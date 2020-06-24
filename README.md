@@ -2,7 +2,10 @@
 
 WordPress: https://wordpress.org/plugins/fluentform
 
+[Demo](https://wpfluentforms.com/contact-form-demo/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Youtube Video Tutorials](https://www.youtube.com/watch?v=JJ0fBWMW174&list=PLXpD0vT4thWEu4gAkLE0Eq7PRCFp_8j2z) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
+
 **WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect WordPress Form builder plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
+
 
 
 Fluent Forms helps you create hassle-free contact forms, subscription forms, or any kind of forms you need for your website in minutes.
