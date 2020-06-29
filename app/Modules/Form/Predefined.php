@@ -857,7 +857,10 @@ class Predefined extends Form
                 $this->formFields = json_encode($predefinedForm['form']);
             }
 
-            $this->defaultSettings = $predefinedForm['formSettings'];
+            if(isset($predefinedForm['formSettings'])) {
+                $this->defaultSettings = $predefinedForm['formSettings'];
+            }
+
 
             if (isset($predefinedForm['notifications'])) {
                 $this->defaultNotifications = $predefinedForm['notifications'];
@@ -866,7 +869,6 @@ class Predefined extends Form
             if(isset($predefinedForm['metas'])) {
                 $this->metas = $predefinedForm['metas'];
             }
-
 
             if(!empty($predefinedForm['has_payment'])) {
                 $this->hasPayment = 1;
