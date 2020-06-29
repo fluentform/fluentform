@@ -267,7 +267,10 @@ class EditorShortcodeParser
     {
         $exploded = explode('.', $value);
         $param = array_pop($exploded);
-        $value = $_REQUEST[$param];
+        if(!isset($_REQUEST[$param])) {
+            return '';
+        }
+        $value = sanitize_textarea_field($_REQUEST[$param]);
         if(is_array($value)) {
             return '';
         }
