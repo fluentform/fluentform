@@ -1,15 +1,22 @@
 {
     "presets": [
         [
-        	"@babel/preset-env", {
+        	"env", {
         		"targets": {
 					"browsers": [
 						"last 2 versions",
 						"IE >= 11"
 					]
 				},
+				"useBuiltIns": true,
         		"modules": false
         	}
         ]
-    ]
+    ],
+    "plugins": [["component", [
+        {
+            "libraryName": "element-ui",
+            "styleLibraryName": "theme-chalk"
+        }
+    ]]]
 }

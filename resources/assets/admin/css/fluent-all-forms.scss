@@ -1,0 +1,16 @@
+@import "_element_icons.css";
+@import "../styles/globals";
+@import "../styles/el_customize";
+@import "../styles/responsive";
+.ff_all_forms {
+    .pull-right {
+        float: right;
+    }
+    .form_navigation {
+        margin-bottom: 20px;
+    }
+}
+
+.v-modal {
+    display: none !important;
+}

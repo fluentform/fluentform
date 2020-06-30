@@ -1,0 +1,48 @@
+@import "../styles/globals";
+
+.ff_doc_top_blocks {
+  display: block;
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+  overflow: hidden;
+  > * {
+    box-sizing: border-box;
+  }
+  .block_1_3 {
+    width: 33.33%;
+    float: left;
+    padding-right: 30px;
+    margin-bottom: 30px;
+    @media (max-width: 768px) {
+      width: 100%;
+      float: none;
+      padding-right: 0px;
+      margin-bottom: 30px;
+    }
+  }
+  .ff_block {
+    .ff_block_box {
+      padding: 15px;
+      background: white;
+      -webkit-box-shadow: 0 0 5px rgba(0,0,0,.05);
+      -moz-box-shadow: 0 0 5px rgba(0,0,0,.05);
+      box-shadow: 0 0 5px rgba(0,0,0,.05);
+      border-radius: 4px;
+      ul {
+        list-style: disc;
+        margin-left: 20px;
+        li a {
+          font-size: 14px;
+          text-decoration: none;
+          line-height: 22px;
+        }
+      }
+    }
+  }
+}
+.text-center {
+  text-align: center;
+}
+
+@import "../styles/responsive";
