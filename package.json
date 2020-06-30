@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@wordpress/hooks": "^2.8.0",
-        "axios": "^0.16.2",
+        "axios": "^0.19.2",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-polyfill": "^6.26.0",
         "babel-preset-env": "^1.7.0",
