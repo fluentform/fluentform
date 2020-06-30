@@ -1,0 +1,32 @@
+.fluentform-admin-notice {
+  display: block;
+  .ff_logo_holder {
+    max-width: 90px;
+    display: inline-block;
+    margin-right: 20px;
+    img {
+      max-width: 100%;
+    }
+  }
+  .ff_notice_container {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    padding-right: 40px;
+    max-width: 67%;
+    > h3 {
+      margin: 0px;
+    }
+    .ff_temp_hide_nag {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      .nag_cross_btn {
+        cursor: pointer;
+        &:hover {
+          color: gray;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,302 @@
+@import "../styles/globals";
+@import "_element_icons.css";
+.ff-add-ons {
+    display: block;
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.ff-add-on {
+    width: 33.33%;
+    float: left;
+    padding-right: 30px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    @media (max-width: 768px) {
+        width: 100%;
+        float: none;
+        padding-right: 0px;
+        margin-bottom: 30px;
+    }
+    &.ff-featured-addon {
+        width: 100%;
+        a.button.button-primary {
+            background: #0084ff;
+            font-size: 18px;
+            padding: 5px 20px;
+            height: auto;
+        }
+        p.ff-add-on-active {
+            position: initial;
+            max-width: 250px;
+        }
+        .ff-plugin_info {
+            float: left;
+            max-width: 250px;
+            padding-right: 20px;
+            border-right: 1px solid #dcd8d8;
+            > img {
+                max-width: 200px;
+                width: 100%;
+                height: auto !important;
+                max-height: none;
+            }
+        }
+        .ff-add-on-description {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .ff-featured_content {
+            float: left;
+            padding-left: 20px;
+            display: block;
+            .ff-integration {
+                max-width: 300px;
+                height: auto;
+            }
+            .ff-feature-lists {
+                text-align: left;
+                float: left;
+                margin-right: 150px;
+                &:last-child {
+                    margin-right: 0;
+                }
+                ul li {
+                    font-size: 17px;
+                    margin-bottom: 10px;
+                    span {
+                        color: green;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ff-add-on-box {
+    padding: 15px;
+    background: white;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ff-add-on-box img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.ff-add-on-active {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.ff-add-on-inactive {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.ff-add-on-active,
+.ff-add-on-inactive {
+    font-weight: bold;
+    padding: 6px;
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+}
+
+.ff-add-on-description {
+    margin-bottom: 56px;
+}
+
+.ff_add_on_navigation {
+    display: block;
+    width: 100%;
+}
+
+.ff_add_on_navigation ul {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    background: white;
+}
+
+.ff_add_on_navigation ul li {
+    display: inline-block;
+    margin-bottom: 0px;
+}
+
+.ff_add_on_navigation ul li a {
+    padding: 10px 15px 12px;
+    display: block;
+    text-decoration: none;
+    font-weight: bold;
+    border-right: 1px solid #f1f1f1;
+    border-top: 2px solid transparent;
+}
+.ff_add_on_navigation li.ff_add_on_item.ff_menu_item_active a {
+    border-top: 2px solid #333333;
+    color: #333;
+}
+.fluent_activation_wrapper {
+    background: #fbf8f8;
+    padding: 45px 20px;
+    display: block;
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+}
+.fluent_activate_now {
+    display: none;
+}
+label.fluentform_label {
+    display: block;
+    padding: 10px;
+    margin-top: 30px;
+}
+
+label.fluentform_label span {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+label.fluentform_label input {
+    height: 45px;
+    font-size: 22px;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+p.contact_us_line {
+    margin-top: 75px;
+    font-size: 13px;
+    color: #777575;
+}
+.fluent_activation_wrapper .button-primary.button_activate {
+    font-size: 19px !important;
+    padding: 5px 25px !important;
+    height: auto !important;
+}
+.license_activated_sucess {
+    padding: 20px 0px;
+    font-size: 20px;
+    color: #525556;
+}
+.fluent_activation_wrapper .fluent_plugin_activated_hide {
+    display: none !important;
+}
+
+
+.add_on_modules {
+    border: 1px solid #dcdfe6;
+
+    .modules_header {
+        background: white;
+        margin: 0px 0px 20px;
+        padding: 20px;
+        width: 100%;
+        display: block;
+    }
+    .module_title {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    .modules_body {
+        width: 100%;
+        clear: both;
+        overflow: hidden;
+        padding-bottom: 20px;
+        .add_on_card {
+            min-width: 300px;
+            background: white;
+            margin: 1% 1% 1% 1%;
+            float: left;
+            width: 31%;
+            border-radius: 5px;
+            box-shadow: -1px 0px 4px 2px #c7c7c7;
+            &.addon_enabled_no {
+                img {
+                    -webkit-filter: grayscale(100%);
+                    filter: grayscale(100%);
+                }
+            }
+        }
+        .addon_header {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #f1f1f1;
+            font-weight: bold;
+        }
+        .addon_body {
+            padding: 15px;
+            height: 130px;
+            overflow: hidden;
+            img {
+                max-width: 50%;
+                max-height: 30px;
+                text-align: center;
+                display: block;
+                margin: 0 auto;
+                margin-bottom: 20px;
+            }
+        }
+        .addon_footer {
+            border-top: 1px solid #e2dfdf;
+            padding: 10px 15px;
+        }
+        a.pro_update_btn {
+            display: inline-block;
+            margin: 0 auto;
+            text-align: center;
+            width: auto;
+            padding: 3px 10px;
+            border: 1px solid #356ae6;
+            font-weight: bold;
+            text-decoration: none;
+            color: #366be6;
+            border-radius: 4px;
+            &:hover {
+                color: white;
+                background:  #366be6;
+            }
+        }
+    }
+
+    .ff_module_navs {
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 10px;
+        padding: 0px 10px 10px 10px;
+    }
+
+    .ff_module_selectors, .ff_mdoules_search {
+        width: 50%;
+        float: left;
+        .input-with-select {
+            max-width: 300px;
+            text-align: right;
+            float: right;
+        }
+    }
+
+}
+
+
+@import "../styles/responsive";
