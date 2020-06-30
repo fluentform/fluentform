@@ -193,10 +193,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     }
                 },
                 fail: function (e, data) {
-                    var errors = [];
+                    let errors = [];
                     data.context.remove();
-                    if (data.jqXHR.responseJSON && data.jqXHR.responseJSON.data && data.jqXHR.responseJSON.data.errors) {
-                        $.each(data.jqXHR.responseJSON.data.errors, function (key, error) {
+                    if (data.jqXHR.responseJSON && data.jqXHR.responseJSON.errors) {
+                        $.each(data.jqXHR.responseJSON.errors, function (key, error) {
                             if (typeof error == 'object') {
                                 $.each(error, function (i, msg) {
                                     errors.push(msg);
