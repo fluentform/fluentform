@@ -266,7 +266,8 @@ class ShortCodeParser
     protected static function getOtherData($key)
     {
         if (strpos($key, 'date.') === 0) {
-            return wp_date(str_replace('date.', '', $key));
+            $format = str_replace('date.', '', $key);
+            return date($format, strtotime(current_time('mysql')));
         } elseif ($key == 'admin_email') {
             return get_option('admin_email', false);
         } elseif ($key == 'ip') {

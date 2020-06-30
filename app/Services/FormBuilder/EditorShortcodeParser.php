@@ -252,7 +252,7 @@ class EditorShortcodeParser
     private static function parseDate($value, $form = null)
     {
         $format = substr(str_replace(['}', '{'], '', $value), 5);
-        $date = wp_date($format);
+        $date = date($format, strtotime(current_time('mysql')));
         return $date ? $date : '';
     }
 
