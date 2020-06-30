@@ -203,8 +203,18 @@ class Extractor
     {
         if (in_array('options', $this->with)) {
             $options = Arr::get($this->field, 'options', []);
+
             if(!$options) {
                 $newOptions = Arr::get($this->field, 'settings.advanced_options', []);
+
+                if(
+                    !$newOptions
+                    && Arr::get($this->field,'element') == 'multi_payment_component'
+                    && Arr::get($this->field,'attributes.type') != 'single'
+                ) {
+                    $newOptions = Arr::get($this->field, 'settings.pricing_options', []);
+                }
+
                 $options = [];
                 if($newOptions) {
                     foreach ($newOptions as $option) {

@@ -138,15 +138,12 @@ class FormBuilder
         }
 
         if ($hasStepWrapper) {
-            do_action(
-                'fluentform_render_item_step_end', $form->fields['stepsWrapper']['stepEnd'], $form
-            );
+            do_action('fluentform_render_item_step_end', $form->fields['stepsWrapper']['stepEnd'], $form);
+        } else {
+            do_action('fluentform_render_item_submit_button', $form->fields['submitButton'], $form);
         }
 
-        do_action('fluentform_render_item_submit_button', $form->fields['submitButton'], $form);
-        
         $content = ob_get_clean();
-
 
         if ($hasStepWrapper) {
             $startElement = $form->fields['stepsWrapper']['stepStart'];

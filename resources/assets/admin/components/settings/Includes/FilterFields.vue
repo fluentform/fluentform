@@ -11,7 +11,7 @@
         <div v-if="conditionals.status">
             {{labels.notification_if_start}}
 
-            <select v-model="conditionals.type">
+            <select class="ff_inline_small" v-model="conditionals.type">
                 <option v-for="(label, value) in {all: 'All', any: 'Any'}" :key="value" :value="value">
                     {{ label }}
                 </option>
