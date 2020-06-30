@@ -212,5 +212,5 @@ function fluentFormHandleScheduledTasks()
 
 function fluentFormHandleScheduledEmailReport()
 {
-     \WPNS\App\Hooks\Handlers\Scheduler::processEmailReport();
+     \FluentForm\App\Services\Scheduler\Scheduler::processEmailReport();
 }
