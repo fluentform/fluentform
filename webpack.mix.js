@@ -37,7 +37,11 @@ mix
     .sass('resources/assets/preview/preview.scss', `public/css/preview.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `public/css/fluent-forms-elementor-widget.css`)
 
-    .less('resources/assets/admin/styles/index.less', `public/css/fluent-forms-admin.css`);
+    .less('resources/assets/admin/styles/index.less', `public/css/fluent-forms-admin.css`, {
+        lessOptions: {
+            javascriptEnabled: true
+        }
+    });
 
 mix.then(() => {
     exec('rtlcss ./public/css/fluent-forms-public.css ./public/css/fluent-forms-public-rtl.css', (error) => {
