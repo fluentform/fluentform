@@ -44,44 +44,51 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 });
             }
 
+            function changeValidation (e, data) {
+                if (!data || !data.files || !data.files.length) {
+                    return;
+                }
+
+                $form.find('.ff-upload-preview-elem').remove();
+                // return true;
+                if ('max_file_count' in rules) {
+                    $(formSelector + '_errors').empty();
+                    $(this).closest('div').find('.error').html('');
+                    var remaining = rules['max_file_count']['remaining'];
+                    if (!remaining || data.files.length > remaining) {
+                        var msg = 'Maximum 1 file is allowed!';
+                        msg = maxFiles > 1 ? 'Maximum ' + maxFiles + ' files are allowed!' : msg;
+                        if (rules.max_file_count && rules.max_file_count.message) {
+                            msg = rules.max_file_count.message;
+                        }
+                        showUploadError(msg);
+                        return false;
+                    }
+                }
+
+                var validationErrors = validateFile(
+                    data.files[0], form.rules[element.prop('name')]
+                );
+
+                if (validationErrors.length) {
+                    showUploadError(validationErrors.join(', '));
+                    return false;
+                }
+
+                return true;
+            }
+
             // Init the uploader
             element.fileupload({
                 dataType: 'json',
+                dropZone: element.closest('.ff-el-group'),
                 url: fluentFormVars.ajaxUrl + '?action=fluentform_file_upload&formId=' + form.id,
-                change: function (e, data) {
-                    if (!data || !data.files || !data.files.length) {
+                change: changeValidation,
+                add: function (e, data) {
+                    if(!changeValidation(e, data)) {
                         return;
                     }
 
-                    $form.find('.ff-upload-preview-elem').remove();
-                    // return true;
-                    if ('max_file_count' in rules) {
-                        $(formSelector + '_errors').empty();
-                        $(this).closest('div').find('.error').html('');
-                        var remaining = rules['max_file_count']['remaining'];
-                        if (!remaining || data.files.length > remaining) {
-                            var msg = 'Maximum 1 file is allowed!';
-                            msg = maxFiles > 1 ? 'Maximum ' + maxFiles + ' files are allowed!' : msg;
-                            if (rules.max_file_count && rules.max_file_count.message) {
-                                msg = rules.max_file_count.message;
-                            }
-                            showUploadError(msg);
-                            return false;
-                        }
-                    }
-
-                    var validationErrors = validateFile(
-                        data.files[0], form.rules[element.prop('name')]
-                    );
-
-                    if (validationErrors.length) {
-                        showUploadError(validationErrors.join(', '));
-                        return false;
-                    }
-
-                    return true;
-                },
-                add: function (e, data) {
                     var previewContainer = $('<div/>', {
                         class: 'ff-upload-preview'
                     });
@@ -150,7 +157,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     data.context.addClass('ff_uploading');
                 },
                 progress: function (e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    let progress = parseInt(data.loaded / data.total * 100, 10);
                     data.context
                         .find('.ff-el-progress-bar')
                         .css('width', progress + '%');
