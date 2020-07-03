@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder
 Requires at least: 4.5
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 3.6.22
+Stable tag: 3.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -301,6 +301,17 @@ Yes, Please check our <a href="https://trello.com/b/FaDlAD9B/public-roadmap-wp-f
 10. All Submission Chart by Date
 
 == Changelog ==
+
+= 3.6.3 (Date: July 3, 2020) =
+* Conditional Logic improvement (Now you can add Conditional Logic to Containers)
+* Query String php notice fixed
+* wp_date() support for older versions
+* Added "Mark as Favorite" in the entry details page
+* Email Summary Error Issue fixed
+* Taxonomies issue has been fixed for container fields
+* File Upload for drag and drop issue fixed
+* Dutch translation has been added
+* RTL support has been added for some elements
 
 = 3.6.22 (Date: June 19, 2020) =
 * Address Field Parser Fix
