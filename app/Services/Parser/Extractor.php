@@ -212,13 +212,20 @@ class Extractor
                     && Arr::get($this->field,'element') == 'multi_payment_component'
                     && Arr::get($this->field,'attributes.type') != 'single'
                 ) {
-                    $newOptions = Arr::get($this->field, 'settings.pricing_options', []);
+                    $pricingOptions = Arr::get($this->field, 'settings.pricing_options', []);
+                    foreach ($pricingOptions as $pricingOption) {
+                        $newOptions[] = [
+                            'value' => $pricingOption['label'],
+                            'label' => $pricingOption['label']
+                        ];
+                    }
                 }
 
                 $options = [];
                 if($newOptions) {
                     foreach ($newOptions as $option) {
-                        $options[$option['value']] = $option['label'];
+                        $value = sanitize_text_field($option['value']);
+                        $options[$value] = sanitize_text_field($option['label']);
                     }
                 }
             }

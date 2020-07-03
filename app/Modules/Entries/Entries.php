@@ -480,14 +480,6 @@ class Entries extends EntryQuery
     {
         do_action('fluentform_before_entry_deleted', $entryId, $formId);
 
-        // we should delete the entry attachment too.
-        // Check if any media type exist in the form
-        // if yes find them and the delete them
-        $form = wpFluent()->table('fluentform_forms')->find($formId);
-
-        $deletableFiles = $this->getSubmissionAttachments($entryId, $form);
-
-
         wpFluent()->table('fluentform_submissions')
             ->where('id', $entryId)
             ->delete();
@@ -524,6 +516,9 @@ class Entries extends EntryQuery
                     ->where('type', 'submission_action')
                     ->delete();
 
+                $form = wpFluent()->table('fluentform_forms')->find($formId);
+                $deletableFiles = $this->getSubmissionAttachments($entryId, $form);
+
                 if ($deletableFiles) {
                     foreach ($deletableFiles as $eachFile) {
                         $file = wp_upload_dir()['basedir'].FLUENTFORM_UPLOAD_DIR.'/'.basename($eachFile);
@@ -538,6 +533,7 @@ class Entries extends EntryQuery
             }
         }
         $errors = ob_get_clean();
+
 
         do_action('fluentform_after_entry_deleted', $entryId, $formId);
 
@@ -631,17 +627,10 @@ class Entries extends EntryQuery
 
         // now other action handler
         if ($actionType == 'other.delete_permanently') {
-            $bulkQuery->delete();
-            wpFluent()->table('fluentform_entry_details')
-                ->where('form_id', $formId)
-                ->whereIn('submission_id', $entries)
-                ->delete();
 
-            wpFluent()->table('fluentform_submission_meta')
-                ->where('form_id', $formId)
-                ->whereIn('response_id', $entries)
-                ->delete();
-
+            foreach ($entries as $entryId) {
+                $this->deleteEntryById($entryId, $formId);
+            }
             $message = __('Selected entries successfully deleted', 'fluentform');
 
         } elseif ($actionType == 'other.make_favorite') {
