@@ -50,9 +50,7 @@ class EmailNotification
         );
         $emailBody = $notification['message'];
 
-        if ($isSendAsPlain) {
-            $emailBody = strip_tags($emailBody);
-        } else {
+        if (!$isSendAsPlain) {
             $emailBody = $this->getEmailWithTemplate($emailBody, $form, $notification);
         }
 
@@ -110,9 +108,13 @@ class EmailNotification
             $notification['sendTo']['email'] = $sendEmail;
         }
 
+        $emailBody = apply_filters('fluentform_email_body', $emailBody, $notification, $submittedData, $form);
+        $subject = apply_filters('fluentform_email_subject', $notification['subject'], $notification, $submittedData, $form);
+        $emailTo = apply_filters('fluentform_email_to', $notification['sendTo']['email'], $notification, $submittedData, $form);
+
         return wp_mail(
-            $notification['sendTo']['email'],
-            $notification['subject'],
+            $emailTo,
+            $subject,
             $emailBody,
             $headers,
             $attachments

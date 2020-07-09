@@ -147,7 +147,7 @@ jQuery(document).ready(function () {
                         // Init reCaptcha if available.
                         if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
                             let recaptchaId = getRecaptchaClientId(formData.form_id);
-                            if(recaptchaId) {
+                            if (recaptchaId) {
                                 formData['data'] += '&' + $.param({
                                     'g-recaptcha-response': grecaptcha.getResponse(recaptchaId)
                                 });
@@ -202,67 +202,68 @@ jQuery(document).ready(function () {
                         $theForm.parent().find('.ff-errors-in-stack').hide();
                         showFormSubmissionProgress($theForm);
 
-                        $.post(fluentFormVars.ajaxUrl + '?t='+Date.now(), formData).then(function (res) {
-                            if (!res || !res.data || !res.data.result) {
-                                // This is an error
-                                $theForm.trigger('fluentform_submission_failed', {
+                        $.post(fluentFormVars.ajaxUrl + '?t=' + Date.now(), formData)
+                            .then(function (res) {
+                                if (!res || !res.data || !res.data.result) {
+                                    // This is an error
+                                    $theForm.trigger('fluentform_submission_failed', {
+                                        form: $theForm,
+                                        response: res
+                                    });
+                                    showErrorMessages(res);
+                                    return;
+                                }
+
+                                if (res.data.nextAction) {
+                                    $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
+                                        form: $theForm,
+                                        response: res
+                                    });
+                                    return;
+                                }
+
+                                $theForm.trigger('fluentform_submission_success', {
                                     form: $theForm,
+                                    config: form,
                                     response: res
                                 });
-                                showErrorMessages(res);
-                                return;
-                            }
 
-                            if (res.data.nextAction) {
-                                $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
+                                jQuery(document.body).trigger('fluentform_submission_success', {
                                     form: $theForm,
+                                    config: form,
                                     response: res
                                 });
-                                return;
-                            }
 
-                            $theForm.trigger('fluentform_submission_success', {
-                                form: $theForm,
-                                config: form,
-                                response: res
-                            });
+                                if ('redirectUrl' in res.data.result) {
+                                    if (res.data.result.message) {
+                                        $('<div/>', {
+                                            'id': formId + '_success',
+                                            'class': 'ff-message-success'
+                                        })
+                                            .html(res.data.result.message)
+                                            .insertAfter($theForm);
+                                        $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
+                                    }
 
-                            jQuery(document.body).trigger('fluentform_submission_success', {
-                                form: $theForm,
-                                config: form,
-                                response: res
-                            });
-
-                            if ('redirectUrl' in res.data.result) {
-                                if (res.data.result.message) {
+                                    location.href = res.data.result.redirectUrl;
+                                    return;
+                                } else {
                                     $('<div/>', {
                                         'id': formId + '_success',
                                         'class': 'ff-message-success'
                                     })
                                         .html(res.data.result.message)
                                         .insertAfter($theForm);
+
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
+
+                                    if (res.data.result.action == 'hide_form') {
+                                        $theForm.hide().addClass('ff_force_hide');
+                                    } else {
+                                        $theForm[0].reset();
+                                    }
                                 }
-
-                                location.href = res.data.result.redirectUrl;
-                                return;
-                            } else {
-                                $('<div/>', {
-                                    'id': formId + '_success',
-                                    'class': 'ff-message-success'
-                                })
-                                    .html(res.data.result.message)
-                                    .insertAfter($theForm);
-
-                                $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
-
-                                if (res.data.result.action == 'hide_form') {
-                                    $theForm.hide().addClass('ff_force_hide');
-                                } else {
-                                    $theForm[0].reset();
-                                }
-                            }
-                        })
+                            })
                             .fail(function (res) {
 
                                 $theForm.trigger('fluentform_submission_failed', {
@@ -276,6 +277,7 @@ jQuery(document).ready(function () {
                                 }
 
                                 showErrorMessages(res.responseJSON.errors);
+
                                 scrollToFirstError(350);
 
                                 if ($theForm.find('.fluentform-step').length) {
@@ -283,11 +285,13 @@ jQuery(document).ready(function () {
                                         .find('.error')
                                         .not(':empty:first')
                                         .closest('.fluentform-step');
-
-                                    let goBackToStep = step.index();
-                                    fireUpdateSlider(
-                                        goBackToStep, fluentFormVars.stepAnimationDuration, false
-                                    );
+                                    
+                                    if (step.length) {
+                                        let goBackToStep = step.index();
+                                        fireUpdateSlider(
+                                            goBackToStep, fluentFormVars.stepAnimationDuration, false
+                                        );
+                                    }
                                 }
                             })
                             .always(function (res) {
@@ -300,7 +304,7 @@ jQuery(document).ready(function () {
                                 // reset reCaptcha if available.
                                 if (window.grecaptcha) {
                                     let reCaptchaId = getRecaptchaClientId(formData.form_id);
-                                    if(reCaptchaId) {
+                                    if (reCaptchaId) {
                                         grecaptcha.reset(reCaptchaId);
                                     }
                                 }
@@ -593,11 +597,11 @@ jQuery(document).ready(function () {
                         return;  // It's on bottom so We don't need to do anything
                     }
                     $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select', function () {
-                        if(window.ff_disable_error_clear) {
+                        if (window.ff_disable_error_clear) {
                             return;
                         }
                         var $parent = $(this).closest('.ff-el-group');
-                        if($parent.hasClass('ff-el-is-error')) {
+                        if ($parent.hasClass('ff-el-is-error')) {
                             $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
                         }
                     });
@@ -706,7 +710,7 @@ jQuery(document).ready(function () {
                         el = $(element);
                         elName = el.prop('name').replace('[]', '');
 
-                        if(el.data('type') === 'repeater_item') {
+                        if (el.data('type') === 'repeater_item') {
                             elName = el.attr('data-name');
                             rules[elName] = rules[el.data('error_index')];
                         }
