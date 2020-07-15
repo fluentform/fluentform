@@ -133,7 +133,7 @@ export default function ($, $theForm) {
     };
 
     function isAccessible($el) {
-        if ($el.closest('.ff_excluded').length) {
+        if ($el.closest('.ff_excluded.has-conditions').length) {
             return false;
         }
         return true;
@@ -143,7 +143,7 @@ export default function ($, $theForm) {
         let itemValue = 0;
         let selectedItems = $theForm.find(selector);
 
-        if (selectedItems.closest('.ff_excluded').length) {
+        if (selectedItems.closest('.ff_excluded.has-conditions').length) {
             return itemValue;
         }
 
