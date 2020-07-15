@@ -34,8 +34,8 @@ export default function ($, $theForm) {
 
     // polyfill for matchAll
     function findAll(regexPattern, sourceString) {
-        let output = []
-        let match
+        let output = [];
+        let match;
         // make sure the pattern has the global flag
         let regexPatternWithGlobal = RegExp(regexPattern, "g")
         while (match = regexPatternWithGlobal.exec(sourceString)) {
@@ -60,7 +60,12 @@ export default function ($, $theForm) {
                 let itemKey = match[0];
                 if (itemKey.indexOf('{input.') != -1) {
                     let inputName = itemKey.replace(/{input.|}/g, '');
-                    replaces[itemKey] = $theForm.find('input[name=' + inputName + ']').val() || 0;
+                    let $el = $theForm.find('input[name=' + inputName + ']');
+                    let value = 0;
+                    if (isAccessible($el)) {
+                        value = $el.val() || 0;
+                    }
+                    replaces[itemKey] = value;
                 } else if (itemKey.indexOf('{select.') != -1) { // select Field
                     let inputName = itemKey.replace(/{select.|}/g, '');
                     let itemValue = getDataCalcValue('select[data-name=' + inputName + '] option:selected');
@@ -71,11 +76,15 @@ export default function ($, $theForm) {
                     replaces[itemKey] = getDataCalcValue('input[data-name=' + inputName + ']:checked');
                 } else if (itemKey.indexOf('{radio.') != -1) { // Radio Fields
                     let inputName = itemKey.replace(/{radio.|}/g, '');
-                    replaces[itemKey] = $theForm.find('input[name=' + inputName + ']:checked').attr('data-calc_value') || 0;
+                    let $el = $theForm.find('input[name=' + inputName + ']:checked');
+                    let value = 0;
+                    if (isAccessible($el)) {
+                        value = $el.attr('data-calc_value') || 0;
+                    }
+                    replaces[itemKey] = value;
                 } else if (itemKey.indexOf('{repeat.') != -1) { // Radio Fields
                     let tableName = itemKey.replace(/{repeat.|}/g, '');
                     let $targetTable = $theForm.find('table[data-root_name=' + tableName + ']');
-
                     if (!repeaterTriggerCache[tableName]) {
                         repeaterTriggerCache[tableName] = true;
                         $targetTable.on('repeat_change', () => {
@@ -83,7 +92,11 @@ export default function ($, $theForm) {
                         });
                     }
 
-                    replaces[itemKey] = $targetTable.find('tbody tr').length;
+                    let value = 0;
+                    if (isAccessible($targetTable)) {
+                        value = $targetTable.find('tbody tr').length
+                    }
+                    replaces[itemKey] = value;
                 }
             });
 
@@ -99,14 +112,12 @@ export default function ($, $theForm) {
                 if (isNaN(calculatedValue)) {
                     calculatedValue = '';
                 }
-
-                if(typeof formula == 'string' && formula.indexOf('round') === 0) {
+                if (typeof formula == 'string' && formula.indexOf('round') === 0) {
                     let decimal = parseInt(formula.substr(-2, 1));
-                    if(decimal && Number.isInteger(decimal)) {
+                    if (decimal && Number.isInteger(decimal)) {
                         calculatedValue = parseFloat(calculatedValue).toFixed(2);
                     }
                 }
-
             } catch (error) {
                 console.log(error);
             }
@@ -121,9 +132,21 @@ export default function ($, $theForm) {
         });
     };
 
+    function isAccessible($el) {
+        if ($el.closest('.ff_excluded').length) {
+            return false;
+        }
+        return true;
+    }
+
     function getDataCalcValue(selector) {
         let itemValue = 0;
         let selectedItems = $theForm.find(selector);
+
+        if (selectedItems.closest('.ff_excluded').length) {
+            return itemValue;
+        }
+
         $.each(selectedItems, (indexItem, item) => {
             let eachItemValue = $(item).attr('data-calc_value');
             if (eachItemValue && !isNaN(eachItemValue)) {
