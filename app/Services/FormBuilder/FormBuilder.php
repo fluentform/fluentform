@@ -13,6 +13,8 @@ class FormBuilder
      */
     protected $app = null;
 
+    protected $form = null;
+
     /**
      * Conditional logic for elements
      * @var array
@@ -48,6 +50,7 @@ class FormBuilder
      */
     public function build($form, $extraCssClass = '', $instanceCssClass = '')
     {
+        $this->form = $form;
         $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
         
         $labelPlacement = $form->settings['layout']['labelPlacement'];
@@ -190,7 +193,18 @@ class FormBuilder
             }
         } else {
             if (!isset($item['attributes']['name'])) {
-                $item['attributes']['name'] = $item['element'] . '-' . uniqid(rand(), true);
+                if($this->form) {
+                    if(empty($this->form->attr_name_index)) {
+                        $this->form->attr_name_index = 1;
+                    } else {
+                        $this->form->attr_name_index += 1;
+                    }
+                    $uniqueId = $this->form->id.'_'.$this->form->attr_name_index;
+                } else {
+                    $uniqueId = uniqid(rand(), true);
+                }
+
+                $item['attributes']['name'] = $item['element'] . '-' . $uniqueId;
             }
             $item['attributes']['data-name'] = $item['attributes']['name'];
             $this->fieldLists[] = $item['element'];
@@ -281,18 +295,22 @@ class FormBuilder
     {
         // If container like element, then recurse
         if (isset($item['columns'])) {
-
+            $containerConditions = false;
             if (isset($item['settings']['conditional_logics'])) {
                 $conditionals = $item['settings']['conditional_logics'];
                 if (isset($conditionals['status'])) {
                     if ($conditionals['status'] && $conditionals['conditions']) {
-                        $this->conditions[$item['attributes']['data-name']] = $item['settings']['conditional_logics'];
+                        $containerConditions = $item['settings']['conditional_logics'];
+                        $this->conditions[$item['attributes']['data-name']] = $containerConditions;
                     }
                 }
             }
 
             foreach ($item['columns'] as $column) {
                 foreach ($column['fields'] as $field) {
+                    if($containerConditions) {
+                        $field['container_conditions'] = $containerConditions;
+                    }
                     $this->extractConditionalLogic($field);
                 }
             }
@@ -302,6 +320,16 @@ class FormBuilder
                 if ($conditionals['status'] && $conditionals['conditions']) {
                     $this->conditions[$item['attributes']['data-name']] = $item['settings']['conditional_logics'];
                 }
+            }
+            if(isset($item['container_conditions'])) {
+                if(!isset($this->conditions[$item['attributes']['data-name']])) {
+                    $this->conditions[$item['attributes']['data-name']] = [
+                        'conditions' => [],
+                        'status' => false,
+                        'type' => 'any'
+                    ];
+                }
+                $this->conditions[$item['attributes']['data-name']]['container_condition'] = $item['container_conditions'];
             }
         }
     }

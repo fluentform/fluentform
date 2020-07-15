@@ -24,31 +24,38 @@ class ConditionApp {
     }
 
     evaluate(item, key) {
-        this.counter++;
-        let type = item.type;
-        let result = 1;
-        if (type == 'any') {
-            result = 0;
-        }
-        item.conditions.forEach(condition => {
-            let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
-
-            if(evalValue && this.fields[condition.field] && condition.field != key) {
-                evalValue = this.evaluate(this.fields[condition.field], condition.field);
-            }
-
+        let mainResult = false;
+        if(item.status) {
+            this.counter++;
+            let type = item.type;
+            let result = 1;
             if (type == 'any') {
-                if (evalValue) {
-                    result = 1;
-                }
-            } else {
-                // For All
-                if (!evalValue && result) {
-                    result = false;
-                }
+                result = 0;
             }
-        });
-        return result == 1;
+            item.conditions.forEach(condition => {
+                let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
+
+                if(evalValue && this.fields[condition.field] && condition.field != key) {
+                    evalValue = this.evaluate(this.fields[condition.field], condition.field);
+                }
+
+                if (type == 'any') {
+                    if (evalValue) {
+                        result = 1;
+                    }
+                } else {
+                    // For All
+                    if (!evalValue && result) {
+                        result = false;
+                    }
+                }
+            });
+            mainResult = result == 1;
+        }
+        if(item.container_condition) {
+            mainResult = this.evaluate(item.container_condition);
+        }
+        return mainResult;
     }
 
     getItemEvaluateValue(item, val) {
