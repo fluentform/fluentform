@@ -164,6 +164,11 @@ export default function ($, $theForm) {
             'input[type=number],input[data-calc_value],select[data-calc_value]'
         ).on('change keyup', doCalculation).trigger('change');
         doCalculation();
+
+        $theForm.on('do_calculation', () => {
+            doCalculation();
+        });
+
     };
 
     initNumberCalculations();

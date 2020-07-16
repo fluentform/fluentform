@@ -74,6 +74,7 @@ const formConditional = function ($, $theForm, form) {
                         .slideUp(200);
                 }
             });
+            $theForm.trigger('do_calculation');
         };
 
         const getFormData = function () {
