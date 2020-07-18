@@ -294,8 +294,6 @@ $app->addAdminAjaxAction('fluentform-predefined-create', function () use ($app) 
  * slack and mailchimp if the form was submitted.
  */
 
-(new FluentForm\App\Services\Integrations\Slack\SlackNotificationActions($app))->register();
-
 
 // Permission settings
 $app->addAdminAjaxAction('fluentform_get_access_roles', function () {

@@ -123,9 +123,13 @@ export default function ($, $theForm) {
             }
 
             if ($field[0].type == 'text') {
-                $($field).val(calculatedValue)
-                    .prop('defaultValue', calculatedValue)
-                    .trigger('change');
+                const $fieldDom = $($field);
+                const prevValue = $fieldDom.val();
+                $fieldDom.val(calculatedValue)
+                    .prop('defaultValue', calculatedValue);
+                if(prevValue != calculatedValue) {
+                    $fieldDom.trigger('change');
+                }
             } else {
                 $field.text(calculatedValue);
             }

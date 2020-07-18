@@ -342,3 +342,5 @@ add_action('fluentform_global_notify_completed', function ($insertId, $form) use
 if(defined('ELEMENTOR_VERSION')) {
     new \FluentForm\App\Modules\Widgets\ElementorWidget($app);
 }
+
+(new FluentForm\App\Services\Integrations\Slack\SlackNotificationActions($app))->register();
