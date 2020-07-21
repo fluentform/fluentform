@@ -1,8 +1,8 @@
-export default function ($) {
+export default function ($, $form) {
     /**
      * Rating element
      */
-    let ratingDoms = $(".jss-ff-el-ratings");
+    let ratingDoms = $form.find(".jss-ff-el-ratings");
 
     if(!ratingDoms.length) {
         return;

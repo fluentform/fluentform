@@ -171,6 +171,7 @@ class GlobalIntegrationManager
 
             if ($feed->value) {
                 $settings = json_decode($feed->value, true);
+
                 $settings = apply_filters('fluentform_get_integration_values_' . $integrationName, $settings, $feed, $formId);
                 if (!empty($settings['list_id'])) {
                     $mergeFields = apply_filters('fluentform_get_integration_merge_fields_' . $integrationName, false, $settings['list_id'], $formId);
@@ -187,6 +188,7 @@ class GlobalIntegrationManager
         }
 
         $settingsFields = apply_filters('fluentform_get_integration_settings_fields_' . $integrationName, [], $formId, $settings);
+
 
         wp_send_json_success([
             'settings'        => $settings,
@@ -223,11 +225,10 @@ class GlobalIntegrationManager
 
         $integration = apply_filters('fluentform_save_integration_value_'.$integrationName, $integration, $integrationId, $formId);
 
-
         $data = [
             'form_id' => $formId,
             'meta_key' => $integrationName.'_feeds',
-            'value' => json_encode($integration, JSON_NUMERIC_CHECK)
+            'value' => \json_encode($integration)
         ];
 
         $data = apply_filters('fluentform_save_integration_settings_'.$integrationName, $data, $integrationId);
