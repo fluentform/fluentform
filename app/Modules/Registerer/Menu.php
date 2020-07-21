@@ -321,8 +321,8 @@ class Menu
         // Register Add-Ons
         add_submenu_page(
             'fluent_forms',
-            __('Modules', 'fluentform'),
-            __('Modules', 'fluentform'),
+            __('Integration Modules', 'fluentform'),
+            __('Integration Modules', 'fluentform'),
             $dashBoardCapability,
             'fluent_form_add_ons',
             array($this, 'renderAddOns')

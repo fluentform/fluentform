@@ -67,7 +67,7 @@ class Component
         wp_register_script(
             'fluentform-advanced',
             $app->publicUrl('js/fluentform-advanced.js'),
-            array('jquery', 'fluent-form-submission'),
+            array('jquery'),
             FLUENTFORM_VERSION,
             true
         );
@@ -494,12 +494,11 @@ class Component
         if (apply_filters('fluentform_load_default_public', true, $form)) {
             wp_enqueue_style('fluentform-public-default');
         }
-        wp_enqueue_script('fluent-form-submission');
-
         /*
          * We will load fluentform-advanced if the form has certain fields or feature
          */
         $this->maybeHasAdvandedFields($form, $formBuilder);
+        wp_enqueue_script('fluent-form-submission');
 
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
         $stepText = apply_filters('fluentform_step_string', $stepText);

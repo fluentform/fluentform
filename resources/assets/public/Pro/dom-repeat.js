@@ -1,5 +1,5 @@
-const initRepeatButtons = function ($) {
-    var repeat = $('.fluentform .js-repeat'); // this is the old version
+const initRepeatButtons = function ($, $form) {
+    var repeat = $form.find('.fluentform .js-repeat'); // this is the old version
     $.each(repeat, (index, repeatItem) => {
         let $repeatItem = $(repeatItem);
         let repeatCols = $repeatItem.find('.ff-t-cell').length;

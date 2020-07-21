@@ -1,8 +1,8 @@
-const initNetPromoter = function ($) {
+const initNetPromoter = function ($, $form) {
     /**
      * Rating element
      */
-    let netPromoterDoms = $(".jss-ff-el-net-promoter");
+    let netPromoterDoms = $form.find(".jss-ff-el-net-promoter");
 
     if(!netPromoterDoms.length) {
         return;

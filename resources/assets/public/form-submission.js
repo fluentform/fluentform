@@ -71,7 +71,7 @@ jQuery(document).ready(function () {
                 };
 
                 var getTheForm = function () {
-                    return $('body').find(formSelector);
+                    return $('body').find('form'+formSelector);
                 };
 
                 var maybeInlineForm = function () {
@@ -653,16 +653,48 @@ jQuery(document).ready(function () {
                 };
 
                 var initTriggers = function () {
+                    $theForm = getTheForm();
                     jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
                     jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
-                    jQuery($theForm).find('input.ff-el-form-control').on('keypress', function (e) {
+                    $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
-                };
+                    $theForm.data('is_initialized', 'yes');
 
-                $(document).on('reInitExtras', formSelector, function () {
-                    reinitExtras();
-                });
+                    $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
+                        const content = $(this).data('content');
+                        let $popContent = $('.ff-el-pop-content');
+                        if(!$popContent.length) {
+                            $('<div/>', {
+                                class : 'ff-el-pop-content'
+                            }).appendTo(document.body);
+                            $popContent = $('.ff-el-pop-content');
+                        }
+                        $popContent.html(content);
+                        const formWidth = $theForm.innerWidth() - 20;
+                        $popContent.css('max-width', formWidth);
+
+                        const iconLeft = $(this).offset().left;
+                        const formLeft = $theForm.offset().left;
+                        const contentWidth = $popContent.outerWidth();
+                        const contentHeight = $popContent.outerHeight();
+
+                        let tipPosition = iconLeft - (contentWidth / 2) + 10;
+
+                        if((tipPosition + contentWidth) > formWidth) {
+                            tipPosition = (formLeft + formWidth) / 2;
+                        } else if(tipPosition < formLeft) {
+                            tipPosition = formLeft;
+                        }
+
+                        $popContent.css('top', $(this).offset().top - contentHeight - 5);
+                        $popContent.css('left', tipPosition);
+                    });
+                    $theForm.find('.ff-el-tooltip').on('mouseleave', function() {
+                        $('.ff-el-pop-content').remove();
+                    });
+
+                };
 
                 return {
                     initFormHandlers,
@@ -676,7 +708,8 @@ jQuery(document).ready(function () {
                     validate,
                     showErrorMessages,
                     scrollToFirstError,
-                    settings: form
+                    settings: form,
+                    formSelector: formSelector
                 }
             })(validationFactory);
         };
@@ -927,17 +960,32 @@ jQuery(document).ready(function () {
 
         var $allForms = $('.frm-fluent-form');
 
-        $.each($allForms, function (formIndex, formItem) {
-            /**
-             * Current form
-             * @type jQuery object
-             */
-            var $theForm = $(formItem);
+        function initSingleForm(selector) {
+            var $theForm = $(selector);
             var formInstance = fluentFormApp($theForm);
             if (formInstance) {
                 formInstance.initFormHandlers();
                 formInstance.initTriggers();
             }
+        }
+
+        $.each($allForms, function (formIndex, formItem) {
+            /**
+             * Current form
+             * @type jQuery object
+             */
+
+            initSingleForm(formItem);
+
+            $(document).on('reInitExtras', formItem,  function () {
+                var $theForm = $(formItem);
+                if( $theForm.data('is_initialized') == 'yes') {
+                    var formInstance = fluentFormApp($theForm);
+                    formInstance.reinitExtras();
+                } else {
+                    initSingleForm(formItem);
+                }
+            });
         });
     })(window.fluentFormVars, jQuery);
 
