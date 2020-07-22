@@ -23,7 +23,7 @@ class CustomHtml extends BaseComponent
             $cls .= ' '.$containerClass;
         }
 		$atts = $this->buildAttributes(
-			\FluentForm\Framework\Helpers\ArrayHelper::except($data['attributes'], 'name')
+			ArrayHelper::except($data['attributes'], 'name')
 		);
 		$html = "<div class='{$cls}' {$atts}>{$data['settings']['html_codes']}</div>";
         $html = apply_filters('fluenform_rendering_field_html_'.$elementName, $html, $data, $form);
