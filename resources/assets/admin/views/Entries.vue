@@ -478,7 +478,7 @@
                     form_id: this.form_id
                 };
                 jQuery.get(ajaxurl, data)
-                    .success((response) => {
+                    .then((response) => {
                         this.counts = response.data.counts;
                     })
                     .fail((error) => {
@@ -507,7 +507,7 @@
 
                 this.loading = true;
                 jQuery.get(ajaxurl, data)
-                    .success((response) => {
+                    .then((response) => {
                         this.entries = response.data.submissions.data;
                         this.paginate = response.data.submissions.paginate;
                         this.columns = response.data.labels;

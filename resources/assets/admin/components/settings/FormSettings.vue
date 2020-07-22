@@ -430,7 +430,7 @@
             },
             fetchPages() {
                 this.$ajax.get('getPages', {form_id: this.form_id})
-                    .success(response => {
+                    .then(response => {
                         this.pages = response.data.pages;
                     })
                     .fail(e => {
