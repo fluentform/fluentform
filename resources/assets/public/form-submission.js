@@ -86,14 +86,21 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var initMultiSelect = function () {
-                    let multiselects = $('.frm-fluent-form .ff_has_multi_select');
-                    if (multiselects.length) {
-                        $.each(multiselects, (index, selectItem) => {
-                            $(selectItem).selectWoo({
-                                placeholder: $(selectItem).attr('placeholder')
-                            });
-                        });
+                    const multiSelects = $theForm.find('.ff_has_multi_select');
+                    if (!multiSelects.length) {
+                       return;
                     }
+
+                    $.each(multiSelects, (index, selectItem) => {
+                        $(selectItem).selectWoo({
+                            placeholder: $(selectItem).attr('placeholder')
+                        });
+                    });
+
+                    $theForm.on('reset', function () {
+                        multiSelects.val(null).trigger('change');
+                    });
+
                 };
 
                 var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
