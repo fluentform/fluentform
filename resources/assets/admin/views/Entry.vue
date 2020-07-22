@@ -228,7 +228,7 @@
                 };
                 this.loading = true;
                 jQuery.get(ajaxurl, data)
-                    .success((res) => {
+                    .then((res) => {
                         if (res.data.submission && res.data.submission.id) {
                             this.entry = res.data.submission;
                             this.original_data = JSON.parse(res.data.submission.response);
