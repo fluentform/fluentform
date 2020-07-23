@@ -62,12 +62,12 @@ class ConditionApp {
         if (item.operator == '=') {
             // this value can be array or string
             if(typeof val == 'object') {
-                return val.indexOf(item.value) != -1;
+                return val !== null && val.indexOf(item.value) != -1;
             }
             return val == item.value;
         } else if (item.operator == '!=') {
             if(typeof val == 'object') {
-                return val.indexOf(item.value) == -1;
+                return val !== null && val.indexOf(item.value) == -1;
             }
             return val != item.value;
         } else if (item.operator == '>') {
@@ -83,9 +83,9 @@ class ConditionApp {
         } else if (item.operator == 'endsWith') {
             return val.endsWith(item.value);
         } else if (item.operator == 'contains') {
-            return val.indexOf(item.value) != -1;
+            return val !== null &&  val.indexOf(item.value) != -1;
         } else if (item.operator == 'doNotContains') {
-            return val.indexOf(item.value) == -1;
+            return val !== null && val.indexOf(item.value) == -1;
         }
         return false;
     }

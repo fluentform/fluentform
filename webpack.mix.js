@@ -35,6 +35,7 @@ mix
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `public/css/fluent-forms-public.css`)
     .sass('resources/assets/public/scss/fluentform-public-default.scss', `public/css/fluentform-public-default.css`)
     .sass('resources/assets/preview/preview.scss', `public/css/preview.css`)
+    .sass('resources/assets/public/scss/choices.scss', `public/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `public/css/fluent-forms-elementor-widget.css`)
 
     .less('resources/assets/admin/styles/index.less', `public/css/fluent-forms-admin.css`, {

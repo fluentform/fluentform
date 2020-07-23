@@ -91,10 +91,17 @@ jQuery(document).ready(function () {
                        return;
                     }
 
-                    $.each(multiSelects, (index, selectItem) => {
-                        $(selectItem).selectWoo({
-                            placeholder: $(selectItem).attr('placeholder')
-                        });
+                    const choiceArgs = {
+                        removeItemButton: true,
+                        silent: true,
+                        shouldSort: false,
+                        searchEnabled: true
+                    };
+
+                    const choiceSettings = $.extend({}, choiceArgs, window.fluentFormVars.choice_js_vars);
+
+                    multiSelects.each((index, selectItem) => {
+                        const choiceInstance = new Choices(selectItem,choiceSettings);
                     });
 
                     $theForm.on('reset', function () {
