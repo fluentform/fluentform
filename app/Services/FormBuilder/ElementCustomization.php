@@ -135,6 +135,11 @@ $element_customization_settings = array(
         'label' => __('Options', 'fluentform'),
         'help_text' => __('Create visual options for the field and checkmark them for default selection.', 'fluentform'),
     ),
+    'enable_select_2' => array(
+        'template' => 'inputYesNoCheckBox',
+        'label' => __('Enable Searchable Smart Options', 'fluentform'),
+        'help_text' => __('If you enable this then options will be searchable by select2 js library', 'fluentform'),
+    ),
     'pricing_options' => array(
         'template' => 'pricingOptions',
         'label' => __('Payment Settings', 'fluentform'),
