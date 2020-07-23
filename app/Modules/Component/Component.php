@@ -96,8 +96,10 @@ class Component
         );
 
         wp_register_style(
-            'choices',
-            $app->publicUrl('libs/choices/choices.min.css')
+            'ff_choices',
+            $app->publicUrl('css/choices.css'),
+            [],
+            FLUENTFORM_VERSION
         );
 
         do_action('fluentform_scripts_registered');
@@ -514,7 +516,13 @@ class Component
             'stepAnimationDuration' => 350,
             'upload_completed_txt' => __('100% Completed', 'fluentform'),
             'upload_start_txt' => __('0% Completed', 'fluentform'),
-            'uploading_txt' => __('Uploading', 'fluentform')
+            'uploading_txt' => __('Uploading', 'fluentform'),
+            'choice_js_vars' => [
+                'noResultsText' => __('No results found', 'fluentform'),
+                'loadingText' => __('Loading...', 'fluentform'),
+                'noChoicesText' => __('No choices to choose from', 'fluentform'),
+                'itemSelectText' => __('Press to select', 'fluentform'),
+            ]
         ));
 
         wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);

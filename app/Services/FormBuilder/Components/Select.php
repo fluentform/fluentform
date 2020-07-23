@@ -25,11 +25,11 @@ class Select extends BaseComponent
 		if (ArrayHelper::get($data['attributes'], 'multiple')) {
 			$data['attributes']['name'] = $data['attributes']['name'].'[]';
 			wp_enqueue_script('choices');
-			wp_enqueue_style('choices');
+			wp_enqueue_style('ff_choices');
             $data['attributes']['class'] .= ' ff_has_multi_select';
 		} else if($isMulti) {
             wp_enqueue_script('choices');
-            wp_enqueue_style('choices');
+            wp_enqueue_style('ff_choices');
             $data['attributes']['class'] .= ' ff_has_multi_select';
         }
 
