@@ -534,7 +534,6 @@ $defaultElements = array(
                 'calc_value_status' => false,
                 'enable_image_input' => false,
                 'enable_select_2' => 'no',
-
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,

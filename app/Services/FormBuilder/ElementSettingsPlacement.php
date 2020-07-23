@@ -143,6 +143,7 @@ $element_settings_placement = array(
             'admin_field_label',
             'placeholder',
             'advanced_options',
+            'enable_select_2',
             'validation_rules',
         ),
         'advanced' => array(

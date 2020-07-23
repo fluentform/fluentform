@@ -19,16 +19,21 @@ class Select extends BaseComponent
         $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
 
         $data['attributes']['id'] = $this->makeElementId($data, $form);
-		
+
+        $isMulti = ArrayHelper::get($data, 'settings.enable_select_2') == 'yes';
+
 		if (ArrayHelper::get($data['attributes'], 'multiple')) {
 			$data['attributes']['name'] = $data['attributes']['name'].'[]';
-			wp_enqueue_script('selectWoo');
-			wp_enqueue_style('select2');
+			wp_enqueue_script('choices');
+			wp_enqueue_style('choices');
             $data['attributes']['class'] .= ' ff_has_multi_select';
-		}
+		} else if($isMulti) {
+            wp_enqueue_script('choices');
+            wp_enqueue_style('choices');
+            $data['attributes']['class'] .= ' ff_has_multi_select';
+        }
 
         $data['attributes']['data-calc_value'] = 0;
-
 
 		if(!isset($data['attributes']['class'])) {
             $data['attributes']['class'] = '';

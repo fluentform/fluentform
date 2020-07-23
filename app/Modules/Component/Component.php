@@ -88,16 +88,16 @@ class Component
         );
 
         wp_register_script(
-            'selectWoo',
-            $app->publicUrl('libs/selectWoo/selectWoo.full.min.js'),
-            array('jquery'),
-            '1.0.8',
+            'choices',
+            $app->publicUrl('libs/choices/choices.min.js'),
+            array(),
+            '9.0.1',
             true
         );
 
         wp_register_style(
-            'select2',
-            $app->publicUrl('libs/selectWoo/select2.min.css')
+            'choices',
+            $app->publicUrl('libs/choices/choices.min.css')
         );
 
         do_action('fluentform_scripts_registered');
