@@ -594,11 +594,9 @@
       display: table-row;
       > span {
         width: 20px;
-        vertical-align: top !important;
         padding-top: 8px !important;
       }
       >span, > div {
-        vertical-align: middle;
         display: table-cell;
       }
     }
