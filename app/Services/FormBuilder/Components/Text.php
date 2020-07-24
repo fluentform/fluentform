@@ -54,6 +54,8 @@ class Text extends BaseComponent
 
             if($step = ArrayHelper::get($data, 'settings.number_step')) {
                 $data['attributes']['step'] =  $step;
+            } else {
+                $data['attributes']['step'] =  'any';
             }
             
             if($min = ArrayHelper::get($data, 'settings.validation_rules.min.value')) {

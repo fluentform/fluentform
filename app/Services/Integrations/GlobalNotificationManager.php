@@ -71,7 +71,6 @@ class GlobalNotificationManager
 
             $action = 'fluentform_integration_notify_' . $feed['meta_key'];
 
-
             if (!$entry) {
                 $entry = $this->getEntry($insertId, $form);
             }
