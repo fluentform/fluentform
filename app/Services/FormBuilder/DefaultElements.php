@@ -173,6 +173,8 @@ $defaultElements = array(
                     ),
                 ),
                 'conditional_logics' => array(),
+                'is_unique' => 'no',
+                'unique_validation_message' => __('This value need to be unique.', 'fluentform')
             ),
             'editor_options' => array(
                 'title' => __('Simple Text', 'fluentform'),

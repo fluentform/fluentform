@@ -1,5 +1,5 @@
 <template>
-    <p>
+    <div style="margin-bottom: 20px">
         <el-checkbox false-label="no" true-label="yes" v-model="model">
             {{listItem.label}}
             <el-tooltip v-if="listItem.help_text" placement="bottom-start" effect="light">
@@ -7,7 +7,7 @@
                 <i class="el-icon-info el-text-info"></i>
             </el-tooltip>
         </el-checkbox>
-    </p>
+    </div>
 </template>
 
 <script type="text/babel">

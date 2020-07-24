@@ -493,19 +493,9 @@ $element_customization_settings = array(
         'help_text' => __('Provide Input Suffix Label. It will show in the input field as suffix label', 'fluentform')
     ),
     'is_unique' => array(
-        'template' => 'select',
+        'template' => 'inputYesNoCheckBox',
         'label' => __('Validate as Unique', 'fluentform'),
-        'help_text' => __('If you make it unique then it will validate as unique from previous submissions of this form', 'fluentform'),
-        'options' => array(
-            array(
-                'value' => 'no',
-                'label' => __('No', 'fluentform'),
-            ),
-            array(
-                'value' => 'yes',
-                'label' => __('Yes', 'fluentform'),
-            )
-        )
+        'help_text' => __('If you make it unique then it will validate as unique from previous submissions of this form', 'fluentform')
     ),
     'show_text' => array(
         'template' => 'select',

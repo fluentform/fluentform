@@ -61,6 +61,8 @@ $element_settings_placement = array(
             'help_message',
             'name',
             'maxlength',
+            'is_unique',
+            'unique_validation_message',
             'conditional_logics',
         ),
         'generalExtras' => array(),

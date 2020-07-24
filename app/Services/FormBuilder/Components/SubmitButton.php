@@ -96,7 +96,13 @@ class SubmitButton extends BaseComponent
         }
 
         if($styles) {
-            $html .= '<style>'.$styles.'</style>';
+            if(did_action('wp_footer')) {
+                $html .= '<style>'.$styles.'</style>';
+            } else {
+                add_action('wp_footer', function () use ($styles) {
+                    echo '<style>'.$styles.'</style>';
+                });
+            }
         }
 
         $html .= '</div>';
