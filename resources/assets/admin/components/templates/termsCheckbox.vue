@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="ff_tc">
         <el-checkbox v-if="item.settings.has_checkbox">
             <span v-html="item.settings.tnc_html"></span>
         </el-checkbox>
@@ -15,3 +15,11 @@ export default {
     props: ['item']
 }
 </script>
+<style>
+    .ff_tc {
+        overflow: hidden;
+    }
+    .ff_tc .el-checkbox__input {
+        vertical-align: top;
+    }
+</style>
