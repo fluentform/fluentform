@@ -168,6 +168,7 @@
       transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
       margin-bottom: 0;
       background: transparent;
+      max-width: 100%;
 
       &:focus {
         color: #495057;
