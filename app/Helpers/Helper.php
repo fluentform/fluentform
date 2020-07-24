@@ -371,4 +371,25 @@ class Helper
         return strpos($fieldsJson, '"element":"'.$elementName.'"') != false;
     }
 
+    public static function isUniqueValidation($validation, $field, $formData, $fields, $form)
+    {
+        if (ArrayHelper::get($field, 'raw.settings.is_unique') == 'yes') {
+            $fieldName = ArrayHelper::get($field, 'name');
+            if ($inputValue = ArrayHelper::get($formData, $fieldName)) {
+                $exist = wpFluent()->table('fluentform_entry_details')
+                    ->where('form_id', $form->id)
+                    ->where('field_name', $fieldName)
+                    ->where('field_value', $inputValue)
+                    ->first();
+                if ($exist) {
+                    return [
+                        'unique' => ArrayHelper::get($field, 'raw.settings.unique_validation_message')
+                    ];
+                }
+            }
+        }
+
+        return $validation;
+    }
+
 }

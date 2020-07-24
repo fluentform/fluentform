@@ -105,6 +105,7 @@ class Checkable extends BaseComponent
             $elMarkup .= "</div>";
         }
 
+
         if($hasImageOption) {
             $elMarkup .= '</div>';
         }

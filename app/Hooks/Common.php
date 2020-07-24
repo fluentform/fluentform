@@ -279,27 +279,8 @@ add_action('wp', function () {
     }
 });
 
-add_filter('fluentform_validate_input_item_input_email', function ($validation, $field, $formData, $fields, $form) {
-    if (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.is_unique') == 'yes') {
-        $fieldName = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'name');
-
-        if ($inputValue = \FluentForm\Framework\Helpers\ArrayHelper::get($formData, $fieldName)) {
-            $exist = wpFluent()->table('fluentform_entry_details')
-                ->where('form_id', $form->id)
-                ->where('field_name', $fieldName)
-                ->where('field_value', $inputValue)
-                ->first();
-            if ($exist) {
-                return [
-                    'unique' => \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.unique_validation_message')
-                ];
-            }
-        }
-    }
-
-    return $validation;
-}, 10, 5);
-
+add_filter('fluentform_validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
+add_filter('fluentform_validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
 
 add_filter('cron_schedules', function ($schedules) {
     $schedules['ff_every_five_minutes'] = array(

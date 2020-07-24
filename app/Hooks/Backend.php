@@ -201,6 +201,10 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['dynamic_default_value'] = '';
             }
 
+            if($upgradeElement == 'select' && !isset($element['settings']['enable_select_2'])) {
+                $element['settings']['enable_select_2'] = 'no';
+            }
+
             return $element;
         });
     }
@@ -259,6 +263,16 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         }
         if (!isset($item['settings']['unique_validation_message'])) {
             $item['settings']['unique_validation_message'] = __('Email address need to be unique.', 'fluentform');
+        }
+        return $item;
+    });
+
+    add_filter('fluentform_editor_init_element_input_text', function ($item) {
+        if (!isset($item['settings']['is_unique'])) {
+            $item['settings']['is_unique'] = 'no';
+        }
+        if (!isset($item['settings']['unique_validation_message'])) {
+            $item['settings']['unique_validation_message'] = __('This field value need to be unique.', 'fluentform');
         }
         return $item;
     });
