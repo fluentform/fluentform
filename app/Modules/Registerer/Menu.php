@@ -294,11 +294,22 @@ class Menu
                 array($this, 'renderFormAdminRoute')
             );
 
+            $entriesTitle =  __('Entries', 'fluentform');
+
+            if(Helper::isFluentAdminPage()) {
+                $entriesCount = wpFluent()->table('fluentform_submissions')
+                    ->where('status', 'unread')
+                    ->count();
+                if($entriesCount) {
+                    $entriesTitle .= ' <span class="ff_unread_count" style="background: #ca4a20;color: white;border-radius: 8px;padding: 1px 8px;">'.$entriesCount.'</span>';
+                }
+            }
+
             // Register entries intermediary page
             add_submenu_page(
                 'fluent_forms',
-                __('Entries', 'fluentform'),
-                __('Entries', 'fluentform'),
+                $entriesTitle,
+                $entriesTitle,
                 $settingsCapability,
                 'fluent_forms_all_entries',
                 array($this, 'renderAllEntriesAdminRoute')

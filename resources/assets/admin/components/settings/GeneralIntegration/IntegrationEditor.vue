@@ -303,6 +303,11 @@
                     .then(response => {
                         this.settings_fields = response.data.settings_fields;
                         this.settings = response.data.settings;
+
+                        if(!this.settings.name) {
+                            this.settings.name = response.data.settings_fields.integration_title + ' Integration Feed' || '';
+                        }
+
                         this.merge_fields = response.data.merge_fields;
 
                         jQuery('head title').text(this.title+' - Fluent Forms');
