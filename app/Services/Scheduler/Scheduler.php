@@ -9,6 +9,7 @@ class Scheduler
 {
     public static function processEmailReport()
     {
+        self::cleanUpOldData();
         $defaults = [
             'status' => 'yes',
             'send_to_type' => 'admin_email',
@@ -139,5 +140,25 @@ class Scheduler
         $emailSubject = apply_filters('fluentform_email_summary_subject', $emailSubject);
 
         return wp_mail($recipients, $emailSubject, $emailBody, $headers);
+    }
+
+    private static function cleanUpOldData()
+    {
+        $deleteDaysCount = apply_filters('fluentform_cleanup_days_count', 60);
+        if(!$deleteDaysCount) {
+            return;
+        }
+        $seconds = $deleteDaysCount * 86400;
+        $deleteTo = date('Y-m-d H:i:s', time() - $seconds);
+        // delete 60 days old analytics data
+        wpFluent()->table('fluentform_form_analytics')
+            ->where('created_at', '<', $deleteTo)
+            ->delete();
+
+        // delete 60 days old scheduled_actions data
+        wpFluent()->table('ff_scheduled_actions')
+            ->where('created_at', '<', $deleteTo)
+            ->delete();
+
     }
 }
