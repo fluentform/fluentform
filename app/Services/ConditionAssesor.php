@@ -46,13 +46,13 @@ class ConditionAssesor
                     if(is_array($inputValue)) {
                        return in_array($conditional['value'], $inputValue);
                     }
-                    return $inputValue === $conditional['value'];
+                    return $inputValue == $conditional['value'];
                     break;
                 case '!=':
                     if(is_array($inputValue)) {
                         return !in_array($conditional['value'], $inputValue);
                     }
-                    return $inputValue !== $conditional['value'];
+                    return $inputValue != $conditional['value'];
                     break;
                 case '>':
                     return $inputValue > $conditional['value'];

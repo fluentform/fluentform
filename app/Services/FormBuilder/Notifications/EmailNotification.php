@@ -50,6 +50,8 @@ class EmailNotification
         );
         $emailBody = $notification['message'];
 
+        $emailBody = apply_filters('fluentform_submission_message_parse', $emailBody, $entryId, $submittedData, $form);
+
         if (!$isSendAsPlain) {
             $emailBody = $this->getEmailWithTemplate($emailBody, $form, $notification);
         }

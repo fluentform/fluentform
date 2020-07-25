@@ -27,7 +27,7 @@ class ShortCodeParser
         'submission' => null
     ];
 
-    public static function parse($parsable, $entryId, $data = null, $form = null, $isUrl = false)
+    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false)
     {
         try {
             $entryId = (int)$entryId;
@@ -41,7 +41,10 @@ class ShortCodeParser
             return static::parseShortCodeFromString($parsable, $isUrl);
 
         } catch (\Exception $e) {
-            // dd($e->getMessage());
+            if(defined('WP_DEBUG') && WP_DEBUG) {
+                error_log($e->getTraceAsString());
+            }
+            return '';
         }
     }
 
@@ -93,6 +96,9 @@ class ShortCodeParser
 
     protected static function parseShortCodeFromString($parsable, $isUrl = false)
     {
+        if(!$parsable) {
+            return '';
+        }
         return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl) {
             $value = '';
             if (strpos($matches[1], 'inputs.') !== false) {
@@ -118,6 +124,10 @@ class ShortCodeParser
                 $value = apply_filters('fluentform_payment_smartcode', '', $property, self::getInstance());
             } else {
                 $value = static::getOtherData($matches[1]);
+            }
+
+            if(is_array($value)) {
+                $value = fluentImplodeRecursive(', ', $value);
             }
 
             if($isUrl) {
@@ -165,9 +175,10 @@ class ShortCodeParser
         }
 
         $field = ArrayHelper::get(static::$formFields, $key, '');
+        
 
         if (!$field) return '';
-
+        
         return static::$store['inputs'][$key] = apply_filters(
             'fluentform_response_render_' . $field['element'],
             static::$store['inputs'][$key],
