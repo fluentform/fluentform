@@ -168,12 +168,17 @@ class FormHandler
         );
 
         if ($confirmation['redirectTo'] == 'samePage') {
+
+            $confirmation['messageToShow'] = apply_filters('fluentform_submission_message_parse', $confirmation['messageToShow'], $insertId, $formData, $form);
+
+
             $message = ShortCodeParser::parse(
                 $confirmation['messageToShow'],
                 $insertId,
                 $formData,
                 $form
             );
+
 
             $message = $message ? $message : 'The form has been successfully submitted.';
 
@@ -235,7 +240,6 @@ class FormHandler
                     $redirectUrl = add_query_arg($params, $baseUrl);
                 }
             }
-
 
             $message = ShortCodeParser::parse(
                 ArrayHelper::get($confirmation, 'redirectMessage', ''),
