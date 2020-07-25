@@ -70,7 +70,7 @@ trait PathsAndUrlsTrait
 	 */
 	public function languagePath($path = '')
 	{
-		return $this['path.language'].ltrim($path, '/');
+		return $this['path.language'];
 	}
 
 	/**

@@ -127,7 +127,7 @@ class Application extends Container
 		$this->bindInstance('path.resource', $path.'resources/');
 		$this->bindInstance('path.storage', $path.'storage/');
 		$this->bindInstance('path.asset', $path.'resources/assets/');
-		$this->bindInstance('path.language', $path.'resources/languages/');
+		$this->bindInstance('path.language', dirname( plugin_basename( $this->baseFile ) ).'/resources/languages');
 		$this->bindInstance('path.view', $path.'resources/views/');
 	}
 
