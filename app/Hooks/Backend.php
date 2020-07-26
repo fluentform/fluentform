@@ -87,15 +87,6 @@ add_action('admin_init', function () {
     }
 });
 
-add_action('fluentform_loading_editor_assets', function ($form) {
-    add_filter('fluentform_editor_init_element_input_name', function ($field) {
-        if (empty($field['settings']['label_placement'])) {
-            $field['settings']['label_placement'] = '';
-        }
-        return $field;
-    });
-});
-
 
 add_filter('fluentform_editor_init_element_container', function ($item) {
     if (!isset($item['settings']['container_class'])) {
@@ -163,6 +154,14 @@ add_action('wp_print_scripts', function () {
 }, 1);
 
 add_action('fluentform_loading_editor_assets', function ($form) {
+
+    add_filter('fluentform_editor_init_element_input_name', function ($field) {
+        if (empty($field['settings']['label_placement'])) {
+            $field['settings']['label_placement'] = '';
+        }
+        return $field;
+    });
+
     $upgradableCheckInputs = [
         'input_radio',
         'select',
@@ -268,12 +267,22 @@ add_action('fluentform_loading_editor_assets', function ($form) {
     });
 
     add_filter('fluentform_editor_init_element_input_text', function ($item) {
-        if (!isset($item['settings']['is_unique'])) {
-            $item['settings']['is_unique'] = 'no';
+        if(isset($item['attributes']['data-mask'])) {
+            if (!isset($item['settings']['data-mask-reverse'])) {
+                $item['settings']['data-mask-reverse'] = 'no';
+            }
+            if (!isset($item['settings']['data-clear-if-not-match'])) {
+                $item['settings']['data-clear-if-not-match'] = 'no';
+            }
+        } else {
+            if (!isset($item['settings']['is_unique'])) {
+                $item['settings']['is_unique'] = 'no';
+            }
+            if (!isset($item['settings']['unique_validation_message'])) {
+                $item['settings']['unique_validation_message'] = __('This field value need to be unique.', 'fluentform');
+            }
         }
-        if (!isset($item['settings']['unique_validation_message'])) {
-            $item['settings']['unique_validation_message'] = __('This field value need to be unique.', 'fluentform');
-        }
+
         return $item;
     });
 

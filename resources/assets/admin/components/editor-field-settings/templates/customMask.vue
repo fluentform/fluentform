@@ -11,10 +11,10 @@
                 :before-close="close">
                 <h4 style="margin-bottom: 5px;">Usage</h4>
                 <ul>
-                    <li>Use a '0' / '#' to indicate a numerical character.</li>
+                    <li>Use a '0' to indicate a numerical character.</li>
+                    <li>Use a '0' to indicate a numerical character.</li>
                     <li>Use a upper case 'A' to indicate an alphabetical character.</li>
                     <li>Use an asterisk '*' to indicate any alphanumeric character.</li>
-                    <!-- <li>Use a question mark '?' to indicate optional characters. <br> <em>Note: All characters after the question mark will be optional.</em></li> -->
                     <li>All other characters are literal values and will be displayed automatically.</li>
                 </ul>
 
@@ -22,6 +22,7 @@
                 <p v-for="input, i in exampleInputs" :key="i">
                     <strong>{{ input.title }} </strong> Mask: <mark>{{ input.mask }}</mark>. Valid Input: <mark>{{ input.validInput }}</mark>
                 </p>
+                <p>View More information about <a target="_blank" rel="noopener" href="https://igorescobar.github.io/jQuery-Mask-Plugin/docs.html">Mask Library</a></p>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="close">Cancel</el-button>
                 </span>
@@ -67,14 +68,9 @@ export default {
                 },
                 {
                     title: 'License Key',
-                    mask: '*-*-***',
+                    mask: '***-***-***',
                     validInput: 'a9a-f0c-28Q'
-                },
-                // {
-                //     title: 'Zip Code w/ Optional Plus Four',
-                //     mask: '99999?-9999',
-                //     validInput: '23462 or 23462-4062'
-                // }
+                }
             ]
         }
     },

@@ -22,6 +22,16 @@ class Text extends BaseComponent
 			$data['attributes']['data-mask'] = $data['settings']['temp_mask'];
 		}
 
+		if($data['settings']['temp_mask'] == 'custom') {
+            if(ArrayHelper::get($data, 'settings.data-mask-reverse') == 'yes') {
+                $data['attributes']['data-mask-reverse'] = 'true';
+            }
+
+            if(ArrayHelper::get($data, 'settings.data-clear-if-not-match') == 'yes') {
+                $data['attributes']['data-clear-if-not-match'] = 'true';
+            }
+        }
+
         if(isset($data['attributes']['data-mask'])) {
             wp_enqueue_script(
                 'jquery-mask',

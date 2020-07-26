@@ -393,6 +393,26 @@ $element_customization_settings = array(
             'operator' => '=='
         )
     ),
+    'data-mask-reverse' => array(
+        'template' => 'inputYesNoCheckBox',
+        'label' => __('Activating a reversible mask', 'fluentform'),
+        'help_text' => __('If you enable this then it the mask will work as reverse', 'fluentform'),
+        'dependency' => array(
+            'depends_on' => 'settings/temp_mask',
+            'value' => 'custom',
+            'operator' => '=='
+        )
+    ),
+    'data-clear-if-not-match' => array(
+        'template' => 'inputYesNoCheckBox',
+        'label' => __('Clear if not match', 'fluentform'),
+        'help_text' => __('Clear value if not match the mask', 'fluentform'),
+        'dependency' => array(
+            'depends_on' => 'settings/temp_mask',
+            'value' => 'custom',
+            'operator' => '=='
+        )
+    ),
     'temp_mask' => array(
         'template' => 'select',
         'label' => __('Mask Input', 'fluentform'),
