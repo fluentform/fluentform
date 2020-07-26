@@ -93,10 +93,8 @@
                 <el-radio-group v-model="selected.value.sendTo.type">
                     <el-radio label="email">Enter Email</el-radio>
                     <el-radio label="field">Select a Field</el-radio>
-                    <!--we won't use the customized routing now-->
-                    <el-radio label="routing" v-if="false">
+                    <el-radio v-if="!!has_pro" label="routing">
                         Configure Routing
-
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
                                 <h3>Routing</h3>
@@ -143,32 +141,10 @@
                 </el-form-item>
             </template>
 
-            <template v-else>
-                <!--we won't use the customized routing now-->
-                <template v-if="false">
-                    <el-row style="margin-bottom: 30px;" class="el-form-item__content"
-                            :class="errors.has('sendTo.routing.*.email') ? 'is-error' : ''">
-                        <el-col :md="10">
-                            <el-row :gutter="5" v-for="(item, index) in selected.value.sendTo.routing" :key="index"
-                                    class="inline-form-field">
-                                <el-col :md="4">Send to</el-col>
-
-                                <el-col :md="18">
-                                    <el-input v-model="selected.value.sendTo.routing[index].email"></el-input>
-                                </el-col>
-
-                                <el-col :md="2">if</el-col>
-                            </el-row>
-                        </el-col>
-
-                        <el-col :md="14">
-                            <filter-fields :fields="inputs" :items="selected.value.sendTo.routing"></filter-fields>
-                        </el-col>
-
-                        <error-view field="sendTo.routing.*.email" :errors="errors"></error-view>
-                    </el-row>
-                </template>
-            </template>
+            <div class="conditional-items" v-else-if="selected.value.sendTo.type == 'routing'">
+                <routing-filter-fields :fields="inputs" :routings="selected.value.sendTo.routing"></routing-filter-fields>
+                <error-view field="sendTo.routing" :errors="errors"></error-view>
+            </div>
 
             <!--Subject-->
             <el-form-item label="Subject" class="is-required" :class="errors.has('subject') ? 'is-error' : ''">
@@ -199,7 +175,6 @@
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <h3>Conditional Logic</h3>
-
                             <p>
                                 Allow this feed conditionally
                             </p>
@@ -227,10 +202,13 @@
                 </template>
 
                 <el-checkbox-group v-model="selected.value.attachments">
-                    <el-checkbox v-for="attachmentField in attachmentFields" :key="attachmentField.attributes.name" :label="attachmentField.attributes.name">{{attachmentField.admin_label}}</el-checkbox>
+                    <el-checkbox v-for="attachmentField in attachmentFields" :key="attachmentField.attributes.name"
+                                 :label="attachmentField.attributes.name">{{attachmentField.admin_label}}
+                    </el-checkbox>
                 </el-checkbox-group>
 
-                <p v-if="selected.value.attachments && selected.value.attachments.length">You should use SMTP so send attachment via email otherwise, It may go to spam</p>
+                <p v-if="selected.value.attachments && selected.value.attachments.length">You should use SMTP so send
+                    attachment via email otherwise, It may go to spam</p>
             </el-form-item>
 
             <el-form-item v-if="pdf_feeds.length">
@@ -251,16 +229,19 @@
                     <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{feed.label}}</el-checkbox>
                 </el-checkbox-group>
 
-                <p v-if="selected.value.pdf_attachments && selected.value.pdf_attachments.length">You should use SMTP so send attachment via email otherwise, It may go to spam</p>
+                <p v-if="selected.value.pdf_attachments && selected.value.pdf_attachments.length">You should use SMTP so
+                    send attachment via email otherwise, It may go to spam</p>
             </el-form-item>
 
-            <el-checkbox true-label="yes" false-label="no" v-model="selected.value.asPlainText">Send Email as Plain Text Format</el-checkbox>
+            <el-checkbox true-label="yes" false-label="no" v-model="selected.value.asPlainText">Send Email as Plain Text
+                Format
+            </el-checkbox>
             <p v-if="selected.value.asPlainText == 'yes'">
-                <br />
+                <br/>
                 Email will send as plain text format. Many formatted text may not work properly.
             </p>
-            
-            <p><br /></p>
+
+            <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
                 <el-collapse-item title="Advanced" name="advanced">
                     <!--from name-->
@@ -286,7 +267,8 @@
                                        v-model="selected.value.fromName"
                                        :data="editorShortcodes"
                         ></input-popover>
-                        <p v-if="selected.value.fromName">It will only be visible in the email if "From Email" value is available </p>
+                        <p v-if="selected.value.fromName">It will only be visible in the email if "From Email" value is
+                            available </p>
                     </el-form-item>
 
                     <!--from email-->
@@ -311,7 +293,8 @@
                                        v-model="selected.value.fromEmail"
                                        :data="fromEmailShortcodes"
                         ></input-popover>
-                        <p v-if="selected.value.fromEmail">It's not recommended to change from email. Please use your domain's email / SMTP main email. Otherwise email may failed to send.</p>
+                        <p v-if="selected.value.fromEmail">It's not recommended to change from email. Please use your
+                            domain's email / SMTP main email. Otherwise email may failed to send.</p>
                     </el-form-item>
 
                     <!--reply to-->
@@ -406,11 +389,12 @@
     </div>
 </template>
 
-<script>
+<script type="text/babel">
     import remove from '../confirmRemove.vue';
     import inputPopover from '../input-popover.vue';
     import wpEditor from '../../../common/_wp_editor';
     import FilterFields from './Includes/FilterFields.vue';
+    import RoutingFilterFields from './Includes/RoutingFilterFields';
     import ErrorView from '../../../common/errorView.vue';
 
     export default {
@@ -421,7 +405,8 @@
             inputPopover,
             FilterFields,
             ErrorView,
-            'wp_editor': wpEditor
+            'wp_editor': wpEditor,
+            RoutingFilterFields
         },
         data() {
             return {
@@ -439,7 +424,7 @@
                             field: null,
                             routing: [
                                 {
-                                    email: null,
+                                    input_value: '',
                                     field: null,
                                     operator: '=',
                                     value: null
@@ -536,11 +521,11 @@
                     freshCopy.value.conditionals = this.mock.value.conditionals;
                 }
 
-                if(!freshCopy.value.pdf_attachments) {
+                if (!freshCopy.value.pdf_attachments) {
                     freshCopy.value.pdf_attachments = [];
                 }
 
-                if(!freshCopy.value.attachments) {
+                if (!freshCopy.value.attachments) {
                     freshCopy.value.attachments = [];
                 }
 
@@ -552,11 +537,11 @@
 
                 let notification = this.notifications[index];
 
-                if(!notification.value.attachments) {
+                if (!notification.value.attachments) {
                     notification.value.attachments = [];
                 }
 
-                if(!notification.value.pdf_attachments) {
+                if (!notification.value.pdf_attachments) {
                     notification.value.pdf_attachments = [];
                 }
 
@@ -567,7 +552,6 @@
                 this.selectedIndex = null;
                 this.errors.clear();
             },
-
             handleActive(index) {
                 let notification = this.notifications[index];
 
@@ -611,7 +595,6 @@
                     .fail(e => {
                     });
             },
-
             fetchNotifications() {
                 let data = {
                     form_id: this.form_id,
