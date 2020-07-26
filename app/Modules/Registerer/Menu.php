@@ -602,6 +602,7 @@ class Menu
 
             if ($formFields) {
                 $formFields = json_decode($formFields, true);
+
                 foreach ($formFields['fields'] as $index => $formField) {
                     $formFields['fields'][$index] = apply_filters(
                         'fluentform_editor_init_element_' . $formField['element'], $formField, $form

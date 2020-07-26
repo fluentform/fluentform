@@ -52,6 +52,8 @@ $element_settings_placement = array(
             'placeholder',
             'temp_mask',
             'data-mask',
+            'data-mask-reverse',
+            'data-clear-if-not-match',
             'validation_rules',
         ),
         'advanced' => array(

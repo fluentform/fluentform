@@ -125,12 +125,15 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var initMask = function () {
-                    var globalOptions = {
-                        clearIfNotMatch: true,
+                    const globalOptions = {
+                        clearIfNotMatch: false,
                         translation: {
-                            '*': {
-                                pattern: /[0-9a-zA-Z]/
-                            }
+                            '*': {pattern: /[0-9a-zA-Z]/},
+                            '0': {pattern: /\d/},
+                            '9': {pattern: /\d/, optional: true},
+                            '#': {pattern: /\d/, recursive: true},
+                            'A': {pattern: /[a-zA-Z0-9]/},
+                            'S': {pattern: /[a-zA-Z]/}
                         }
                     };
 
@@ -139,7 +142,14 @@ jQuery(document).ready(function () {
                             mask = el.data('mask'),
                             maskStr = mask.mask;
 
-                        el.mask(maskStr, globalOptions);
+                        let options = globalOptions;
+                        if(el.attr('data-mask-reverse')) {
+                            options.reverse = true;
+                        }
+                        if(el.attr('data-clear-if-not-match')) {
+                            options.clearIfNotMatch = true;
+                        }
+                        el.mask(maskStr, options);
                     });
                 };
 
