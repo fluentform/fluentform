@@ -300,6 +300,15 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
     if (!$note) {
         $note = $status;
     }
+
+    if(strlen($note) > 255) {
+        if(function_exists('mb_substr')) {
+            $note = mb_substr($note, 0, 251).'...';
+        } else {
+            $note = substr($note, 0, 251).'...';
+        }
+    }
+
     $actionId = intval($feed['scheduled_action_id']);
     wpFluent()->table('ff_scheduled_actions')
         ->where('id', $actionId)

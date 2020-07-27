@@ -45,7 +45,8 @@ class Settings
 
         wp_localize_script('fluentform-global-settings-js', 'FluentFormApp', [
             'plugin' => $this->app->getSlug(),
-            'akismet_activated' => AkismetHandler::isPluginEnabled()
+            'akismet_activated' => AkismetHandler::isPluginEnabled(),
+            'has_pro' =>  defined('FLUENTFORMPRO')
         ]);
     }
 }

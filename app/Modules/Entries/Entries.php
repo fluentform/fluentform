@@ -37,6 +37,10 @@ class Entries extends EntryQuery
         $limit = $this->request->get('per_page', 10);
         $page = $this->request->get('page', 1);
         $offset = ($page - 1) * $limit;
+
+        $search = $this->request->get('search');
+        $status = $this->request->get('entry_status');
+
         $query = wpFluent()->table('fluentform_submissions')
                         ->select([
                             'fluentform_submissions.id',
@@ -56,6 +60,17 @@ class Entries extends EntryQuery
         if($formId) {
             $query->where('fluentform_submissions.form_id', $formId);
         }
+
+        if($status) {
+            $query->where('fluentform_submissions.status', $status);
+        } else {
+            $query->where('fluentform_submissions.status', '!=', 'trashed');
+        }
+
+        if($search) {
+            $query->where('fluentform_submissions.response', 'LIKE', '%'.$search.'%');
+        }
+
         $total =  $query->count();
         $entries = $query->get();
         foreach ($entries as $entry) {

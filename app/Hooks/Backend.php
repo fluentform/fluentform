@@ -48,15 +48,16 @@ $app->addAction('fluentform_global_menu', function () use ($app) {
     $menu->renderGlobalMenu();
     if (get_option('fluentform_scheduled_actions_migrated') != 'yes') {
         \FluentForm\App\Databases\Migrations\ScheduledActions::migrate();
-        $hookName = 'fluentform_do_scheduled_tasks';
-        if (!wp_next_scheduled($hookName)) {
-            wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
-        }
+    }
 
-        $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
-        if (!wp_next_scheduled($emailReportHookName)) {
-            wp_schedule_event(time(), 'daily', $emailReportHookName);
-        }
+    $hookName = 'fluentform_do_scheduled_tasks';
+    if (!wp_next_scheduled($hookName)) {
+        wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
+    }
+
+    $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
+    if (!wp_next_scheduled($emailReportHookName)) {
+        wp_schedule_event(time(), 'daily', $emailReportHookName);
     }
 
 });

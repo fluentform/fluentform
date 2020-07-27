@@ -405,3 +405,30 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 .form-editor--sidebar .el-form--label-top .el-form-item__label {
   padding-bottom: 6px;
 }
+.ff_setting_menu {
+  li {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+    &.active {
+      opacity: 0.8;
+    }
+  }
+}
+.ff_form_name {
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+}
+.ff-navigation-right {
+  .btn.copy, >a {
+    opacity: 0.5;
+  }
+  &:hover {
+    .btn.copy, >a {
+      opacity: 1;
+    }
+  }
+}

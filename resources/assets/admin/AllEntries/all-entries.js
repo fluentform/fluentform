@@ -5,6 +5,8 @@ import lang from 'element-ui/lib/locale/lang/en';
 import {
     Button,
     ButtonGroup,
+    RadioGroup,
+    RadioButton,
     Input,
     Checkbox,
     Select,
@@ -33,6 +35,8 @@ Vue.use(Checkbox);
 Vue.use(Pagination);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(RadioGroup);
+Vue.use(RadioButton);
 Vue.use(Radio);
 Vue.use(Table);
 Vue.use(TableColumn);

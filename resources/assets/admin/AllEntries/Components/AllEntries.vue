@@ -3,14 +3,31 @@
         <div class="payment_header">
             <div class="payment_title">All Form Entries</div>
             <div class="payment_actions">
+                <el-button @click="toggleChart()" type="info" size="mini">
+                    <span v-if="chart_status == 'yes'">Hide Chart</span>
+                    <span v-else>Show Chart</span>
+                </el-button>
             </div>
         </div>
-        <div class="entry_chart">
+        <div v-if="chart_status == 'yes'" class="entry_chart">
             <entry-chart></entry-chart>
         </div>
 
         <div class="payment_details">
-            <el-table stripe :data="entries">
+            <div style="margin-bottom: 20px" class="payment_header">
+                <el-radio-group @change="fetchEntries('reset')" size="small" v-model="entry_status">
+                    <el-radio-button label="">All</el-radio-button>
+                    <el-radio-button label="unread">Unread Only</el-radio-button>
+                    <el-radio-button label="read">Read Only</el-radio-button>
+                </el-radio-group>
+                <div class="payment_actions">
+                    <el-input @keyup.enter.native="fetchEntries()" size="small" placeholder="Search Entry" v-model="search">
+                        <el-button @click="fetchEntries()" slot="append" icon="el-icon-search"></el-button>
+                    </el-input>
+                </div>
+            </div>
+
+            <el-table v-loading="loading" stripe :data="entries">
                 <el-table-column width="220" label="Submission ID">
                     <template slot-scope="scope">
                         <a class="payment_sub_url" :href="scope.row.entry_url">
@@ -68,17 +85,25 @@
                     current_page: 1,
                     last_page: 1,
                     per_page: 10
-                }
+                },
+                chart_status: 'yes',
+                entry_status: '',
+                search: ''
             }
         },
         methods: {
-            fetchEntries() {
+            fetchEntries(type) {
+                if(type == 'reset') {
+                    this.paginate.current_page = 1;
+                }
                 this.loading = true;
                 jQuery.get(window.ajaxurl, {
                     action: 'fluentform_get_all_entries',
                     form_id: this.selectedFormId,
                     page: this.paginate.current_page,
-                    per_page: this.paginate.per_page
+                    per_page: this.paginate.per_page,
+                    search: this.search,
+                    entry_status: this.entry_status
                 })
                     .then(response => {
                         this.entries = response.data.entries;
@@ -106,6 +131,14 @@
                     amount = parseFloat(amount).toFixed(2);
                 }
                 return amount +' '+ row.currency;
+            },
+            toggleChart() {
+                if(this.chart_status == 'yes') {
+                    this.chart_status = 'no';
+                } else {
+                    this.chart_status = 'yes';
+                }
+                localStorage.setItem('ff_chart_status', this.chart_status);
             }
         },
         filters: {
@@ -116,6 +149,10 @@
             }
         },
         mounted() {
+            let status = localStorage.getItem('ff_chart_status');
+            if(status) {
+                this.chart_status = status;
+            }
             this.fetchEntries();
         }
     };
@@ -152,6 +189,12 @@
 
     .pull-right.ff_paginate {
         margin-top: 20px;
+    }
+
+    .payment_details {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #dddddd;
     }
 
 </style>
