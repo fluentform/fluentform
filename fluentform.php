@@ -35,3 +35,15 @@ add_action('wpmu_new_blog', function ($blogId) {
     (new FluentForm\App\Modules\Activator)->migrate();
     restore_current_blog();
 });
+
+
+add_action('init', function () {
+    if(isset($_GET['hook_demo'])) {
+        error_log(json_encode($_POST));
+        wp_send_json([
+            'status' => false,
+            'errors' => 'TINYTEXT is a string data type that can store up to to 255 characters. TEXT is a string data type that can store up to 65,535 characters. TEXT is commonly used for storing blocks of text such as the body of an article. MEDIUMTEXT is a string data type with a maximum length of 16,777,215 characters.'
+        ], 400);
+        die();
+    }
+});

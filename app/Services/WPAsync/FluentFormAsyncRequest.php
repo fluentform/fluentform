@@ -136,7 +136,6 @@ class FluentFormAsyncRequest
         if($originId && !empty($form) && !empty($submission)) {
             do_action('fluentform_global_notify_completed', $submission->id, $form);
         }
-        
     }
 
     private function getEntry($submission, $form)

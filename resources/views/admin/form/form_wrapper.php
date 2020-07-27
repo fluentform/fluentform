@@ -3,7 +3,7 @@
 	
 	<div class="form_internal_menu">
 
-        <div class="ff_form_name" id="js-ff-nav-title">
+        <div title="<?php echo $form->title; ?>" class="ff_form_name" id="js-ff-nav-title">
 			<span><?php echo $form->title; ?></span>
 		</div>
 

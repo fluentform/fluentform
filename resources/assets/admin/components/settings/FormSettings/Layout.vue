@@ -45,8 +45,10 @@
             </template>
 
             <el-select v-model="layout.helpMessagePlacement">
-                <el-option v-for="(label, value) in {'with_label': 'Next to Label', 'under_input': 'Below Input Element'}" :key="value"
-                           :label="label" :value="value"
+                <el-option
+                    v-for="(label, value) in {'with_label': 'Next to Label', 'under_input': 'Below Input Element'}"
+                    :key="value"
+                    :label="label" :value="value"
                 ></el-option>
             </el-select>
         </el-form-item>
@@ -68,8 +70,10 @@
             </template>
 
             <el-select v-model="layout.errorMessagePlacement">
-                <el-option v-for="(label, value) in {'stackToBottom': 'Stack to Bottom', 'inline': 'Below Input Element'}" :key="value"
-                           :label="label" :value="value"
+                <el-option
+                    v-for="(label, value) in {'stackToBottom': 'Stack to Bottom', 'inline': 'Below Input Element'}"
+                    :key="value"
+                    :label="label" :value="value"
                 ></el-option>
             </el-select>
         </el-form-item>
@@ -78,7 +82,8 @@
             <el-row class="setting_header">
                 <el-col :md="24">
                     <h2>Email Summaries</h2>
-                    <p>Would you like to receive a weekly report showing how your forms are performing? Enable Email Summaries option and you will get a report every week to the provided email address</p>
+                    <p>Would you like to receive a weekly report showing how your forms are performing? Enable Email
+                        Summaries option and you will get a report every week to the provided email address</p>
                 </el-col>
             </el-row>
             <el-row style="margin-bottom: 50px;">
@@ -89,13 +94,16 @@
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <p>
-                                        Determine, If you want to enable/disable email reporting. If enabled, you will get email summaries
+                                        Determine, If you want to enable/disable email reporting. If enabled, you will
+                                        get email summaries
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
-                        <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> Enable Email Summaries Weekly Delivery</el-checkbox>
+                        <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> Enable Email
+                            Summaries Weekly Delivery
+                        </el-checkbox>
                     </el-form-item>
                     <template v-if="email_report.status == 'yes'">
                         <el-form-item>
@@ -116,7 +124,8 @@
                             </el-radio-group>
                             <div v-if="email_report.send_to_type == 'custom_email'">
                                 <label>Please recipient email address</label>
-                                <el-input placeholder="Recipient Email Address" v-model="email_report.custom_recipients"></el-input>
+                                <el-input placeholder="Recipient Email Address"
+                                          v-model="email_report.custom_recipients"></el-input>
                                 <p>For Multiple please use comma separated values</p>
                             </div>
                         </el-form-item>
@@ -133,7 +142,8 @@
                                 </el-tooltip>
                             </template>
                             <el-select placeholder="Select Day" size="small" v-model="email_report.sending_day">
-                                <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey" :label="sendDay"></el-option>
+                                <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey"
+                                           :label="sendDay"></el-option>
                             </el-select>
                         </el-form-item>
                     </template>
@@ -148,7 +158,8 @@
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <h3>Customize Form Settings</h3>
-                            <p>These Settings will be used as default settings of a new form where<br/>You can customize many options globally, which will effect all forms.</p>
+                            <p>These Settings will be used as default settings of a new form where<br/>You can customize
+                                many options globally, which will effect all forms.</p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
@@ -206,7 +217,8 @@
                             <div slot="content">
                                 <h3>Email Footer Text</h3>
                                 <p>
-                                    By Default, Fluent Forms add your site title as email footer. You can add email footer text here. (HTML supported)
+                                    By Default, Fluent Forms add your site title as email footer. You can add email
+                                    footer text here. (HTML supported)
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -229,14 +241,16 @@
                             <div slot="content">
                                 <h3>Honeypot Security</h3>
                                 <p>
-                                   If you enable this then Fluent Forms will verify honeypot security. Most of the time, bots will fail this test.
+                                    If you enable this then Fluent Forms will verify honeypot security. Most of the
+                                    time, bots will fail this test.
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
                         </el-tooltip>
                     </template>
 
-                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.honeypotStatus"></el-switch>
+                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                               v-model="misc.honeypotStatus"></el-switch>
                     <p>Recommended settings: Enabled</p>
                 </el-form-item>
 
@@ -248,13 +262,15 @@
                                 <div slot="content">
                                     <h3>Akismet Integration</h3>
                                     <p>
-                                        If you enable this then Fluent Forms will verify the form submission with Akismet. It will save you from spam form submission.
+                                        If you enable this then Fluent Forms will verify the form submission with
+                                        Akismet. It will save you from spam form submission.
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
-                        <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.akismet_status"></el-switch>
+                        <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                                   v-model="misc.akismet_status"></el-switch>
                         <p>Recommended settings: Enabled</p>
                     </el-form-item>
 
@@ -280,7 +296,6 @@
 
                 </template>
 
-
                 <el-form-item>
                     <template slot="label">
                         Classic Editor Button
@@ -295,7 +310,8 @@
                         </el-tooltip>
                     </template>
 
-                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.classicEditorButton"></el-switch>
+                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                               v-model="misc.classicEditorButton"></el-switch>
                 </el-form-item>
 
                 <el-form-item>
@@ -305,13 +321,15 @@
                             <div slot="content">
                                 <h3>No-Conflict Mode</h3>
                                 <p>
-                                    If you enable this, then fluent forms will try to prevent other plugin scripts from loading and remove the conflicts.
+                                    If you enable this, then fluent forms will try to prevent other plugin scripts from
+                                    loading and remove the conflicts.
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
                         </el-tooltip>
                     </template>
-                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.noConflictStatus"></el-switch>
+                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                               v-model="misc.noConflictStatus"></el-switch>
                     <p>Recommended settings: Enabled</p>
                 </el-form-item>
 
@@ -328,24 +346,50 @@
                             <i class="el-icon-info el-text-info"></i>
                         </el-tooltip>
                     </template>
-                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.tabIndex"></el-switch>
+                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                               v-model="misc.tabIndex"></el-switch>
+                </el-form-item>
+
+                <el-form-item v-if="hasPro">
+                    <template slot="label">
+                        Geo-Location provider
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>Geo-Location provider</h3>
+                                <p>
+                                    If you use advanced phone field and enable auto country ditect then may configure this.
+                                </p>
+                            </div>
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+                    <div class="ff_items_inline">
+                        <el-select size="small" v-model="misc.geo_provider">
+                            <el-option
+                                v-for="(provider, providerUrl) in geo_providers"
+                                :key="provider" :value="providerUrl"
+                                :label="provider.label"></el-option>
+                        </el-select>
+                        <template v-if="misc.geo_provider && geo_providers[misc.geo_provider].has_token">
+                            <el-input type="password" size="small" placeholder="GEO API Token" v-model="misc.geo_provider_token"></el-input>
+                            <p>{{geo_providers[misc.geo_provider].token_instruction}}</p>
+                        </template>
+                    </div>
                 </el-form-item>
 
             </el-col>
         </el-row>
 
         <permission-settings></permission-settings>
-
-        <el-form-item>
-        </el-form-item>
     </el-form>
 </template>
 
 <script type="text/babel">
     import PermissionSettings from './_Privacy'
+
     export default {
         name: 'FormLayout',
-        components: { PermissionSettings },
+        components: {PermissionSettings},
         props: {
             data: {
                 required: true
@@ -380,17 +424,41 @@
                     Fri: 'Friday',
                     Sat: 'Saturday',
                     Sun: 'Sunday'
-                }
+                },
+                geo_providers: {
+                    'ipinfo.io': {
+                        label: 'ipinfo.io',
+                        has_token: true,
+                        token_instruction: 'If you have much more visitor for your phone field form then you may add an API token. It will work even if you do not use a token'
+                    }
+                },
+                hasPro: !!window.FluentFormApp.has_pro
             }
         },
         mounted() {
             this.layout = this.data.layout;
 
-            if(!this.data.misc.akismet_validation) {
+            if (!this.data.misc.akismet_validation) {
                 this.$set(this.data.misc, 'akismet_validation', 'mark_as_spam');
+            }
+
+            if(!this.data.misc.geo_provider) {
+                this.$set(this.data.misc, 'geo_provider', 'ipinfo.io');
             }
 
             this.misc = this.data.misc;
         }
     }
 </script>
+
+<style>
+    .ff_items_inline .el-select, .ff_items_inline .el-input {
+        display: inline-block;
+        width: 49%;
+    }
+
+    .ff_items_inline .el-select .el-input {
+        width: 100%;
+    }
+
+</style>

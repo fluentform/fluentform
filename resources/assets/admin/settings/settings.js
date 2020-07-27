@@ -63,7 +63,7 @@ new Vue({
     },
     data: {
         component: 'settings',
-        App: FluentFormApp,
+        App: window.FluentFormApp,
         settings_key: ''
     },
     methods: {
