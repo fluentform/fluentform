@@ -4,7 +4,7 @@
             <el-col :md="24">
                 <h3>Activity Logs</h3>
                 <p>
-                    All the external CRM/API call logs and you can see and track if there has any issue with any of your API configuration.
+                    All the external CRM/API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)
                 </p>
             </el-col>
         </el-row>
@@ -18,6 +18,17 @@
                         :key="item.form_id"
                         :label="item.title"
                         :value="item.form_id">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="ff_form_group ff_inline">
+                Source
+                <el-select @change="getLogs()" size="mini" clearable v-model="selected_component" placeholder="Select Component">
+                    <el-option
+                        v-for="item in available_components"
+                        :key="item"
+                        :label="getReadableName(item)"
+                        :value="item">
                     </el-option>
                 </el-select>
             </div>
@@ -80,6 +91,11 @@
                     prop="created_at"
                     label="Date"
                     width="180">
+                </el-table-column>
+                <el-table-column width="90" label="Action">
+                    <template slot-scope="props">
+                        <el-button @click="retryNotification(props.row)" v-if="props.row.status != 'success'" type="info" size="mini">Retry</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <br/>
@@ -183,8 +199,9 @@
                     action: 'fluentform_get_activity_log_filters'
                 })
                     .then(response => {
-                        this.available_statuses = response.data.available_statuses;
+                        this.available_statuses = response.data.api_statuses;
                         this.available_forms = response.data.available_forms;
+                        this.available_components = response.data.available_components;
                     })
                     .fail(error => {
                         console.log(error);
@@ -199,6 +216,24 @@
                     .replace('_notification_feed', '')
                     .replace('_', ' ');
                 return newName;
+            },
+            retryNotification(notification) {
+                this.loading = true;
+                jQuery.post(ajaxurl, {
+                    action: 'fluentform_retry_api_action',
+                    log_id: notification.id
+                })
+                    .then(response => {
+                        notification.status = response.data.feed.status;
+                        notification.note = response.data.feed.note;
+                        this.$notify.success(response.data.feed.note);
+                    })
+                    .fail((error) => {
+                        this.$notify.error(error.responseJSON.data.message);
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    });
             }
         },
         mounted() {
