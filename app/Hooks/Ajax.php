@@ -186,6 +186,11 @@ $app->addAdminAjaxAction('fluentform_get_api_logs', function () use ($app) {
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getApiLogs();
 });
 
+$app->addAdminAjaxAction('fluentform_retry_api_action', function () use ($app) {
+    Acl::verify('fluentform_entries_viewer');
+    (new \FluentForm\App\Modules\Logger\DataLogger($app))->retryApiAction();
+});
+
 $app->addAdminAjaxAction('fluentform_delete_logs_by_ids', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteLogsByIds();

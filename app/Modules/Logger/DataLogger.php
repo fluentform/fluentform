@@ -1,6 +1,8 @@
 <?php namespace FluentForm\App\Modules\Logger;
 
 use FluentForm\App\Databases\Migrations\FormLogs;
+use FluentForm\App\Modules\Form\FormDataParser;
+use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -25,14 +27,24 @@ class DataLogger
             $formattedStatuses[] = $status->status;
         }
 
-        $components = wpFluent()->table('fluentform_logs')
-            ->select('component')
-            ->groupBy('component')
+        $apis = wpFluent()->table('ff_scheduled_actions')
+            ->select('status')
+            ->groupBy('status')
+            ->get();
+
+        $apiStatuses = [];
+        foreach ($apis as $api) {
+            $apiStatuses[] = $api->status;
+        }
+
+        $components = wpFluent()->table('ff_scheduled_actions')
+            ->select('action')
+            ->groupBy('action')
             ->get();
 
         $formattedComponents = [];
         foreach ($components as $component) {
-            $formattedComponents[] = $component->component;
+            $formattedComponents[] = $component->action;
         }
 
         $forms = wpFluent()->table('fluentform_logs')
@@ -54,7 +66,8 @@ class DataLogger
         wp_send_json_success([
             'available_statuses' => $formattedStatuses,
             'available_components' => $formattedComponents,
-            'available_forms' => $formattedForms
+            'available_forms' => $formattedForms,
+            'api_statuses' => $apiStatuses
         ]);
     }
 
@@ -184,6 +197,10 @@ class DataLogger
             $logsQuery = $logsQuery->where('ff_scheduled_actions.status', $status);
         }
 
+        if($component = ArrayHelper::get($_REQUEST, 'component')) {
+            $logsQuery = $logsQuery->where('ff_scheduled_actions.action', $component);
+        }
+
         $logsQueryMain = $logsQuery;
 
         $logs = $logsQuery->offset($skip)
@@ -245,5 +262,60 @@ class DataLogger
         wp_send_json_success([
             'message' => __('Selected logs successfully deleted', 'fluentform')
         ], 200);
+    }
+
+    public function retryApiAction()
+    {
+        $logId = $this->app->request->get('log_id');
+        $actionFeed = wpFluent()->table('ff_scheduled_actions')
+            ->find($logId);
+
+        if(!$actionFeed) {
+            wp_send_json_error([
+                'message' => 'API log does not exist'
+            ], 423);
+        }
+
+        if(!$actionFeed->status == 'success') {
+            wp_send_json_error([
+                'message' => 'API log already in success mode'
+            ], 423);
+        }
+
+        $form = wpFluent()->table('fluentform_forms')->find($actionFeed->form_id);
+
+        $feed = maybe_unserialize($actionFeed->data);
+        $feed['scheduled_action_id'] = $actionFeed->id;
+
+        $submission = wpFluent()->table('fluentform_submissions')->find($actionFeed->origin_id);
+        $entry = $this->getEntry($submission, $form);
+        $formData = json_decode($submission->response, true);
+
+        wpFluent()->table($this->table)
+            ->where('id', $actionFeed->id)
+            ->update([
+                'status' => 'manual_retry',
+                'retry_count' => $actionFeed->retry_count + 1,
+                'updated_at' => current_time('mysql')
+            ]);
+
+        do_action($actionFeed->action, $feed, $formData, $entry, $form);
+
+        /*
+         * Hopefully it's done
+         */
+        $actionFeed = wpFluent()->table('ff_scheduled_actions')
+            ->find($logId);
+
+        wp_send_json_success([
+            'message' => 'Retry completed',
+            'feed' => $actionFeed
+        ], 200);
+    }
+
+    private function getEntry($submission, $form)
+    {
+        $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
+        return FormDataParser::parseFormEntry($submission, $form, $formInputs);
     }
 }
