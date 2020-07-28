@@ -64,7 +64,7 @@ class Text extends BaseComponent
 
             if($step = ArrayHelper::get($data, 'settings.number_step')) {
                 $data['attributes']['step'] =  $step;
-            } else {
+            } else if(ArrayHelper::get($data, 'attributes.type') == 'number') {
                 $data['attributes']['step'] =  'any';
             }
             
