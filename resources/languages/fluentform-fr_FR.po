@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-25 08:46+0000\n"
-"PO-Revision-Date: 2020-07-25 08:47+0000\n"
+"POT-Creation-Date: 2020-07-28 13:36+0000\n"
+"PO-Revision-Date: 2020-07-28 13:36+0000\n"
 "Language-Team: French (France)\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
@@ -14,11 +14,11 @@ msgstr ""
 "Language: fr_FR\n"
 "X-Loco-Version: 2.4.0; wp-5.4.2"
 
-#: app/Hooks/Backend.php:69
+#: app/Hooks/Backend.php:70
 msgid "Fluent Forms Latest Form Submissions"
 msgstr "Fluent Forms Dernières soumissions de formulaires"
 
-#: app/Hooks/Backend.php:121
+#: app/Hooks/Backend.php:113
 msgid "-- Select a form --"
 msgstr "-- Sélectionnez un formulaire --"
 
@@ -26,11 +26,11 @@ msgstr "-- Sélectionnez un formulaire --"
 msgid "Email address need to be unique."
 msgstr "L’adresse courriel doit être unique."
 
-#: app/Hooks/Backend.php:275
+#: app/Hooks/Backend.php:283
 msgid "This field value need to be unique."
 msgstr ""
 
-#: app/Hooks/Backend.php:284
+#: app/Hooks/Backend.php:294
 msgid "Fluent Forms PDF"
 msgstr "PDF Fluent Forms"
 
@@ -337,7 +337,7 @@ msgstr "PM"
 msgid "Year"
 msgstr "Année"
 
-#: app/Modules/Entries/Entries.php:147
+#: app/Modules/Entries/Entries.php:162
 #, fuzzy
 msgid ""
 "Sorry! No entries found. All your entries will be shown here once you start "
@@ -346,47 +346,47 @@ msgstr ""
 "Pardon! Aucune entrée trouvée. Toutes vos entrées seront affichées ici une "
 "fois que vous commencerez à obtenir des soumissions de formulaire"
 
-#: app/Modules/Entries/Entries.php:398
+#: app/Modules/Entries/Entries.php:413
 #, fuzzy
 msgid "Fluent Forms Bot"
 msgstr "Formes fluides Bot"
 
-#: app/Modules/Entries/Entries.php:442
+#: app/Modules/Entries/Entries.php:457
 #, fuzzy
 msgid "Note has been successfully added"
 msgstr "Note a été ajoutée avec succès"
 
-#: app/Modules/Entries/Entries.php:474
+#: app/Modules/Entries/Entries.php:489
 #, fuzzy
 msgid "Item Successfully deleted"
 msgstr "Article supprimé avec succès"
 
-#: app/Modules/Entries/Entries.php:581
+#: app/Modules/Entries/Entries.php:596
 #, fuzzy
 msgid "Item has been added to favorites"
 msgstr "L’article a été ajouté aux favoris"
 
-#: app/Modules/Entries/Entries.php:583
+#: app/Modules/Entries/Entries.php:598
 #, fuzzy
 msgid "Item has been removed from favorites"
 msgstr "L’article a été supprimé des favoris"
 
-#: app/Modules/Entries/Entries.php:608
+#: app/Modules/Entries/Entries.php:623
 #, fuzzy
 msgid "Please select entries first"
 msgstr "S’il vous plaît sélectionner les entrées d’abord"
 
-#: app/Modules/Entries/Entries.php:634
+#: app/Modules/Entries/Entries.php:649
 #, fuzzy
 msgid "Selected entries successfully deleted"
 msgstr "Entrées sélectionnées supprimées avec succès"
 
-#: app/Modules/Entries/Entries.php:640
+#: app/Modules/Entries/Entries.php:655
 #, fuzzy
 msgid "Selected entries successfully marked as Favorite"
 msgstr "Entrées sélectionnées avec succès marquées comme favoris"
 
-#: app/Modules/Entries/Entries.php:645
+#: app/Modules/Entries/Entries.php:660
 #, fuzzy
 msgid "Selected entries successfully remove from favorite"
 msgstr "Les entrées sélectionnées sont supprimées avec succès des"
@@ -434,15 +434,15 @@ msgstr "Le formulaire a bien été dupliqué."
 msgid "...."
 msgstr "…."
 
-#: app/Modules/Form/FormHandler.php:347
+#: app/Modules/Form/FormHandler.php:351
 msgid "Nonce verification failed, please try again."
 msgstr "Vérification nonce a échoué. Merci d'essayer à nouveau."
 
-#: app/Modules/Form/FormHandler.php:363
+#: app/Modules/Form/FormHandler.php:367
 msgid "Submission marked as spammed. Please try again"
 msgstr "Soumission marquée comme spammée. S’il vous plaît essayer à nouveau"
 
-#: app/Modules/Form/FormHandler.php:397
+#: app/Modules/Form/FormHandler.php:401
 msgid "reCaptcha verification failed, please try again."
 msgstr "la vérification reCaptcha a échoué, s’il vous plaît essayer à nouveau."
 
@@ -456,7 +456,7 @@ msgstr ""
 msgid "You form has been successfully imported."
 msgstr "Votre formulaire a été importé avec succès."
 
-#: app/Modules/Logger/DataLogger.php:225 app/Modules/Logger/DataLogger.php:246
+#: app/Modules/Logger/DataLogger.php:242 app/Modules/Logger/DataLogger.php:263
 #, fuzzy
 msgid "Selected logs successfully deleted"
 msgstr "Journaux sélectionnés supprimés avec succès"
@@ -465,6 +465,7 @@ msgstr "Journaux sélectionnés supprimés avec succès"
 msgid "Fluent Forms Pro"
 msgstr "Fluent Forms PRO"
 
+#. Name of the plugin
 #: app/Modules/Registerer/Menu.php:264 resources/views/admin/global_menu.php:6
 msgid "Fluent Forms"
 msgstr "Fluent Forms"
@@ -496,8 +497,8 @@ msgstr ""
 
 #: app/Modules/Registerer/Menu.php:346 app/Modules/Registerer/Menu.php:347
 #: resources/views/admin/global_menu.php:22
-msgid "Settings"
-msgstr "Paramètres"
+msgid "Global Settings"
+msgstr ""
 
 #: app/Modules/Registerer/Menu.php:356 app/Modules/Registerer/Menu.php:357
 #: resources/views/admin/transfer/index.php:6
@@ -599,7 +600,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:104
 #: app/Modules/Widgets/FluentFormWidget.php:890
 #: app/Services/FormBuilder/ElementCustomization.php:234
-#: app/Services/FormBuilder/ElementCustomization.php:507
+#: app/Services/FormBuilder/ElementCustomization.php:527
 #: app/Services/FormBuilder/ValidationRuleSettings.php:65
 msgid "Yes"
 msgstr "Oui"
@@ -607,7 +608,7 @@ msgstr "Oui"
 #: app/Modules/Widgets/FluentFormWidget.php:105
 #: app/Modules/Widgets/FluentFormWidget.php:891
 #: app/Services/FormBuilder/ElementCustomization.php:238
-#: app/Services/FormBuilder/ElementCustomization.php:511
+#: app/Services/FormBuilder/ElementCustomization.php:531
 #: app/Services/FormBuilder/ValidationRuleSettings.php:69
 msgid "No"
 msgstr "Non"
@@ -621,7 +622,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:304
 #: app/Modules/Widgets/FluentFormWidget.php:1180
 #: app/Services/FormBuilder/ElementCustomization.php:190
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:460
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:462
 msgid "Description"
 msgstr "Description"
 
@@ -777,7 +778,7 @@ msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:443
 #: app/Services/FormBuilder/ElementCustomization.php:55
-#: app/Services/FormBuilder/ElementCustomization.php:532
+#: app/Services/FormBuilder/ElementCustomization.php:552
 msgid "Default"
 msgstr "Par défaut"
 
@@ -899,7 +900,7 @@ msgid "Border Color"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1016
-#: app/Services/FormBuilder/ElementCustomization.php:448
+#: app/Services/FormBuilder/ElementCustomization.php:468
 msgid "Checkbox"
 msgstr "Case à cocher"
 
@@ -912,8 +913,8 @@ msgid "Checked"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1118
-#: app/Services/FormBuilder/DefaultElements.php:1017
-#: app/Services/FormBuilder/DefaultElements.php:1023
+#: app/Services/FormBuilder/DefaultElements.php:1019
+#: app/Services/FormBuilder/DefaultElements.php:1025
 msgid "Section Break"
 msgstr "Saut de Section"
 
@@ -922,7 +923,7 @@ msgid "Label"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1263
-#: app/Services/FormBuilder/DefaultElements.php:983
+#: app/Services/FormBuilder/DefaultElements.php:985
 msgid "Checkbox Grid"
 msgstr "Grille de cases à cocher"
 
@@ -954,8 +955,8 @@ msgid "Label Color"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1487
-#: app/Services/FormBuilder/DefaultElements.php:788
-#: app/Services/FormBuilder/DefaultElements.php:815
+#: app/Services/FormBuilder/DefaultElements.php:790
+#: app/Services/FormBuilder/DefaultElements.php:817
 msgid "Image Upload"
 msgstr "Téléchargement d'Image"
 
@@ -1008,7 +1009,7 @@ msgid "Full Width"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:2037
-#: app/Services/FormBuilder/ElementCustomization.php:427
+#: app/Services/FormBuilder/ElementCustomization.php:447
 msgid "Custom"
 msgstr "Personnalisé"
 
@@ -2044,29 +2045,29 @@ msgstr "Prénom"
 #: app/Services/FormBuilder/DefaultElements.php:98
 #: app/Services/FormBuilder/DefaultElements.php:135
 #: app/Services/FormBuilder/DefaultElements.php:172
-#: app/Services/FormBuilder/DefaultElements.php:206
-#: app/Services/FormBuilder/DefaultElements.php:239
-#: app/Services/FormBuilder/DefaultElements.php:284
-#: app/Services/FormBuilder/DefaultElements.php:312
-#: app/Services/FormBuilder/DefaultElements.php:341
-#: app/Services/FormBuilder/DefaultElements.php:370
-#: app/Services/FormBuilder/DefaultElements.php:400
-#: app/Services/FormBuilder/DefaultElements.php:429
-#: app/Services/FormBuilder/DefaultElements.php:481
-#: app/Services/FormBuilder/DefaultElements.php:542
-#: app/Services/FormBuilder/DefaultElements.php:589
-#: app/Services/FormBuilder/DefaultElements.php:645
-#: app/Services/FormBuilder/DefaultElements.php:695
-#: app/Services/FormBuilder/DefaultElements.php:726
-#: app/Services/FormBuilder/DefaultElements.php:764
-#: app/Services/FormBuilder/DefaultElements.php:796
-#: app/Services/FormBuilder/DefaultElements.php:840
-#: app/Services/FormBuilder/DefaultElements.php:883
-#: app/Services/FormBuilder/DefaultElements.php:939
-#: app/Services/FormBuilder/DefaultElements.php:990
-#: app/Services/FormBuilder/DefaultElements.php:1048
-#: app/Services/FormBuilder/DefaultElements.php:1101
-#: app/Services/FormBuilder/DefaultElements.php:1130
+#: app/Services/FormBuilder/DefaultElements.php:208
+#: app/Services/FormBuilder/DefaultElements.php:241
+#: app/Services/FormBuilder/DefaultElements.php:286
+#: app/Services/FormBuilder/DefaultElements.php:314
+#: app/Services/FormBuilder/DefaultElements.php:343
+#: app/Services/FormBuilder/DefaultElements.php:372
+#: app/Services/FormBuilder/DefaultElements.php:402
+#: app/Services/FormBuilder/DefaultElements.php:431
+#: app/Services/FormBuilder/DefaultElements.php:483
+#: app/Services/FormBuilder/DefaultElements.php:544
+#: app/Services/FormBuilder/DefaultElements.php:591
+#: app/Services/FormBuilder/DefaultElements.php:647
+#: app/Services/FormBuilder/DefaultElements.php:697
+#: app/Services/FormBuilder/DefaultElements.php:728
+#: app/Services/FormBuilder/DefaultElements.php:766
+#: app/Services/FormBuilder/DefaultElements.php:798
+#: app/Services/FormBuilder/DefaultElements.php:842
+#: app/Services/FormBuilder/DefaultElements.php:885
+#: app/Services/FormBuilder/DefaultElements.php:941
+#: app/Services/FormBuilder/DefaultElements.php:992
+#: app/Services/FormBuilder/DefaultElements.php:1050
+#: app/Services/FormBuilder/DefaultElements.php:1103
+#: app/Services/FormBuilder/DefaultElements.php:1132
 msgid "This field is required"
 msgstr "Ce champ est requis"
 
@@ -2107,246 +2108,246 @@ msgid "Simple Text"
 msgstr "Texte simple"
 
 #: app/Services/FormBuilder/DefaultElements.php:198
-#: app/Services/FormBuilder/DefaultElements.php:212
-#: app/Services/FormBuilder/ElementCustomization.php:398
+#: app/Services/FormBuilder/DefaultElements.php:214
+#: app/Services/FormBuilder/ElementCustomization.php:418
 msgid "Mask Input"
 msgstr "Entrée Masquée"
 
-#: app/Services/FormBuilder/DefaultElements.php:232
+#: app/Services/FormBuilder/DefaultElements.php:234
 msgid "Textarea"
 msgstr "Zone de texte"
 
-#: app/Services/FormBuilder/DefaultElements.php:245
+#: app/Services/FormBuilder/DefaultElements.php:247
 msgid "Text Area"
 msgstr "Zone de texte"
 
-#: app/Services/FormBuilder/DefaultElements.php:260
+#: app/Services/FormBuilder/DefaultElements.php:262
 msgid "Address"
 msgstr "Adresse"
 
-#: app/Services/FormBuilder/DefaultElements.php:273
-#: app/Services/FormBuilder/DefaultElements.php:277
+#: app/Services/FormBuilder/DefaultElements.php:275
+#: app/Services/FormBuilder/DefaultElements.php:279
 msgid "Address Line 1"
 msgstr "Adresse ligne 1"
 
-#: app/Services/FormBuilder/DefaultElements.php:301
-#: app/Services/FormBuilder/DefaultElements.php:305
+#: app/Services/FormBuilder/DefaultElements.php:303
+#: app/Services/FormBuilder/DefaultElements.php:307
 msgid "Address Line 2"
 msgstr "Adresse ligne 2"
 
-#: app/Services/FormBuilder/DefaultElements.php:329
-#: app/Services/FormBuilder/DefaultElements.php:333
+#: app/Services/FormBuilder/DefaultElements.php:331
+#: app/Services/FormBuilder/DefaultElements.php:335
 msgid "City"
 msgstr "Ville"
 
-#: app/Services/FormBuilder/DefaultElements.php:358
-#: app/Services/FormBuilder/DefaultElements.php:362
+#: app/Services/FormBuilder/DefaultElements.php:360
+#: app/Services/FormBuilder/DefaultElements.php:364
 msgid "State"
 msgstr "État"
 
-#: app/Services/FormBuilder/DefaultElements.php:387
+#: app/Services/FormBuilder/DefaultElements.php:389
 msgid "Zip"
 msgstr "Code postal"
 
-#: app/Services/FormBuilder/DefaultElements.php:392
+#: app/Services/FormBuilder/DefaultElements.php:394
 msgid "Zip Code"
 msgstr "Code postal"
 
-#: app/Services/FormBuilder/DefaultElements.php:416
-#: app/Services/FormBuilder/DefaultElements.php:872
+#: app/Services/FormBuilder/DefaultElements.php:418
+#: app/Services/FormBuilder/DefaultElements.php:874
 msgid "Select Country"
 msgstr "Sélectionnez un pays"
 
-#: app/Services/FormBuilder/DefaultElements.php:421
-#: app/Services/FormBuilder/DefaultElements.php:876
+#: app/Services/FormBuilder/DefaultElements.php:423
+#: app/Services/FormBuilder/DefaultElements.php:878
 msgid "Country"
 msgstr "Pays"
 
-#: app/Services/FormBuilder/DefaultElements.php:452
+#: app/Services/FormBuilder/DefaultElements.php:454
 #: app/Services/FormBuilder/ElementCustomization.php:308
 msgid "Address Fields"
 msgstr "Champs d’adresse"
 
-#: app/Services/FormBuilder/DefaultElements.php:471
-#: app/Services/FormBuilder/DefaultElements.php:503
+#: app/Services/FormBuilder/DefaultElements.php:473
+#: app/Services/FormBuilder/DefaultElements.php:505
 msgid "Numeric Field"
 msgstr "Champ numérique"
 
-#: app/Services/FormBuilder/DefaultElements.php:485
+#: app/Services/FormBuilder/DefaultElements.php:487
 #, fuzzy
 msgid "This field must contain numeric value"
 msgstr "Ce champ doit contenir de la valeur numérique"
 
-#: app/Services/FormBuilder/DefaultElements.php:489
+#: app/Services/FormBuilder/DefaultElements.php:491
 #, fuzzy
 msgid "Minimum value is "
 msgstr "La valeur minimale est"
 
-#: app/Services/FormBuilder/DefaultElements.php:493
+#: app/Services/FormBuilder/DefaultElements.php:495
 #, fuzzy
 msgid "Maximum value is "
 msgstr "La valeur maximale est"
 
-#: app/Services/FormBuilder/DefaultElements.php:518
-#: app/Services/FormBuilder/DefaultElements.php:548
+#: app/Services/FormBuilder/DefaultElements.php:520
+#: app/Services/FormBuilder/DefaultElements.php:550
 msgid "Dropdown"
 msgstr "Liste déroulante"
 
-#: app/Services/FormBuilder/DefaultElements.php:565
-#: app/Services/FormBuilder/DefaultElements.php:596
+#: app/Services/FormBuilder/DefaultElements.php:567
+#: app/Services/FormBuilder/DefaultElements.php:598
 msgid "Radio Field"
 msgstr "Bouton Radio"
 
-#: app/Services/FormBuilder/DefaultElements.php:613
+#: app/Services/FormBuilder/DefaultElements.php:615
 msgid "Checkbox Field"
 msgstr "Champ de Case à cocher"
 
-#: app/Services/FormBuilder/DefaultElements.php:652
+#: app/Services/FormBuilder/DefaultElements.php:654
 msgid "Check Box"
 msgstr "Case à cocher"
 
-#: app/Services/FormBuilder/DefaultElements.php:672
+#: app/Services/FormBuilder/DefaultElements.php:674
 msgid "Multiselect"
 msgstr "Sélection multiple"
 
-#: app/Services/FormBuilder/DefaultElements.php:701
+#: app/Services/FormBuilder/DefaultElements.php:703
 msgid "Multiple Choice"
 msgstr "Choix multiples"
 
-#: app/Services/FormBuilder/DefaultElements.php:719
+#: app/Services/FormBuilder/DefaultElements.php:721
 msgid "URL"
 msgstr "URL"
 
-#: app/Services/FormBuilder/DefaultElements.php:730
+#: app/Services/FormBuilder/DefaultElements.php:732
 #, fuzzy
 msgid "This field must contain a valid url"
 msgstr "Ce champ doit contenir une URL valide"
 
-#: app/Services/FormBuilder/DefaultElements.php:736
+#: app/Services/FormBuilder/DefaultElements.php:738
 msgid "Website URL"
 msgstr "URL du site"
 
-#: app/Services/FormBuilder/DefaultElements.php:754
+#: app/Services/FormBuilder/DefaultElements.php:756
 msgid "Date / Time"
 msgstr "Date / Heure"
 
-#: app/Services/FormBuilder/DefaultElements.php:770
+#: app/Services/FormBuilder/DefaultElements.php:772
 msgid "Time & Date"
 msgstr "Heure Date"
 
-#: app/Services/FormBuilder/DefaultElements.php:801
-#: app/Services/FormBuilder/DefaultElements.php:845
+#: app/Services/FormBuilder/DefaultElements.php:803
+#: app/Services/FormBuilder/DefaultElements.php:847
 #, fuzzy
 msgid "Maximum file size limit is 1MB"
 msgstr "La limite maximale de taille du fichier est de 1 Mo"
 
-#: app/Services/FormBuilder/DefaultElements.php:805
+#: app/Services/FormBuilder/DefaultElements.php:807
 #, fuzzy
 msgid "You can upload maximum 1 image"
 msgstr "Vous pouvez télécharger une image maximale de 1"
 
-#: app/Services/FormBuilder/DefaultElements.php:809
+#: app/Services/FormBuilder/DefaultElements.php:811
 #, fuzzy
 msgid "Allowed image types does not match"
 msgstr "Les types d’images autorisés ne correspondent pas"
 
-#: app/Services/FormBuilder/DefaultElements.php:832
-#: app/Services/FormBuilder/DefaultElements.php:859
+#: app/Services/FormBuilder/DefaultElements.php:834
+#: app/Services/FormBuilder/DefaultElements.php:861
 msgid "File Upload"
 msgstr "Téléchargement de fichiers"
 
-#: app/Services/FormBuilder/DefaultElements.php:849
+#: app/Services/FormBuilder/DefaultElements.php:851
 #, fuzzy
 msgid "You can upload maximum 1 file"
 msgstr "Vous pouvez télécharger un fichier maximum 1"
 
-#: app/Services/FormBuilder/DefaultElements.php:853
+#: app/Services/FormBuilder/DefaultElements.php:855
 msgid "Invalid file type"
 msgstr "Type de fichier invalide"
 
-#: app/Services/FormBuilder/DefaultElements.php:897
+#: app/Services/FormBuilder/DefaultElements.php:899
 #: app/Services/FormBuilder/ElementCustomization.php:360
 msgid "Country List"
 msgstr "Liste de pays"
 
-#: app/Services/FormBuilder/DefaultElements.php:913
+#: app/Services/FormBuilder/DefaultElements.php:915
 msgid "Custom HTML"
 msgstr "HTML personnalisé"
 
-#: app/Services/FormBuilder/DefaultElements.php:929
-#: app/Services/FormBuilder/DefaultElements.php:951
+#: app/Services/FormBuilder/DefaultElements.php:931
+#: app/Services/FormBuilder/DefaultElements.php:953
 msgid "Ratings"
 msgstr "Evaluations"
 
-#: app/Services/FormBuilder/DefaultElements.php:944
+#: app/Services/FormBuilder/DefaultElements.php:946
 msgid "Nice"
 msgstr "Nice"
 
-#: app/Services/FormBuilder/DefaultElements.php:945
+#: app/Services/FormBuilder/DefaultElements.php:947
 msgid "Good"
 msgstr "Bon"
 
-#: app/Services/FormBuilder/DefaultElements.php:946
+#: app/Services/FormBuilder/DefaultElements.php:948
 msgid "Very Good"
 msgstr "Très bon"
 
-#: app/Services/FormBuilder/DefaultElements.php:947
+#: app/Services/FormBuilder/DefaultElements.php:949
 msgid "Awesome"
 msgstr "Excellent"
 
-#: app/Services/FormBuilder/DefaultElements.php:948
+#: app/Services/FormBuilder/DefaultElements.php:950
 msgid "Amazing"
 msgstr "Surprenant"
 
-#: app/Services/FormBuilder/DefaultElements.php:968
+#: app/Services/FormBuilder/DefaultElements.php:970
 msgid "Hidden Field"
 msgstr "Champ masqué"
 
-#: app/Services/FormBuilder/DefaultElements.php:1004
+#: app/Services/FormBuilder/DefaultElements.php:1006
 msgid "Checkable Grid"
 msgstr "Grille vérifiable"
 
-#: app/Services/FormBuilder/DefaultElements.php:1018
+#: app/Services/FormBuilder/DefaultElements.php:1020
 msgid "Some description about this section"
 msgstr "Une description de cette section"
 
-#: app/Services/FormBuilder/DefaultElements.php:1041
+#: app/Services/FormBuilder/DefaultElements.php:1043
 msgid "Password"
 msgstr "Mot de passe"
 
-#: app/Services/FormBuilder/DefaultElements.php:1054
+#: app/Services/FormBuilder/DefaultElements.php:1056
 msgid "Password Field"
 msgstr "Champ mot de passe"
 
-#: app/Services/FormBuilder/DefaultElements.php:1069
+#: app/Services/FormBuilder/DefaultElements.php:1071
 msgid "Previous"
 msgstr "Précédent"
 
-#: app/Services/FormBuilder/DefaultElements.php:1074
+#: app/Services/FormBuilder/DefaultElements.php:1076
 #, fuzzy
 msgid "Next"
 msgstr "Suivant"
 
-#: app/Services/FormBuilder/DefaultElements.php:1079
+#: app/Services/FormBuilder/DefaultElements.php:1081
 msgid "Form Step"
 msgstr "Étape du formulaire"
 
-#: app/Services/FormBuilder/DefaultElements.php:1096
+#: app/Services/FormBuilder/DefaultElements.php:1098
 msgid "Terms and Conditions"
 msgstr "Termes et Conditions"
 
-#: app/Services/FormBuilder/DefaultElements.php:1107
+#: app/Services/FormBuilder/DefaultElements.php:1109
 #: app/Services/FormBuilder/ElementCustomization.php:160
 msgid "Terms & Conditions"
 msgstr "Termes & Conditions"
 
-#: app/Services/FormBuilder/DefaultElements.php:1122
 #: app/Services/FormBuilder/DefaultElements.php:1124
-#: app/Services/FormBuilder/DefaultElements.php:1137
+#: app/Services/FormBuilder/DefaultElements.php:1126
+#: app/Services/FormBuilder/DefaultElements.php:1139
 msgid "GDPR Agreement"
 msgstr "Accord GDPR"
 
-#: app/Services/FormBuilder/DefaultElements.php:1123
+#: app/Services/FormBuilder/DefaultElements.php:1125
 msgid ""
 "I consent to having this website store my submitted information so they can "
 "respond to my inquiry"
@@ -2354,60 +2355,60 @@ msgstr ""
 "Je consents à ce que ce site stocke mes informations soumises afin qu'ils "
 "puissent répondre à mon enquête"
 
-#: app/Services/FormBuilder/DefaultElements.php:1152
+#: app/Services/FormBuilder/DefaultElements.php:1154
 msgid "reCaptcha"
 msgstr "reCaptcha"
 
-#: app/Services/FormBuilder/DefaultElements.php:1170
+#: app/Services/FormBuilder/DefaultElements.php:1172
 #: app/Services/FormBuilder/ElementCustomization.php:224
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: app/Services/FormBuilder/DefaultElements.php:1187
+#: app/Services/FormBuilder/DefaultElements.php:1189
 msgid "Action Hook"
 msgstr "Accroche d’action"
 
-#: app/Services/FormBuilder/DefaultElements.php:1207
+#: app/Services/FormBuilder/DefaultElements.php:1209
 #, fuzzy
 msgid "One Column Container"
 msgstr "Conteneur d’une colonne"
 
-#: app/Services/FormBuilder/DefaultElements.php:1225
+#: app/Services/FormBuilder/DefaultElements.php:1227
 #, fuzzy
 msgid "Two Column Container"
 msgstr "Conteneur à colonnes de deux colonnes"
 
-#: app/Services/FormBuilder/DefaultElements.php:1243
+#: app/Services/FormBuilder/DefaultElements.php:1245
 #, fuzzy
 msgid "Three Column Container"
 msgstr "Conteneur de trois colonnes"
 
-#: app/Services/FormBuilder/DefaultElements.php:1262
+#: app/Services/FormBuilder/DefaultElements.php:1264
 #, fuzzy
 msgid "Four Column Container"
 msgstr "Conteneur à quatre colonnes"
 
-#: app/Services/FormBuilder/DefaultElements.php:1282
+#: app/Services/FormBuilder/DefaultElements.php:1284
 #, fuzzy
 msgid "Five Column Container"
 msgstr "Conteneur de cinq colonnes"
 
-#: app/Services/FormBuilder/DefaultElements.php:1303
+#: app/Services/FormBuilder/DefaultElements.php:1305
 #, fuzzy
 msgid "Six Column Container"
 msgstr "Conteneur six colonnes"
 
-#: app/Services/FormBuilder/DefaultElements.php:1394
+#: app/Services/FormBuilder/DefaultElements.php:1396
 #, fuzzy
 msgid "Payment Field"
 msgstr "Champ de paiement"
 
-#: app/Services/FormBuilder/DefaultElements.php:1406
+#: app/Services/FormBuilder/DefaultElements.php:1408
 #, fuzzy
 msgid "Custom Payment Amount"
 msgstr "Montant du paiement personnalisé"
 
-#: app/Services/FormBuilder/DefaultElements.php:1417
+#: app/Services/FormBuilder/DefaultElements.php:1419
 msgid "Item Quantity"
 msgstr "Quantité"
 
@@ -2797,7 +2798,7 @@ msgstr ""
 "La description sera montrée à l’utilisateur comme contenu de texte normal."
 
 #: app/Services/FormBuilder/ElementCustomization.php:195
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:391
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:393
 msgid "Button Text"
 msgstr "Texte du bouton"
 
@@ -2918,7 +2919,7 @@ msgid "Steps"
 msgstr "Étapes"
 
 #: app/Services/FormBuilder/ElementCustomization.php:287
-#: app/Services/FormBuilder/ElementCustomization.php:403
+#: app/Services/FormBuilder/ElementCustomization.php:423
 msgid "None"
 msgstr "Aucun"
 
@@ -3055,53 +3056,69 @@ msgid "Custom Mask"
 msgstr "Masque personnalisé"
 
 #: app/Services/FormBuilder/ElementCustomization.php:389
-#: app/Services/FormBuilder/ElementCustomization.php:434
-#: app/Services/FormBuilder/ElementCustomization.php:439
+#: app/Services/FormBuilder/ElementCustomization.php:454
+#: app/Services/FormBuilder/ElementCustomization.php:459
 #, fuzzy
 msgid "Write your own mask for this input"
 msgstr "Écrivez votre propre masque pour cette entrée"
 
+#: app/Services/FormBuilder/ElementCustomization.php:398
+msgid "Activating a reversible mask"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:399
+msgid "If you enable this then it the mask will work as reverse"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:408
+msgid "Clear if not match"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:409
+msgid "Clear value if not match the mask"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:419
 #, fuzzy
 msgid "Select a mask for the input field"
 msgstr "Sélectionnez un masque pour le champ d’entrée"
 
-#: app/Services/FormBuilder/ElementCustomization.php:415
+#: app/Services/FormBuilder/ElementCustomization.php:435
 msgid "23/03/2018"
 msgstr "23/03/2019"
 
-#: app/Services/FormBuilder/ElementCustomization.php:419
+#: app/Services/FormBuilder/ElementCustomization.php:439
 #, fuzzy
 msgid "23:59:59"
 msgstr "23:59:59"
 
-#: app/Services/FormBuilder/ElementCustomization.php:423
+#: app/Services/FormBuilder/ElementCustomization.php:443
 msgid "23/03/2018 23:59:59"
 msgstr "23/03/2019 23:59:59"
 
-#: app/Services/FormBuilder/ElementCustomization.php:433
+#: app/Services/FormBuilder/ElementCustomization.php:453
 msgid "Grid Columns"
 msgstr "Colonnes de la grille"
 
-#: app/Services/FormBuilder/ElementCustomization.php:438
+#: app/Services/FormBuilder/ElementCustomization.php:458
 msgid "Grid Rows"
 msgstr "Rangées de grille"
 
-#: app/Services/FormBuilder/ElementCustomization.php:443
-#: app/Services/FormBuilder/ElementCustomization.php:444
+#: app/Services/FormBuilder/ElementCustomization.php:463
+#: app/Services/FormBuilder/ElementCustomization.php:464
 msgid "Field Type"
 msgstr "Type de champ"
 
-#: app/Services/FormBuilder/ElementCustomization.php:452
+#: app/Services/FormBuilder/ElementCustomization.php:472
 msgid "Radio"
 msgstr "Radio"
 
-#: app/Services/FormBuilder/ElementCustomization.php:458
+#: app/Services/FormBuilder/ElementCustomization.php:478
 #, fuzzy
 msgid "Max Repeat inputs"
 msgstr "Entrées Max Repeat"
 
-#: app/Services/FormBuilder/ElementCustomization.php:459
+#: app/Services/FormBuilder/ElementCustomization.php:479
 #, fuzzy
 msgid ""
 "Please provide max number of rows the user can fill up for this repeat field."
@@ -3110,31 +3127,31 @@ msgstr ""
 "S’il vous plaît fournir le nombre maximum de lignes que l’utilisateur peut "
 "remplir pour ce champ de répétition. Restez vide/0 pour les numéros illimités"
 
-#: app/Services/FormBuilder/ElementCustomization.php:472
+#: app/Services/FormBuilder/ElementCustomization.php:492
 #: app/Services/FormBuilder/ValidationRuleSettings.php:77
 msgid "Min Value"
 msgstr "Valeur minimale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:473
+#: app/Services/FormBuilder/ElementCustomization.php:493
 #, fuzzy
 msgid "Please provide minimum value"
 msgstr "S’il vous plaît fournir une valeur minimale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:477
+#: app/Services/FormBuilder/ElementCustomization.php:497
 #: app/Services/FormBuilder/ValidationRuleSettings.php:84
 msgid "Max Value"
 msgstr "Valeur maximale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:478
+#: app/Services/FormBuilder/ElementCustomization.php:498
 #, fuzzy
 msgid "Please provide Maximum value"
 msgstr "S’il vous plaît fournir une valeur maximale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:482
+#: app/Services/FormBuilder/ElementCustomization.php:502
 msgid "Step"
 msgstr "Étape"
 
-#: app/Services/FormBuilder/ElementCustomization.php:483
+#: app/Services/FormBuilder/ElementCustomization.php:503
 #, fuzzy
 msgid ""
 "Please provide step attribute for this field. Give value \"any\" for "
@@ -3143,12 +3160,12 @@ msgstr ""
 "S’il vous plaît fournir l’attribut étape pour ce domaine. Donner de la "
 "valeur \"n’importe quel\" pour la valeur flottante"
 
-#: app/Services/FormBuilder/ElementCustomization.php:487
+#: app/Services/FormBuilder/ElementCustomization.php:507
 #, fuzzy
 msgid "Prefix Label"
 msgstr "Étiquette de préfixe"
 
-#: app/Services/FormBuilder/ElementCustomization.php:488
+#: app/Services/FormBuilder/ElementCustomization.php:508
 #, fuzzy
 msgid ""
 "Provide Input Prefix Label. It will show in the input field as prefix label"
@@ -3156,12 +3173,12 @@ msgstr ""
 "Fournir l’étiquette Préfixe d’entrée. Il affichera dans le champ d’entrée "
 "comme étiquette de préfixe"
 
-#: app/Services/FormBuilder/ElementCustomization.php:492
+#: app/Services/FormBuilder/ElementCustomization.php:512
 #, fuzzy
 msgid "Suffix Label"
 msgstr "Étiquette Suffix"
 
-#: app/Services/FormBuilder/ElementCustomization.php:493
+#: app/Services/FormBuilder/ElementCustomization.php:513
 #, fuzzy
 msgid ""
 "Provide Input Suffix Label. It will show in the input field as suffix label"
@@ -3169,12 +3186,12 @@ msgstr ""
 "Fournir l’étiquette Suffix d’entrée. Il affichera dans le champ d’entrée "
 "comme étiquette de suffixe"
 
-#: app/Services/FormBuilder/ElementCustomization.php:497
+#: app/Services/FormBuilder/ElementCustomization.php:517
 #, fuzzy
 msgid "Validate as Unique"
 msgstr "Valider comme unique"
 
-#: app/Services/FormBuilder/ElementCustomization.php:498
+#: app/Services/FormBuilder/ElementCustomization.php:518
 #, fuzzy
 msgid ""
 "If you make it unique then it will validate as unique from previous "
@@ -3183,38 +3200,38 @@ msgstr ""
 "Si vous le rendez unique, alors il sera validé comme unique à partir des "
 "soumissions précédentes de ce formulaire"
 
-#: app/Services/FormBuilder/ElementCustomization.php:502
+#: app/Services/FormBuilder/ElementCustomization.php:522
 msgid "Show Text"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:503
+#: app/Services/FormBuilder/ElementCustomization.php:523
 msgid "Show Text value on selection"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:517
+#: app/Services/FormBuilder/ElementCustomization.php:537
 #, fuzzy
 msgid "Validation Message for Duplicate"
 msgstr "Message de validation pour le double"
 
-#: app/Services/FormBuilder/ElementCustomization.php:518
+#: app/Services/FormBuilder/ElementCustomization.php:538
 #, fuzzy
 msgid "If validation failed then it will show this message"
 msgstr "Si la validation a échoué, elle affichera ce message"
 
-#: app/Services/FormBuilder/ElementCustomization.php:527
+#: app/Services/FormBuilder/ElementCustomization.php:547
 msgid "Layout"
 msgstr "Mise en page"
 
-#: app/Services/FormBuilder/ElementCustomization.php:528
+#: app/Services/FormBuilder/ElementCustomization.php:548
 #, fuzzy
 msgid "Select the Layout for checkable items"
 msgstr "Sélectionnez la mise en page pour les articles vérifiables"
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:392
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:394
 msgid "Form submission button text."
 msgstr "Texte du bouton de soumission de formulaire."
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:461
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:463
 #, fuzzy
 msgid "Write HTML content for GDPR agreement checkbox"
 msgstr "Rédiger du contenu HTML pour la case de contrôle de l’accord GDPR"
@@ -3580,10 +3597,6 @@ msgstr "Le champ URL Redirect is required when Confirmation Type est Redirect."
 #, fuzzy
 msgid "The Redirect URL format is invalid."
 msgstr "Le format URL Redirect est invalide."
-
-#. Name of the plugin
-msgid "Fluent Forms - Best Form Plugin for WordPress"
-msgstr "Fluent Forms - Extension de formulaire pour WordPress"
 
 #. Description of the plugin
 #, fuzzy

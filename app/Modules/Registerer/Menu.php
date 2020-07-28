@@ -343,8 +343,8 @@ class Menu
             // Register global settings sub menu page.
             add_submenu_page(
                 'fluent_forms',
-                __('Settings', 'fluentform'),
-                __('Settings', 'fluentform'),
+                __('Global Settings', 'fluentform'),
+                __('Global Settings', 'fluentform'),
                 $settingsCapability,
                 'fluent_forms_settings',
                 array($this, 'renderGlobalSettings')

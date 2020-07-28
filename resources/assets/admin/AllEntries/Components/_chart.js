@@ -21,7 +21,13 @@ export default {
                                 drawOnChartArea: true
                             },
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                userCallback: function(label, index, labels) {
+                                    // when the floored value is the same as the value we have a whole number
+                                    if (Math.floor(label) === label) {
+                                        return label;
+                                    }
+                                },
                             }
                         }
                     ],
@@ -31,7 +37,9 @@ export default {
                                 drawOnChartArea: true
                             },
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                autoSkip: true,
+                                maxTicksLimit: 10
                             }
                         }
                     ]
