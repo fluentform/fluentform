@@ -140,7 +140,9 @@ class EmailNotification
 
     private function getSendAddresses($notification, $submittedData)
     {
-        $sendAddresses = ArrayHelper::get($notification, 'sendTo.email');
+        $sendAddresses = [
+            ArrayHelper::get($notification, 'sendTo.email')
+        ];
 
         if (ArrayHelper::get($notification, 'sendTo.type') == 'field' && !empty($notification['sendTo']['field'])) {
             $sendAddresses = [

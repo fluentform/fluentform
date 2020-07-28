@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder
 Requires at least: 4.5
-Tested up to: 5.4
+Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 3.6.31
+Stable tag: 3.6.41
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,6 +191,8 @@ Here are the few forms from those that we have packed for you:
 <li>Drip - WP Fluent Forms Drip Module allows you to create Drip subscribers from WordPress, so you can grow your email list.</li>
 <li>iContact - Connect iContact with WP Fluent Forms and subscribe a contact when a form is submitted.</li>
 <li>SendinBlue - Connect Your Forms with SendinBlue CRM</li>
+<li>SendinBlue - Connect Your Forms with SendinBlue CRM</li>
+<li>Automizy - Connect Your Forms with Automizy Marketing Solution</li>
 <li>User Registration - Create WordPress users from fluent form submissions</li>
 <li>Post/CPT integration - Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>
 <li>PayPal - Create PayPal forms to easily collect payments, donations, and online orders. Sale your items easily using Forms</li>
@@ -299,8 +301,21 @@ Yes, Please check our <a href="https://trello.com/b/FaDlAD9B/public-roadmap-wp-f
 8. Advanced Form Editor
 9. Form Integration Manager
 10. All Submission Chart by Date
+11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 3.6.41 (Date: July 27, 2020) =
+* Conditional Logic improvements
+* Validate Uniqueness for Text Input values
+* Replace select2 with choices.JS library (cool)
+* Enable Search option for single select options
+* Reset selects after form submission bug fix
+* Popup issue fix for Elementor
+* Added new tooltip style for better visibility
+* Translation loading issue fixed
+* Slack Notification issue has been fixed
+* Internal Improvements and Performence increase
 
 = 3.6.31 (Date: July 3, 2020) =
 * Conditional Logic improvement (Now you can add Conditional Logic to Containers)
