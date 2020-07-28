@@ -19,7 +19,7 @@ $page = sanitize_text_field($_GET['page']);
     <?php endif; ?>
 
     <a href="<?php echo admin_url('admin.php?page=fluent_forms_settings'); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_settings') ? 'ninja-tab-active' : '' ?>">
-        <?php _e('Settings', 'fluentform'); ?>
+        <?php _e('Global Settings', 'fluentform'); ?>
     </a>
     <a href="<?php echo admin_url('admin.php?page=fluent_form_add_ons'); ?>" class="ninja-tab <?php echo ($page == 'fluent_form_add_ons') ? 'ninja-tab-active' : '' ?>">
         <?php _e('Integrations', 'fluentform'); ?>

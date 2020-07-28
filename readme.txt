@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder
 Requires at least: 4.5
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 3.6.41
+Stable tag: 3.6.42
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -304,6 +304,11 @@ Yes, Please check our <a href="https://trello.com/b/FaDlAD9B/public-roadmap-wp-f
 11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 3.6.42 (Date: July 28, 2020) =
+* Email sending issue has been fixed
+* Input background issue has been fixed
+* Cleaner All entries chart
 
 = 3.6.41 (Date: July 27, 2020) =
 * Conditional Logic improvements

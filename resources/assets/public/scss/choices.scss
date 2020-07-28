@@ -197,6 +197,7 @@ $inner-border-color: #ced4da;
     font-size: $choices-font-size-md;
     min-height: auto;
     overflow: hidden;
+    background: white;
     .is-focused &,
     .is-open & {
       border-color: $focus-border-color;

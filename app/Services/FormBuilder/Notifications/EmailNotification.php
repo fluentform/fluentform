@@ -148,10 +148,11 @@ class EmailNotification
             $sendAddresses = [
                 ArrayHelper::get($submittedData, $notification['sendTo']['field'])
             ];
+            $sendAddresses = array_filter($sendAddresses, 'is_email');
         }
 
         if (ArrayHelper::get($notification, 'sendTo.type') != 'routing') {
-            return array_filter($sendAddresses, 'is_email');
+            return $sendAddresses;
         }
 
         $routings = ArrayHelper::get($notification, 'sendTo.routing');
