@@ -27,7 +27,7 @@ export default {
                                     if (Math.floor(label) === label) {
                                         return label;
                                     }
-                                },
+                                }
                             }
                         }
                     ],
