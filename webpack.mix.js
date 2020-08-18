@@ -10,6 +10,14 @@ if (!mix.inProduction()) {
     }).sourceMaps(false);
 }
 
+mix.webpackConfig({
+    resolve: {
+        alias: {
+            '@': path.resolve('resources/assets')
+        }
+    }
+});
+
 mix
     .js('resources/assets/admin/settings/settings.js', `public/js/fluentform-global-settings.js`)
     .js('resources/assets/admin/transfer/transfer.js', `public/js/fluentform-transfer.js`)

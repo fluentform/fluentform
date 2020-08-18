@@ -20,7 +20,7 @@
                         size="small"
                 >Back
                 </el-button>
-                <el-button v-else @click="addVisible = true" type="primary" size="small" icon="plus">Add PDF Feed
+                <el-button v-else @click="addVisible = true" type="primary" size="small" icon="el-icon-plus">Add PDF Feed
                 </el-button>
             </el-col>
         </el-row>

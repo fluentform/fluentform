@@ -10,6 +10,8 @@
 
                 <!--Save settings-->
                 <el-col :md="12" class="action-buttons clearfix mb15">
+                    <video-doc btn_size="medium" class="pull-right ff-left-spaced" route_id="formConfirmation" />
+
                     <el-button
                             :loading="loading"
                             class="pull-right"
@@ -34,8 +36,11 @@
 
             <!-- Appearance Settings -->
             <el-row class="setting_header">
-                <el-col :md="24">
+                <el-col :md="12">
                     <h2>Form Layout</h2>
+                </el-col>
+                <el-col :md="12">
+                    <video-doc btn_text="Learn More" class="pull-right ff-left-spaced" route_id="formErrorMessage" />
                 </el-col>
             </el-row>
 
@@ -147,8 +152,13 @@
 
             <!-- Form Restrictions -->
             <el-row class="setting_header">
-                <el-col :md="24">
-                    <h2>Scheduling & Restrictions</h2>
+                <el-col :md="12">
+                    <h2>
+                        Scheduling & Restrictions
+                    </h2>
+                </el-col>
+                <el-col :md="12">
+                    <video-doc class="pull-right" btn_text="Learn More" route_id="formScheduling"></video-doc>
                 </el-col>
             </el-row>
 
@@ -166,7 +176,7 @@
                         <h2>Advanced Form Validation</h2>
                         <p>
                             You can set rules to the user input and based on the rules you can prevent the form submit.
-                            This is very useful feature for preventing spam/bot submissions.
+                            This is very useful feature for preventing spam/bot submissions. <a target="_blank" rel="noopener" href="#">Learn More here</a>
                         </p>
                     </el-col>
                 </el-row>
@@ -277,6 +287,7 @@
     import errorView from '../../../common/errorView';
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import AdvancedValidation from "./Includes/AdvancedValidation";
+    import VideoDoc from '@/common/VideoInstruction.vue';
 
     export default {
         name: 'FormSettings',
@@ -295,7 +306,8 @@
             errorView,
             AddConfirmation,
             SurveyResult,
-            AdvancedValidation
+            AdvancedValidation,
+            VideoDoc
         },
         data() {
             return {

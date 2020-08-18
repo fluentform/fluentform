@@ -432,3 +432,16 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
     }
   }
 }
+
+.editor_play_video {
+  position: absolute;
+  top: 373px;
+  right: 38%;
+  background: #409eff;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0px 1px 2px 2px #dae9cc;
+  font-size: 19px;
+  cursor: pointer;
+}

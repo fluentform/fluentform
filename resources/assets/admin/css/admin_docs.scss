@@ -21,6 +21,20 @@
       margin-bottom: 30px;
     }
   }
+
+  .block_2_3 {
+    width: 66.67%;
+    float: left;
+    padding-right: 30px;
+    margin-bottom: 30px;
+    @media (max-width: 768px) {
+      width: 100%;
+      float: none;
+      padding-right: 0px;
+      margin-bottom: 30px;
+    }
+  }
+
   .ff_block {
     .ff_block_box {
       padding: 15px;

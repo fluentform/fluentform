@@ -3,6 +3,7 @@
         <el-row class="setting_header">
             <el-col :md="12"><h2>{{title}}</h2></el-col>
             <el-col :md="12" class="action-buttons mb15 clearfix">
+                <video-doc class="pull-right ff-left-spaced" :route_id="integration_name" btn_text="View Video Instruction" />
                 <router-link
                     class="pull-right el-button el-button--default el-button--small"
                     :to="{name: 'allIntegrations'}"
@@ -244,6 +245,7 @@
     import DropDownManyFields from './_DropdownManyFields';
     import ChainedFields from './_ChainedFields';
     import ChainedSelects from './_ChainedSelects';
+    import VideoDoc from '@/common/VideoInstruction.vue';
 
     export default {
         name: 'general_notification_edit',
@@ -257,7 +259,8 @@
             DropDownLabelRepeater,
             DropDownManyFields,
             ChainedFields,
-            ChainedSelects
+            ChainedSelects,
+            VideoDoc
         },
         props: ['form_id', 'inputs', 'has_pro', 'editorShortcodes'],
         watch: {

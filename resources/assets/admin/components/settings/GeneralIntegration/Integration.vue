@@ -16,7 +16,7 @@
         </el-row>
 
         <div v-if="isEmpty(available_integrations) && !loading">
-            <p style="font-size: 18px; text-align: center;">You don't have any integration module enabled. Please go to integration modules and enable and configured from 13 available modules</p>
+            <p style="font-size: 18px; text-align: center;">You don't have any integration module enabled. Please go to integration modules and enable and configured from 30+ available modules</p>
             <p style="text-align: center;"><a class="el-button el-button--primary el-button--small el-dropdown-selfdefine" :href="all_module_config_url">Configure Modules</a></p>
         </div>
 
@@ -62,7 +62,10 @@
         </el-table>
 
         <br />
-        <p v-show="!integrations.length" style="text-align: right;"><a style="text-decoration: none;" :href="all_module_config_url">Check Global Integration Settings</a></p>
+        <p v-show="!integrations.length" style="text-align: right;">
+            <a :href="all_module_config_url">Check Global Integration Settings</a>
+            <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">View Documentations</a>
+        </p>
 
     </div>
 </template>

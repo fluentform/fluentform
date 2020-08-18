@@ -7,15 +7,22 @@
 
             <!--Save settings-->
             <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <el-button v-if="selected" @click="discard"
-                           class="pull-right" icon="el-icon-arrow-left" size="small"
-                >Back
-                </el-button>
-
-                <el-button v-else @click="add" type="primary"
-                           size="small" icon="plus"
-                >Add Notification
-                </el-button>
+                <template v-if="selected">
+                    <el-button @click="discard"
+                               icon="el-icon-arrow-left"
+                               size="small"
+                    >
+                        Back
+                    </el-button>
+                    <video-doc route_id="conditionalEmailSettings"></video-doc>
+                </template>
+                <template v-else>
+                    <el-button @click="add" type="primary"
+                               size="small" icon="el-icon-plus"
+                    >Add Notification
+                    </el-button>
+                    <video-doc route_id="formEmailSettings"></video-doc>
+                </template>
             </el-col>
         </el-row>
 
@@ -142,7 +149,8 @@
             </template>
 
             <div class="conditional-items" v-else-if="selected.value.sendTo.type == 'routing'">
-                <routing-filter-fields :fields="inputs" :routings="selected.value.sendTo.routing"></routing-filter-fields>
+                <routing-filter-fields :fields="inputs"
+                                       :routings="selected.value.sendTo.routing"></routing-filter-fields>
                 <error-view field="sendTo.routing" :errors="errors"></error-view>
             </div>
 
@@ -203,7 +211,7 @@
 
                 <el-checkbox-group v-model="selected.value.attachments">
                     <el-checkbox v-for="attachmentField in attachmentFields" :key="attachmentField.attributes.name"
-                                 :label="attachmentField.attributes.name">{{attachmentField.admin_label}}
+                                 :label="attachmentField.attributes.name">{{ attachmentField.admin_label }}
                     </el-checkbox>
                 </el-checkbox-group>
 
@@ -226,7 +234,8 @@
                 </template>
 
                 <el-checkbox-group v-model="selected.value.pdf_attachments">
-                    <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{feed.label}}</el-checkbox>
+                    <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{ feed.label }}
+                    </el-checkbox>
                 </el-checkbox-group>
 
                 <p v-if="selected.value.pdf_attachments && selected.value.pdf_attachments.length">You should use SMTP so
@@ -381,7 +390,7 @@
                     size="medium"
                     type="success"
                     icon="el-icon-success">
-                    {{loading ? 'Saving' : 'Save' }} Notification
+                    {{ loading ? 'Saving' : 'Save' }} Notification
                 </el-button>
             </div>
 
@@ -390,305 +399,307 @@
 </template>
 
 <script type="text/babel">
-    import remove from '../confirmRemove.vue';
-    import inputPopover from '../input-popover.vue';
-    import wpEditor from '../../../common/_wp_editor';
-    import FilterFields from './Includes/FilterFields.vue';
-    import RoutingFilterFields from './Includes/RoutingFilterFields';
-    import ErrorView from '../../../common/errorView.vue';
+import remove from '../confirmRemove.vue';
+import inputPopover from '../input-popover.vue';
+import wpEditor from '../../../common/_wp_editor';
+import FilterFields from './Includes/FilterFields.vue';
+import RoutingFilterFields from './Includes/RoutingFilterFields';
+import ErrorView from '../../../common/errorView.vue';
+import VideoDoc from '@/common/VideoInstruction.vue';
 
-    export default {
-        name: 'EmailNotifications',
-        props: ['form_id', 'inputs', 'has_pro', 'has_pdf', 'editorShortcodes'],
-        components: {
-            remove,
-            inputPopover,
-            FilterFields,
-            ErrorView,
-            'wp_editor': wpEditor,
-            RoutingFilterFields
-        },
-        data() {
-            return {
-                loading: true,
-                selected: null,
-                selectedIndex: null,
-                notifications: [],
-                pdf_feeds: [],
-                mock: {
-                    value: {
-                        name: 'New Notification',
-                        sendTo: {
-                            type: 'email',
-                            email: null,
-                            field: null,
-                            routing: [
-                                {
-                                    input_value: '',
-                                    field: null,
-                                    operator: '=',
-                                    value: null
-                                }
-                            ],
-                        },
-                        fromName: '',
-                        fromEmail: '',
-                        replyTo: '',
-                        bcc: '',
-                        subject: '',
-                        message: '',
-                        conditionals: {
-                            status: false,
-                            type: 'all',
-                            conditions: [
-                                {
-                                    field: null,
-                                    operator: '=',
-                                    value: null
-                                }
-                            ]
-                        },
-                        enabled: true,
-                        pdf_attachments: [],
-                        attachments: []
-                    }
-                },
-                errors: new Errors,
-                // emailShortcodes: [],
-                activeNotificationCollapse: ''
-            }
-        },
-        computed: {
-            emailFields() {
-                return _ff.filter(this.inputs, (input) => {
-                    return input.attributes.type === 'email';
-                });
-            },
-
-            attachmentFields() {
-                return _ff.filter(this.inputs, (input) => {
-                    return input.attributes && input.attributes.type === 'file';
-                });
-            },
-
-            emailShortcodes() {
-                const inputEmails = {
-                    title: 'Input Emails',
-                    shortcodes: {}
-                };
-                _ff.each(this.inputs, (input, key) => {
-                    const code = `{inputs.${key}}`;
-                    if (input.attributes.type === 'email') {
-                        inputEmails.shortcodes[code] = input.admin_label;
-                    }
-                });
-
-                return [inputEmails];
-            },
-
-            fromEmailShortcodes() {
-                const freshCopy = _ff.cloneDeep(this.emailShortcodes);
-                freshCopy[0].shortcodes = {
-                    '{admin_email}': 'Admin Email',
-                    ...freshCopy[0].shortcodes
-                };
-                return freshCopy;
-            },
-            emailBodyeditorShortcodes() {
-                const freshCopy = _ff.cloneDeep(this.editorShortcodes);
-                freshCopy[0].shortcodes = {
-                    ...freshCopy[0].shortcodes,
-                    '{all_data}': 'All Data',
-                };
-                return freshCopy;
-            }
-        },
-        methods: {
-            add() {
-                this.selectedIndex = this.notifications.length;
-                this.selected = _ff.cloneDeep(this.mock);
-            },
-            clone(index) {
-                let freshCopy = _ff.cloneDeep(this.notifications[index]);
-
-                freshCopy.value.name = null;
-                freshCopy.id = null;
-
-                if (!freshCopy.value.conditionals
-                    || !freshCopy.value.conditionals.conditions
-                    || !freshCopy.value.conditionals.conditions.length
-                ) {
-                    freshCopy.value.conditionals = this.mock.value.conditionals;
+export default {
+    name: 'EmailNotifications',
+    props: ['form_id', 'inputs', 'has_pro', 'has_pdf', 'editorShortcodes'],
+    components: {
+        remove,
+        inputPopover,
+        FilterFields,
+        ErrorView,
+        'wp_editor': wpEditor,
+        RoutingFilterFields,
+        VideoDoc
+    },
+    data() {
+        return {
+            loading: true,
+            selected: null,
+            selectedIndex: null,
+            notifications: [],
+            pdf_feeds: [],
+            mock: {
+                value: {
+                    name: 'New Notification',
+                    sendTo: {
+                        type: 'email',
+                        email: null,
+                        field: null,
+                        routing: [
+                            {
+                                input_value: '',
+                                field: null,
+                                operator: '=',
+                                value: null
+                            }
+                        ],
+                    },
+                    fromName: '',
+                    fromEmail: '',
+                    replyTo: '',
+                    bcc: '',
+                    subject: '',
+                    message: '',
+                    conditionals: {
+                        status: false,
+                        type: 'all',
+                        conditions: [
+                            {
+                                field: null,
+                                operator: '=',
+                                value: null
+                            }
+                        ]
+                    },
+                    enabled: true,
+                    pdf_attachments: [],
+                    attachments: []
                 }
-
-                if (!freshCopy.value.pdf_attachments) {
-                    freshCopy.value.pdf_attachments = [];
-                }
-
-                if (!freshCopy.value.attachments) {
-                    freshCopy.value.attachments = [];
-                }
-
-                this.selected = freshCopy;
-                this.selectedIndex = index + 1;
             },
-            edit(index) {
-                this.selectedIndex = index;
-
-                let notification = this.notifications[index];
-
-                if(!notification.name || !notification.subject || !notification.sendTo) {
-                    this.selected = _ff.cloneDeep(this.mock);
-                    return;
-                }
-
-                if (!notification.value.attachments) {
-                    notification.value.attachments = [];
-                }
-
-                if (!notification.value.pdf_attachments) {
-                    notification.value.pdf_attachments = [];
-                }
-
-                this.selected = _ff.cloneDeep(notification);
-            },
-            discard() {
-                this.selected = null;
-                this.selectedIndex = null;
-                this.errors.clear();
-            },
-            handleActive(index) {
-                let notification = this.notifications[index];
-
-                let id = notification.id;
-
-                delete (notification.id);
-
-                let data = {
-                    form_id: this.form_id,
-                    meta_key: 'notifications',
-                    value: JSON.stringify(notification.value),
-                    id
-                };
-
-                this.$ajax.post('saveFormSettings', data)
-                    .done(response => {
-                        notification.id = response.data.id;
-
-                        let handle = notification.value.enabled ? 'enabled' : 'disabled';
-
-                        this.$notify.success({
-                            title: 'Success',
-                            message: 'Successfully ' + handle + ' the notification.',
-                            offset: 30
-                        });
-                    })
-                    .fail(e => {
-                        notification.id = id;
-                    });
-            },
-            remove(index, id) {
-                this.$ajax.delete('removeFormSettings', {id, form_id: this.form_id})
-                    .done(response => {
-                        this.notifications.splice(index, 1);
-                        this.$notify.success({
-                            title: 'Success',
-                            message: 'Successfully removed the notification.',
-                            offset: 30
-                        });
-                    })
-                    .fail(e => {
-                    });
-            },
-            fetchNotifications() {
-                let data = {
-                    form_id: this.form_id,
-                    meta_key: 'notifications',
-                    is_multiple: true
-                };
-
-                this.$ajax.get('getFormSettings', data)
-                    .then(response => {
-                        this.notifications = response.data.result;
-                    })
-                    .fail(e => {
-                    })
-                    .always(_ => {
-                        this.loading = false;
-                    });
-            },
-            fetchEmailTemplates() {
-                jQuery.get(window.ajaxurl, {
-                    action: 'fluentform_pdf_admin_ajax_actions',
-                    form_id: window.FluentFormApp.form_id,
-                    route: 'feed_lists'
-                })
-                    .then(response => {
-                        this.pdf_feeds = response.data.pdf_feeds;
-                    })
-                    .fail(error => console.log(error));
-            },
-            store() {
-                this.loading = true;
-                this.errors.clear();
-
-                let id = this.selected.id;
-
-                delete (this.selected.id);
-
-                let data = {
-                    form_id: this.form_id,
-                    meta_key: 'notifications',
-                    value: JSON.stringify(this.selected.value),
-                    id
-                };
-
-                this.$ajax.post('saveFormSettings', data)
-                    .done(response => {
-                        this.selected.id = response.data.id;
-
-                        this.notifications.splice(this.selectedIndex, 1, this.selected);
-
-                        this.$notify.success({
-                            title: 'Success',
-                            message: 'Successfully saved the notification.',
-                            offset: 30
-                        });
-
-                        this.selected = null;
-
-                        this.selectedIndex = null;
-                    })
-                    .fail(errors => {
-                        this.errors.record(errors.responseJSON.data.errors);
-
-                        this.selected.id = id;
-                    })
-                    .always(_ => this.loading = false);
-            },
-        },
-
-        mounted() {
-            // Back to all notifications by clicking on menu item
-            jQuery('[data-hash="email_notifications"]').on('click', this.discard);
-            jQuery('head title').text('Email Notifications - Fluent Forms');
-        },
-        beforeMount() {
-            this.fetchNotifications();
-            this.has_pdf && this.fetchEmailTemplates();
-        },
-        beforeCreate() {
-            ffSettingsEvents.$emit('change-title', 'Email Notification Settings');
+            errors: new Errors,
+            // emailShortcodes: [],
+            activeNotificationCollapse: ''
         }
-    };
+    },
+    computed: {
+        emailFields() {
+            return _ff.filter(this.inputs, (input) => {
+                return input.attributes.type === 'email';
+            });
+        },
+
+        attachmentFields() {
+            return _ff.filter(this.inputs, (input) => {
+                return input.attributes && input.attributes.type === 'file';
+            });
+        },
+
+        emailShortcodes() {
+            const inputEmails = {
+                title: 'Input Emails',
+                shortcodes: {}
+            };
+            _ff.each(this.inputs, (input, key) => {
+                const code = `{inputs.${key}}`;
+                if (input.attributes.type === 'email') {
+                    inputEmails.shortcodes[code] = input.admin_label;
+                }
+            });
+
+            return [inputEmails];
+        },
+
+        fromEmailShortcodes() {
+            const freshCopy = _ff.cloneDeep(this.emailShortcodes);
+            freshCopy[0].shortcodes = {
+                '{admin_email}': 'Admin Email',
+                ...freshCopy[0].shortcodes
+            };
+            return freshCopy;
+        },
+        emailBodyeditorShortcodes() {
+            const freshCopy = _ff.cloneDeep(this.editorShortcodes);
+            freshCopy[0].shortcodes = {
+                ...freshCopy[0].shortcodes,
+                '{all_data}': 'All Data',
+            };
+            return freshCopy;
+        }
+    },
+    methods: {
+        add() {
+            this.selectedIndex = this.notifications.length;
+            this.selected = _ff.cloneDeep(this.mock);
+        },
+        clone(index) {
+            let freshCopy = _ff.cloneDeep(this.notifications[index]);
+
+            freshCopy.value.name = null;
+            freshCopy.id = null;
+
+            if (!freshCopy.value.conditionals
+                || !freshCopy.value.conditionals.conditions
+                || !freshCopy.value.conditionals.conditions.length
+            ) {
+                freshCopy.value.conditionals = this.mock.value.conditionals;
+            }
+
+            if (!freshCopy.value.pdf_attachments) {
+                freshCopy.value.pdf_attachments = [];
+            }
+
+            if (!freshCopy.value.attachments) {
+                freshCopy.value.attachments = [];
+            }
+
+            this.selected = freshCopy;
+            this.selectedIndex = index + 1;
+        },
+        edit(index) {
+            this.selectedIndex = index;
+
+            let notification = this.notifications[index];
+
+            if (!notification.name || !notification.subject || !notification.sendTo) {
+                this.selected = _ff.cloneDeep(this.mock);
+                return;
+            }
+
+            if (!notification.value.attachments) {
+                notification.value.attachments = [];
+            }
+
+            if (!notification.value.pdf_attachments) {
+                notification.value.pdf_attachments = [];
+            }
+
+            this.selected = _ff.cloneDeep(notification);
+        },
+        discard() {
+            this.selected = null;
+            this.selectedIndex = null;
+            this.errors.clear();
+        },
+        handleActive(index) {
+            let notification = this.notifications[index];
+
+            let id = notification.id;
+
+            delete (notification.id);
+
+            let data = {
+                form_id: this.form_id,
+                meta_key: 'notifications',
+                value: JSON.stringify(notification.value),
+                id
+            };
+
+            this.$ajax.post('saveFormSettings', data)
+                .done(response => {
+                    notification.id = response.data.id;
+
+                    let handle = notification.value.enabled ? 'enabled' : 'disabled';
+
+                    this.$notify.success({
+                        title: 'Success',
+                        message: 'Successfully ' + handle + ' the notification.',
+                        offset: 30
+                    });
+                })
+                .fail(e => {
+                    notification.id = id;
+                });
+        },
+        remove(index, id) {
+            this.$ajax.delete('removeFormSettings', {id, form_id: this.form_id})
+                .done(response => {
+                    this.notifications.splice(index, 1);
+                    this.$notify.success({
+                        title: 'Success',
+                        message: 'Successfully removed the notification.',
+                        offset: 30
+                    });
+                })
+                .fail(e => {
+                });
+        },
+        fetchNotifications() {
+            let data = {
+                form_id: this.form_id,
+                meta_key: 'notifications',
+                is_multiple: true
+            };
+
+            this.$ajax.get('getFormSettings', data)
+                .then(response => {
+                    this.notifications = response.data.result;
+                })
+                .fail(e => {
+                })
+                .always(_ => {
+                    this.loading = false;
+                });
+        },
+        fetchEmailTemplates() {
+            jQuery.get(window.ajaxurl, {
+                action: 'fluentform_pdf_admin_ajax_actions',
+                form_id: window.FluentFormApp.form_id,
+                route: 'feed_lists'
+            })
+                .then(response => {
+                    this.pdf_feeds = response.data.pdf_feeds;
+                })
+                .fail(error => console.log(error));
+        },
+        store() {
+            this.loading = true;
+            this.errors.clear();
+
+            let id = this.selected.id;
+
+            delete (this.selected.id);
+
+            let data = {
+                form_id: this.form_id,
+                meta_key: 'notifications',
+                value: JSON.stringify(this.selected.value),
+                id
+            };
+
+            this.$ajax.post('saveFormSettings', data)
+                .done(response => {
+                    this.selected.id = response.data.id;
+
+                    this.notifications.splice(this.selectedIndex, 1, this.selected);
+
+                    this.$notify.success({
+                        title: 'Success',
+                        message: 'Successfully saved the notification.',
+                        offset: 30
+                    });
+
+                    this.selected = null;
+
+                    this.selectedIndex = null;
+                })
+                .fail(errors => {
+                    this.errors.record(errors.responseJSON.data.errors);
+
+                    this.selected.id = id;
+                })
+                .always(_ => this.loading = false);
+        },
+    },
+
+    mounted() {
+        // Back to all notifications by clicking on menu item
+        jQuery('[data-hash="email_notifications"]').on('click', this.discard);
+        jQuery('head title').text('Email Notifications - Fluent Forms');
+    },
+    beforeMount() {
+        this.fetchNotifications();
+        this.has_pdf && this.fetchEmailTemplates();
+    },
+    beforeCreate() {
+        ffSettingsEvents.$emit('change-title', 'Email Notification Settings');
+    }
+};
 </script>
 
 <style lang="scss">
-    .inline-form-field {
-        margin-top: 15px;
-    }
+.inline-form-field {
+    margin-top: 15px;
+}
 
-    .el-collapse-item {
-        margin-bottom: 1px;
-    }
+.el-collapse-item {
+    margin-bottom: 1px;
+}
 </style>
