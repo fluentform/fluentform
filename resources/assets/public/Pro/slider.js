@@ -5,6 +5,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
      */
     var activeStep = 0;
 
+    var wrapperWidth = '';
+
     fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
     
     fluentFormVars.enable_step_data_persistency = $theForm.find(
@@ -167,7 +169,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         const totalSteps = formSteps.length;
         const stepTitles = $theForm.find('.ff-step-titles li');
 
-        stepsWrapper.css({width: (100 * totalSteps) + '%'});
+        wrapperWidth = (100 * totalSteps) + '%';
+
+        stepsWrapper.css({width: wrapperWidth});
         formSteps.css({width: (100 / totalSteps) + '%'});
 
         $(formSteps[activeStep]).addClass('active');
@@ -340,7 +344,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             };
         }
 
-        stepsWrapper.animate(inlineCssObj, animDuration, () => isScrollTop && scrollTop());
+        stepsWrapper.animate(inlineCssObj, animDuration, () => function () {
+            isScrollTop && scrollTop();
+            stepsWrapper.css({width: wrapperWidth});
+        });
+
+
 
         // Fire ajax request to persist the step state/data
         if (fluentFormVars.enable_step_data_persistency == 'yes' && !isPopulatingStepData) {

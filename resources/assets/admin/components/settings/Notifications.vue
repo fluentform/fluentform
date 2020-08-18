@@ -537,6 +537,11 @@
 
                 let notification = this.notifications[index];
 
+                if(!notification.name || !notification.subject || !notification.sendTo) {
+                    this.selected = _ff.cloneDeep(this.mock);
+                    return;
+                }
+
                 if (!notification.value.attachments) {
                     notification.value.attachments = [];
                 }

@@ -257,10 +257,6 @@ class EmailNotification
             'Content-Type: text/html; charset=utf-8'
         ];
 
-        if ($isSendAsPlain) {
-            $headers = [];
-        }
-
         $fromEmail = $notification['fromEmail'];
 
         if (!is_email($fromEmail)) {

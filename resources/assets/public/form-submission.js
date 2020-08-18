@@ -683,7 +683,7 @@ jQuery(document).ready(function () {
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
-                    $theForm.data('is_initialized', 'yes');
+                    $theForm.attr('data-is_initialized', 'yes');
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
                         const content = $(this).data('content');
@@ -1003,7 +1003,7 @@ jQuery(document).ready(function () {
 
             $(document).on('reInitExtras', formItem,  function () {
                 var $theForm = $(formItem);
-                if( $theForm.data('is_initialized') == 'yes') {
+                if( $theForm.attr('data-is_initialized') == 'yes' ) {
                     var formInstance = fluentFormApp($theForm);
                     formInstance.reinitExtras();
                 } else {

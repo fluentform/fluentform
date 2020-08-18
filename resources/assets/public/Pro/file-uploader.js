@@ -4,6 +4,11 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
      * @return {void}
      */
     var initUploader = function () {
+
+        if(!jQuery.fn.fileupload) {
+            return;
+        }
+
         $form.find('input[type="file"]').each(function (key, el) {
             var element = $(this),
                 uploadedList;
