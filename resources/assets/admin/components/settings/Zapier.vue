@@ -13,7 +13,7 @@
                 </el-button>
 
                 <el-button v-else @click="add" type="primary"
-                           size="small" icon="plus"
+                           size="small" icon="el-icon-plus"
                 >Add Webhook
                 </el-button>
             </el-col>

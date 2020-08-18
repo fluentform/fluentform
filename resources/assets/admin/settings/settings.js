@@ -22,6 +22,7 @@ import {
     Option,
     OptionGroup,
     Switch,
+    Dialog,
     Loading,
     Notification,
     Checkbox,
@@ -50,6 +51,7 @@ Vue.use(InputNumber);
 Vue.use(ColorPicker);
 Vue.use(RadioGroup);
 Vue.use(Radio);
+Vue.use(Dialog);
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 

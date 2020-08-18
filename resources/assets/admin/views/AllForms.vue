@@ -167,6 +167,12 @@
                             </el-button>
                         </div>
                     </div>
+                  <div class="fluent_form_intro_video">
+                    <h2>Check the video intro</h2>
+                    <div class="videoWrapper">
+                      <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  </div>
                 </div>
             </template>
         </div>
@@ -412,10 +418,10 @@
     }
 
     .fluent_form_intro {
-        max-width: 600px;
+        max-width: 700px;
         margin: 0 auto;
         background: white;
-        padding: 20px 30px;
+        padding: 20px 30px 30px;
     }
 
     .ff_forms_table .el-loading-mask {
@@ -425,4 +431,11 @@
     .copy {
         cursor: context-menu;
     }
+    .fluent_form_intro_video {
+      max-width: 700px;
+      margin: 20px auto;
+      text-align: center;
+      padding: 20px 0 0;
+    }
+
 </style>

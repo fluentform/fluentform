@@ -23,6 +23,7 @@
                     >Add Confirmation
                     </el-button>
                 </template>
+                <video-doc btn_text="Learn" route_id="otherConfirmationSettings" />
             </el-col>
         </el-row>
 
@@ -127,13 +128,15 @@
     </div>
 </template>
 
-<script>
+<script type="text/babel">
     import Remove from '../confirmRemove.vue'
     import InputPopover from '../input-popover.vue'
     import FilterFields from './Includes/FilterFields'
     import ErrorView from '../../../common/errorView'
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import ComingSoon from '../modals/ItemDisabled.vue'
+    import VideoDoc from '@/common/VideoInstruction.vue';
+
 
     export default {
         name: 'Confirmations',
@@ -156,7 +159,8 @@
             FilterFields,
             ErrorView,
             AddConfirmation,
-            ComingSoon
+            ComingSoon,
+            VideoDoc
         },
         data() {
             return {

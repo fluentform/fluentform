@@ -1,21 +1,28 @@
 <template>
     <div>
         <el-row class="setting_header">
-            <el-col :md="24">
-                <h2>{{settings.menu_title}}</h2>
+            <el-col :md="18">
+                <h2>{{ settings.menu_title }}</h2>
                 <p class="integration_description" v-html="settings.menu_description"></p>
+            </el-col>
+            <el-col :md="6">
+                <video-doc class="pull-right" :route_id="settings_key" btn_text="Video Tutorial" />
             </el-col>
         </el-row>
 
         <div v-if="settings.hide_on_valid && integration.status" class="integration_success_state">
             <div v-if="settings.logo" class="integration_logo">
-                <img style="max-height:50px;" :src="settings.logo" />
-                <br /> <br />
+                <img style="max-height:50px;" :src="settings.logo"/>
+                <br/> <br/>
             </div>
 
             <p v-html="settings.discard_settings.section_description"></p>
-            <el-button @click="disconnect(settings.discard_settings.data)" type="danger" size="small">{{settings.discard_settings.button_text}}</el-button>
-            <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="success" size="small">Verify Connection Again</el-button>
+            <el-button @click="disconnect(settings.discard_settings.data)" type="danger" size="small">
+                {{ settings.discard_settings.button_text }}
+            </el-button>
+            <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="success"
+                       size="small">Verify Connection Again
+            </el-button>
 
 
         </div>
@@ -28,7 +35,7 @@
                 <!--Site key-->
                 <el-form-item v-for="(field,fieldKey) in settings.fields" :key="fieldKey">
                     <template slot="label">
-                        {{field.label}}
+                        {{ field.label }}
                         <el-tooltip v-if="field.label_tips" class="item" placement="bottom-start" effect="light">
                             <div slot="content">
                                 <div v-html="field.label_tips">
@@ -48,8 +55,8 @@
                         </el-select>
                     </template>
                     <template v-if="field.type == 'link'">
-                        <a :target="field.target" :class="field.btn_class" :href="field.link">{{field.link_text}}</a>
-                        <p>{{field.tips}}</p>
+                        <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
+                        <p>{{ field.tips }}</p>
                     </template>
                     <template v-else>
                         <el-input :placeholder="field.placeholder" :type="field.type"
@@ -60,96 +67,101 @@
 
                 <el-form-item>
                     <el-button v-loading="saving" type="success" icon="el-icon-success" size="medium" @click="save">
-                        {{settings.save_button_text}}
+                        {{ settings.save_button_text }}
                     </el-button>
                 </el-form-item>
             </el-form>
 
             <div v-if="integration.status">
-                <p><i class="el-icon-success"></i> {{settings.valid_message}}</p>
+                <p><i class="el-icon-success"></i> {{ settings.valid_message }}</p>
             </div>
             <div v-else>
-                <p><i class="el-icon-error"></i> {{settings.invalid_message}}</p>
+                <p><i class="el-icon-error"></i> {{ settings.invalid_message }}</p>
             </div>
         </div>
 
-        <p v-if="error_message">{{error_message}}</p>
+        <p v-if="error_message">{{ error_message }}</p>
     </div>
 </template>
 
-<script>
-    export default {
-        name: "generalIntegration",
-        props: ['app', 'settings_key'],
-        data() {
-            return {
-                integration: {},
-                loading: false,
-                saving: false,
-                settings: {},
-                error_message: ''
-            }
-        },
-        watch: {
-            settings_key() {
-                this.integration = {};
-                this.settings = {};
-                this.getIntegrationSettings();
-            }
-        },
-        methods: {
-            save() {
-                this.saving = true;
-                this.$ajax.$post('global_integration_settings', {
-                    settings_key: this.settings_key,
-                    integration: this.integration
-                })
-                    .then(response => {
-                        this.$notify.success({
-                            message: response.data.message,
-                            offset: 30
-                        });
-                        if(response.data.redirect_url) {
-                            window.location.href = response.data.redirect_url;
-                            return;
-                        }
+<script type="text/babel">
+import VideoDoc from '@/common/VideoInstruction.vue';
 
-                        this.integration.status = response.data.status;
-                    })
-                    .fail(error => {
-                        this.integration.status = false;
-                        this.$notify.error({
-                            message: error.responseJSON.data.message,
-                            offset: 30
-                        });
-                    })
-                    .always(() => {
-                        this.saving = false;
-                    });
-            },
-            getIntegrationSettings() {
-                this.loading = true;
-                this.$ajax.$get('global_integration_settings', {
-                    settings_key: this.settings_key
-                })
-                    .then(response => {
-                        this.integration = response.data.integration;
-                        this.settings = response.data.settings;
-                    })
-                    .fail(error => {
-                        this.error_message = error.responseJSON.data.message;
-                    })
-                    .always(() => {
-                        this.loading = false;
-                    });
-            },
-            disconnect(data) {
-                this.integration = data;
-                this.save();
-            }
-        },
-        mounted() {
+export default {
+    name: "generalIntegration",
+    props: ['app', 'settings_key'],
+    components: {
+        VideoDoc
+    },
+    data() {
+        return {
+            integration: {},
+            loading: false,
+            saving: false,
+            settings: {},
+            error_message: ''
+        }
+    },
+    watch: {
+        settings_key() {
+            this.integration = {};
+            this.settings = {};
             this.getIntegrationSettings();
         }
+    },
+    methods: {
+        save() {
+            this.saving = true;
+            this.$ajax.$post('global_integration_settings', {
+                settings_key: this.settings_key,
+                integration: this.integration
+            })
+                .then(response => {
+                    this.$notify.success({
+                        message: response.data.message,
+                        offset: 30
+                    });
+                    if (response.data.redirect_url) {
+                        window.location.href = response.data.redirect_url;
+                        return;
+                    }
+
+                    this.integration.status = response.data.status;
+                })
+                .fail(error => {
+                    this.integration.status = false;
+                    this.$notify.error({
+                        message: error.responseJSON.data.message,
+                        offset: 30
+                    });
+                })
+                .always(() => {
+                    this.saving = false;
+                });
+        },
+        getIntegrationSettings() {
+            this.loading = true;
+            this.$ajax.$get('global_integration_settings', {
+                settings_key: this.settings_key
+            })
+                .then(response => {
+                    this.integration = response.data.integration;
+                    this.settings = response.data.settings;
+                })
+                .fail(error => {
+                    this.error_message = error.responseJSON.data.message;
+                })
+                .always(() => {
+                    this.loading = false;
+                });
+        },
+        disconnect(data) {
+            this.integration = data;
+            this.save();
+        }
+    },
+    mounted() {
+        this.getIntegrationSettings();
     }
+}
 </script>

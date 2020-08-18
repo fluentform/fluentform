@@ -337,3 +337,27 @@ label.el-radio, label.el-checkbox {
     box-sizing: border-box;
   }
 }
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+.ff-left-spaced {
+  margin-left: 10px !important;
+}
+
+.doc_video_wrapper {
+  text-align: center;
+  background: white;
+  padding: 20px 0 0 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
