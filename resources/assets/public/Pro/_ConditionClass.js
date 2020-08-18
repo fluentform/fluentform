@@ -20,12 +20,13 @@ class ConditionApp {
             let item = this.fields[key];
             this.field_statues[key] = this.evaluate(item, key);
         }
+        console.log(this.field_statues);
         return this.field_statues;
     }
 
     evaluate(item, key) {
         let mainResult = false;
-        if(item.status) {
+        if (item.status) {
             this.counter++;
             let type = item.type;
             let result = 1;
@@ -35,7 +36,7 @@ class ConditionApp {
             item.conditions.forEach(condition => {
                 let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
 
-                if(evalValue && this.fields[condition.field] && condition.field != key) {
+                if (evalValue && this.fields[condition.field] && condition.field != key) {
                     evalValue = this.evaluate(this.fields[condition.field], condition.field);
                 }
 
@@ -52,7 +53,7 @@ class ConditionApp {
             });
             mainResult = result == 1;
         }
-        if(item.container_condition) {
+        if (item.container_condition) {
             mainResult = this.evaluate(item.container_condition);
         }
         return mainResult;
@@ -61,12 +62,12 @@ class ConditionApp {
     getItemEvaluateValue(item, val) {
         if (item.operator == '=') {
             // this value can be array or string
-            if(typeof val == 'object') {
+            if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) != -1;
             }
             return val == item.value;
         } else if (item.operator == '!=') {
-            if(typeof val == 'object') {
+            if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) == -1;
             }
             return val != item.value;
@@ -83,7 +84,7 @@ class ConditionApp {
         } else if (item.operator == 'endsWith') {
             return val.endsWith(item.value);
         } else if (item.operator == 'contains') {
-            return val !== null &&  val.indexOf(item.value) != -1;
+            return val !== null && val.indexOf(item.value) != -1;
         } else if (item.operator == 'doNotContains') {
             return val !== null && val.indexOf(item.value) == -1;
         }

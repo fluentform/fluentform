@@ -67,8 +67,9 @@ class Text extends BaseComponent
             } else if(ArrayHelper::get($data, 'attributes.type') == 'number') {
                 $data['attributes']['step'] =  'any';
             }
-            
-            if($min = ArrayHelper::get($data, 'settings.validation_rules.min.value')) {
+
+            $min = ArrayHelper::get($data, 'settings.validation_rules.min.value');
+            if($min || $min == 0) {
                 $data['attributes']['min'] =  $min;
             }
 

@@ -62,6 +62,11 @@ class FormSettings
 
         foreach ($result as $item) {
             $item->value = json_decode($item->value, true);
+            if($metaKey == 'notifications') {
+                if(!$item->value) {
+                    $item->value = ['name' => ''];
+                }
+            }
             if (isset($item->value['layout']) && !isset($item->value['layout']['asteriskPlacement'])) {
                 $item->value['layout']['asteriskPlacement'] = 'asterisk-right';
             }
