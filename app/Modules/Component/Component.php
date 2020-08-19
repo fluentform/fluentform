@@ -858,6 +858,7 @@ class Component
                     if (ffForms.length) {
                         jQuery.each(ffForms, function (index, ffForm) {
                             jQuery(ffForm).trigger('reInitExtras');
+                            jQuery(document).trigger('ff_reinit', [ffForm]);
                         });
                     }
                 });
