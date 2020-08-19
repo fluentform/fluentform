@@ -20,7 +20,6 @@ class ConditionApp {
             let item = this.fields[key];
             this.field_statues[key] = this.evaluate(item, key);
         }
-        console.log(this.field_statues);
         return this.field_statues;
     }
 
@@ -53,6 +52,11 @@ class ConditionApp {
             });
             mainResult = result == 1;
         }
+
+        if(item.status && item.conditions.length && !mainResult) {
+            return mainResult;
+        }
+
         if (item.container_condition) {
             mainResult = this.evaluate(item.container_condition);
         }

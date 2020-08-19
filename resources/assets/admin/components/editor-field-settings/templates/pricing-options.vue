@@ -46,6 +46,10 @@
                         v-if="hasImageSupport"
                         v-model="editItem.settings.enable_image_input"
                     >Photo</el-checkbox>
+                    <el-checkbox
+                        v-if="hasImageSupport"
+                        v-model="editItem.settings.enable_desc_input"
+                    >Description</el-checkbox>
                 </div>
                 <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text" />
             </div>
@@ -59,7 +63,7 @@
             >
                 <vddl-draggable
                     :moved="handleMoved"
-                    class="optionsToRender"
+                    class="optionsToRender ff_t"
                     v-for="(option, index) in editItem.settings.pricing_options"
                     :key="option.id"
                     :draggable="option"
@@ -67,7 +71,7 @@
                     :wrapper="editItem.settings.pricing_options"
                     effect-allowed="move"
                 >
-                    <vddl-nodrag class="nodrag">
+                    <vddl-nodrag class="nodrag ff_tr">
                         <div class="checkbox">
                             <input
                                 ref="defaultOptions"
@@ -102,7 +106,7 @@
                                 min="0"
                                 step="any"
                                 type="number"
-                                placeholder="value"
+                                placeholder="Price"
                                 v-model="option.value"
                             />
                         </div>
@@ -112,6 +116,9 @@
                             <i @click="decrease(index)" class="icon icon-minus-circle"></i>
                         </div>
                     </vddl-nodrag>
+                    <div v-if="editItem.settings.enable_desc_input" class="item_desc">
+                        <textarea placeholder="Item Short Description" v-model="option.desc" />
+                    </div>
                 </vddl-draggable>
             </vddl-list>
             <el-button
@@ -289,5 +296,9 @@
         span.el-checkbox__label {
             padding-left: 3px;
         }
+    }
+    .item_desc textarea {
+        margin-top: 5px;
+        width: 100%;
     }
 </style>

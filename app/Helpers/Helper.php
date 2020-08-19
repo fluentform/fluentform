@@ -150,21 +150,19 @@ class Helper
             ->where('form_id', $formId)
             ->first();
 
+        if (is_array($value) || is_object($value)) {
+            $value = json_encode($value);
+        }
+
         if (!$meta) {
             $insetid = wpFluent()->table('fluentform_form_meta')
                 ->insert([
                     'meta_key' => $metaKey,
                     'form_id'  => $formId,
-                    'value'    => json_encode($value)
+                    'value'    => $value
                 ]);
             return $insetid;
-
         } else {
-
-            if (is_array($value) || is_object($value)) {
-                $value = json_encode($value);
-            }
-
             wpFluent()->table('fluentform_form_meta')
                 ->where('id', $meta->id)
                 ->update([
