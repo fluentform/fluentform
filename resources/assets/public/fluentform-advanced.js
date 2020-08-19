@@ -6,14 +6,14 @@ import fileUploader from './Pro/file-uploader';
 import formSlider from './Pro/slider';
 import calculation from './Pro/calculations'
 (function ($) {
-    $(document).on('fluentform_init', function (e, formItem, form) {
-        let $theForm = $(formItem);
+    $(document).on('fluentform_init', function (e, $theForm, form) {
         const formInstanceSelector = $theForm.attr('data-form_instance');
 
         if (!form) {
             console.log('No Fluent form JS vars found!');
             return;
         }
+
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
@@ -41,16 +41,3 @@ import calculation from './Pro/calculations'
         });
     });
 })(jQuery);
-
-// Polyfill for startsWith and endsWith
-(function (sp) {
-    if (!sp.startsWith)
-        sp.startsWith = function (str) {
-            return !!(str && this) && !this.lastIndexOf(str, 0)
-        }
-    if (!sp.endsWith)
-        sp.endsWith = function (str) {
-            var offset = str && this ? this.length - str.length : -1
-            return offset >= 0 && this.lastIndexOf(str, offset) === offset
-        }
-})(String.prototype);

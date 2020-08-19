@@ -71,7 +71,7 @@ jQuery(document).ready(function () {
                 };
 
                 var getTheForm = function () {
-                    return $('body').find('form'+formSelector);
+                    return $('body').find('form' + formSelector);
                 };
 
                 var maybeInlineForm = function () {
@@ -88,7 +88,11 @@ jQuery(document).ready(function () {
                 var initMultiSelect = function () {
                     const multiSelects = $theForm.find('.ff_has_multi_select');
                     if (!multiSelects.length) {
-                       return;
+                        return;
+                    }
+
+                    if (!$.isFunction(window.Choices)) {
+                        return;
                     }
 
                     const choiceArgs = {
@@ -98,16 +102,15 @@ jQuery(document).ready(function () {
                         searchEnabled: true
                     };
 
-                    const choiceSettings = $.extend({}, choiceArgs, window.fluentFormVars.choice_js_vars);
+                    const choiceSettings = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
 
                     multiSelects.each((index, selectItem) => {
-                        const choiceInstance = new Choices(selectItem,choiceSettings);
+                        $(selectItem).data('choicesjs', new Choices(selectItem, choiceSettings));
                     });
 
                     $theForm.on('reset', function () {
                         multiSelects.val(null).trigger('change');
                     });
-
                 };
 
                 var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
@@ -143,10 +146,10 @@ jQuery(document).ready(function () {
                             maskStr = mask.mask;
 
                         let options = globalOptions;
-                        if(el.attr('data-mask-reverse')) {
+                        if (el.attr('data-mask-reverse')) {
                             options.reverse = true;
                         }
-                        if(el.attr('data-clear-if-not-match')) {
+                        if (el.attr('data-clear-if-not-match')) {
                             options.clearIfNotMatch = true;
                         }
                         el.mask(maskStr, options);
@@ -309,7 +312,7 @@ jQuery(document).ready(function () {
                                         .find('.error')
                                         .not(':empty:first')
                                         .closest('.fluentform-step');
-                                    
+
                                     if (step.length) {
                                         let goBackToStep = step.index();
                                         fireUpdateSlider(
@@ -385,6 +388,11 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var registerFormSubmissionHandler = function () {
+
+                    if ($theForm.attr('data-ff_reinit') == 'yes') {
+                        return;
+                    }
+
                     $(document).on('submit', formSelector, function (e) {
                         e.preventDefault();
                         submissionAjaxHandler($(this));
@@ -683,14 +691,14 @@ jQuery(document).ready(function () {
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
-                    $theForm.attr('data-is_initialized', 'yes');
+                    $theForm.data('is_initialized', 'yes');
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
                         const content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
-                        if(!$popContent.length) {
+                        if (!$popContent.length) {
                             $('<div/>', {
-                                class : 'ff-el-pop-content'
+                                class: 'ff-el-pop-content'
                             }).appendTo(document.body);
                             $popContent = $('.ff-el-pop-content');
                         }
@@ -705,16 +713,16 @@ jQuery(document).ready(function () {
 
                         let tipPosition = iconLeft - (contentWidth / 2) + 10;
 
-                        if((tipPosition + contentWidth) > formWidth) {
+                        if ((tipPosition + contentWidth) > formWidth) {
                             tipPosition = (formLeft + formWidth) / 2;
-                        } else if(tipPosition < formLeft) {
+                        } else if (tipPosition < formLeft) {
                             tipPosition = formLeft;
                         }
 
                         $popContent.css('top', $(this).offset().top - contentHeight - 5);
                         $popContent.css('left', tipPosition);
                     });
-                    $theForm.find('.ff-el-tooltip').on('mouseleave', function() {
+                    $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();
                     });
 
@@ -984,8 +992,7 @@ jQuery(document).ready(function () {
 
         var $allForms = $('.frm-fluent-form');
 
-        function initSingleForm(selector) {
-            var $theForm = $(selector);
+        function initSingleForm($theForm) {
             var formInstance = fluentFormApp($theForm);
             if (formInstance) {
                 formInstance.initFormHandlers();
@@ -998,19 +1005,20 @@ jQuery(document).ready(function () {
              * Current form
              * @type jQuery object
              */
-
-            initSingleForm(formItem);
-
-            $(document).on('reInitExtras', formItem,  function () {
-                var $theForm = $(formItem);
-                if( $theForm.attr('data-is_initialized') == 'yes' ) {
-                    var formInstance = fluentFormApp($theForm);
-                    formInstance.reinitExtras();
-                } else {
-                    initSingleForm(formItem);
-                }
-            });
+            initSingleForm($(formItem));
         });
+
+        $(document).on('ff_reinit', function (e, formItem) {
+            var $theForm = $(formItem);
+            $theForm.attr('data-ff_reinit', 'yes');
+            if ($theForm.data('is_initialized') == 'yes') {
+                const formInstance = fluentFormApp($theForm);
+                formInstance.reinitExtras();
+            } else {
+                initSingleForm($theForm);
+            }
+        });
+
     })(window.fluentFormVars, jQuery);
 
 });
