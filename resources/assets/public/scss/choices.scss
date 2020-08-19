@@ -163,6 +163,7 @@ $inner-border-color: #ced4da;
       margin: 0;
       box-shadow: none;
       border-radius: 0;
+      display: inline-block;
       &:focus {
         box-shadow: none;
         border: none;
