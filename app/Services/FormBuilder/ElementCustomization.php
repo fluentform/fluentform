@@ -142,7 +142,7 @@ $element_customization_settings = array(
     ),
     'pricing_options' => array(
         'template' => 'pricingOptions',
-        'label' => __('Payment Settings', 'fluentform'),
+        'label' => __('Payment Items', 'fluentform'),
         'help_text' => __('Set your product type and corresponding prices', 'fluentform'),
     ),
     'validation_rules' => array(

@@ -11,7 +11,7 @@
             <tbody>
             <tr v-for="(item, itemIndex) in settings[field.key]" :key="'item_'+itemIndex">
                 <td>
-                    <el-input placeholder="Field Label" v-model="item.label"></el-input>
+                    <el-input :placeholder="field.field_label || 'Field Label'" v-model="item.label"></el-input>
                 </td>
                 <td>
                     <field-general

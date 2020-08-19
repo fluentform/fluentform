@@ -3,6 +3,7 @@
 namespace FluentForm\App\Modules\Form;
 
 use FluentForm\App\Databases\Migrations\FormSubmissionDetails;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\Entries\Entries;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
@@ -327,6 +328,10 @@ class FormHandler
 
         $errors = apply_filters('fluentform_validation_errors', $errors, $this->formData, $this->form, $fields);
 
+        if(Helper::getFormMeta($this->form->id, '_has_user_registration') == 'yes') {
+            $errors = apply_filters('fluentform_validation_user_registration_errors', $errors, $this->formData, $this->form, $fields);
+        }
+
         if ($errors) {
             wp_send_json(['errors' => $errors], 422);
         }
@@ -435,7 +440,7 @@ class FormHandler
             wp_send_json([
                 'errors' => [
                     'restricted' => [
-                        __($isAllowed['message'], 'fluentform')
+                        $isAllowed['message']
                     ]
                 ]
             ], 422);

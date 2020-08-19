@@ -46,13 +46,17 @@ class GlobalNotificationManager
             if ($parsedValue && ArrayHelper::isTrue($parsedValue, 'enabled')) {
                 // Now check if conditions matched or not
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
-
                 if ($isConditionMatched) {
-                    $enabledFeeds[] = [
+                    $item = [
                         'id'       => $feed->id,
                         'meta_key' => $feed->meta_key,
                         'settings' => $parsedValue
                     ];
+                    if($feed->meta_key == 'user_registration_feeds') {
+                        array_unshift($enabledFeeds , $item);
+                    } else {
+                        $enabledFeeds[] = $item;
+                    }
                 }
             }
         }

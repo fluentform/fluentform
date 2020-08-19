@@ -54,7 +54,6 @@ const formConditional = function ($, $theForm, form) {
         };
 
         const hideShowElements = function (items) {
-            console.log(items);
             $.each(items, (itemName, status) => {
                 const el = getElement(itemName);
                 let $parent = el.closest('.has-conditions');
