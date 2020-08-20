@@ -96,6 +96,7 @@
                                 placeholder="Bulk Actions"
                                 id="bulk-action-selector-top"
                                 name="action"
+                                popper-class="el-big-items"
                                 v-model="bulkAction"
                                 size="small"
                         >
@@ -317,6 +318,7 @@
 
             <div class="tablenav bottom">
                 <div class="alignleft actions bulkactions">
+                    <email-resend v-if="entrySelections.length" btn_text="Bulk Resend Notifications" :entry_ids="selection_ids" :form_id="form_id"></email-resend>
                     <el-checkbox class="compact_input" v-model="isCompact">Compact View</el-checkbox>
                 </div>
                 <div class="pull-right">
@@ -339,12 +341,14 @@
     import remove from '../components/confirmRemove'
     import moment from 'moment';
     import each from 'lodash/each';
+    import EmailResend from './Helpers/_ResentEmailNotification'
 
     export default {
         name: 'FormEntries',
         props: ['form_id', 'has_pdf'],
         components: {
-            remove
+            remove,
+            EmailResend
         },
         watch: {
             search_string() {
@@ -455,6 +459,14 @@
                 });
 
                 return bulk_actions;
+            },
+            selection_ids() {
+                let selectedEntries = [];
+
+                this.entrySelections.forEach(function (element) {
+                    selectedEntries.push(element.id);
+                });
+                return selectedEntries;
             }
         },
         methods: {
@@ -521,7 +533,6 @@
                     });
             },
             handleTableSort(column) {
-                console.log(column);
                 if (column.order) {
                     if (column.prop === 'id') {
                         this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';

@@ -78,6 +78,7 @@
             </el-select>
         </el-form-item>
 
+        <!-- Email Summaries-->
         <div class="ff_email_notification_settings">
             <el-row class="setting_header">
                 <el-col :md="24">
