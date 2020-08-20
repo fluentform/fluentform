@@ -57,42 +57,43 @@
             </el-col>
         </el-row>
         <hr/>
-        <div v-loading.body="loading"
+        <div v-loading="loading"
              class="ff_forms_table"
              element-loading-text="Loading Forms..."
         >
-            <template v-if="!loading">
-                <div v-if="app.formsCount > 0"
+            <template v-if="app.formsCount > 0">
+                <div
                      class="entries_table">
                     <div class="tablenav top">
                         <el-table
-                                  :data="items"
-                                  :stripe="true"
-                                  @selection-change="handleSelectionChange">
+                            :data="items"
+                            :stripe="true"
+                            @sort-change="handleTableSort"
+                            @selection-change="handleSelectionChange">
 
-                            <el-table-column :label="$t('ID')" prop="id" width="60">
+                            <el-table-column sortable :label="$t('ID')" prop="id" width="60"></el-table-column>
 
-                            </el-table-column>
-
-                            <el-table-column :label="$t('Title')" prop="title" min-width="230">
+                            <el-table-column sortable :label="$t('Title')" prop="title" min-width="230">
                                 <template slot-scope="scope">
                                     <strong>{{ scope.row.title }}</strong>
                                     <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
                                     <div class="row-actions">
                                         <span class="ff_edit">
-                                            <a :href="scope.row.edit_url"> {{ $t( 'Edit' ) }}</a> |
+                                            <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a> |
                                         </span>
                                         <span class="ff_edit">
-                                            <a :href="scope.row.settings_url"> {{ $t( 'Settings' ) }}</a> |
+                                            <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a> |
                                         </span>
                                         <span class="ff_entries">
-                                         <a :href="scope.row.entries_url"> {{ $t( 'Entries' ) }}</a> |
+                                         <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a> |
                                     </span>
                                         <span class="ff_entries">
-                                         <a target="_blank" :href="scope.row.preview_url"> {{ $t( 'Preview' ) }}</a> |
+                                         <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
                                     </span>
                                         <span class="ff_duplicate">
-                                         <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{ $t( 'Duplicate' ) }}</a> |
+                                         <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
+                                                 $t('Duplicate')
+                                             }}</a> |
                                     </span>
                                         <span class="trash">
                                         <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
@@ -119,8 +120,10 @@
 
                             <el-table-column width="150" :label="$t('Entries')">
                                 <template slot-scope="scope">
-                                    <a :href="scope.row.entries_url"><span v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
-                                        scope.row.total_Submissions }}</a>
+                                    <a :href="scope.row.entries_url"><span
+                                        v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
+                                            scope.row.total_Submissions
+                                        }}</a>
                                 </template>
                             </el-table-column>
 
@@ -152,29 +155,32 @@
                         </div>
                     </div>
                 </div>
-                <div v-else>
-                    <div class="fluent_form_intro">
-                        <h1 class="text-center">Welcome to WP Fluent Froms</h1>
-                        <p class="text-center">Thank you for installing WP Fluent Froms - The Most Advanced Form Builder
-                            Plugin for WordPress</p>
-                        <div class="text-center">
-                            <el-button
-                                round
-                                type="primary"
-                                @click="showAddFormModal = true"
-                            >Click Here to Create Your
-                                First Form
-                            </el-button>
-                        </div>
+            </template>
+            <div v-else>
+                <div class="fluent_form_intro">
+                    <h1 class="text-center">Welcome to WP Fluent Froms</h1>
+                    <p class="text-center">Thank you for installing WP Fluent Froms - The Most Advanced Form Builder
+                        Plugin for WordPress</p>
+                    <div class="text-center">
+                        <el-button
+                            round
+                            type="primary"
+                            @click="showAddFormModal = true"
+                        >Click Here to Create Your
+                            First Form
+                        </el-button>
                     </div>
-                  <div class="fluent_form_intro_video">
+                </div>
+                <div class="fluent_form_intro_video">
                     <h2>Check the video intro</h2>
                     <div class="videoWrapper">
-                      <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                     </div>
-                  </div>
                 </div>
-            </template>
+            </div>
         </div>
 
         <predefinedFormsModal
@@ -193,249 +199,258 @@
 </template>
 
 <script type="text/babel">
-    import Clipboard from 'clipboard';
-    import remove from '../components/confirmRemove'
-    import AddFormModal from '../components/modals/AddFormModal';
-    import predefinedFormsModal from '../components/modals/predefinedFormsModal';
-    import PostTypeSelectionModal from '../components/modals/PostTypeSelectionModal';
+import Clipboard from 'clipboard';
+import remove from '../components/confirmRemove'
+import AddFormModal from '../components/modals/AddFormModal';
+import predefinedFormsModal from '../components/modals/predefinedFormsModal';
+import PostTypeSelectionModal from '../components/modals/PostTypeSelectionModal';
 
-    export default {
-        name: 'AllForms',
-        components: {
-            predefinedFormsModal,
-            AddFormModal,
-            remove,
-            PostTypeSelectionModal
+export default {
+    name: 'AllForms',
+    components: {
+        predefinedFormsModal,
+        AddFormModal,
+        remove,
+        PostTypeSelectionModal
+    },
+    data() {
+        return {
+            has_post_feature: !!window.FluentFormApp.has_post_feature,
+            app: window.FluentFormApp,
+            paginate: {
+                total: 0,
+                current_page: 1,
+                last_page: 1,
+                per_page: localStorage.getItem('formItemsPerPage') || 10
+            },
+            loading: true,
+            items: [],
+            predefinedForms: {},
+            predefinedDropDownForms: {},
+            categories: [],
+            search_string: '',
+            selectAll: 0,
+            showAddFormModal: false,
+            checkedItems: [],
+            showSelectFormModal: false,
+            searchFormsKeyWord: '',
+            clearingSearchKeyword: false,
+            postTypeSelectionDialogVisibility: false,
+            isDisabledAnalytics: !!window.FluentFormApp.isDisableAnalytics,
+            sort_column: 'id',
+            sort_by: 'DESC'
+        }
+    },
+    methods: {
+        goToPage(val) {
+            jQuery('html, body').animate({scrollTop: 0}, 300).promise().then(elements => {
+                this.fetchItems(
+                    this.paginate.current_page = val
+                );
+            });
         },
-        data() {
-            return {
-                has_post_feature: !!window.FluentFormApp.has_post_feature,
-                app: window.FluentFormApp,
-                paginate: {
-                    total: 0,
-                    current_page: 1,
-                    last_page: 1,
-                    per_page: localStorage.getItem('formItemsPerPage') || 10
-                },
-                loading: true,
-                items: [],
-                predefinedForms: {},
-                predefinedDropDownForms: {},
-                categories: [],
-                search_string: '',
-                selectAll: 0,
-                showAddFormModal: false,
-                checkedItems: [],
-                showSelectFormModal: false,
-                searchFormsKeyWord: '',
-                clearingSearchKeyword: false,
-                postTypeSelectionDialogVisibility: false,
-                isDisabledAnalytics: !!window.FluentFormApp.isDisableAnalytics
-            }
+        handleSizeChange(val) {
+            localStorage.setItem('formItemsPerPage', val);
+            this.paginate.per_page = val;
+            this.fetchItems();
         },
-        methods: {
-            goToPage(val) {
-                jQuery('html, body').animate({scrollTop: 0}, 300).promise().then(elements => {
-                    this.fetchItems(
-                        this.paginate.current_page = val
-                    );
-                });
-            },
-            handleSizeChange(val) {
-                localStorage.setItem('formItemsPerPage', val);
-                this.paginate.per_page = val;
-                this.fetchItems();
-            },
-            fetchItems() {
-                this.loading = true;
+        fetchItems() {
+            this.loading = true;
+            let data = {
+                search: this.searchFormsKeyWord,
+                action: this.$action.getAllForms,
+                per_page: this.paginate.per_page,
+                page: this.paginate.current_page,
+                sort_column: this.sort_column,
+                sort_by: this.sort_by
+            };
 
-                let data = {
-                    search: this.searchFormsKeyWord,
-                    action: this.$action.getAllForms,
-                    per_page: this.paginate.per_page,
-                    page: this.paginate.current_page,
-                };
-
-                jQuery.get(ajaxurl, data)
-                    .done((response) => {
-                        this.items = response.data;
-                        this.paginate.total = response.total;
-                        this.paginate.current_page = response.current_page;
-                        this.paginate.last_page = response.last_page;
-                    })
-                    .fail(error => {
-                        this.$message.error('Something went wrong, please try again.');
-                    })
-                    .always(() => {
-                        this.loading = false;
-                    });
-            },
-            refetchItems() {
-                this.paginate.current_page = 1;
-                this.clearingSearchKeyword = true;
-                this.fetchItems();
-                this.$nextTick(() => {
-                    this.clearingSearchKeyword = false;
-                });
-            },
-            getPredefinedForms() {
-                this.loading = true;
-
-                jQuery.get(ajaxurl, {
-                    action: this.$action.getPredefinedForms
-                }).done(res => {
-                    this.predefinedForms = res.forms;
-                    this.categories = res.categories;
-                    this.predefinedDropDownForms = res.predefined_dropDown_forms;
-                }).fail(error => {
+            jQuery.get(ajaxurl, data)
+                .done((response) => {
+                    this.items = response.data;
+                    this.paginate.total = response.total;
+                    this.paginate.current_page = response.current_page;
+                    this.paginate.last_page = response.last_page;
+                })
+                .fail(error => {
                     this.$message.error('Something went wrong, please try again.');
                 })
-                    .always(() => {
-                        this.loading = false;
-                    });
-            },
-            removeForm(id, index) {
-                let data = {
-                    action: this.$action.removeForm,
-                    formId: id
-                }
-                jQuery.get(ajaxurl, data)
-                    .done(res => {
-                        this.items.splice(index, 1);
-                        this.$notify.success({
-                            title: 'Congratulations!',
-                            message: res.message,
-                            offset: 30
-                        });
-                    })
-                    .fail(_ => {
-                    });
-            },
-            duplicateForm(id) {
-                let data = {
-                    action: this.$action.duplicateForm,
-                    formId: id
-                }
-                jQuery.post(ajaxurl, data)
-                    .then(res => {
-                        this.$notify.success({
-                            title: 'Congratulations!',
-                            message: res.message,
-                            offset: 30
-                        });
-                        if (res.redirect) {
-                            window.location.href = res.redirect;
-                        } else {
-                            alert('Something is wrong! Please try again');
-                        }
-                    })
-                    .fail(error => {
-                        alert('Something is wrong! Please try again');
-                    });
-            },
-            handleTableSort(column) {
-            },
-            handleSelectionChange(val) {
-                this.entrySelections = val;
-            },
-            searchForms(event) {
-                this.paginate.current_page = 1;
-                this.fetchItems();
-            },
-            createForm({key, form}) {
-                if (key === 'post') {
-                    return this.createPostForm(key, form);
-                }
-
-                this.$refs.predefinedFormsModal.createForm(
-                    key, // formType
-                    form // form
-                );
-            },
-            createPostForm(key, form) {
-                this.postTypeSelectionDialogVisibility = true;
-            },
-            onPostTypeSelctionEnd(post_type) {
-                this.postTypeSelectionDialogVisibility = false;
-
-                if (post_type) {
-                    this.$refs.predefinedFormsModal.doCreateForm({
-                        post_type,
-                        type: 'post',
-                        title: 'Post Form',
-                        predefined: 'blank_form',
-                        action: this.$action.createPredefinedForm
-                    });
-                }
-            }
-        },
-        mounted() {
-            this.fetchItems();
-            this.getPredefinedForms();
-
-            (new Clipboard('.copy')).on('success', event => {
-                this.$message({
-                    message: 'Copied to Clipboard!',
-                    type: 'success'
+                .always(() => {
+                    this.loading = false;
                 });
+        },
+        refetchItems() {
+            this.paginate.current_page = 1;
+            this.clearingSearchKeyword = true;
+            this.fetchItems();
+            this.$nextTick(() => {
+                this.clearingSearchKeyword = false;
             });
         },
-        created() {
-            let hash = window.location.hash;
+        getPredefinedForms() {
+            this.loading = true;
 
-            if (hash.indexOf('add=1') != -1) {
-                this.showAddFormModal = true;
-            }
-
-            if (hash.indexOf('entries') != -1) {
-                this.showSelectFormModal = true;
-            }
-
-            jQuery('a[href="admin.php?page=fluent_forms#add=1"]').on('click', event => {
-                this.showAddFormModal = true;
-                this.showSelectFormModal = false;
-            });
-
-            jQuery('a[href="admin.php?page=fluent_forms#entries"]').on('click', event => {
-                this.showAddFormModal = false;
-                this.showSelectFormModal = true;
-            });
+            jQuery.get(ajaxurl, {
+                action: this.$action.getPredefinedForms
+            }).done(res => {
+                this.predefinedForms = res.forms;
+                this.categories = res.categories;
+                this.predefinedDropDownForms = res.predefined_dropDown_forms;
+            }).fail(error => {
+                this.$message.error('Something went wrong, please try again.');
+            })
+                .always(() => {
+                    this.loading = false;
+                });
         },
-        watch: {
-            searchFormsKeyWord: function (newVal, oldVal) {
-                if ((oldVal && !newVal) && !this.clearingSearchKeyword) {
-                    this.paginate.current_page = 1;
-                    this.fetchItems();
-                }
+        removeForm(id, index) {
+            let data = {
+                action: this.$action.removeForm,
+                formId: id
+            }
+            jQuery.get(ajaxurl, data)
+                .done(res => {
+                    this.items.splice(index, 1);
+                    this.$notify.success({
+                        title: 'Congratulations!',
+                        message: res.message,
+                        offset: 30
+                    });
+                })
+                .fail(_ => {
+                });
+        },
+        duplicateForm(id) {
+            let data = {
+                action: this.$action.duplicateForm,
+                formId: id
+            }
+            jQuery.post(ajaxurl, data)
+                .then(res => {
+                    this.$notify.success({
+                        title: 'Congratulations!',
+                        message: res.message,
+                        offset: 30
+                    });
+                    if (res.redirect) {
+                        window.location.href = res.redirect;
+                    } else {
+                        alert('Something is wrong! Please try again');
+                    }
+                })
+                .fail(error => {
+                    alert('Something is wrong! Please try again');
+                });
+        },
+        handleTableSort(column) {
+            if (column.order) {
+                this.sort_column = column.prop;
+                this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
+                this.fetchItems();
+            }
+        },
+        handleSelectionChange(val) {
+            this.entrySelections = val;
+        },
+        searchForms(event) {
+            this.paginate.current_page = 1;
+            this.fetchItems();
+        },
+        createForm({key, form}) {
+            if (key === 'post') {
+                return this.createPostForm(key, form);
+            }
+
+            this.$refs.predefinedFormsModal.createForm(
+                key, // formType
+                form // form
+            );
+        },
+        createPostForm(key, form) {
+            this.postTypeSelectionDialogVisibility = true;
+        },
+        onPostTypeSelctionEnd(post_type) {
+            this.postTypeSelectionDialogVisibility = false;
+
+            if (post_type) {
+                this.$refs.predefinedFormsModal.doCreateForm({
+                    post_type,
+                    type: 'post',
+                    title: 'Post Form',
+                    predefined: 'blank_form',
+                    action: this.$action.createPredefinedForm
+                });
             }
         }
-    };
+    },
+    mounted() {
+        this.fetchItems();
+        this.getPredefinedForms();
+
+        (new Clipboard('.copy')).on('success', event => {
+            this.$message({
+                message: 'Copied to Clipboard!',
+                type: 'success'
+            });
+        });
+    },
+    created() {
+        let hash = window.location.hash;
+
+        if (hash.indexOf('add=1') != -1) {
+            this.showAddFormModal = true;
+        }
+
+        if (hash.indexOf('entries') != -1) {
+            this.showSelectFormModal = true;
+        }
+
+        jQuery('a[href="admin.php?page=fluent_forms#add=1"]').on('click', event => {
+            this.showAddFormModal = true;
+            this.showSelectFormModal = false;
+        });
+
+        jQuery('a[href="admin.php?page=fluent_forms#entries"]').on('click', event => {
+            this.showAddFormModal = false;
+            this.showSelectFormModal = true;
+        });
+    },
+    watch: {
+        searchFormsKeyWord: function (newVal, oldVal) {
+            if ((oldVal && !newVal) && !this.clearingSearchKeyword) {
+                this.paginate.current_page = 1;
+                this.fetchItems();
+            }
+        }
+    }
+};
 </script>
 
 <style lang="scss">
-    .text-center {
-        text-align: center;
-    }
+.text-center {
+    text-align: center;
+}
 
-    .fluent_form_intro {
-        max-width: 700px;
-        margin: 0 auto;
-        background: white;
-        padding: 20px 30px 30px;
-    }
+.fluent_form_intro {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px 30px 30px;
+}
 
-    .ff_forms_table .el-loading-mask {
-        z-index: 100;
-    }
+.ff_forms_table .el-loading-mask {
+    z-index: 100;
+}
 
-    .copy {
-        cursor: context-menu;
-    }
-    .fluent_form_intro_video {
-      max-width: 700px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 20px 0 0;
-    }
+.copy {
+    cursor: context-menu;
+}
+
+.fluent_form_intro_video {
+    max-width: 700px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px 0 0;
+}
 
 </style>

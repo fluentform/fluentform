@@ -65,8 +65,11 @@ class Form
         $search = $this->request->get('search');
         $status = $this->request->get('status');
 
+        $shortColumn = $this->request->get('sort_column', 'id');
+        $sortBy = $this->request->get('sort_by', 'DESC');
+
         $query = wpFluent()->table('fluentform_forms')
-            ->orderBy('id', 'DESC');
+            ->orderBy($shortColumn, $sortBy);
 
         if ($status && $status != 'all') {
             $query->where('status', $status);
