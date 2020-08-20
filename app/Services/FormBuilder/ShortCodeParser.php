@@ -30,8 +30,6 @@ class ShortCodeParser
     public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false)
     {
         try {
-            $entryId = (int)$entryId;
-
             static::setDependencies($entryId, $data, $form);
 
             if (is_array($parsable)) {

@@ -1,6 +1,6 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button @click="dialogVisible=true" type="info" size="small">Resend Email Notification</el-button>
+        <el-button v-if="element_type == 'button'" @click="dialogVisible=true" type="info" size="small">{{btn_text}}</el-button>
         <el-dialog
             title="Choose Email Notification"
             top="42px"
@@ -49,7 +49,31 @@
 <script type="text/babel">
     export default {
         name: 'resentEmailNotification',
-        props: ['entry_id', 'form_id'],
+        props: {
+            entry_id: {
+                default() {
+                    return '';
+                }
+            },
+            form_id: {
+                required: true
+            },
+            entry_ids: {
+                default() {
+                    return []
+                }
+            },
+            element_type: {
+                default() {
+                    return 'button'
+                }
+            },
+            btn_text: {
+                default() {
+                    return 'Resend Email Notification'
+                }
+            }
+        },
         data() {
             return {
                 has_pro: !!window.fluent_form_entries_vars.has_pro,
@@ -86,6 +110,7 @@
                     notification_id: this.form.selected_notification_id,
                     form_id: this.form_id,
                     entry_id: this.entry_id,
+                    entry_ids: this.entry_ids,
                     send_to_type: this.form.send_to_type,
                     send_to_custom_email: this.form.send_to_custom_email,
                     ff_sumulate: 'fluentform_submit'

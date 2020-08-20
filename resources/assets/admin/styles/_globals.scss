@@ -361,3 +361,13 @@ label.el-radio, label.el-checkbox {
   max-width: 800px;
   margin: 0 auto;
 }
+
+.el-big-items {
+  .el-select-dropdown__wrap {
+    max-height: 350px;
+  }
+}
+
+.ff_email_resend_inline {
+  display: inline-block;
+}

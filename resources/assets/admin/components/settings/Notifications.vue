@@ -29,7 +29,7 @@
         <!-- Notification Table: 1 -->
         <el-table v-loading="loading"
                   element-loading-text="Fetching Notifications..."
-                  v-if="! selected"
+                  v-if="!selected"
                   :data="notifications"
                   stripe
                   class="el-fluid">
@@ -71,7 +71,7 @@
         </el-table>
 
         <!-- Notification Editor -->
-        <el-form v-else label-width="205px" label-position="left">
+        <el-form v-else-if="selected" label-width="205px" label-position="left">
 
             <!--Notification name-->
             <el-form-item label="Name">
@@ -548,7 +548,7 @@ export default {
 
             let notification = this.notifications[index];
 
-            if (!notification.name || !notification.subject || !notification.sendTo) {
+            if (!notification.value || !notification.value.name || !notification.value.sendTo) {
                 this.selected = _ff.cloneDeep(this.mock);
                 return;
             }
@@ -561,7 +561,7 @@ export default {
                 notification.value.pdf_attachments = [];
             }
 
-            this.selected = _ff.cloneDeep(notification);
+            this.selected = notification;
         },
         discard() {
             this.selected = null;
