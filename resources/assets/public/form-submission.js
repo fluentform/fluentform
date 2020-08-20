@@ -57,10 +57,8 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var initFormHandlers = function () {
-                    initMask();
                     registerFormSubmissionHandler();
                     maybeInlineForm();
-                    initCheckableActive();
                     initInlineErrorItems();
                     $theForm.removeClass('ff-form-loading').addClass('ff-form-loaded');
 
@@ -85,40 +83,6 @@ jQuery(document).ready(function () {
                         animDuration: animDuration,
                         isScrollTop: isScrollTop,
                         actionType: actionType
-                    });
-                };
-
-                /**
-                 * Init jQuery mask plugin
-                 *
-                 * @return void
-                 */
-                var initMask = function () {
-                    const globalOptions = {
-                        clearIfNotMatch: false,
-                        translation: {
-                            '*': {pattern: /[0-9a-zA-Z]/},
-                            '0': {pattern: /\d/},
-                            '9': {pattern: /\d/, optional: true},
-                            '#': {pattern: /\d/, recursive: true},
-                            'A': {pattern: /[a-zA-Z0-9]/},
-                            'S': {pattern: /[a-zA-Z]/}
-                        }
-                    };
-
-                    $('input[data-mask]').each(function (key, el) {
-                        var el = $(el),
-                            mask = el.data('mask'),
-                            maskStr = mask.mask;
-
-                        let options = globalOptions;
-                        if (el.attr('data-mask-reverse')) {
-                            options.reverse = true;
-                        }
-                        if (el.attr('data-clear-if-not-match')) {
-                            options.clearIfNotMatch = true;
-                        }
-                        el.mask(maskStr, options);
                     });
                 };
 
@@ -618,27 +582,7 @@ jQuery(document).ready(function () {
                     return el.length ? el : $("[name='" + name + "[]']", $theForm);
                 };
 
-                var initCheckableActive = function () {
-                    var $theForm = getTheForm();
-                    $theForm.find('.ff-el-form-check input[type=radio]').on('change', function () {
-                        if ($(this).is(':checked')) {
-                            $(this).closest('.ff-el-input--content').find('.ff-el-form-check').removeClass('ff_item_selected');
-                            $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
-                        }
-                    });
-
-                    $theForm.find('.ff-el-form-check input[type=checkbox]').on('change', function () {
-                        if ($(this).is(':checked')) {
-                            $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
-                        } else {
-                            $(this).closest('.ff-el-form-check').removeClass('ff_item_selected');
-                        }
-                    });
-                }
-
                 var reinitExtras = function () {
-                    initMask();
-                    initCheckableActive();
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
                         var $el = $theForm.find('.ff-el-recaptcha.g-recaptcha');
                         var siteKey = $el.data('sitekey');
@@ -694,10 +638,8 @@ jQuery(document).ready(function () {
 
                 return {
                     initFormHandlers,
-                    initMask,
                     registerFormSubmissionHandler,
                     maybeInlineForm,
-                    initCheckableActive,
                     reinitExtras,
                     initTriggers,
                     validate,
@@ -713,6 +655,8 @@ jQuery(document).ready(function () {
 
             init: function () {
                 this.initMultiSelect();
+                this.initMask();
+                this.initCheckableActive();
             },
 
             /**
@@ -761,6 +705,61 @@ jQuery(document).ready(function () {
 
                     // Save choicesjs instance for future access.
                     $(el).data('choicesjs', new Choices(el, args));
+                });
+            },
+
+            /**
+             * Init jQuery mask plugin
+             *
+             * @return void
+             */
+            initMask: function () {
+
+                if (jQuery.fn.mask == undefined) {
+                    return;
+                }
+
+                const globalOptions = {
+                    clearIfNotMatch: false,
+                    translation: {
+                        '*': {pattern: /[0-9a-zA-Z]/},
+                        '0': {pattern: /\d/},
+                        '9': {pattern: /\d/, optional: true},
+                        '#': {pattern: /\d/, recursive: true},
+                        'A': {pattern: /[a-zA-Z0-9]/},
+                        'S': {pattern: /[a-zA-Z]/}
+                    }
+                };
+
+                $('input[data-mask]').each(function (key, el) {
+                    var el = $(el),
+                        mask = el.data('mask'),
+                        maskStr = mask.mask;
+
+                    let options = globalOptions;
+                    if (el.attr('data-mask-reverse')) {
+                        options.reverse = true;
+                    }
+                    if (el.attr('data-clear-if-not-match')) {
+                        options.clearIfNotMatch = true;
+                    }
+                    el.mask(maskStr, options);
+                });
+            },
+
+            initCheckableActive: function () {
+                $(document).on('change', '.ff-el-form-check input[type=radio]', function () {
+                    if ($(this).is(':checked')) {
+                        $(this).closest('.ff-el-input--content').find('.ff-el-form-check').removeClass('ff_item_selected');
+                        $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
+                    }
+                });
+                $(document).on('change', '.ff-el-form-check input[type=checkbox]', function () {
+                    if ($(this).is(':checked')) {
+                        $(this).closest('.ff-el-form-check').addClass('ff_item_selected');
+                    } else {
+                        $(this).closest('.ff-el-form-check').removeClass('ff_item_selected');
+                    }
                 });
             }
         }
