@@ -25,7 +25,6 @@ jQuery(document).ready(function () {
         return ffValidationError;
     })();
 
-
     (function (fluentFormVars, $) {
 
         if (!fluentFormVars) {
@@ -691,7 +690,6 @@ jQuery(document).ready(function () {
                     $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();
                     });
-
                 };
 
                 return {
@@ -711,11 +709,10 @@ jQuery(document).ready(function () {
             })(validationFactory);
         };
 
-
         const fluentFormCommonActions = {
 
             init: function () {
-                this.initMultiSelect(jQuery);
+                this.initMultiSelect();
             },
 
             /**
@@ -723,7 +720,7 @@ jQuery(document).ready(function () {
              *
              * @return void
              */
-            initMultiSelect: function ($) {
+            initMultiSelect: function () {
                 // Loads if function exists.
                 if (!$.isFunction(window.Choices)) {
                     return;
@@ -1039,9 +1036,12 @@ jQuery(document).ready(function () {
             } else {
                 initSingleForm($theForm);
             }
+            fluentFormCommonActions.init();
         });
 
-        fluentFormCommonActions.init();
+        $( window ).on( 'load', function () {
+            fluentFormCommonActions.init();
+        });
 
     })(window.fluentFormVars, jQuery);
 });
@@ -1063,6 +1063,17 @@ jQuery(document).ready(function () {
                 this_len = this.length;
             }
             return this.substring(this_len - search.length, this_len) === search;
+        };
+    }
+
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    if (!sp.includes) {
+        sp.includes = function(search, start) {
+            if (search instanceof RegExp) {
+                throw TypeError('first argument must not be a RegExp');
+            }
+            if (start === undefined) { start = 0; }
+            return this.indexOf(search, start) !== -1;
         };
     }
 
