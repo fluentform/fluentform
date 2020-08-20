@@ -88,6 +88,7 @@ class Select extends BaseComponent
 
 			$atts = [
 			    'data-calc_value' =>  ArrayHelper::get($option, 'calc_value'),
+			    'data-custom-properties' =>  ArrayHelper::get($option, 'calc_value'),
                 'value' => ArrayHelper::get($option, 'value'),
             ];
 

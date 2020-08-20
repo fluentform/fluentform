@@ -25,6 +25,7 @@ jQuery(document).ready(function () {
         return ffValidationError;
     })();
 
+
     (function (fluentFormVars, $) {
 
         if (!fluentFormVars) {
@@ -57,7 +58,6 @@ jQuery(document).ready(function () {
                  * @return void
                  */
                 var initFormHandlers = function () {
-                    initMultiSelect();
                     initMask();
                     registerFormSubmissionHandler();
                     maybeInlineForm();
@@ -78,39 +78,6 @@ jQuery(document).ready(function () {
                     if ($theForm.hasClass('ff-form-inline')) {
                         $theForm.find('button.ff-btn-submit').css('height', '50px');
                     }
-                };
-
-                /**
-                 * Init Select2
-                 *
-                 * @return void
-                 */
-                var initMultiSelect = function () {
-                    const multiSelects = $theForm.find('.ff_has_multi_select');
-                    if (!multiSelects.length) {
-                        return;
-                    }
-
-                    if (!$.isFunction(window.Choices)) {
-                        return;
-                    }
-
-                    const choiceArgs = {
-                        removeItemButton: true,
-                        silent: true,
-                        shouldSort: false,
-                        searchEnabled: true
-                    };
-
-                    const choiceSettings = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
-
-                    multiSelects.each((index, selectItem) => {
-                        $(selectItem).data('choicesjs', new Choices(selectItem, choiceSettings));
-                    });
-
-                    $theForm.on('reset', function () {
-                        multiSelects.val(null).trigger('change');
-                    });
                 };
 
                 var fireUpdateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
@@ -671,7 +638,6 @@ jQuery(document).ready(function () {
                 }
 
                 var reinitExtras = function () {
-                    initMultiSelect();
                     initMask();
                     initCheckableActive();
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
@@ -730,7 +696,6 @@ jQuery(document).ready(function () {
 
                 return {
                     initFormHandlers,
-                    initMultiSelect,
                     initMask,
                     registerFormSubmissionHandler,
                     maybeInlineForm,
@@ -745,6 +710,63 @@ jQuery(document).ready(function () {
                 }
             })(validationFactory);
         };
+
+
+        const fluentFormCommonActions = {
+
+            init: function () {
+                this.initMultiSelect(jQuery);
+            },
+
+            /**
+             * Init choice2
+             *
+             * @return void
+             */
+            initMultiSelect: function ($) {
+                // Loads if function exists.
+                if (!$.isFunction(window.Choices)) {
+                    return;
+                }
+
+                if (!$('.ff_has_multi_select').length) {
+                    return;
+                }
+
+                $('.ff_has_multi_select').each(function (idx, el) {
+                    if ($(el).hasClass('choices__input')) {
+                       // return;
+                    }
+
+                    const choiceArgs = {
+                        removeItemButton: true,
+                        silent: true,
+                        shouldSort: false,
+                        searchEnabled: true
+                    };
+                    const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
+
+                    args.callbackOnCreateTemplates = function () {
+
+                        var self = this,
+                            $element = $(self.passedElement.element);
+                        return {
+                            // Change default template for option.
+                            option: function (item) {
+                                var opt = Choices.defaults.templates.option.call(this, item);
+                                if (item.customProperties) {
+                                    opt.dataset.calc_value = item.customProperties;
+                                }
+                                return opt;
+                            },
+                        };
+                    };
+
+                    // Save choicesjs instance for future access.
+                    $(el).data('choicesjs', new Choices(el, args));
+                });
+            }
+        }
 
         /**
          * Validation factory
@@ -1019,8 +1041,9 @@ jQuery(document).ready(function () {
             }
         });
 
-    })(window.fluentFormVars, jQuery);
+        fluentFormCommonActions.init();
 
+    })(window.fluentFormVars, jQuery);
 });
 
 // Polyfill for startsWith and endsWith
