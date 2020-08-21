@@ -599,6 +599,7 @@ class Component
         preg_match_all('/{(.*?)}/', $output, $matches);
         $patterns = array_unique($matches[0]);
 
+
         $attrDefaultValues = [];
 
         foreach ($patterns as $pattern) {

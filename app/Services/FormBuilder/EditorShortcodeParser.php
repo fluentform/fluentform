@@ -270,10 +270,10 @@ class EditorShortcodeParser
         if(!isset($_REQUEST[$param])) {
             return '';
         }
-        $value = sanitize_textarea_field($_REQUEST[$param]);
+        $value = $_REQUEST[$param];
         if(is_array($value)) {
-            return '';
+            return sanitize_textarea_field(implode(', ', $value));
         }
-        return isset($_REQUEST[$param]) ? wp_kses_post($value) : '';
+        return sanitize_textarea_field($value);
     }
 }

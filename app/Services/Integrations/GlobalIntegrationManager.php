@@ -67,11 +67,15 @@ class GlobalIntegrationManager
 
         $notificationKeys = apply_filters('fluentform_global_notification_types', [], $formId);
 
-        $feeds = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', $formId)
-            ->whereIn('meta_key', $notificationKeys)
-            ->orderBy('id', 'DESC')
-            ->get();
+        if($notificationKeys) {
+            $feeds = wpFluent()->table('fluentform_form_meta')
+                ->where('form_id', $formId)
+                ->whereIn('meta_key', $notificationKeys)
+                ->orderBy('id', 'DESC')
+                ->get();
+        } else {
+            $feeds = [];
+        }
 
         $formattedFeeds = [];
 

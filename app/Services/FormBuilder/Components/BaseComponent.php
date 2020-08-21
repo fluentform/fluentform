@@ -18,13 +18,13 @@ class BaseComponent
 
     /**
      * Build unique ID concating form id and name attribute
-     * @param  array  $data $form
+     * @param array $data $form
      * @return string for id value
      */
     protected function makeElementId($data, $form)
     {
         if (isset($data['attributes']['name'])) {
-            if(!empty($data['attributes']['id'])) {
+            if (!empty($data['attributes']['id'])) {
                 return $data['attributes']['id'];
             }
             $elementName = $data['attributes']['name'];
@@ -35,7 +35,7 @@ class BaseComponent
 
     /**
      * Build attributes for any html element
-     * @param  array  $attributes
+     * @param array $attributes
      * @return string [Compiled key='value' attributes]
      */
     protected function buildAttributes($attributes, $form = null)
@@ -45,7 +45,7 @@ class BaseComponent
         foreach ($attributes as $key => $value) {
             if ($value || $value === 0 || $value === '0') {
                 $value = htmlspecialchars($value);
-                $atts .= $key.'="'.$value.'" ';
+                $atts .= $key . '="' . $value . '" ';
             }
         }
 
@@ -54,14 +54,14 @@ class BaseComponent
 
     /**
      * Extract value attribute from attribute list
-     * @param  array  &$element
+     * @param array  &$element
      * @return string
      */
     protected function extractValueFromAttributes(&$element)
     {
         $value = '';
 
-        if(isset($element['attributes']['value'])) {
+        if (isset($element['attributes']['value'])) {
             $value = $element['attributes']['value'];
             unset($element['attributes']['value']);
         }
@@ -69,9 +69,22 @@ class BaseComponent
         return $value;
     }
 
+    protected function extractDynamicValues($data, $form)
+    {
+        $defaultValues = [];
+        if ($dynamicDefaultValue = ArrayHelper::get($data, 'settings.dynamic_default_value')) {
+            $parseValue = $this->parseEditorSmartCode($dynamicDefaultValue, $form);
+            if ($parseValue) {
+                $defaultValues = explode(',', $parseValue);
+                $defaultValues = array_map('trim', $defaultValues);
+            }
+        }
+        return $defaultValues;
+    }
+
     /**
      * Determine if the given element has conditions bound
-     * @param  array   $element [Html element being compiled]
+     * @param array $element [Html element being compiled]
      * @return boolean
      */
     protected function hasConditions($element)
@@ -79,7 +92,7 @@ class BaseComponent
         $conditionals = ArrayHelper::get($element, 'settings.conditional_logics');
 
         if (isset($conditionals['status']) && $conditionals['status']) {
-            return array_filter($conditionals['conditions'], function($item) {
+            return array_filter($conditionals['conditions'], function ($item) {
                 return $item['field'] && $item['operator'];
             });
         }
@@ -87,12 +100,12 @@ class BaseComponent
 
     /**
      * Generate a unique id for an element
-     * @param  string $str [preix]
+     * @param string $str [preix]
      * @return string [Unique id]
      */
     protected function getUniqueId($str)
     {
-        return $str.'_'.md5(uniqid(mt_rand(), true));
+        return $str . '_' . md5(uniqid(mt_rand(), true));
     }
 
     /**
@@ -106,7 +119,7 @@ class BaseComponent
 
     /**
      * Get required class for form element wrapper
-     * @param  array $rules [Validation rules]
+     * @param array $rules [Validation rules]
      * @return mixed
      */
     protected function getRequiredClass($rules)
@@ -129,12 +142,12 @@ class BaseComponent
             $asteriskPlacement = $form->settings['layout']['asteriskPlacement'];
         }
 
-        return $asteriskPlacement.' ';
+        return $asteriskPlacement . ' ';
     }
 
     /**
      * Generate a label for any element
-     * @param  array  $data
+     * @param array $data
      * @return string [label Html element]
      */
     protected function buildElementLabel($data, $form)
@@ -149,36 +162,36 @@ class BaseComponent
         $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
 
-        return "<div class='".$classes."'><label for='".$id."'>".$label."</label>{$helpMessage}</div>";
+        return "<div class='" . $classes . "'><label for='" . $id . "'>" . $label . "</label>{$helpMessage}</div>";
     }
 
     /**
      * Generate html/markup for any element
-     * @param  string   $elMarkup [Predifined partial markup]
-     * @param  array    $data
-     * @param  StdClass $form     [Form object]
+     * @param string $elMarkup [Predifined partial markup]
+     * @param array $data
+     * @param StdClass $form [Form object]
      * @return string   [Compiled markup]
      */
     protected function buildElementMarkup($elMarkup, $data, $form)
     {
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
-        
+
         $labelPlacement = ArrayHelper::get($data, 'settings.label_placement');
-        
-        $labelPlacementClass = $labelPlacement ? 'ff-el-form-'.$labelPlacement.' ' : '';
+
+        $labelPlacementClass = $labelPlacement ? 'ff-el-form-' . $labelPlacement . ' ' : '';
 
         $validationRules = ArrayHelper::get($data, 'settings.validation_rules');
 
         $labelClass = trim(
-            'ff-el-input--label '.
-            $this->getRequiredClass($validationRules).
+            'ff-el-input--label ' .
+            $this->getRequiredClass($validationRules) .
             $this->getAsteriskPlacement($form)
         );
 
         $formGroupClass = trim(
-            $this->getDefaultContainerClass().
-            $labelPlacementClass.
-            $hasConditions.
+            $this->getDefaultContainerClass() .
+            $labelPlacementClass .
+            $hasConditions .
             ArrayHelper::get($data, 'settings.container_class')
         );
 
@@ -201,7 +214,7 @@ class BaseComponent
 
         if (!empty($data['settings']['label'])) {
             $label = ArrayHelper::get($data, 'settings.label');
-            
+
             $labelMarkup = sprintf(
                 "<div class='%s'><label %s>%s</label> %s</div>",
                 $labelClass,
@@ -226,7 +239,7 @@ class BaseComponent
 
     /**
      * Generate a help message for any element beside label
-     * @param  array  $data
+     * @param array $data
      * @return string [Html]
      */
     protected function getLabelHelpMessage($data)
@@ -240,12 +253,12 @@ class BaseComponent
 
     /**
      * Generate a help message for any element beside form element
-     * @param  array  $data
+     * @param array $data
      * @return string [Html]
      */
     protected function getInputHelpMessage($data, $hideClass = '')
     {
-        $class = trim('ff-el-help-message '.$hideClass);
+        $class = trim('ff-el-help-message ' . $hideClass);
 
         if (isset($data['settings']['help_message']) && !empty($data['settings']['help_message'])) {
             return "<div class='{$class}'>{$data['settings']['help_message']}</div>";

@@ -28,6 +28,9 @@ export default {
     computed: {
         ...mapGetters(['editorShortcodes']),
         fieldType() {
+            if(this.listItem.type) {
+                return this.listItem.type;
+            }
             if (!this.editItem.attributes.type) {
                 return 'textarea';
             }

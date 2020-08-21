@@ -342,7 +342,8 @@ $element_customization_settings = array(
     ),
     'dynamic_default_value' => array(
         'template' => 'inputValue',
-        'label' => __('Default Value', 'fluentform'),
+        'type' => 'text',
+        'label' => __('Dynamic Default Value', 'fluentform'),
         'help_text' => __('If you would like to pre-populate the value of a field, enter it here.', 'fluentform'),
     ),
     'container_class' => array(
