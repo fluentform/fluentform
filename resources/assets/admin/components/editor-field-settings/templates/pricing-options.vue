@@ -46,10 +46,6 @@
                         v-if="hasImageSupport"
                         v-model="editItem.settings.enable_image_input"
                     >Photo</el-checkbox>
-                    <el-checkbox
-                        v-if="hasImageSupport"
-                        v-model="editItem.settings.enable_desc_input"
-                    >Description</el-checkbox>
                 </div>
                 <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text" />
             </div>
