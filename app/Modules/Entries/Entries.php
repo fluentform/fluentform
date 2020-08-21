@@ -502,18 +502,35 @@ class Entries extends EntryQuery
             ->where('response_id', $entryId)
             ->delete();
 
-        wpFluent()->table('fluentform_entry_details')
-            ->where('submission_id', $entryId)
-            ->delete();
-
         wpFluent()->table('fluentform_logs')
             ->where('source_id', $entryId)
             ->where('source_type', 'submission_item')
             ->delete();
 
+        wpFluent()->table('fluentform_entry_details')
+            ->where('submission_id', $entryId)
+            ->delete();
+
         ob_start();
         if (defined('FLUENTFORMPRO')) {
             try {
+                if($formId) {
+                    if(is_numeric($formId)) {
+                        $form = wpFluent()->table('fluentform_forms')->find($formId);
+                    } else {
+                        $form = $formId;
+                    }
+                    $deletableFiles = $this->getSubmissionAttachments($entryId, $form);
+                    if ($deletableFiles) {
+                        foreach ($deletableFiles as $eachFile) {
+                            $file = wp_upload_dir()['basedir'].FLUENTFORM_UPLOAD_DIR.'/'.basename($eachFile);
+                            if(is_readable($file) && !is_dir($file)) {
+                                vddd(unlink($file));
+                            }
+                        }
+                    }
+                }
+
                 wpFluent()->table('fluentform_order_items')
                     ->where('submission_id', $entryId)
                     ->delete();
@@ -531,22 +548,12 @@ class Entries extends EntryQuery
                     ->where('type', 'submission_action')
                     ->delete();
 
-                $form = wpFluent()->table('fluentform_forms')->find($formId);
-                $deletableFiles = $this->getSubmissionAttachments($entryId, $form);
-
-                if ($deletableFiles) {
-                    foreach ($deletableFiles as $eachFile) {
-                        $file = wp_upload_dir()['basedir'].FLUENTFORM_UPLOAD_DIR.'/'.basename($eachFile);
-                        if(is_readable($file) && !is_dir($file)) {
-                            unlink($file);
-                        }
-                    }
-                }
-
             } catch (\Exception $exception) {
                 // ...
             }
         }
+
+
         $errors = ob_get_clean();
 
 
@@ -642,9 +649,9 @@ class Entries extends EntryQuery
 
         // now other action handler
         if ($actionType == 'other.delete_permanently') {
-
+            $form =   $form = wpFluent()->table('fluentform_forms')->find($formId);
             foreach ($entries as $entryId) {
-                $this->deleteEntryById($entryId, $formId);
+                $this->deleteEntryById($entryId, $form);
             }
             $message = __('Selected entries successfully deleted', 'fluentform');
 

@@ -29,17 +29,32 @@
                             ></el-option>
                         </el-select>
 
+                        <el-select
+                            v-else-if="primary_field.input_options == 'all'"
+                            v-model="settings[primary_field.key]"
+                            placeholder="Select a Field"
+                            style="width:100%"
+                            clearable
+                        >
+                            <el-option
+                                v-for="(option, index) in inputs"
+                                :key="index" :value="option.attributes.name"
+                                :label="option.admin_label"
+                            ></el-option>
+                        </el-select>
+
+
                         <template v-else>
                             <field-general
                                 :editorShortcodes="editorShortcodes"
                                 v-model="settings[primary_field.key]"
                             ></field-general>
-                            
-                            <div
-                                class="primary_field_help_text"
-                                v-if="primary_field.help_text"
-                            >{{ primary_field.help_text }}</div>
                         </template>
+
+                        <div
+                            class="primary_field_help_text"
+                            v-if="primary_field.help_text"
+                        >{{ primary_field.help_text }}</div>
 
                         <error-view field="fieldEmailAddress" :errors="errors"></error-view>
                     </div>

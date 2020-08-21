@@ -55,7 +55,6 @@ class FluentFormWidget extends Widget_Base {
 
     protected function _register_controls()
     {
-
           $this->register_general_controls();
           $this->register_error_controls();
           $this->register_title_description_style_controls();
@@ -72,8 +71,6 @@ class FluentFormWidget extends Widget_Base {
           $this->register_submit_button_style_controls();
           $this->register_success_message_style_controls();
           $this->register_errors_style_controls();
-
-
     }
 
     protected function register_general_controls(){
