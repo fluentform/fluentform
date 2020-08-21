@@ -32,11 +32,8 @@ class Checkable extends BaseComponent
 
         $defaultValues = (array)$this->extractValueFromAttributes($data);
 
-        if($dynamicDefaultValue = ArrayHelper::get($data, 'settings.dynamic_default_value')) {
-            $parseValue = $this->parseEditorSmartCode($dynamicDefaultValue, $form);
-            if($parseValue) {
-                $defaultValues = (array) $parseValue;
-            }
+        if($dynamicValues = $this->extractDynamicValues($data, $form)) {
+            $defaultValues = $dynamicValues;
         }
 
         $elMarkup = '';

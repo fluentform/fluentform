@@ -517,6 +517,7 @@ $defaultElements = array(
                 'class' => '',
             ),
             'settings' => array(
+                'dynamic_default_value' => '',
                 'label' => __('Dropdown', 'fluentform'),
                 'admin_field_label' => '',
                 'help_message' => '',

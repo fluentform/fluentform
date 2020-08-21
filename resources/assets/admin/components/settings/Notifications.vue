@@ -242,13 +242,8 @@
                     send attachment via email otherwise, It may go to spam</p>
             </el-form-item>
 
-            <el-checkbox true-label="yes" false-label="no" v-model="selected.value.asPlainText">Send Email as Plain Text
-                Format
+            <el-checkbox true-label="yes" false-label="no" v-model="selected.value.asPlainText">Send Email as Classic Template
             </el-checkbox>
-            <p v-if="selected.value.asPlainText == 'yes'">
-                <br/>
-                Email will send as plain text format. Many formatted text may not work properly.
-            </p>
 
             <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
