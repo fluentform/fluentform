@@ -104,10 +104,24 @@ const formConditional = function ($, $theForm, form) {
                     } else {
                         data[name] = [];
                     }
+                } else if(type == 'file') {
+                    let file_urls = '';
+                    let $el = $theForm.find('input[name='+name+']')
+                    $el
+                        .closest('.ff-el-input--content')
+                        .find('.ff-uploaded-list')
+                        .find('.ff-upload-preview[data-src]')
+                        .each(function (i, div) {
+                            file_urls += $(this).data('src');
+                        });
+                    data[name] = file_urls;
                 } else {
                     data[name] = el.val();
                 }
             });
+
+            console.log(data);
+
             return data;
         };
 

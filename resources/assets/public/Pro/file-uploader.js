@@ -5,7 +5,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
      */
     var initUploader = function () {
 
-        if(!jQuery.fn.fileupload) {
+        if (!jQuery.fn.fileupload) {
             return;
         }
 
@@ -49,7 +49,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 });
             }
 
-            function changeValidation (e, data) {
+            function changeValidation(e, data) {
                 if (!data || !data.files || !data.files.length) {
                     return;
                 }
@@ -83,14 +83,22 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 return true;
             }
 
+            function addParameterToURL(param) {
+                let _url = fluentFormVars.ajaxUrl;
+                _url += (_url.split('?')[1] ? '&' : '?') + param;
+                return _url;
+            }
+
+            const $el = $(el);
+
             // Init the uploader
             element.fileupload({
                 dataType: 'json',
                 dropZone: element.closest('.ff-el-group'),
-                url: fluentFormVars.ajaxUrl + '?action=fluentform_file_upload&formId=' + form.id,
+                url: addParameterToURL('action=fluentform_file_upload&formId=' + form.id),
                 change: changeValidation,
                 add: function (e, data) {
-                    if(!changeValidation(e, data)) {
+                    if (!changeValidation(e, data)) {
                         return;
                     }
 
@@ -188,6 +196,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                             data.context.find('.ff-upload-remove').attr(
                                 'data-href', data.result.data.files[0].file
                             );
+
+                            $form.find('input[name=' + $el.data('name') + ']').trigger('change');
                         }
                     } else {
                         // For debugging purpose to catch devlopment erros,
@@ -280,6 +290,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             var elFiles,
                 $this = $(this),
                 parent = $this.closest('.ff-uploaded-list'),
+                $el = parent.closest('.ff-el-input--content').find('input[type=file]'),
                 filePath = $this.attr('data-href');
             if (filePath == '#') {
                 $this.closest('.ff-upload-preview').remove();
@@ -299,6 +310,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                         if (!parent.find('.ff-upload-preview').length) {
                             parent.siblings('.ff-upload-progress').addClass('ff-hidden');
                         }
+                        $el.trigger('change');
                     });
             }
         });

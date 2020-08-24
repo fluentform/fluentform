@@ -109,11 +109,14 @@ class Scheduler
             }
         }
 
-        $emailBody = View::make('email.report.body', array(
+        $data = array(
             'submissions' => $submissionCounts,
             'payments' => $paymentCounts,
             'days' => $days
-        ));
+        );
+        $emailBody = View::make('email.report.body', $data);
+
+        $emailBody = apply_filters('fluentform_email_summary_body', $emailBody, $data);
 
         $originalEmailBody = $emailBody;
 
@@ -139,7 +142,15 @@ class Scheduler
 
         $emailSubject = apply_filters('fluentform_email_summary_subject', $emailSubject);
 
-        return wp_mail($recipients, $emailSubject, $emailBody, $headers);
+        $emailResult = wp_mail($recipients, $emailSubject, $emailBody, $headers);
+
+        do_action('fluentform_email_summary_details', [
+            'recipients' => $recipients,
+            'email_subject' => $emailSubject,
+            'email_body' => $emailBody
+        ], $data, $emailResult);
+
+        return $emailResult;
     }
 
     private static function cleanUpOldData()
