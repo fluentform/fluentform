@@ -159,7 +159,15 @@ jQuery(document).ready(function () {
                         $theForm.parent().find('.ff-errors-in-stack').hide();
                         showFormSubmissionProgress($theForm);
 
-                        $.post(fluentFormVars.ajaxUrl + '?t=' + Date.now(), formData)
+                        function addParameterToURL(param) {
+                            let _url = fluentFormVars.ajaxUrl;
+                            _url += (_url.split('?')[1] ? '&' : '?') + param;
+                            return _url;
+                        }
+
+                        const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
+
+                        $.post(ajaxRequestUrl, formData)
                             .then(function (res) {
                                 if (!res || !res.data || !res.data.result) {
                                     // This is an error
@@ -676,7 +684,7 @@ jQuery(document).ready(function () {
 
                 $('.ff_has_multi_select').each(function (idx, el) {
                     if ($(el).hasClass('choices__input')) {
-                       // return;
+                        // return;
                     }
 
                     const choiceArgs = {
@@ -1038,7 +1046,7 @@ jQuery(document).ready(function () {
             fluentFormCommonActions.init();
         });
 
-        $( window ).on( 'load', function () {
+        $(window).on('load', function () {
             fluentFormCommonActions.init();
         });
 
@@ -1067,11 +1075,13 @@ jQuery(document).ready(function () {
 
     // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
     if (!sp.includes) {
-        sp.includes = function(search, start) {
+        sp.includes = function (search, start) {
             if (search instanceof RegExp) {
                 throw TypeError('first argument must not be a RegExp');
             }
-            if (start === undefined) { start = 0; }
+            if (start === undefined) {
+                start = 0;
+            }
             return this.indexOf(search, start) !== -1;
         };
     }
