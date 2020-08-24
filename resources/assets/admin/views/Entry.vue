@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <payment-summary v-if="order_data" :submission="entry" :order_data="order_data"></payment-summary>
+                <payment-summary @reload_payments="getEntry()" v-if="order_data" :submission="entry" :order_data="order_data"></payment-summary>
 
                 <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 

@@ -41,6 +41,8 @@
                 <div class="info_box_header">
                     Payment Details
                 </div>
+                <div class="info_box_header_actions">
+                </div>
             </div>
             <div class="entry_info_body">
                 <div v-for="(transaction,index) in order_data.transactions"
@@ -99,7 +101,9 @@
                         </li>
                         <li>
                             <div class="ff_list_header">Payment Status</div>
-                            <div class="ff_list_value">{{ transaction.status }}</div>
+                            <div class="ff_list_value">
+                                <span class="ff_card_badge" :class="'ff_badge_status_'+transaction.status">{{ transaction.status }}</span>
+                            </div>
                         </li>
                         <li>
                             <div class="ff_list_header">Date</div>
@@ -109,11 +113,12 @@
                             <div v-html="transaction.additional_note" class="ff_list_value"></div>
                         </li>
                     </ul>
+                    <el-button @click="initTransactionEditor(transaction)" size="small" type="primary">Edit Transaction</el-button>
                 </div>
             </div>
         </div>
 
-        <div v-if="order_data.refunds.length" class="entry_info_box entry_submission_order_data">
+        <div v-if="order_data.refunds && order_data.refunds.length" class="entry_info_box entry_submission_order_data">
             <div class="entry_info_header">
                 <div class="info_box_header">
                     Refunds
@@ -144,6 +149,59 @@
                 </div>
             </div>
         </div>
+
+        <el-dialog
+            v-loading="editing"
+            title="Edit Transaction"
+            :visible.sync="transactionModal"
+            width="60%">
+            <el-form label-position="left" v-if="editingTransaction" :data="editingTransaction">
+                <el-form-item label="Billing Name">
+                    <el-input placeholder="Billing Name" v-model="editingTransaction.payer_name"/>
+                </el-form-item>
+                <el-form-item label="Billing Email">
+                    <el-input type="email" placeholder="Billing Email" v-model="editingTransaction.payer_email"/>
+                </el-form-item>
+                <el-form-item label="Billing Address">
+                    <el-input type="textarea" placeholder="Billing Address" v-model="editingTransaction.billing_address"/>
+                </el-form-item>
+                <el-form-item label="Billing Address">
+                    <el-input type="textarea" placeholder="Billing Address" v-model="editingTransaction.billing_address"/>
+                </el-form-item>
+                <el-form-item label="Reference ID">
+                    <el-input type="text" placeholder="Reference ID" v-model="editingTransaction.charge_id"/>
+                </el-form-item>
+                <el-form-item v-if="editingTransaction.payment_method == 'test'" label="Note">
+                    <el-input type="textarea" placeholder="Reference ID" v-model="editingTransaction.payment_note"/>
+                </el-form-item>
+                <el-form-item label="Status">
+                    <el-radio-group v-model="editingTransaction.status">
+                        <el-radio
+                            v-for="(paymentStatus, status_key) in payment_statuses"
+                            :key="status_key"
+                            :label="status_key"
+                        >{{paymentStatus}}</el-radio>
+                    </el-radio-group>
+                    <p v-if="(editingTransaction.status == 'refunded' || editingTransaction.status == 'partial-refunded') && original_editing_status != editingTransaction.status">
+                        Please note that, Actual Refund needs to be handled in your Payment Service Provider.
+                    </p>
+                </el-form-item>
+                <template v-if="editingTransaction.status == 'partially-refunded'">
+                    <el-form-item label="New Refund Amount">
+                        <el-input type="number" step="any" v-model="editingTransaction.refund_amount"></el-input>
+                        <p>Please Provide new refund amount only.</p>
+                    </el-form-item>
+                    <el-form-item label="Refund Note">
+                        <el-input type="textarea" v-model="editingTransaction.refund_note"></el-input>
+                    </el-form-item>
+                </template>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="transactionModal = false">Cancel</el-button>
+                <el-button type="primary" @click="updateTransaction()">Confirm</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 <script type="text/babel">
@@ -151,7 +209,13 @@
         name: 'PaymentSummary',
         props: ['order_data', 'submission'],
         data() {
-            return {}
+            return {
+                editingTransaction: false,
+                transactionModal: false,
+                payment_statuses: window.fluent_form_entries_vars.payment_statuses,
+                editing: false,
+                original_editing_status: ''
+            }
         },
         methods: {
             getFormattedMoney(amount) {
@@ -159,8 +223,34 @@
                 if (!amount) {
                     return 'n/a';
                 }
-               // return fromatPrice(amount, this.submission.currencySetting);
             },
+            initTransactionEditor(transaction) {
+                this.editingTransaction = transaction;
+                this.original_editing_status = JSON.parse(JSON.stringify(transaction.status));
+                this.transactionModal = true;
+            },
+            updateTransaction() {
+                this.editing = true;
+                jQuery.post(window.ajaxurl, {
+                    action: 'handle_payment_ajax_endpoint',
+                    form_id: this.editingTransaction.form_id,
+                    transaction: this.editingTransaction,
+                    route: 'update_transaction'
+                })
+                .then(response => {
+                    this.$notify.success(response.data.message);
+                    this.$emit('reload_payments');
+                    this.transactionModal = false;
+                    this.editingTransaction = false;
+                    this.original_editing_status = '';
+                })
+                .fail((errors) => {
+                    console.log(errors);
+                })
+                .always(() => {
+                    this.editing = false;
+                });
+            }
         }
     }
 </script>
@@ -199,5 +289,15 @@
     .transaction_item_line .ff_list_value {
         background: #ffff44;
         padding: 2px 6px;
+    }
+
+    .ff_badge_status_ {
+        &pending {
+            background-color: #ffff03;
+        }
+        &paid {
+            background: #67c23a;
+            color: white;
+        }
     }
 </style>
