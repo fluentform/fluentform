@@ -832,7 +832,7 @@ class Predefined extends Form
             ])
         ], 200);
     }
-    
+
     /**
      * Create a predefined form
      * @param $name
