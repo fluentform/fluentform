@@ -276,7 +276,9 @@
                             label="Payment Method"
                             width="120px">
                         <template slot-scope="scope">
-                            {{ scope.row.payment_method }}
+                            <span class="ff_card_badge" v-if="scope.row.payment_method">
+                                {{ getPaymentMethodName(scope.row.payment_method) }}
+                            </span>
                         </template>
                     </el-table-column>
                 </template>
@@ -741,6 +743,12 @@
                 this.$router.push({
                     name: 'form-reports'
                 });
+            },
+            getPaymentMethodName(status) {
+                if(status == 'test') {
+                    return 'Offline';
+                }
+                return status;
             }
         },
         mounted() {

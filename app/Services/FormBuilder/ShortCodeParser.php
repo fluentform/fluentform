@@ -256,6 +256,9 @@ class ShortCodeParser
             if($key == 'total_paid' || $key == 'payment_total') {
                 return round($entry->{$key} / 100, 2);
             }
+            if($key == 'payment_method' && $key == 'test') {
+                return __('Offline', 'fluentform');
+            }
             return $entry->{$key};
         }
         if($key == 'admin_view_url') {
