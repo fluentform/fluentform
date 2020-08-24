@@ -359,6 +359,7 @@ $element_customization_settings = array(
     'country_list' => array(
         'template' => 'customCountryList',
         'label' => __('Country List', 'fluentform'),
+        'key' => 'country_list'
     ),
     'product_field_types' => array(
         'template' => 'productFieldTypes',
