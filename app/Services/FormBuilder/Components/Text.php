@@ -60,6 +60,10 @@ class Text extends BaseComponent
                 }, 10, 2);
 
                 do_action('ff_rendering_calculation_form', $form, $data);
+            } else {
+                if(!apply_filters('fluentform_disable_inputmode', false)) {
+                    $data['attributes']['inputmode'] = 'numeric';
+                }
             }
 
             if($step = ArrayHelper::get($data, 'settings.number_step')) {
