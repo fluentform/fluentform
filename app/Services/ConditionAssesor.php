@@ -78,6 +78,27 @@ class ConditionAssesor
                 case 'doNotContains':
                     return !Str::contains($inputValue, $conditional['value']);
                     break;
+                case 'length_equal':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) == $conditional['value'];
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) == $conditional['value'];
+                    break;
+                case 'length_less_than':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) < $conditional['value'];
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) < $conditional['value'];
+                    break;
+                case 'length_greater_than':
+                    if(is_array($inputValue)) {
+                        return count($inputValue) > $conditional['value'];
+                    }
+                    $inputValue = strval($inputValue);
+                    return strlen($inputValue) > $conditional['value'];
+                    break;
             }
         }
 

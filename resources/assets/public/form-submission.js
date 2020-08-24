@@ -558,7 +558,7 @@ jQuery(document).ready(function () {
                     if (!errorSetting || errorSetting == 'stackToBottom') {
                         return;  // It's on bottom so We don't need to do anything
                     }
-                    $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select', function () {
+                    $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select,textarea', function () {
                         if (window.ff_disable_error_clear) {
                             return;
                         }
