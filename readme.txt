@@ -8,7 +8,7 @@ Stable tag: 3.6.50
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The fastest and easiest WP Form Plugin for WordPress.
+The fastest and easiest WP Forms Plugin for WordPress.
 
 == Description ==
 **WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect WordPress Form builder plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
@@ -17,7 +17,7 @@ The fastest and easiest WP Form Plugin for WordPress.
 
 [Demo](https://wpfluentforms.com/contact-form-demo/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Youtube Video Tutorials](https://www.youtube.com/watch?v=JJ0fBWMW174&list=PLXpD0vT4thWEu4gAkLE0Eq7PRCFp_8j2z) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
 
-Fluent Forms helps you create hassle-free contact forms, subscription forms, or any kind of forms you need for your website in minutes.
+Fluent Forms helps you create hassle-free contact forms, subscription forms, or any kind of WP Forms you need for your website in minutes.
 
 ==Amazing Features==
 
@@ -25,17 +25,17 @@ Fluent Forms helps you create hassle-free contact forms, subscription forms, or 
 * Multi-column Contact Form Layout
 * Smart Conditional Logic Form Fields
 * Conditional Confirmation Messages
-* Build 100% Responsive and Mobile Friendly Web Forms
-* Reusable Templates
-* Spam Protection with Google Recaptcha
-* Placeholder Customization
-* AJAX Submission and Both Client-Side and Server-Side Data Validation
-* Send Beautiful Email to submitter and admin
-* You can configure what will happen after form submission. You can show a success message, or you can redirect the user to a selected URL.
+* Build 100% Responsive and Mobile Friendly Web Forms and Contact Forms.
+* Reusable Templates for All kind of Forms including many contact forms.
+* Spam Protection with Google Recaptcha for your contact forms.
+* Placeholder Customization for your contact forms.
+* AJAX Submission and Both Client-Side and Server-Side Data Validation for contact forms.
+* Send Beautiful Email to submitter and admin after contact form submission.
+* You can configure what will happen after a contact form submission. You can show a success message, or you can redirect the user to a selected URL.
 * Restrict Your Web Contact Form by user role
 * Show the form only for a time/date range.
 * 30+ Form Field Types to build any Web Forms quickly.
-* In-Depth Analytics where you can see how many times it's displayed and how many leads were captured.
+* In-Depth Analytics where you can see how many times it's displayed and how many leads were captured from Contact Forms.
 * Set Default Value On Contact Form Fields or you can populate from URL parameters
 * Export/Import Contact Forms
 * MailChimp Integration - Add Lead/Contact on MailChimp on form submission
@@ -52,14 +52,14 @@ As responsiveness is a must for any online tool these days, WP Fluent Forms is d
 Here goes a list of all the Premium features you will be enjoying in WP Fluent Forms:
 
 == Super Fast Contact Forms ==
-WP Fluent Forms is built for speed. It does not slow down your site nor load lots of css & js. A standard form only loads less than 30KB css and js combined, which is the lowest among all the form builders out there. WP Fluent Forms will outperform a big way if you compare with all the form builders plugin. Most of the form builders plugin loads at least 300KB assets to load a simple form where WP Fluent Forms load 10% of the average size.
+WP Fluent Forms is built for speed. It does not slow down your site nor load lots of css & js. A standard form only loads less than 30KB css and js combined, which is the lowest among all the form builders out there. WP Fluent Forms will outperform a big way if you compare with all the form builders plugin. Most of the form builders plugin loads at least 300KB assets to load a simple form where WP Fluent Forms load 10% of the average size. Build the fastest contact forms and web forms in minutes.
 
 == Built-in Data Analysis Tool ==
-In version 3.0.0, we have added the most exciting features that no other form plugins provide, and that is built-in data visualization tool. Using the data visualization module, you can analyze your data, analyze the data using a pie-chart, bar chart, tabular view. Using Ninja Tables plugin you can even show the submitted data in the frontend.
+In version 3.0.0, we have added the most exciting features that no other form plugins provide, and that is built-in data visualization tool. Using the data visualization module, you can analyze your data from your web and contact forms, analyze the data using a pie-chart, bar chart, tabular view. Using Ninja Tables plugin you can even show the submitted data in the frontend.
 
 == Best Contact Form Plugin in WordPress ==
 WP Fluent Forms is an extremely feature-rich plugin that delivers a beautiful and bright user interface. Everything works with drag-and-drop, which makes creating new forms slightly quicker and more accessible, You will get all the premium components like conditional logics, more than 30 custom fields, 3rd party integrations, built-in entry management system, etc.
-WP Fluent Forms can be used for your regular contact forms, event forms, any data collection form. You can connect the form data with many 3rd party CRM without writing a single line of code. And the Best thing is this is entirely free, and it always is free and opensource.
+WP Fluent Forms can be used for your regular contact forms, event forms, online forms and any data collection form. You can connect the form data with many 3rd party CRM without writing a single line of code. And the Best thing is this is entirely free, and it always is free and opensource.
 
 == DRAG & DROP CONTACT FORM BUILDER ==
 Our powerful drag & drop contact form builder allows you to easily create WordPress contact forms and other online forms in just a few minutes without writing any code. Building forms is now easier for you than writing and drawing it on a piece of paper!
@@ -297,6 +297,10 @@ Yes, You can export your data in CSV, Excel, ODS, JSON format.
 = Do you have a public roadmap? =
 
 Yes, Please check our <a href="https://trello.com/b/FaDlAD9B/public-roadmap-wp-fluent-forms">public road map in Trello</a>
+
+= I want to report a bug, where to report? =
+
+The entire source code is <a href="https://github.com/fluentform/fluentform">available on github</a>. Please feel free to fork and send a pull request or report a bug.
 
 
 == Screenshots ==
