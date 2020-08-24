@@ -13,7 +13,7 @@ class Predefined extends Form
      */
     private function getPredefinedForms()
     {
-        return array(
+        $forms = array(
 
             'blank_form' => array(
                 'screenshot' => App::publicUrl('img/forms/new_blank.png'),
@@ -775,6 +775,8 @@ class Predefined extends Form
                 'json'       => '[{"id":"12","title":"Website Feedback","form":{"fields":[{"index":0,"element":"input_name","attributes":{"name":"names","data-type":"name-element"},"settings":{"container_class":"","admin_field_label":"Full Name","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"fields":{"first_name":{"element":"input_text","attributes":{"type":"text","name":"first_name","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Enter Your Full Name","help_message":"","visible":true,"validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"middle_name":{"element":"input_text","attributes":{"type":"text","name":"middle_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Middle Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"last_name":{"element":"input_text","attributes":{"type":"text","name":"last_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Last Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}}},"editor_options":{"title":"Name Fields","element":"name-fields","icon_class":"icon-user","template":"nameFields"},"uniqElKey":"el_1559114141631"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Your Email address","label_placement":"","help_message":"","admin_field_label":"Email","validation_rules":{"required":{"value":true,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":[]},"editor_options":{"title":"Email Address","icon_class":"icon-envelope-o","template":"inputText"},"uniqElKey":"el_1559114139212"},{"index":8,"element":"input_radio","attributes":{"type":"radio","name":"input_radio","value":""},"settings":{"container_class":"","label":"Is this the first time you have visited the website?","admin_field_label":"Is this the first time you have visited the website?","label_placement":"","display_type":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"options":{"yes":"Yes","no":"No"},"editor_options":{"title":"Radio Button","icon_class":"icon-dot-circle-o","element":"input-radio","template":"inputRadio"},"uniqElKey":"el_1559114154264"},{"index":3,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"","rows":4,"cols":2},"settings":{"container_class":"","label":"What is the PRIMARY reason you came to the site?","admin_field_label":"What is the PRIMARY reason you came to the site?","label_placement":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Text Area","icon_class":"icon-paragraph","template":"inputTextarea"},"uniqElKey":"el_1559114186791"},{"index":9,"element":"input_checkbox","attributes":{"type":"checkbox","name":"checkbox","value":[]},"settings":{"container_class":"","label":"Did you find what you needed?","admin_field_label":"Did you find what you needed?","label_placement":"","display_type":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"options":{"Yes, all of it":"Yes, all of it","Yes, some of it":"Yes, some of it","No, none of it":"No, none of it"},"editor_options":{"title":"Check Box","icon_class":"icon-check-square-o","template":"inputCheckbox"},"uniqElKey":"el_1559114208705"},{"index":8,"element":"ratings","attributes":{"class":"","value":0,"name":"ratings"},"settings":{"label":"User Friendlyness","show_text":false,"help_message":"","label_placement":"","admin_field_label":"User Friendlyness","container_class":"","conditional_logics":[],"validation_rules":{"required":{"value":true,"message":"This field is required"}}},"options":{"1":"Nice","2":"Good","3":"Very Good","4":"Awesome","5":"Amazing"},"editor_options":{"title":"Ratings","icon_class":"icon-eye-slash","template":"ratings"},"uniqElKey":"el_1559114515484"}],"submitButton":{"uniqElKey":"el_1559114078404","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Send your feedback","img_url":""}},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline","cssClassName":""}},"notifications":{"name":" Website Feedback Notification","sendTo":{"type":"email","email":"{wp.admin_email}","field":null,"routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"Website Feedback","message":"<p>{all_data}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]'
             ),
         );
+
+        return apply_filters('fluentform_predefined_forms', $forms);
     }
 
     /**
@@ -791,7 +793,6 @@ class Predefined extends Form
         );
 
         foreach ($this->getPredefinedForms() as $key => $item) {
-
             if (!$item['category']) {
                 $item['category'] = 'Other';
             }
@@ -821,11 +822,9 @@ class Predefined extends Form
             );
         }
 
-        $forms = apply_filters('fluentform_predefined_forms', $data);
-
         wp_send_json([
-            'forms' => $forms,
-            'categories' => array_keys($forms),
+            'forms' => $data,
+            'categories' => array_keys($data),
             'predefined_dropDown_forms' => apply_filters('fluentform-predefined-dropDown-forms', [
                 'post' => [
                     'title' => 'Post Form',
@@ -833,7 +832,7 @@ class Predefined extends Form
             ])
         ], 200);
     }
-
+    
     /**
      * Create a predefined form
      * @param $name
