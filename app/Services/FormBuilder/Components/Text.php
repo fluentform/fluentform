@@ -42,7 +42,7 @@ class Text extends BaseComponent
             );
         }
 
-        if($data['element'] == 'input_number' || $data['element'] = 'custom_payment_component') {
+        if($data['element'] == 'input_number' || $data['element'] == 'custom_payment_component') {
             if(
                 ArrayHelper::get($data, 'settings.calculation_settings.status') &&
                 $formula = ArrayHelper::get($data, 'settings.calculation_settings.formula')
@@ -58,7 +58,6 @@ class Text extends BaseComponent
                     }
                     return $css_class;
                 }, 10, 2);
-
                 do_action('ff_rendering_calculation_form', $form, $data);
             } else {
                 if(!apply_filters('fluentform_disable_inputmode', false)) {

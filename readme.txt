@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder
 Requires at least: 4.5
 Tested up to: 5.5.0
 Requires PHP: 5.6
-Stable tag: 3.6.50
+Stable tag: 3.6.51
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -318,7 +318,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 3.6.50 (Date: Aug 24, 2020) =
+= 3.6.51 (Date: Aug 24, 2020) =
 * UI/UX improvement
 * Conditional Logic Improvement
 * Added Advanced Conditions
