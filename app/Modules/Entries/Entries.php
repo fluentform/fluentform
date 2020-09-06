@@ -649,7 +649,7 @@ class Entries extends EntryQuery
 
         // now other action handler
         if ($actionType == 'other.delete_permanently') {
-            $form =   $form = wpFluent()->table('fluentform_forms')->find($formId);
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
             foreach ($entries as $entryId) {
                 $this->deleteEntryById($entryId, $form);
             }

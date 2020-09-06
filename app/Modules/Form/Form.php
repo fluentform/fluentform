@@ -416,7 +416,18 @@ class Form
 
         $this->model->where('id', $formId)->delete();
 
+        $maybeErrors = $this->deleteFormAssests($formId);
 
+
+        wp_send_json([
+            'message' => __('Successfully deleted the form.', 'fluentform'),
+            'errors' => $maybeErrors
+        ], 200);
+    }
+
+
+    protected function deleteFormAssests($formId)
+    {
         // Now Let's delete associate items
         wpFluent()->table('fluentform_submissions')
             ->where('form_id', $formId)
@@ -456,11 +467,7 @@ class Form
             }
         }
         $errors = ob_get_clean();
-
-        wp_send_json([
-            'message' => __('Successfully deleted the form.', 'fluentform'),
-            'errors' => $errors
-        ], 200);
+        return $errors;
     }
 
     /**
