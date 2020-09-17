@@ -140,7 +140,7 @@
                     card: 'Debit/Credit Card',
                     ideal: 'iDeal',
                     fpx: 'FPX',
-                    bacs_debit: 'BECS Direct Debit ',
+                    bacs_debit: 'BACS Direct Debit (UK)',
                     bancontact: 'Bancontact',
                     giropay: 'Giropay',
                     p24: 'Przelewy24 (P24)',
