@@ -8,12 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $email_heading = apply_filters('fluentform_email_template_email_heading', false, $form, $notification);
 $headerImage = apply_filters('fluentform_email_template_header_image', false, $form, $notification);
-
+$contentType = apply_filters('fluentform_email_content_type_header', 'text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html>
 <html dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="<?php echo $contentType; ?>" />
         <meta name="x-apple-disable-message-reformatting" />
         <title><?php echo get_bloginfo( 'name', 'display' ); ?></title>
     </head>
