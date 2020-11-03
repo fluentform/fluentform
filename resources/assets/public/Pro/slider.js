@@ -240,7 +240,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             }
         });
 
-        $(formSelector).on('click', '.fluentform-step  .step-nav button', function (e) {
+        $(formSelector).on('click', '.fluentform-step  .step-nav button, .fluentform-step  .step-nav img', function (e) {
             const btn = $(this).data('action');
             let actionType = 'next';
             let current = $(this).closest('.fluentform-step');
