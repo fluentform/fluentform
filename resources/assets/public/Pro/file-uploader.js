@@ -285,7 +285,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
      * @return {void}
      */
     var registerFileRemove = function () {
-        $('.ff-uploaded-list').on('click', '.ff-upload-remove', function (e) {
+        $form.find('.ff-uploaded-list').on('click', '.ff-upload-remove', function (e) {
             e.preventDefault();
             var elFiles,
                 $this = $(this),
