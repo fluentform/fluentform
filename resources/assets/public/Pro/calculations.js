@@ -21,6 +21,22 @@ export default function ($, $theForm) {
             }
         },
         {
+            type: 0,
+            token:"ceil",
+            show:"ceil",
+            value:function(a){
+                return Math.ceil(a);
+            }
+        },
+        {
+            type: 0,
+            token:"floor",
+            show:"floor",
+            value:function(a){
+                return Math.floor(a);
+            }
+        },
+        {
             type: 8,
             token: "max",
             show: "max",
