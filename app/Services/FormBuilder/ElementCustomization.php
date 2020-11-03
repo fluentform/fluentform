@@ -26,7 +26,7 @@ $dateConfigSettings = array(
     'disabled' => !defined('FLUENTFORMPRO'),
     'css_class' => 'ff_code_editor',
     'inline_help_text' => 'Only valid JS object will work. Please check <a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/time-date#advanced_configaration">the documentation for available config options</a>',
-    'help_text' => __('You can write your own date configaration as JS object. Please write valid configaration as per flatpickr config.', 'fluentform'),
+    'help_text' => __('You can write your own date configuration as JS object. Please write valid configuration as per flatpickr config.', 'fluentform'),
 );
 
 if (!defined('FLUENTFORMPRO')) {

@@ -8,12 +8,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
     var wrapperWidth = '';
 
     fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
-    
+
     fluentFormVars.enable_step_data_persistency = $theForm.find(
         '.ff-step-container'
     ).attr('data-enable_step_data_persistency');
 
-    if(fluentFormVars.enable_step_data_persistency == 'yes') {
+    if (fluentFormVars.enable_step_data_persistency == 'yes') {
         fluentFormVars.enable_step_page_resume = $theForm.find(
             '.ff-step-container'
         ).attr('data-enable_step_page_resume');
@@ -38,9 +38,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         return window.fluentFormApp($theForm);
     };
 
-    var initFormWithSavedState = function() {
+    var initFormWithSavedState = function () {
         if (fluentFormVars.enable_step_data_persistency == 'no') return;
-        
+
         jQuery(document).ready(e => {
             jQuery.getJSON(fluentFormVars.ajaxUrl, {
                 form_id: $theForm.data('form_id'),
@@ -53,7 +53,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         });
     };
 
-    var populateFormDataAndSetActiveStep = function({response, step_completed}) {
+    var populateFormDataAndSetActiveStep = function ({response, step_completed}) {
         jQuery.each(response, (key, value) => {
             if (!value) return;
 
@@ -61,7 +61,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             if (type === '[object Object]') {
                 let $el = jQuery(`[data-name=${key}]`);
-                
+
                 if ($el.length && $el.attr('data-type') === 'tabular-element') {
                     // Tabular Grid
                     jQuery.each(value, (row, columns) => {
@@ -84,11 +84,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     jQuery.getJSON(fluentFormVars.ajaxUrl, data).then(response => {
                         jQuery.each(response, (key, options) => {
                             let $select = $el.find(`select[data-key=${key}]`);
-                            
+
                             if ($select.attr('data-index') != 0) {
                                 jQuery.each(options, (k, val) => {
                                     $select.append(
-                                        jQuery('<option />', { value: val, text: val })
+                                        jQuery('<option />', {value: val, text: val})
                                     );
                                 });
                             }
@@ -153,7 +153,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         isPopulatingStepData = true;
         if (fluentFormVars.enable_step_page_resume == 'yes') {
             updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
-        };
+        }
+        ;
         isPopulatingStepData = false;
     };
 
@@ -239,7 +240,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             }
         });
 
-        $(formSelector).on('click',  '.fluentform-step  .step-nav button', function (e) {
+        $(formSelector).on('click', '.fluentform-step  .step-nav button', function (e) {
             const btn = $(this).data('action');
             let actionType = 'next';
             let current = $(this).closest('.fluentform-step');
@@ -321,17 +322,31 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 return;
             }
 
-            if (window.ff_scroll_top_offset) {
-                formTop = window.ff_scroll_top_offset;
-            }
+            const scrollElement = $theForm.find('.ff_step_start');
 
-            $('html, body').delay(animDuration).animate({
-                scrollTop: formTop
-            }, animDuration, function (e) {
-                $('.fluentform-step.active', $theForm)
-                    .find(':input:visible:first')
-                    .focus();
-            });
+            if (window.ff_scroll_top_offset) {
+                var formTop = window.ff_scroll_top_offset;
+            } else {
+                var formTop = scrollElement.offset().top - 20
+            }
+            
+            var isInViewport = function ($el) {
+                var elementTop = $el.offset().top;
+                var elementBottom = elementTop + $el.outerHeight();
+
+                var viewportTop = $(window).scrollTop();
+                var viewportBottom = viewportTop + $(window).height();
+
+                return elementBottom > viewportTop && elementTop < viewportBottom;
+            };
+
+            const isVisible = isInViewport(scrollElement);
+
+            if (!isVisible) {
+                $('html, body').delay(animDuration).animate({
+                    scrollTop: formTop
+                }, 0);
+            }
         };
 
         let inlineCssObj = {
@@ -344,11 +359,10 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             };
         }
 
-        stepsWrapper.animate(inlineCssObj, animDuration, () => function () {
+        stepsWrapper.animate(inlineCssObj, animDuration, () => {
             isScrollTop && scrollTop();
             stepsWrapper.css({width: wrapperWidth});
         });
-
 
 
         // Fire ajax request to persist the step state/data
@@ -381,7 +395,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
                 hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
 
-                if($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
+                if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
                     hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
                     hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
                     hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
@@ -394,7 +408,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
     };
 
-    var saveStepData = function($theForm, activeStep) {
+    var saveStepData = function ($theForm, activeStep) {
         var $inputs = $theForm.find(':input').filter(function (i, el) {
             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
         });
@@ -402,8 +416,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         $inputs.filter((i, el) => {
             let $el = $(el);
             return $el.parents().hasClass('ff_repeater_table') &&
-            $el.attr('type') == 'select' &&
-            !$el.val();
+                $el.attr('type') == 'select' &&
+                !$el.val();
         }).prepend('<option selected disabled />');
 
         var formData = {
@@ -412,7 +426,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             form_id: $theForm.data('form_id'),
             action: 'fluentform_step_form_save_data'
         };
-        
+
         return jQuery.post(fluentFormVars.ajaxUrl, formData);
     };
 

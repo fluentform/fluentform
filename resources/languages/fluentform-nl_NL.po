@@ -1164,10 +1164,10 @@ msgstr "Uitgebreide datum configuratie"
 
 #: app/Services/FormBuilder/ElementCustomization.php:29
 msgid ""
-"You can write your own date configaration as JS object. Please write valid "
-"configaration as per flatpickr config."
+"You can write your own date configuration as JS object. Please write valid "
+"configuration as per flatpickr config."
 msgstr ""
-"Je kan je eigen datum configaration als JS-object schrijven. Schrijf een "
+"Je kan je eigen datum configuration als JS-object schrijven. Schrijf een "
 "geldige configuratie volgens de flatpickr-configuratie."
 
 #: app/Services/FormBuilder/ElementCustomization.php:40

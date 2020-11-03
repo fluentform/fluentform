@@ -1205,11 +1205,11 @@ msgstr "Configuration de date avancée"
 #: app/Services/FormBuilder/ElementCustomization.php:29
 #, fuzzy
 msgid ""
-"You can write your own date configaration as JS object. Please write valid "
-"configaration as per flatpickr config."
+"You can write your own date configuration as JS object. Please write valid "
+"configuration as per flatpickr config."
 msgstr ""
-"Vous pouvez écrire votre propre configaration date comme objet JS. S’il vous "
-"plaît écrire la configaration valide comme par config flatpickr."
+"Vous pouvez écrire votre propre configuration date comme objet JS. S’il vous "
+"plaît écrire la configuration valide comme par config flatpickr."
 
 #: app/Services/FormBuilder/ElementCustomization.php:40
 #, fuzzy

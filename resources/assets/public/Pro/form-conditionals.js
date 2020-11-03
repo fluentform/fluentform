@@ -120,7 +120,6 @@ const formConditional = function ($, $theForm, form) {
                 }
             });
 
-            console.log(data);
 
             return data;
         };
