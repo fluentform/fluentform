@@ -1158,8 +1158,8 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:29
 msgid ""
-"You can write your own date configaration as JS object. Please write valid "
-"configaration as per flatpickr config."
+"You can write your own date configuration as JS object. Please write valid "
+"configuration as per flatpickr config."
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:40
