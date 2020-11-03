@@ -10,8 +10,8 @@ export default function ($, $theForm) {
     mexp.addToken([
         {
             type: 8,
-            token: "round",
-            show: "round",
+            token: 'round',
+            show: 'round',
             value: function (value, decimals) {
                 if (!decimals && decimals !== 0) {
                     decimals = 2;
@@ -22,24 +22,24 @@ export default function ($, $theForm) {
         },
         {
             type: 0,
-            token:"ceil",
-            show:"ceil",
-            value:function(a){
+            token: 'ceil',
+            show: 'ceil',
+            value: function (a) {
                 return Math.ceil(a);
             }
         },
         {
             type: 0,
-            token:"floor",
-            show:"floor",
-            value:function(a){
+            token: 'floor',
+            show: 'floor',
+            value: function (a) {
                 return Math.floor(a);
             }
         },
         {
             type: 8,
-            token: "max",
-            show: "max",
+            token: 'max',
+            show: 'max',
             value: function (a, b) {
                 if (a > b)
                     return a;
@@ -143,7 +143,7 @@ export default function ($, $theForm) {
                 const prevValue = $fieldDom.val();
                 $fieldDom.val(calculatedValue)
                     .prop('defaultValue', calculatedValue);
-                if(prevValue != calculatedValue) {
+                if (prevValue != calculatedValue) {
                     $fieldDom.trigger('change');
                 }
             } else {
