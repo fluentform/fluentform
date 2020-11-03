@@ -483,6 +483,7 @@ class Component
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
 
         $form->instance_css_class = $instanceCssClass;
+        $form->instance_index = Helper::$formInstance;
 
         $formBuilder = $this->app->make('formBuilder');
         $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);
