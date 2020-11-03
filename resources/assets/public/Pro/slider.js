@@ -329,7 +329,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             } else {
                 var formTop = scrollElement.offset().top - 20
             }
-            
+
             var isInViewport = function ($el) {
                 var elementTop = $el.offset().top;
                 var elementBottom = elementTop + $el.outerHeight();
@@ -342,7 +342,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             const isVisible = isInViewport(scrollElement);
 
-            if (!isVisible) {
+            if (!isVisible || window.ff_force_scroll) {
                 $('html, body').delay(animDuration).animate({
                     scrollTop: formTop
                 }, 0);
