@@ -3,180 +3,190 @@
         <template v-if="formSettings">
             <!--Save settings-->
             <!-- Confirmation Settings -->
-            <el-row class="setting_header">
-                <el-col :md="12">
-                    <h2>Confirmation Settings</h2>
-                </el-col>
+            <div class="ff_settings_block">
+                <el-row class="setting_header">
+                    <el-col :md="12">
+                        <h2>Confirmation Settings</h2>
+                    </el-col>
 
-                <!--Save settings-->
-                <el-col :md="12" class="action-buttons clearfix mb15">
-                    <video-doc btn_size="medium" class="pull-right ff-left-spaced" route_id="formConfirmation" />
+                    <!--Save settings-->
+                    <el-col :md="12" class="action-buttons clearfix mb15">
+                        <video-doc btn_size="medium" class="pull-right ff-left-spaced" route_id="formConfirmation"/>
 
-                    <el-button
+                        <el-button
                             :loading="loading"
                             class="pull-right"
                             size="medium"
                             type="success"
                             icon="el-icon-success"
                             @click="saveSettings">
-                        {{loading ? 'Saving' : 'Save'}} Settings
-                    </el-button>
-                </el-col>
-            </el-row>
-
-            <!--confirmation settings form-->
-            <el-form label-width="205px" label-position="left">
-                <add-confirmation
+                            {{loading ? 'Saving' : 'Save'}} Settings
+                        </el-button>
+                    </el-col>
+                </el-row>
+                <!--confirmation settings form-->
+                <el-form label-width="205px" label-position="left">
+                    <add-confirmation
                         :pages="pages"
                         :editorShortcodes="editorShortcodes"
                         :confirmation="formSettings.confirmation"
                         :errors="errors">
-                </add-confirmation>
-            </el-form>
-
-            <!-- Appearance Settings -->
-            <el-row class="setting_header">
-                <el-col :md="12">
-                    <h2>Form Layout</h2>
-                </el-col>
-                <el-col :md="12">
-                    <video-doc btn_text="Learn More" class="pull-right ff-left-spaced" route_id="formErrorMessage" />
-                </el-col>
-            </el-row>
-
-            <!--Appearance settings form-->
-            <el-form label-width="205px" label-position="left">
-                <!--Label placement-->
-                <el-form-item>
-                    <template slot="label">
-                        Label Alignment
-
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Form Label Placement</h3>
-
-                                <p>
-                                    Select the default label placement. Labels can be <br>
-                                    top aligned above a field, left aligned to the <br>
-                                    left of a field, or right aligned to the right of a field.
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio v-for="(labelOption, optionName) in labelPlacementOptions"
-                              v-model="formSettings.layout.labelPlacement" :label="optionName"
-                              :key="optionName" border>
-                        {{ labelOption }}
-                    </el-radio>
-                </el-form-item>
-
-                <!--Help Message placement-->
-                <el-form-item>
-                    <template slot="label">
-                        Help Message Position
-
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Help Message Placement</h3>
-
-                                <p>
-                                    Select the default help message placement. <br>
-                                    Help messages can be placed beside <br>
-                                    label as a tooltip, or bellow each input.
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio v-for="(option, optionName) in helpMessagePlacementOptions"
-                              v-model="formSettings.layout.helpMessagePlacement" :label="optionName"
-                              :key="optionName" border> {{ option }}
-                    </el-radio>
-                </el-form-item>
-
-                <!--Error Message placement-->
-                <el-form-item>
-                    <template slot="label">
-                        Error Message Position
-
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Error Message placement</h3>
-
-                                <p>
-                                    Select the default error message placement. <br>
-                                    Error messages can be placed bellow each input, <br>
-                                    or stacked after the form submit button.
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio v-for="(option, optionName) in errorMessagesPlacement"
-                              v-model="formSettings.layout.errorMessagePlacement" :label="optionName"
-                              :key="optionName" border>{{ option }}
-                    </el-radio>
-                </el-form-item>
-
-                <!--Required asterisk mark position -->
-                <el-form-item>
-                    <template slot="label">
-                        Asterisk Position
-
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Required Asterisk Position</h3>
-
-                                <p>
-                                    The asterisk marker position for the required elements
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio v-for="(option, optionName) in asteriskPlacementMock"
-                              v-model="formSettings.layout.asteriskPlacement" :label="optionName"
-                              :key="optionName" border>{{ option }}
-                    </el-radio>
-                </el-form-item>
-            </el-form>
-
-            <!-- Form Restrictions -->
-            <el-row class="setting_header">
-                <el-col :md="12">
-                    <h2>
-                        Scheduling & Restrictions
-                    </h2>
-                </el-col>
-                <el-col :md="12">
-                    <video-doc class="pull-right" btn_text="Learn More" route_id="formScheduling"></video-doc>
-                </el-col>
-            </el-row>
-
-            <!--Restriction settings form-->
-            <div class="ff_settings_section">
-                <div class="ff_settings_body">
-                    <form_restriction :data="formSettings.restrictions"></form_restriction>
+                    </add-confirmation>
+                </el-form>
+                <div style="margin-top: 25px">
+                    <el-checkbox true-label="yes" false-label="no" v-model="formSettings.double_optin.status">Enable <b>Double
+                        Optin</b> Confirmation before Form Processing
+                    </el-checkbox>
                 </div>
             </div>
 
-            <div class="ff_advanced_validation_wrapper">
+            <!-- Appearance Settings -->
+            <div class="ff_settings_block ff_top_50">
+                <el-row class="setting_header">
+                    <el-col :md="12">
+                        <h2>Form Layout</h2>
+                    </el-col>
+                    <el-col :md="12">
+                        <video-doc btn_text="Learn More" class="pull-right ff-left-spaced" route_id="formErrorMessage"/>
+                    </el-col>
+                </el-row>
+                <!--Appearance settings form-->
+                <el-form label-width="205px" label-position="left">
+                    <!--Label placement-->
+                    <el-form-item>
+                        <template slot="label">
+                            Label Alignment
+
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Form Label Placement</h3>
+
+                                    <p>
+                                        Select the default label placement. Labels can be <br>
+                                        top aligned above a field, left aligned to the <br>
+                                        left of a field, or right aligned to the right of a field.
+                                    </p>
+                                </div>
+
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-radio v-for="(labelOption, optionName) in labelPlacementOptions"
+                                  v-model="formSettings.layout.labelPlacement" :label="optionName"
+                                  :key="optionName" border>
+                            {{ labelOption }}
+                        </el-radio>
+                    </el-form-item>
+
+                    <!--Help Message placement-->
+                    <el-form-item>
+                        <template slot="label">
+                            Help Message Position
+
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Help Message Placement</h3>
+
+                                    <p>
+                                        Select the default help message placement. <br>
+                                        Help messages can be placed beside <br>
+                                        label as a tooltip, or bellow each input.
+                                    </p>
+                                </div>
+
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-radio v-for="(option, optionName) in helpMessagePlacementOptions"
+                                  v-model="formSettings.layout.helpMessagePlacement" :label="optionName"
+                                  :key="optionName" border> {{ option }}
+                        </el-radio>
+                    </el-form-item>
+
+                    <!--Error Message placement-->
+                    <el-form-item>
+                        <template slot="label">
+                            Error Message Position
+
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Error Message placement</h3>
+
+                                    <p>
+                                        Select the default error message placement. <br>
+                                        Error messages can be placed bellow each input, <br>
+                                        or stacked after the form submit button.
+                                    </p>
+                                </div>
+
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-radio v-for="(option, optionName) in errorMessagesPlacement"
+                                  v-model="formSettings.layout.errorMessagePlacement" :label="optionName"
+                                  :key="optionName" border>{{ option }}
+                        </el-radio>
+                    </el-form-item>
+
+                    <!--Required asterisk mark position -->
+                    <el-form-item>
+                        <template slot="label">
+                            Asterisk Position
+
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Required Asterisk Position</h3>
+
+                                    <p>
+                                        The asterisk marker position for the required elements
+                                    </p>
+                                </div>
+
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-radio v-for="(option, optionName) in asteriskPlacementMock"
+                                  v-model="formSettings.layout.asteriskPlacement" :label="optionName"
+                                  :key="optionName" border>{{ option }}
+                        </el-radio>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+            <!-- Form Restrictions -->
+            <div class="ff_settings_block ff_top_50">
+                <el-row class="setting_header">
+                    <el-col :md="12">
+                        <h2>
+                            Scheduling & Restrictions
+                        </h2>
+                    </el-col>
+                    <el-col :md="12">
+                        <video-doc class="pull-right" btn_text="Learn More" route_id="formScheduling"></video-doc>
+                    </el-col>
+                </el-row>
+                <!--Restriction settings form-->
+                <div class="ff_settings_section">
+                    <div class="ff_settings_body">
+                        <form_restriction :data="formSettings.restrictions"></form_restriction>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ff_advanced_validation_wrapper ff_settings_block ff_top_50">
                 <!-- Header -->
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>Advanced Form Validation</h2>
                         <p>
                             You can set rules to the user input and based on the rules you can prevent the form submit.
-                            This is very useful feature for preventing spam/bot submissions. <a target="_blank" rel="noopener" href="#">Learn More here</a>
+                            This is very useful feature for preventing spam/bot submissions. <a target="_blank"
+                                                                                                rel="noopener" href="#">Learn
+                            More here</a>
                         </p>
                     </el-col>
                 </el-row>
@@ -189,90 +199,97 @@
                 </div>
             </div>
 
-
             <!-- Survey Result -->
-            <el-row class="setting_header">
-                <el-col :md="24">
-                    <h2>Survey Result</h2>
-                </el-col>
-            </el-row>
+            <div class="ff_settings_block ff_top_50">
+                <el-row class="setting_header">
+                    <el-col :md="24">
+                        <h2>Survey Result</h2>
+                    </el-col>
+                </el-row>
 
-            <div class="ff_settings_section">
-                <div class="ff_settings_body">
-                    <survey-result :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
+                <div class="ff_settings_section">
+                    <div class="ff_settings_body">
+                        <survey-result :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
 
-                    <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                    </div>
                 </div>
             </div>
 
-            <el-row class="setting_header">
-                <el-col :md="24">
-                    <h2>
-                        Compliance Settings
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Delete entry on form submission</h3>
+            <div class="ff_settings_block ff_top_50">
+                <el-row class="setting_header">
+                    <el-col :md="24">
+                        <h2>
+                            Compliance Settings
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Delete entry on form submission</h3>
 
-                                <p>
-                                    if you enable this settings then your entry data will be deleted from database. It's
-                                    useful for HIPPA/GDPR Compliance for some forms
-                                </p>
-                            </div>
+                                    <p>
+                                        if you enable this settings then your entry data will be deleted from database.
+                                        It's
+                                        useful for HIPPA/GDPR Compliance for some forms
+                                    </p>
+                                </div>
 
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </h2>
-                </el-col>
-            </el-row>
-            <div class="ff_settings_section">
-                <div class="ff_settings_body">
-                    <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no"
-                                 v-model="formSettings.delete_entry_on_submission">Delete entry data after form
-                        submission
-                    </el-checkbox>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </h2>
+                    </el-col>
+                </el-row>
+                <div class="ff_settings_section">
+                    <div class="ff_settings_body">
+                        <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no"
+                                     v-model="formSettings.delete_entry_on_submission">Delete entry data after form
+                            submission
+                        </el-checkbox>
 
-                    <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
 
-                    <p v-if="formSettings.delete_entry_on_submission == 'yes'"><br/>Your data will be deleted on form
-                        submission so no entry data, analytics and visual reporting will be available for this form </p>
+                        <p v-if="formSettings.delete_entry_on_submission == 'yes'"><br/>Your data will be deleted on
+                            form
+                            submission so no entry data, analytics and visual reporting will be available for this form
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <br/><br/>
-            <el-row class="setting_header">
-                <el-col :md="24">
-                    <h2>
-                        Other
-                    </h2>
-                </el-col>
-            </el-row>
+            <div class="ff_settings_block ff_top_50">
+                <el-row class="setting_header">
+                    <el-col :md="24">
+                        <h2>
+                            Other
+                        </h2>
+                    </el-col>
+                </el-row>
 
-            <div class="ff_settings_section">
-                <div class="ff_settings_body">
-                    <div class="el-form-item">
-                        <label class="el-form-item__label" style="width: 205px; text-align: left;">
-                            Extra CSS Form Class
-                        </label>
-                        <div class="el-form-item__content" style="margin-left: 205px;">
-                            <el-input
+                <div class="ff_settings_section">
+                    <div class="ff_settings_body">
+                        <div class="el-form-item">
+                            <label class="el-form-item__label" style="width: 205px; text-align: left;">
+                                Extra CSS Form Class
+                            </label>
+                            <div class="el-form-item__content" style="margin-left: 205px;">
+                                <el-input
                                     :disabled="!hasPro"
                                     placeholder="extra css class"
                                     size="small"
                                     v-model="formSettings.form_extra_css_class"/>
+                            </div>
                         </div>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
                     </div>
-                    <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
                 </div>
             </div>
 
             <el-row style="margin-top: 50px">
                 <el-button
-                        :loading="loading"
-                        class="pull-right"
-                        size="medium"
-                        type="success"
-                        icon="el-icon-success"
-                        @click="saveSettings">
+                    :loading="loading"
+                    class="pull-right"
+                    size="medium"
+                    type="success"
+                    icon="el-icon-success"
+                    @click="saveSettings">
                     {{loading ? 'Saving' : 'Save'}} Settings
                 </el-button>
             </el-row>
@@ -428,6 +445,19 @@
                                     showCount: false
                                 }
                             }
+
+                            if (!settings.double_optin) {
+                                settings.double_optin = {
+                                    status: 'no',
+                                    confirmation_message: 'Please check your email inbox to confirm this submission',
+                                    email_body_type: 'global',
+                                    email_body: '',
+                                    email_field: '',
+                                    skip_if_logged_in: 'yes',
+                                    skip_if_fc_subscribed: 'yes'
+                                }
+                            }
+
                             this.formSettings = settings;
                         } else {
                             this.setDefaultSettings();
