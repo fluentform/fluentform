@@ -116,9 +116,10 @@
             li {
                 margin: 0px;
                 cursor: pointer;
+                border-top: 1px solid rgba(255, 255, 255, 0.07);
                 transition: border-color .3s,background-color .3s,color .3s;
                 a {
-                    padding: 16px 15px;
+                    padding: 20px 15px;
                     display: block;
                     text-decoration: none;
                     color: rgb(255, 255, 255);
@@ -362,3 +363,6 @@ select.ff_inline_small {
 
 @import "../styles/responsive";
 
+.ff_top_50 {
+    margin-top: 50px;
+}
