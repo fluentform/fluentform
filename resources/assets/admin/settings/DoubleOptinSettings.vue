@@ -65,6 +65,76 @@
                     <p>Use #confirmation_url# smartcode for double optin confirmation URL</p>
                 </el-form-item>
 
+                <!--from name-->
+                <el-form-item>
+                    <template slot="label">
+                        From Name
+
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>From Name</h3>
+
+                                <p>
+                                    Enter the name you would like the notification email sent from
+                                </p>
+                            </div>
+
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-input size="small" placeholder="From Name"
+                              v-model="settings.fromName"/>
+                    <p v-if="settings.fromName">It will only be visible in the email if "From Email" value is
+                        available </p>
+                </el-form-item>
+
+                <!--from email-->
+                <el-form-item>
+                    <template slot="label">
+                        From Email
+
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>From Email Address</h3>
+                                <p>
+                                    Enter the email address you would like the <br>
+                                    notification email sent from.
+                                </p>
+                            </div>
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-input size="small" placeholder="From Email"
+                              v-model="settings.fromEmail"/>
+                    <p v-if="settings.fromEmail">It's not recommended to change from email. Please use your
+                        domain's email / SMTP main email. Otherwise email may failed to send.</p>
+                </el-form-item>
+
+                <!--reply to-->
+                <el-form-item>
+                    <template slot="label">
+                        Reply To
+
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>Reply To</h3>
+
+                                <p>
+                                    Enter the email address you would like to be <br>
+                                    used as the reply to address for the notification email.
+                                </p>
+                            </div>
+
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-input size="small" placeholder="Reply To Email"
+                              v-model="settings.replyTo"/>
+                </el-form-item>
+
                 <el-checkbox true-label="yes" false-label="no" v-model="settings.auto_delete_status">
                     Automatically delete unconfirmed entries if not confirmed in certain days
                 </el-checkbox>
