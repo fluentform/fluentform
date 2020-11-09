@@ -562,7 +562,6 @@ class Entries extends EntryQuery
         return true;
     }
 
-
     private function getSubmissionAttachments($submissionId, $form)
     {
         $fields = FormFieldsParser::getAttachmentInputFields($form, ['element', 'attributes']);

@@ -85,6 +85,8 @@ class FormSettings
             'advancedValidationSettings' => $form->getAdvancedValidationSettings($formId)
         ];
 
+        $settings = apply_filters('fluentform_form_settings_ajax', $settings, $formId);
+
         wp_send_json_success($settings, 200);
     }
 
@@ -102,6 +104,8 @@ class FormSettings
 
         $form->updateMeta($formId, 'formSettings', $formSettings);
         $form->updateMeta($formId, 'advancedValidationSettings', $advancedValidationSettings);
+
+        do_action('fluentform_after_save_form_settings', $formId, $this->request->all());
 
         wp_send_json_success([
             'message' => __('Settings has been saved.', 'fluentform')

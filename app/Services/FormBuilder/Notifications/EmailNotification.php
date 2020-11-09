@@ -251,7 +251,7 @@ class EmailNotification
         return apply_filters('fluentform_email_template_footer_text', $footerText, $form, $notification);
     }
 
-    private function getHeaders($notification, $isSendAsPlain = false)
+    public function getHeaders($notification, $isSendAsPlain = false)
     {
         $headers = [
             'Content-Type: text/html; charset=utf-8'
