@@ -75,7 +75,6 @@ class FormHandler
 
         $this->setForm($formId);
 
-
         // Parse the form and get the flat inputs with validations.
         $fields = FormFieldsParser::getInputs($this->form, ['rules', 'raw']);
 
@@ -100,6 +99,11 @@ class FormHandler
         }
 
         $insertId = wpFluent()->table('fluentform_submissions')->insert($insertData);
+
+        $uidHash = md5(wp_generate_uuid4() . $insertId);
+        Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
+
+        do_action('fluentform_before_form_actions_processing', $insertId, $this->formData, $this->form);
 
         $result = $this->processFormSubmissionData($insertId, $this->formData, $this->form);
 
@@ -128,6 +132,8 @@ class FormHandler
                 $formData,
                 $form
             );
+
+            Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
 
             $this->app->doAction(
                 'fluentform_submission_inserted_' . $form->type . '_form',

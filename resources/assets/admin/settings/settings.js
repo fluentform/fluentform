@@ -7,6 +7,7 @@ import Settings from './Settings.vue';
 import reCaptcha from './reCaptcha.vue';
 import pdf_settings from './pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings';
+import DoubleOptinSettings from './DoubleOptinSettings';
 
 import {
     Button,
@@ -61,7 +62,8 @@ new Vue({
         settings: Settings,
         re_captcha: reCaptcha,
         pdf_settings: pdf_settings,
-        'general-integration-settings': GeneralIntegrationSettings
+        'general-integration-settings': GeneralIntegrationSettings,
+        'double_optin_settings': DoubleOptinSettings
     },
     data: {
         component: 'settings',
@@ -98,7 +100,6 @@ new Vue({
             if (hash) {
                 that.setRoute(hash);
             }
-
             jQuery(this).parent().addClass('active');
         });
     }

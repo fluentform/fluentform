@@ -529,6 +529,7 @@ class Menu
             'plugin' => $this->app->getSlug(),
             'hasPro' => defined('FLUENTFORMPRO'),
             'hasPDF' => defined('FLUENTFORM_PDF_VERSION'),
+            'hasFluentCRM' => defined('FLUENTCRM'),
             'ace_path_url' => $this->app->publicUrl('libs/ace')
         ));
 
@@ -681,6 +682,12 @@ class Menu
      */
     public function renderGlobalSettings()
     {
+        if (function_exists('wp_enqueue_editor')) {
+            add_filter('user_can_richedit', '__return_true');
+            wp_enqueue_editor();
+            wp_enqueue_media();
+        }
+
         // Fire an event letting others know the current component
         // that fluentform is rendering for the global settings
         // page. So that they can hook and load their custom

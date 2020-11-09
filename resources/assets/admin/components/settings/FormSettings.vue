@@ -1,6 +1,26 @@
 <template>
-    <div v-loading="!formSettings" element-loading-text="Loading Settings..." style="min-height: 100px;">
+    <div class="ff_settings_off" v-loading="!formSettings" element-loading-text="Loading Settings..."
+         style="min-height: 100px;">
         <template v-if="formSettings">
+            <div class="ff_settings_header">
+                <el-row>
+                    <el-col :md="12">
+                        <h2>Form Settings</h2>
+                    </el-col>
+                    <el-col :md="12">
+                        <el-button
+                            :loading="loading"
+                            class="pull-right"
+                            size="small"
+                            type="success"
+                            icon="el-icon-success"
+                            @click="saveSettings">
+                            {{loading ? 'Saving' : 'Save'}} Settings
+                        </el-button>
+                    </el-col>
+                </el-row>
+            </div>
+
             <!--Save settings-->
             <!-- Confirmation Settings -->
             <div class="ff_settings_block">
@@ -12,16 +32,6 @@
                     <!--Save settings-->
                     <el-col :md="12" class="action-buttons clearfix mb15">
                         <video-doc btn_size="medium" class="pull-right ff-left-spaced" route_id="formConfirmation"/>
-
-                        <el-button
-                            :loading="loading"
-                            class="pull-right"
-                            size="medium"
-                            type="success"
-                            icon="el-icon-success"
-                            @click="saveSettings">
-                            {{loading ? 'Saving' : 'Save'}} Settings
-                        </el-button>
                     </el-col>
                 </el-row>
                 <!--confirmation settings form-->
@@ -33,15 +43,128 @@
                         :errors="errors">
                     </add-confirmation>
                 </el-form>
-                <div style="margin-top: 25px">
-                    <el-checkbox true-label="yes" false-label="no" v-model="formSettings.double_optin.status">Enable <b>Double
-                        Optin</b> Confirmation before Form Processing
-                    </el-checkbox>
-                </div>
+            </div>
+
+            <!--Double Opt-in settings-->
+            <div v-if="double_optin" class="ff_settings_block">
+                <el-checkbox true-label="yes" false-label="no" v-model="double_optin.status">
+                    Enable <b>Double Optin</b> Confirmation before Form Data Processing
+                </el-checkbox>
+
+                <el-form class="ff_top_50" v-if="double_optin.status == 'yes'" :data="double_optin" label-width="205px"
+                         label-position="left">
+
+                    <el-form-item>
+                        <template slot="label">
+                            Primary Email Field
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <p>
+                                        Select The primary Email field from form fields.<br/>
+                                        In the selected email field, The double-optin email will be sent for
+                                        verification
+                                    </p>
+                                </div>
+
+                                <i class="el-icon-info el-text-info"/>
+                            </el-tooltip>
+                        </template>
+
+                        <el-select v-model="double_optin.email_field" placeholder="Select an email field">
+                            <el-option
+                                v-for="(item, index) in emailFields"
+                                :key="index"
+                                :label="item.admin_label"
+                                :value="item.attributes.name">
+                            </el-option>
+                        </el-select>
+
+                    </el-form-item>
+
+                    <template v-if="double_optin.email_field">
+                        <el-form-item>
+                            <template slot="label">
+                                Initial Success Message
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <h3>Initial Success Message</h3>
+                                        <p>
+                                            Enter the text you would like the user to <br>
+                                            see just after initial form submission.
+                                        </p>
+                                    </div>
+
+                                    <i class="el-icon-info el-text-info"/>
+                                </el-tooltip>
+                            </template>
+                            <wp-editor :height="75" :editor-shortcodes="editorShortcodes"
+                                       v-model="double_optin.confirmation_message"/>
+                            <p>This message will be shown after the intial form submission</p>
+                        </el-form-item>
+
+                        <el-form-item label="Email Type">
+                            <el-radio-group v-model="double_optin.email_body_type">
+                                <el-radio label="global">As Per Global Settings</el-radio>
+                                <el-radio label="custom">Customized Double Optin Email</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+
+                        <template v-if="double_optin.email_body_type == 'custom'">
+                            <el-form-item>
+                                <template slot="label">
+                                    Optin Email Subject
+                                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                                        <div slot="content">
+                                            <p>
+                                                Email Subject for double optin email.<br />You can use any smart code in the email subject
+                                            </p>
+                                        </div>
+
+                                        <i class="el-icon-info el-text-info"/>
+                                    </el-tooltip>
+                                </template>
+                                <el-input size="small" placeholder="Email Subject"
+                                          v-model="double_optin.email_subject"/>
+                            </el-form-item>
+                            <el-form-item>
+                                <template slot="label">
+                                    Optin Email Body
+                                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                                        <div slot="content">
+                                            <h3>Optin Email Body</h3>
+                                            <p>
+                                                Enter the content you would like the user to <br>
+                                                send via email for confirmation.
+                                            </p>
+                                        </div>
+
+                                        <i class="el-icon-info el-text-info"/>
+                                    </el-tooltip>
+                                </template>
+                                <wp-editor :height="150" :editor-shortcodes="editorShortcodes"
+                                           v-model="double_optin.email_body"/>
+                                <p>Use #confirmation_url# smartcode for double optin confirmation URL</p>
+                            </el-form-item>
+                        </template>
+
+                        <div class="form_item">
+                            <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_logged_in">
+                                Disable Double Optin for Logged in users
+                            </el-checkbox>
+                        </div>
+
+                        <div v-if="hasFluentCRM" class="form_item">
+                            <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
+                                Disable Double Optin if contact email is subscribed in <b>FluentCRM</b>
+                            </el-checkbox>
+                        </div>
+                    </template>
+
+                </el-form>
             </div>
 
             <!-- Appearance Settings -->
-            <div class="ff_settings_block ff_top_50">
+            <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="12">
                         <h2>Form Layout</h2>
@@ -158,7 +281,7 @@
             </div>
 
             <!-- Form Restrictions -->
-            <div class="ff_settings_block ff_top_50">
+            <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="12">
                         <h2>
@@ -177,7 +300,7 @@
                 </div>
             </div>
 
-            <div class="ff_advanced_validation_wrapper ff_settings_block ff_top_50">
+            <div class="ff_advanced_validation_wrapper ff_settings_block">
                 <!-- Header -->
                 <el-row class="setting_header">
                     <el-col :md="24">
@@ -200,7 +323,7 @@
             </div>
 
             <!-- Survey Result -->
-            <div class="ff_settings_block ff_top_50">
+            <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>Survey Result</h2>
@@ -216,7 +339,7 @@
                 </div>
             </div>
 
-            <div class="ff_settings_block ff_top_50">
+            <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
@@ -254,7 +377,7 @@
                 </div>
             </div>
 
-            <div class="ff_settings_block ff_top_50">
+            <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
@@ -371,7 +494,16 @@
                 isPageLoading: true,
                 errors: new Errors,
                 delete_entry_on_submission: 'no',
-                hasPro: !!window.FluentFormApp.hasPro
+                hasPro: !!window.FluentFormApp.hasPro,
+                hasFluentCRM: !!window.FluentFormApp.hasFluentCRM,
+                double_optin: false
+            }
+        },
+        computed: {
+            emailFields() {
+                return _ff.filter(this.inputs, (input) => {
+                    return input.attributes.type === 'email';
+                });
             }
         },
         methods: {
@@ -446,23 +578,14 @@
                                 }
                             }
 
-                            if (!settings.double_optin) {
-                                settings.double_optin = {
-                                    status: 'no',
-                                    confirmation_message: 'Please check your email inbox to confirm this submission',
-                                    email_body_type: 'global',
-                                    email_body: '',
-                                    email_field: '',
-                                    skip_if_logged_in: 'yes',
-                                    skip_if_fc_subscribed: 'yes'
-                                }
-                            }
-
                             this.formSettings = settings;
                         } else {
                             this.setDefaultSettings();
                         }
                         this.advancedValidationSettings = response.data.advancedValidationSettings;
+
+                        this.double_optin = response.data.double_optin;
+
                     })
                     .fail(e => {
                         this.setDefaultSettings();
@@ -484,7 +607,8 @@
                 let data = {
                     form_id: this.form_id,
                     formSettings: JSON.stringify(this.formSettings),
-                    advancedValidationSettings: JSON.stringify(this.advancedValidationSettings)
+                    advancedValidationSettings: JSON.stringify(this.advancedValidationSettings),
+                    double_optin: JSON.stringify(this.double_optin)
                 };
 
                 this.$ajax.post('saveFormGeneralSettings', data)

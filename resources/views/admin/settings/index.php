@@ -17,9 +17,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                         <a data-hash="settings"
                            href="<?php echo Helper::makeMenuUrl('fluent_forms_settings', [
                                'hash' => 'settings'
-                           ]); ?>"
-                        >
+                           ]); ?>">
                             <?php echo __('Settings'); ?>
+                        </a>
+                    </li>
+                    <li class="<?php echo Helper::getHtmlElementClass('double_optin_settings', $currentComponent); ?> ff_menu_item_double_optin">
+                        <a data-hash="double_optin_settings"
+                           href="<?php echo Helper::makeMenuUrl('fluent_forms_settings', [
+                               'hash' => 'double_optin_settings'
+                           ]); ?>">
+                            <?php echo __('Double Optin Settings', 'fluentform'); ?>
                         </a>
                     </li>
                     <?php foreach ($components as $componentName => $component): ?>

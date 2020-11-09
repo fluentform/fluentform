@@ -269,7 +269,6 @@ p {
   margin-top: 20px;
   box-sizing: border-box;
   .ff_global_notice {
-    padding: 15px;
     background: white;
     margin-right: 20px;
     display: block;
@@ -370,4 +369,30 @@ label.el-radio, label.el-checkbox {
 
 .ff_email_resend_inline {
   display: inline-block;
+}
+
+.ff_settings_off {
+  background-color: #f7fafc;
+  padding: 10px 15px;
+  margin: -15px -35px;
+  .ff_settings_block {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    border-radius: 6px;
+    box-shadow: 0 0 35px 0 rgba(16,64,112,.15);
+  }
+}
+
+.ff_settings_header {
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-top: -10px;
+  padding: 10px 20px 10px;
+  border-bottom: 1px solid #e0dbdb;
+  h2 {
+    margin: 0;
+    line-height: 30px;
+  }
 }
