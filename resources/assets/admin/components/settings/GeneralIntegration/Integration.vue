@@ -21,7 +21,7 @@
         </div>
 
         <!-- GetResponse Feeds Table: 1 -->
-        <el-table v-else border stripe v-loading="loading" stripe :data="integrations" class="el-fluid" >
+        <el-table v-else border stripe v-loading="loading" :data="integrations">
             <template slot="empty">
                 <div class="getting_started_message">
                     <p>You don't have any form feed integration yet. Create new feed and connect your data to your favorite CRM/Marketing tool</p>

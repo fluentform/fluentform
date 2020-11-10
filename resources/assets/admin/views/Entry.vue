@@ -97,7 +97,7 @@
                                     entry.ip }}</a></p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>Source URL : <a target="_blank" :href="entry.source_url">{{ entry.source_url }}</a>
+                                <p style="word-break: break-all;">Source URL : <a target="_blank" :href="entry.source_url">{{ entry.source_url }}</a>
                                 </p>
                             </div>
                             <div class="wpf_each_entry">
@@ -148,7 +148,7 @@
         </el-row>
 
         <email-resend :form_id="form_id" :entry_id="entry_id" />
-
+        <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
         <el-dialog
             title="Edit Entry Data"
             top="42px"
@@ -159,7 +159,6 @@
                         v-if="editTable" :labels="labels" :submission="entry"
                         :fields="formFields"></edit-entry>
         </el-dialog>
-
     </div>
 </template>
 
@@ -172,6 +171,7 @@
     import EntryFileList from './Helpers/FilesList.vue';
     import EntryImageList from './Helpers/ImageList.vue';
     import EmailResend from './Helpers/_ResentEmailNotification'
+    import ManualEntryActions from './Helpers/_ManualEntryActions'
     import PaymentSummary from './Payments/PaymentSummary'
 
     export default {
@@ -185,7 +185,8 @@
             EntryFileList,
             EntryImageList,
             EmailResend,
-            PaymentSummary
+            PaymentSummary,
+            ManualEntryActions
         },
         data() {
             return {

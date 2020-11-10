@@ -128,7 +128,7 @@ class GlobalNotificationManager
         $handler->dispatchAjax(['origin_id' => $insertId]);
     }
 
-    private function checkCondition($parsedValue, $formData, $insertId)
+    public function checkCondition($parsedValue, $formData, $insertId)
     {
         $conditionSettings = ArrayHelper::get($parsedValue, 'conditionals');
         if (
