@@ -65,9 +65,23 @@ class GlobalIntegrationManager
     {
         $formId = $this->app->request->get('form_id');
 
+        $formattedFeeds = $this->getNotificationFeeds($formId);
+
+        $availableIntegrations = apply_filters('fluentform_get_available_form_integrations', [], $formId);
+
+        wp_send_json_success([
+            'feeds'                  => $formattedFeeds,
+            'available_integrations' => $availableIntegrations,
+            'all_module_config_url'  => admin_url('admin.php?page=fluent_form_add_ons')
+        ], 200);
+
+    }
+
+    public function getNotificationFeeds($formId)
+    {
         $notificationKeys = apply_filters('fluentform_global_notification_types', [], $formId);
 
-        if($notificationKeys) {
+        if ($notificationKeys) {
             $feeds = wpFluent()->table('fluentform_form_meta')
                 ->where('form_id', $formId)
                 ->whereIn('meta_key', $notificationKeys)
@@ -82,9 +96,9 @@ class GlobalIntegrationManager
         foreach ($feeds as $feed) {
             $data = json_decode($feed->value, true);
             $enabled = $data['enabled'];
-            if($enabled && $enabled == 'true') {
+            if ($enabled && $enabled == 'true') {
                 $enabled = true;
-            } else if($enabled == 'false') {
+            } else if ($enabled == 'false') {
                 $enabled = false;
             }
             $feedData = [
@@ -97,15 +111,7 @@ class GlobalIntegrationManager
             $feedData = apply_filters('fluentform_global_notification_feed_' . $feed->meta_key, $feedData, $formId);
             $formattedFeeds[] = $feedData;
         }
-
-        $availableIntegrations = apply_filters('fluentform_get_available_form_integrations', [], $formId);
-
-        wp_send_json_success([
-            'feeds'                  => $formattedFeeds,
-            'available_integrations' => $availableIntegrations,
-            'all_module_config_url' => admin_url('admin.php?page=fluent_form_add_ons')
-        ], 200);
-
+        return $formattedFeeds;
     }
 
     public function updateNotificationStatus()
@@ -185,9 +191,9 @@ class GlobalIntegrationManager
             $settings = apply_filters('fluentform_get_integration_defaults_' . $integrationName, $settings, $formId);
         }
 
-        if($settings['enabled'] == 'true') {
+        if ($settings['enabled'] == 'true') {
             $settings['enabled'] = true;
-        } else if($settings['enabled'] == 'false' || $settings['enabled']) {
+        } else if ($settings['enabled'] == 'false' || $settings['enabled']) {
             $settings['enabled'] = false;
         }
 
@@ -208,37 +214,37 @@ class GlobalIntegrationManager
         $integrationId = intval($this->app->request->get('integration_id'));
         $formId = intval($this->app->request->get('form_id'));
 
-        if($this->app->request->get('data_type') == 'stringify') {
+        if ($this->app->request->get('data_type') == 'stringify') {
             $integration = \json_decode($this->app->request->get('integration'), true);
         } else {
             $integration = wp_unslash($_REQUEST['integration']);
         }
 
-        if($integration['enabled'] && $integration['enabled'] == 'true') {
+        if ($integration['enabled'] && $integration['enabled'] == 'true') {
             $integration['status'] = true;
         }
 
-        if(!$integration['name']) {
+        if (!$integration['name']) {
             wp_send_json_error([
                 'message' => 'Validation Failed',
-                'errors' => [
+                'errors'  => [
                     'name' => ['Feed name is required']
                 ]
             ], 423);
         }
 
-        $integration = apply_filters('fluentform_save_integration_value_'.$integrationName, $integration, $integrationId, $formId);
+        $integration = apply_filters('fluentform_save_integration_value_' . $integrationName, $integration, $integrationId, $formId);
 
         $data = [
-            'form_id' => $formId,
-            'meta_key' => $integrationName.'_feeds',
-            'value' => \json_encode($integration)
+            'form_id'  => $formId,
+            'meta_key' => $integrationName . '_feeds',
+            'value'    => \json_encode($integration)
         ];
 
-        $data = apply_filters('fluentform_save_integration_settings_'.$integrationName, $data, $integrationId);
+        $data = apply_filters('fluentform_save_integration_settings_' . $integrationName, $data, $integrationId);
 
         $created = false;
-        if($integrationId) {
+        if ($integrationId) {
             wpFluent()->table('fluentform_form_meta')
                 ->where('form_id', $formId)
                 ->where('id', $integrationId)
@@ -250,10 +256,10 @@ class GlobalIntegrationManager
         }
 
         wp_send_json_success([
-            'message' => __('Integration successfully saved', 'fluentform'),
-            'integration_id' => $integrationId,
+            'message'          => __('Integration successfully saved', 'fluentform'),
+            'integration_id'   => $integrationId,
             'integration_name' => $integrationName,
-            'created' => $created
+            'created'          => $created
         ], 200);
     }
 
