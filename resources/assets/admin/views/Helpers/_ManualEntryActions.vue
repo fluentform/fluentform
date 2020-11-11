@@ -10,7 +10,6 @@
             :visible.sync="dialogVisible"
             width="60%">
             <template v-if="has_pro">
-
                 <div v-loading="loading" element-loading-text="Loading Feeds..." class="ff_notification_feeds">
                     <el-table border stripe :data="feeds">
                         <el-table-column
@@ -44,12 +43,11 @@
                         </el-table-column>
                     </el-table>
                 </div>
-
                 <div v-if="error_message" v-html="error_message" class="ff-error"></div>
                 <div v-if="success_message" v-html="success_message" class="ff-success"></div>
             </template>
             <div style="text-align: center" v-else>
-                <h3>This feature is available on pro version of fluent forms.</h3>
+                <h3>This feature is available on pro version of Fluent Forms.</h3>
                 <a target="_blank"
                    href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop"
                    class="el-button el-button--danger">
@@ -152,7 +150,10 @@
                         this.feeds = response.data.feeds;
                     })
                     .fail((errors) => {
-
+                        if (!error.responseJSON && !error.responseText || error.responseText == '0') {
+                            alert('Looks like you are using older version of fluent forms pro. Please update to latest version');
+                            return;
+                        }
                     })
                     .always(() => {
                         this.loading = false;
