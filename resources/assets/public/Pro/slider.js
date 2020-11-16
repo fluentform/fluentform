@@ -557,7 +557,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             });
             previewThumb.append($('<div/>', {
                 class: 'ff-upload-preview-img',
-                style: `background-image: url('${fileUrl}');`
+                style: `background-image: url('${getThumbnail(fileUrl)}');`
             }));
 
             var previewDetails = $('<div/>', {
@@ -605,6 +605,31 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
         $el.trigger('change_remaining', - fileUrls.length);
         $el.trigger('change');
+    };
+
+    var getThumbnail = function (file) {
+
+        const extension = file.split(/[#?]/)[0].split('.').pop().trim().toLowerCase();
+
+        if (['jpg', 'jpeg', 'gif', 'png'].indexOf(extension) != -1) {
+            return file;
+        }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = 60;
+        canvas.height = 60;
+        canvas.style.zIndex = 8;
+        canvas.style.position = "absolute";
+        canvas.style.border = "1px solid";
+
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(0, 0, 60, 60);
+        ctx.font = "13px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText(extension, 30, 30, 60);
+        return canvas.toDataURL();
     };
 
     var init = function () {

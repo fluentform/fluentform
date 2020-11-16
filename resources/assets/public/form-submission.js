@@ -30,6 +30,7 @@ jQuery(document).ready(function () {
         if (!fluentFormVars) {
             fluentFormVars = {};
         }
+
         fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
 
         window.fluentFormApp = function ($theForm) {
@@ -770,7 +771,7 @@ jQuery(document).ready(function () {
                     }
                 });
             }
-        }
+        };
 
         /**
          * Validation factory

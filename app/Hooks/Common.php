@@ -108,6 +108,13 @@ foreach ($elements as $element) {
     }, 10, 4);
 }
 
+$app->addFilter('fluentform_response_render_textarea', function ($value, $field, $formId, $isHtml) {
+    if(!$isHtml || !$value) {
+        return $value;
+    }
+    return '<span style="white-space: pre">'.$value.'</span>';
+}, 10, 4);
+
 $app->addFilter('fluentform_response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
     return \FluentForm\App\Modules\Form\FormDataParser::formatFileValues($response, $isHtml);
 }, 10, 4);
@@ -334,3 +341,25 @@ if(defined('ELEMENTOR_VERSION')) {
 }
 
 (new FluentForm\App\Services\Integrations\Slack\SlackNotificationActions($app))->register();
+
+
+/*
+ * Smartcode parser shortcodes
+ */
+
+add_filter('ff_will_return_html', function ($result, $integration, $key) {
+    $dictionary = [
+        'notifications' => ['message']
+    ];
+
+    if(!isset($dictionary[$integration])) {
+        return $result;
+    }
+
+    if(in_array($key, $dictionary[$integration])) {
+        return true;
+    }
+
+    return $result;
+
+}, 10, 3);

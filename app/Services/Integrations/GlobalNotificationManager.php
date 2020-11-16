@@ -82,7 +82,7 @@ class GlobalNotificationManager
             // It's sync
             $processedValues = $feed['settings'];
             unset($processedValues['conditionals']);
-            $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData);
+            $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData, $form, false, $feed['meta_key']);
             $feed['processedValues'] = $processedValues;
 
             if (apply_filters('fluentform_notifying_async_' . $integrationKey, true, $form->id)) {
