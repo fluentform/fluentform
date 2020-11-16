@@ -104,6 +104,10 @@ foreach ($elements as $element) {
             }
         }
 
+        if($element == 'input_checkbox') {
+            return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
+        }
+
         return \FluentForm\App\Modules\Form\FormDataParser::formatValue($response);
     }, 10, 4);
 }

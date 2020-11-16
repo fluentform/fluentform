@@ -68,6 +68,8 @@ class FormHandler
         // Parse the url encoded data from the request object.
         parse_str($this->app->request->get('data'), $data);
 
+        $data['_wp_http_referer'] = urldecode( $data['_wp_http_referer']);
+
         // Merge it back again to the request object.
         $this->app->request->merge(['data' => $data]);
 
@@ -513,7 +515,6 @@ class FormHandler
      */
     public function prepareInsertData($formData = false)
     {
-
         $formId = $this->form->id;
 
         if (!$formData) {
@@ -547,7 +548,7 @@ class FormHandler
             'form_id' => $formId,
             'serial_number' => $serialNumber,
             'response' => json_encode($this->formData),
-            'source_url' => site_url(Arr::get($this->formData, '_wp_http_referer')),
+            'source_url' => site_url(Arr::get($formData, '_wp_http_referer')),
             'user_id' => get_current_user_id(),
             'browser' => $browser->getBrowser(),
             'device' => $browser->getPlatform(),
@@ -555,6 +556,7 @@ class FormHandler
             'created_at' => current_time('mysql'),
             'updated_at' => current_time('mysql')
         ];
+
 
         return apply_filters('fluentform_filter_insert_data', $response);
     }
