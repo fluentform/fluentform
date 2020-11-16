@@ -23,6 +23,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             // Set maximum allowed files count protection
             var rules = form.rules[element.prop('name')];
             var maxFiles = rules['max_file_count']['value'];
+
             if ('max_file_count' in rules) {
                 rules['max_file_count']['remaining'] = Number(maxFiles);
             }
@@ -235,6 +236,11 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     showUploadError(errors.join(', '));
                 }
             });
+
+            $el.on('change_remaining', function (e, data) {
+                rules['max_file_count']['remaining'] += data;
+            });
+
         });
     };
 
@@ -297,6 +303,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 if (!parent.find('.ff-upload-preview').length) {
                     parent.siblings('.ff-upload-progress').addClass('ff-hidden');
                 }
+                $el.trigger('change_remaining', 1);
             } else {
                 $.post(fluentFormVars.ajaxUrl, {
                     path: filePath,
@@ -304,8 +311,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 })
                     .then(function (response) {
                         var element = $this.closest('.ff-el-input--content').find('input');
-                        var rules = form.rules[element.prop('name')];
-                        rules['max_file_count']['remaining'] += 1;
+                        $el.trigger('change_remaining', 1);
                         $this.closest('.ff-upload-preview').remove();
                         if (!parent.find('.ff-upload-preview').length) {
                             parent.siblings('.ff-upload-progress').addClass('ff-hidden');

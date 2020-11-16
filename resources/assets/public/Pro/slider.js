@@ -9,14 +9,16 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
     fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
 
-    fluentFormVars.enable_step_data_persistency = $theForm.find(
+    const stepPersistency = $theForm.find(
         '.ff-step-container'
-    ).attr('data-enable_step_data_persistency');
+    ).attr('data-enable_step_data_persistency') == 'yes';
 
-    if (fluentFormVars.enable_step_data_persistency == 'yes') {
-        fluentFormVars.enable_step_page_resume = $theForm.find(
+    let stepResume = false;
+
+    if (stepPersistency) {
+        stepResume = $theForm.find(
             '.ff-step-container'
-        ).attr('data-enable_step_page_resume');
+        ).attr('data-enable_step_page_resume') == 'yes';
     }
 
     var isRtl = !!window.fluentFormVars.is_rtl;
@@ -39,7 +41,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
     };
 
     var initFormWithSavedState = function () {
-        if (fluentFormVars.enable_step_data_persistency == 'no') return;
+        if (!stepPersistency) return;
 
         jQuery(document).ready(e => {
             jQuery.getJSON(fluentFormVars.ajaxUrl, {
@@ -58,6 +60,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             if (!value) return;
 
             let type = Object.prototype.toString.call(value);
+
 
             if (type === '[object Object]') {
                 let $el = jQuery(`[data-name=${key}]`);
@@ -102,13 +105,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                         jQuery(`[name="${key}[${k}]"]`).val(v).change();
                     });
                 }
-            } else if (type === '[object Array]') {
+            }
+            else if (type === '[object Array]') {
                 let $el = jQuery(`[name=${key}]`);
+
                 $el = $el.length ? $el : jQuery(`[data-name=${key}]`);
                 $el = $el.length ? $el : jQuery(`[name=${key}\\[\\]]`);
-                if ($el.prop('multiple')) {
+                if ($el.attr('type') == 'file') {
+                    addFilesToElement($el, value);
+                }
+                else if ($el.prop('multiple')) {
                     $el.val(value).change();
-                } else if ($el.attr('data-type') === 'repeater_field') {
+                }
+                else if ($el.attr('data-type') === 'repeater_field') {
                     // Repeater Field
                     let $tbody = $el.find('tbody');
                     let elName = $el.attr('data-name');
@@ -131,7 +140,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                             }).change();
                         });
                     });
-                } else {
+                }
+                else {
                     // Checkbox Groups
                     $el.each((i, $elem) => {
                         if (jQuery.inArray($($elem).val(), value) != -1) {
@@ -139,11 +149,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                         }
                     });
                 }
-            } else {
+            }
+            else {
                 // Others
                 let $el = jQuery(`[name=${key}]`);
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
-                    jQuery(`[name=${key}][value=${value}]`).prop('checked', true).change();
+                    jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                 } else {
                     $el.val(value).change();
                 }
@@ -151,10 +162,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         });
 
         isPopulatingStepData = true;
-        if (fluentFormVars.enable_step_page_resume == 'yes') {
+        if (stepResume) {
             updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
         }
         ;
+
         isPopulatingStepData = false;
     };
 
@@ -366,7 +378,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
 
         // Fire ajax request to persist the step state/data
-        if (fluentFormVars.enable_step_data_persistency == 'yes' && !isPopulatingStepData) {
+        if (stepPersistency && !isPopulatingStepData) {
             saveStepData($theForm, activeStep).then(response => {
                 console.log(response);
             });
@@ -420,9 +432,34 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 !$el.val();
         }).prepend('<option selected disabled />');
 
+        let inputData = $inputs.serialize();
+
+        var hasFiles = false;
+        $.each($theForm.find('[type=file]'), function (index, fileInput) {
+            var params = {}, fileInputName = fileInput.name + '[]';
+            params[fileInputName] = [];
+
+            $(fileInput)
+                .closest('div')
+                .find('.ff-uploaded-list')
+                .find('.ff-upload-preview[data-src]')
+                .each(function (i, div) {
+                    params[fileInputName][i] = $(this).data('src');
+                });
+
+            $.each(params, function (k, v) {
+                if (v.length) {
+                    var obj = {};
+                    obj[k] = v;
+                    inputData += '&' + $.param(obj);
+                    hasFiles = true;
+                }
+            });
+        });
+
         var formData = {
             active_step: activeStep,
-            data: $inputs.serialize(),
+            data: inputData,
             form_id: $theForm.data('form_id'),
             action: 'fluentform_step_form_save_data'
         };
@@ -504,6 +541,70 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             maybeAction($(this));
         });
 
+    };
+
+    var addFilesToElement = function ($el, fileUrls) {
+        var $uploadedList = $el.closest('.ff-el-input--content').find('.ff-uploaded-list');
+
+        $.each(fileUrls, function (index, fileUrl) {
+            var previewContainer = $('<div/>', {
+                class: 'ff-upload-preview',
+                'data-src': fileUrl,
+                style: 'border: 1px solid rgb(111, 117, 125)'
+            });
+            var previewThumb = $('<div/>', {
+                class: 'ff-upload-thumb'
+            });
+            previewThumb.append($('<div/>', {
+                class: 'ff-upload-preview-img',
+                style: `background-image: url('${fileUrl}');`
+            }));
+
+            var previewDetails = $('<div/>', {
+                class: 'ff-upload-details'
+            });
+
+
+            var fileProgress = $('<span/>', {
+                html: fluentFormVars.upload_completed_txt,
+                class: 'ff-upload-progress-inline-text ff-inline-block'
+            });
+
+            var fileName = $('<div/>', {
+                class: 'ff-upload-filename',
+                html: fileUrl.substring(fileUrl.lastIndexOf('/') + 1)
+            });
+
+            var progressBarInline = $(`
+									<div class="ff-upload-progress-inline ff-el-progress">
+										<div style="width: 100%;" class="ff-el-progress-bar"></div>
+									</div>
+								`);
+
+            var removeBtn = $('<span/>', {
+                'data-href': '#',
+                'html': '&times;',
+                'class': 'ff-upload-remove'
+            });
+
+            var fileSize = $('<div>', {
+                class: 'ff-upload-filesize ff-inline-block',
+                html: ''
+            });
+
+            var errorInline = $('<div>', {
+                class: 'ff-upload-error',
+                style: 'color:red;'
+            });
+
+            previewDetails.append(fileName, progressBarInline, fileProgress, fileSize, errorInline, removeBtn);
+            previewContainer.append(previewThumb, previewDetails);
+
+            $uploadedList.append(previewContainer);
+        });
+
+        $el.trigger('change_remaining', - fileUrls.length);
+        $el.trigger('change');
     };
 
     var init = function () {
