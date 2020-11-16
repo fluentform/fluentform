@@ -192,9 +192,9 @@
                                         valign="top">
                                         <?php
                                         $generateText = sprintf(
-                                            __('This email has been generated from Fluent Forms at %1$s%2s%3$s.', 'fluentform'),
+                                            __('This email has been generated from Fluent Forms at %1$s%2$s%3$s.', 'fluentform'),
                                             '<a href="' .  site_url() . '">',
-                                            get_bloginfo('site_title'),
+                                            get_bloginfo('name'),
                                             '</a>'
                                         );
                                         $generateText = apply_filters('fluentform_email_summary_body_text', $generateText, $submissions);

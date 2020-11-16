@@ -92,7 +92,7 @@
                     action: 'fluentform_update_entry',
                     form_id: this.form_id,
                     entry_id: this.entry_id,
-                    entry: this.entry
+                    entry: JSON.stringify(this.entry)
                 })
                     .then(response => {
                         this.$notify.success({

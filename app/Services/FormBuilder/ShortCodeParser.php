@@ -3,10 +3,10 @@
 namespace FluentForm\App\Services\FormBuilder;
 
 use FluentForm\App;
-use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Browser\Browser;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class ShortCodeParser
 {
@@ -19,27 +19,27 @@ class ShortCodeParser
     protected static $formFields = null;
 
     protected static $store = [
-        'inputs' => null,
+        'inputs'          => null,
         'original_inputs' => null,
-        'user' => null,
-        'post' => null,
-        'other' => null,
-        'submission' => null
+        'user'            => null,
+        'post'            => null,
+        'other'           => null,
+        'submission'      => null
     ];
 
-    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false)
+    public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $provider = false)
     {
         try {
             static::setDependencies($entryId, $data, $form);
 
             if (is_array($parsable)) {
-                return static::parseShortCodeFromArray($parsable, $isUrl);
+                return static::parseShortCodeFromArray($parsable, $isUrl, $provider);
             }
 
-            return static::parseShortCodeFromString($parsable, $isUrl);
+            return static::parseShortCodeFromString($parsable, $isUrl, false);
 
         } catch (\Exception $e) {
-            if(defined('WP_DEBUG') && WP_DEBUG) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log($e->getTraceAsString());
             }
             return '';
@@ -79,29 +79,33 @@ class ShortCodeParser
         }
     }
 
-    protected static function parseShortCodeFromArray($parsable, $isUrl = false)
+    protected static function parseShortCodeFromArray($parsable, $isUrl = false, $provider = false)
     {
         foreach ($parsable as $key => $value) {
             if (is_array($value)) {
-                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl);
+                $parsable[$key] = static::parseShortCodeFromArray($value, $isUrl, $provider);
             } else {
-                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl);
+                $isHtml = false;
+                if ($provider) {
+                    $isHtml = apply_filters('ff_will_return_html', false, $provider, $key);
+                }
+                $parsable[$key] = static::parseShortCodeFromString($value, $isUrl, $isHtml);
             }
         }
 
         return $parsable;
     }
 
-    protected static function parseShortCodeFromString($parsable, $isUrl = false)
+    protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false)
     {
-        if(!$parsable) {
+        if (!$parsable) {
             return '';
         }
-        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl) {
+        return preg_replace_callback('/{+(.*?)}/', function ($matches) use ($isUrl, $isHtml) {
             $value = '';
             if (strpos($matches[1], 'inputs.') !== false) {
                 $formProperty = substr($matches[1], strlen('inputs.'));
-                $value = static::getFormData($formProperty);
+                $value = static::getFormData($formProperty, $isHtml);
             } elseif (strpos($matches[1], 'user.') !== false) {
                 $userProperty = substr($matches[1], strlen('user.'));
                 $value = static::getUserData($userProperty);
@@ -117,18 +121,18 @@ class ShortCodeParser
             } elseif (strpos($matches[1], 'cookie.') !== false) {
                 $scookieProperty = substr($matches[1], strlen('cookie.'));
                 $value = ArrayHelper::get($_COOKIE, $scookieProperty);
-            }  elseif (strpos($matches[1], 'payment.') !== false) {
+            } elseif (strpos($matches[1], 'payment.') !== false) {
                 $property = substr($matches[1], strlen('payment.'));
                 $value = apply_filters('fluentform_payment_smartcode', '', $property, self::getInstance());
             } else {
                 $value = static::getOtherData($matches[1]);
             }
 
-            if(is_array($value)) {
+            if (is_array($value)) {
                 $value = fluentImplodeRecursive(', ', $value);
             }
 
-            if($isUrl) {
+            if ($isUrl) {
                 $value = urlencode($value);
             }
 
@@ -137,19 +141,29 @@ class ShortCodeParser
         }, $parsable);
     }
 
-    protected static function getFormData($key)
+    protected static function getFormData($key, $isHtml = false)
     {
-        if(strpos($key, '.label')) {
+        if (strpos($key, '.label')) {
             $key = str_replace('.label', '', $key);
-            $value = ArrayHelper::get(static::$store['original_inputs'], $key);
             $field = ArrayHelper::get(static::$formFields, $key, '');
-            return static::$store['inputs'][$key] = apply_filters(
+            if (empty($field['element'])) {
+                return '';
+            }
+
+            $value = ArrayHelper::get(static::$store['original_inputs'], $key);
+
+            return apply_filters(
                 'fluentform_response_render_' . $field['element'],
-                static::$store['inputs'][$key],
+                $value,
                 $field,
                 static::getForm()->id,
                 true
             );
+        }
+
+        if (strpos($key, '.value')) {
+            $key = str_replace('.value', '', $key);
+            return ArrayHelper::get(static::$store['original_inputs'], $key);
         }
 
         if (strpos($key, '.') && !isset(static::$store['inputs'][$key])) {
@@ -173,16 +187,26 @@ class ShortCodeParser
         }
 
         $field = ArrayHelper::get(static::$formFields, $key, '');
-        
+
 
         if (!$field) return '';
-        
+
+        if($isHtml) {
+            return apply_filters(
+                'fluentform_response_render_' . $field['element'],
+                static::$store['original_inputs'][$key],
+                $field,
+                static::getForm()->id,
+                $isHtml
+            );
+        }
+
         return static::$store['inputs'][$key] = apply_filters(
             'fluentform_response_render_' . $field['element'],
             static::$store['inputs'][$key],
             $field,
             static::getForm()->id,
-            false
+            $isHtml
         );
     }
 
@@ -206,26 +230,26 @@ class ShortCodeParser
             $authorProperty = substr($key, strlen('author.'));
             $authorId = static::$store['post']->post_author;
             if ($authorId) {
-                $data =  get_the_author_meta($authorProperty, $authorId);
-                if(!is_array($data)) {
+                $data = get_the_author_meta($authorProperty, $authorId);
+                if (!is_array($data)) {
                     return $data;
                 }
             }
             return '';
-        } else if(strpos($key, 'meta.') !== false) {
+        } else if (strpos($key, 'meta.') !== false) {
             $metaKey = substr($key, strlen('meta.'));
             $postId = static::$store['post']->ID;
             $data = get_post_meta($postId, $metaKey, true);
-            if(!is_array($data)) {
+            if (!is_array($data)) {
                 return $data;
             }
             return '';
-        } else if(strpos($key, 'acf.') !== false) {
+        } else if (strpos($key, 'acf.') !== false) {
             $metaKey = substr($key, strlen('acf.'));
             $postId = static::$store['post']->ID;
-            if(function_exists('get_field')) {
-                $data = get_field($metaKey, $postId,  true);
-                if(!is_array($data)) {
+            if (function_exists('get_field')) {
+                $data = get_field($metaKey, $postId, true);
+                if (!is_array($data)) {
                     return $data;
                 }
                 return '';
@@ -253,20 +277,20 @@ class ShortCodeParser
     {
         $entry = static::getEntry();
         if (property_exists($entry, $key)) {
-            if($key == 'total_paid' || $key == 'payment_total') {
+            if ($key == 'total_paid' || $key == 'payment_total') {
                 return round($entry->{$key} / 100, 2);
             }
-            if($key == 'payment_method' && $key == 'test') {
+            if ($key == 'payment_method' && $key == 'test') {
                 return __('Offline', 'fluentform');
             }
             return $entry->{$key};
         }
-        if($key == 'admin_view_url') {
-            return admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$entry->form_id.'#/entries/'.$entry->id);
-        } else if(strpos($key, 'meta.') !== false) {
+        if ($key == 'admin_view_url') {
+            return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
+        } else if (strpos($key, 'meta.') !== false) {
             $metaKey = substr($key, strlen('meta.'));
             $data = App\Helpers\Helper::getSubmissionMeta($entry->id, $metaKey);
-            if(!is_array($data)) {
+            if (!is_array($data)) {
                 return $data;
             }
             return '';
@@ -307,7 +331,7 @@ class ShortCodeParser
             return $html;
         }
         // This fallback actually
-        $handlerValue = apply_filters('fluentform_shortcode_parser_callback_' . $key, '{'.$key.'}', self::getInstance());
+        $handlerValue = apply_filters('fluentform_shortcode_parser_callback_' . $key, '{' . $key . '}', self::getInstance());
 
         if ($handlerValue) {
             return $handlerValue;
@@ -349,7 +373,7 @@ class ShortCodeParser
     public static function getInstance()
     {
         static $instance;
-        if($instance) {
+        if ($instance) {
             return $instance;
         }
         $instance = new static();
