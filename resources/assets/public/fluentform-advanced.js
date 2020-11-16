@@ -17,8 +17,6 @@ import calculation from './Pro/calculations'
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
-        const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
-
         /*
         * Normals
          */
@@ -26,18 +24,22 @@ import calculation from './Pro/calculations'
         initRepeater($theForm);
         initRepeatButtons($, $theForm);
         formConditional($, $theForm, form, window.fluentFormVars);
-        sliderInstance.init();
         calculation($, $theForm);
         ratingDom($, $theForm);
         initNetPromoter($, $theForm);
 
-        $theForm.on('update_slider', function (e, data) {
-            sliderInstance.updateSlider(
-                data.goBackToStep,
-                data.animDuration,
-                data.isScrollTop,
-                data.actionType
-            );
-        });
+        if($theForm.hasClass('ff-form-has-steps')) {
+            const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
+            sliderInstance.init();
+            $theForm.on('update_slider', function (e, data) {
+                sliderInstance.updateSlider(
+                    data.goBackToStep,
+                    data.animDuration,
+                    data.isScrollTop,
+                    data.actionType
+                );
+            });
+        }
+
     });
 })(jQuery);
