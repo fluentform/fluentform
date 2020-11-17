@@ -47,6 +47,7 @@ class Report
         }
 
         $reportableInputs = Helper::getReportableInputs();
+
         $formReportableInputs = array_intersect($reportableInputs, array_values($elements));
 
         $reportableInputs = Helper::getSubFieldReportableInputs();
@@ -166,10 +167,15 @@ class Report
         $reports = $reportQuery->groupBy(['fluentform_entry_details.field_name', 'fluentform_entry_details.field_value', 'fluentform_entry_details.sub_field_name'])
             ->get();
 
+
         $formattedReports = [];
         foreach ($reports as $report) {
+            $filedValue = maybe_unserialize($report->field_value);
+            if(is_array($filedValue)) {
+                $filedValue = implode(', ', $filedValue);
+            }
             $formattedReports[$report->field_name]['reports'][] = [
-                'value'     => $report->sub_field_name . ' : ' . maybe_unserialize($report->field_value),
+                'value'     => $report->sub_field_name . ' : ' . $filedValue,
                 'count'     => $report->total_count,
                 'sub_field' => $report->sub_field_name,
             ];
