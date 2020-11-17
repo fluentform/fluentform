@@ -280,7 +280,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     form: $theForm
                 });
 
-                maybeUpdateDynamicLabels(activeStep);
+                var formSteps = $theForm.find('.fluentform-step');
+                $theForm.trigger('ff_render_dynamic_smartcodes', $(formSteps[activeStep]));
 
             } else {
                 activeStep--;
@@ -467,56 +468,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         return jQuery.post(fluentFormVars.ajaxUrl, formData);
     };
 
-    var maybeUpdateDynamicLabels = function (activeStep) {
-        var formSteps = $theForm.find('.fluentform-step');
-        var workStep = $(formSteps[activeStep]);
-
-        jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
-            var ref = $(item).data('ref');
-
-            if (ref == 'payment_summary') {
-                $theForm.trigger('calculate_payment_summary', {
-                    element: $(item)
-                });
-                return;
-            }
-
-            var refElement = $theForm.find('.ff-el-form-control[name="' + ref + '"]');
-
-            var separator = ' ';
-
-            if (!refElement.length) {
-                refElement = $theForm.find('.ff-field_container[data-name="' + ref + '"]').find('input');
-            }
-
-            if (!refElement.length) {
-                // This may radio element / Checkbox element
-                refElement = $theForm.find('*[name="' + ref + '"]:checked');
-                if (!refElement.length) {
-                    refElement = $theForm.find('*[name="' + ref + '[]"]:checked');
-                    separator = ', ';
-                }
-            }
-
-            var refValues = [];
-            $.each(refElement, function () {
-                let inputValue = $(this).val();
-                if (inputValue) {
-                    refValues.push(inputValue);
-                }
-            });
-
-            let replaceValue = '';
-            if (refValues.length) {
-                replaceValue = refValues.join(separator);
-            } else {
-                replaceValue = $(item).data('fallback');
-            }
-
-            $(this).html(replaceValue);
-        });
-    };
-
     var maybeAutoSlider = function () {
         let autoSlider = $theForm.find('.ff-step-container').attr('data-enable_auto_slider') == 'yes';
         if (!autoSlider) {
@@ -603,7 +554,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             $uploadedList.append(previewContainer);
         });
 
-        $el.trigger('change_remaining', - fileUrls.length);
+        $el.trigger('change_remaining', -fileUrls.length);
         $el.trigger('change');
     };
 
@@ -637,6 +588,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         removePrevFromFirstFirstStep();
         initStepSlider();
         maybeAutoSlider();
+
+
+
     };
 
     return {

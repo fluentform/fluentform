@@ -4,7 +4,8 @@ import ratingDom from './Pro/dom-rating';
 import formConditional from "./Pro/form-conditionals";
 import fileUploader from './Pro/file-uploader';
 import formSlider from './Pro/slider';
-import calculation from './Pro/calculations'
+import calculation from './Pro/calculations';
+
 (function ($) {
     $(document).on('fluentform_init', function (e, $theForm, form) {
         const formInstanceSelector = $theForm.attr('data-form_instance');
@@ -16,6 +17,70 @@ import calculation from './Pro/calculations'
 
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
+
+       function maybeUpdateDynamicLabels(workStep) {
+            jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
+                var ref = $(item).data('ref');
+
+                if (ref == 'payment_summary') {
+                    $theForm.trigger('calculate_payment_summary', {
+                        element: $(item)
+                    });
+                    return;
+                }
+
+                var refElement = $theForm.find('.ff-el-form-control[name="' + ref + '"]');
+
+                var separator = ' ';
+
+                if (!refElement.length) {
+                    refElement = $theForm.find('.ff-field_container[data-name="' + ref + '"]').find('input');
+                }
+
+                if (!refElement.length) {
+                    // This may radio element / Checkbox element
+                    refElement = $theForm.find('*[name="' + ref + '"]:checked');
+                    if (!refElement.length) {
+                        refElement = $theForm.find('*[name="' + ref + '[]"]:checked');
+                        separator = ', ';
+                    }
+
+                    // maybe it's a multi-select item
+                    if (!refElement.length) {
+                        refElement = $theForm.find('*[name="' + ref + '[]"]').find('option:selected');
+                        separator = ', ';
+                    }
+                }
+
+                var refValues = [];
+                $.each(refElement, function () {
+                    let inputValue = $(this).val();
+                    if(inputValue) {
+                        let tagName = $(this).prop("tagName");
+                        if (tagName == 'OPTION') {
+                            inputValue = $(this).text();
+                        } else if (tagName == 'SELECT') {
+                            inputValue = $(this).find('option:selected').text();
+                        } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
+                            inputValue = $(this).parent().find('span').html();
+                        }
+
+                        if (inputValue) {
+                            refValues.push(inputValue);
+                        }
+                    }
+                });
+
+                let replaceValue = '';
+                if (refValues.length) {
+                    replaceValue = refValues.join(separator);
+                } else {
+                    replaceValue = $(item).data('fallback');
+                }
+
+                $(this).html(replaceValue);
+            });
+        }
 
         /*
         * Normals
@@ -40,6 +105,16 @@ import calculation from './Pro/calculations'
                 );
             });
         }
+
+        if($theForm.hasClass('ff_has_dynamic_smartcode'))
+
+        $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
+            maybeUpdateDynamicLabels($(selector));
+        });
+
+        $theForm.on('keyup change', ':input', function () {
+            maybeUpdateDynamicLabels($theForm);
+        });
 
     });
 })(jQuery);
