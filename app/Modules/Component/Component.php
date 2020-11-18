@@ -489,7 +489,6 @@ class Component
         $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);
         $output = $this->replaceEditorSmartCodes($output, $form);
 
-
         if (!wp_script_is('fluent-form-submission', 'registered')) {
             $this->registerScripts();
         }
@@ -536,7 +535,6 @@ class Component
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false
         ];
-
 
         $form_vars = array(
             'id' => $form->id,

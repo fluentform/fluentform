@@ -925,7 +925,7 @@ export default {
             });
 
             if (window.localStorage) {
-                if (window.localStorage.getItem('ff_is_full_screen') != 'no') {
+                if (window.localStorage.getItem('ff_is_full_screen') == 'yes') {
                     jQuery('body').addClass('ff_full_screen').addClass('folded');
                 }
             } else {
