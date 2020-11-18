@@ -106,15 +106,15 @@ import calculation from './Pro/calculations';
             });
         }
 
-        if($theForm.hasClass('ff_has_dynamic_smartcode'))
+        if($theForm.hasClass('ff_has_dynamic_smartcode')) {
+            $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
+                maybeUpdateDynamicLabels($(selector));
+            });
 
-        $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
-            maybeUpdateDynamicLabels($(selector));
-        });
-
-        $theForm.on('keyup change', ':input', function () {
-            maybeUpdateDynamicLabels($theForm);
-        });
-
+            $theForm.on('keyup change', ':input', function () {
+                maybeUpdateDynamicLabels($theForm);
+            });
+        }
+        
     });
 })(jQuery);

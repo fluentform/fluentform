@@ -16,9 +16,9 @@
                 </ul>
             </template>
             <div>
-                <p>SmartCodes For Step Forms:</p>
+                <p>Dynamic SmartCodes</p>
                 <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
-                    <li><code>{dynamic.YOUR_INPUT_NAME}</code>: to show input data from the previous steps</li>
+                    <li><code>{dynamic.YOUR_INPUT_NAME}</code>: to show data from any input</li>
                 </ul>
             </div>
         </template>

@@ -69,6 +69,11 @@ class FormBuilder
 
         $formBody = $this->buildFormBody($form);
 
+        if(strpos($formBody, '{dynamic.')) {
+            $formClass .= ' ff_has_dynamic_smartcode';
+            wp_enqueue_script('fluentform-advanced');
+        }
+
         $formClass = apply_filters('fluentform_form_class', $formClass, $form);
 
         if ($form->has_payment) {
