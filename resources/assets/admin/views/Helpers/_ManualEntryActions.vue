@@ -11,6 +11,8 @@
             width="60%">
             <template v-if="has_pro">
                 <div v-loading="loading" element-loading-text="Loading Feeds..." class="ff_notification_feeds">
+                    <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="verify_condition">Check Conditional Logic when replaying a feed action</el-checkbox>
+
                     <el-table border stripe :data="feeds">
                         <el-table-column
                             width="180"
@@ -93,7 +95,8 @@
                 error_message: '',
                 success_message: '',
                 feeds: [],
-                loading: false
+                loading: false,
+                verify_condition: 'yes'
             }
         },
         methods: {
@@ -108,7 +111,8 @@
                     action: 'ffpro_post_integration_feed_replay',
                     feed_id: feedId,
                     form_id: this.form_id,
-                    entry_id: this.entry_id
+                    entry_id: this.entry_id,
+                    verify_condition: this.verify_condition
                 };
                 jQuery.post(window.ajaxurl, data)
                     .then(response => {

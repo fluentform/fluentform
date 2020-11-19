@@ -212,8 +212,13 @@
                     ]
                 })
                 .then(response => {
-                    this.reCaptcha = response.data._fluentform_reCaptcha_details || { siteKey: '', secretKey: '' };
-                    this.reCaptcha_status = response.data._fluentform_reCaptcha_keys_status
+                    const recaptcha = response.data._fluentform_reCaptcha_details || { siteKey: '', secretKey: '' };
+                    if(!recaptcha.api_version) {
+                        recaptcha.api_version = 'v2_visible';
+                    }
+                    this.reCaptcha = recaptcha;
+                    this.reCaptcha_status = response.data._fluentform_reCaptcha_keys_status;
+
                 });
             }
         },

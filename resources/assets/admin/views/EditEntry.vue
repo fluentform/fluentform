@@ -123,6 +123,7 @@
                         };
                         break;
                     case 'input_email':
+                    case 'post_title':
                     case 'input_text':
                     case 'input_url':
                     case 'input_password':
