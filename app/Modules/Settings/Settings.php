@@ -36,7 +36,7 @@ class Settings
     {
         $values = [];
         $key = $this->request->get('key');
-        
+
         if (is_array($key)) {
             foreach ($key as $key_item) {
                 $values[$key_item] = get_option($key_item);
@@ -44,7 +44,7 @@ class Settings
         } else {
             $values[$key] = get_option($key);
         }
-        
+
         wp_send_json_success($values, 200);
     }
 
@@ -81,7 +81,6 @@ class Settings
         }
 
         $token = ArrayHelper::get($data, 'token');
-
         $secretKey = ArrayHelper::get($data, 'secretKey');
 
         // If token is not empty meaning user verified their captcha.
@@ -94,7 +93,8 @@ class Settings
                 // Prepare captcha data.
                 $captchaData = [
                     'siteKey'   => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
-                    'secretKey' => sanitize_text_field($secretKey)
+                    'secretKey' => sanitize_text_field($secretKey),
+                    'api_version' => ArrayHelper::get($data, 'api_version')
                 ];
 
                 // Update the reCaptcha details with siteKey & secretKey.
