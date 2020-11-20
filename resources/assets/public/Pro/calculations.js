@@ -79,7 +79,7 @@ export default function ($, $theForm) {
                     let $el = $theForm.find('input[name=' + inputName + ']');
                     let value = 0;
                     if (isAccessible($el)) {
-                        value = $el.val() || 0;
+                        value = window.ff_helper.numericVal($el);
                     }
                     replaces[itemKey] = value;
                 } else if (itemKey.indexOf('{select.') != -1) { // select Field
@@ -181,7 +181,7 @@ export default function ($, $theForm) {
      */
     var initNumberCalculations = function () {
         $theForm.find(
-            'input[type=number],input[data-calc_value],select[data-calc_value]'
+            'input[type=number],input[data-calc_value],select[data-calc_value],.ff_numeric'
         ).on('change keyup', doCalculation).trigger('change');
         doCalculation();
 

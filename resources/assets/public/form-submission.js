@@ -25,6 +25,16 @@ jQuery(document).ready(function () {
         return ffValidationError;
     })();
 
+    window.ff_helper = {
+        numericVal: function ($el) {
+            if ($el.hasClass('ff_numeric')) {
+                let formatConfig = JSON.parse($el.attr('data-formatter'));
+                return currency($el.val(), formatConfig).value;
+            }
+            return $el.val() || 0;
+        }
+    };
+
     (function (fluentFormVars, $) {
 
         if (!fluentFormVars) {
@@ -665,6 +675,7 @@ jQuery(document).ready(function () {
             init: function () {
                 this.initMultiSelect();
                 this.initMask();
+                this.initNumericFormat();
                 this.initCheckableActive();
             },
 
@@ -769,6 +780,21 @@ jQuery(document).ready(function () {
                     } else {
                         $(this).closest('.ff-el-form-check').removeClass('ff_item_selected');
                     }
+                });
+            },
+
+            initNumericFormat: function () {
+                var numericFields = $('.frm-fluent-form .ff_numeric');
+                $.each(numericFields, (index, field) => {
+                    let $field = $(field);
+                    let formatConfig = JSON.parse($field.attr('data-formatter'));
+                    if($field.val()) {
+                        $field.val(currency($field.val(), formatConfig).format());
+                    }
+                    $field.on('blur change', function () {
+                        let value = currency($(this).val(), formatConfig).format();
+                        $(this).val(value);
+                    });
                 });
             }
         };
@@ -909,9 +935,10 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.numeric = function (el, rule) {
-                    var val = el.val();
+                    var val = window.ff_helper.numericVal(el);
+                    val = val.toString();
 
-                    if (!rule.value || !val.length) {
+                    if (!rule.value || !val) {
                         return true;
                     }
 
@@ -924,8 +951,8 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.min = function (el, rule) {
-                    var val = el.val();
-
+                    var val = window.ff_helper.numericVal(el);
+                    val = val.toString();
                     if (!rule.value || !val.length) {
                         return true;
                     }
@@ -941,7 +968,8 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.max = function (el, rule) {
-                    var val = el.val();
+                    var val = window.ff_helper.numericVal(el);
+                    val = val.toString();
 
                     if (!rule.value || !val.length) {
                         return true;

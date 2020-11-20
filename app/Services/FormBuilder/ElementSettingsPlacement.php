@@ -126,6 +126,7 @@ $element_settings_placement = array(
             'admin_field_label',
             'placeholder',
             'validation_rules',
+            'numeric_formatter'
         ),
         'advanced' => array(
             'value',

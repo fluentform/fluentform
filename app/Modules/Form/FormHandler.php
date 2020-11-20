@@ -285,6 +285,13 @@ class FormHandler
 
         $this->validateReCaptcha();
 
+        foreach ($fields as $fieldName => $field) {
+            if(isset($this->formData[$fieldName])) {
+                $element = $field['element'];
+                $this->formData[$fieldName] = apply_filters('fluentform_input_data_'.$element, $this->formData[$fieldName], $field, $this->formData);
+            }
+        }
+
         $originalValidations = FormFieldsParser::getValidations($this->form, $this->formData, $fields);
 
         // Fire an event so that one can hook into it to work with the rules & messages.

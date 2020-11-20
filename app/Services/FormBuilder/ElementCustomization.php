@@ -534,6 +534,12 @@ $element_customization_settings = array(
             )
         )
     ),
+    'numeric_formatter' => array(
+        'template' => 'select',
+        'label' => __('Number Format', 'fluentform'),
+        'help_text' => __('Select the format of numbers that are allowed in this field. You have the option to use a comma or a dot as the decimal separator.', 'fluentform'),
+        'options' => \FluentForm\App\Helpers\Helper::getNumericFormatters()
+    ),
     'unique_validation_message' => array(
         'template' => 'inputText',
         'label' => __('Validation Message for Duplicate', 'fluentform'),

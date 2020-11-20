@@ -477,6 +477,7 @@ $defaultElements = array(
                 'number_step' => '',
                 'prefix_label' => '',
                 'suffix_label' => '',
+                'numeric_formatter' => '',
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,

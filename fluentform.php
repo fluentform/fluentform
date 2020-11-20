@@ -35,4 +35,3 @@ add_action('wpmu_new_blog', function ($blogId) {
     (new FluentForm\App\Modules\Activator)->migrate();
     restore_current_blog();
 });
-
