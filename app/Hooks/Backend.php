@@ -251,6 +251,9 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         if (!isset($item['settings']['prefix_label'])) {
             $item['settings']['prefix_label'] = '';
         }
+        if (!isset($item['settings']['numeric_formatter'])) {
+            $item['settings']['numeric_formatter'] = '';
+        }
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }

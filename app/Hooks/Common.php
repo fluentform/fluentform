@@ -43,9 +43,9 @@ $component->addRendererActions();
 $component->addFluentFormShortCode();
 $component->addFluentFormDefaultValueParser();
 
-$component = new \FluentForm\App\Modules\Component\Component($app);
 $component->addFluentformSubmissionInsertedFilter();
 $component->addIsRenderableFilter();
+$component->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
     if (isset($_GET['fluentform_pages']) && $_GET['fluentform_pages'] == 1) {
@@ -98,13 +98,13 @@ foreach ($elements as $element) {
             $response = __('Accepted', 'fluentform');
         }
 
-        if($response && $isLabel && in_array($element, ['select', 'input_radio'])) {
-            if(isset($field['options'][$response])) {
+        if ($response && $isLabel && in_array($element, ['select', 'input_radio'])) {
+            if (isset($field['options'][$response])) {
                 return $field['options'][$response];
             }
         }
 
-        if($element == 'input_checkbox') {
+        if ($element == 'input_checkbox') {
             return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
         }
 
@@ -113,15 +113,16 @@ foreach ($elements as $element) {
 }
 
 $app->addFilter('fluentform_response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    if(!$isHtml || !$value) {
+    if (!$isHtml || !$value) {
         return $value;
     }
-    return '<span style="white-space: pre">'.$value.'</span>';
+    return '<span style="white-space: pre">' . $value . '</span>';
 }, 10, 4);
 
 $app->addFilter('fluentform_response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
     return \FluentForm\App\Modules\Form\FormDataParser::formatFileValues($response, $isHtml);
 }, 10, 4);
+
 
 $app->addFilter('fluentform_response_render_input_image', function ($response, $field, $form_id, $isHtml = false) {
     return \FluentForm\App\Modules\Form\FormDataParser::formatImageValues($response, $isHtml);
@@ -171,13 +172,13 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
 
         wpFluent()->table('fluentform_submission_meta')->insert([
             'response_id' => $entryId,
-            'form_id' => $form->id,
-            'meta_key' => 'api_log',
-            'value' => $msg,
-            'name' => $feed->formattedValue['name'],
-            'status' => 'success',
-            'created_at' => current_time('mysql'),
-            'updated_at' => current_time('mysql')
+            'form_id'     => $form->id,
+            'meta_key'    => 'api_log',
+            'value'       => $msg,
+            'name'        => $feed->formattedValue['name'],
+            'status'      => 'success',
+            'created_at'  => current_time('mysql'),
+            'updated_at'  => current_time('mysql')
         ]);
     } catch (Exception $e) {
         error_log($e->getMessage());
@@ -193,13 +194,13 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 
         wpFluent()->table('fluentform_submission_meta')->insert([
             'response_id' => $entryId,
-            'form_id' => $form->id,
-            'meta_key' => 'api_log',
-            'value' => json_encode($res),
-            'name' => $feed->formattedValue['name'],
-            'status' => 'failed',
-            'created_at' => current_time('mysql'),
-            'updated_at' => current_time('mysql'),
+            'form_id'     => $form->id,
+            'meta_key'    => 'api_log',
+            'value'       => json_encode($res),
+            'name'        => $feed->formattedValue['name'],
+            'status'      => 'failed',
+            'created_at'  => current_time('mysql'),
+            'updated_at'  => current_time('mysql'),
         ]);
     } catch (Exception $e) {
         error_log($e->getMessage());
@@ -296,7 +297,7 @@ add_filter('fluentform_validate_input_item_input_text', ['\FluentForm\App\Helper
 add_filter('cron_schedules', function ($schedules) {
     $schedules['ff_every_five_minutes'] = array(
         'interval' => 300,
-        'display' => esc_html__('Every 5 minutes (FluentForm)', 'fluentform'),
+        'display'  => esc_html__('Every 5 minutes (FluentForm)', 'fluentform'),
     );
     return $schedules;
 }, 10, 1);
@@ -312,11 +313,11 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
         $note = $status;
     }
 
-    if(strlen($note) > 255) {
-        if(function_exists('mb_substr')) {
-            $note = mb_substr($note, 0, 251).'...';
+    if (strlen($note) > 255) {
+        if (function_exists('mb_substr')) {
+            $note = mb_substr($note, 0, 251) . '...';
         } else {
-            $note = substr($note, 0, 251).'...';
+            $note = substr($note, 0, 251) . '...';
         }
     }
 
@@ -325,12 +326,12 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
         ->where('id', $actionId)
         ->update([
             'status' => $status,
-            'note' => $note
+            'note'   => $note
         ]);
 }, 10, 3);
 
 add_action('fluentform_global_notify_completed', function ($insertId, $form) use ($app) {
-    if(strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform_truncate_password_values', true, $form)) {
+    if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform_truncate_password_values', true, $form)) {
         // we have password
         (new \FluentForm\App\Services\Integrations\GlobalNotificationManager($app))->cleanUpPassword($insertId, $form);
     }
@@ -340,7 +341,7 @@ add_action('fluentform_global_notify_completed', function ($insertId, $form) use
  * Elementor Block Init
  */
 
-if(defined('ELEMENTOR_VERSION')) {
+if (defined('ELEMENTOR_VERSION')) {
     new \FluentForm\App\Modules\Widgets\ElementorWidget($app);
 }
 
@@ -356,14 +357,27 @@ add_filter('ff_will_return_html', function ($result, $integration, $key) {
         'notifications' => ['message']
     ];
 
-    if(!isset($dictionary[$integration])) {
+    if (!isset($dictionary[$integration])) {
         return $result;
     }
 
-    if(in_array($key, $dictionary[$integration])) {
+    if (in_array($key, $dictionary[$integration])) {
         return true;
     }
 
     return $result;
 
 }, 10, 3);
+
+
+$app->addFilter('fluentform_response_render_input_number', function ($response, $field, $form_id, $isHtml = false) {
+    if (!$response || !$isHtml) {
+        return $response;
+    }
+    $fieldSettings = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings');
+    $formatter = \FluentForm\Framework\Helpers\ArrayHelper::get($fieldSettings, 'numeric_formatter');
+    if (!$formatter) {
+        return $response;
+    }
+    return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
+}, 10, 4);

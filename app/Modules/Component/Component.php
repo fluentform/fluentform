@@ -970,4 +970,18 @@ class Component
         }
     }
 
+    public function registerInputSanitizers()
+    {
+        add_filter('fluentform_input_data_input_number', array($this, 'getNumericInputValue'), 10, 2);
+        add_filter('fluentform_input_data_custom_payment_component', array($this, 'getNumericInputValue'), 10, 2);
+    }
+
+    public function getNumericInputValue($value, $field)
+    {
+        $formatter = ArrayHelper::get($field, 'raw.settings.numeric_formatter');
+        if(!$formatter) {
+            return $value;
+        }
+        return Helper::getNumericValue($value, $formatter);
+    }
 }

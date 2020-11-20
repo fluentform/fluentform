@@ -38,7 +38,7 @@ class Helper
                 $attribute = null;
             }
         }
-        
+
         return $input;
     }
 
@@ -197,20 +197,20 @@ class Helper
             ->where('meta_key', $metaKey)
             ->first();
 
-        if($meta) {
+        if ($meta) {
             wpFluent()->table('fluentform_submission_meta')
                 ->where('id', $meta->id)
                 ->insert([
-                    'value' => $value,
+                    'value'      => $value,
                     'updated_at' => current_time('mysql')
                 ]);
             return $meta->id;
         }
 
-        if(!$formId) {
-            $submission =  wpFluent()->table('fluentform_submissions')
-                                ->find($submissionId);
-            if($submission) {
+        if (!$formId) {
+            $submission = wpFluent()->table('fluentform_submissions')
+                ->find($submissionId);
+            if ($submission) {
                 $formId = $submission->form_id;
             }
         }
@@ -218,11 +218,11 @@ class Helper
         return wpFluent()->table('fluentform_submission_meta')
             ->insert([
                 'response_id' => $submissionId,
-                'form_id' => $formId,
-                'meta_key' => $metaKey,
-                'value' => $value,
-                'created_at' => current_time('mysql'),
-                'updated_at' => current_time('mysql')
+                'form_id'     => $formId,
+                'meta_key'    => $metaKey,
+                'value'       => $value,
+                'created_at'  => current_time('mysql'),
+                'updated_at'  => current_time('mysql')
             ]);
 
     }
@@ -239,7 +239,7 @@ class Helper
         }
 
         $formSettings = json_decode($settings->value, true);
-        
+
         if ($formSettings && ArrayHelper::get($formSettings, 'delete_entry_on_submission') == 'yes') {
             return true;
         }
@@ -249,12 +249,12 @@ class Helper
 
     public static function formExtraCssClass($form)
     {
-        if(!$form->settings) {
+        if (!$form->settings) {
             $settings = wpFluent()->table('fluentform_form_meta')
                 ->where('form_id', $form->id)
                 ->where('meta_key', 'formSettings')
                 ->first();
-                
+
             $formSettings = json_decode($settings->value, true);
         } else {
             $formSettings = $form->settings;
@@ -274,7 +274,7 @@ class Helper
 
     public static function getNextTabIndex($increment = 1)
     {
-        if(self::isTabIndexEnabled()) {
+        if (self::isTabIndexEnabled()) {
             static::$tabIndex += $increment;
             return static::$tabIndex;
         }
@@ -284,7 +284,7 @@ class Helper
     public static function getFormInstaceClass($formId)
     {
         static::$formInstance += 1;
-        return  'ff_form_instance_'.$formId.'_'.static::$formInstance;
+        return 'ff_form_instance_' . $formId . '_' . static::$formInstance;
     }
 
     public static function resetTabIndex()
@@ -305,7 +305,7 @@ class Helper
         ];
 
         $status = true;
-        
+
         if (!isset($_GET['page']) || !in_array($_GET['page'], $fluentPages)) {
             $status = false;
         }
@@ -313,7 +313,8 @@ class Helper
         return apply_filters('fluentform_is_admin_page', $status);
     }
 
-    public static function getShortCodeIds($content, $tag = 'fluentform', $selector = 'id') {
+    public static function getShortCodeIds($content, $tag = 'fluentform', $selector = 'id')
+    {
 
         if (false === strpos($content, '[')) {
             return [];
@@ -344,7 +345,7 @@ class Helper
 
     public static function isTabIndexEnabled()
     {
-        if(static::$tabIndexStatus == 'na') {
+        if (static::$tabIndexStatus == 'na') {
             $globalSettings = get_option('_fluentform_global_form_settings');
             static::$tabIndexStatus = ArrayHelper::get($globalSettings, 'misc.tabIndex') == 'yes';
         }
@@ -356,7 +357,7 @@ class Helper
         $form = wpFluent()->table('fluentform_forms')->find($formId);
         $fields = json_decode($form->form_fields, true);
 
-        if(ArrayHelper::get($fields, 'stepsWrapper')) {
+        if (ArrayHelper::get($fields, 'stepsWrapper')) {
             return true;
         }
         return false;
@@ -366,7 +367,7 @@ class Helper
     {
         $form = wpFluent()->table('fluentform_forms')->find($formId);
         $fieldsJson = $form->form_fields;
-        return strpos($fieldsJson, '"element":"'.$elementName.'"') != false;
+        return strpos($fieldsJson, '"element":"' . $elementName . '"') != false;
     }
 
     public static function isUniqueValidation($validation, $field, $formData, $fields, $form)
@@ -388,6 +389,81 @@ class Helper
         }
 
         return $validation;
+    }
+
+    public static function getNumericFormatters()
+    {
+        return apply_filters('fluentform_numeric_styles', array(
+            'none'                 => array(
+                'value' => '',
+                'label' => 'None'
+            ),
+            'comma_dot_style'      => array(
+                'value'    => 'comma_dot_style',
+                'label'    => __('US Style with Decimal (EX: 123,456.00)', 'fluentform'),
+                'settings' => [
+                    'decimal'   => '.',
+                    'separator' => ',',
+                    'precision' => 2,
+                    'symbol'    => ''
+                ]
+            ),
+            'dot_comma_style_zero' => array(
+                'value'    => 'dot_comma_style_zero',
+                'label'    => __('US Style without Decimal (Ex: 123,456,789)', 'fluentform'),
+                'settings' => [
+                    'decimal'   => ',',
+                    'separator' => '.',
+                    'precision' => 0,
+                    'symbol'    => ''
+                ]
+            ),
+            'dot_comma_style'      => array(
+                'value'    => 'dot_comma_style',
+                'label'    => __('EU Style with Decimal (Ex: 123,456.00)', 'fluentform'),
+                'settings' => [
+                    'decimal'   => ',',
+                    'separator' => '.',
+                    'precision' => 2,
+                    'symbol'    => ''
+                ]
+            ),
+            'comma_dot_style_zero' => array(
+                'value'    => 'comma_dot_style_zero',
+                'label'    => __('EU Style without Decimal (EX: 123,456,789)', 'fluentform'),
+                'settings' => [
+                    'decimal'   => '.',
+                    'separator' => ',',
+                    'precision' => 0,
+                    'symbol'    => ''
+                ]
+            )
+        ));
+    }
+
+    public static function getNumericValue($input, $formatterName)
+    {
+        $formatters = self::getNumericFormatters();
+        if(empty($formatters[$formatterName]['settings'])) {
+            return $input;
+        }
+        $settings = $formatters[$formatterName]['settings'];
+        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^\d'.preg_quote($settings['decimal']).']/', '', $input)));
+
+        return number_format($number, $settings['precision'], '.', '');
+    }
+
+    public static function getNumericFormatted($input, $formatterName)
+    {
+        if(!is_numeric($input)) {
+            return $input;
+        }
+        $formatters = self::getNumericFormatters();
+        if(empty($formatters[$formatterName]['settings'])) {
+            return $input;
+        }
+        $settings = $formatters[$formatterName]['settings'];
+        return number_format($input, $settings['precision'], $settings['decimal'], $settings['separator']);
     }
 
 }
