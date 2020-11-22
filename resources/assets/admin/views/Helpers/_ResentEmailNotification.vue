@@ -39,7 +39,7 @@
             </template>
             <div style="text-align: center" v-else>
                 <h3>This feature is available on pro version of fluent forms.</h3>
-                <a target="_blank" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&amp;utm_medium=wp&amp;utm_campaign=wp_plugin&amp;utm_term=upgrade&amp;utm_content=pop" class="el-button el-button--danger">
+                <a target="_blank" rel="noopener" :href="upgrade_url" class="el-button el-button--danger">
                     Buy Pro Now
                 </a>
             </div>
@@ -86,7 +86,8 @@
                     send_to_type: 'default',
                     send_to_custom_email: ''
                 },
-                notifications: window.fluent_form_entries_vars.email_notifications
+                notifications: window.fluent_form_entries_vars.email_notifications,
+                upgrade_url: window.fluent_form_entries_vars.upgrade_url
             }
         },
         computed: {

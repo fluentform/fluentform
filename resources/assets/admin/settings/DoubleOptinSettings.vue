@@ -218,6 +218,8 @@
         mounted() {
             if (this.hasPro) {
                 this.fetch();
+            } else {
+                this.loading = false;
             }
             jQuery('.ff_menu_item_double_optin').addClass('active');
         }

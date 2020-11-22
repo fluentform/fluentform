@@ -51,7 +51,8 @@
             <div style="text-align: center" v-else>
                 <h3>This feature is available on pro version of Fluent Forms.</h3>
                 <a target="_blank"
-                   href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop"
+                   :href="upgrade_url"
+                   rel="nofollow"
                    class="el-button el-button--danger">
                     Buy Pro Now
                 </a>
@@ -96,7 +97,8 @@
                 success_message: '',
                 feeds: [],
                 loading: false,
-                verify_condition: 'yes'
+                verify_condition: 'yes',
+                upgrade_url: window.fluent_form_entries_vars.upgrade_url
             }
         },
         methods: {

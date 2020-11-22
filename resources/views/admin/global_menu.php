@@ -33,7 +33,7 @@ $page = sanitize_text_field($_GET['page']);
         <?php _e('Support', 'fluentform'); ?>
     </a>
     <?php if(!defined('FLUENTFORMPRO')): ?>
-    <a target="_blank" rel="noopener" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade" class="ninja-tab buy_pro_tab">
+    <a target="_blank" rel="noopener" href="<?php echo fluentform_upgrade_url(); ?>" class="ninja-tab buy_pro_tab">
         <?php _e('Upgrade to Pro', 'fluentform'); ?>
     </a>
     <?php endif; ?>

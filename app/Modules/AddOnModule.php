@@ -86,7 +86,7 @@ class AddOnModule
 
     public function getPremiumAddOns()
     {
-        $purchaseUrl = 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/';
+        $purchaseUrl = fluentform_upgrade_url();
         return array(
             'paypal'  => array(
                 'title'        => 'PayPal',

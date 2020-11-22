@@ -30,7 +30,7 @@
         <div style="text-align:center" v-else>
             <h3>Entry editor is available on pro version. Please upgrade to pro</h3>
             <a rel="nofollow" target="_blank"
-               href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=entry_editor"
+               :href="upgrade_url"
                class="el-button el-button--danger">
                 Buy Pro Now
             </a>
@@ -70,7 +70,8 @@
             return {
                 entry: JSON.parse(this.submission.response),
                 saving: false,
-                has_pro: !!window.fluent_form_entries_vars.has_pro
+                has_pro: !!window.fluent_form_entries_vars.has_pro,
+                upgrade_url: window.fluent_form_entries_vars.upgrade_url
             }
         },
         computed: {

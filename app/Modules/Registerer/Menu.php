@@ -530,6 +530,7 @@ class Menu
             'hasPro' => defined('FLUENTFORMPRO'),
             'hasPDF' => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM' => defined('FLUENTCRM'),
+            'upgrade_url' => fluentform_upgrade_url(),
             'ace_path_url' => $this->app->publicUrl('libs/ace')
         ));
 
@@ -550,6 +551,7 @@ class Menu
             'plugin' => $this->app->getSlug(),
             'formsCount' => $formsCount,
             'hasPro' => defined('FLUENTFORMPRO'),
+            'upgrade_url' => fluentform_upgrade_url(),
             'adminUrl' => admin_url('admin.php?page=fluent_forms'),
             'isDisableAnalytics' => apply_filters('fluentform-disabled_analytics', false)
         )));
@@ -671,7 +673,8 @@ class Menu
                 $this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php')
             ),
             'all_forms_url' => admin_url('admin.php?page=fluent_forms'),
-            'has_payment_features' => !defined('FLUENTFORMPRO')
+            'has_payment_features' => !defined('FLUENTFORMPRO'),
+            'upgrade_url' => fluentform_upgrade_url(),
         )));
     }
 
@@ -721,6 +724,7 @@ class Menu
         wp_localize_script('fluentform-transfer-js', 'FluentFormApp', [
             'plugin' => $this->app->getSlug(),
             'forms' => $forms,
+            'upgrade_url' => fluentform_upgrade_url(),
             'hasPro' => defined('FLUENTFORMPRO'),
         ]);
 
