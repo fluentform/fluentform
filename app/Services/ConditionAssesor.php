@@ -11,6 +11,7 @@ class ConditionAssesor
     {
         $status = Arr::get($field, 'conditionals.status');
 
+
         $conditionals =  $status ? Arr::get($field, 'conditionals.conditions') : false;
 
 
@@ -18,7 +19,8 @@ class ConditionAssesor
 
         if ($conditionals) {
             $toMatch = Arr::get($field, 'conditionals.type');
-            
+
+
             foreach ($conditionals as $conditional) {
 
                 $hasConditionMet = static::assess($conditional, $inputs);

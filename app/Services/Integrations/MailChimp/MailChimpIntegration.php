@@ -149,7 +149,9 @@ class MailChimpIntegration extends IntegrationManager
             'list_name'         => '',
             'name'              => '',
             'merge_fields'      => (object)[],
-            'tags'              => '',
+            'tags' => '',
+            'tag_routers'            => [],
+            'tag_ids_selection_type' => 'simple',
             'markAsVIP'         => false,
             'fieldEmailAddress' => '',
             'doubleOptIn'       => false,
@@ -208,12 +210,21 @@ class MailChimpIntegration extends IntegrationManager
                     'inline_tip'   => 'Select the mailchimp interest category and interest'
                 ],
                 [
-                    'key'          => 'tags',
+                    'key' => 'tags',
                     'require_list' => true,
-                    'label'        => 'Tags',
-                    'tips'         => 'Associate tags to your Mailchimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.',
-                    'component'    => 'value_text',
-                    'inline_tip'   => 'Please provide each tag by comma separated value'
+                    'label' => 'Tags',
+                    'tips' => 'Associate tags to your MailChimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.',
+                    'component'    => 'selection_routing',
+                    'simple_component' => 'value_text',
+                    'routing_input_type' => 'text',
+                    'routing_key'  => 'tag_ids_selection_type',
+                    'settings_key' => 'tag_routers',
+                    'labels'       => [
+                        'choice_label'      => 'Enable Dynamic Tag Input',
+                        'input_label'       => '',
+                        'input_placeholder' => 'Tag'
+                    ],
+                    'inline_tip' => 'Please provide each tag by comma separated value, You can use dynamic smart codes'
                 ],
                 [
                     'key'          => 'note',
@@ -342,7 +353,6 @@ class MailChimpIntegration extends IntegrationManager
 
         return $fields;
     }
-
 
     public function fetchInterestGroups()
     {

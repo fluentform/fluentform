@@ -77,7 +77,6 @@ trait MailChimpSubscriber
 
         $feedData = $feed['processedValues'];
 
-
         if (!is_email($feedData['fieldEmailAddress'])) {
             $feedData['fieldEmailAddress'] = ArrayHelper::get($formData, $feedData['fieldEmailAddress']);
         }
@@ -106,9 +105,16 @@ trait MailChimpSubscriber
             $arguments['ip_signup'] = $entry->ip;
         }
 
-        if ($feedData['tags']) {
-            $providedTags = explode(',', $feedData['tags']);
-            $arguments['tags'] = array_map('trim', $providedTags);
+        $tags = $this->getSelectedTagIds($feedData, $formData, 'tags');
+        if(!is_array($tags)) {
+            $tags = explode(',', $tags);
+        }
+
+        $tags = array_map('trim', $tags);
+        $tags = array_filter($tags);
+
+        if ($tags) {
+            $arguments['tags'] = $tags;
         }
 
         $note = '';
@@ -193,7 +199,6 @@ trait MailChimpSubscriber
                     }
                 }
             }
-
             return true;
         }
 

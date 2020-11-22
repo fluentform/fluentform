@@ -206,8 +206,17 @@
                             <div style="margin-left: -205px;" v-html="field.html_info"></div>
                         </template>
 
+                        <template v-else-if="field.component == 'selection_routing'">
+                            <selection-routing
+                                :inputs="inputs"
+                                :field="field"
+                                :editorShortcodes="editorShortcodes"
+                                :settings="settings" />
+                        </template>
+
                         <template v-else>
-                            <p>No Template found</p>
+                            <p>No Template found. Please make sure you are using latest version of Fluent Forms</p>
+                            <pre>{{field.component}}</pre>
                             <pre>{{field}}</pre>
                         </template>
                     </el-form-item>
@@ -246,10 +255,12 @@
     import ChainedFields from './_ChainedFields';
     import ChainedSelects from './_ChainedSelects';
     import VideoDoc from '@/common/VideoInstruction.vue';
+    import SelectionRouting from './_SelectionRouting';
 
     export default {
         name: 'general_notification_edit',
         components: {
+            SelectionRouting,
             ErrorView,
             inputPopover,
             FilterFields,

@@ -1,14 +1,21 @@
 <template>
     <div class="ff_routing_fields">
         <div v-if="!disabled">
-
             <table class="ff_routing_table">
                 <tbody>
                     <tr v-for="(routing, key) in routings" :key="key">
                         <td>
                             <label class="ff_inline">
                                 {{labels.input_label}}
-                                <el-input :placeholder="labels.input_placeholder" size="small" v-model="routing.input_value"/>
+                                <el-input v-if="input_type == 'text'" :placeholder="labels.input_placeholder" size="small" v-model="routing.input_value"/>
+                                <el-select size="small" v-else-if="input_type == 'select'" v-model="routing.input_value" :placeholder="labels.input_placeholder">
+                                    <el-option
+                                        v-for="(item,itemValue) in input_options"
+                                        :key="itemValue"
+                                        :label="item"
+                                        :value="itemValue">
+                                    </el-option>
+                                </el-select>
                             </label>
                         </td>
                         <td>
@@ -48,7 +55,7 @@
                             <el-input size="small" v-else placeholder="Enter a value" v-model="routing.value"></el-input>
                         </td>
                         <td>
-                            <div class="action-btns ">
+                            <div style="line-height: 100%;" class="action-btns ">
                                 <i class="el-icon-plus" @click="add(key)"></i>
                                 <i class="el-icon-minus" @click="remove(key)" v-if="routings.length > 1"></i>
                             </div>
@@ -58,14 +65,12 @@
             </table>
         </div>
 
-        <coming-soon
-            v-else
-            :visibility.sync="comingSoon"/>
+        <coming-soon v-else :visibility.sync="comingSoon"/>
 
     </div>
 </template>
 
-<script>
+<script type="text/babel">
     import ComingSoon from '../../modals/ItemDisabled';
 
     export default {
@@ -94,6 +99,15 @@
                     input_label: 'Send To',
                     input_placeholder: 'Email Address'
                 })
+            },
+            input_type: {
+                type: String,
+                default: 'text'
+            },
+            input_options: {
+                type: Object,
+                required: false,
+                default: {}
             }
         },
         data() {
