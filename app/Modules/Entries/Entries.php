@@ -165,7 +165,8 @@ class Entries extends EntryQuery
             'email_notifications' => $formattedNotification,
             'available_countries' => $app->load(
                 $app->appPath('Services/FormBuilder/CountryNames.php')
-            )
+            ),
+            'upgrade_url' => fluentform_upgrade_url()
         ], $form);
 
         wp_localize_script(

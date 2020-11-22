@@ -45,8 +45,8 @@
         data() {
             return {
                 contentComponent: '',
-                campaignUrl: 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop',
-                pay_campaignUrl: 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp_payment&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop'
+                campaignUrl: window.FluentFormApp.upgrade_url || 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop',
+                pay_campaignUrl: window.FluentFormApp.upgrade_url || 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp_payment&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=pop'
             }
         },
         watch: {

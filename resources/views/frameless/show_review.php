@@ -64,7 +64,7 @@
                             <li>Visual Data Reporting</li>
                         </ul>
                         <p style="text-align: center">
-                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluent&utm_medium=styler&utm_campaign=styler&utm_term=styler">Upgrade to Pro</a>
+                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo fluentform_upgrade_url(); ?>">Upgrade to Pro</a>
                         </p>
 
 
@@ -80,7 +80,7 @@
                         </ul>
 
                         <p style="text-align: center">
-                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluent&utm_medium=styler&utm_campaign=styler&utm_term=styler">Upgrade to Pro</a>
+                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo fluentform_upgrade_url(); ?>">Upgrade to Pro</a>
                         </p>
                     </div>
                 </div>
