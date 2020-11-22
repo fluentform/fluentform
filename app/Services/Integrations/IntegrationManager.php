@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Integrations;
 
+use FluentForm\Framework\Helpers\ArrayHelper;
+
 abstract class IntegrationManager
 {
     protected $app = null;
@@ -194,5 +196,47 @@ abstract class IntegrationManager
             ];
         }
         return $settings;
+    }
+
+    protected function getSelectedTagIds($data, $inputData, $simpleKey = 'tag_ids', $routingId = 'tag_ids_selection_type', $routersKey = 'tag_routers')
+    {
+        $routing = ArrayHelper::get($data, $routingId, 'simple');
+        if(!$routing || $routing == 'simple') {
+            return ArrayHelper::get($data, $simpleKey, []);
+        }
+
+        $routers = ArrayHelper::get($data, $routersKey);
+        if(empty($routers)) {
+            return [];
+        }
+
+        return $this->evaluateRoutings($routers, $inputData);
+    }
+
+    protected function evaluateRoutings($routings, $inputData)
+    {
+        $validInputs = [];
+        foreach ($routings as $routing) {
+            $inputValue = ArrayHelper::get($routing, 'input_value');
+            if(!$inputValue) {
+                continue;
+            }
+            $condition = [
+                'conditionals' => [
+                    'status'     => true,
+                    'is_test' => true,
+                    'type'       => 'any',
+                    'conditions' => [
+                        $routing
+                    ]
+                ]
+            ];
+
+            if (\FluentForm\App\Services\ConditionAssesor::evaluate($condition, $inputData)) {
+                $validInputs[] = $inputValue;
+            }
+        }
+
+        return $validInputs;
     }
 }

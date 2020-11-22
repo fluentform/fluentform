@@ -157,7 +157,6 @@ class EmailNotification
 
         $routings = ArrayHelper::get($notification, 'sendTo.routing');
         $validAddresses = [];
-
         foreach ($routings as $routing) {
             $inputValue = ArrayHelper::get($routing, 'input_value');
             if(!$inputValue || !is_email($inputValue)) {
