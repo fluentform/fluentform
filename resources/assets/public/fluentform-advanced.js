@@ -118,3 +118,38 @@ import calculation from './Pro/calculations';
         
     });
 })(jQuery);
+
+// Polyfill for startsWith and endsWith
+(function (sp) {
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith#Polyfill
+    if (!sp.startsWith) {
+        sp.startsWith = function (search, pos) {
+            pos = !pos || pos < 0 ? 0 : +pos;
+            return this.substring(pos, pos + search.length) === search;
+        };
+    }
+
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith#Polyfill
+    if (!sp.endsWith) {
+        sp.endsWith = function (search, this_len) {
+            if (this_len === undefined || this_len > this.length) {
+                this_len = this.length;
+            }
+            return this.substring(this_len - search.length, this_len) === search;
+        };
+    }
+
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    if (!sp.includes) {
+        sp.includes = function (search, start) {
+            if (search instanceof RegExp) {
+                throw TypeError('first argument must not be a RegExp');
+            }
+            if (start === undefined) {
+                start = 0;
+            }
+            return this.indexOf(search, start) !== -1;
+        };
+    }
+
+})(String.prototype);
