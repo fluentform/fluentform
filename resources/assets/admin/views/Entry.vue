@@ -335,7 +335,12 @@
                 if (!dataValue) {
                     return;
                 }
-                let itemArray = dataValue.split(',');
+
+                let itemArray = [];
+
+                if(typeof itemArray == 'string') {
+                    itemArray = dataValue.split(',');
+                }
 
 
                 let options = field.options;
