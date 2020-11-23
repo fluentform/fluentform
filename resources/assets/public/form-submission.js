@@ -703,7 +703,8 @@ jQuery(document).ready(function () {
                         removeItemButton: true,
                         silent: true,
                         shouldSort: false,
-                        searchEnabled: true
+                        searchEnabled: true,
+                        searchResultLimit: 50
                     };
                     const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
 

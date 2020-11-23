@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder
 Requires at least: 4.5
-Tested up to: 5.5.0
+Tested up to: 5.5.3
 Requires PHP: 5.6
-Stable tag: 3.6.51
+Stable tag: 3.6.60
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -317,6 +317,15 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 3.6.60 (Date: Nov 23, 2020) =
+* New: Number formats on the fly for numeric fields
+* New: Import Global Styles from another form
+* New: Dynamic Input Values as Label HTML (Live Update)
+* New: Inline Conditional Tags on CRM integration Feeds
+* Improvement: Oxygen Builder & ACF Integration
+* Many other small bug fixes and improvements
+* Overall UI/UX improvement
 
 = 3.6.51 (Date: Aug 24, 2020) =
 * UI/UX improvement

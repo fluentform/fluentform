@@ -412,15 +412,15 @@ class Helper
                 'value'    => 'dot_comma_style_zero',
                 'label'    => __('US Style without Decimal (Ex: 123,456,789)', 'fluentform'),
                 'settings' => [
-                    'decimal'   => ',',
-                    'separator' => '.',
+                    'decimal'   => '.',
+                    'separator' => ',',
                     'precision' => 0,
                     'symbol'    => ''
                 ]
             ),
             'dot_comma_style'      => array(
                 'value'    => 'dot_comma_style',
-                'label'    => __('EU Style with Decimal (Ex: 123,456.00)', 'fluentform'),
+                'label'    => __('EU Style with Decimal (Ex: 123.456,00)', 'fluentform'),
                 'settings' => [
                     'decimal'   => ',',
                     'separator' => '.',
@@ -430,10 +430,10 @@ class Helper
             ),
             'comma_dot_style_zero' => array(
                 'value'    => 'comma_dot_style_zero',
-                'label'    => __('EU Style without Decimal (EX: 123,456,789)', 'fluentform'),
+                'label'    => __('EU Style without Decimal (EX: 123.456.789)', 'fluentform'),
                 'settings' => [
-                    'decimal'   => '.',
-                    'separator' => ',',
+                    'decimal'   => ',',
+                    'separator' => '.',
                     'precision' => 0,
                     'symbol'    => ''
                 ]
