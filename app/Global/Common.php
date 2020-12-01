@@ -223,6 +223,11 @@ function fluentFormHandleScheduledTasks()
     // Let's run the feed actions
     $handler = new \FluentForm\App\Services\WPAsync\FluentFormAsyncRequest(wpFluentForm());
     $handler->processActions();
+
+    $rand = mt_rand(1,10);
+    if($rand >= 7) {
+        do_action('fluentform_maybe_scheduled_jobs');
+    }
 }
 
 function fluentFormHandleScheduledEmailReport()

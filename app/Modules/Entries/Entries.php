@@ -568,7 +568,6 @@ class Entries extends EntryQuery
         $fields = FormFieldsParser::getAttachmentInputFields($form, ['element', 'attributes']);
 
         $deletableFiles = [];
-
         if ($fields) {
             $submission = wpFluent()->table('fluentform_submissions')
                 ->where('id', $submissionId)
@@ -578,9 +577,7 @@ class Entries extends EntryQuery
 
             foreach ($fields as $field) {
                 if (!empty($data[$field['attributes']['name']])) {
-
                     $files = $data[$field['attributes']['name']];
-
                     if (is_array($files)) {
                         $deletableFiles = array_merge($deletableFiles, $files);
                     } else {
