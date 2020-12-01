@@ -341,6 +341,14 @@ class Form
         ]);
     }
 
+    public function deleteMeta($formId, $metaKey)
+    {
+        return wpFluent()->table('fluentform_form_meta')
+            ->where('form_id', $formId)
+            ->where('meta_key', $metaKey)
+            ->delete();
+    }
+
     /**
      * Find/Read a from from the database
      * @return void

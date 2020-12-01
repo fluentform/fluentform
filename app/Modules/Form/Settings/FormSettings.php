@@ -105,6 +105,18 @@ class FormSettings
         $form->updateMeta($formId, 'formSettings', $formSettings);
         $form->updateMeta($formId, 'advancedValidationSettings', $advancedValidationSettings);
 
+        $deleteAfterXDaysStatus = ArrayHelper::get($formSettings, 'delete_after_x_days');
+        $deleteDaysCount = ArrayHelper::get($formSettings, 'auto_delete_days');
+        $deleteOnSubmission = ArrayHelper::get($formSettings, 'delete_entry_on_submission');
+
+        if($deleteOnSubmission != 'yes' && $deleteDaysCount && $deleteAfterXDaysStatus == 'yes') {
+            // We have to set meta values
+            $form->updateMeta($formId, 'auto_delete_days', intval($deleteDaysCount));
+        } else {
+            // we have to delete meta values
+            $form->deleteMeta($formId, 'auto_delete_days');
+        }
+
         do_action('fluentform_after_save_form_settings', $formId, $this->request->all());
 
         wp_send_json_success([

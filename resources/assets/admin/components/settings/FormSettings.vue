@@ -369,10 +369,31 @@
 
                         <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
 
-                        <p v-if="formSettings.delete_entry_on_submission == 'yes'"><br/>Your data will be deleted on
-                            form
-                            submission so no entry data, analytics and visual reporting will be available for this form
-                        </p>
+                        <template v-if="formSettings.delete_entry_on_submission == 'yes'">
+                            <p><br/>
+                                Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form
+                            </p>
+                        </template>
+                        <div v-if="formSettings.delete_entry_on_submission != 'yes'" style="margin-top: 20px;" class="ff_auto_delete_section">
+                            <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no"
+                                         v-model="formSettings.delete_after_x_days">
+                                Enable auto delete old entries
+                            </el-checkbox>
+                            <div v-if="formSettings.delete_after_x_days == 'yes'" class="el-form-item">
+                                <label class="el-form-item__label">
+                                    Specify how many days old entries will be deleted for this form
+                                </label>
+                                <div class="el-form-item__content">
+                                    <el-input-number
+                                        :disabled="!hasPro"
+                                        size="small"
+                                        v-model="formSettings.auto_delete_days"/>
+                                </div>
+                                <p style="color: red; padding-top: 20px;" v-if="formSettings.auto_delete_days">
+                                    Entries older than <b>{{formSettings.auto_delete_days}} days</b> will be deleted automatically
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

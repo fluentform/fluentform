@@ -108,19 +108,6 @@ class GlobalNotificationManager
             return;
         }
 
-        /*
-         * Maybe Migrate on run time
-         * We will remove this code at the end of 2020
-         * @todo: Remove when appropriate
-         */
-        if(get_option('fluentform_scheduled_actions_migrated') != 'yes') {
-            ScheduledActions::migrate();
-            $hookName = 'fluentform_do_scheduled_tasks';
-            if (!wp_next_scheduled($hookName)) {
-                wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
-            }
-        }
-
         // Now we will push this async feeds
         $handler = $this->app['fluentFormAsyncRequest'];
         $handler->queueFeeds( $asyncFeeds);
