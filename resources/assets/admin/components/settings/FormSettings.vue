@@ -385,6 +385,7 @@
                                 </label>
                                 <div class="el-form-item__content">
                                     <el-input-number
+                                        :min="1"
                                         :disabled="!hasPro"
                                         size="small"
                                         v-model="formSettings.auto_delete_days"/>

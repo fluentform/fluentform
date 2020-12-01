@@ -496,7 +496,8 @@ class Entries extends EntryQuery
     {
         do_action('fluentform_before_entry_deleted', $entryId, $formId);
 
-        if (defined('FLUENTFORMPRO') && $formId) {
+        $disableAttachmentDelete = apply_filters('fluentform_disable_attachment_delete', false, $formId);
+        if (defined('FLUENTFORMPRO') && $formId && !$disableAttachmentDelete) {
             if (is_numeric($formId)) {
                 $form = wpFluent()->table('fluentform_forms')->find($formId);
             } else {
@@ -512,6 +513,7 @@ class Entries extends EntryQuery
                 }
             }
         }
+
 
         wpFluent()->table('fluentform_submissions')
             ->where('id', $entryId)
