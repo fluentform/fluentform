@@ -47,12 +47,12 @@ class EditorShortcodeParser
 
     /**
      * Filter dynamic shortcodes in input value
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     public static function filter($value, $form)
     {
-        if(strpos($value, '{ ') === 0) {
+        if (strpos($value, '{ ') === 0) {
             // it's the css
             return $value;
         }
@@ -111,16 +111,16 @@ class EditorShortcodeParser
                 $dynamicKey = explode('|', $dynamicKey);
                 $fallBack = '';
                 $ref = '';
-                if(count($dynamicKey) > 1) {
+                if (count($dynamicKey) > 1) {
                     $fallBack = $dynamicKey[1];
                 }
                 $ref = $dynamicKey[0];
 
-                if($ref == 'payment_summary') {
-                    return '<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">'.$fallBack.'</div></div>';
+                if ($ref == 'payment_summary') {
+                    return '<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>';
                 }
 
-                return '<span class="ff_dynamic_value" data-ref="'.$ref.'" data-fallback="'.$fallBack.'">'.$fallBack.'</span>';
+                return '<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>';
             } else {
                 // This can be the css
                 $handlerValue = apply_filters('fluentform_editor_shortcode_callback_' . $handler, '{' . $handler . '}', $form);
@@ -134,7 +134,7 @@ class EditorShortcodeParser
 
     /**
      * Parse the curly braced shortcode into array
-     * @param  string $value
+     * @param string $value
      * @return mixed
      */
     public static function parseValue($value)
@@ -157,13 +157,24 @@ class EditorShortcodeParser
 
     /**
      * Parse loggedin user properties
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     private static function parseUserProperties($value, $form = null)
     {
         if ($user = wp_get_current_user()) {
             $prop = substr(str_replace(['{', '}'], '', $value), 5);
+
+            if (strpos($prop, 'meta.') !== false) {
+                $metaKey = substr($prop, strlen('meta.'));
+                $userId = $user->ID;
+                $data = get_user_meta($userId, $metaKey, true);
+                if (!is_array($data)) {
+                    return $data;
+                }
+                return '';
+            }
+
             return $user->{$prop};
         }
 
@@ -171,8 +182,8 @@ class EditorShortcodeParser
     }
 
     /**
-     * Parse loggedin user properties
-     * @param  string $value
+     * Parse embedded post properties
+     * @param string $value
      * @return string
      */
     private static function parsePostProperties($value, $form = null)
@@ -182,10 +193,42 @@ class EditorShortcodeParser
             return '';
         }
 
-        $prop = substr(str_replace(['{', '}'], '', $value), 11);
+        $key = $prop = substr(str_replace(['{', '}'], '', $value), 11);
+
+        if (strpos($key, 'author.') !== false) {
+            $authorProperty = substr($key, strlen('author.'));
+            $authorId = $post->post_author;
+            if ($authorId) {
+                $data = get_the_author_meta($authorProperty, $authorId);
+                if (!is_array($data)) {
+                    return $data;
+                }
+            }
+            return '';
+        } else if (strpos($key, 'meta.') !== false) {
+            $metaKey = substr($key, strlen('meta.'));
+            $postId = $post->ID;
+            $data = get_post_meta($postId, $metaKey, true);
+            if (!is_array($data)) {
+                return $data;
+            }
+            return '';
+        } else if (strpos($key, 'acf.') !== false) {
+            $metaKey = substr($key, strlen('acf.'));
+            $postId = $post->ID;
+            if (function_exists('get_field')) {
+                $data = get_field($metaKey, $postId, true);
+                if (!is_array($data)) {
+                    return $data;
+                }
+                return '';
+            }
+        }
+
         if ($prop == 'permalink') {
             return htmlspecialchars(site_url(wp_unslash($_SERVER['REQUEST_URI'])));
         }
+
         if (property_exists($post, $prop)) {
             return $post->{$prop};
         }
@@ -195,7 +238,7 @@ class EditorShortcodeParser
 
     /**
      * Parse WP Properties
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     private static function parseWPProperties($value, $form = null)
@@ -218,7 +261,7 @@ class EditorShortcodeParser
 
     /**
      * Parse browser/user-agent properties
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     private static function parseBrowserProperties($value, $form = null)
@@ -235,7 +278,7 @@ class EditorShortcodeParser
 
     /**
      * Parse ip shortcode
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     private static function parseIp($value, $form = null)
@@ -246,7 +289,7 @@ class EditorShortcodeParser
 
     /**
      * Parse date shortcode
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     private static function parseDate($value, $form = null)
@@ -259,19 +302,19 @@ class EditorShortcodeParser
     /**
      * Parse request query param.
      *
-     * @param  string $value
-     * @param  \stdClass $form
+     * @param string $value
+     * @param \stdClass $form
      * @return string
      */
     public static function parseQueryParam($value)
     {
         $exploded = explode('.', $value);
         $param = array_pop($exploded);
-        if(!isset($_REQUEST[$param])) {
+        if (!isset($_REQUEST[$param])) {
             return '';
         }
         $value = $_REQUEST[$param];
-        if(is_array($value)) {
+        if (is_array($value)) {
             return sanitize_textarea_field(implode(', ', $value));
         }
         return sanitize_textarea_field($value);
