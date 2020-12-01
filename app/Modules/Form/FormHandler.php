@@ -258,7 +258,7 @@ class FormHandler
             );
 
             $returnData = [
-                'redirectUrl' => $redirectUrl,
+                'redirectUrl' => wp_sanitize_redirect($redirectUrl),
                 'message' => $message
             ];
         }
