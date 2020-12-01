@@ -167,11 +167,9 @@ class ShortCodeParser
         }
 
         if (strpos($key, '.') && !isset(static::$store['inputs'][$key])) {
-            if (!isset(static::$store['inputs'][$key])) {
-                static::$store['inputs'][$key] = ArrayHelper::get(
-                    static::$store['original_inputs'], $key, ''
-                );
-            }
+            return ArrayHelper::get(
+                static::$store['original_inputs'], $key, ''
+            );
         }
 
         if (!isset(static::$store['inputs'][$key])) {
@@ -191,7 +189,7 @@ class ShortCodeParser
 
         if (!$field) return '';
 
-        if($isHtml) {
+        if ($isHtml) {
             return apply_filters(
                 'fluentform_response_render_' . $field['element'],
                 static::$store['original_inputs'][$key],
