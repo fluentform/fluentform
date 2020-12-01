@@ -17,7 +17,7 @@
                         @click="saveSettings">
                     {{saving ? 'Saving' : 'Save'}} Settings
                 </el-button>
-                <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="share_url" class="el-button pull-right el-button--danger el-button--mini">
+                <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="final_share_url" class="el-button pull-right el-button--danger el-button--mini">
                     <span class="dashicons dashicons-share"></span>
                 </a>
             </el-col>
@@ -160,8 +160,22 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-form-item v-if="share_url && settings.status == 'yes'">
+                        <template slot="label">
+                            Security Code
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <p>
+                                        A Salt to secure your share url so nobody can guess by form ID.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-input v-model="settings.share_url_salt" />
+                    </el-form-item>
                     <el-form-item v-if="share_url && settings.status == 'yes'" label="Landing Page URL">
-                        <el-input readonly v-model="share_url" />
+                        <input class="el-input__inner" readonly type="text" :value="final_share_url" />
                     </el-form-item>
 
                     <el-form-item>
@@ -216,6 +230,20 @@
                 }
             }
         },
+        computed: {
+            final_share_url() {
+                if(this.settings.share_url_salt) {
+                    return this.share_url + '&form='+this.settings.share_url_salt;
+                } else {
+                    return this.share_url;
+                }
+            }
+        },
+        watch: {
+            'settings.share_url_salt': function (value, oldValue){
+                this.settings.share_url_salt = this.string_to_slug(value);
+            }
+        },
         methods: {
             saveSettings() {
                 this.saving = true;
@@ -264,6 +292,16 @@
                     .always(() => {
                         this.loading = false;
                     });
+            },
+            string_to_slug (text) {
+                return text
+                    .toString()                     // Cast to string
+                    .toLowerCase()                  // Convert the string to lowercase letters
+                    .normalize('NFD')       // The normalize() method returns the Unicode Normalization Form of a given string.
+                    .replace(/\s+/g, '-')           // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                    .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+
             }
         },
         mounted() {
