@@ -329,6 +329,11 @@
                 return value ? _ff.chunk(value.split(', '), chunkSize) : [];
             },
             maybeExtractCommaArrayInfo(dataValue, field) {
+
+                if (typeof dataValue == 'string' && field.element == 'input_checkbox') {
+                    return dataValue;
+                }
+
                 if(field.element == 'select' && field.attributes && !field.attributes.multiple) {
                     return dataValue;
                 }
@@ -338,7 +343,7 @@
 
                 let itemArray = [];
 
-                if(typeof itemArray == 'string') {
+                if(typeof dataValue == 'string') {
                     itemArray = dataValue.split(',');
                 }
 

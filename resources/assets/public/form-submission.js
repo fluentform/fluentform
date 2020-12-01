@@ -32,6 +32,13 @@ jQuery(document).ready(function () {
                 return currency($el.val(), formatConfig).value;
             }
             return $el.val() || 0;
+        },
+        formatCurrency($el, value) {
+            if ($el.hasClass('ff_numeric')) {
+                let formatConfig = JSON.parse($el.attr('data-formatter'));
+                return currency(value, formatConfig).format();
+            }
+            return value;
         }
     };
 
@@ -789,9 +796,11 @@ jQuery(document).ready(function () {
                 $.each(numericFields, (index, field) => {
                     let $field = $(field);
                     let formatConfig = JSON.parse($field.attr('data-formatter'));
-                    if($field.val()) {
-                        $field.val(currency($field.val(), formatConfig).format());
+
+                    if ($field.val()) {
+                        $field.val(window.ff_helper.formatCurrency($field, $field.val()));
                     }
+
                     $field.on('blur change', function () {
                         let value = currency($(this).val(), formatConfig).format();
                         $(this).val(value);

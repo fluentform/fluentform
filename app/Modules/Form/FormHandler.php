@@ -225,8 +225,6 @@ class FormHandler
             );
 
             if($isUrlParser) {
-                $redirectUrl = esc_url_raw($redirectUrl);
-
                 /*
                  * For Empty Redirect Value
                  */

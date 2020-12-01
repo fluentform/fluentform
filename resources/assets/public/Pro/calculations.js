@@ -141,9 +141,12 @@ export default function ($, $theForm) {
             if ($field[0].type == 'text') {
                 const $fieldDom = $($field);
                 const prevValue = $fieldDom.val();
-                $fieldDom.val(calculatedValue)
-                    .prop('defaultValue', calculatedValue);
-                if (prevValue != calculatedValue) {
+
+                const formattedValue = window.ff_helper.formatCurrency($fieldDom, calculatedValue);
+
+                if (prevValue != formattedValue) {
+                    $fieldDom.val(formattedValue)
+                        .prop('defaultValue', formattedValue);
                     $fieldDom.trigger('change');
                 }
             } else {

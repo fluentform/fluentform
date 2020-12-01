@@ -3,7 +3,8 @@
         <el-input 
             :type="item.attributes.type"
             :value="item.attributes.value"
-            :placeholder="item.attributes.placeholder">
+            :disabled="disabled"
+            :placeholder="placeholder">
         </el-input>
     </withLabel>
 </template>
@@ -16,6 +17,19 @@ export default {
     props: ['item'],
     components: {
         withLabel
+    },
+    computed: {
+        disabled() {
+            return this.item.attributes.type == 'number' &&
+                this.item.settings.calculation_settings &&
+                this.item.settings.calculation_settings.status;
+        },
+        placeholder() {
+            if (this.disabled) {
+                return this.item.settings.calculation_settings.formula;
+            }
+            return this.item.attributes.placeholder;
+        }
     }
 }
 </script>

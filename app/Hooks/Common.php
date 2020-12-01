@@ -116,7 +116,7 @@ $app->addFilter('fluentform_response_render_textarea', function ($value, $field,
     if (!$isHtml || !$value) {
         return $value;
     }
-    return '<span style="white-space: pre">' . $value . '</span>';
+    return '<span style="white-space: pre-line">' . $value . '</span>';
 }, 10, 4);
 
 $app->addFilter('fluentform_response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
