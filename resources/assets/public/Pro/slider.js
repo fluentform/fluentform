@@ -105,19 +105,16 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                         jQuery(`[name="${key}[${k}]"]`).val(v).change();
                     });
                 }
-            }
-            else if (type === '[object Array]') {
+            } else if (type === '[object Array]') {
                 let $el = jQuery(`[name=${key}]`);
 
                 $el = $el.length ? $el : jQuery(`[data-name=${key}]`);
                 $el = $el.length ? $el : jQuery(`[name=${key}\\[\\]]`);
                 if ($el.attr('type') == 'file') {
                     addFilesToElement($el, value);
-                }
-                else if ($el.prop('multiple')) {
+                } else if ($el.prop('multiple')) {
                     $el.val(value).change();
-                }
-                else if ($el.attr('data-type') === 'repeater_field') {
+                } else if ($el.attr('data-type') === 'repeater_field') {
                     // Repeater Field
                     let $tbody = $el.find('tbody');
                     let elName = $el.attr('data-name');
@@ -140,8 +137,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                             }).change();
                         });
                     });
-                }
-                else {
+                } else {
                     // Checkbox Groups
                     $el.each((i, $elem) => {
                         if (jQuery.inArray($($elem).val(), value) != -1) {
@@ -149,8 +145,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 // Others
                 let $el = jQuery(`[name=${key}]`);
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
@@ -475,21 +470,25 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         function maybeAction($el) {
+            function doStep($el) {
+                let timeout = window.ffTransitionTimeOut || 400;
+                let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded)').length;
+                if (count == 1) {
+                    setTimeout(() => {
+                        $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
+                    }, timeout);
+                }
+            }
             let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
-
-            if(condCounts) {
+            if (condCounts) {
                 setTimeout(() => {
-                    let timeout = window.ffTransitionTimeOut || 400;
-                    let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded)').length;
-                    if (count == 1) {
-                        setTimeout(() => {
-                            $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
-                        }, timeout);
-                    }
+                    doStep($el);
                 }, 400);
+            } else {
+                doStep($el);
             }
         };
-
+        
         $theForm.find('.ff-el-form-check-radio,.ff-el-net-label, .ff-el-ratings label').on('click', function () {
             maybeAction($(this));
         });
@@ -594,7 +593,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         removePrevFromFirstFirstStep();
         initStepSlider();
         maybeAutoSlider();
-
 
 
     };
