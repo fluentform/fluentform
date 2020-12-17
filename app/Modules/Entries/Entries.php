@@ -538,9 +538,6 @@ class Entries extends EntryQuery
                     ->where('submission_id', $entryId)
                     ->delete();
 
-                wpFluent()->table('fluentform_subscriptions')
-                    ->where('submission_id', $entryId)
-                    ->delete();
 
                 wpFluent()->table('fluentform_transactions')
                     ->where('submission_id', $entryId)

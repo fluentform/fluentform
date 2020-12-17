@@ -464,9 +464,7 @@ class Form
                 wpFluent()->table('fluentform_order_items')
                     ->where('form_id', $formId)
                     ->delete();
-                wpFluent()->table('fluentform_subscriptions')
-                    ->where('form_id', $formId)
-                    ->delete();
+
                 wpFluent()->table('fluentform_transactions')
                     ->where('form_id', $formId)
                     ->delete();
