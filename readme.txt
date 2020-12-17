@@ -8,10 +8,13 @@ Stable tag: 3.6.61
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The fastest and easiest WP Forms Plugin for WordPress.
+The Fastest Contact Form Builder Plugin for WordPress - Fluent Forms
 
 == Description ==
-**WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect WordPress Form builder plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
+
+= Fastest Contact Form Builder - Fluent Forms =
+
+**WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect **WordPress Form builder** plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
 
 [youtube https://www.youtube.com/watch?v=FFR2ZZaVF3g]
 
