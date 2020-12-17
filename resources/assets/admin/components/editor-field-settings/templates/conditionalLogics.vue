@@ -16,7 +16,7 @@
                 <el-radio v-model="conditional_logics.type" label="all">All</el-radio>
             </el-form-item>
 
-            <div v-for="condition, i in conditional_logics.conditions" :key="i" class="conditional-logic">
+            <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
                 <select
                         v-model="condition.field"
                         @change="condition.value = ''"
@@ -24,7 +24,7 @@
                         class="condition-field"
                 >
                     <option value="" disabled>- Select -</option>
-                    <option v-for="dep, meta, i in dependencies"
+                    <option v-for="(dep, meta, i) in dependencies"
                             v-if="meta != editItem.attributes.name"
                             :key="i"
                             :value="meta">{{ dep.field_label || meta }}
@@ -137,9 +137,10 @@
                     'custom_payment_component',
                     'multi_payment_component',
                     'item_quantity_component',
+                    'cpt_selection'
                 ],
                 showPreventMessage: false,
-                emptyRules: {field: '', value: '', operator: ''}
+                emptyRules: { field: '', value: '', operator: '' }
             }
         },
         computed: {
