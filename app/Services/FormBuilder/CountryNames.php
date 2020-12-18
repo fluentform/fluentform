@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 
 $country_names = array(
     'AF' => __('Afghanistan', 'fluentform'),
-    'AX' => __('Åland Islands', 'fluentform'),
+    'AX' => __('Aland Islands', 'fluentform'),
     'AL' => __('Albania', 'fluentform'),
     'DZ' => __('Algeria', 'fluentform'),
     'AS' => __('American Samoa', 'fluentform'),
