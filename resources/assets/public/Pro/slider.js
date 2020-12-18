@@ -470,25 +470,20 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         function maybeAction($el) {
-            function doStep($el) {
-                let timeout = window.ffTransitionTimeOut || 400;
-                let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded)').length;
-                if (count == 1) {
+            let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded)').length;
+            if (count == 1) {
+                let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
+                if (condCounts) {
+                    let timeout = window.ffTransitionTimeOut || 400;
                     setTimeout(() => {
                         $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
                     }, timeout);
+                } else {
+                    $el.closest('.fluentform-step.active').find('.ff-btn-next').trigger('click');
                 }
             }
-            let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
-            if (condCounts) {
-                setTimeout(() => {
-                    doStep($el);
-                }, 400);
-            } else {
-                doStep($el);
-            }
-        };
-        
+        }
+
         $theForm.find('.ff-el-form-check-radio,.ff-el-net-label, .ff-el-ratings label').on('click', function () {
             maybeAction($(this));
         });

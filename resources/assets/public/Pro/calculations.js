@@ -113,6 +113,38 @@ export default function ($, $theForm) {
                         value = $targetTable.find('tbody tr').length
                     }
                     replaces[itemKey] = value;
+                } else if (itemKey.indexOf('{payment.') != -1) {
+                    let inputName = itemKey.replace(/{payment.|}/g, '');
+                    let $elem = $theForm.find(':input[data-name=' + inputName + ']');
+                    console.log($elem);
+                    let value = 0;
+                    if ($elem.length && isAccessible($elem)) {
+                        let elementType = $elem[0].type;
+                        console.log(elementType);
+                        if (elementType == 'radio') {
+                            let $element = $theForm.find('input[name=' + inputName + ']:checked');
+                            value = $element.attr('data-payment_value');
+                        } else if (elementType == 'hidden') {
+                            value = $elem.attr('data-payment_value');
+                        } else if (elementType == 'number' || elementType == 'text') {
+                            value = window.ff_helper.numericVal($elem);
+                        } else if (elementType == 'checkbox') {
+                            let groupId = $elem.data('group_id');
+                            let groups = $theForm.find('input[data-group_id="' + groupId + '"]:checked');
+                            let groupTotal = 0;
+                            groups.each((index, group) => {
+                                let itemPrice = jQuery(group).data('payment_value');
+                                if (itemPrice) {
+                                    groupTotal += parseFloat(itemPrice);
+                                }
+                            });
+                            value = groupTotal;
+                        } else if (elementType == 'select-one') {
+                            let $element = $theForm.find('select[name=' + inputName + '] option:selected');
+                            value = $element.data('payment_value');
+                        }
+                    }
+                    replaces[itemKey] = value;
                 }
             });
 
@@ -184,8 +216,9 @@ export default function ($, $theForm) {
      */
     var initNumberCalculations = function () {
         $theForm.find(
-            'input[type=number],input[data-calc_value],select[data-calc_value],.ff_numeric'
+            'input[type=number],input[data-calc_value],select[data-calc_value],.ff_numeric,.ff_payment_item'
         ).on('change keyup', doCalculation).trigger('change');
+
         doCalculation();
 
         $theForm.on('do_calculation', () => {

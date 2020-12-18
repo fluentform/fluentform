@@ -165,8 +165,8 @@
                 <el-form-item label="Billing Address">
                     <el-input type="textarea" placeholder="Billing Address" v-model="editingTransaction.billing_address"/>
                 </el-form-item>
-                <el-form-item label="Billing Address">
-                    <el-input type="textarea" placeholder="Billing Address" v-model="editingTransaction.billing_address"/>
+                <el-form-item label="Shipping Address">
+                    <el-input type="textarea" placeholder="Shipping Address" v-model="editingTransaction.shipping_address"/>
                 </el-form-item>
                 <el-form-item label="Reference ID">
                     <el-input type="text" placeholder="Reference ID" v-model="editingTransaction.charge_id"/>

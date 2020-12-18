@@ -114,6 +114,8 @@ import calculation from './Pro/calculations';
             $theForm.on('keyup change', ':input', function () {
                 maybeUpdateDynamicLabels($theForm);
             });
+
+            maybeUpdateDynamicLabels($theForm);
         }
         
     });
