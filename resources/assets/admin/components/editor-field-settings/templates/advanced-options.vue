@@ -7,7 +7,7 @@
                 <template v-if="has_pro">
                     <el-checkbox v-if="hasImageSupport" v-model="editItem.settings.enable_image_input">Photo</el-checkbox>
                 </template>
-                <template v-else>
+                <template v-else-if="hasImageSupport">
                     <el-checkbox v-model="pro_mock" @change="showProMessage()">Photo</el-checkbox>
                 </template>
             </div>

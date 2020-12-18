@@ -77,13 +77,24 @@
                 } else if(item.element == 'input_radio' || item.element == 'net_promoter_score') {
                     return '{radio.' + item.attributes.name + '}';
                 } else if(item.element == 'repeater_field') {
-                    return '{repeat.'+item.attributes.name+'}'
+                    return '{repeat.'+item.attributes.name+'}';
+                } else if(item.element == 'multi_payment_component') {
+                    return '{payment.'+item.attributes.name+'}';
                 }
             },
             isCalculative(item) {
-                if (item.element == 'input_number' || item.element == 'repeater_field' || item.element == 'net_promoter_score' || item.element == 'rangeslider') {
+                const paymentElements = [
+                    'multi_payment_component',
+                    'input_number',
+                    'repeater_field',
+                    'net_promoter_score',
+                    'rangeslider'
+                ];
+
+                if (paymentElements.indexOf(item.element) != -1) {
                     return true;
                 }
+
                 return (
                     item.element == 'select' ||
                     item.element == 'input_checkbox' ||
