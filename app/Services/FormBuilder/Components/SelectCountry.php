@@ -32,20 +32,20 @@ class SelectCountry extends BaseComponent
 
         $activeList = ArrayHelper::get($data, 'settings.country_list.active_list');
 
-        $elMarkup = "<select " . $this->buildAttributes($data['attributes']) . "><option value=''>".$placeholder."</option>";
+        $elMarkup = "<select " . $this->buildAttributes($data['attributes']) . "><option value=''>" . $placeholder . "</option>";
 
         if ($activeList == 'priority_based') {
             $selectCountries = ArrayHelper::get($data, 'settings.country_list.priority_based', []);
             $priorityCountries = $this->getSelectedCountries($selectCountries);
             $primaryListLabel = ArrayHelper::get($data, 'settings.primary_label');
             $otherListLabel = ArrayHelper::get($data, 'settings.other_label');
-            $elMarkup .= '<optgroup label="'.$primaryListLabel.'">';
-            $elMarkup .=  $this->buildOptions($priorityCountries, $defaultValues);
-            $elMarkup .= '</optgroup><optgroup label="'.$otherListLabel.'">';
-            $elMarkup .=  $this->buildOptions($data['options'], $defaultValues);
+            $elMarkup .= '<optgroup label="' . $primaryListLabel . '">';
+            $elMarkup .= $this->buildOptions($priorityCountries, $defaultValues);
+            $elMarkup .= '</optgroup><optgroup label="' . $otherListLabel . '">';
+            $elMarkup .= $this->buildOptions($data['options'], $defaultValues);
             $elMarkup .= '</optgroup>';
         } else {
-            $elMarkup .=  $this->buildOptions($data['options'], $defaultValues);
+            $elMarkup .= $this->buildOptions($data['options'], $defaultValues);
         }
 
         $elMarkup .= "</select>";
@@ -81,6 +81,12 @@ class SelectCountry extends BaseComponent
             $data['options'] = $countries;
         }
 
+        $selectedCountries = $data['options'];
+        $selectedCountries = array_flip($selectedCountries);
+        ksort($selectedCountries);
+        $selectedCountries = array_flip($selectedCountries);
+        $data['options'] = $selectedCountries;
+
         return $data;
     }
 
@@ -112,7 +118,9 @@ class SelectCountry extends BaseComponent
             $options[$value] = $countries[$value];
         }
 
-        return $options;
+        $options = array_flip($options);
+        ksort($options);
+        return array_flip($options);
     }
 
 }
