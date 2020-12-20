@@ -24,7 +24,7 @@
                 <elLabel
                     slot="label"
                     label="Payment Amount"
-                    helpText="Please Provide the payment amount"
+                    helpText="Please Provide the payment amount. Max 2 decimal point is excepted"
                 />
                 <el-input type="text" v-model="editItem.attributes.value" />
             </el-form-item>

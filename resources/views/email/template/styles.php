@@ -225,3 +225,9 @@ text-transform: capitalize;
 .fluent_credit span a {
 text-decoration: none;
 }
+.aligncenter {
+text-align: center !important;
+}
+.alignright {
+text-align: right !important;
+}
