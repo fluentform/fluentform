@@ -1,6 +1,6 @@
 === Contact Form Plugin - WP Fluent Forms - Fastest Contact Form Builder Plugin for WordPress ===
 Contributors: techjewel,adreastrian,heera,wpmanageninja
-Tags: contact form, contact forms, wp forms, forms, form builder
+Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
 Tested up to: 5.5.3
 Requires PHP: 5.6
@@ -8,11 +8,11 @@ Stable tag: 3.6.62
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The Fastest Contact Form Builder Plugin for WordPress - Fluent Forms
+The Fastest and Best Contact Form Builder Plugin for WordPress. Drag and drop form builder plugin with all premium features.
 
 == Description ==
 
-= Fastest Contact Form Builder - Fluent Forms =
+= The Best and Fastest Contact Form Builder Plugin - Fluent Forms =
 
 **WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect **WordPress Form builder** plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
 
@@ -128,6 +128,7 @@ With WP Fluent Forms, you can organize your submitted entries according to their
 - Net Promoter Score
 - Checkable Grid
 - Ratings Form Field
+- Post/CPT selection field
 - Form Step to build multi-step form
 - Action Hook Field
 - Shortcode Field
@@ -320,6 +321,11 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 3.6.62 (Date: Dec 20, 2020) =
+* Database Improvement
+* Smartcode improvement
+* UI Improvement
 
 = 3.6.61 (Date: Dec 01, 2020) =
 * Form Builder screen improvement
