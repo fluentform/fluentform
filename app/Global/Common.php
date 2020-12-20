@@ -172,7 +172,7 @@ if (!function_exists('fluentImplodeRecursive')) {
 
 function fluentform_get_active_theme_slug()
 {
-    return get_option('stylesheet');
+    return get_option('template');
 }
 
 if (!function_exists('getFluentFormCountryList')) {
