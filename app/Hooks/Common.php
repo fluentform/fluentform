@@ -99,6 +99,12 @@ foreach ($elements as $element) {
         }
 
         if ($response && $isLabel && in_array($element, ['select', 'input_radio'])) {
+            if(!isset($field['options'])) {
+                $field['options'] = [];
+                foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
+                    $field['options'][$option['value']] = $option['label'];
+                }
+            }
             if (isset($field['options'][$response])) {
                 return $field['options'][$response];
             }

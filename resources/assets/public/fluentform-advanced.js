@@ -55,19 +55,18 @@ import calculation from './Pro/calculations';
                 var refValues = [];
                 $.each(refElement, function () {
                     let inputValue = $(this).val();
-                    if(inputValue) {
-                        let tagName = $(this).prop("tagName");
-                        if (tagName == 'OPTION') {
-                            inputValue = $(this).text();
-                        } else if (tagName == 'SELECT') {
-                            inputValue = $(this).find('option:selected').text();
-                        } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
-                            inputValue = $(this).parent().find('span').html();
-                        }
-
-                        if (inputValue) {
-                            refValues.push(inputValue);
-                        }
+                    // if(inputValue) {
+                    //     let tagName = $(this).prop("tagName");
+                    //     if (tagName == 'OPTION') {
+                    //         inputValue = $(this).text();
+                    //     } else if (tagName == 'SELECT') {
+                    //         inputValue = $(this).find('option:selected').text();
+                    //     } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
+                    //         inputValue = $(this).parent().find('span').html();
+                    //     }
+                    // }
+                    if (inputValue) {
+                        refValues.push(inputValue);
                     }
                 });
 

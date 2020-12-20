@@ -292,6 +292,13 @@ class FormDataParser
             return $values;
         }
 
+        if(!isset($field['options'])) {
+            $field['options'] = [];
+            foreach (ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
+                $field['options'][$option['value']] = $option['label'];
+            }
+        }
+
         $html = '<ul style="white-space: normal;">';
         foreach ($values as $value) {
             $item = $value;

@@ -61,8 +61,7 @@
                                 </template>
                                 <template
                                     v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                    <div
-                                        v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
                                 </template>
                                 <template v-else>
                                     <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
