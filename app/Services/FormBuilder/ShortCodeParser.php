@@ -145,20 +145,7 @@ class ShortCodeParser
     {
         if (strpos($key, '.label')) {
             $key = str_replace('.label', '', $key);
-            $field = ArrayHelper::get(static::$formFields, $key, '');
-            if (empty($field['element'])) {
-                return '';
-            }
-
-            $value = ArrayHelper::get(static::$store['original_inputs'], $key);
-
-            return apply_filters(
-                'fluentform_response_render_' . $field['element'],
-                $value,
-                $field,
-                static::getForm()->id,
-                true
-            );
+            $isHtml = true;
         }
 
         if (strpos($key, '.value')) {
