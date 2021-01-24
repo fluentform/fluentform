@@ -29,8 +29,8 @@ use FluentForm\Framework\Foundation\Bootstrap;
 Bootstrap::run(__FILE__);
 
 // Handle Newtwork new Site Activation
-add_action('wpmu_new_blog', function ($blogId) {
-    switch_to_blog($blogId);
+add_action('wp_insert_site', function ($blog) {
+    switch_to_blog($blog->blog_id);
     include_once plugin_dir_path(__FILE__) . 'app/Modules/Activator.php';
     (new FluentForm\App\Modules\Activator)->migrate();
     restore_current_blog();

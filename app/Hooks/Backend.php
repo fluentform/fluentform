@@ -166,6 +166,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
     $upgradableCheckInputs = [
         'input_radio',
         'select',
+        'select_country',
         'input_checkbox'
     ];
 
@@ -201,7 +202,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['dynamic_default_value'] = '';
             }
 
-            if($upgradeElement == 'select' && !isset($element['settings']['enable_select_2'])) {
+            if($upgradeElement == 'select' || $upgradeElement = 'select_country' && !isset($element['settings']['enable_select_2'])) {
                 $element['settings']['enable_select_2'] = 'no';
             }
 
