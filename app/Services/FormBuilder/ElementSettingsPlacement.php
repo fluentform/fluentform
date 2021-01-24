@@ -107,7 +107,6 @@ $element_settings_placement = array(
             'label',
             'label_placement',
             'admin_field_label',
-            'enable_select_2',
             'placeholder',
             'validation_rules',
         ),

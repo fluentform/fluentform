@@ -881,7 +881,6 @@ $defaultElements = array(
                 'admin_field_label' => '',
                 'label_placement' => '',
                 'help_message' => '',
-                'enable_select_2' => 'no',
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,
