@@ -94,7 +94,7 @@ class Helper
 
     public static function getEntryStatuses($form_id = false)
     {
-        $statuses = apply_filters('fluentform_entry_statuses_core', [
+        $statuses = apply_filters('fluentform_entry_statuses', [
             'unread' => 'Unread',
             'read'   => 'Read'
         ], $form_id);
