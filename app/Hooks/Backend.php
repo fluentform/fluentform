@@ -204,7 +204,6 @@ add_action('fluentform_loading_editor_assets', function ($form) {
 
             if($upgradeElement == 'select' || $upgradeElement = 'select_country' && !isset($element['settings']['enable_select_2'])) {
                     $element['settings']['enable_select_2'] = 'no';
-                }
             }
 
             return $element;
