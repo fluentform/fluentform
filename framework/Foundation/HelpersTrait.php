@@ -76,7 +76,7 @@ trait HelpersTrait
      * @param string $scope [specify the scope of the ajax action|internal use]
      * @return Framework\Foundation\HookReference
      */
-    private function addAjaxAction($tag, $handler, $priority = 10, $scope)
+    private function addAjaxAction($tag, $handler, $priority, $scope)
     {
     	if ($scope == 'admin') {
         	add_action(
@@ -129,7 +129,7 @@ trait HelpersTrait
      * @param string $scope [specify the scope of the ajax action|internal use]
      * @return mixed [a reference to the handler to remove the action later]
      */
-    private function removeAjaxAction($tag, $handler, $priority = 10, $scope)
+    private function removeAjaxAction($tag, $handler, $priority, $scope)
     {
     	if ($scope == 'admin') {
         	return remove_action(
