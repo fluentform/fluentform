@@ -8,6 +8,7 @@ class FormCssJs
 {
     public function addCssJs($formId)
     {
+        // @todo: Limit 3 sometimes make things double
         $metas = wpFluent()->table('fluentform_form_meta')
             ->where('form_id', $formId)
             ->whereIn('meta_key', [
@@ -15,7 +16,8 @@ class FormCssJs
                 '_custom_form_js',
                 '_ff_form_styler_css'
             ])
-            ->limit(3)
+            ->groupBy('meta_key')
+            //->limit(3)
             ->get();
 
         if (!$metas) {
