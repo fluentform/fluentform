@@ -1076,12 +1076,14 @@ jQuery(document).ready(function () {
         $(document).on('ff_reinit', function (e, formItem) {
             var $theForm = $(formItem);
             $theForm.attr('data-ff_reinit', 'yes');
-            if ($theForm.data('is_initialized') == 'yes') {
-                const formInstance = fluentFormApp($theForm);
-                formInstance.reinitExtras();
-            } else {
-                initSingleForm($theForm);
+            // in elementor is_initialized is called when the page is loaded so removed the condition to check fo it
+    
+            const formInstance = fluentFormApp($theForm);
+            formInstance.reinitExtras();
+            if (window.grecaptcha) {
+                grecaptcha.reset(); //two recapthca on same page creates conflicts
             }
+            initSingleForm($theForm);
             fluentFormCommonActions.init();
         });
 
