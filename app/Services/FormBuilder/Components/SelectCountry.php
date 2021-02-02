@@ -23,6 +23,12 @@ class SelectCountry extends BaseComponent
         $defaultValues = (array)$this->extractValueFromAttributes($data);
         $data['attributes']['class'] = trim('ff-el-form-control ' . $data['attributes']['class']);
         $data['attributes']['id'] = $this->makeElementId($data, $form);
+        $isSearchable = ArrayHelper::get ($data,'settings.enable_select_2');
+        if($isSearchable == 'yes'){
+            wp_enqueue_script('choices');
+            wp_enqueue_style('ff_choices');
+            $data['attributes']['class'] .= ' ff_has_multi_select';
+        }
 
         if ($tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex()) {
             $data['attributes']['tabindex'] = $tabIndex;
