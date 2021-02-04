@@ -226,6 +226,7 @@ class BaseComponent
             // $labelMarkup = "<div class='".$labelClass."'><label ".$forStr.">".$label."</label> {$labelHelpText}</div>";
         }
 
+
         return sprintf(
             "<div class='%s'>%s<div class='ff-el-input--content'>%s%s</div></div>",
             $formGroupClass,
