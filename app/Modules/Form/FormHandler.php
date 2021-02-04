@@ -286,7 +286,7 @@ class FormHandler
         foreach ($fields as $fieldName => $field) {
             if(isset($this->formData[$fieldName])) {
                 $element = $field['element'];
-                $this->formData[$fieldName] = apply_filters('fluentform_input_data_'.$element, $this->formData[$fieldName], $field, $this->formData);
+                $this->formData[$fieldName] = apply_filters('fluentform_input_data_'.$element, $this->formData[$fieldName], $field, $this->formData, $this->form);
             }
         }
 
