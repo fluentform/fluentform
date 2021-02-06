@@ -26,6 +26,16 @@
                         </tr>
                         </tbody>
                         <tfoot>
+                        <template v-if="order_data.discount_items && order_data.discount_items.length">
+                            <tr>
+                                <th colspan="3" class="text-right">Sub-Total</th>
+                                <th><span v-html="formatMoney(order_data.order_items_subtotal, submission.currency)"></span></th>
+                            </tr>
+                            <tr v-for="(discount, index) in order_data.discount_items" :key="index">
+                                <th colspan="3" class="text-right">Discount: {{discount.item_name}}</th>
+                                <th>-<span v-html="formatMoney(discount.line_total, submission.currency)"></span></th>
+                            </tr>
+                        </template>
                         <tr>
                             <th colspan="3" class="text-right">Total</th>
                             <th><span v-html="formatMoney(order_data.order_items_total, submission.currency)"></span></th>

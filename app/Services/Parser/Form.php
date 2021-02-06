@@ -276,7 +276,8 @@ class Form
             'custom_payment_component',
             'multi_payment_component',
             'payment_method',
-            'item_quantity_component'
+            'item_quantity_component',
+            'payment_coupon'
         ];
 
         return array_filter($fields, function ($field) use ($paymentElements) {

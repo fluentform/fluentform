@@ -62,7 +62,6 @@
                     </el-select>
                 </el-form-item>
 
-
                 <div class="ff_card_block" v-if="payment_methods.stripe">
                     <h3>Stripe Settings</h3>
 
@@ -106,6 +105,104 @@
 
                     </el-form-item>
 
+                    <el-form-item label="">
+                        <template slot="label">
+                            Stripe Account
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <p>
+                                        You can select which stripe account credential will be used for this form. Select "Custom Stripe Credential" for a different stripe account than global.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="settings.stripe_account_type">
+                            <el-radio label="global">As per global settings</el-radio>
+                            <el-radio label="custom">Custom Stripe Credentials</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <div style="background: white; padding: 10px 20px;" v-if="settings.stripe_account_type == 'custom'">
+                        <el-form-item label="">
+                            <template slot="label">
+                                Payment Mode
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <h3>Payment Mode</h3>
+                                        <p>
+                                            Select the payment mode. for testing purposes you should select Test Mode otherwise select Live mode.
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-radio-group v-model="settings.stripe_custom_config.payment_mode">
+                                <el-radio label="live">Live Mode</el-radio>
+                                <el-radio label="test">Test Mode</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <h4>Please provide your <b style="color: red;">{{settings.stripe_custom_config.payment_mode | ucFirst}} API keys</b></h4>
+                        <el-form-item label="Publishable key">
+                            <template slot="label">
+                                {{settings.stripe_custom_config.payment_mode | ucFirst}} Publishable key
+                            </template>
+                            <el-input type="text" size="small" v-model="settings.stripe_custom_config.publishable_key"
+                                      placeholder="Publishable key"/>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <template slot="label">
+                                {{settings.stripe_custom_config.payment_mode | ucFirst}} Secret key
+                            </template>
+                            <el-input type="password" size="small" v-model="settings.stripe_custom_config.secret_key"
+                                      placeholder="Secret key"/>
+                        </el-form-item>
+                        <p>You can find the API keys to <a target="_blank" rel="noopener" href="https://dashboard.stripe.com/apikeys">Stripe Dashboard</a></p>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 20px;" class="ff_card_block" v-if="payment_methods.paypal">
+                    <h3>PayPal Settings</h3>
+                    <el-form-item label="">
+                        <template slot="label">
+                            PayPal Account
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <p>
+                                        You can select which PayPal account email will be used for this form. Select "Custom PayPal ID" for a different PayPal account than global.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="settings.paypal_account_type">
+                            <el-radio label="global">As per global settings</el-radio>
+                            <el-radio label="custom">Custom PayPal ID</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <template v-if="settings.paypal_account_type == 'custom'">
+                        <el-form-item label="">
+                            <template slot="label">
+                                Payment Mode
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <h3>Payment Mode</h3>
+                                        <p>
+                                            Select the payment mode. for testing purposes you should select Test Mode otherwise select Live mode.
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-radio-group v-model="settings.custom_paypal_mode">
+                                <el-radio label="live">Live Mode</el-radio>
+                                <el-radio label="test">Test Mode</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="PayPal Email">
+                            <el-input type="email" v-model="settings.custom_paypal_id" placeholder="Custom PayPal Email" />
+                        </el-form-item>
+                    </template>
                 </div>
 
                 <div style="margin-top: 30px" class="action_right">

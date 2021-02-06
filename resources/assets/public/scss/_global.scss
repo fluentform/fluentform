@@ -137,3 +137,38 @@
     -webkit-appearance: radio;
   }
 }
+
+.ff_coupon_wrapper {
+  .ff_input-group-append {
+    cursor: pointer;
+    &:hover {
+      .ff_input-group-text {
+        background: #e3e8ed;
+      }
+    }
+  }
+}
+
+ul.ff_coupon_responses {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    padding-top: 5px;
+  }
+
+  span.error-clear {
+    font-weight: bold;
+    color: #ff5050;
+    margin-right: 10px;
+  }
+
+  .ff_error {
+    color: #f56c6c;
+    cursor: pointer;
+  }
+
+  .ff_success {
+    color: #28a745;
+  }
+}
