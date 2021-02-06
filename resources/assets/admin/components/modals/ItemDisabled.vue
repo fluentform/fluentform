@@ -20,6 +20,9 @@
                             Upgrade to Pro Now
                         </a>
                     </div>
+                    <div v-else-if="modal && modal.disable_html">
+                        <div v-html="modal.disable_html"></div>
+                    </div>
                     <div v-else>
                         <p style="margin-bottom: 30px; font-size: 18px;">This field is only available on pro add-on</p>
                         <a  target="_blank"
