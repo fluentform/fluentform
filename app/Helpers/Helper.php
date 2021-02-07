@@ -466,5 +466,43 @@ class Helper
         $settings = $formatters[$formatterName]['settings'];
         return number_format($input, $settings['precision'], $settings['decimal'], $settings['separator']);
     }
+    
+    public static function checkDuplicateNameAttr($fields)
+    {
+        
+        $fields        = json_decode ($fields,true);
+        $temp          = $fields['fields'];
+        $skipElements  = ['container','custom_html','payment_summary_component','shortcode','section_break','action_hook','form_step'];
+        foreach ($temp as $outerLoopfield ) {
+    
+            $elementOuterLoop = ArrayHelper::get ($outerLoopfield,'element');
+            $nameOuterLoop    = ArrayHelper::get ($outerLoopfield,'attributes.name');
+            $firstCheckDone   = false;
+            
+            foreach ($temp as $field){
+                $element = ArrayHelper::get ($field,'element');
+                $name    = ArrayHelper::get ($field,'attributes.name');
+               
+                if( in_array ( $element , $skipElements) ){
+                    continue;
+                }
+                //check if the same element has two input with duplicate name
+                if(($element ==  $elementOuterLoop ) && ($name == $nameOuterLoop)){
+                   if($firstCheckDone){
 
+                       return [
+                           'status' => false,
+                           'name'=> $name
+                       ];
+                   }
+                    $firstCheckDone = true;
+    
+                }
+            }
+        };
+        return [
+            'status' => true,
+        ];
+        
+    }
 }

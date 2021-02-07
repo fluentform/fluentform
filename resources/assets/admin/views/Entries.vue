@@ -202,9 +202,9 @@
                     <template slot-scope="scope">
                         <div class="has_hover_item">
                             <router-link :to="{
-                                    name: 'form-entry', 
-                                    params: { 
-                                        form_id: scope.row.form_id, 
+                                    name: 'form-entry',
+                                    params: {
+                                        form_id: scope.row.form_id,
                                         entry_id: scope.row.id
                                     },
                                     query: {
@@ -298,9 +298,9 @@
                     <template slot-scope="scope">
                         <el-button-group>
                             <router-link :to="{
-                                    name: 'form-entry', 
-                                    params: { 
-                                        form_id: scope.row.form_id, 
+                                    name: 'form-entry',
+                                    params: {
+                                        form_id: scope.row.form_id,
                                         entry_id: scope.row.id
                                     },
                                     query: {
@@ -711,11 +711,19 @@
                 window.location.href = window.fluent_form_entries_vars.entries_url_base + formId;
             },
             exportEntries(format = 'csv') {
+
+                let selectedEntries = [];
+
+                this.entrySelections.forEach(function (element) {
+                    selectedEntries.push(element.id);
+                });
+
                 let data = {
                     action: 'fluentform-form-entries-export',
                     form_id: this.form_id,
                     format: format,
                     entry_type: this.entry_type,
+                    entries: selectedEntries,
                     sort_by: this.sort_by,
                     search: this.search_string,
                     payment_statuses: this.selectedPaymentStatuses

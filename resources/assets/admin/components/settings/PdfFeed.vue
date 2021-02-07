@@ -4,7 +4,8 @@
             <el-tab-pane label="PDF Contents">
                 <el-form v-if="feed.settings" label-position="left" label-width="205px">
                     <field-mapper
-                            :field="{ component: 'text', label: 'Feed Title', placeholder: 'Feed Title' }"
+                            :field="{ component: 'value_text', label: 'Feed Title', placeholder: 'Feed Title' }"
+                            :editorShortcodes="editorShortcodes"
                             :errors="errors"
                             v-model="feed.name"
                     >
