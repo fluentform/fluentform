@@ -265,6 +265,11 @@ $app->addAdminAjaxAction('fluentform_notice_action_track_yes', function () use (
     (new FluentForm\App\Modules\Track\TrackModule())->sendInitialInfo();
 });
 
+$app->addAdminAjaxAction('fluentform_install_fluentsmtp', function () {
+    Acl::hasAnyFormPermission();
+    (new FluentForm\App\Modules\Track\SetupModule())->installPlugin('fluent-smtp');
+});
+
 // Export forms
 $app->addAdminAjaxAction('fluentform-export-forms', function () use ($app) {
     Acl::verify('fluentform_settings_manager');
