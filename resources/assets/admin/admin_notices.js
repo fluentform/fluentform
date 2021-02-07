@@ -47,15 +47,50 @@ const ffNoticeApp = {
                 .fail(function (error) {
                     console.log(error);
                 });
-
         });
 
+    },
+
+    initSmtpInstall() {
+        let $btn = jQuery('.intstall_fluentsmtp');
+        $btn.on('click', function (e) {
+            e.preventDefault();
+            jQuery(this).attr('disabled', true);
+            jQuery('.ff_addon_installing').show();
+            jQuery.post(ajaxurl, {
+                action: 'fluentform_install_fluentsmtp'
+            })
+                .then(function (response) {
+                    $btn.text('Please wait....');
+                    if(response.is_installed && response.config_url) {
+                        window.location.href = response.config_url;
+                    } else if(response.is_installed) {
+                        location.reload();
+                    } else {
+                        alert('something is wrong when installing the plugin. Please install FluentSMTP manually.')
+                    }
+                    console.log(response);
+                })
+                .fail(function (error) {
+                    let message = 'something is wrong when installing the plugin. Please install FluentSMTP manually.';
+                    if(error.responseJSON && error.responseJSON.message) {
+                        message = error.responseJSON.message;
+                    }
+                    alert(message);
+                    console.log(error);
+                })
+                .always(() => {
+                    jQuery(this).attr('disabled', false);
+                    jQuery('.ff_addon_installing').hide();
+                });
+        });
     },
 
     initReady() {
         jQuery(document).ready(() => {
             this.initNagButton();
             this.initTrackYes();
+            this.initSmtpInstall();
         });
     }
 };
