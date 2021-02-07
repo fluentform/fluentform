@@ -539,12 +539,17 @@ class Form
     private function validate()
     {
         $fields = $this->request->get('formFields');
-        $haveUniqeNames = Helper::checkDuplicateNameAttr ($fields);
-        if($haveUniqeNames['status'] == false){
-            wp_send_json([
-                'title' => __('Name attribute "'.$haveUniqeNames['name'].'" has duplicate value!', 'fluentform')
-            ], 422);
+        if($fields) {
+            $duplicates = Helper::getDuplicateFieldNames($fields);
+            if($duplicates){
+                $duplicateString = implode(', ', $duplicates);
+                wp_send_json([
+                    'title' => sprintf( __( 'Name attribute %s has duplicate value.', 'fluentform' ), $duplicateString )
+                ], 422);
+            }
         }
+
+
         if (!$this->request->get('title')) {
             wp_send_json([
                 'title' => 'The title field is required.'

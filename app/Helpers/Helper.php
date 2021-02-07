@@ -445,64 +445,61 @@ class Helper
     public static function getNumericValue($input, $formatterName)
     {
         $formatters = self::getNumericFormatters();
-        if(empty($formatters[$formatterName]['settings'])) {
+        if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
-        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^\d'.preg_quote($settings['decimal']).']/', '', $input)));
+        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^\d' . preg_quote($settings['decimal']) . ']/', '', $input)));
 
         return number_format($number, $settings['precision'], '.', '');
     }
 
     public static function getNumericFormatted($input, $formatterName)
     {
-        if(!is_numeric($input)) {
+        if (!is_numeric($input)) {
             return $input;
         }
         $formatters = self::getNumericFormatters();
-        if(empty($formatters[$formatterName]['settings'])) {
+        if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
         return number_format($input, $settings['precision'], $settings['decimal'], $settings['separator']);
     }
-    
-    public static function checkDuplicateNameAttr($fields)
-    {
-        
-        $fields        = json_decode ($fields,true);
-        $temp          = $fields['fields'];
-        $skipElements  = ['container','custom_html','payment_summary_component','shortcode','section_break','action_hook','form_step'];
-        foreach ($temp as $outerLoopfield ) {
-    
-            $elementOuterLoop = ArrayHelper::get ($outerLoopfield,'element');
-            $nameOuterLoop    = ArrayHelper::get ($outerLoopfield,'attributes.name');
-            $firstCheckDone   = false;
-            
-            foreach ($temp as $field){
-                $element = ArrayHelper::get ($field,'element');
-                $name    = ArrayHelper::get ($field,'attributes.name');
-               
-                if( in_array ( $element , $skipElements) ){
-                    continue;
-                }
-                //check if the same element has two input with duplicate name
-                if(($element ==  $elementOuterLoop ) && ($name == $nameOuterLoop)){
-                   if($firstCheckDone){
 
-                       return [
-                           'status' => false,
-                           'name'=> $name
-                       ];
-                   }
-                    $firstCheckDone = true;
-    
+    public static function getDuplicateFieldNames($fields)
+    {
+        $fields = json_decode($fields, true);
+        $items = $fields['fields'];
+        $inputNames = self::getFieldNamesStatuses($items);
+        $uniqueNames = array_unique($inputNames);
+
+        if(count($inputNames) == count($uniqueNames)) {
+            return [];
+        }
+
+        return array_diff_assoc($inputNames, $uniqueNames);
+    }
+
+    protected static function getFieldNamesStatuses($fields)
+    {
+        $names = [];
+
+        foreach ($fields as $field) {
+            if(ArrayHelper::get($field, 'element') == 'container') {
+                $columns = ArrayHelper::get($field, 'columns', []);
+                foreach ($columns as $column) {
+                    $columnInputs = self::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
+                    $names = array_merge($names, $columnInputs);
+                }
+            } else {
+                if($name = ArrayHelper::get($field, 'attributes.name')) {
+                    $names[] = $name;
                 }
             }
-        };
-        return [
-            'status' => true,
-        ];
-        
+        }
+
+        return $names;
+
     }
 }
