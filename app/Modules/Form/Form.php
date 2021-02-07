@@ -533,11 +533,18 @@ class Form
     }
 
     /**
-     * Validate a form only by form title
+     * Validate a form  by form title & for duplicate name attributes
      * @return void
      */
     private function validate()
     {
+        $fields = $this->request->get('formFields');
+        $haveUniqeNames = Helper::checkDuplicateNameAttr ($fields);
+        if($haveUniqeNames['status'] == false){
+            wp_send_json([
+                'title' => __('Name attribute "'.$haveUniqeNames['name'].'" has duplicate value!', 'fluentform')
+            ], 422);
+        }
         if (!$this->request->get('title')) {
             wp_send_json([
                 'title' => 'The title field is required.'

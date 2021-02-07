@@ -276,6 +276,7 @@ new Vue({
                         message: error.responseJSON.title,
                         offset: 30
                     });
+                    this.form_saving = false;
                 });
         },
 

@@ -205,9 +205,9 @@ class FormDataParser
             }
             $columnLabels = $field['raw']['settings']['grid_columns'];
             $fieldType = $field['raw']['settings']['tabular_field_type'];
-            $columnHeaders = implode('</th><th>', array_values($columnLabels));
+            $columnHeaders = implode('</th><th  style="text-align: center;">', array_values($columnLabels));
 
-            $elMarkup = "<table class='ff-table'><thead><tr><th></th><th>{$columnHeaders}</th></tr></thead><tbody>";
+            $elMarkup = "<table class='ff-table'><thead><tr><th></th><th   style='text-align: center;'>{$columnHeaders}</th></tr></thead><tbody>";
 
             foreach (static::makeTabularData($field['raw']) as $row) {
 
@@ -228,7 +228,7 @@ class FormDataParser
                     if ($isChecked) {
                         $icon = '✔';
                     }
-                    $elMarkup .= "<td>" . $icon . "</td>";
+                    $elMarkup .= "<td style='text-align: center;'>" . $icon . "</td>";
                 }
                 $elMarkup .= "</tr>";
             }

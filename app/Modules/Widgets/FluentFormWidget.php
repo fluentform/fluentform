@@ -63,6 +63,7 @@ class FluentFormWidget extends Widget_Base {
           $this->register_input_textarea_style_controls();
           $this->register_placeholder_style_controls();
           $this->register_radio_checkbox_style_controls();
+          $this->register_terms_gdpr_style_controls();
           $this->register_section_break_style_controls();
           $this->register_checkbox_grid_style_controls();
           $this->register_address_line_style_controls();
@@ -839,7 +840,63 @@ class FluentFormWidget extends Widget_Base {
 
         $this->end_controls_section();
     }
-
+    protected function register_terms_gdpr_style_controls()
+    {
+        
+        $this->start_controls_section(
+            'section_form_terms_gdpr_style',
+            [
+                'label' => __('GDPR , Terms & Condition ', 'fluentform'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+    
+        $this->add_responsive_control(
+            'form_terms_gdpr_alignment',
+            [
+                'label' => __('Alignment', 'fluentform'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __('Left', 'fluentform'),
+                        'icon' => 'fa fa-align-left',
+                    ],
+                    'center' => [
+                        'title' => __('Center', 'fluentform'),
+                        'icon' => 'fa fa-align-center',
+                    ],
+                    'right' => [
+                        'title' => __('Right', 'fluentform'),
+                        'icon' => 'fa fa-align-right',
+                    ],
+                ],
+                'default' => '',
+                'selectors' => [ '{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c' => 'text-align: {{VALUE}};'],
+            ]
+        );
+        
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'form_terms_gdpr_typography',
+                'label' => __('Typography', 'fluentform'),
+                'selector' => '{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c ',
+               
+            ]
+        );
+        $this->add_control(
+            'form_terms_gdpr_color',
+            [
+                'label' => __('Color', 'fluentform'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => ['{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c ' => 'color: {{VALUE}};'],
+            ]
+        );
+        
+        $this->end_controls_section();
+    }
+    
     protected function register_placeholder_style_controls(){
         $this->start_controls_section(
             'section_placeholder_style',
@@ -2051,8 +2108,7 @@ class FluentFormWidget extends Widget_Base {
                 ],
                 'size_units' => ['px', '%'],
                 'selectors' => [
-                    '{{WRAPPER}} .fluentform-widget-wrapper .ff-el-group .ff-btn-submit' => 'width: {{SIZE}}{{UNIT}}',
-                ],
+                    '{{WRAPPER}} .fluentform-widget-wrapper .ff-el-group .ff-btn-submit' => 'width: {{SIZE}}{{UNIT}}',],
                 'condition' => [
                     'form_submit_button_width_type' => 'custom',
                 ],
@@ -2410,4 +2466,5 @@ class FluentFormWidget extends Widget_Base {
      * @access protected
      */
     protected function _content_template() {}
+    
 }

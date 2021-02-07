@@ -95,7 +95,9 @@ foreach ($elements as $element) {
         }
 
         if (in_array($field['element'], array('gdpr_agreement', 'terms_and_condition'))) {
-            $response = __('Accepted', 'fluentform');
+            if(!empty($response)){
+                $response = __('Accepted', 'fluentform');
+            }
         }
 
         if ($response && $isLabel && in_array($element, ['select', 'input_radio'])) {
