@@ -677,7 +677,7 @@ $defaultElements = array(
                 'admin_field_label' => '',
                 'label_placement' => '',
                 'placeholder' => '',
-
+                'max_selection' => '',
                 'advanced_options' => array(
                     [
                         'label' => 'Option 1',
@@ -692,7 +692,6 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
-
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,

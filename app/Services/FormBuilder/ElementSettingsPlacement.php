@@ -150,6 +150,7 @@ $element_settings_placement = array(
             'placeholder',
             'advanced_options',
             'enable_select_2',
+            'max_selection',
             'validation_rules',
         ),
         'advanced' => array(
