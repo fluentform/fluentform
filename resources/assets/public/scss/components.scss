@@ -239,10 +239,13 @@
       position: relative;
       z-index: 2;
       cursor: pointer;
-      color: lighten($font-color, 35%);
       margin-left: 2px;
+      vertical-align: middle;
       &:hover {
         color: $font-color;
+      }
+      svg {
+        fill: lighten($font-color, 35%);
       }
     }
 
