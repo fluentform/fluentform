@@ -62,6 +62,10 @@ class Checkable extends BaseComponent
 
         $data['settings']['container_class'] .= ' '.ArrayHelper::get($data, 'settings.layout_class');
 
+        if(ArrayHelper::get($data, 'settings.randomize_options') == 'yes') {
+            shuffle($formattedOptions);
+        }
+
         foreach ($formattedOptions as $option) {
 
             $displayType = isset($data['settings']['display_type']) ? ' ff-el-form-check-' . $data['settings']['display_type'] : '';

@@ -416,6 +416,11 @@ $element_customization_settings = array(
             'operator' => '=='
         )
     ),
+    'randomize_options' => array(
+        'template' => 'inputYesNoCheckBox',
+        'label' => __('Shuffle the available options', 'fluentform'),
+        'help_text' => __('If you enable this then the checkable options will be shuffled', 'fluentform')
+    ),
     'data-clear-if-not-match' => array(
         'template' => 'inputYesNoCheckBox',
         'label' => __('Clear if not match', 'fluentform'),

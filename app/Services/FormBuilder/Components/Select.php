@@ -80,6 +80,10 @@ class Select extends BaseComponent
             }
         }
 
+        if(ArrayHelper::get($data, 'settings.randomize_options') == 'yes') {
+            shuffle($formattedOptions);
+        }
+
         $opts = '';
         if (!empty($data['settings']['placeholder'])) {
             $opts .= '<option value="">' . $data['settings']['placeholder'] . '</option>';

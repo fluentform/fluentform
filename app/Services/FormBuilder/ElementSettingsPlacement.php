@@ -149,6 +149,7 @@ $element_settings_placement = array(
             'admin_field_label',
             'placeholder',
             'advanced_options',
+            'randomize_options',
             'enable_select_2',
             'max_selection',
             'validation_rules',
@@ -169,6 +170,7 @@ $element_settings_placement = array(
             'admin_field_label',
             'placeholder',
             'advanced_options',
+            'randomize_options',
             'validation_rules',
         ),
         'advanced' => array(
@@ -187,6 +189,7 @@ $element_settings_placement = array(
             'admin_field_label',
             'placeholder',
             'advanced_options',
+            'randomize_options',
             'validation_rules',
         ),
         'advanced' => array(

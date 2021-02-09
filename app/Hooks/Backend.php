@@ -202,6 +202,10 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['dynamic_default_value'] = '';
             }
 
+            if ($upgradeElement != 'select_country' && !isset($element['settings']['randomize_options'])) {
+                $element['settings']['randomize_options'] = 'no';
+            }
+
             if($upgradeElement == 'select' && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple') && empty($element['settings']['max_selection'])) {
                 $element['settings']['max_selection'] = '';
             }

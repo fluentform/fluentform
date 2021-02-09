@@ -231,3 +231,9 @@ text-align: center !important;
 .alignright {
 text-align: right !important;
 }
+
+img.aligncenter {
+text-align: center !important;
+display: block !important;
+margin: 0 auto !important;
+}
