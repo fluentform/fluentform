@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.6.1
 Requires PHP: 5.6
-Stable tag: 3.6.64
+Stable tag: 3.6.65
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -322,7 +322,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 3.6.64 (Date: Feb 09, 2020) =
+= 3.6.65 (Date: Feb 09, 2021) =
 * Randomize /Shuffle checkable options
 * PHP 8.0 support – Fluent Forms is not 100% compatible with PHP8
 * Limit how many option a user can select for a select field.
@@ -331,8 +331,6 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 * Better CSS loading time
 * FluentSMTP support
 * Replace icon fonts with SVG
-
-
 
 = 3.6.62 (Date: Dec 20, 2020) =
 * Database Improvement
