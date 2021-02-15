@@ -359,9 +359,9 @@
                                     <transition name="slide-fade">
                                         <div v-show="optionFieldsSection == 'payment'"
                                              class="option-fields-section--content">
-                                            <div v-for="itemMockList, i in paymentsMockListChunked" :key="i"
+                                            <div v-for="(itemMockList, i) in paymentsMockListChunked" :key="i"
                                                  class="v-row mb15">
-                                                <div class="v-col--33" v-for="itemMock, i in itemMockList" :key="i">
+                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
                                                     <vddl-draggable
                                                         class="btn-element"
                                                         :class="{ 'disabled': isDisabled(itemMock) }"

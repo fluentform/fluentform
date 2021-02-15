@@ -61,6 +61,7 @@
                     <template v-else>
                         <el-input :placeholder="field.placeholder" :type="field.type"
                                   v-model="integration[fieldKey]"></el-input>
+                        <p v-if="field.tips">{{ field.tips }}</p>
                     </template>
                 </el-form-item>
                 <!--Validate Keys-->

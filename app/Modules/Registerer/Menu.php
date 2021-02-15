@@ -215,7 +215,7 @@ class Menu
             wp_enqueue_style('fluentform_settings_global');
         } else if ($page == 'fluent_form_add_ons') {
             wp_enqueue_style('fluentform-add-ons');
-        } else if ($page == 'fluent_forms_docs') {
+        } else if ($page == 'fluent_forms_docs' || $page == 'fluent_forms_smtp') {
             wp_enqueue_style('fluentform_doc_style');
         }
     }
@@ -358,6 +358,16 @@ class Menu
                 $settingsCapability,
                 'fluent_forms_transfer',
                 array($this, 'renderTransfer')
+            );
+
+            // Register import/export sub menu page.
+            add_submenu_page(
+                'fluent_forms',
+                __('SMTP', 'fluentform'),
+                __('SMTP', 'fluentform'),
+                $settingsCapability,
+                'fluent_forms_smtp',
+                array($this, 'renderSmtpPromo')
             );
         }
 
@@ -755,7 +765,8 @@ class Menu
             'fluent_forms_transfer',
             'fluent_forms_settings',
             'fluent_form_add_ons',
-            'fluent_forms_docs'
+            'fluent_forms_docs',
+            'fluent_forms_smtp'
         );
 
         if (isset($_GET['page']) && in_array($_GET['page'], $fluentFormPages)) {
@@ -789,5 +800,19 @@ class Menu
     public function renderPaymentEntries()
     {
         do_action('flunetform_render_payment_entries');
+    }
+
+    public function renderSmtpPromo()
+    {
+        wp_enqueue_script('fluentform_admin_notice', fluentformMix('js/admin_notices.js'), array(
+            'jquery'
+        ), FLUENTFORM_VERSION);
+
+        View::render('admin.smtp.index', [
+            'logo' => $this->app->publicUrl('img/fluentsmtp.svg'),
+            'banner_image' => $this->app->publicUrl('img/fluentsmtp-banner.png'),
+            'is_installed' => defined('FLUENTMAIL'),
+            'setup_url' => admin_url('options-general.php?page=fluent-mail#/connections')
+        ]);
     }
 }

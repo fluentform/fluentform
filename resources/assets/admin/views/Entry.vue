@@ -212,7 +212,8 @@
                 formFields: {},
                 original_data: {},
                 show_empty: 'no',
-                widgets: {}
+                widgets: {},
+                labels: {}
             }
         },
         methods: {

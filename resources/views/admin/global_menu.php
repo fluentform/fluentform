@@ -29,12 +29,19 @@ $page = sanitize_text_field($_GET['page']);
             <?php _e('Payments', 'fluentform'); ?><span class="ff_new_badge">new</span>
         </a>
     <?php endif; ?>
+
+    <?php if(!defined('FLUENT_MAIL') && !defined('FLUENTFORMPRO')): ?>
+        <a class="ninja-tab <?php echo ($page == 'fluent_forms_smtp') ? 'ninja-tab-active' : '' ?>" href="<?php echo admin_url('admin.php?page=fluent_forms_smtp'); ?>">SMTP</a>
+    <?php endif; ?>
+
     <a href="<?php echo admin_url('admin.php?page=fluent_forms_docs'); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_docs') ? 'ninja-tab-active' : '' ?>">
         <?php _e('Support', 'fluentform'); ?>
     </a>
+
     <?php if(!defined('FLUENTFORMPRO')): ?>
     <a target="_blank" rel="noopener" href="<?php echo fluentform_upgrade_url(); ?>" class="ninja-tab buy_pro_tab">
         <?php _e('Upgrade to Pro', 'fluentform'); ?>
     </a>
     <?php endif; ?>
+    <?php do_action('fluentform_after_global_menu'); ?>
 </div>

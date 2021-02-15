@@ -346,6 +346,17 @@ $element_customization_settings = array(
         'label' => __('Dynamic Default Value', 'fluentform'),
         'help_text' => __('If you would like to pre-populate the value of a field, enter it here.', 'fluentform'),
     ),
+    'max_selection' => array(
+        'template' => 'inputNumber',
+        'type' => 'text',
+        'label' => __('Max Selection', 'fluentform'),
+        'help_text' => __('Define Max selections items that a user can select .', 'fluentform'),
+        'dependency' => array(
+            'depends_on' => 'attributes/multiple',
+            'value' => true,
+            'operator' => '=='
+        )
+    ),
     'container_class' => array(
         'template' => 'inputText',
         'label' => __('Container Class', 'fluentform'),
@@ -404,6 +415,11 @@ $element_customization_settings = array(
             'value' => 'custom',
             'operator' => '=='
         )
+    ),
+    'randomize_options' => array(
+        'template' => 'inputYesNoCheckBox',
+        'label' => __('Shuffle the available options', 'fluentform'),
+        'help_text' => __('If you enable this then the checkable options will be shuffled', 'fluentform')
     ),
     'data-clear-if-not-match' => array(
         'template' => 'inputYesNoCheckBox',
