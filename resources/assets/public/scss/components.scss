@@ -165,28 +165,10 @@
     }
 
     &-repeat-buttons {
-      width: 50px;
-      line-height: 53px;
-      min-height: 42px;
-      margin-bottom: 10px;
-      display: table;
-      padding-left: 5px;
-
-      > span {
-        display: table-cell;
-        vertical-align: middle;
-      }
-
       &-list {
-        float: left;
-        width: 10%;
-      }
-
-      [class^="icon-"],
-      [class*=" icon-"] {
-        margin-left: 3px;
-        margin-top: -10px;
-        cursor: pointer;
+        span {
+          cursor: pointer;
+        }
       }
     }
 
@@ -257,10 +239,13 @@
       position: relative;
       z-index: 2;
       cursor: pointer;
-      color: lighten($font-color, 35%);
       margin-left: 2px;
+      vertical-align: middle;
       &:hover {
         color: $font-color;
+      }
+      svg {
+        fill: lighten($font-color, 35%);
       }
     }
 

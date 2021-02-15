@@ -702,9 +702,6 @@ jQuery(document).ready(function () {
                 }
 
                 $('.ff_has_multi_select').each(function (idx, el) {
-                    if ($(el).hasClass('choices__input')) {
-                        // return;
-                    }
 
                     const choiceArgs = {
                         removeItemButton: true,
@@ -713,10 +710,21 @@ jQuery(document).ready(function () {
                         searchEnabled: true,
                         searchResultLimit: 50
                     };
+
+
                     const args = {...choiceArgs, ...window.fluentFormVars.choice_js_vars};
 
-                    args.callbackOnCreateTemplates = function () {
+                    const maxSelection = $(el).attr('data-max_selected_options');
+                    if (parseInt(maxSelection)) {
+                        args.maxItemCount = parseInt(maxSelection);
+                        args.maxItemText = function (maxItemCount) {
+                            let message = window.fluentFormVars.choice_js_vars.maxItemTextLang;
+                            message = message.replace('%%maxItemCount%%', maxItemCount);
+                            return message;
+                        }
+                    }
 
+                    args.callbackOnCreateTemplates = function () {
                         var self = this,
                             $element = $(self.passedElement.element);
                         return {
@@ -730,6 +738,7 @@ jQuery(document).ready(function () {
                             },
                         };
                     };
+
 
                     // Save choicesjs instance for future access.
                     $(el).data('choicesjs', new Choices(el, args));

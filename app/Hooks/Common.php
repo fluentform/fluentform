@@ -95,10 +95,12 @@ foreach ($elements as $element) {
         }
 
         if (in_array($field['element'], array('gdpr_agreement', 'terms_and_condition'))) {
-            $response = __('Accepted', 'fluentform');
+            if(!empty($response)){
+                $response = __('Accepted', 'fluentform');
+            }
         }
 
-        if ($response && $isLabel && in_array($element, ['select', 'input_radio'])) {
+        if ($response && $isLabel && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
             if(!isset($field['options'])) {
                 $field['options'] = [];
                 foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {

@@ -547,6 +547,7 @@ $defaultElements = array(
                     ),
                 ),
                 'conditional_logics' => array(),
+                'randomize_options' => 'no',
             ),
             'editor_options' => array(
                 'title' => __('Dropdown', 'fluentform'),
@@ -571,6 +572,7 @@ $defaultElements = array(
                 'label_placement' => '',
                 'display_type' => '',
                 'help_message' => '',
+                'randomize_options' => 'no',
                 'advanced_options' => array(
                     [
                         'label' => 'Yes',
@@ -619,7 +621,6 @@ $defaultElements = array(
                 'label_placement' => '',
                 'display_type' => '',
                 'help_message' => '',
-
                 'advanced_options' => array(
                     [
                         'label' => 'Item 1',
@@ -642,7 +643,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
-
+                'randomize_options' => 'no',
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,
@@ -677,7 +678,7 @@ $defaultElements = array(
                 'admin_field_label' => '',
                 'label_placement' => '',
                 'placeholder' => '',
-
+                'max_selection' => '',
                 'advanced_options' => array(
                     [
                         'label' => 'Option 1',
@@ -692,7 +693,6 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
-
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,

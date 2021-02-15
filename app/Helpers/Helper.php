@@ -301,7 +301,8 @@ class Helper
             'fluent_forms_settings',
             'fluent_form_add_ons',
             'fluent_forms_docs',
-            'fluent_form_payment_entries'
+            'fluent_form_payment_entries',
+            'fluent_forms_smtp'
         ];
 
         $status = true;
@@ -444,26 +445,61 @@ class Helper
     public static function getNumericValue($input, $formatterName)
     {
         $formatters = self::getNumericFormatters();
-        if(empty($formatters[$formatterName]['settings'])) {
+        if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
-        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^\d'.preg_quote($settings['decimal']).']/', '', $input)));
+        $number = floatval(str_replace($settings['decimal'], '.', preg_replace('/[^\d' . preg_quote($settings['decimal']) . ']/', '', $input)));
 
         return number_format($number, $settings['precision'], '.', '');
     }
 
     public static function getNumericFormatted($input, $formatterName)
     {
-        if(!is_numeric($input)) {
+        if (!is_numeric($input)) {
             return $input;
         }
         $formatters = self::getNumericFormatters();
-        if(empty($formatters[$formatterName]['settings'])) {
+        if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
         return number_format($input, $settings['precision'], $settings['decimal'], $settings['separator']);
     }
 
+    public static function getDuplicateFieldNames($fields)
+    {
+        $fields = json_decode($fields, true);
+        $items = $fields['fields'];
+        $inputNames = self::getFieldNamesStatuses($items);
+        $uniqueNames = array_unique($inputNames);
+
+        if(count($inputNames) == count($uniqueNames)) {
+            return [];
+        }
+
+        return array_diff_assoc($inputNames, $uniqueNames);
+    }
+
+    protected static function getFieldNamesStatuses($fields)
+    {
+        $names = [];
+
+        foreach ($fields as $field) {
+            if(ArrayHelper::get($field, 'element') == 'container') {
+                $columns = ArrayHelper::get($field, 'columns', []);
+                foreach ($columns as $column) {
+                    $columnInputs = self::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
+                    $names = array_merge($names, $columnInputs);
+                }
+            } else {
+                if($name = ArrayHelper::get($field, 'attributes.name')) {
+                    $names[] = $name;
+                }
+            }
+        }
+
+        return $names;
+
+    }
 }

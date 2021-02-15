@@ -180,7 +180,7 @@ class Export
             if ($isFavourite == 'yes') {
                 $query->where('is_favourite', '1');
             }
-
+            
             $status = $this->request->get('entry_type');
 
             if ($status == 'trashed') {
@@ -189,6 +189,11 @@ class Export
                 $query->where('status', $status);
             } else {
                 $query->where('status', '!=', 'trashed');
+            }
+            $entries = fluentFormSanitizer($this->request->get('entries', []));
+    
+            if (is_array($entries) && (count ($entries) > 0 )) {
+                $query->whereIn('id', $entries);
             }
 
             if ($paymentStatuses = $this->request->get('payment_statuses')) {

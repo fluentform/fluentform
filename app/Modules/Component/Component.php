@@ -73,11 +73,13 @@ class Component
         );
 
         // Date Pickckr Style
-        wp_register_style(
-            'flatpickr',
-            $app->publicUrl('libs/flatpickr/flatpickr.min.css')
-        );
-
+        //fix for essential addon event picker conflict
+        if (!wp_script_is( 'flatpickr', 'registered' )) {
+            wp_register_style(
+                'flatpickr',
+                $app->publicUrl('libs/flatpickr/flatpickr.min.css')
+            );
+        }
         // Date Pickckr Script
         wp_register_script(
             'flatpickr',
@@ -523,6 +525,7 @@ class Component
                 'loadingText' => __('Loading...', 'fluentform'),
                 'noChoicesText' => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
+                'maxItemTextLang' => 'Only %%maxItemCount%% values can be added'
             ]
         ));
 
