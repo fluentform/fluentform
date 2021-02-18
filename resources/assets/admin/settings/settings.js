@@ -5,7 +5,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 
 import Settings from './Settings.vue';
 import reCaptcha from './reCaptcha.vue';
-import pdf_settings from './pdf.vue';
+import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings';
 import DoubleOptinSettings from './DoubleOptinSettings';
 
