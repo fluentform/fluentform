@@ -251,22 +251,6 @@ class Container implements ArrayAccess
     }
 
     /**
-     * Get the parameter name for the given parameter.
-     *
-     * @return string
-     */
-    protected function getParameterName($parameter)
-    {
-        $parameterType = $this->getParameterType($parameter);
-
-        if (property_exists($parameterType, 'name')) {
-            return $parameterType->name;
-        }
-
-        return $parameterType->getName();
-    }
-
-    /**
      * Get the alias for a key if available.
      * @param  string  $key
      * @return string
