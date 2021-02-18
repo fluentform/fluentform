@@ -38,10 +38,10 @@ $page = sanitize_text_field($_GET['page']);
         <?php _e('Support', 'fluentform'); ?>
     </a>
 
-    <?php if(!defined('FLUENTFORMPRO')): ?>
-    <a target="_blank" rel="noopener" href="<?php echo fluentform_upgrade_url(); ?>" class="ninja-tab buy_pro_tab">
-        <?php _e('Upgrade to Pro', 'fluentform'); ?>
-    </a>
-    <?php endif; ?>
     <?php do_action('fluentform_after_global_menu'); ?>
+    <?php if(!defined('FLUENTFORMPRO')): ?>
+        <a target="_blank" rel="noopener" href="<?php echo fluentform_upgrade_url(); ?>" class="ninja-tab buy_pro_tab">
+            <?php _e('Upgrade to Pro', 'fluentform'); ?>
+        </a>
+    <?php endif; ?>
 </div>
