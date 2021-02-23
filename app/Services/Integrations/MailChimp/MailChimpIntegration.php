@@ -440,6 +440,7 @@ class MailChimpIntegration extends IntegrationManager
     */
     public function notify($feed, $formData, $entry, $form)
     {
+        $feed     = $this->formatAddressField ( $feed , $formData );
         $response = $this->subscribe($feed, $formData, $entry, $form);
         
         if ($response == true) {
@@ -451,5 +452,31 @@ class MailChimpIntegration extends IntegrationManager
             }
             do_action('ff_integration_action_result', $feed, 'failed', $message);
         }
+    }
+    
+    /*
+    * For formatting address field to match with Mailchimp
+    */
+    
+    private function formatAddressField($feed, $formData)
+    {
+        //get selected address field from integration
+        $addressKey = ArrayHelper::get ( $feed, 'settings.merge_fields.ADDRESS', false );
+        // get address input key & value
+        $addressProperty = substr ( str_replace ( ['{', '}'], '', $addressKey ), 7 );
+        $addressValue    = ArrayHelper::get ( $formData, $addressProperty, '' );
+        if (!$addressKey || empty( $addressProperty ) || empty( $addressValue )) {
+            return $feed;
+        }
+        $formattedAddress = [
+            'addr1'   => ArrayHelper::get ( $addressValue, 'address_line_1' , ''),
+            'addr2'   => ArrayHelper::get ( $addressValue, 'address_line_2' , '' ),
+            'city'    => ArrayHelper::get ( $addressValue, 'city' , '' ),
+            'state'   => ArrayHelper::get ( $addressValue, 'state' , '' ),
+            'zip'     => ArrayHelper::get ( $addressValue, 'zip' ,'' ),
+            'country' => ArrayHelper::get ( $addressValue, 'country' , '' ),
+        ];
+        ArrayHelper::set ($feed,'processedValues.merge_fields.ADDRESS', $formattedAddress);
+        return $feed;
     }
 }
