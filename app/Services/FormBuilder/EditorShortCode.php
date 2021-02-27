@@ -28,7 +28,8 @@ class EditorShortcode
                 '{user.user_email}' => __('User Email', 'fluentform'),
                 '{user.user_login}' => __('User Username', 'fluentform'),
                 '{browser.name}' => __('User Browser Client', 'fluentform'),
-                '{browser.platform}' => __('User Operating System', 'fluentform')
+                '{browser.platform}' => __('User Operating System', 'fluentform'),
+                '{random_string.your_prefix}' => __('Random String with Prefix', 'fluentform')
             ]
         ];
     }
