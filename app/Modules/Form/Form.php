@@ -237,6 +237,7 @@ class Form
                     'enabled' => false,
                     'start' => null,
                     'end' => null,
+                    'selectedDays' => null,
                     'pendingMsg' => __("Form submission is not started yet.", 'fluentform'),
                     'expiredMsg' => __("Form submission is now closed.", 'fluentform')
                 ),

@@ -803,6 +803,15 @@ class Component
             return false;
         }
 
+        $weekDayToday     =  date("l") ;   //day of the week
+        $selectedWeekDays = ArrayHelper::get ($restrictions,'selectedDays',[]);
+        
+        if( ! in_array ($weekDayToday,$selectedWeekDays) && defined('FLUENTFORMPRO')){
+            $isRenderable['message'] = $restrictions['expiredMsg'];
+            
+            return false;
+        }
+
         return true;
     }
 

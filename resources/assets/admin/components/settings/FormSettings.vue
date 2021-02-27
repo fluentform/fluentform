@@ -586,6 +586,8 @@
                                 settings.restrictions.limitNumberOfEntries = {};
                             if (!settings.restrictions.scheduleForm)
                                 settings.restrictions.scheduleForm = {};
+                            if(!settings.restrictions.scheduleForm.selectedDays)
+                                settings.restrictions.scheduleForm.selectedDays = [];
                             if (!settings.restrictions.requireLogin)
                                 settings.restrictions.requireLogin = {};
 

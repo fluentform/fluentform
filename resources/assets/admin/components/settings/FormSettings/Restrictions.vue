@@ -73,6 +73,20 @@
         <!--Additional fields when form sheduling enabled-->
         <transition name="slide-down">
             <div v-if="form.scheduleForm.enabled" class="conditional-items">
+                <el-row>
+                    <el-form-item label="Select Weekdays" v-if="form.scheduleForm.enabled">
+
+                        <el-checkbox  :disabled="!hasPro"  :indeterminate="isIndeterminate" v-model="checkAllWeekday"  @change="handleCheckAllChange">Check all</el-checkbox>
+                        <br>
+                        <el-checkbox-group v-model="selectedDays">
+
+                            <el-checkbox :disabled="!hasPro"  v-for="weekday in weekdays" :key="weekday" @change="handleCheckedDayChange" :label="weekday"></el-checkbox>
+
+                        </el-checkbox-group>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+
+                    </el-form-item>
+                </el-row>
                 <el-row :gutter="30">
                     <el-col :md="12">
                         <el-form-item label="Submission Starts" v-if="form.scheduleForm.enabled">
@@ -222,6 +236,11 @@
         },
         data() {
             return {
+                hasPro: !!window.FluentFormApp.hasPro,
+                isIndeterminate: false,
+                checkAllWeekday:'',
+                selectedDays:[],
+                weekdays: ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday' ],
                 entryPeriodOptions: {
                     total: 'Total Entries',
                     day: 'Per Day',
@@ -257,6 +276,28 @@
                         }
                     ]
                 }
+            }
+        },
+        methods: {
+            handleCheckAllChange(val) {
+                this.selectedDays = val ? this.weekdays : [];
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+                this.isIndeterminate = false;
+            },
+            handleCheckedDayChange(value) {
+
+                let checkedCount = this.selectedDays.length;
+                this.checkAllWeekday = checkedCount === this.weekdays.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.weekdays.length;
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+
+            }
+        },
+        mounted() {
+            this.selectedDays = this.form.scheduleForm.selectedDays ;
+            if( !this.hasPro){
+                this.selectedDays    = this.weekdays;
+                this.checkAllWeekday = true;
             }
         },
         computed: {
