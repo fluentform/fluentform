@@ -134,7 +134,7 @@
                 </ul>
 
                 <div v-loading="!isMockLoaded"
-                     element-loading-text="Loading Awesomes..."
+                     element-loading-text="Loading Awesomeness..."
                      style="min-height: 150px;"
                      class="panel-full-height nav-tab-items">
                     <template v-if="isMockLoaded">
