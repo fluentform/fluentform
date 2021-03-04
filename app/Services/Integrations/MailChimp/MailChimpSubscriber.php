@@ -127,15 +127,18 @@ trait MailChimpSubscriber
         $contactHash = md5(strtolower($arguments['email_address']));
 
         $existingMember = $this->getMemberByEmail($listId, $arguments['email_address']);
-
+        
         $isNew = true;
+        
         if (!empty($existingMember['id'])) {
             $isNew = false;
+            //for resubscribing unsubscribed contact * deleted contact can not be subscribed via api
+            $arguments['status'] = $status;
             // We have members so we can merge the values
             if (apply_filters('fluentform_mailchimp_keep_existing_interests', true, $form->id)) {
                 $arguments['interests'] = ArrayHelper::get($existingMember, 'interests', []);
             }
-
+            
             if ($arguments['tags']) {
                 if (apply_filters('fluentform_mailchimp_keep_existing_tags', true, $form->id)) {
                     $tags = ArrayHelper::get($existingMember, 'tags', []);
@@ -156,13 +159,13 @@ trait MailChimpSubscriber
             $interestGroup = ArrayHelper::get($feedData, 'interest_group.sub_category');
             $arguments['interests'][$interestGroup] = true;
         }
-
+        
         $arguments = array_filter($arguments);
         $settings = get_option('_fluentform_mailchimp_details');
         $MailChimp = new MailChimp($settings['apiKey']);
         $endPoint = 'lists/' . $listId . '/members/' . $contactHash;
-
-
+        
+        
         $result = $MailChimp->put($endPoint, $arguments);
 
         if ($result && !is_wp_error($result) && isset($result['id'])) {
