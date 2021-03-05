@@ -135,9 +135,10 @@
                 let data = {
                     form_id: this.form_id,
                     status: row.enabled,
-                    notification_id: row.id
+                    notification_id: row.id,
+                    action: 'fluentform_post_update_form_integration_status'
                 };
-                this.$ajax.$post('update_form_integration_status', data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         console.log(response);
                         this.$notify.success({
@@ -175,7 +176,8 @@
             },
             getFeeds() {
                 this.loading = true;
-                this.$ajax.$get('all-general-integration-feeds',  {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_get_all-general-integration-feeds',
                     form_id: this.form_id
                 })
                     .then(response => {

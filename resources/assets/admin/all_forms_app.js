@@ -61,11 +61,6 @@ import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 
-import jQueryActions from './jquery-actions'
-Vue.use(jQueryActions)
-import ajaxCaller from './ajaxCaller';
-Vue.use(ajaxCaller);
-
 import AllForms from './views/AllForms.vue';
 
 Vue.mixin({

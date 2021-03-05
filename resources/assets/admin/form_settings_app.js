@@ -4,8 +4,6 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Errors from '../common/Errors';
-import ajaxCaller from './ajaxCaller';
-import jQueryActions from './jquery-actions';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
@@ -83,10 +81,8 @@ Vue.use(Dialog);
 Vue.use(Tooltip);
 Vue.use(FormItem);
 Vue.use(DatePicker);
-Vue.use(ajaxCaller);
 Vue.use(TableColumn);
 Vue.use(InputNumber);
-Vue.use(jQueryActions);
 Vue.use(Tabs);
 Vue.use(TabPane);
 

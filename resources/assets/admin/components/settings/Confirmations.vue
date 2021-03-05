@@ -234,10 +234,11 @@
                     form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(confirmation),
-                    id
+                    id,
+                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                this.$ajax.post('saveFormSettings', data)
+                FluentFormsGlobal.$post(data)
                     .done(response => {
                         confirmation.id = response.id;
 
@@ -251,7 +252,11 @@
                     .fail(e => {});
             },
             remove(index, id) {
-                this.$ajax.delete('removeFormSettings', { id, form_id: this.form.id })
+                FluentFormsGlobal.$post({
+                    action: 'fluentform-settings-formSettings-remove',
+                    id,
+                    form_id: this.form.id
+                })
                     .done(response => {
 
                         this.confirmations.splice(index, 1);
@@ -265,7 +270,9 @@
             },
 
             getPages() {
-                this.$ajax.get('getPages')
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-get-pages'
+                })
                     .done(response => {
                         this.pages = response.data.pages;
                     })
@@ -280,10 +287,11 @@
             fetch() {
                 let data = {
                     form_id: this.form.id,
-                    meta_key: 'confirmations'
+                    meta_key: 'confirmations',
+                    action: 'fluentform-settings-formSettings'
                 };
 
-                this.$ajax.get('getFormSettings', data)
+                FluentFormsGlobal.$get(data)
                     .done(response => {
                         this.confirmations = response.data.result.map((item) => {
                             const {value, ...rest} = item;
@@ -304,10 +312,11 @@
                     form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(this.selected),
-                    id
+                    id,
+                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                this.$ajax.post('saveFormSettings', data)
+                FluentFormsGlobal.$post(data)
                     .done(response => {
                         this.selected.id = response.data.id;
 

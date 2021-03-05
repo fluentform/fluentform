@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import ajaxCaller from '../ajaxCaller';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
@@ -46,7 +45,6 @@ Vue.use(OptionGroup);
 Vue.use(Switch);
 Vue.use(Tooltip);
 Vue.use(FormItem);
-Vue.use(ajaxCaller);
 Vue.use(Loading.directive);
 Vue.use(InputNumber);
 Vue.use(ColorPicker);
