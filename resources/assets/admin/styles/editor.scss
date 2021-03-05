@@ -1,4 +1,36 @@
 /* FORM EDITOR STYLE */
+/*
+* Element css
+ */
+@import "~element-ui/lib/theme-chalk/row.css";
+@import "~element-ui/lib/theme-chalk/checkbox.css";
+@import "~element-ui/lib/theme-chalk/checkbox-group.css";
+@import "~element-ui/lib/theme-chalk/col.css";
+@import "~element-ui/lib/theme-chalk/color-picker.css";
+@import "~element-ui/lib/theme-chalk/dialog.css";
+@import "~element-ui/lib/theme-chalk/dropdown.css";
+@import "~element-ui/lib/theme-chalk/dropdown-menu.css";
+@import "~element-ui/lib/theme-chalk/dropdown-item.css";
+@import "~element-ui/lib/theme-chalk/form.css";
+@import "~element-ui/lib/theme-chalk/form-item.css";
+@import "~element-ui/lib/theme-chalk/input.css";
+@import "~element-ui/lib/theme-chalk/slider.css";
+@import "~element-ui/lib/theme-chalk/loading.css";
+@import "~element-ui/lib/theme-chalk/message.css";
+@import "~element-ui/lib/theme-chalk/notification.css";
+@import "~element-ui/lib/theme-chalk/option.css";
+@import "~element-ui/lib/theme-chalk/radio-group.css";
+@import "~element-ui/lib/theme-chalk/radio-button.css";
+@import "~element-ui/lib/theme-chalk/radio.css";
+@import "~element-ui/lib/theme-chalk/popover.css";
+@import "~element-ui/lib/theme-chalk/rate.css";
+@import "~element-ui/lib/theme-chalk/button.css";
+@import "~element-ui/lib/theme-chalk/button-group.css";
+@import "~element-ui/lib/theme-chalk/select.css";
+@import "~element-ui/lib/theme-chalk/tab-pane.css";
+@import "~element-ui/lib/theme-chalk/tabs.css";
+@import "~element-ui/lib/theme-chalk/tooltip.css";
+@import "~element-ui/lib/theme-chalk/upload.css";
 
 .form-editor {
   * {
