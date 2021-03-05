@@ -9,13 +9,13 @@
             </div>
             <hr />
             <template>
-                <div class="form-group">
+                <div style="margin-bottom: 20px;" class="form-group">
                     <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
                         Check all
                     </el-checkbox>
                 </div>
 
-                <div class="form-group">
+                <div style="margin-bottom: 20px;" class="form-group">
                     <el-checkbox-group v-model="capability" @change="handleCheckedCapabilitiesChange">
                         <el-checkbox v-for="role in roles" :label="role.key" :key="role.key">
                             {{ role.name }}
@@ -94,11 +94,3 @@
         }
     };
 </script>
-
-<style scoped>
-    .form-group {
-        margin-bottom: 20px;
-    }
-</style>
-
-

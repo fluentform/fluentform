@@ -13,12 +13,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-    .section-break {
-        &__title {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-    }
-</style>

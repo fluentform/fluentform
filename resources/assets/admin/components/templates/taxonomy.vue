@@ -49,34 +49,3 @@ export default {
 };
 </script>
 
-<style>
-    .taxonomy-template .el-form-item .select {
-        width: 100%;
-        height: 35px !important;
-        min-width: 100%;
-    }
-
-    .taxonomy-template .el-form-item .el-checkbox .el-checkbox__inner {
-        border: 1px solid #7e8993;
-        border-radius: 4px;
-        background: #fff;
-        color: #555;
-        clear: both;
-        height: 1rem;
-        margin: -.25rem .25rem 0 0;
-        width: 1rem;
-        min-width: 1rem;
-        box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-        transition: .05s border-color ease-in-out;
-    }
-
-    .taxonomy-template .el-form-item .el-checkbox {
-        line-height: 19px;
-        display: block;
-        margin: 5px 0 5px 0;
-    }
-
-    .taxonomy-template .el-form-item .el-checkbox .el-checkbox__label {
-        padding-left: 5px;
-    }
-</style>

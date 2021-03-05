@@ -27,9 +27,3 @@
         }
     };
 </script>
-
-<style>
-    .chained-Select-template .header {
-        margin-right: 5px;
-    }    
-</style>

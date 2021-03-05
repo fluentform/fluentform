@@ -18,6 +18,14 @@ mix.webpackConfig({
     }
 });
 
+mix.options({
+    extractVueStyles: 'public/css/elements.css'
+});
+
+// mix.js('resources/assets/admin/editor_app.js', `public/js/fluent-forms-editor.js`);
+// return;
+
+
 mix
     .js('resources/assets/admin/fluent_forms_global.js', `public/js/fluent_forms_global.js`)
     .js('resources/assets/admin/settings/settings.js', `public/js/fluentform-global-settings.js`)
@@ -34,6 +42,7 @@ mix
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
 
+    .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)
     .sass('resources/assets/admin/css/settings_global.scss', `public/css/settings_global.css`)
     .sass('resources/assets/admin/css/fluent-all-forms.scss', `public/css/fluent-all-forms.css`)

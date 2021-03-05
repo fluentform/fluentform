@@ -277,36 +277,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .conditional-logic {
-        margin-bottom: 10px;
-    }
-
-    .condition-value,
-    .condition-field {
-        width: 30%;
-    }
-
-    .condition-operator {
-        width: 85px;
-    }
-
-    .action-btn {
-        display: inline-block;
-        min-width: 32px;
-
-        .icon {
-            vertical-align: middle;
-            cursor: pointer;
-        }
-    }
-
-    .form-control-2 {
-        line-height: 28;
-        height: 28px;
-        border-radius: 5px;
-        padding: 2px 5px;
-        vertical-align: middle;
-    }
-</style>

@@ -187,28 +187,4 @@
     };
 </script>
 
-<style lang="scss">
-    .ff_each_template {
-        margin-bottom: 20px;
 
-        .ff_card {
-            border: 1px solid #dddddd;
-            cursor: pointer;
-            text-align: center;
-            padding: 10px;
-
-            .ff_template_label {
-                font-weight: bold;
-            }
-
-            &:hover {
-                opacity: 0.8;
-                border: 2px solid #409eff;
-            }
-        }
-
-        img {
-            max-width: 100%;
-        }
-    }
-</style>

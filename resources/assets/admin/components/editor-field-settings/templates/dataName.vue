@@ -16,5 +16,3 @@
 		}
 	};
 </script>
-
-<style></style>

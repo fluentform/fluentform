@@ -19,11 +19,3 @@ export default {
     }
 }
 </script>
-
-<style>
-    .el-form-item .select {
-        width: 100%;
-        height: 35px !important;
-        min-width: 100%;
-    }
-</style>

@@ -77,13 +77,3 @@
     };
 </script>
 
-<style>
-    .el-dialog.el-dialog.post-type-selection {
-        height: 165px !important;
-    }
-
-    .el-dialog.el-dialog.post-type-selection .el-dialog__body {
-        height: 118px !important;
-        overflow: hidden;
-    }
-</style>

@@ -146,9 +146,3 @@
         }
     };
 </script>
-
-<style>
-    .pull-right {
-        float: right !important;
-    }
-</style>

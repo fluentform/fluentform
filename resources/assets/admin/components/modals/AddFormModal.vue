@@ -80,10 +80,3 @@
     }
 </script>
 
-<style>
-    small {
-        font-weight: normal;
-        font-size: 13px;
-        margin-left: 15px;
-    }
-</style>

@@ -1,42 +1,4 @@
 @import "../styles/_var.scss";
-@import "~element-ui/lib/theme-chalk/button.css";
-@import "~element-ui/lib/theme-chalk/row.css";
-@import "~element-ui/lib/theme-chalk/col.css";
-@import "~element-ui/lib/theme-chalk/radio.css";
-@import "~element-ui/lib/theme-chalk/checkbox.css";
-@import "~element-ui/lib/theme-chalk/checkbox-group.css";
-@import "~element-ui/lib/theme-chalk/radio-group.css";
-@import "~element-ui/lib/theme-chalk/select.css";
-@import "~element-ui/lib/theme-chalk/option.css";
-@import "~element-ui/lib/theme-chalk/option-group.css";
-@import "~element-ui/lib/theme-chalk/input.css";
-@import "~element-ui/lib/theme-chalk/form.css";
-@import "~element-ui/lib/theme-chalk/form-item.css";
-@import "~element-ui/lib/theme-chalk/tooltip.css";
-@import "~element-ui/lib/theme-chalk/switch.css";
-@import "~element-ui/lib/theme-chalk/input-number.css";
-@import "~element-ui/lib/theme-chalk/date-picker.css";
-@import "~element-ui/lib/theme-chalk/table.css";
-@import "~element-ui/lib/theme-chalk/table-column.css";
-@import "~element-ui/lib/theme-chalk/popover.css";
-@import "~element-ui/lib/theme-chalk/dropdown.css";
-@import "~element-ui/lib/theme-chalk/dropdown-menu.css";
-@import "~element-ui/lib/theme-chalk/dropdown-item.css";
-@import "~element-ui/lib/theme-chalk/collapse.css";
-@import "~element-ui/lib/theme-chalk/collapse-item.css";
-@import "~element-ui/lib/theme-chalk/slider.css";
-@import "~element-ui/lib/theme-chalk/tag.css";
-@import "~element-ui/lib/theme-chalk/loading.css";
-@import "~element-ui/lib/theme-chalk/message.css";
-@import "~element-ui/lib/theme-chalk/notification.css";
-@import "~element-ui/lib/theme-chalk/dialog.css";
-@import "~element-ui/lib/theme-chalk/message-box.css";
-@import "~element-ui/lib/theme-chalk/button-group.css";
-@import "~element-ui/lib/theme-chalk/color-picker.css";
-@import "~element-ui/lib/theme-chalk/tabs.css";
-@import "~element-ui/lib/theme-chalk/tab-pane.css";
-
-@import "_element_icons.css";
 @import "../styles/globals";
 @import "../styles/_el_customize.scss";
 
@@ -405,4 +367,246 @@ select.ff_inline_small {
 }
 .ff_top_25 {
     margin-top: 25px;
+}
+
+.inline-form-field {
+    margin-top: 15px;
+}
+.el-collapse-item {
+    margin-bottom: 1px;
+}
+.ff_conversational_page_items {
+    margin-top: 30px;
+}
+.ff_items_inline .el-select, .ff_items_inline .el-input {
+    display: inline-block;
+    width: 49%;
+}
+
+.ff_items_inline .el-select .el-input {
+    width: 100%;
+}
+.el-table .warning-row {
+    background: oldlace;
+}
+
+.el-table .warning-row td {
+    background: oldlace !important;
+}
+
+.el-checkbox + .el-checkbox {
+    margin-left: auto;
+}
+
+.el-fluid {
+    width: 100% !important;
+}
+
+.action-add-field-row {
+    width: 41px;
+    line-height: 1;
+    font-size: 18px;
+}
+
+.action-add-field-select {
+    width: calc(100% - 46px);
+}
+
+.wpf_each_filter {
+    padding-right: 20px;
+    > label {
+        width: 100%;
+        display: block;
+    }
+    > .el-select {
+        width: 100% !important;
+    }
+}
+.action-btns i {
+    cursor: pointer;
+    padding: 2px;
+}
+
+.action-btns i:hover {
+    color: #58B7FF
+}
+
+.action-btns i {
+    cursor: pointer;
+    padding: 2px;
+}
+
+.action-btns i:hover {
+    color: #58B7FF
+}
+
+.ff_inline .el-input {
+    display: inline-block;
+    width: auto;
+}
+.ff_routing_fields {
+    margin-bottom: 30px;
+}
+table.ff_routing_table {
+    width: 100%;
+    border: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table.ff_routing_table tr td {
+    padding: 12px 3px;
+    border: 0;
+}
+
+table.ff_routing_table tr {
+    border: 1px solid #e8e8ec70;
+    border-left: 0;
+    border-right: 0;
+}
+
+.promo_section {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #bdbdbd;
+    margin-top: 30px;
+}
+
+.promo_section p {
+    font-size: 20px;
+}
+
+.promo_section a {
+    font-size: 20px !important;
+    height: 40px !important;
+    padding: 6px 20px !important;
+}
+.ff-feature-lists ul li {
+    font-size: 18px;
+    line-height: 27px;
+}
+
+.ff-feature-lists ul li span {
+    font-size: 20px;
+    margin-top: 4px;
+}
+
+.ff_landing_page_items {
+    margin-top: 30px;
+}
+
+.inline-form-field {
+    margin-top: 15px;
+}
+
+.el-collapse-item {
+    margin-bottom: 1px;
+}
+
+.ff_each_template {
+    margin-bottom: 20px;
+
+    .ff_card {
+        border: 1px solid #dddddd;
+        cursor: pointer;
+        text-align: center;
+        padding: 10px;
+
+        .ff_template_label {
+            font-weight: bold;
+        }
+
+        &:hover {
+            opacity: 0.8;
+            border: 2px solid #409eff;
+        }
+    }
+
+    img {
+        max-width: 100%;
+    }
+}
+
+.post_feed .no-mapping-alert {
+    text-align: center;
+    background-color: #eee;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.post_feed .meta_fields_mapping {
+    margin-top: 20px;
+}
+
+.post_feed .feed_name {
+    color: #666;
+    font-weight: 400;
+}
+
+.post_feeds .green {
+    color: green;
+}
+
+.post_feeds .red {
+    color: red;
+}
+
+.post-settings .mt15 {
+    margin-top: 15px;
+}
+
+.el-checkbox + .el-checkbox {
+    margin-left: auto;
+}
+
+.el-fluid {
+    width: 100% !important;
+}
+
+.action-add-field-row {
+    width: 41px;
+    line-height: 1;
+    font-size: 18px;
+}
+
+.action-add-field-select {
+    width: calc(100% - 46px);
+}
+
+.content-ellipsis .cell {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.content-ellipsis .page a {
+    text-decoration: none;
+}
+
+.el-form-item__error {
+    position: relative !important;
+
+    p {
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+}
+
+.pull-right {
+    float: right !important;
+}
+
+.ninja_custom_css_editor {
+    min-height: 350px;
+    height: auto;
+}
+.ninja_css_errors .ace_gutter-cell.ace_warning {
+    display: none;
+}
+
+
+.ninja_css_errors .ace_gutter-cell.ace_warning {
+    display: none;
 }

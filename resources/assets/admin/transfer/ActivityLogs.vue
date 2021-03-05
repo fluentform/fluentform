@@ -242,14 +242,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .ff_filter_wrapper {
-        width: 100%;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-    .ff_inline {
-        display: inline-block;
-    }
-</style>

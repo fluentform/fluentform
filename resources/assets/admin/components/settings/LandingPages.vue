@@ -310,9 +310,3 @@
         }
     };
 </script>
-
-<style lang="scss">
-    .ff_landing_page_items {
-        margin-top: 30px;
-    }
-</style>

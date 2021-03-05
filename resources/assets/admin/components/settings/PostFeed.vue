@@ -477,22 +477,3 @@
     };
 </script>
 
-<style>
-    .post_feed .no-mapping-alert {
-        text-align: center;
-        background-color: #eee;
-        padding: 10px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-        font-weight: 500;
-    }
-
-    .post_feed .meta_fields_mapping {
-        margin-top: 20px;
-    }
-
-    .post_feed .feed_name {
-        color: #666;
-        font-weight: 400;
-    }
-</style>

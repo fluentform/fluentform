@@ -82,14 +82,3 @@ export default {
 }
 </script>
 
-<style>
-    mark {
-        background-color:#929292 !important;
-        color: #fff !important;
-        font-size: 11px;
-        padding: 5px;
-        display: inline-block;
-        line-height: 1;
-        
-    }
-</style>

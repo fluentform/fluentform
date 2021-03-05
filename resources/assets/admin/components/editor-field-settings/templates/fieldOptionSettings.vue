@@ -64,9 +64,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-    .el-form-item.ff_full_width_child .el-form-item__content {
-        width: 100%;
-        margin-left: 0 !important;
-    }
-</style>

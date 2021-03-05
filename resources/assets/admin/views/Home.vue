@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2 class="nav-tab-wrapper">
-            <span class="plugin-name">{{ $t('Fluent Forms') }}</span>
+            <span style="float: left; padding: 8px 0;" class="plugin-name">{{ $t('Fluent Forms') }}</span>
 
             <router-link active-class="nav-tab-active" exact :class="['nav-tab']"
                          :to="{ name: 'home' }"
@@ -19,11 +19,3 @@
         name: 'Home',
     }
 </script>
-
-<style>
-    .plugin-name {
-        float: left;
-        padding: 8px 0;
-    }
-</style>
-

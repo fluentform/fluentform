@@ -662,15 +662,3 @@
     };
 </script>
 
-<style lang="scss">
-    @import "../../styles/el_customize";
-
-    .el-form-item__error {
-        position: relative !important;
-
-        p {
-            margin-bottom: 0px;
-            margin-top: 0px;
-        }
-    }
-</style>

@@ -103,22 +103,3 @@
         }
     };
 </script>
-
-<style>
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
-    }
-
-    .fade-enter, .fade-leave-to {
-        opacity: 0;
-        transition: opacity .5s;
-    }
-
-    .el-form-item__label {
-        font-size: 13px;
-    }
-
-    input[type=checkbox] {
-        display: none;
-    }
-</style>

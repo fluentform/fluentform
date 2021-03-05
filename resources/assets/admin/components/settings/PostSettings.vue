@@ -175,9 +175,3 @@
         }
     };    
 </script>
-
-<style>
-    .post-settings .mt15 {
-        margin-top: 15px;
-    }
-</style>

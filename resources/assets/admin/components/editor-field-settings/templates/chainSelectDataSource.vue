@@ -172,31 +172,3 @@
         }
     };
 </script>
-
-<style>
-    .chained-select-settings .uploader {
-        width: 100%;
-        height: 130px;
-        position: relative;
-        margin-top: 10px;
-    }
-
-    .chained-select-settings .el-upload--text {
-        width: 100%;
-        height: 130px;
-    }
-
-    .chained-select-settings .el-upload-dragger {
-        width: 100%;
-        height: 130px;
-    }
-
-    .chained-select-settings .el-upload-list,
-    .chained-select-settings .el-upload-list .el-upload-list__item {
-        margin: -5px 0 0 0;
-    }
-
-    .chained-select-settings .btn-danger {
-        color: #f56c6c;
-    }
-</style>

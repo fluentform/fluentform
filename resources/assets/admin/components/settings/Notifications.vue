@@ -688,13 +688,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss">
-.inline-form-field {
-    margin-top: 15px;
-}
-
-.el-collapse-item {
-    margin-bottom: 1px;
-}
-</style>

@@ -125,8 +125,3 @@
     };
 </script>
 
-<style lang="scss">
-    .ff_conversational_page_items {
-        margin-top: 30px;
-    }
-</style>
