@@ -123,6 +123,10 @@ class Acl
 
 	public static function verifyNonce($key = 'fluent_forms_admin_nonce')
 	{
+		if (!wp_doing_ajax()) {
+			return;
+		}
+
 		$nonce = ArrayHelper::get($_REQUEST, $key);
 
 		if (!wp_verify_nonce($nonce, $key)) {

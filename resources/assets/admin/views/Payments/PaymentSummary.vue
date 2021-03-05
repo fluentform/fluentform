@@ -242,7 +242,7 @@
             updateTransaction() {
                 this.editing = true;
                 FluentFormsGlobal.$post({
-                    action: 'handle_payment_ajax_endpoint',
+                    action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.editingTransaction.form_id,
                     transaction: this.editingTransaction,
                     route: 'update_transaction'
