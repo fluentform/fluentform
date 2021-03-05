@@ -82,7 +82,7 @@
         methods: {
             fetchNotes() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform-get-entry-notes', 
                     form_id: this.form_id, 
                     entry_id: this.entry_id,
@@ -103,8 +103,8 @@
                     entry_id: this.entry_id,
                     form_id: this.form_id
                 };
-                
-                jQuery.post(ajaxurl, data)
+
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify({
                             title: 'Success',
@@ -134,39 +134,3 @@
     }
 </script> 
 
-<style lang="scss">
-    .add_note_wrapper {
-        padding: 20px;
-    }
-    .fluent_notes {
-        .fluent_note_content {
-            background: #eaf2fa;
-            padding: 10px 15px;
-            font-size: 13px;
-            line-height: 160%;
-        }
-        .fluent_note_meta {
-            padding: 5px 15px;
-            font-size: 11px;
-        }
-    }
-    .wpf_add_note_box button {
-        float: right;
-        margin-top: 15px;
-    }
-
-    .wpf_add_note_box {
-        overflow: hidden;
-        display: block;
-        margin-bottom: 30px;
-        border-bottom: 1px solid #dcdfe6;
-        padding-bottom: 30px;
-    }
-    span.ff_tag {
-        background: #697386;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 10px;
-        font-size: 10px;
-    }
-</style> 

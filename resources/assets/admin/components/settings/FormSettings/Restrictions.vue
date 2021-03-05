@@ -73,6 +73,19 @@
         <!--Additional fields when form sheduling enabled-->
         <transition name="slide-down">
             <div v-if="form.scheduleForm.enabled" class="conditional-items">
+                <el-row>
+                    <el-form-item label="Select Weekdays" v-if="form.scheduleForm.enabled">
+
+                        <el-checkbox   :indeterminate="isIndeterminate" v-model="checkAllWeekday"  @change="handleCheckAllChange">Check all</el-checkbox>
+                        <br>
+                        <el-checkbox-group v-model="selectedDays">
+
+                            <el-checkbox   v-for="weekday in weekdays" :key="weekday" @change="handleCheckedDayChange" :label="weekday"></el-checkbox>
+
+                        </el-checkbox-group>
+
+                    </el-form-item>
+                </el-row>
                 <el-row :gutter="30">
                     <el-col :md="12">
                         <el-form-item label="Submission Starts" v-if="form.scheduleForm.enabled">
@@ -87,18 +100,18 @@
                         </el-form-item>
                     </el-col>
                     <el-form labelWidth="160px">
-                    <el-col :md="12">
-                        <el-form-item label="Submission Ends">
-                            <el-date-picker
-                                class="el-fluid"
-                                style="width: 100%;"
-                                v-model="form.scheduleForm.end"
-                                type="datetime"
-                                placeholder="Select date and time"
-                                :picker-options="datePickerOptions">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
+                        <el-col :md="12">
+                            <el-form-item label="Submission Ends">
+                                <el-date-picker
+                                        class="el-fluid"
+                                        style="width: 100%;"
+                                        v-model="form.scheduleForm.end"
+                                        type="datetime"
+                                        placeholder="Select date and time"
+                                        :picker-options="datePickerOptions">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
                     </el-form>
                 </el-row>
 
@@ -222,6 +235,10 @@
         },
         data() {
             return {
+                isIndeterminate: false,
+                checkAllWeekday:'',
+                selectedDays:[],
+                weekdays: ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday' ],
                 entryPeriodOptions: {
                     total: 'Total Entries',
                     day: 'Per Day',
@@ -258,6 +275,26 @@
                     ]
                 }
             }
+        },
+        methods: {
+            handleCheckAllChange(val) {
+                this.selectedDays = val ? this.weekdays : [];
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+                this.isIndeterminate = false;
+            },
+            handleCheckedDayChange(value) {
+
+                let checkedCount = this.selectedDays.length;
+                this.checkAllWeekday = checkedCount === this.weekdays.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.weekdays.length;
+                this.form.scheduleForm.selectedDays = this.selectedDays;
+
+            }
+        },
+        mounted() {
+            this.selectedDays    = this.form.scheduleForm.selectedDays ;
+            this.checkAllWeekday = this.selectedDays.length === this.weekdays.length;
+
         },
         computed: {
             form() {

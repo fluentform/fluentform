@@ -188,7 +188,7 @@
 
                 let enabled = notification.value.enabled == 'true' ? 'enabled' : 'disabled';
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .done(response => {
                         this.$notify.success({
                             offset: 30,
@@ -199,7 +199,7 @@
                     .fail(e => console.log(e));
             },
             remove(index, id) {
-                jQuery.post(ajaxurl, {
+                FluentFormsGlobal.$post({
                     id: id,
                     action: 'fluentform-delete-zapier-notification'
                 })
@@ -217,9 +217,9 @@
                 let data = {
                     form_id: this.form_id,
                     action: 'fluentform-get-zapier-notifications'
-                };      
+                };
 
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                 .then(response => {
                     this.notifications = response.data.map((item) => {
                         let status = item.value.conditionals.status;
@@ -241,7 +241,7 @@
                     action: 'fluentform-save-zapier-notification',
                 };
 
-                jQuery.post(ajaxurl, data).done(response => {
+                FluentFormsGlobal.$post(data).done(response => {
                     this.selected.id = response.data.id;
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
                     
@@ -260,7 +260,7 @@
             },
             verifyEndpoint() {
                 this.verifying = true;
-                jQuery.post(ajaxurl, {
+                FluentFormsGlobal.$post({
                     form_id: this.form_id,
                     zapier_hook_id: this.selected.id,
                     action: 'fluentform-verify-endpoint-zapier'
@@ -288,11 +288,3 @@
     }
 </script>
 
-<style lang="scss">
-    .inline-form-field {
-        margin-top: 15px;
-    }
-    .el-collapse-item {
-        margin-bottom: 1px;
-    }
-</style>

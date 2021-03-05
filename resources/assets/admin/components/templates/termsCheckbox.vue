@@ -15,16 +15,3 @@ export default {
     props: ['item']
 }
 </script>
-<style>
-    .ff_tc {
-        overflow: hidden;
-    }
-    .ff_tc .el-checkbox__input {
-        vertical-align: top;
-    }
-    .ff_tc .el-checkbox__label {
-        overflow: hidden;
-        word-break: break-word;
-        white-space: break-spaces;
-    }
-</style>

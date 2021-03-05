@@ -404,7 +404,7 @@
                 };
 
                 this.errors.record({});
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                 .then(response => {
                     this.setSelectedId(response.data.notification_id);
                     this.$notify.success({
@@ -540,22 +540,4 @@
     }
 </script>
 
-<style>
-    .el-checkbox + .el-checkbox {
-        margin-left: auto;
-    }
 
-    .el-fluid {
-        width: 100% !important;
-    }
-
-    .action-add-field-row {
-        width: 41px;
-        line-height: 1;
-        font-size: 18px;
-    }
-
-    .action-add-field-select {
-        width: calc(100% - 46px);
-    }
-</style>

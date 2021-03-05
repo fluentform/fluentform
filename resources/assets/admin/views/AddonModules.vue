@@ -97,7 +97,7 @@
                 jQuery.each(this.addOns, (key, addon) => {
                     addonModules[key] = addon.enabled;
                 });
-                jQuery.post(window.ajaxurl,  {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_update_modules',
                     addons: addonModules
                 })

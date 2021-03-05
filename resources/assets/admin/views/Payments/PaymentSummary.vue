@@ -241,8 +241,8 @@
             },
             updateTransaction() {
                 this.editing = true;
-                jQuery.post(window.ajaxurl, {
-                    action: 'handle_payment_ajax_endpoint',
+                FluentFormsGlobal.$post({
+                    action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.editingTransaction.form_id,
                     transaction: this.editingTransaction,
                     route: 'update_transaction'
@@ -264,50 +264,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .transaction_item_small {
-        margin: 0px -20px 20px;
-        padding: 10px 20px;
-        background: whitesmoke;
-    }
-
-    .transaction_item_heading {
-        display: block;
-        border-bottom: 1px solid gray;
-        margin: 0 -20px 20px;
-        padding: 10px 20px;
-    }
-
-    .transaction_heading_title {
-        display: inline-block;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .transaction_heading_action {
-        float: right;
-        margin-top: -10px;
-    }
-
-    .transaction_item_line {
-        padding: 0px;
-        font-size: 15px;
-        margin-bottom: 10px;
-    }
-
-    .transaction_item_line .ff_list_value {
-        background: #ffff44;
-        padding: 2px 6px;
-    }
-
-    .ff_badge_status_ {
-        &pending {
-            background-color: #ffff03;
-        }
-        &paid {
-            background: #67c23a;
-            color: white;
-        }
-    }
-</style>

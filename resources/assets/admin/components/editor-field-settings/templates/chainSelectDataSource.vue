@@ -74,7 +74,8 @@
 
                 this.fetching = true;
 
-                this.$ajax.post('chainedSelectFetchRemoteFile', {
+                FluentFormsGlobal.$post({
+                    action: 'fluentform_chained_select_file_upload',
                     ...this.dataSourceInfo,
                     url: this.dataSourceUrl,
                 }).then(response => {
@@ -102,9 +103,9 @@
 
                 this.removing = true;
 
-                this.$ajax.post(
-                    'chainedSelectFetchRemovDataSource', this.dataSourceInfo
-                ).then(response => {
+                this.dataSourceInfo.action = 'fluentform_chained_select_remove_ds';
+
+                FluentFormsGlobal.$post(this.dataSourceInfo).then(response => {
                     this.editItem.settings.data_source.url = '';
                     this.editItem.settings.data_source.name = '';
                     this.editItem.settings.data_source.meta_key = null;
@@ -172,31 +173,3 @@
         }
     };
 </script>
-
-<style>
-    .chained-select-settings .uploader {
-        width: 100%;
-        height: 130px;
-        position: relative;
-        margin-top: 10px;
-    }
-
-    .chained-select-settings .el-upload--text {
-        width: 100%;
-        height: 130px;
-    }
-
-    .chained-select-settings .el-upload-dragger {
-        width: 100%;
-        height: 130px;
-    }
-
-    .chained-select-settings .el-upload-list,
-    .chained-select-settings .el-upload-list .el-upload-list__item {
-        margin: -5px 0 0 0;
-    }
-
-    .chained-select-settings .btn-danger {
-        color: #f56c6c;
-    }
-</style>

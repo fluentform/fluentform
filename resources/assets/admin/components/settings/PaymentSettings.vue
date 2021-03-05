@@ -255,8 +255,8 @@
         methods: {
             getSettings() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
-                    action: 'handle_payment_ajax_endpoint',
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.form.id,
                     route: 'get_form_settings'
                 })
@@ -274,8 +274,8 @@
             },
             saveSettings() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
-                    action: 'handle_payment_ajax_endpoint',
+                FluentFormsGlobal.$post({
+                    action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.form.id,
                     route: 'save_form_settings',
                     settings: this.settings

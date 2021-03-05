@@ -194,18 +194,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-    .optionsToRender {
-        margin: 7px 0;
-    }
-    .action-btn {
-        display: inline-block;
-        min-width: 32px;
-
-        .icon {
-            vertical-align: middle;
-            cursor: pointer;
-        }
-    }
-</style>

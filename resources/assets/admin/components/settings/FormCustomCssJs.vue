@@ -78,7 +78,7 @@
         methods: {
             fetchSettings() {
                 this.fetching = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform-get-form-custom_css_js',
                     form_id: this.form_id
                 })
@@ -95,7 +95,7 @@
             },
             saveSettings() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform-save-form-custom_css_js',
                     form_id: this.form_id,
                     custom_css: this.custom_css,

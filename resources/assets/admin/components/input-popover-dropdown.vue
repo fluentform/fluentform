@@ -42,33 +42,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    @import "../styles/var";
-
-    .el-dropdown-list-wrapper {
-        padding: 0;
-
-        .group-title {
-            display: block;
-            padding: 5px 10px;
-            background-color: $info;
-            color: #fff;
-        }
-    }
-
-    .input-textarea-value {
-        position: relative;
-
-        .icon {
-            position: absolute;
-            right: 0;
-            top: -18px;
-            cursor: pointer;
-        }
-    }
-
-    .group-title {
-
-    }
-</style>

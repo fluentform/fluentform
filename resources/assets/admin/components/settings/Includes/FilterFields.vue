@@ -148,14 +148,3 @@ export default {
     }
 };
 </script>
-
-<style>
-.action-btns i {
-    cursor: pointer;
-    padding: 2px;
-}
-
-.action-btns i:hover {
-    color: #58B7FF
-}
-</style>

@@ -50,13 +50,3 @@
         }
     };
 </script>
-
-<style>
-    .remove-btn {
-        cursor: pointer;
-    }
-
-    .el-text-danger {
-        color: #FF4949;
-    }
-</style>

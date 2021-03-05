@@ -452,14 +452,3 @@
     }
 </script>
 
-<style>
-    .ff_items_inline .el-select, .ff_items_inline .el-input {
-        display: inline-block;
-        width: 49%;
-    }
-
-    .ff_items_inline .el-select .el-input {
-        width: 100%;
-    }
-
-</style>

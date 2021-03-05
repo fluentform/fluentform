@@ -57,12 +57,3 @@ export default {
     }
 }
 </script>
-
-<style>
-    .el-select .el-input {
-        min-width: 70px;
-    }
-    .input-with-select .el-input-group__prepend {
-        background-color: #fff;
-    }
-</style>

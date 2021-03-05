@@ -63,7 +63,7 @@
         methods: {
             fetchLogs() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform-get-entry-logs',
                     entry_id: this.entry_id,
                     source_type: 'submission_item',
@@ -92,30 +92,3 @@
         }
     }
 </script>
-<style lang="scss">
-    .entry_submission_log {
-        .wpf_entry_label {
-            margin-bottom: 10px;
-        }
-
-        &_component {
-            font-weight: bold;
-            text-transform: capitalize;
-        }
-
-        span {
-            &:first-child {
-                color: white;
-                border-radius: 3px;
-            }
-        }
-
-        .log_status_failed, .log_status_error {
-            background: #c23434;
-        }
-
-        .log_status_success {
-            background: #348938;
-        }
-    }
-</style>
