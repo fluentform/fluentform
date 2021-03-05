@@ -114,7 +114,7 @@
         methods: {
             createFeed(templateName) {
                 this.creating = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     form_id: this.form_id,
                     action: 'fluentform_pdf_admin_ajax_actions',
                     route: 'create_feed',
@@ -138,7 +138,7 @@
                 this.selectedId = selectedId;
             },
             remove(id) {
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     form_id: this.form_id,
                     action: 'fluentform_pdf_admin_ajax_actions',
                     route: 'delete_feed',
@@ -163,7 +163,7 @@
             },
             fetchPdfFeeds() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     form_id: this.form_id,
                     action: 'fluentform_pdf_admin_ajax_actions',
                     route: 'get_feeds'
@@ -187,28 +187,4 @@
     };
 </script>
 
-<style lang="scss">
-    .ff_each_template {
-        margin-bottom: 20px;
 
-        .ff_card {
-            border: 1px solid #dddddd;
-            cursor: pointer;
-            text-align: center;
-            padding: 10px;
-
-            .ff_template_label {
-                font-weight: bold;
-            }
-
-            &:hover {
-                opacity: 0.8;
-                border: 2px solid #409eff;
-            }
-        }
-
-        img {
-            max-width: 100%;
-        }
-    }
-</style>

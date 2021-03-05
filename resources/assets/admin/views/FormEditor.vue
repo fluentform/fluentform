@@ -134,7 +134,7 @@
                 </ul>
 
                 <div v-loading="!isMockLoaded"
-                     element-loading-text="Loading Awesomes..."
+                     element-loading-text="Loading Awesomeness..."
                      style="min-height: 150px;"
                      class="panel-full-height nav-tab-items">
                     <template v-if="isMockLoaded">
@@ -787,8 +787,8 @@ export default {
          * prepare those for editor render.
          */
         initiateMockLists() {
-            jQuery.get(ajaxurl, {
-                action: this.$action.getElements,
+            FluentFormsGlobal.$get({
+                action: 'fluentform-load-editor-components',
                 formId: window.FluentFormApp.form.id
             })
                 .done(response => {
@@ -836,7 +836,8 @@ export default {
          * And do necessary adjustments to the editor
          */
         fetchSettings() {
-            this.$ajax.get('getFormSettings', {
+            FluentFormsGlobal.$get({
+                action: 'fluentform-settings-formSettings',
                 form_id: this.form_id,
                 meta_key: 'formSettings'
             })
@@ -1028,31 +1029,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.form-editor--sidebar {
-    position: relative;
-}
-
-.code {
-    overflow-x: scroll;
-}
-
-.search-element {
-    padding: 10px 20px;
-}
-
-.ff-user-guide {
-    text-align: center;
-    margin-top: -105px;
-    position: relative;
-    z-index: 1;
-}
-
-.post-form-settings {
-    label.el-form-item__label {
-        font-weight: 500;
-        margin-top: 8px;
-        color: #606266;
-    }
-}
-</style>

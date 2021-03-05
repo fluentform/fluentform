@@ -571,7 +571,10 @@
                 }
             },
             fetchSettings() {
-                this.$ajax.get('getFormGeneralSettings', {form_id: this.form_id})
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-settings-general-formSettings',
+                    form_id: this.form_id
+                })
                     .done(response => {
                         if (response.data.generalSettings) {
                             let settings = response.data.generalSettings;
@@ -586,6 +589,8 @@
                                 settings.restrictions.limitNumberOfEntries = {};
                             if (!settings.restrictions.scheduleForm)
                                 settings.restrictions.scheduleForm = {};
+                             if(!settings.restrictions.scheduleForm.selectedDays)
+                                settings.restrictions.scheduleForm.selectedDays = [];
                             if (!settings.restrictions.requireLogin)
                                 settings.restrictions.requireLogin = {};
 
@@ -616,7 +621,10 @@
                     });
             },
             fetchPages() {
-                this.$ajax.get('getPages', {form_id: this.form_id})
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-get-pages',
+                    form_id: this.form_id
+                })
                     .then(response => {
                         this.pages = response.data.pages;
                     })
@@ -630,10 +638,11 @@
                     form_id: this.form_id,
                     formSettings: JSON.stringify(this.formSettings),
                     advancedValidationSettings: JSON.stringify(this.advancedValidationSettings),
-                    double_optin: JSON.stringify(this.double_optin)
+                    double_optin: JSON.stringify(this.double_optin),
+                    action: 'fluentform-save-settings-general-formSettings'
                 };
 
-                this.$ajax.post('saveFormGeneralSettings', data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success({
                             title: 'Success',
@@ -659,16 +668,3 @@
         }
     };
 </script>
-
-<style lang="scss">
-    @import "../../styles/el_customize";
-
-    .el-form-item__error {
-        position: relative !important;
-
-        p {
-            margin-bottom: 0px;
-            margin-top: 0px;
-        }
-    }
-</style>

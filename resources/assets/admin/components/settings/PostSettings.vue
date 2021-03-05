@@ -103,7 +103,8 @@
         },
         methods: {
             fetchSettings() {
-                this.$ajax.get('getFormSettings', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-settings-formSettings'
                     meta_key: 'formSettings',
                     form_id: window.FluentFormApp.form_id
                 })
@@ -123,7 +124,8 @@
             },
             saveSettings() {
                 this.saving = true;
-                this.$ajax.post('saveFormSettings', {
+                FluentFormsGlobal.$post({
+                    action: 'fluentform-settings-formSettings-store',
                     meta_key: 'formSettings',
                     id: this.formSettings.id,
                     form_id: window.FluentFormApp.form_id,
@@ -175,9 +177,3 @@
         }
     };    
 </script>
-
-<style>
-    .post-settings .mt15 {
-        margin-top: 15px;
-    }
-</style>

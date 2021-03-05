@@ -25,9 +25,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-    .address-field-wrapper {
-        margin-top: 10px;
-    }
-</style>

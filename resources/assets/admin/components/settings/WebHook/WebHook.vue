@@ -132,7 +132,7 @@
                     notification: JSON.stringify(row.formattedValue)
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success({
                             offset: 30,
@@ -155,7 +155,7 @@
                     form_id: this.form.id 
                 };
 
-                jQuery.post(ajaxurl, data )
+                FluentFormsGlobal.$post(data )
                 .then(response => {
                     this.integrations = response.data.integrations;
                     this.$notify.success({
@@ -171,8 +171,8 @@
                     form_id: this.form.id,
                     action: 'fluentform-get-webhooks'
                 };
-                
-                jQuery.get(ajaxurl, data)
+
+                FluentFormsGlobal.$get(data)
                 .then(response => {
                     this.integrations = response.data.integrations;
                     this.request_headers = response.data.request_headers;

@@ -65,11 +65,11 @@
         methods: {
             fetchInputs() {
                 let data = {
-                    action: this.$action.getFormInputs,
+                    action: 'fluentform-form-inputs',
                     formId: this.form.id
                 };
 
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .done(response => {
                         console.log(response);
                     })
@@ -81,7 +81,7 @@
                     form_id: this.form_id
                 };
 
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .then(response => {
                         this.extra_navs = response.data.setting_navs;
                         this.app_ready = true;
@@ -103,22 +103,3 @@
         }
     };
 </script>
-
-<style>
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
-    }
-
-    .fade-enter, .fade-leave-to {
-        opacity: 0;
-        transition: opacity .5s;
-    }
-
-    .el-form-item__label {
-        font-size: 13px;
-    }
-
-    input[type=checkbox] {
-        display: none;
-    }
-</style>

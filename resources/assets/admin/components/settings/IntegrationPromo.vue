@@ -33,31 +33,3 @@
         name: 'integration_promo'
     }
 </script>
-
-<style>
-    .promo_section {
-        text-align: center;
-        padding: 20px;
-        border-top: 1px solid #bdbdbd;
-        margin-top: 30px;
-    }
-
-    .promo_section p {
-        font-size: 20px;
-    }
-
-    .promo_section a {
-        font-size: 20px !important;
-        height: 40px !important;
-        padding: 6px 20px !important;
-    }
-    .ff-feature-lists ul li {
-        font-size: 18px;
-        line-height: 27px;
-    }
-
-    .ff-feature-lists ul li span {
-        font-size: 20px;
-        margin-top: 4px;
-    }
-</style>

@@ -136,39 +136,3 @@
         }
     };
 </script>
-
-<style>
-    .action-btns i {
-        cursor: pointer;
-        padding: 2px;
-    }
-
-    .action-btns i:hover {
-        color: #58B7FF
-    }
-
-    .ff_inline .el-input {
-        display: inline-block;
-        width: auto;
-    }
-    .ff_routing_fields {
-        margin-bottom: 30px;
-    }
-    table.ff_routing_table {
-        width: 100%;
-        border: 0;
-        border-spacing: 0;
-        border-collapse: collapse;
-    }
-
-    table.ff_routing_table tr td {
-        padding: 12px 3px;
-        border: 0;
-    }
-
-    table.ff_routing_table tr {
-        border: 1px solid #e8e8ec70;
-        border-left: 0;
-        border-right: 0;
-    }
-</style>

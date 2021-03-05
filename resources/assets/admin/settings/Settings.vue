@@ -68,7 +68,8 @@
         methods: {
             fetch() {
                 this.loading = true;
-                this.$ajax.get('getGlobalSettings', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-global-settings',
                     key: [
                         '_fluentform_global_form_settings',
                         '_fluentform_email_report_summary'
@@ -108,10 +109,11 @@
                 this.loading = true;
                 let data = {
                     key: 'SaveGlobalLayoutSettings',
-                    value: JSON.stringify(this.formSettings)
+                    value: JSON.stringify(this.formSettings),
+                    action: 'fluentform-global-settings-store'
                 };
 
-                this.$ajax.post('saveGlobalSettings', data)
+                FluentFormsGlobal.$post(data)
                     .done(response => {
                         if (response) {
                             this.loading = false;
@@ -132,9 +134,10 @@
             saveEmailSummarySettings() {
                 let data = {
                     key: 'EmailSummarySettings',
-                    value: JSON.stringify(this.email_report)
+                    value: JSON.stringify(this.email_report),
+                    action: 'fluentform-global-settings-store'
                 };
-                this.$ajax.post('saveGlobalSettings', data)
+                FluentFormsGlobal.$post(data)
                     .done(response => {
 
                     });
@@ -146,9 +149,3 @@
         }
     };
 </script>
-
-<style>
-    .pull-right {
-        float: right !important;
-    }
-</style>

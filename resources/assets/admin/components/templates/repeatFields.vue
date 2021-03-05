@@ -39,26 +39,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss">
-    .repeat-field--item {
-        width: calc(100% - 40px);
-        float: left;
-        margin-right: 5px;
-        display: flex;
-
-        > div {
-            flex-grow: 1;
-            margin: 0 3px;
-        }
-
-        .el-form-item__label {
-            text-align: left;
-        }
-    }
-
-
-    .repeat-field-actions {
-        margin-top: 40px;
-    }
-</style>

@@ -97,7 +97,7 @@
                     this.paginate.current_page = 1;
                 }
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_all_entries',
                     form_id: this.selectedFormId,
                     page: this.paginate.current_page,
@@ -158,43 +158,3 @@
     };
 </script>
 
-<style lang="scss">
-    .payment_header {
-        overflow: hidden;
-        .payment_actions {
-            float: right;
-        }
-    }
-    .entry_chart {
-        padding: 10px;
-        background: white;
-        margin: 20px 0px;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-    }
-    .el-table .warning-row {
-        background: oldlace;
-    }
-
-    span.ff_payment_badge {
-        padding: 0px 10px 2px;
-        border: 1px solid gray;
-        border-radius: 9px;
-        margin-left: 5px;
-        font-size: 12px;
-    }
-
-    tr.el-table__row td {
-        padding: 18px 0px;
-    }
-
-    .pull-right.ff_paginate {
-        margin-top: 20px;
-    }
-
-    .payment_details {
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #dddddd;
-    }
-
-</style>

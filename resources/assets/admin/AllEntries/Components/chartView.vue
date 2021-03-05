@@ -28,7 +28,7 @@
             fetchData() {
                 this.loading = true;
 
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_all_entries_report',
                     form_id: this.form_id
                 })

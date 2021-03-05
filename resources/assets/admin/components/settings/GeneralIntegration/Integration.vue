@@ -21,7 +21,7 @@
         </div>
 
         <!-- GetResponse Feeds Table: 1 -->
-        <el-table v-else border stripe v-loading="loading" :data="integrations">
+        <el-table v-else stripe v-loading="loading" :data="integrations" class="el-fluid">
             <template slot="empty">
                 <div class="getting_started_message">
                     <p>You don't have any form feed integration yet. Create new feed and connect your data to your favorite CRM/Marketing tool</p>
@@ -135,9 +135,10 @@
                 let data = {
                     form_id: this.form_id,
                     status: row.enabled,
-                    notification_id: row.id
+                    notification_id: row.id,
+                    action: 'fluentform_post_update_form_integration_status'
                 };
-                this.$ajax.$post('update_form_integration_status', data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         console.log(response);
                         this.$notify.success({
@@ -162,7 +163,7 @@
                     form_id: this.form_id
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success({
                             offset: 30,
@@ -175,7 +176,8 @@
             },
             getFeeds() {
                 this.loading = true;
-                this.$ajax.$get('all-general-integration-feeds',  {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_get_all-general-integration-feeds',
                     form_id: this.form_id
                 })
                     .then(response => {
@@ -202,12 +204,4 @@
     }
 </script>
 
-<style>
-    .el-table .warning-row {
-        background: oldlace;
-    }
 
-    .el-table .warning-row td {
-        background: oldlace !important;
-    }
-</style>

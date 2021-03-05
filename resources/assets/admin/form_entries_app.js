@@ -3,13 +3,7 @@ import './helpers';
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
-import jQueryActions from './jquery-actions'
-import ajaxCaller from './ajaxCaller'
-
 Vue.use(VueRouter);
-Vue.use(jQueryActions);
-Vue.use(ajaxCaller);
 
 import {
     Card,

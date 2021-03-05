@@ -19,10 +19,3 @@ export default {
     },
 }
 </script>
-
-<style>
-    .sidebar-popper {
-        max-width: 300px;
-        line-height: 1.5;
-    }
-</style>

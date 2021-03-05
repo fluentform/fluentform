@@ -251,12 +251,3 @@
         }
     };
 </script>
-
-<style lang="scss">
-    .ff_condition_icon {
-        position: absolute;
-        right: 17px;
-        color: #9ca1a7;
-        z-index: 99999999;
-    }
-</style>

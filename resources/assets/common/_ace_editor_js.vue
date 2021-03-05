@@ -57,12 +57,3 @@
     }
 </script>
 
-<style>
-    .ninja_custom_css_editor {
-       min-height: 350px;
-        height: auto;
-    }
-    .ninja_css_errors .ace_gutter-cell.ace_warning {
-        display: none;
-    }
-</style>

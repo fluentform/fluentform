@@ -115,7 +115,7 @@
         methods: {
             fetchReport() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     form_id: this.form_id,
                     action: 'fluentform-form-report',
                     statuses: this.filter_statuses
@@ -132,7 +132,7 @@
             },
             resetAnalytics() {
                 if (window.confirm('All the views recorded to this form will be deleted. Are you sure?')) {
-                    jQuery.post(window.ajaxurl, {
+                    FluentFormsGlobal.$post({
                         form_id: this.form_id,
                         action: 'fluentform-reset-analytics'
                     })

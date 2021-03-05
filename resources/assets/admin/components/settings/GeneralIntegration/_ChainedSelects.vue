@@ -32,7 +32,7 @@
         methods: {
             fetchSettings() {
                 this.loading = true;
-                jQuery.get(this.field.remote_url, {
+                FluentFormsGlobal.$get(this.field.remote_url, {
                     settings: this.settings
                 })
                       .then(response => {
@@ -70,15 +70,3 @@
     }
 </script>
 
-<style lang="scss">
-    .wpf_each_filter {
-        padding-right: 20px;
-        > label {
-            width: 100%;
-            display: block;
-        }
-        > .el-select {
-            width: 100% !important;
-        }
-    }
-</style>

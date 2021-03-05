@@ -491,7 +491,7 @@
                     action: 'fluentform-form-entry-counts',
                     form_id: this.form_id
                 };
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .then((response) => {
                         this.counts = response.data.counts;
                     })
@@ -520,7 +520,7 @@
                 }
 
                 this.loading = true;
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .then((response) => {
                         this.entries = response.data.submissions.data;
                         this.paginate = response.data.submissions.paginate;
@@ -557,7 +557,7 @@
                     status: 'trashed'
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify({
                             title: 'Success',
@@ -592,7 +592,7 @@
                     action_type: actionType
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success({
                             title: 'Success',
@@ -658,7 +658,7 @@
                     is_favourite: is_favourite
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.entries[index].is_favourite = response.data.is_favourite;
                         this.getEntryCounts();
@@ -675,7 +675,7 @@
                     status: status
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.entries[index].status = response.data.status;
                         this.getEntryCounts();
@@ -692,7 +692,7 @@
                     status: 'read'
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.entries.splice(index, 1);
                         this.getEntryCounts();
@@ -770,9 +770,3 @@
     };
 </script>
 
-<style lang="scss">
-    .el-table .cell.el-tooltip {
-        max-height: 50px;
-        overflow: hidden;
-    }
-</style>

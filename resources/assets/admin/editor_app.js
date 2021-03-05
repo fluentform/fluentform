@@ -3,8 +3,6 @@ import Vue from 'vue';
 import Vddl from 'vddl';
 
 import store from './store';
-import jQueryActions from './jquery-actions';
-import ajaxCaller from './ajaxCaller';
 import './css/element-variables.scss';
 import {
     Button,
@@ -46,8 +44,6 @@ import FormEditor from './views/FormEditor.vue';
 import {mapActions} from 'vuex';
 
 Vue.use(Vddl);
-Vue.use(jQueryActions);
-Vue.use(ajaxCaller);
 
 Vue.use(Rate);
 Vue.use(Tabs);
@@ -246,14 +242,13 @@ new Vue({
             }
 
             let data = {
-                action: this.$action.updateForm,
+                action: 'fluentform-form-update',
                 formId: this.form_id,
                 title: this.form.title,
                 formFields: JSON.stringify(formFields)
             };
 
-            jQuery
-                .post(ajaxurl, data)
+            FluentFormsGlobal.$post(data)
                 .done(response => {
                     this.$notify({
                         title: "Success",
