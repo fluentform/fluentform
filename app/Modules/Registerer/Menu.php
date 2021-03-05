@@ -166,6 +166,10 @@ class Menu
             'all'
         );
 
+        add_filter('admin_footer_text', function ($text) {
+            return '<span id="footer-thankyou">Thanks for using <a target="_blank" rel="nofollow" href="https://wordpress.org/plugins/fluentform">Fluent Forms</a>.</span>';
+        });
+
     }
 
     public function isFluentPages()
