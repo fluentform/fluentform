@@ -210,7 +210,7 @@ class Container implements ArrayAccess
         
         try {
             if ($class = $this->getParameterType($parameter)) {
-                $class = $class->getName();
+                $class = $this->getParameterName($class);
                 if ($class && in_array($class, $types)) {
                     $class = null;
                 }
@@ -248,6 +248,22 @@ class Container implements ArrayAccess
         }
 
         return $parameter->getClass();
+    }
+
+    /**
+     * Get the parameter name for the given parameter.
+     *
+     * @return string
+     */
+    protected function getParameterName($parameter)
+    {
+        $parameterType = $this->getParameterType($parameter);
+
+        if (property_exists($parameterType, 'name')) {
+            return $parameterType->name;
+        }
+
+        return $parameterType->getName();
     }
 
     /**
