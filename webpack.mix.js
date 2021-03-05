@@ -19,6 +19,7 @@ mix.webpackConfig({
 });
 
 mix
+    .js('resources/assets/admin/fluent_forms_global.js', `public/js/fluent_forms_global.js`)
     .js('resources/assets/admin/settings/settings.js', `public/js/fluentform-global-settings.js`)
     .js('resources/assets/admin/transfer/transfer.js', `public/js/fluentform-transfer.js`)
     .js('resources/assets/admin/form_settings_app.js', `public/js/form_settings_app.js`)

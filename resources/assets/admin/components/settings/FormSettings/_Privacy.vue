@@ -42,7 +42,7 @@
         methods: {
             get() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: "fluentform_get_access_roles",
                 })
                     .then(response => {
@@ -67,8 +67,7 @@
                     action: "fluentform_set_access_roles",
                     capability: this.capability
                 };
-                jQuery
-                    .post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
 
                     })

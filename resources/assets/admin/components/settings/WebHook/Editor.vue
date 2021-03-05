@@ -404,7 +404,7 @@
                 };
 
                 this.errors.record({});
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                 .then(response => {
                     this.setSelectedId(response.data.notification_id);
                     this.$notify.success({

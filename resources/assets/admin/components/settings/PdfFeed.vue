@@ -62,7 +62,7 @@
         methods: {
             getFeed() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     form_id: this.form_id,
                     feed_id: this.edit_id,
                     action: 'fluentform_pdf_admin_ajax_actions',
@@ -82,7 +82,7 @@
             },
             saveFeed() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     form_id: this.form_id,
                     feed_id: this.edit_id,
                     action: 'fluentform_pdf_admin_ajax_actions',

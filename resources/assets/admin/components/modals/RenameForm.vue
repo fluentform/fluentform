@@ -52,12 +52,12 @@ export default {
             this.loading = true;
             
             let data = {
-                action: this.$action.updateForm,
+                action: 'fluentform-form-update',
                 title: this.model,
                 formId: window.FluentFormApp.form_id
             };
 
-            jQuery.post(ajaxurl, data)
+            FluentFormsGlobal.$post(data)
                 .then((response) => {
                     this.$notify.success({
                         title: 'Success!',

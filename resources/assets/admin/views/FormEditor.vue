@@ -787,8 +787,8 @@ export default {
          * prepare those for editor render.
          */
         initiateMockLists() {
-            jQuery.get(ajaxurl, {
-                action: this.$action.getElements,
+            FluentFormsGlobal.$get({
+                action: 'fluentform-load-editor-components',
                 formId: window.FluentFormApp.form.id
             })
                 .done(response => {

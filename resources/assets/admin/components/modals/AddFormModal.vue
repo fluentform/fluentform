@@ -48,13 +48,13 @@
             add() {
                 this.loading = true;
                 let data = {
-                    action: this.$action.saveForm,
+                    action: 'fluentform-form-store',
                     type: this.template,
                     title: this.form_title,
                     status: this.status
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then((response) => {
                         this.$notify.success({
                             title: 'Congratulations!',

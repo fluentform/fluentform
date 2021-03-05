@@ -228,7 +228,7 @@
                     sort_by: this.sort_by,
                 };
                 this.loading = true;
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .then((res) => {
                         if (res.data.submission && res.data.submission.id) {
                             this.entry = res.data.submission;
@@ -286,7 +286,7 @@
                     is_favourite: newStatus
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.entry.is_favourite = newStatus;
                     })
@@ -302,7 +302,7 @@
                     status: status
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.entry.status = status;
                         this.$notify({

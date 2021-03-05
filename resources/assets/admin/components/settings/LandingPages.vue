@@ -254,7 +254,7 @@
                     settings: this.settings
                 };
 
-                jQuery.post(window.ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
                         this.$notify.success({
@@ -278,7 +278,7 @@
                     form_id: this.form_id
                 };
 
-                jQuery.get(window.ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
                         this.settings = response.data.settings;

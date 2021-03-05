@@ -48,7 +48,7 @@ $component->addIsRenderableFilter();
 $component->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
-    if (isset($_GET['fluentform_pages']) && $_GET['fluentform_pages'] == 1) {
+    if (isset($_GET['fluent_forms_pages']) && $_GET['fluent_forms_pages'] == 1) {
 
         add_action('wp_enqueue_scripts', function () use ($app) {
             wp_enqueue_script('jquery');

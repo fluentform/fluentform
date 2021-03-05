@@ -116,7 +116,7 @@
                     send_to_custom_email: this.form.send_to_custom_email,
                     ff_sumulate: 'fluentform_submit'
                 };
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success(response.data.message);
                         this.success_message = response.data.message;

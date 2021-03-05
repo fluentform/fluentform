@@ -258,14 +258,14 @@ export default {
             this.loading = true;
             let data = {
                 search: this.searchFormsKeyWord,
-                action: this.$action.getAllForms,
+                action: 'fluentform-forms',
                 per_page: this.paginate.per_page,
                 page: this.paginate.current_page,
                 sort_column: this.sort_column,
                 sort_by: this.sort_by
             };
 
-            jQuery.get(ajaxurl, data)
+            FluentFormsGlobal.$get(data)
                 .done((response) => {
                     this.items = response.data;
                     this.paginate.total = response.total;
@@ -290,8 +290,8 @@ export default {
         getPredefinedForms() {
             this.loading = true;
 
-            jQuery.get(ajaxurl, {
-                action: this.$action.getPredefinedForms
+            FluentFormsGlobal.$get({
+                action: 'fluentform-predefined-forms'
             }).done(res => {
                 this.predefinedForms = res.forms;
                 this.categories = res.categories;
@@ -305,10 +305,10 @@ export default {
         },
         removeForm(id, index) {
             let data = {
-                action: this.$action.removeForm,
+                action: 'fluentform-form-delete',
                 formId: id
             }
-            jQuery.get(ajaxurl, data)
+            FluentFormsGlobal.$get(data)
                 .done(res => {
                     this.items.splice(index, 1);
                     this.$notify.success({
@@ -322,10 +322,10 @@ export default {
         },
         duplicateForm(id) {
             let data = {
-                action: this.$action.duplicateForm,
+                action: 'fluentform-form-duplicate',
                 formId: id
             }
-            jQuery.post(ajaxurl, data)
+            FluentFormsGlobal.$post(data)
                 .then(res => {
                     this.$notify.success({
                         title: 'Congratulations!',
