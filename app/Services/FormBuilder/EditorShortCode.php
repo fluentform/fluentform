@@ -114,7 +114,7 @@ class EditorShortcode
             $groups[] = static::getPaymentShortcodes($form);
         }
 
-        return $groups;
+        return apply_filters('fluentform_form_settings_smartcodes', $groups, $form);
     }
 
     public static function parse($string, $data, callable $arrayFormatter = null)
