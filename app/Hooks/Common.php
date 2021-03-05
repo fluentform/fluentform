@@ -52,6 +52,16 @@ add_action('wp', function () use ($app) {
 
         add_action('wp_enqueue_scripts', function () use ($app) {
             wp_enqueue_script('jquery');
+	        wp_enqueue_script(
+	        	'fluent_forms_global',
+		        $app->publicUrl('js/fluent_forms_global.js'),
+		        array('jquery'),
+		        FLUENTFORM_VERSION,
+		        true
+	        );
+	        wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
+		        'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce')
+	        ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($_REQUEST['preview_id']));
             if (apply_filters('fluentform_load_default_public', true, $form)) {
