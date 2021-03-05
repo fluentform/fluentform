@@ -721,12 +721,13 @@
                 let data = {
                     action: 'fluentform-form-entries-export',
                     form_id: this.form_id,
-                    format: format,
+                    format: format, 
                     entry_type: this.entry_type,
                     entries: selectedEntries,
                     sort_by: this.sort_by,
                     search: this.search_string,
-                    payment_statuses: this.selectedPaymentStatuses
+                    payment_statuses: this.selectedPaymentStatuses,
+                    fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
                 if (this.advancedFilter) {
                     data.date_range = this.filter_date_range;
