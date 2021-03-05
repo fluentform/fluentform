@@ -207,10 +207,16 @@ class Container implements ArrayAccess
     protected function resolveClass(ReflectionParameter $parameter)
     {
         $types = ['bool', 'int', 'float', 'string', 'array', 'resource'];
-        
+
         try {
             if ($class = $this->getParameterType($parameter)) {
-                $class = $this->getParameterName($class);
+
+                if($class instanceof \ReflectionType) {
+                    $class = (string) $class;
+                    return $this->make($class);
+                }
+
+                $class = $class->getName();
                 if ($class && in_array($class, $types)) {
                     $class = null;
                 }
@@ -248,22 +254,6 @@ class Container implements ArrayAccess
         }
 
         return $parameter->getClass();
-    }
-
-    /**
-     * Get the parameter name for the given parameter.
-     *
-     * @return string
-     */
-    protected function getParameterName($parameter)
-    {
-        $parameterType = $this->getParameterType($parameter);
-
-        if (property_exists($parameterType, 'name')) {
-            return $parameterType->name;
-        }
-
-        return $parameterType->getName();
     }
 
     /**
