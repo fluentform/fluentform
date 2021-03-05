@@ -47,7 +47,8 @@
         },
         mounted() {
             this.loading = true;
-            this.$ajax.get('getTotalForms', {
+            FluentFormsGlobal.$get({
+                action: 'fluentform-get-all-forms',
                 fields: ['id', 'title']
             })
                 .done(response => {

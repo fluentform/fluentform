@@ -836,7 +836,8 @@ export default {
          * And do necessary adjustments to the editor
          */
         fetchSettings() {
-            this.$ajax.get('getFormSettings', {
+            FluentFormsGlobal.$get({
+                action: 'fluentform-settings-formSettings',
                 form_id: this.form_id,
                 meta_key: 'formSettings'
             })
