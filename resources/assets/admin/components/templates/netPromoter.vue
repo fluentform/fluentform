@@ -27,22 +27,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-    .ff-el-rate {
-        display: inline-block;
-    }
-    .net-promoter-button{
-        border-radius: inherit;
-    }
-    .ff-el-net-promoter-tags{
-        display: flex;
-        justify-content: space-between;
-        max-width: 550px;
-        p{
-            font-size: 12px;
-            opacity: 0.6;
-        }
-    }
-
-</style>

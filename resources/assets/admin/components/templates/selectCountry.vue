@@ -24,10 +24,3 @@ export default {
     },
 }
 </script>
-
-<style>
-    .el-form-item .select {
-        width: 100%;
-        min-height: 35px;
-    }
-</style>

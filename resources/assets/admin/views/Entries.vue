@@ -770,9 +770,3 @@
     };
 </script>
 
-<style lang="scss">
-    .el-table .cell.el-tooltip {
-        max-height: 50px;
-        overflow: hidden;
-    }
-</style>

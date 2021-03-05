@@ -70,15 +70,3 @@
     }
 </script>
 
-<style lang="scss">
-    .wpf_each_filter {
-        padding-right: 20px;
-        > label {
-            width: 100%;
-            display: block;
-        }
-        > .el-select {
-            width: 100% !important;
-        }
-    }
-</style>

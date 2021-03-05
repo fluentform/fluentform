@@ -1028,31 +1028,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.form-editor--sidebar {
-    position: relative;
-}
-
-.code {
-    overflow-x: scroll;
-}
-
-.search-element {
-    padding: 10px 20px;
-}
-
-.ff-user-guide {
-    text-align: center;
-    margin-top: -105px;
-    position: relative;
-    z-index: 1;
-}
-
-.post-form-settings {
-    label.el-form-item__label {
-        font-weight: 500;
-        margin-top: 8px;
-        color: #606266;
-    }
-}
-</style>

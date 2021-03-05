@@ -265,36 +265,3 @@
     };
 </script>
 
-<style lang="scss">
-    .optionsToRender {
-        margin: 7px 0;
-    }
-
-    .action-btn {
-        display: inline-block;
-        min-width: 32px;
-
-        .icon {
-            vertical-align: middle;
-            cursor: pointer;
-        }
-    }
-
-    .pull-right.top-check-action {
-        > label {
-            margin-right: 10px;
-
-            &:last-child {
-                margin-right: 0px;
-            }
-        }
-
-        span.el-checkbox__label {
-            padding-left: 3px;
-        }
-    }
-    .item_desc textarea {
-        margin-top: 5px;
-        width: 100%;
-    }
-</style>

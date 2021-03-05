@@ -426,31 +426,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.text-center {
-    text-align: center;
-}
-
-.fluent_form_intro {
-    max-width: 700px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px 30px 30px;
-}
-
-.ff_forms_table .el-loading-mask {
-    z-index: 100;
-}
-
-.copy {
-    cursor: context-menu;
-}
-
-.fluent_form_intro_video {
-    max-width: 700px;
-    margin: 20px auto;
-    text-align: center;
-    padding: 20px 0 0;
-}
-
-</style>

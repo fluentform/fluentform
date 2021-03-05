@@ -341,18 +341,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    @import "../../styles/var";
-    @import "../../styles/el_customize";
-
-    .content-ellipsis .cell {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    .content-ellipsis .page a {
-        text-decoration: none;
-    }
-</style>

@@ -202,12 +202,4 @@
     }
 </script>
 
-<style>
-    .el-table .warning-row {
-        background: oldlace;
-    }
 
-    .el-table .warning-row td {
-        background: oldlace !important;
-    }
-</style>

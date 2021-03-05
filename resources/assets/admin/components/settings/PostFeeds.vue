@@ -194,13 +194,3 @@
         }
     };    
 </script>
-
-<style>
-    .post_feeds .green {
-        color: green;
-    }
-
-    .post_feeds .red {
-        color: red;
-    }
-</style>

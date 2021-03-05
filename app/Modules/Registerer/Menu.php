@@ -178,6 +178,7 @@ class Menu
             return '<span id="footer-thankyou">Thanks for using <a target="_blank" rel="nofollow" href="https://wordpress.org/plugins/fluentform">Fluent Forms</a>.</span>';
         });
 
+        wp_enqueue_style('fluentform_global_elements', $app->publicUrl('css/element-ui-css.css'), [], FLUENTFORM_VERSION, 'all');
     }
 
     public function isFluentPages()
@@ -235,8 +236,6 @@ class Menu
         } else if ($page == 'fluent_forms_docs' || $page == 'fluent_forms_smtp') {
             wp_enqueue_style('fluentform_doc_style');
         }
-
-//	    wp_enqueue_script('fluent_all_forms');
     }
 
     /**

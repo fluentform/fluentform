@@ -52,6 +52,7 @@
                         </template>
 
                         <div
+                            style="color: #999;font-size: 12px;line-height: 15px;font-style: italic;"
                             class="primary_field_help_text"
                             v-if="primary_field.help_text"
                         >{{ primary_field.help_text }}</div>
@@ -115,12 +116,3 @@
 
     };
 </script>
-
-<style scoped>
-    .primary_field_help_text {
-        color: #999;
-        font-size: 12px;
-        line-height: 15px;
-        font-style: italic;
-    }
-</style>

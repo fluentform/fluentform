@@ -150,17 +150,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .ff-error {
-        background: #FF9800;
-        color: white;
-        padding: 10px;
-    }
-
-    .ff-success {
-        padding: 10px;
-        background: #4CAF50;
-        color: white;
-    }
-</style>

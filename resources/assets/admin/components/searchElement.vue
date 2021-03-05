@@ -78,14 +78,3 @@ export default {
 </script>
 
 
-<style lang="scss">
-    .search-element {
-        padding: 0;
-        margin: 10px 0;
-
-        input {
-            border: 0 !important;
-            border-radius: 0 !important;
-        }
-    }
-</style>
