@@ -152,7 +152,8 @@
                 }
 
                 this.saving = true;
-                this.$ajax.post('saveGlobalSettings', {
+                FluentFormsGlobal.$post({
+                    action: 'fluentform-global-settings-store',
                     key: 'reCaptcha',
                     reCaptcha: this.reCaptcha
                 }).then(response => {
@@ -178,7 +179,8 @@
             },
             clearSettings() {
                 this.clearing = true;
-                this.$ajax.post('saveGlobalSettings', {
+                FluentFormsGlobal.$post({
+                    action: 'fluentform-global-settings-store',
                     key: 'reCaptcha',
                     reCaptcha: 'clear-settings'
                 }).then(response => {
@@ -205,7 +207,8 @@
                 return ! ! (this.reCaptcha.siteKey && this.reCaptcha.secretKey);
             },
             getReCaptchaSettings() {
-                this.$ajax.get('getGlobalSettings', { 
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-global-settings',
                     key: [
                         '_fluentform_reCaptcha_details', 
                         '_fluentform_reCaptcha_keys_status'

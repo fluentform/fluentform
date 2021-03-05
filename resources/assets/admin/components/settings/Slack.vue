@@ -71,9 +71,10 @@
                 let data = {
                     form_id: this.form_id,
                     meta_key: 'slack',
+                    action: 'fluentform-settings-formSettings'
                 };
 
-                this.$ajax.get('getFormSettings', data)
+                FluentFormsGlobal.$get(data)
                     .then(response => {
                         if (response.data.result[0]) {
                             this.slack = response.data.result[0].value;
@@ -93,10 +94,11 @@
                     form_id: this.form_id,
                     meta_key: 'slack',
                     value: JSON.stringify(this.slack),
-                    id: this.slack.id
+                    id: this.slack.id,
+                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                this.$ajax.post('saveFormSettings', data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.slack.id = response.data.id;
 

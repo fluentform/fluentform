@@ -113,7 +113,8 @@ export default {
     methods: {
         save() {
             this.saving = true;
-            this.$ajax.$post('global_integration_settings', {
+            FluentFormsGlobal.$post({
+                action: 'fluentform_post_global_integration_settings',
                 settings_key: this.settings_key,
                 integration: this.integration
             })
@@ -142,7 +143,8 @@ export default {
         },
         getIntegrationSettings() {
             this.loading = true;
-            this.$ajax.$get('global_integration_settings', {
+            FluentFormsGlobal.$get({
+                action: 'fluentform_get_global_integration_settings',
                 settings_key: this.settings_key
             })
                 .then(response => {

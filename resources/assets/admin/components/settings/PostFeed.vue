@@ -374,11 +374,11 @@
                     meta_key: 'postFeeds',
                     id: this.feed.id,
                     form_id: this.form_id,
-                    value: JSON.stringify(this.feed.value)
+                    value: JSON.stringify(this.feed.value),
+                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                this.$ajax.post('saveFormSettings', feed)
-
+                FluentFormsGlobal.$post(feed)
                     .done(response => {
                         this.feed.id = response.data.id;
                         this.feed.form_id = feed.form_id;

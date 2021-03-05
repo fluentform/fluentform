@@ -1,6 +1,4 @@
 import Vue from 'vue';
-import ajaxCaller from '../ajaxCaller';
-Vue.use(ajaxCaller);
 
 import {
     Button,
