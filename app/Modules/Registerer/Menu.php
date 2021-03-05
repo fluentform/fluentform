@@ -194,7 +194,8 @@ class Menu
 
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-        	'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce')
+        	'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
+	        'ajaxurl' => admin_url('admin-ajax.php')
         ]);
 
         $page = sanitize_text_field($_GET['page']);

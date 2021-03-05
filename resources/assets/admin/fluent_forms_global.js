@@ -1,20 +1,25 @@
 (function ($) {
     class FluentFormsGlobal {
         constructor() {
-            const fluent_forms_global_var = window.fluent_forms_global_var;
+            this.fluent_forms_global_var = window.fluent_forms_global_var;
+            this.url = fluent_forms_global_var.ajaxurl;
 
             $.ajaxSetup({
                 data:{
-                    fluent_forms_admin_nonce: fluent_forms_global_var['fluent_forms_admin_nonce']
+                    fluent_forms_admin_nonce: this.fluent_forms_global_var.fluent_forms_admin_nonce
                 }
             });
         }
 
-        $get(data, url = window.ajaxurl) {
+        $get(data, url = '') {
+            url = url || this.url;
+
             return $.get(url, data);
         }
 
-        $post(data, url = window.ajaxurl) {
+        $post(data, url = '') {
+            url = url || this.url;
+
             return $.post(url, data);
         }
     }
