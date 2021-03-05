@@ -89,7 +89,7 @@
             },
             updateEntry() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_update_entry',
                     form_id: this.form_id,
                     entry_id: this.entry_id,

@@ -135,7 +135,7 @@
                 postFormData: {
                     type: 'post',
                     predefined: 'blank_form',
-                    action: this.$action.createPredefinedForm
+                    action: 'fluentform-predefined-create'
                 },
                 creatingForm: false,
                 // predefinedForms: {},
@@ -211,7 +211,7 @@
                 let data = {
                     type: selectedFormType,
                     predefined: formType,
-                    action: this.$action.createPredefinedForm
+                    action: 'fluentform-predefined-create'
                 };
 
                 if (selectedFormType === 'post') {
@@ -225,7 +225,7 @@
                 this.postTypeSelectionDialogVisibility = true;
             },
             doCreateForm(data) {
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .done((response) => {
                         this.$notify.success({
                             title: 'Congratulations!',

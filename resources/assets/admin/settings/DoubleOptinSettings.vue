@@ -183,7 +183,7 @@
         methods: {
             save() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_save_global_double_optin',
                     settings: this.settings
                 })
@@ -199,7 +199,7 @@
             },
             fetch() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_global_double_optin'
                 })
                     .then(response => {

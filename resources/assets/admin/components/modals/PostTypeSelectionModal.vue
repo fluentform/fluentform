@@ -53,7 +53,7 @@
             if (this.post_types.length) return;
 
             this.loading = true;
-            jQuery.get(ajaxurl, {action: 'fluentform_get_post_types'}).done(res => {
+            FluentFormsGlobal.$get({action: 'fluentform_get_post_types'}).done(res => {
                 this.post_types = res.data.post_types;
             })
                 .fail(res => {

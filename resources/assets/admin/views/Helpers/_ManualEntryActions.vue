@@ -116,7 +116,7 @@
                     entry_id: this.entry_id,
                     verify_condition: this.verify_condition
                 };
-                jQuery.post(window.ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success(response.data.message);
                     })
@@ -147,7 +147,7 @@
                 }
 
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'ffpro_get_integration_feeds',
                     form_id: this.form_id
                 })

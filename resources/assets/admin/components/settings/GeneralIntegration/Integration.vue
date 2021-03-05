@@ -162,7 +162,7 @@
                     form_id: this.form_id
                 };
 
-                jQuery.post(ajaxurl, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success({
                             offset: 30,

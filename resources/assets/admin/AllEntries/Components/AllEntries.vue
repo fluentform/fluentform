@@ -97,7 +97,7 @@
                     this.paginate.current_page = 1;
                 }
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_all_entries',
                     form_id: this.selectedFormId,
                     page: this.paginate.current_page,

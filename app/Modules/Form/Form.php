@@ -85,7 +85,7 @@ class Form
         $forms = $query->paginate();
 
         foreach ($forms['data'] as $form) {
-            $form->preview_url = site_url('?fluentform_pages=1&preview_id=' . $form->id) . '#ff_preview';;
+            $form->preview_url = site_url('?fluent_forms_pages=1&preview_id=' . $form->id) . '#ff_preview';;
             $form->edit_url = $this->getAdminPermalink('editor', $form);
             $form->settings_url = $this->getSettingsUrl($form);
             $form->entries_url = $this->getAdminPermalink('entries', $form);

@@ -63,7 +63,7 @@
         methods: {
             fetchLogs() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform-get-entry-logs',
                     entry_id: this.entry_id,
                     source_type: 'submission_item',

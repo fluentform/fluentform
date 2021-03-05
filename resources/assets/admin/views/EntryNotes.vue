@@ -82,7 +82,7 @@
         methods: {
             fetchNotes() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform-get-entry-notes', 
                     form_id: this.form_id, 
                     entry_id: this.entry_id,
@@ -103,8 +103,8 @@
                     entry_id: this.entry_id,
                     form_id: this.form_id
                 };
-                
-                jQuery.post(ajaxurl, data)
+
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify({
                             title: 'Success',

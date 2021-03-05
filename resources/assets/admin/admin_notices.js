@@ -9,7 +9,7 @@ const ffNoticeApp = {
             
             jQuery('#ff_notice_' + noticeName).remove();
 
-            jQuery.post(ajaxurl, {
+            FluentFormsGlobal.$post({
                 action: 'fluentform_notice_action',
                 notice_name: noticeName,
                 action_type: noticeType
@@ -36,7 +36,7 @@ const ffNoticeApp = {
 
             jQuery('#ff_notice_' + noticeName).remove();
 
-            jQuery.post(ajaxurl, {
+            FluentFormsGlobal.$post({
                 action: 'fluentform_notice_action_track_yes',
                 notice_name: noticeName,
                 email_enabled: emailEnabled
@@ -57,7 +57,7 @@ const ffNoticeApp = {
             e.preventDefault();
             jQuery(this).attr('disabled', true);
             jQuery('.ff_addon_installing').show();
-            jQuery.post(ajaxurl, {
+            FluentFormsGlobal.$post({
                 action: 'fluentform_install_fluentsmtp'
             })
                 .then(function (response) {

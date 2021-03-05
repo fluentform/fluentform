@@ -246,14 +246,13 @@ new Vue({
             }
 
             let data = {
-                action: this.$action.updateForm,
+                action: 'fluentform-form-update',
                 formId: this.form_id,
                 title: this.form.title,
                 formFields: JSON.stringify(formFields)
             };
 
-            jQuery
-                .post(ajaxurl, data)
+            FluentFormsGlobal.$post(data)
                 .done(response => {
                     this.$notify({
                         title: "Success",

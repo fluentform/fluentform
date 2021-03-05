@@ -143,7 +143,7 @@
         methods: {
             getLogs() {
                 this.loading = true;
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_api_logs',
                     page_number: this.page_number,
                     per_page: this.per_page,
@@ -170,7 +170,7 @@
                     logIds.push(item.id);
                 });
 
-                jQuery.post(ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_delete_api_logs_by_ids',
                     log_ids: logIds,
                 })
@@ -195,7 +195,7 @@
                 this.multipleSelection = val;
             },
             getAvailableFilters() {
-                jQuery.get(ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_get_activity_log_filters'
                 })
                     .then(response => {
@@ -219,7 +219,7 @@
             },
             retryNotification(notification) {
                 this.loading = true;
-                jQuery.post(ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_retry_api_action',
                     log_id: notification.id
                 })

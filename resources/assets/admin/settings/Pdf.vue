@@ -63,7 +63,7 @@
         methods: {
             save() {
                 this.saving = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'fluentform_pdf_admin_ajax_actions',
                     route: 'save_global_settings',
                     settings: this.settings
@@ -87,7 +87,7 @@
             },
             getGlobalPdfSettings() {
                 this.loading = true;
-                jQuery.get(window.ajaxurl, {
+                FluentFormsGlobal.$get({
                     action: 'fluentform_pdf_admin_ajax_actions',
                     route: 'get_global_settings'
                 })

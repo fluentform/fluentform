@@ -241,7 +241,7 @@
             },
             updateTransaction() {
                 this.editing = true;
-                jQuery.post(window.ajaxurl, {
+                FluentFormsGlobal.$post({
                     action: 'handle_payment_ajax_endpoint',
                     form_id: this.editingTransaction.form_id,
                     transaction: this.editingTransaction,

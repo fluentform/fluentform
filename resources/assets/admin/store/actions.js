@@ -4,7 +4,7 @@ export default {
             form_id,
             action: 'fluentform-load-editor-shortcodes'
         };
-        jQuery.get(ajaxurl, data)
+        FluentFormsGlobal.$get(data)
             .done(res => {
                 if (res.success)
                     commit('loadEditorShortcodes', res.data.shortcodes);

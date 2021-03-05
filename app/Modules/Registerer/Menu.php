@@ -38,6 +38,14 @@ class Menu
 
         $app = $this->app;
 
+        wp_register_script(
+        	'fluent_forms_global',
+	        $app->publicUrl('js/fluent_forms_global.js'),
+	        array('jquery'),
+	        FLUENTFORM_VERSION,
+	        true
+        );
+
         wp_register_style(
             'fluentform_settings_global',
             $app->publicUrl("css/settings_global.css"),
@@ -179,6 +187,11 @@ class Menu
             return;
         }
 
+        wp_enqueue_script('fluent_forms_global');
+        wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
+        	'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce')
+        ]);
+
         $page = sanitize_text_field($_GET['page']);
 
         if ($page == 'fluent_forms' && isset($_GET['route']) && isset($_GET['form_id'])) {
@@ -209,15 +222,17 @@ class Menu
             wp_enqueue_script('fluentform-transfer-js');
         } else if (
             $page == 'fluent_forms_settings' ||
-            $page == 'fluent_form_payment_entries' ||
+            $page == 'fluent_forms_payment_entries' ||
             $page == 'fluent_forms_all_entries'
         ) {
             wp_enqueue_style('fluentform_settings_global');
-        } else if ($page == 'fluent_form_add_ons') {
+        } else if ($page == 'fluent_forms_add_ons') {
             wp_enqueue_style('fluentform-add-ons');
         } else if ($page == 'fluent_forms_docs' || $page == 'fluent_forms_smtp') {
             wp_enqueue_style('fluentform_doc_style');
         }
+
+//	    wp_enqueue_script('fluent_all_forms');
     }
 
     /**
@@ -321,7 +336,7 @@ class Menu
                     __('Payments', 'fluentform'),
                     __('Payments', 'fluentform'),
                     $settingsCapability,
-                    'fluent_form_payment_entries',
+                    'fluent_forms_payment_entries',
                     array($this, 'renderPaymentEntries')
                 );
             }
@@ -335,7 +350,7 @@ class Menu
             __('Integration Modules', 'fluentform'),
             __('Integration Modules', 'fluentform'),
             $dashBoardCapability,
-            'fluent_form_add_ons',
+            'fluent_forms_add_ons',
             array($this, 'renderAddOns')
         );
 
@@ -744,7 +759,7 @@ class Menu
 
     private function getFormPreviewUrl($form_id)
     {
-        return site_url('?fluentform_pages=1&design_mode=1&preview_id=' . $form_id) . '#ff_preview';
+        return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $form_id) . '#ff_preview';
     }
 
     public function addPreviewButton($formId)
@@ -764,7 +779,7 @@ class Menu
             'fluent_forms',
             'fluent_forms_transfer',
             'fluent_forms_settings',
-            'fluent_form_add_ons',
+            'fluent_forms_add_ons',
             'fluent_forms_docs',
             'fluent_forms_smtp'
         );

@@ -31,10 +31,10 @@
         methods: {
             fetchInputs() {
                 let data = {
-                    action: this.$action.getFormInputs,
+                    action: 'fluentform-form-inputs',
                     formId: this.form_id
                 };
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .done(response => {
                         this.inputs = Object.assign({}, response);
                         this.app_ready = true;
@@ -44,11 +44,11 @@
             },
             fetchAllEditorShortcodes() {
                 let data = {
-                    action: this.$action.getAllEditorShortcodes,
+                    action: 'fluentform-load-all-editor-shortcodes',
                     formId: this.form_id,
                     input_only: true
                 };
-                jQuery.get(ajaxurl, data)
+                FluentFormsGlobal.$get(data)
                     .done(response => {
                         let allShortCodes = response;
                         if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {

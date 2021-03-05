@@ -32,7 +32,7 @@
         methods: {
             fetchSettings() {
                 this.loading = true;
-                jQuery.get(this.field.remote_url, {
+                FluentFormsGlobal.$get(this.field.remote_url, {
                     settings: this.settings
                 })
                       .then(response => {
