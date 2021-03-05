@@ -88,14 +88,16 @@
         },
         methods: {
             getPostSettings() {
-                this.$ajax.get('getPostSettings', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_get_post_settings',
                     form_id: this.form_id
                 }).done(response => {
                     this.post_settings = response.data;
                 });
             },
             fetchPostFeeds() {
-                this.$ajax.get('getFormSettings', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform-settings-formSettings',
                     form_id: this.form_id,
                     meta_key: 'postFeeds',
                     is_multiple: true
@@ -127,7 +129,8 @@
                 this.show_feeds = false;
             },
             deletePostFeed(index, feed) {
-                this.$ajax.delete('removeFormSettings', {
+                FluentFormsGlobal.$post({
+                    action: 'fluentform-settings-formSettings-remove',
                     id: feed.id,
                     form_id: feed.form_id
                 })
@@ -154,9 +157,10 @@
                     form_id: this.form_id,
                     meta_key: 'postFeeds',
                     value: JSON.stringify(feed.value),
+                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                this.$ajax.post('saveFormSettings', data).done(response => {
+                FluentFormsGlobal.$post(data).done(response => {
                     feed.id = response.data.id;
 
                     let handle = feed.value.status ? 'enabled' : 'disabled';

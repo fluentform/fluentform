@@ -309,7 +309,8 @@
         methods: {
             loadIntegrationSettings() {
                 this.loading_app = true;
-                this.$ajax.$get('form_integration_settings', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_get_form_integration_settings',
                     integration_id: this.integration_id,
                     integration_name: this.integration_name,
                     form_id: this.form_id
@@ -336,7 +337,8 @@
             },
             loadMergeFields() {
                 this.loading_list = true;
-                this.$ajax.$get('form_integration_list', {
+                FluentFormsGlobal.$get({
+                    action: 'fluentform_get_form_integration_list',
                     integration_id: this.integration_id,
                     list_id: this.settings.list_id,
                     form_id: this.form_id,
@@ -359,9 +361,10 @@
                     integration_id: this.integration_id,
                     integration_name: this.integration_name,
                     integration: JSON.stringify(this.settings),
-                    data_type: 'stringify'
+                    data_type: 'stringify',
+                    action: 'fluentform_post_form_integration_settings'
                 };
-                this.$ajax.$post('form_integration_settings', data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         if(response.data.created) {
                             this.$router.push({

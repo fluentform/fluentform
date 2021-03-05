@@ -574,10 +574,11 @@ export default {
                 form_id: this.form_id,
                 meta_key: 'notifications',
                 value: JSON.stringify(notification.value),
-                id
+                id,
+                action: 'fluentform-settings-formSettings-store'
             };
 
-            this.$ajax.post('saveFormSettings', data)
+            FluentFormsGlobal.$post(data)
                 .done(response => {
                     notification.id = response.data.id;
 
@@ -594,7 +595,11 @@ export default {
                 });
         },
         remove(index, id) {
-            this.$ajax.delete('removeFormSettings', {id, form_id: this.form_id})
+            FluentFormsGlobal.$post({
+                action: 'fluentform-settings-formSettings-remove',
+                id,
+                form_id: this.form_id
+            })
                 .done(response => {
                     this.notifications.splice(index, 1);
                     this.$notify.success({
@@ -610,10 +615,11 @@ export default {
             let data = {
                 form_id: this.form_id,
                 meta_key: 'notifications',
-                is_multiple: true
+                is_multiple: true,
+                action: 'fluentform-settings-formSettings'
             };
 
-            this.$ajax.get('getFormSettings', data)
+            FluentFormsGlobal.$get(data)
                 .then(response => {
                     this.notifications = response.data.result;
                 })
@@ -646,10 +652,11 @@ export default {
                 form_id: this.form_id,
                 meta_key: 'notifications',
                 value: JSON.stringify(this.selected.value),
-                id
+                id,
+                action: 'fluentform-settings-formSettings-store'
             };
 
-            this.$ajax.post('saveFormSettings', data)
+            FluentFormsGlobal.$post(data)
                 .done(response => {
                     this.selected.id = response.data.id;
 

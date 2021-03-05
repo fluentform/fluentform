@@ -3,8 +3,6 @@ import Vue from 'vue';
 import Vddl from 'vddl';
 
 import store from './store';
-import jQueryActions from './jquery-actions';
-import ajaxCaller from './ajaxCaller';
 import './css/element-variables.scss';
 import {
     Button,
@@ -46,8 +44,6 @@ import FormEditor from './views/FormEditor.vue';
 import {mapActions} from 'vuex';
 
 Vue.use(Vddl);
-Vue.use(jQueryActions);
-Vue.use(ajaxCaller);
 
 Vue.use(Rate);
 Vue.use(Tabs);
