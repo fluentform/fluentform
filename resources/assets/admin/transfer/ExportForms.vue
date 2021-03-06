@@ -59,11 +59,11 @@
             exportForms() {
                 if (this.selected.length) {
                     const data = {
-                        action: this.$action['exportForms'],
+                        action: 'fluentform-export-forms',
                         forms: this.selected,
-                        format: 'json'
+                        format: 'json',
+                        fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                     };
-
                     location.href = ajaxurl + '?' + jQuery.param(data);
                 }
             }

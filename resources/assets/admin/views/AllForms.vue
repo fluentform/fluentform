@@ -378,7 +378,7 @@ export default {
                     type: 'post',
                     title: 'Post Form',
                     predefined: 'blank_form',
-                    action: this.$action.createPredefinedForm
+                    action: 'fluentform-predefined-create'
                 });
             }
         }

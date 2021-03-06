@@ -1,6 +1,6 @@
 <template>
     <div v-loading="loading" class="entriest_chart_wrapper">
-        <subscriber-chart :chart-data="chartData" :maxCumulativeValue="maxCumulativeValue"></subscriber-chart>
+        <subscriber-chart v-if="show_stats" :chart-data="chartData" :maxCumulativeValue="maxCumulativeValue"></subscriber-chart>
     </div>
 </template>
 
@@ -12,25 +12,28 @@
         components: {
             SubscriberChart
         },
-        props: ['form_id'],
+        props: ['form_id', 'date_range'],
         data() {
             return {
                 loading: true,
                 chartData: {},
                 maxCumulativeValue: 0,
-                stats: {
-                    'January' : 20,
-                    'February': 30
-                }
+                stats: {},
+                show_stats: false
+            }
+        },
+        watch: {
+            date_range() {
+                this.fetchData();
             }
         },
         methods: {
             fetchData() {
                 this.loading = true;
-
                 FluentFormsGlobal.$get({
                     action: 'fluentform_get_all_entries_report',
-                    form_id: this.form_id
+                    form_id: this.form_id,
+                    date_range: this.date_range
                 })
                     .then(response => {
                         this.stats = response.data.stats;
@@ -41,6 +44,7 @@
                     })
                     .always(() => {
                         this.loading = false;
+                        this.show_stats = true;
                     });
             },
             setupChartItems() {

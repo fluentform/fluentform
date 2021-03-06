@@ -48,7 +48,12 @@ $component->addIsRenderableFilter();
 $component->registerInputSanitizers();
 
 add_action('wp', function () use ($app) {
-    if (isset($_GET['fluent_forms_pages']) && $_GET['fluent_forms_pages'] == 1) {
+    // @todo: We will remove the fluentform_pages check from April 2021
+    if ((isset($_GET['fluent_forms_pages']) || isset($_GET['fluentform_pages']))) {
+
+        if(empty(isset($_GET['fluent_forms_pages'])) && empty($_GET['fluentform_pages'])) {
+            return;
+        }
 
         add_action('wp_enqueue_scripts', function () use ($app) {
             wp_enqueue_script('jquery');

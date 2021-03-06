@@ -721,7 +721,7 @@
                 let data = {
                     action: 'fluentform-form-entries-export',
                     form_id: this.form_id,
-                    format: format, 
+                    format: format,
                     entry_type: this.entry_type,
                     entries: selectedEntries,
                     sort_by: this.sort_by,
