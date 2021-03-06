@@ -88,6 +88,20 @@ class Entries extends EntryQuery
     {
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
+
+        $ranges = $this->request->get('date_range', []);
+
+        if(!empty($ranges[0])) {
+            $from = $ranges[0];
+        }
+
+        if(!empty($ranges[1])) {
+            $time = strtotime($ranges[1]) + 24 * 60 * 60;
+            $to = date('Y-m-d H:i:s', $time);
+
+        }
+
+
         $period = new \DatePeriod(new \DateTime($from), new \DateInterval('P1D'), new \DateTime($to));
 
         $range = [];
@@ -95,6 +109,7 @@ class Entries extends EntryQuery
         foreach ($period as $date) {
             $range[$date->format('Y-m-d')] = 0;
         }
+
         $itemsQuery = wpFluent()->table('fluentform_submissions')->select([
             wpFluent()->raw('DATE(created_at) AS date'),
             wpFluent()->raw('COUNT(id) AS count'),

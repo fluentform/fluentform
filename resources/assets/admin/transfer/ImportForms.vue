@@ -84,10 +84,12 @@
                     return;
                 }
 
+
                 var data = new FormData();
                 data.append('format', 'json');
                 data.append('file', file);
-                data.append('action', this.$action['importForms']);
+                data.append('action', 'fluentform-import-forms');
+                data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
 
                 jQuery.ajax({
                     url: ajaxurl,
