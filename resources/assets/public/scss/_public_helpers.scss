@@ -191,6 +191,9 @@
       }
     }
   }
+  .ff-t-container .ff-name-title{
+    width: 40%;
+  }
 
   .ff_hide_label .ff-el-input--label {
     display: none;
@@ -273,6 +276,9 @@
 @media only screen and (max-width: 768px) {
   .lity-container {
     width: 96%;
+  }
+  .fluentform .ff-t-container .ff-name-title{
+    width: 100%;
   }
 
 }

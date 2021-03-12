@@ -9,14 +9,14 @@
 
             <inputText v-if="childFields.indexOf('help_message') != -1" :listItem="{type: 'text', label: 'Help Message'}" v-model="field.settings.help_message"></inputText>
 
-            <inputText v-if="childFields.indexOf('maxlength') != -1" :listItem="{type: 'number', label: 'Max text length'}" v-model="field.attributes.maxlength"></inputText>
-
+            <inputText v-if="childFields.indexOf('maxlength') != -1 && field.attributes.maxlength  " :listItem="{type: 'number', label: 'Max text length'}" v-model="field.attributes.maxlength"></inputText>
             <advanced-options
                     class="ff_full_width_child"
-                    v-if="childFields.indexOf('advanced_options') != -1"
+                    v-if="childFields.indexOf('advanced_options') != -1 ||field.settings.advanced_options  != undefined "
                     :editItem="field" :list-item="{ label: 'Options', help_text: 'Provide Field Options'}"
                     :hasCalValue="false"
             ></advanced-options>
+
 
         </el-form>
 
@@ -56,7 +56,8 @@ export default {
         inputPopover,
         validationRules,
         inputDefaultValue,
-        advancedOptions
+        advancedOptions,
+
     },
     computed: {
         ...mapGetters(['editorShortcodes']),
