@@ -66,6 +66,9 @@ class Name extends Select
                 $field['attributes']['id'] = $this->makeElementId($field, $form);
                 $nameTitleClass= "";
                 if($field['attributes']['type'] == 'select'){
+                    if(!defined('FLUENTFORMPRO')){
+                        continue;
+                    }
                     $nameTitleClass=  ' ff-name-title';
     
                     $defaultValues = (array)$this->extractValueFromAttributes($field);
