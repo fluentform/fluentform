@@ -6,6 +6,7 @@ use FluentForm\App\Services\Integrations\IntegrationManager;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Modules\Acl\Acl;
 
 class MailChimpIntegration extends IntegrationManager
 {
@@ -356,6 +357,7 @@ class MailChimpIntegration extends IntegrationManager
 
     public function fetchInterestGroups()
     {
+        Acl::verifyNonce ();
         $settings = $_REQUEST['settings'];
 
         $listId = ArrayHelper::get($settings, 'list_id');
