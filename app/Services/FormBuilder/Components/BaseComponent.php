@@ -219,7 +219,7 @@ class BaseComponent
                 "<div class='%s'><label %s>%s</label> %s</div>",
                 $labelClass,
                 $forStr,
-                $label,
+                __($label,'fluentform'),
                 $labelHelpText
             );
 
