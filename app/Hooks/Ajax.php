@@ -118,6 +118,21 @@ $app->addAdminAjaxAction('fluentform-save-form-custom_css_js', function () {
     (new \FluentForm\App\Modules\Form\Settings\FormCssJs)->saveSettingsAjax();
 });
 
+$app->addAdminAjaxAction('fluentform-save-form-entry_column_view_settings', function () {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->saveVisibleColumnsAjax();
+});
+
+$app->addAdminAjaxAction('fluentform-save-form-entry_column_order_settings', function () {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->saveEntryColumnsOrderAjax();
+});
+
+$app->addAdminAjaxAction('fluentform-reset-form-entry_column_order_settings', function () {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->resetEntryDisplaySettings($formId);
+});
+
 $app->addAdminAjaxAction('fluentform-load-editor-components', function () use ($app) {
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->index();

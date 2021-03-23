@@ -2,7 +2,7 @@ import './helpers';
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Vddl from 'vddl';
 Vue.use(VueRouter);
 
 import {
@@ -37,7 +37,7 @@ import {
     OptionGroup,
     Alert
 } from 'element-ui';
-
+Vue.use(Vddl);
 Vue.use(Form);
 Vue.use(Alert);
 Vue.use(Radio);
