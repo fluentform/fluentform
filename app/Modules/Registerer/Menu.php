@@ -283,6 +283,12 @@ class Menu
             $title = __('Fluent Forms', 'fluentform');
         }
 
+        $menuPriority = 25;
+
+        if(defined('FLUENTCRM')) {
+            $menuPriority = 3;
+        }
+
         add_menu_page(
             $title,
             $title,
@@ -290,7 +296,7 @@ class Menu
             'fluent_forms',
             array($this, 'renderFormAdminRoute'),
             $this->getMenuIcon(),
-            25
+            $menuPriority
         );
 
 
