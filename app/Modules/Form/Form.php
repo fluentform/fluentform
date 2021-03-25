@@ -5,6 +5,7 @@ namespace FluentForm\App\Modules\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Form
 {
@@ -407,6 +408,15 @@ class Form
             $this->model->where('id', $formId)->update([
                 'has_payment' => 0
             ]);
+        }
+
+        $emailInputs = FormFieldsParser::getElement($form, ['input_email'], ['element', 'attributes']);
+        if($emailInputs) {
+            $emailInput = array_shift($emailInputs);
+            $emailInputName = ArrayHelper::get($emailInput, 'attributes.name');
+            $this->updateMeta($formId, '_primary_email_field', $emailInputName);
+        } else {
+            $this->updateMeta($formId, '_primary_email_field', '');
         }
 
         wp_send_json([
