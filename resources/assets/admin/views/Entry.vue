@@ -80,6 +80,9 @@
 
                 <submission_logs  :entry_id="entry_id" />
 
+                <email-resend :form_id="form_id" :entry_id="entry_id" />
+                <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
+
             </el-col>
             <el-col :xs="24" :sm="6" :md="6" :lg="6">
                 <div class="entry_info_box postbox">
@@ -146,8 +149,6 @@
             </el-col>
         </el-row>
 
-        <email-resend :form_id="form_id" :entry_id="entry_id" />
-        <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
         <el-dialog
             title="Edit Entry Data"
             top="42px"
