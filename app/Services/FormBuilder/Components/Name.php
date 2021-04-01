@@ -4,8 +4,9 @@ namespace FluentForm\App\Services\FormBuilder\Components;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Services\FormBuilder\Components\Select;
 
-class Name extends BaseComponent
+class Name extends Select
 {
     /**
      * Compile and echo the html element
@@ -45,7 +46,7 @@ class Name extends BaseComponent
         if ($labelPlacement) {
             $labelPlacementClass = ' ff-el-form-'.$labelPlacement;
         }
-
+       
         foreach ($data['fields'] as $field) {
             if ($field['settings']['visible']) {
                 $fieldName = $field['attributes']['name'];
@@ -63,11 +64,24 @@ class Name extends BaseComponent
                 @$field['settings']['container_class'] .= $labelPlacementClass;
 
                 $field['attributes']['id'] = $this->makeElementId($field, $form);
-
-                $elMarkup = "<input ".$this->buildAttributes($field['attributes']).">";
+                $nameTitleClass= "";
+                if($field['attributes']['type'] == 'select'){
+                    if(!defined('FLUENTFORMPRO')){
+                        continue;
+                    }
+                    $nameTitleClass=  ' ff-name-title';
+    
+                    $defaultValues = (array)$this->extractValueFromAttributes($field);
+                  
+                    $elMarkup = "<select " . $this->buildAttributes($field['attributes']) . ">" . $this->buildOptions($field, $defaultValues) . "</select>";
+    
+                }else{
+                    $elMarkup = "<input ".$this->buildAttributes($field['attributes']).">";
+                    
+                }
 
                 $inputTextMarkup = $this->buildElementMarkup($elMarkup, $field, $form);
-                $html .= "<div class='ff-t-cell'>{$inputTextMarkup}</div>";
+                $html .= "<div class='ff-t-cell {$nameTitleClass}'>{$inputTextMarkup}</div>";
             }
         }
         $html .= "</div>";
