@@ -98,7 +98,7 @@
                     @click="postTypeSelectionDialogVisibility = true"
                 >
                     <span v-if="creatingForm">Creating Form...</span>
-                    <span v-else>New a Post Creation Form</span>
+                    <span v-else>Create a Post Form</span>
                 </el-button>
 
                 <el-button size="mini" @click="close">Cancel</el-button>
