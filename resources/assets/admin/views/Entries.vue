@@ -69,8 +69,57 @@
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+
+
+                <el-dropdown
+
+                        size="mini"
+                        split-button type="default"
+                        class="current_form_name"
+                        :hide-on-click="false"
+                >
+
+                  <span class="el-dropdown-link">
+                        {{$t('Columns')}}
+                  </span>
+                    <el-dropdown-menu slot="dropdown" >
+
+                        <el-dropdown-item
+                                v-for="(column, column_name) in columns"
+                                :key="column_name"
+
+                        >
+                            <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"  v-model="visibleColumns" >
+                                {{ column }}
+                            </el-checkbox>
+
+                        </el-dropdown-item>
+
+                        <el-dropdown-item
+                                key="column_order"
+                                command="column_order"
+                        >
+                            <el-button @click="visibleColReorderModal =true" style="width:100%;"  type="primary" size="mini">
+                                 {{ $t('Reorder Column') }}
+                            </el-button>
+
+                        </el-dropdown-item>
+
+                    </el-dropdown-menu>
+                </el-dropdown>
+
             </div>
         </div>
+
+        <el-dialog   :visible.sync="visibleColReorderModal" :title=" $t('Change Column Display Order') " >
+            <ColumnDragAndDrop
+                    :columns="columns"
+                    :columns_order ="columnsOrder"
+                    :form_id="form_id"
+                    :visible_columns="visibleColumns" >
+
+            </ColumnDragAndDrop>
+        </el-dialog>
 
         <el-alert
                 v-if="autoDeleteStatus"
@@ -239,7 +288,8 @@
                 </el-table-column>
 
                 <el-table-column
-                        v-for="(column, column_name) in columns"
+                        v-for="(column, column_name) in formattedColumn"
+                        v-if="visibleColumns.includes(column_name)"
                         :label="column"
                         :show-overflow-tooltip="isCompact"
                         min-width="200"
@@ -344,13 +394,15 @@
     import moment from 'moment';
     import each from 'lodash/each';
     import EmailResend from './Helpers/_ResentEmailNotification'
+    import ColumnDragAndDrop from "./ColumnDragAndDrop";
 
     export default {
         name: 'FormEntries',
         props: ['form_id', 'has_pdf'],
         components: {
             remove,
-            EmailResend
+            EmailResend,
+            ColumnDragAndDrop
         },
         watch: {
             search_string() {
@@ -428,7 +480,10 @@
                 },
                 show_favorites: 'no',
                 available_pdf: null,
-                pdf_dropdown: null
+                pdf_dropdown: null,
+                visibleColReorderModal: false,
+                visibleColumns: null,
+                columnsOrder: null,
             }
         },
         computed: {
@@ -469,6 +524,19 @@
                     selectedEntries.push(element.id);
                 });
                 return selectedEntries;
+            },
+            formattedColumn(){
+                // if null, display order is not set now set default column data
+                if( this.columnsOrder === null){
+                    return this.columns;
+                }
+                // if column display order is set
+                let columns = this.columnsOrder;
+                let array = {};
+                each(columns, (key, index) => {
+                    array[key.value] = key.label;
+                });
+                return array;
             }
         },
         methods: {
@@ -525,12 +593,17 @@
                         this.entries = response.data.submissions.data;
                         this.paginate = response.data.submissions.paginate;
                         this.columns = response.data.labels;
+
+                        this.visibleColumns = response.data.visible_columns ;
+                        this.columnsOrder = response.data.columns_order ;
+
                         this.resetUrlParams();
                     })
                     .fail((error) => {
 
                     })
                     .always(() => {
+                        this.getVisibleColumns();
                         this.loading = false;
                     });
             },
@@ -758,7 +831,26 @@
                     return 'Offline';
                 }
                 return status;
-            }
+            },
+            handleColumnChange(){
+                let data = {
+                    action : 'fluentform-save-form-entry_column_view_settings',
+                    form_id : this.form_id,
+                    visible_columns : JSON.stringify(this.visibleColumns)
+                };
+                FluentFormsGlobal.$post(data)
+                    .then(response => {
+                    })
+                    .fail(error => {
+                        console.log(error);
+                    });
+            },
+            getVisibleColumns(){
+                if(this.visibleColumns === null){
+                    //visibleColumns is not set initially so set all columns to visible
+                    this.visibleColumns = Object.keys(this.columns);
+                }
+            },
         },
         mounted() {
             this.getData();
