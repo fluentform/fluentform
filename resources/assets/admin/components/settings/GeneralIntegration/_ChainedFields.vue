@@ -52,9 +52,9 @@
         methods: {
             fetchSettings() {
                 this.loading = true;
-                FluentFormsGlobal.$get(this.field.remote_url, {
+                FluentFormsGlobal.$get( {
                     settings: this.settings
-                })
+                },this.field.remote_url)
                 .then(response => {
                     this.categories = response.data.categories;
                     this.subcategories = response.data.subcategories;
