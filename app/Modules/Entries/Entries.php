@@ -278,10 +278,15 @@ class Entries extends EntryQuery
                 'fluentform_all_entry_labels_with_payment', $entries['formLabels'], false, $form
             );
         }
-
+        $formId          = $this->request->get ( 'form_id' );
+        $visible_columns = Helper::getFormMeta ( $formId, '_visible_columns', NULL );
+        $columns_order   = Helper::getFormMeta ($formId,'_columns_order',NULL);
+        
         wp_send_json_success([
             'submissions' => apply_filters('fluentform_all_entries', $entries['submissions']),
-            'labels'      => $labels
+            'labels'      => $labels,
+            'visible_columns' =>  $visible_columns,
+            'columns_order' => $columns_order
         ], 200);
     }
 

@@ -610,3 +610,19 @@ table.ff_routing_table tr {
 .ninja_css_errors .ace_gutter-cell.ace_warning {
     display: none;
 }
+.ff-vddl-col_options_wrap {
+    div.vddl-column-list {
+        display: flex;
+        align-items: center;
+    }
+    .vddl-column-name {
+        margin-bottom: 5px;
+    }
+    .handle {
+        cursor: move;
+        width: 25px;
+        height: 16px;
+        background: url("../assets/handle.png") center center no-repeat;
+        background-size: 20px 20px;
+    }
+}
