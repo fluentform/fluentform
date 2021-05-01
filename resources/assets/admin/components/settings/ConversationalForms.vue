@@ -19,21 +19,25 @@
                         @click="saveSettings">
                     {{saving ? 'Saving' : 'Save'}} Settings
                 </el-button>
-                <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="share_url" class="el-button pull-right el-button--danger el-button--mini">
-                    <span class="dashicons dashicons-share"></span>
+                <a v-show="share_url && settings.status == 'yes'"
+                   style="margin-right: 10px"
+                   target="_blank"
+                   rel="noopener"
+                   :href="share_url"
+                   class="el-button pull-right el-button--danger el-button--mini"
+                >
+                    <i class="dashicons dashicons-share"/>
                 </a>
             </el-col>
         </el-row>
 
         <div v-if="settings" class="ff_landing_settings_wrapper">
             <el-form ref="form" :model="settings" label-width="205px" label-position="right">
-
                 <el-checkbox v-model="settings.status" true-label="yes" false-label="no">
                     Enable Conversational Form Mode
                 </el-checkbox>
 
                 <div v-if="settings.status == 'yes'" class="ff_conversational_page_items">
-
                     <field-mapper
                             v-for="field in settings_fields"
                             :field="field"
@@ -158,7 +162,6 @@
         mounted() {
             this.getFields();
             this.fetchSettings();
-
         }
     };
 </script>
