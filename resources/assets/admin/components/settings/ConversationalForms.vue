@@ -4,7 +4,7 @@
             <el-col :md="16">
                 <h2>Conversational Form</h2>
                 <p>
-                    Create interactive conversional form using one question at a time approach to boost form completion.
+                    Create interactive conversational form using one question at a time approach to boost form completion.
                 </p>
             </el-col>
 
@@ -19,6 +19,9 @@
                         @click="saveSettings">
                     {{saving ? 'Saving' : 'Save'}} Settings
                 </el-button>
+                <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="share_url" class="el-button pull-right el-button--danger el-button--mini">
+                    <span class="dashicons dashicons-share"></span>
+                </a>
             </el-col>
         </el-row>
 
@@ -26,11 +29,25 @@
             <el-form ref="form" :model="settings" label-width="205px" label-position="right">
 
                 <el-checkbox v-model="settings.status" true-label="yes" false-label="no">
-                    Enable Form Landing Page Mode
+                    Enable Conversational Form Mode
                 </el-checkbox>
 
                 <div v-if="settings.status == 'yes'" class="ff_conversational_page_items">
-                    Conversational Form Customizations Goes Here...
+
+                    <field-mapper
+                            v-for="field in settings_fields"
+                            :field="field"
+                            :editorShortcodes="editorShortcodes"
+                            :errors="errors"
+                            :key="field.key"
+                            v-model="settings[field.key]"
+                    >
+                    </field-mapper>
+
+                    <el-form-item v-if="share_url && settings.status == 'yes'" label="Page URL">
+                        <input class="el-input__inner" readonly type="text" :value="share_url" />
+                    </el-form-item>
+
                     <el-form-item>
                         <el-button
                                 :loading="saving"
@@ -51,22 +68,26 @@
 </template>
 
 <script type="text/babel">
-    // import WpEditor from '../../../common/_wp_editor';
-    // import PhotoUploader from '../../../common/PhotoUploader';
-
+    import PhotoUploader from '../../../common/PhotoUploader';
+    import FieldMapper from "./GeneralIntegration/FieldMapper";
     export default {
         name: 'landing_pages',
         components: {
-            // WpEditor,
-            // PhotoUploader
+            PhotoUploader,
+            FieldMapper
         },
         data() {
             return {
-                loading: false,
-                saving: false,
-                settings: false,
-                form_id: window.FluentFormApp.form_id,
-                error_text: '',
+                settings_fields : [],
+                editorShortcodes : [],
+                errors : new Errors(),
+                loading : false,
+                saving : false,
+                settings : false,
+                form_id : window.FluentFormApp.form_id,
+                error_text : '',
+                share_url : '',
+
             }
         },
         methods: {
@@ -97,7 +118,7 @@
             },
             fetchSettings() {
                 this.loading = true;
-                
+
                 let data = {
                     action: 'ff_get_conversational_form_settings',
                     form_id: this.form_id
@@ -117,10 +138,27 @@
                     .always(() => {
                         this.loading = false;
                     });
-            }
+            },
+            getFields() {
+                this.loading = true;
+                FluentFormsGlobal.$get({
+                       action: 'ff_get_conversational_form_fields',
+                     })
+                    .then(response => {
+                        this.settings_fields = response.data.settings_fields;
+                    })
+                    .fail((error) => {
+                        console.log(error);
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    });
+            },
         },
         mounted() {
+            this.getFields();
             this.fetchSettings();
+
         }
     };
 </script>
