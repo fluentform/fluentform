@@ -32,9 +32,9 @@
         methods: {
             fetchSettings() {
                 this.loading = true;
-                FluentFormsGlobal.$get(this.field.remote_url, {
+                FluentFormsGlobal.$get( {
                     settings: this.settings
-                })
+                },this.field.remote_url)
                       .then(response => {
                           let dataOptions = response.data;
                           each(dataOptions, (data, dataKey) => {
