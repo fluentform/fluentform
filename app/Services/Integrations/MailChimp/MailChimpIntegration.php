@@ -155,6 +155,7 @@ class MailChimpIntegration extends IntegrationManager
             'markAsVIP'         => false,
             'fieldEmailAddress' => '',
             'doubleOptIn'       => false,
+            'resubscribe'       => false,
             'note'              => ''
         ];
 
@@ -240,6 +241,14 @@ class MailChimpIntegration extends IntegrationManager
                     'tips'            => 'When the double opt-in option is enabled,<br />Mailchimp will send a confirmation email<br />to the user and will only add them to your <br /Mailchimp list upon confirmation.',
                     'component'       => 'checkbox-single',
                     'checkbox_label' => 'Enable Double Opt-in'
+                ],
+                [
+                    'key' => 'resubscribe',
+                    'require_list' => true,
+                    'label' => 'ReSubscribe',
+                    'tips' => 'When this option is enabled, if the subscriber is in an inactive state or<br />has previously been unsubscribed, they will be re-added to the active list.<br />Therefore, this option should be used with caution and only when appropriate.',
+                    'component' => 'checkbox-single',
+                    'checkbox_label' => 'Enable ReSubscription'
                 ],
                 [
                     'key'             => 'markAsVIP',
