@@ -5,9 +5,9 @@
         <div class="address-field-option" v-for="field, i in editItem.fields">
             <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
 
-            <el-checkbox v-model="field.settings.visible">{{ field.settings.label }}</el-checkbox>
+            <el-checkbox v-model="field.settings.visible"  :disabled="field.settings.disabled === true" >{{ field.settings.label }}</el-checkbox>
 
-            <fieldOptionSettings class="address-field-option__settings" :field="field"></fieldOptionSettings>
+            <fieldOptionSettings class="address-field-option__settings" :field="field"  v-if="field.settings.disabled != true" ></fieldOptionSettings>
         </div>
     </div>
 </template>
