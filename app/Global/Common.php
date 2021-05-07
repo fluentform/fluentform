@@ -172,6 +172,9 @@ if (!function_exists('fluentImplodeRecursive')) {
 
 function fluentform_get_active_theme_slug()
 {
+    if(defined('TEMPLATELY_FILE')) {
+        return 'templately';
+    }
     return get_option('template');
 }
 
