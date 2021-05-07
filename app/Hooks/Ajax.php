@@ -130,7 +130,7 @@ $app->addAdminAjaxAction('fluentform-save-form-entry_column_order_settings', fun
 
 $app->addAdminAjaxAction('fluentform-reset-form-entry_column_order_settings', function () {
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->resetEntryDisplaySettings($formId);
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->resetEntryDisplaySettings();
 });
 
 $app->addAdminAjaxAction('fluentform-load-editor-components', function () use ($app) {

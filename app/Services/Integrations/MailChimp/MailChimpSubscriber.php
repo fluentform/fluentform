@@ -131,6 +131,10 @@ trait MailChimpSubscriber
         $isNew = true;
         if (!empty($existingMember['id'])) {
             $isNew = false;
+            if(ArrayHelper::isTrue($feedData, 'resubscribe')){
+                //for resubscribing unsubscribed contact ; status = subscribed || pending
+                $arguments['status'] = $status;
+            }
             // We have members so we can merge the values
             if (apply_filters('fluentform_mailchimp_keep_existing_interests', true, $form->id)) {
                 $arguments['interests'] = ArrayHelper::get($existingMember, 'interests', []);
