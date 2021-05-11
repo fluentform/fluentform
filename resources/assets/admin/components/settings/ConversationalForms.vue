@@ -75,7 +75,7 @@
     import PhotoUploader from '../../../common/PhotoUploader';
     import FieldMapper from "./GeneralIntegration/FieldMapper";
     export default {
-        name: 'landing_pages',
+        name: 'ConversationalForms',
         components: {
             PhotoUploader,
             FieldMapper
