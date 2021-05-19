@@ -246,10 +246,9 @@ class BaseComponent
     protected function getLabelHelpMessage($data)
     {
         if (isset($data['settings']['help_message']) && $data['settings']['help_message'] != '') {
+        	$text = htmlspecialchars($data['settings']['help_message']);
             $icon = '<svg width="16" height="16" viewBox="0 0 25 25"><path d="m329 393l0-46c0-2-1-4-2-6-2-2-4-3-7-3l-27 0 0-146c0-3-1-5-3-7-2-1-4-2-7-2l-91 0c-3 0-5 1-7 2-1 2-2 4-2 7l0 46c0 2 1 5 2 6 2 2 4 3 7 3l27 0 0 91-27 0c-3 0-5 1-7 3-1 2-2 4-2 6l0 46c0 3 1 5 2 7 2 1 4 2 7 2l128 0c3 0 5-1 7-2 1-2 2-4 2-7z m-36-256l0-46c0-2-1-4-3-6-2-2-4-3-7-3l-54 0c-3 0-5 1-7 3-2 2-3 4-3 6l0 46c0 3 1 5 3 7 2 1 4 2 7 2l54 0c3 0 5-1 7-2 2-2 3-4 3-7z m182 119c0 40-9 77-29 110-20 34-46 60-80 80-33 20-70 29-110 29-40 0-77-9-110-29-34-20-60-46-80-80-20-33-29-70-29-110 0-40 9-77 29-110 20-34 46-60 80-80 33-20 70-29 110-29 40 0 77 9 110 29 34 20 60 46 80 80 20 33 29 70 29 110z" transform="scale(0.046875 0.046875)"></path></svg>';
-            return "<div class='ff-el-tooltip' data-content='{$data['settings']['help_message']}'>
-                {$icon}
-            </div>";
+            return sprintf( '<div class="ff-el-tooltip" data-content="%s">%s</div>', $text, $icon );
         }
     }
 
