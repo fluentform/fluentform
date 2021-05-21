@@ -40,7 +40,7 @@ class RoleManager
 
     public function setRoles() {
         if(current_user_can('manage_options')) {
-            $capability = isset($_REQUEST['capability']) ? $_REQUEST['capability'] : [];
+            $capability = isset($_REQUEST['capability']) ? wp_unslash($_REQUEST['capability']) : [];
 
             foreach ($capability as $item) {
             	if (strtolower($item) == 'subscriber') {

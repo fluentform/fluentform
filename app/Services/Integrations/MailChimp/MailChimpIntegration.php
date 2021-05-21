@@ -365,7 +365,7 @@ class MailChimpIntegration extends IntegrationManager
 
     public function fetchInterestGroups()
     {
-        $settings = $_REQUEST['settings'];
+	    $settings = wp_unslash($this->app->request->get('settings'));
 
         $listId = ArrayHelper::get($settings, 'list_id');
         if(!$listId) {

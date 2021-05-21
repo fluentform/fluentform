@@ -47,16 +47,16 @@ class FormCssJs
                 add_action('wp_head', function () use ($css, $formId, $cssId) {
                     ?>
 
-<style id="<?php echo $cssId; ?>" type="text/css">
-    <?php echo $css; ?>
+<style id="<?php echo esc_attr($cssId); ?>" type="text/css">
+    <?php echo $this->escCss($css); ?>
 </style>
                     <?php
                 }, 10);
             } else {
                 ?>
 
-    <style id="<?php echo $cssId; ?>" type="text/css">
-        <?php echo $css; ?>
+    <style id="<?php echo esc_attr($cssId); ?>" type="text/css">
+        <?php echo $this->escCss($css); ?>
     </style>
                 <?php
             }
@@ -107,10 +107,12 @@ class FormCssJs
     {
         $formId = absint($_REQUEST['form_id']);
 
-        $css = $_REQUEST['custom_css'];
-        $js = $_REQUEST['custom_js'];
-        $css = wp_strip_all_tags(wp_unslash($css));
-        $js = wp_unslash($js);
+        $css = wp_strip_all_tags(wp_unslash($_REQUEST['custom_css']));
+        $js = wp_unslash($_REQUEST['custom_js']);
+
+        if (preg_match('#</?\w+#', $css)) {
+	        $css = '';
+        }
 
         $this->store($formId, '_custom_form_css', $css);
         $this->store($formId, '_custom_form_js', $js);
@@ -118,6 +120,11 @@ class FormCssJs
         wp_send_json_success([
             'message' => __('Custom CSS and JS successfully updated', 'fluentform')
         ], 200);
+    }
+
+	protected function escCss($css)
+	{
+        return preg_match('#</?\w+#', $css) ? '' : $css;
     }
 
 
