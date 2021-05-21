@@ -237,7 +237,9 @@ class FormBuilder
                     $innerItem['attributes']['name'] = $rootName . '[' . $itemName . ']';
                 } else {
                     if ($item['element'] == 'input_repeat' || $item['element'] == 'repeater_field') {
-                        if(!empty($innerItem['settings']['validation_rules']['email'])) {
+	                   
+	                    
+                        if(empty($innerItem['settings']['validation_rules']['email'])) {
                             unset($innerItem['settings']['validation_rules']['email']);
                         }
                         $innerItem['attributes']['name'] = $rootName . '[' . $key . ']';
