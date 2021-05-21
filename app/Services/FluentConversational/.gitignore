@@ -1,0 +1,8 @@
+/.idea
+.DS_Store
+/node_modules
+/src/storage/logs/error.log
+/src/vendor
+/src/public
+/.phpintel
+/public

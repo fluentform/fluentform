@@ -1,0 +1,26 @@
+{
+    "scripts": {
+        "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch-poll": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --watch-poll --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "hots": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --https --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "dependencies": {
+        "vue": "^2.6.11",
+        "vue-textarea-autosize": "^1.1.1",
+        "vue-the-mask": "^0.11.1"
+    },
+    "devDependencies": {
+        "babel-plugin-component": "^1.1.1",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-polyfill": "^6.26.0",
+        "babel-preset-env": "^1.7.0",
+        "cross-env": "^7.0.2",
+        "laravel-mix": "^5.0.4",
+        "less": "^3.12.2",
+        "less-loader": "^6.2.0",
+        "vue-template-compiler": "^2.6.12"
+    }
+}
