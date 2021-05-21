@@ -116,13 +116,13 @@ class GlobalIntegrationManager
 
     public function updateNotificationStatus()
     {
-        $formId = $this->app->request->get('form_id');
-        $notificationId = $this->app->request->get('notification_id');
-        $status = $_REQUEST['status'];
+        $formId = intval($this->app->request->get('form_id'));
+        $notificationId = intval($this->app->request->get('notification_id'));
+        $status = sanitize_key($this->app->request->get('status'));
 
         $feed = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', intval($formId))
-            ->where('id', intval($notificationId))
+            ->where('form_id', $formId)
+            ->where('id', $notificationId)
             ->first();
 
         $notification = json_decode($feed->value, true);
@@ -135,15 +135,15 @@ class GlobalIntegrationManager
         }
 
         wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', intval($formId))
-            ->where('id', intval($notificationId))
+            ->where('form_id', $formId)
+            ->where('id', $notificationId)
             ->update([
                 'value' => json_encode($notification, JSON_NUMERIC_CHECK)
             ]);
 
         $feed = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', intval($formId))
-            ->where('id', intval($notificationId))
+            ->where('form_id', $formId)
+            ->where('id', $notificationId)
             ->first();
 
 
