@@ -16,20 +16,21 @@ $defaultElements = array(
                 'label_placement' => 'top'
             ),
             'fields' => array(
-                'title' => array(
-                    'attributes' => array(
-                    ),
-                    'settings' => array(
-                        'disabled' => true,
-                        'container_class' => '', 'label' => __('Title (Requires Fluent Forms Pro)', 'fluentform'),
-                        'visible' => false,
-                        'validation_rules' => array(),
-                        'calc_value_status' => false,
-                    ),
-                    'editor_options' => array(
-                        'template' => 'inputText'
-                    ),
-                ),
+//                'title' => array(
+//                    'attributes' => array(
+//                    ),
+//                    'settings' => array(
+//                        'disabled' => false,
+//                        'container_class' => '',
+//                        'label' => __('Title', 'fluentform'),
+//                        'visible' => false,
+//                        'validation_rules' => array(),
+//                        'calc_value_status' => false,
+//                    ),
+//                    'editor_options' => array(
+//                        'template' => 'inputText'
+//                    ),
+//                ),
                 'first_name' => array(
                     'element' => 'input_text',
                     'attributes' => array(

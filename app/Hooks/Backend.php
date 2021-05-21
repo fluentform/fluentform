@@ -210,7 +210,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['max_selection'] = '';
             }
 
-            if($upgradeElement == 'select' || $upgradeElement = 'select_country' && !isset($element['settings']['enable_select_2'])) {
+            if(($upgradeElement == 'select' || $upgradeElement = 'select_country') && !isset($element['settings']['enable_select_2'])) {
                 $element['settings']['enable_select_2'] = 'no';
             }
 
