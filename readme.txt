@@ -1,4 +1,4 @@
-=== Contact Form Plugin - WP Fluent Forms - Fastest Contact Form Builder Plugin for WordPress ===
+=== Contact Form Plugin - Fastest Contact Form Builder Plugin for WordPress by Fluent Forms ===
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
@@ -18,7 +18,7 @@ The Fastest and Best Contact Form Builder Plugin for WordPress. Drag and drop fo
 
 [youtube https://www.youtube.com/watch?v=FFR2ZZaVF3g]
 
-[Demo](https://wpfluentforms.com/contact-form-demo/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Youtube Video Tutorials](https://www.youtube.com/watch?v=JJ0fBWMW174&list=PLXpD0vT4thWEu4gAkLE0Eq7PRCFp_8j2z) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
+[Demo](https://fluentforms.com/forms/) | [User Guide](https://wpmanageninja.com/docs/fluent-form/) | [Get Support](https://wpmanageninja.com/support-tickets/) | [Youtube Video Tutorials](https://www.youtube.com/watch?v=JJ0fBWMW174&list=PLXpD0vT4thWEu4gAkLE0Eq7PRCFp_8j2z) | [Official Facebook Community](https://www.facebook.com/groups/fluentforms/)
 
 Fluent Forms helps you create hassle-free contact forms, subscription forms, or any kind of WP Forms you need for your website in minutes.
 
@@ -329,6 +329,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 * Includes Licenses txt files
 * Fix smart filter UI saving
 * Added Column Re-order and show and hide data for form entries
+* Added ReSubscribe option for MailChimp
 
 = 3.6.70 (Date: Mar 09, 2021) =
 * Fix Form Scheduling
