@@ -13,6 +13,8 @@
 </template>
 
 <script type="text/babel">
+    import Clipboard from "clipboard";
+
     export default {
         name: 'settings_app',
         data() {
@@ -81,6 +83,13 @@
             });
 
             jQuery('head title').text('Settings & Integrations - Fluent Forms');
+            (new Clipboard('.copy')).on('success', (e) => {
+                this.$message({
+                                  message: 'Copied to Clipboard!',
+                                  type: 'success',
+                                  offset: 40
+                              });
+            });
 
         }
     }
