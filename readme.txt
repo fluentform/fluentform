@@ -323,7 +323,12 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 == Changelog ==
 
 = 3.6.71 (Date: May 21, 2021) =
-* Fixes vulnerabilities
+* Fixes Sanitize Data and Escaping on render for custom CSS and JS
+* Sub-Page Slug URL escaping issue fixed
+* MailChimp Data Sanitization Fixed
+* Includes Licenses txt files
+* Fix smart filter UI saving
+* Added Column Re-order and show and hide data for form entries
 
 = 3.6.70 (Date: Mar 09, 2021) =
 * Fix Form Scheduling
