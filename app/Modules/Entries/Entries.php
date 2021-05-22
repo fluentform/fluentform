@@ -296,7 +296,7 @@ class Entries extends EntryQuery
 
         $entryId = intval($this->request->get('entry_id'));
 
-        $entry_type = sanitize_text_field($this->request->get('entry_type', 'all'));
+        $entry_type = sanitize_key($this->request->get('entry_type', 'all'));
 
         if ($entry_type === 'favorite') {
             $this->is_favourite = true;

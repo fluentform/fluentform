@@ -437,6 +437,11 @@ class Menu
 
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
 
+        if (!$form) {
+            echo __("<h2>No form found</h2>", 'fluentform');
+            return;
+        }
+
         $formAdminMenus = array(
             'editor' => array(
                 'slug' => 'editor',
@@ -460,15 +465,10 @@ class Menu
 
         $formAdminMenus = apply_filters('fluentform_form_admin_menu', $formAdminMenus, $form_id, $form);
 
-        $form = wpFluent()->table('fluentform_forms')->find($form_id);
-
-        if (!$form) {
-            echo __("<h2>No form found</h2>", 'fluentform');
-            return;
-        }
+        $route = sanitize_key($_GET['route']);
 
         View::render('admin.form.form_wrapper', array(
-            'route' => sanitize_text_field($_GET['route']),
+            'route' => $route,
             'form_id' => $form_id,
             'form' => $form,
             'menu_items' => $formAdminMenus
@@ -531,7 +531,7 @@ class Menu
 
         $settingsMenus = array_filter(array_merge($settingsMenus, $externalMenuItems));
 
-        $currentRoute = sanitize_text_field($this->app->request->get('sub_route', ''));
+        $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
 
         View::render('admin.form.settings_wrapper', array(
             'form_id' => $form_id,
@@ -735,6 +735,8 @@ class Menu
         $currentComponent = apply_filters('fluentform_global_settings_current_component',
             $this->app->request->get('component', 'settings')
         );
+
+        $currentComponent = sanitize_key($currentComponent);
 
         $components = apply_filters('fluentform_global_settings_components', []);
 

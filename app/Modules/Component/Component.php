@@ -319,7 +319,7 @@ class Component
                 } else if ($atts['status'] == 'favourites') {
                     $countQuery = $countQuery->where('is_favourite', '=', 1);
                 } else {
-                    $countQuery = $countQuery->where('status', '=', sanitize_text_field($atts['status']));
+                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
                 }
 
                 $total = $countQuery->count();
@@ -368,13 +368,13 @@ class Component
                 } else if ($atts['status'] == 'favourites') {
                     $countQuery = $countQuery->where('is_favourite', '=', 1);
                 } else {
-                    $countQuery = $countQuery->where('status', '=', sanitize_text_field($atts['status']));
+                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
                 }
 
                 if ($atts['payment_status'] == 'all') {
                     // ...
                 } else if ($atts['payment_status']) {
-                    $countQuery = $countQuery->where('payment_status', '=', sanitize_text_field($atts['payment_status']));
+                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
                 }
 
                 $row = $countQuery->first();

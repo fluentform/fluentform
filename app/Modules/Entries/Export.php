@@ -51,7 +51,7 @@ class Export
             exit('No Form Found');
         }
 
-        $type = sanitize_text_field($this->request->get('format', 'csv'));
+        $type = sanitize_key($this->request->get('format', 'csv'));
         if (!in_array($type, ['csv', 'ods', 'xlsx', 'json'])) {
             exit('Invalid requested format');
         }

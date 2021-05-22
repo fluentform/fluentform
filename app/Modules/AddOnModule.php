@@ -34,13 +34,13 @@ class AddOnModule
         $current_menu_item = 'fluentform_add_ons';
 
         if (isset($_GET['sub_page']) && $_GET['sub_page']) {
-            $current_menu_item = sanitize_text_field($_GET['sub_page']);
+            $current_menu_item = sanitize_key($_GET['sub_page']);
         }
 
         return View::make('admin.addons.index', [
             'menus'             => $extraMenus,
             'base_url'          => admin_url('admin.php?page=fluent_forms_add_ons'),
-            'current_menu_item' => sanitize_key($current_menu_item)
+            'current_menu_item' => $current_menu_item
         ]);
     }
 
