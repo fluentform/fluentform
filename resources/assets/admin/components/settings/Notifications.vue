@@ -195,7 +195,7 @@
                               :disabled="!has_pro"></FilterFields>
             </el-form-item>
 
-            <el-form-item v-if="attachmentFields.length">
+            <el-form-item v-if="attachmentFields.length && selected.value.attachments">
                 <template slot="label">
                     Email Attachments
                     <el-tooltip class="item" placement="bottom-start" effect="light">
@@ -211,12 +211,14 @@
 
                 <el-checkbox-group v-model="selected.value.attachments">
                     <el-checkbox v-for="attachmentField in attachmentFields" :key="attachmentField.attributes.name"
-                                 :label="attachmentField.attributes.name">{{ attachmentField.admin_label }}
+                                 :value="attachmentField.attributes.name"
+                                 :label="attachmentField.admin_label">
                     </el-checkbox>
                 </el-checkbox-group>
 
-                <p v-if="selected.value.attachments && selected.value.attachments.length">You should use SMTP so send
-                    attachment via email otherwise, It may go to spam</p>
+                <p v-if="selected.value.attachments && selected.value.attachments.length">
+                    You should use SMTP so send attachment via email otherwise, It may go to spam
+                </p>
             </el-form-item>
 
             <el-form-item v-if="pdf_feeds.length">
@@ -539,24 +541,24 @@ export default {
             this.selectedIndex = index + 1;
         },
         edit(index) {
-            this.selectedIndex = index;
-
             let notification = this.notifications[index];
-
             if (!notification.value || !notification.value.name || !notification.value.sendTo) {
                 this.selected = _ff.cloneDeep(this.mock);
+                this.selectedIndex = index;
                 return;
             }
 
-            if (!notification.value.attachments) {
-                notification.value.attachments = [];
-            }
-
-            if (!notification.value.pdf_attachments) {
-                notification.value.pdf_attachments = [];
-            }
-
             this.selected = notification;
+
+            if (!this.selected.value.attachments) {
+                this.$set(this.selected.value, 'attachments', []);
+            }
+
+            if (!this.selected.value.pdf_attachments) {
+                this.$set(this.selected.value, 'pdf_attachments', []);
+            }
+
+            this.selectedIndex = index;
         },
         discard() {
             this.selected = null;
