@@ -237,18 +237,20 @@ jQuery(document).ready(function () {
                                     })
                                         .html(res.data.result.message)
                                         .insertAfter($theForm);
-                                    // Scroll to success msg if not in viewport
-                                    var successMsg = $('#'+formId + '_success');
-                                    if (successMsg.length && !isElementInViewport(successMsg[0])) {
-                                        $('html, body').delay(animDuration).animate({
-                                            scrollTop: successMsg.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
-                                        }, animDuration);
-                                    }
+                                   
 
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
                                     if (res.data.result.action == 'hide_form') {
                                         $theForm.hide().addClass('ff_force_hide');
+                                        // Scroll to success msg if not in viewport
+                                        var successMsg = $('#'+formId + '_success');
+                                        if (successMsg.length && !isElementInViewport(successMsg[0])) {
+                                            console.log('not in view port')
+                                            $('html, body').delay(350).animate({
+                                               scrollTop: successMsg.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
+                                           }, 350);
+                                        }
                                     } else {
                                         $theForm[0].reset();
                                     }
