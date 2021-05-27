@@ -113,8 +113,6 @@ jQuery(document).ready(function () {
 
                         validate($inputs);
 
-                        return false;
-
                         var formData = {
                             data: $inputs.serialize(),
                             action: 'fluentform_submit',
@@ -853,7 +851,6 @@ jQuery(document).ready(function () {
                  * @throws Error
                  */
                 this.validate = function (elements, rules) {
-                    console.log(rules);
                     var self = this, isValid = true, el, elName;
                     elements.each(function (index, element) {
                         el = $(element);
