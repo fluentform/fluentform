@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 5.7
+Tested up to: 5.7.2
 Requires PHP: 5.6
-Stable tag: 3.6.71
+Stable tag: 3.6.72
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -322,7 +322,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 3.6.71 (Date: May 21, 2021) =
+= 3.6.72 (Date: May 22, 2021) =
 * Fixes Sanitize Data and Escaping on render for custom CSS and JS
 * Sub-Page Slug URL escaping issue fixed
 * MailChimp Data Sanitization Fixed

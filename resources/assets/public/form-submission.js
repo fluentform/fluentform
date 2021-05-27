@@ -1103,9 +1103,7 @@ jQuery(document).ready(function () {
             fluentFormCommonActions.init();
         });
 
-        $(window).on('load', function () {
-            fluentFormCommonActions.init();
-        });
+        fluentFormCommonActions.init();
 
     })(window.fluentFormVars, jQuery);
 });
