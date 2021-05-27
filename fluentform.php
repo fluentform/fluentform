@@ -2,9 +2,9 @@
 /*
 Plugin Name: Fluent Forms
 Description: Contact Form By Fluent Forms is the advanced Contact form plugin with drag and drop, multi column supported form builder plugin
-Version: 3.6.72
+Version: 3.6.73
 Author: Contact Form - WPManageNinja LLC
-Author URI: https://wpfluentforms.com
+Author URI: https://fluentforms.com
 Plugin URI: https://wpmanageninja.com/wp-fluent-form/
 License: GPLv2 or later
 Text Domain: fluentform
@@ -16,7 +16,7 @@ defined('ABSPATH') or die;
 defined('FLUENTFORM') or define('FLUENTFORM', true);
 define('FLUENTFORM_DIR_PATH', plugin_dir_path(__FILE__));
 
-defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '3.6.72');
+defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '3.6.73');
 
 if (!defined('FLUENTFORM_HAS_NIA')) {
     define('FLUENTFORM_HAS_NIA', true);
