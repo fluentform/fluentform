@@ -32,7 +32,7 @@
         </el-row>
 
         <div v-if="settings" class="ff_landing_settings_wrapper">
-            <el-form ref="form" :model="settings" label-width="205px" label-position="right">
+            <el-form ref="form" :model="settings" label-width="205px" label-position="left">
                 <el-checkbox v-model="settings.status" true-label="yes" false-label="no">
                     Enable Conversational Form Mode
                 </el-checkbox>
@@ -49,7 +49,10 @@
                     </field-mapper>
 
                     <el-form-item v-if="share_url && settings.status == 'yes'" label="Page URL">
-                        <input class="el-input__inner" readonly type="text" :value="share_url" />
+                        <el-input readonly v-model="share_url">
+                            <el-button :data-clipboard-text="share_url" class="copy" title="Click to Copy" slot="append" ><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i></el-button>
+                        </el-input>
+
                     </el-form-item>
 
                     <el-form-item>
@@ -74,6 +77,8 @@
 <script type="text/babel">
     import PhotoUploader from '../../../common/PhotoUploader';
     import FieldMapper from "./GeneralIntegration/FieldMapper";
+    import Clipboard from "clipboard";
+
     export default {
         name: 'ConversationalForms',
         components: {
@@ -162,6 +167,13 @@
         mounted() {
             this.getFields();
             this.fetchSettings();
+            (new Clipboard('.copy')).on('success', (e) => {
+                this.$message({
+                                  message: 'Copied to Clipboard!',
+                                  type: 'success',
+                                  offset: 40
+                              });
+            });
         }
     };
 </script>
