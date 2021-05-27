@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.7.2
 Requires PHP: 5.6
-Stable tag: 3.6.72
+Stable tag: 3.6.73
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -321,6 +321,10 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 3.6.73 (Date: May 27, 2021) =
+* Hot Fix: Form hide issue fixed after submission
+* A big update is coming soon
 
 = 3.6.72 (Date: May 22, 2021) =
 * Fixes Sanitize Data and Escaping on render for custom CSS and JS
