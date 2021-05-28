@@ -50,7 +50,7 @@
     </div>
 
     <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <template v-if="haveSettings(advancedEditOptions)">
+        <template v-if="editItem.style_pref">
             <h5 @click="toggleFieldsSection('layoutOptions')"
                 :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
                 class="option-fields-section--title">
@@ -262,7 +262,10 @@ export default {
                 'calculation_settings',
                 'prefix_label',
                 'suffix_label',
-                'numeric_formatter'
+                'numeric_formatter',
+                'layout_class',
+                'container_class',
+                'class'
             ];
             console.log(key);
             return unsupportedSettings.indexOf(key) === -1;
