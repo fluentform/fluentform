@@ -26,12 +26,14 @@
                 <li :class="editorInserterTab == 'general' ? 'active' : ''">
                     <a href="#" @click.prevent="changeEditorInserterTab('general')">General</a>
                 </li>
-                <li :class="editorInserterTab == 'advanced' ? 'active' : ''">
-                    <a href="#" @click.prevent="changeEditorInserterTab('advanced')">Advanced</a>
-                </li>
-                <li :class="editorInserterTab == 'container' ? 'active' : ''">
-                    <a href="#" @click.prevent="changeEditorInserterTab('container')">Container</a>
-                </li>
+                <template v-if="!is_conversion_form">
+                    <li :class="editorInserterTab == 'advanced' ? 'active' : ''">
+                        <a href="#" @click.prevent="changeEditorInserterTab('advanced')">Advanced</a>
+                    </li>
+                    <li :class="editorInserterTab == 'container' ? 'active' : ''">
+                        <a href="#" @click.prevent="changeEditorInserterTab('container')">Container</a>
+                    </li>
+                </template>
             </ul>
 
             <div class="editor-inserter__contents">

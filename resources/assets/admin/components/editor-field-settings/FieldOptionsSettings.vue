@@ -9,9 +9,9 @@
 
         <transition name="slide-fade">
             <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section--content">
-                <template v-for="(listItem, key, i) in generalEditOptions"
-                          v-if="elementOptions.includes(key) && dependancyPass(listItem)">
+                <template v-for="(listItem, key, i) in generalEditOptions">
                     <component
+                        v-if="willShow(key, listItem)"
                         :is="guessElTemplate(listItem)"
                         v-model="vModelFinder(key)[key]"
                         :editItem="editItem"
@@ -34,9 +34,9 @@
 
             <transition name="slide-fade">
                 <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section--content">
-                    <template v-for="listItem, key, i in advancedEditOptions">
+                    <template v-for="(listItem, key, i) in advancedEditOptions">
                         <component
-                            v-if="elementOptions.includes(key) && dependancyPass(listItem)"
+                            v-if="willShow(key, listItem)"
                             :is="guessElTemplate(listItem)"
                             v-model="vModelFinder(key)[key]"
                             :form_items="form_items"
@@ -48,6 +48,23 @@
             </transition>
         </template>
     </div>
+
+    <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+        <template v-if="haveSettings(advancedEditOptions)">
+            <h5 @click="toggleFieldsSection('layoutOptions')"
+                :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
+                class="option-fields-section--title">
+                Layout Settings
+            </h5>
+
+            <transition name="slide-fade">
+                <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section--content">
+                    <conversion-style-pref :pref="editItem.style_pref" />
+                </div>
+            </transition>
+        </template>
+    </div>
+
 </el-form>
 </template>
 
@@ -89,6 +106,7 @@ import paymentMethodsConfig from './templates/paymentMethodsConfig.vue';
 import targetProduct from './templates/targetProduct.vue';
 import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
+import ConversionStylePref from "./conversion-templates/ConversionStylePref";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -134,7 +152,8 @@ export default {
         ff_paymentMethodsConfig: paymentMethodsConfig,
         ff_targetProduct: targetProduct,
         ff_inputYesNoCheckBox: inputYesNoCheckBox,
-        ff_fieldsRepeatSettings: fieldsRepeatSettings
+        ff_fieldsRepeatSettings: fieldsRepeatSettings,
+        ConversionStylePref
     },
     data() {
         return {
@@ -232,6 +251,21 @@ export default {
                 return false;
             }
             return true;
+        },
+        willShow(key, listItem) {
+            return this.elementOptions.includes(key) && this.dependancyPass(listItem) && this.conversionPass(listItem, key);
+        },
+        conversionPass(listItem, key) {
+            let unsupportedSettings = [
+                'conditional_logics',
+                'label_placement',
+                'calculation_settings',
+                'prefix_label',
+                'suffix_label',
+                'numeric_formatter'
+            ];
+            console.log(key);
+            return unsupportedSettings.indexOf(key) === -1;
         }
     },
 };

@@ -135,7 +135,6 @@
 
 <script type="text/babel">
     import elLabel from '../../includes/el-label.vue'
-    import each from 'lodash/each';
     import PhotoWidget from '../../../../common/PhotoUploader'
 
     export default {

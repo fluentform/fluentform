@@ -2,7 +2,7 @@
     <div class="ff_photo_card" :class="'ff_photo_' + design_mode_name">
         <div v-if="app_ready" class="wpf_photo_holder">
             <img style="max-width: 100%" v-if="image_url" :src="image_url"/>
-            <div @click="initUploader" class="photo_widget_btn"><span class="dashicons dashicons-upload"></span></div>
+            <div @click="initUploader" class="photo_widget_btn"><span class="dashicons dashicons-cloud-upload"></span></div>
             <div @click="image_url = ''" v-if="enable_clear_name == 'yes' && image_url" class="photo_widget_btn_clear"><span
                     class="dashicons dashicons-trash"></span></div>
         </div>

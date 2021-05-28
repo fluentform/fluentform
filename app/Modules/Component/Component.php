@@ -137,13 +137,14 @@ class Component
      */
     public function index()
     {
-        $this->app->doAction(
-            'fluent_editor_init',
-            $components = $this->app->make('components')
-        );
+        $formId = intval($_REQUEST['formId']);
+        $components = $this->app->make('components');
+
+        $this->app->doAction( 'fluent_editor_init', $components );
 
         $editorComponents = $components->sort()->toArray();
-        $editorComponents = $this->app->applyFilters('fluent_editor_components', $editorComponents);
+        $editorComponents = apply_filters('fluent_editor_components', $editorComponents, $formId);
+
         $countries = $this->app->load($this->app->appPath('Services/FormBuilder/CountryNames.php'));
 
         wp_send_json_success(array(

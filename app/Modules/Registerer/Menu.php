@@ -710,6 +710,7 @@ class Menu
             'all_forms_url' => admin_url('admin.php?page=fluent_forms'),
             'has_payment_features' => !defined('FLUENTFORMPRO'),
             'upgrade_url' => fluentform_upgrade_url(),
+            'is_conversion_form' => Helper::getFormMeta($formId, 'is_conversion_form') == 'yes'
         )));
     }
 
