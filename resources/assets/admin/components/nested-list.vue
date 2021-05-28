@@ -64,6 +64,17 @@
 </template>
 
 <script type="text/babel">
-    import NestedHandler from "./NestedHandler";
-    export default NestedHandler;
+    import NestedHandler from "./NestedHandler.js";
+    export default {
+        name: 'list',
+        props: NestedHandler.props,
+        components: NestedHandler.components,
+        data() {
+            return {
+                showRemoveElConfirm: false,
+                removeElIndex: null,
+            }
+        },
+        methods: NestedHandler.methods
+    };
 </script>

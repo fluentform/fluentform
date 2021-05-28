@@ -1,3 +1,4 @@
+$editorBg: #fafafa;
 .ff_conv_section_wrapper {
   display: flex;
   flex-direction: row;
@@ -12,6 +13,7 @@
       display: none !important;
     }
     .ff_conv_input {
+      padding-left: 30px;
       width: 100%;
       display: block;
     }
@@ -19,22 +21,80 @@
 
   .ff_conv_input {
     width: 100%;
-    padding: 30px 20px 30px 0;
+    padding: 30px 20px 30px 30px;
   }
 
   .ff_conv_media_preview {
     width: 100%;
-    text-align: center;
     img {
       max-width: 100%;
       max-height: 300px;
     }
   }
+
+  &.ff_conv_layout_media_right {
+    .ff_conv_media_preview {
+      text-align: center;
+    }
+  }
+
+  &.ff_conv_layout_media_left {
+    flex-direction: row-reverse;
+    .ff_conv_media_preview {
+      text-align: center;
+    }
+    .ff_conv_input {
+      width: 100%;
+      padding: 30px 0 30px 30px;
+    }
+  }
+
+  &.ff_conv_layout_media_right_full {
+    .ff_conv_media_preview {
+      margin: -10px -10px -10px 0px;
+    }
+    img {
+      display: block;
+      margin: 0px auto;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 50%;
+    }
+  }
+
+  &.ff_conv_layout_media_left_full {
+    flex-direction: row-reverse;
+    .ff_conv_media_preview {
+      margin: -10px 0px -10px -10px;
+    }
+    .ff_conv_input {
+      width: 100%;
+      padding: 30px 0 30px 30px;
+    }
+    img {
+      display: block;
+      margin: 0px auto;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 50%;
+    }
+  }
 }
 
 .ff_conv_section {
-  padding-bottom: 30px;
+  color: rgb(38, 38, 39);
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.06) 0px 2px 12px;
+  animation: 1s cubic-bezier(0.22, 1, 0.36, 1) 0s 1 normal none running expand;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: transparent;
+  margin-bottom: 20px;
 }
+
 .ff_iconed_radios {
   > label {
     border: 1px solid rgb(115, 115, 115);
@@ -65,5 +125,12 @@
         display: block;
       }
     }
+  }
+}
+
+.ff_conversion_editor {
+  background: $editorBg;
+  .form-editor--body, .form-editor__body-content, .panel__body--list {
+    background-color: $editorBg !important;
   }
 }

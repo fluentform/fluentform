@@ -40,9 +40,20 @@
 </template>
 
 <script type="text/babel">
-import NestedHandler from './NestedHandler';
+import NestedHandler from './NestedHandler.js';
 import StylePrefPreview from './editor-field-settings/conversion-templates/StylePrefPreview';
 NestedHandler.components['style-pref-preview'] = StylePrefPreview;
 
-export default NestedHandler;
+export default {
+    name: 'NestedListConversion',
+    props: NestedHandler.props,
+    components: NestedHandler.components,
+    data() {
+        return {
+            showRemoveElConfirm: false,
+            removeElIndex: null,
+        }
+    },
+    methods: NestedHandler.methods
+};
 </script>

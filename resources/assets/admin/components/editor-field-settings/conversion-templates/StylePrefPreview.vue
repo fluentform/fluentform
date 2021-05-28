@@ -1,6 +1,10 @@
 <template>
     <div class="ff_conv_media_preview">
-        <img :src="pref.media" />
+        <div class="fcc_block_media_attachment" :class="'fc_i_layout_' + pref.layout">
+            <picture class="fc_image_holder">
+                <img :src="pref.media" />
+            </picture>
+        </div>
     </div>
 </template>
 

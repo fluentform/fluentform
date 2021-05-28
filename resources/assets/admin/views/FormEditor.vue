@@ -450,7 +450,7 @@
 <script type="text/babel">
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import Clipboard from 'clipboard';
-import list from '../components/nested-list.vue';
+import List from '../components/nested-list.vue';
 import ListConversion from '../components/nested-list-conversion.vue';
 import recaptcha from '../components/modals/Recaptcha.vue';
 import searchElement from '../components/searchElement.vue';
@@ -468,7 +468,7 @@ export default {
         'form_saving'
     ],
     components: {
-        list,
+        List,
         ListConversion,
         recaptcha,
         RenameForm,
