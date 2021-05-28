@@ -17,6 +17,17 @@
                 <el-label slot="label" label="Media Brightness" helpText="Brightness of your selected media"></el-label>
                 <el-slider :min="-100" input-size="mini" :max="100" v-model="pref.brightness" show-input></el-slider>
             </el-form-item>
+            <template v-if="pref.layout == 'media_right_full' || pref.layout == 'media_left_full'">
+                <el-form-item>
+                    <el-label slot="label" label="Media Horizontal Position" helpText="Horizontal (X) Position of the media"></el-label>
+                    <el-slider :min="0" input-size="mini" :max="100" v-model="pref.media_x_position" show-input></el-slider>
+                </el-form-item>
+                <el-form-item>
+                    <el-label slot="label" label="Media Vertical Position" helpText="Vertical (Y) Position of the media"></el-label>
+                    <el-slider :min="0" input-size="mini" :max="100" v-model="pref.media_y_position" show-input></el-slider>
+                </el-form-item>
+            </template>
+
             <el-form-item>
                 <el-label slot="label" label="Media Alt Text" helpText="Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend"></el-label>
                 <el-input type="textarea" v-model="pref.alt_text" show-input></el-input>
