@@ -256,6 +256,9 @@ export default {
             return this.elementOptions.includes(key) && this.dependancyPass(listItem) && this.conversionPass(listItem, key);
         },
         conversionPass(listItem, key) {
+            if(!this.is_conversion_form) {
+                return true;
+            }
             let unsupportedSettings = [
                 'conditional_logics',
                 'label_placement',

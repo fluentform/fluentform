@@ -8,8 +8,7 @@ $editorBg: #fafafa;
   flex-basis: 50%;
 
   &.ff_conv_layout_default {
-    padding: 30px 0;
-
+    padding: 10px 0;
     .ff_conv_media_preview {
       display: none !important;
     }
@@ -22,7 +21,7 @@ $editorBg: #fafafa;
 
   .ff_conv_input {
     width: 100%;
-    padding: 30px 20px 30px 30px;
+    padding: 0 20px 0 30px;
 
     label.el-form-item__label {
       font-size: 18px;
@@ -31,6 +30,7 @@ $editorBg: #fafafa;
 
     display: flex;
     flex-direction: column-reverse;
+
     .help-text {
       margin-bottom: 8px;
       font-style: normal !important;
@@ -118,13 +118,16 @@ $editorBg: #fafafa;
   background-color: transparent;
   margin-bottom: 20px;
   cursor: pointer;
+
   .hover-action-middle {
     align-items: flex-start;
     justify-content: flex-end;
   }
+
   .panel__body--item {
     border-radius: 10px;
   }
+
   .panel__body--item.selected {
     background: white;
     box-shadow: 0 0 5px 1px #409eff;
@@ -170,4 +173,29 @@ $editorBg: #fafafa;
   .form-editor--body, .form-editor__body-content, .panel__body--list {
     background-color: $editorBg !important;
   }
+
+  .ffc_btn_wrapper {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    .fcc_btn_help {
+      padding-left: 15px;
+    }
+  }
+
+  .welcome_screen {
+    &.text-center {
+      .ffc_btn_wrapper {
+        justify-content: center;
+      }
+    }
+
+    &.text-right {
+      .ffc_btn_wrapper {
+        justify-content: flex-end;
+      }
+    }
+  }
+
 }

@@ -19,6 +19,7 @@ import customHTML from './templates/customHTML.vue'
 import inputHidden from './templates/inputHidden.vue'
 import buttonSubmit from './templates/buttonSubmit.vue'
 import sectionBreak from './templates/sectionBreak.vue'
+import welcomeScreen from './templates/welcomeScreen.vue'
 import repeatFields from './templates/repeatFields.vue'
 import selectCountry from './templates/selectCountry.vue'
 import inputTextarea from './templates/inputTextarea.vue'
@@ -67,6 +68,7 @@ export default {
         ff_buttonSubmit: buttonSubmit,
         ff_repeatFields: repeatFields,
         ff_sectionBreak: sectionBreak,
+        ff_welcomeScreen: welcomeScreen,
         ff_selectCountry: selectCountry,
         ff_inputTextarea: inputTextarea,
         ff_addressFields: addressFields,
