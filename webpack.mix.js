@@ -41,7 +41,7 @@ mix
     .js('resources/assets/admin/admin_notices.js', `public/js/admin_notices.js`)
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
-    .js('resources/assets/admin/conversational_design.js', `public/js/conversational_design.js`)
+    .js('resources/assets/admin/conversion_templates/conversational_design.js', `public/js/conversational_design.js`)
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)
@@ -56,6 +56,7 @@ mix
     .sass('resources/assets/preview/preview.scss', `public/css/preview.css`)
     .sass('resources/assets/public/scss/choices.scss', `public/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `public/css/fluent-forms-elementor-widget.css`)
+    .sass('resources/assets/admin/conversion_templates/design_css.scss', `public/css/conversational_design.css`)
 
     .less('resources/assets/admin/styles/index.less', `public/css/fluent-forms-admin.css`, {
         lessOptions: {
