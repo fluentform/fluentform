@@ -41,7 +41,7 @@
 
 <script type="text/babel">
 import NestedHandler from './NestedHandler.js';
-import StylePrefPreview from './editor-field-settings/conversion-templates/StylePrefPreview';
+import StylePrefPreview from '../conversion_templates/StylePrefPreview';
 NestedHandler.components['style-pref-preview'] = StylePrefPreview;
 
 export default {

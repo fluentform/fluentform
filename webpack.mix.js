@@ -41,6 +41,7 @@ mix
     .js('resources/assets/admin/admin_notices.js', `public/js/admin_notices.js`)
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
+    .js('resources/assets/admin/conversational_design.js', `public/js/conversational_design.js`)
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)

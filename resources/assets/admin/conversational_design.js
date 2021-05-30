@@ -1,5 +1,4 @@
 import './helpers';
-
 import Vue from 'vue';
 
 import {
@@ -61,7 +60,7 @@ import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 
-import AllForms from './views/AllForms.vue';
+import DesignSkeleton from './conversion_templates/Parts/Skeleton.vue';
 
 Vue.mixin({
     methods: {
@@ -80,15 +79,15 @@ Vue.mixin({
 });
 
 new Vue({
-    el: '#ff_all_forms_app',
-    components: {
-        'ff_all_forms_table': AllForms
-    },
+    el: '#ff_conversation_form_design_app',
     data: {},
+    components: {
+        DesignSkeleton: DesignSkeleton
+    },
     beforeCreate() {
         this.$on('change-title', (module) => {
             jQuery('title').text(`${module} - FluentForm`);
         });
-        this.$emit('change-title', 'All Forms');
+        this.$emit('change-title', 'Conversational Form Design');
     }
 });

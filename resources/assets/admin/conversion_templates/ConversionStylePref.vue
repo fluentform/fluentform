@@ -37,8 +37,8 @@
 </template>
 
 <script type="text/babel">
-import elLabel from '../../includes/el-label.vue'
-import PhotoWidget from '../../../../common/PhotoUploader';
+import elLabel from '../components/includes/el-label.vue'
+import PhotoWidget from '../../common/PhotoUploader';
 
 export default {
     name: 'ConversionStylePref',
