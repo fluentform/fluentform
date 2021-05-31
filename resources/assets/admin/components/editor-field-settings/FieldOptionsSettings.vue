@@ -106,7 +106,7 @@ import paymentMethodsConfig from './templates/paymentMethodsConfig.vue';
 import targetProduct from './templates/targetProduct.vue';
 import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
-import ConversionStylePref from "./conversion-templates/ConversionStylePref";
+import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -260,7 +260,7 @@ export default {
                 return true;
             }
             let unsupportedSettings = [
-                'conditional_logics',
+                // 'conditional_logics',
                 'label_placement',
                 'calculation_settings',
                 'prefix_label',
@@ -270,7 +270,6 @@ export default {
                 'container_class',
                 'class'
             ];
-            console.log(key);
             return unsupportedSettings.indexOf(key) === -1;
         }
     },

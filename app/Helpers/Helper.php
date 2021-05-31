@@ -500,6 +500,16 @@ class Helper
         }
 
         return $names;
+    }
 
+    public static function isConversionForm($formId)
+    {
+        static $cache = [];
+        if(isset($cache[$formId])) {
+            return $cache[$formId];
+        }
+
+        $cache[$formId] = self::getFormMeta($formId, 'is_conversion_form') == 'yes';
+        return $cache[$formId];
     }
 }

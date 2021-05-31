@@ -1,67 +1,40 @@
-import './helpers';
-
+import '../helpers';
 import Vue from 'vue';
 
 import {
+    ColorPicker,
+    Form,
+    Input,
     Row,
     Col,
-    Button,
-    ButtonGroup,
-    Input,
-    Dialog,
-    Form,
     FormItem,
-    Select,
-    Option,
-    RadioGroup,
-    Radio,
-    Popover,
-    Tooltip,
+    Slider,
+    Button,
     Loading,
     Message,
     Notification,
-    Table,
-    TableColumn,
-    Tag,
-    Pagination,
-    Dropdown,
-    DropdownMenu,
-    DropdownItem
 } from 'element-ui';
 
-Vue.use(ButtonGroup);
+Vue.use(Form);
+Vue.use(Input);
 Vue.use(Row);
 Vue.use(Col);
-Vue.use(Table);
-Vue.use(Tag);
-Vue.use(Pagination);
-Vue.use(Dropdown);
-Vue.use(DropdownMenu);
-Vue.use(DropdownItem);
-Vue.use(TableColumn);
-Vue.use(Tooltip);
-Vue.use(Popover);
-Vue.use(RadioGroup);
-Vue.use(Radio);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(Form);
 Vue.use(FormItem);
-Vue.use(Dialog);
-Vue.use(Input);
+Vue.use(ColorPicker);
+Vue.use(Slider);
 Vue.use(Button);
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message
+Vue.prototype.$message = Message;
 
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 
-import AllForms from './views/AllForms.vue';
+import DesignSkeleton from './Parts/Skeleton.vue';
 
 Vue.mixin({
     methods: {
@@ -80,15 +53,15 @@ Vue.mixin({
 });
 
 new Vue({
-    el: '#ff_all_forms_app',
-    components: {
-        'ff_all_forms_table': AllForms
-    },
+    el: '#ff_conversation_form_design_app',
     data: {},
+    components: {
+        DesignSkeleton: DesignSkeleton
+    },
     beforeCreate() {
         this.$on('change-title', (module) => {
             jQuery('title').text(`${module} - FluentForm`);
         });
-        this.$emit('change-title', 'All Forms');
+        this.$emit('change-title', 'Conversational Form Design');
     }
 });

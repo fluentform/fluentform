@@ -112,7 +112,6 @@ Vue.mixin({
 import Slack from './components/settings/Slack.vue';
 import Zapier from './components/settings/Zapier.vue';
 import LandingPages from './components/settings/LandingPages.vue';
-import ConversationalForms from './components/settings/ConversationalForms.vue';
 import PostFeeds from './components/settings/PostFeeds.vue';
 import BasicSettings from './components/settings/FormSettings.vue';
 import Confirmations from './components/settings/Confirmations.vue';
@@ -188,11 +187,6 @@ const routes = [
         path: '/landing_pages',
         name: 'landing_pages',
         component: LandingPages
-    },
-    {
-        path: '/conversational_forms',
-        name: 'conversational_forms',
-        component: ConversationalForms
     }
 ];
 

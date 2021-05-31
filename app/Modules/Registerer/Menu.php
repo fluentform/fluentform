@@ -434,8 +434,12 @@ class Menu
     private function renderFormInnerPages()
     {
         $form_id = intval($_GET['form_id']);
-
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
+
+        if (!$form) {
+            echo __("<h2>No form found</h2>", 'fluentform');
+            return;
+        }
 
         $formAdminMenus = array(
             'editor' => array(
@@ -459,13 +463,6 @@ class Menu
         );
 
         $formAdminMenus = apply_filters('fluentform_form_admin_menu', $formAdminMenus, $form_id, $form);
-
-        $form = wpFluent()->table('fluentform_forms')->find($form_id);
-
-        if (!$form) {
-            echo __("<h2>No form found</h2>", 'fluentform');
-            return;
-        }
 
         View::render('admin.form.form_wrapper', array(
             'route' => sanitize_text_field($_GET['route']),
@@ -710,7 +707,7 @@ class Menu
             'all_forms_url' => admin_url('admin.php?page=fluent_forms'),
             'has_payment_features' => !defined('FLUENTFORMPRO'),
             'upgrade_url' => fluentform_upgrade_url(),
-            'is_conversion_form' => Helper::getFormMeta($formId, 'is_conversion_form') == 'yes'
+            'is_conversion_form' => Helper::isConversionForm($formId)
         )));
     }
 
@@ -770,17 +767,30 @@ class Menu
 
     private function getFormPreviewUrl($form_id)
     {
+        if(Helper::isConversionForm($form_id)) {
+            return site_url('?fluent_forms_conversational_form=1&form_id='.$form_id);
+        }
         return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $form_id) . '#ff_preview';
     }
 
     public function addPreviewButton($formId)
     {
-        echo '<a target="_blank" class="el-button el-button--small" href="' . $this->getFormPreviewUrl($formId) . '">Preview & Design</a>';
+        $previewText = __('Preview & Design', 'fluent-form');
+        $previewUrl = $this->getFormPreviewUrl($formId);
+        if(Helper::isConversionForm($formId)) {
+            $previewText = 'Preview';
+        }
+
+        echo '<a target="_blank" class="el-button el-button--small" href="' . $previewUrl . '">'.$previewText.'</a>';
     }
 
     public function addCopyShortcodeButton($formId)
     {
-        echo '<button style="background:#dedede;color:#545454;padding:5px;" title="Click to Copy" class="btn copy" data-clipboard-text=\'[fluentform id="' . $formId . '"]\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> [fluentform id="' . $formId . '"]</button>';
+        $shortcode = '[fluentform id="' . $formId . '"]';
+        if(Helper::isConversionForm($formId)) {
+            $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
+        }
+        echo '<button style="background:#dedede;color:#545454;padding:5px;max-width: 200px;overflow: hidden;" title="Click to Copy" class="btn copy" data-clipboard-text=\''.$shortcode.'\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> '.$shortcode.'</button>';
         return;
     }
 
