@@ -25,11 +25,17 @@
             <h3>Form Messages</h3>
             <el-row :gutter="30">
                 <el-col :span="12">
+                    <el-form-item label="Continue Button Text">
+                        <el-input v-model="meta_settings.i18n.continue" type="text" placeholder="EG: Continue" />
+                    </el-form-item>
                     <el-form-item label="Skip Button Text">
                         <el-input v-model="meta_settings.i18n.skip_btn" type="text" placeholder="Skip Button Text" />
                     </el-form-item>
                     <el-form-item label="Keyboard instruction to go to next question">
                         <el-input v-model="meta_settings.i18n.keyboard_instruction" type="text" placeholder="EG: press Enter ↵" />
+                    </el-form-item>
+                    <el-form-item label="Hint for making a line break in Textarea">
+                        <el-input v-model="meta_settings.i18n.long_text_help" type="text" placeholder="EG: Shift ⇧ + Enter ↵ to make a line break" />
                     </el-form-item>
                     <el-form-item label="Hint for multiple selection">
                         <el-input v-model="meta_settings.i18n.multi_select_hint" type="text" placeholder="EG: Choose as many as you like" />
