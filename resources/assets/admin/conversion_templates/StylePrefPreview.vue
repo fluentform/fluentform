@@ -1,6 +1,6 @@
 <template>
     <div class="ff_conv_media_preview">
-        <div :style="{ filter:  brightness}" class="fcc_block_media_attachment" :class="'fc_i_layout_' + pref.layout">
+        <div :style="{ filter:  brightness }" class="fcc_block_media_attachment" :class="'fc_i_layout_' + pref.layout">
             <picture class="fc_image_holder">
                 <img :style="{ 'object-position': imagePositionCSS }" :src="pref.media" />
             </picture>

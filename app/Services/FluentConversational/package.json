@@ -10,7 +10,8 @@
     "dependencies": {
         "vue": "^2.6.11",
         "vue-textarea-autosize": "^1.1.1",
-        "vue-the-mask": "^0.11.1"
+        "vue-the-mask": "^0.11.1",
+        "whatwg-fetch": "^3.6.2"
     },
     "devDependencies": {
         "babel-plugin-component": "^1.1.1",
