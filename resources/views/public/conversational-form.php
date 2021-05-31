@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo esc_html($meta['title']); ?></title>
     <meta name="description" content="<?php echo strip_tags($meta['description']) ?>">
+    <?php wp_site_icon(); ?>
     <style id="ffc_generated_css" type="text/css">
         <?php echo $generated_css; ?>
     </style>

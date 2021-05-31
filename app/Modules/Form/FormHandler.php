@@ -346,7 +346,7 @@ class FormHandler
         }
 
         if ($errors) {
-            wp_send_json(['errors' => $errors], 422);
+            wp_send_json(['errors' => $errors], 423);
         }
 
         return true;
