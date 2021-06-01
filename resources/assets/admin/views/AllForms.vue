@@ -8,7 +8,6 @@
                 </div>
 
                 <el-dropdown
-                    v-if="has_post_feature"
                     split-button
                     size="small"
                     type="primary"
@@ -21,7 +20,11 @@
 
                     <!-- The split dropdown for creating predefined forms easily -->
                     <el-dropdown-menu slot="dropdown" style="top:25px !important;">
+                        <el-dropdown-item :command="{ key: 'conversational', form: { title: 'Conversational Form', type: 'blank_conversational' }}">
+                            Create Conversational Form
+                        </el-dropdown-item>
                         <el-dropdown-item
+                            v-if="has_post_feature"
                             :key="key"
                             :command="{key, form}"
                             v-for="(form, key) in predefinedDropDownForms"
@@ -30,10 +33,6 @@
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-                <el-button @click="showAddFormModal = true" size="small"
-                           type="primary" v-else> {{ $t('Add a New Form') }}
-                </el-button>
-
             </el-col>
 
             <el-col :sm="12">
@@ -226,7 +225,7 @@ export default {
             loading: true,
             items: [],
             predefinedForms: {},
-            predefinedDropDownForms: {},
+            predefinedDropDownForms: false,
             categories: [],
             search_string: '',
             selectAll: 0,
