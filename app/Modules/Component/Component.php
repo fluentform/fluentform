@@ -279,10 +279,12 @@ class Component
                 'id' => null,
                 'title' => null,
                 'permission' => '',
+                'type' => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ), $atts);
 
             $atts = shortcode_atts($shortcodeDefaults, $atts);
+
             return $this->renderForm($atts);
         });
 
@@ -483,10 +485,16 @@ class Component
             return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
         }
 
+
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
 
         $form->instance_css_class = $instanceCssClass;
         $form->instance_index = Helper::$formInstance;
+
+
+        if($atts['type'] == 'conversational') {
+            return (new \FluentConversational\Form())->renderShortcode($form);
+        }
 
         $formBuilder = $this->app->make('formBuilder');
         $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);
