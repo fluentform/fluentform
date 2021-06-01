@@ -21,9 +21,7 @@
 
     </style>
     <style type="text/css">
-        <?php
-            echo $submit_css;
-        ?>
+        <?php echo $submit_css; ?>
 
     </style>
 </head>
@@ -34,7 +32,6 @@
     </div>
 </div>
 <?php
-//wp_footer();
 do_action('fluentform_conversational_frame_footer');
 ?>
 </body>
