@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo esc_html($meta['title']); ?></title>
     <meta name="description" content="<?php echo strip_tags($meta['description']) ?>">
+
+    <?php if(!empty($meta['featured_image'])): ?>
+        <meta property="og:image" content="<?php echo esc_url($meta['featured_image']); ?>"/>
+    <?php endif; ?>
+
+    <meta property="og:title" content="<?php echo esc_html($meta['title']); ?>"/>
+
+    <meta property="og:description" content="<?php echo strip_tags($meta['description']) ?>"/>
+
+
     <?php wp_site_icon(); ?>
     <style type="text/css">
         body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;max-width:100vw;font-family:sans-serif}a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}body *{box-sizing:border-box}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}
