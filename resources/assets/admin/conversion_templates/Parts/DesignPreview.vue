@@ -55,6 +55,9 @@ export default {
                 css += `${prefix} .f-label-wrap { color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-label-wrap .f-key { border-color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')} !important; }`;
+                css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected { background-color: ${this.hexToRGBA(settings.answer_color, '0.3')} !important; }`;
+                css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: ${settings.answer_color} !important; color: white; }`;
+                css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected svg { fill: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-answer input, ${prefix} .f-answer textarea { color: ${settings.answer_color} !important; }`;
             }
 
