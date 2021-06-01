@@ -21,12 +21,33 @@
     </style>
     <style type="text/css">
         <?php echo $submit_css; ?>
+        .ffc_loading_screen {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .ffc_loading_screen h2 {
+            font-size: 30px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body class="ff_conversation_page_body  ff_conversation_page_<?php echo $form_id; ?>">
 <div class="ffc_conv_wrapper">
     <div class="ff_conv_app ff_conv_app_frame ff_conv_app_<?php echo $form_id; ?>">
-        <div data-var_name="fluent_forms_global_var" class="ffc_conv_form" style="width: 100%" id="ffc_app_landing"></div>
+        <div data-var_name="fluent_forms_global_var" class="ffc_conv_form" style="width: 100%" id="ffc_app_landing">
+            <div class="ffc_loading_screen">
+                <div class="ffc_loading_icon">
+
+                </div>
+                <h2>Loading Form</h2>
+            </div>
+        </div>
     </div>
 </div>
 <?php

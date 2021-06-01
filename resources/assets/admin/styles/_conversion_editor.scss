@@ -7,6 +7,7 @@ $editorBg: #fafafa;
   flex-grow: 1;
   flex-basis: 50%;
 
+
   &.ff_conv_layout_default {
     padding: 10px 0;
     .ff_conv_media_preview {
@@ -196,6 +197,10 @@ $editorBg: #fafafa;
         justify-content: flex-end;
       }
     }
+  }
+
+  .ff_default_submit_button_wrapper {
+    display: block !important;
   }
 
 }

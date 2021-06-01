@@ -26,7 +26,7 @@ class Predefined extends Form
             ),
 
             'conversational' => array(
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/conversational.gif'),
                 'createable' => true,
                 'title'      => 'Conversational Form',
                 'brief'      => 'Create Smart form UI',
