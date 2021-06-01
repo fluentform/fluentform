@@ -26,7 +26,7 @@
 <body class="ff_conversation_page_body  ff_conversation_page_<?php echo $form_id; ?>">
 <div class="ffc_conv_wrapper">
     <div class="ff_conv_app ff_conv_app_frame ff_conv_app_<?php echo $form_id; ?>">
-        <div style="width: 100%" id="app"></div>
+        <div data-var_name="fluent_forms_global_var" class="ffc_conv_form" style="width: 100%" id="ffc_app_landing"></div>
     </div>
 </div>
 <?php
