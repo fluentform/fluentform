@@ -7,6 +7,7 @@
 @import "~element-ui/lib/theme-chalk/row.css";
 @import "~element-ui/lib/theme-chalk/col.css";
 @import "~element-ui/lib/theme-chalk/switch.css";
+@import "./browser_frame";
 
 .fcc_conversational_design {
   margin-top: 30px;
@@ -70,7 +71,8 @@ div#ff_conversation_form_design_app {
 }
 
 #fcc_iframe_holder {
-  border-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.06) 0px 2px 12px;
   iframe {
     border-radius: 8px;
@@ -123,4 +125,16 @@ ul.fcc_inline_social {
   background: #409eff !important;
   color: white !important;
   padding: 8px 20px;
+}
+
+.fcc_pro_message {
+  margin: 10px 0;
+  background: #fef6f1;
+  padding: 15px;
+  text-align: center;
+  font-size: 13px;
+  a {
+    display: block;
+    margin-top: 10px;
+  }
 }

@@ -1,16 +1,36 @@
 <template>
     <div class="fcc_design_preview">
-        <div id="fcc_iframe_holder"></div>
+        <div class="browser-frame">
+            <div class="browser-controls">
+                <div class="window-controls">
+                    <span class="close"></span>
+                    <span class="minimise"></span>
+                    <span class="maximise"></span>
+                </div>
+                <div class="page-controls">
+                    <span class="white-container dashicons dashicons-arrow-left-alt2"></span>
+                    <span class="white-container dashicons dashicons-arrow-right-alt2"></span>
+                </div>
+                <span v-if="has_pro" class="url-bar white-container">
+                    FluentForm Preview
+                </span>
+                <span v-else class="url-bar bar-warning white-container">
+                    Design Customization is only available on Pro Version of Fluent Forms. <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form">Buy Pro</a>
+                </span>
+            </div>
+            <div style="min-height: 600px;" v-loading="loading_iframe" id="fcc_iframe_holder"></div>
+        </div>
     </div>
 </template>
 
 <script type="text/babel">
 export default {
     name: 'DesignPreview',
-    props: ['form_id', 'design_settings'],
+    props: ['form_id', 'design_settings', 'has_pro'],
     data() {
         return {
             iframe: false,
+            loading_iframe: true,
             preview_url: window.ffc_conv_vars.preview_url
         }
     },
@@ -34,10 +54,11 @@ export default {
                     frame.show();
                     frame.contents().find('head').append('<style id="ffc_generated_css"></style>')
                     that.generateCss(that.design_settings);
+                    that.loading_iframe = false;
                 }
             });
 
-            jQuery('#fcc_iframe_holder').append(this.iframe);
+            jQuery('#fcc_iframe_holder').html(this.iframe);
         },
         pushCSS(css) {
             if (this.iframe) {
