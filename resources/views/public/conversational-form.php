@@ -15,10 +15,9 @@
 
     <meta property="og:description" content="<?php echo strip_tags($meta['description']) ?>"/>
 
-
     <?php wp_site_icon(); ?>
     <style type="text/css">
-        body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;max-width:100vw;font-family:sans-serif}a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}body *{box-sizing:border-box}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}
+        body{height:100%;width:100%;overflow:auto;margin:0;padding:0;max-width:100vw;font-family:sans-serif}a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}body *{box-sizing:border-box}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}
         .ff_conv_app{
             font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
         }
@@ -49,12 +48,9 @@
 </head>
 <body class="ff_conversation_page_body  ff_conversation_page_<?php echo $form_id; ?>">
 <div class="ffc_conv_wrapper">
-    <div class="ff_conv_app ff_conv_app_frame ff_conv_app_<?php echo $form_id; ?>">
+    <div class="ff_conv_app ff_conv_app_frame ff_conv_app_<?php echo $form_id; ?> ffc_media_hide_mob_<?php echo $design['hide_media_on_mobile']; ?>">
         <div data-var_name="fluent_forms_global_var" class="ffc_conv_form" style="width: 100%" id="ffc_app_landing">
             <div class="ffc_loading_screen">
-                <div class="ffc_loading_icon">
-
-                </div>
                 <h2>Loading Form</h2>
             </div>
         </div>

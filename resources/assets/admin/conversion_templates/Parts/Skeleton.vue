@@ -10,7 +10,7 @@
                     </ul>
                 </div>
                 <div v-loading="saving" class="ffc_sidebar_body">
-                    <design-elements v-if="active_tab == 'design'" :design_settings="design_settings"/>
+                    <design-elements :has_pro="has_pro" v-if="active_tab == 'design'" :design_settings="design_settings"/>
                     <div style="padding-top: 20px;" v-else-if="active_tab == 'meta'">
                         <p>Set your social sharing meta texts and form messages here</p>
                     </div>
@@ -18,13 +18,13 @@
                         <p>Share your form by unique URL or copy and paste the <em>shorcode</em> to embed in your page
                             and post</p>
                     </div>
-                    <div v-if="active_tab != 'share'" class="ffc_design_submit">
+                    <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
                         <el-button type="primary" @click="saveDesignSettings()">Save Settings</el-button>
                     </div>
                 </div>
             </div>
             <div class="ffc_design_container">
-                <design-preview v-if="active_tab == 'design'" @css_generated="(css) => { generated_css = css; }"
+                <design-preview :has_pro="has_pro" v-if="active_tab == 'design'" @css_generated="(css) => { generated_css = css; }"
                                 :design_settings="design_settings"
                                 :form_id="form_id"/>
                 <meta-setting-view v-else-if="active_tab == 'meta'" :meta_settings="meta_settings"/>
@@ -51,14 +51,15 @@ export default {
     },
     data() {
         return {
-            active_tab: 'share',
+            active_tab: 'design',
             form_id: window.ffc_conv_vars.form_id,
             design_settings: {},
             meta_settings: {},
             generated_css: '',
             saving: false,
             loading: true,
-            share_url: ''
+            share_url: '',
+            has_pro: true
         }
     },
     methods: {
@@ -100,8 +101,11 @@ export default {
 
             FluentFormsGlobal.$get(data)
                 .then(response => {
-                    this.design_settings = response.data.design_settings;
+                    const designSettings = response.data.design_settings;
+                    designSettings.background_brightness = parseInt(designSettings.background_brightness);
+                    this.design_settings = designSettings;
                     this.meta_settings = response.data.meta_settings;
+                    this.has_pro = !!response.data.has_pro;
                     this.setBaseUrl();
                 })
                 .fail(error => {
