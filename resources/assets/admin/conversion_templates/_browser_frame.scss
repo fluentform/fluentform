@@ -79,3 +79,8 @@ $control-height: 25px;
     font-size: 120%;
   }
 }
+
+.browser-frame.ffc_browser_mobile {
+  max-width: 375px;
+  margin: 0 auto;
+}
