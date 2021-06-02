@@ -1,6 +1,6 @@
 <template>
     <div class="fcc_design_preview">
-        <div class="browser-frame">
+        <div :class="'ffc_browser_' + device_type" class="browser-frame">
             <div class="browser-controls">
                 <div class="window-controls">
                     <span class="close"></span>
@@ -20,6 +20,16 @@
             </div>
             <div style="min-height: 600px;" v-loading="loading_iframe" id="fcc_iframe_holder"></div>
         </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <el-switch
+                v-model="device_type"
+                active-value="desktop"
+                inactive-value="mobile"
+                active-text="Desktop"
+                inactive-text="Mobile">
+            </el-switch>
+        </div>
+
     </div>
 </template>
 
@@ -31,7 +41,8 @@ export default {
         return {
             iframe: false,
             loading_iframe: true,
-            preview_url: window.ffc_conv_vars.preview_url
+            preview_url: window.ffc_conv_vars.preview_url,
+            device_type: 'desktop'
         }
     },
     watch: {
@@ -40,6 +51,15 @@ export default {
                 this.generateCss(settings);
             },
             deep: true
+        },
+        device_type(value) {
+            if(this.iframe) {
+                if(this.design_settings.hide_media_on_mobile == 'yes') {
+                    (this.iframe.contents().find('body'))[0].classList.add('ffc_media_hide_mob_yes');
+                } else {
+                    (this.iframe.contents().find('body'))[0].classList.remove('ffc_media_hide_mob_yes');
+                }
+            }
         }
     },
     methods: {
@@ -94,6 +114,7 @@ export default {
 
             }
 
+
             if(settings.background_image) {
                 let opacity = 1;
                 let imagePropertyCss = '';
@@ -108,6 +129,7 @@ export default {
 
                 css += `${prefix}:before { content: ' '; opacity: ${opacity}; background-image: ${imagePropertyCss} url("${settings.background_image}"); }`;
             }
+
 
             if(settings.disable_branding == 'yes') {
                 css += `${prefix} .footer-inner-wrap .f-nav a.ffc_power { display: none !important; }`;
