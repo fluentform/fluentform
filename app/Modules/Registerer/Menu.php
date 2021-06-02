@@ -681,6 +681,10 @@ class Menu
 
         $searchTags = apply_filters( 'fluent_editor_element_search_tags', $searchTags, $form );
 
+        $elementPlacements = apply_filters('fluent_editor_element_settings_placement',
+            $this->app->load( $this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php') ), $form
+        );
+
         wp_localize_script('fluentform_editor_script', 'FluentFormApp', apply_filters('fluentform_editor_vars', array(
             'plugin' => $pluginSlug,
             'form_id' => $formId,
@@ -701,9 +705,7 @@ class Menu
 
             'element_search_tags' => $searchTags,
 
-            'element_settings_placement' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php')
-            ),
+            'element_settings_placement' => $elementPlacements,
             'all_forms_url' => admin_url('admin.php?page=fluent_forms'),
             'has_payment_features' => !defined('FLUENTFORMPRO'),
             'upgrade_url' => fluentform_upgrade_url(),
