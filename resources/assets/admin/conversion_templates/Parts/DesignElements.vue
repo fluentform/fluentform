@@ -31,11 +31,11 @@
                 <photo-uploader v-model="design_settings.background_image" design_mode="horizontal" enable_clear="yes"/>
             </el-form-item>
 
-            <el-form-item v-if="design_settings.background_image" label="BG Brightness">
+            <el-form-item class="fcc_label_top" v-if="design_settings.background_image" label="BG Brightness">
                 <el-slider :min="-100" input-size="mini" :max="100"
                            v-model="design_settings.background_brightness"></el-slider>
             </el-form-item>
-            <el-form-item label="Disable Layout on Mobile Devices">
+            <el-form-item class="fcc_eq_line" label="Disable Layout on Mobile Devices">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.hide_media_on_mobile"></el-switch>
             </el-form-item>
 

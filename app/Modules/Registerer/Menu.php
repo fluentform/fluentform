@@ -689,7 +689,7 @@ class Menu
             'plugin' => $pluginSlug,
             'form_id' => $formId,
             'plugin_public_url' => $this->app->publicUrl(),
-            'preview_url' => $this->getFormPreviewUrl($formId),
+            'preview_url' => Helper::getPreviewUrl($formId),
             'form' => $form,
             'hasPro' => defined('FLUENTFORMPRO'),
             'countries' => $this->app->load(
@@ -766,21 +766,12 @@ class Menu
         View::render('admin.transfer.index');
     }
 
-
-    private function getFormPreviewUrl($form_id)
-    {
-        if(Helper::isConversionForm($form_id)) {
-            return site_url('?fluent_forms_conversational_form=1&form_id='.$form_id);
-        }
-        return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $form_id) . '#ff_preview';
-    }
-
     public function addPreviewButton($formId)
     {
         $previewText = __('Preview & Design', 'fluent-form');
-        $previewUrl = $this->getFormPreviewUrl($formId);
-        if(Helper::isConversionForm($formId)) {
-            $previewText = 'Preview';
+        $previewUrl = Helper::getPreviewUrl($formId);
+        if($isConversational = Helper::isConversionForm($formId)) {
+            $previewText = __('Preview', 'fluent-form');
         }
 
         echo '<a target="_blank" class="el-button el-button--small" href="' . $previewUrl . '">'.$previewText.'</a>';
