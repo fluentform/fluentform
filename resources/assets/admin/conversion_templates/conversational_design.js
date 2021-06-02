@@ -12,6 +12,7 @@ import {
     Button,
     Loading,
     Message,
+    Switch,
     Notification,
 } from 'element-ui';
 
@@ -22,6 +23,7 @@ Vue.use(Col);
 Vue.use(FormItem);
 Vue.use(ColorPicker);
 Vue.use(Slider);
+Vue.use(Switch);
 Vue.use(Button);
 
 Vue.use(Loading.directive)

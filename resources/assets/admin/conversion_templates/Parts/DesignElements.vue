@@ -33,6 +33,10 @@
                 <el-slider :min="-100" input-size="mini" :max="100"
                            v-model="design_settings.background_brightness"></el-slider>
             </el-form-item>
+
+            <el-form-item label="Disable Branding">
+                <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_branding"></el-switch>
+            </el-form-item>
         </el-form>
     </div>
 </template>

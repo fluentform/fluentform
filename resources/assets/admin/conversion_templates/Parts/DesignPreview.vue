@@ -67,8 +67,10 @@ export default {
             }
 
             if(settings.button_color) {
-                css += `${prefix} .q-inner .o-btn-action { background-color: ${settings.button_color}; }`;
-                css += `${prefix} .q-inner .o-btn-action span { color: ${settings.button_text_color}; }`;
+                css += `${prefix} .q-inner .o-btn-action, ${prefix} .footer-inner-wrap .f-nav { background-color: ${settings.button_color}; }`;
+                css += `${prefix} .q-inner .o-btn-action span, ${prefix} .footer-inner-wrap .f-nav a { color: ${settings.button_text_color}; }`;
+                css += `${prefix} .footer-inner-wrap .f-nav a svg { fill: ${settings.button_text_color}; }`;
+
             }
 
             if(settings.background_image) {
@@ -85,6 +87,11 @@ export default {
 
                 css += `${prefix}:before { content: ' '; opacity: ${opacity}; background-image: ${imagePropertyCss} url("${settings.background_image}"); }`;
             }
+
+            if(settings.disable_branding == 'yes') {
+                css += `${prefix} .footer-inner-wrap .f-nav a.ffc_power { display: none !important; }`;
+            }
+
             this.$emit('css_generated', css);
             this.pushCSS(css);
         },
