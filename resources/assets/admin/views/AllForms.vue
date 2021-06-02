@@ -20,7 +20,8 @@
 
                     <!-- The split dropdown for creating predefined forms easily -->
                     <el-dropdown-menu slot="dropdown" style="top:25px !important;">
-                        <el-dropdown-item :command="{ key: 'conversational', form: { title: 'Conversational Form', type: 'blank_conversational' }}">
+                        <el-dropdown-item
+                            :command="{ key: 'conversational', form: { title: 'Conversational Form', type: 'blank_conversational' }}">
                             Create Conversational Form
                         </el-dropdown-item>
                         <el-dropdown-item
@@ -62,7 +63,7 @@
         >
             <template v-if="app.formsCount > 0">
                 <div
-                     class="entries_table">
+                    class="entries_table">
                     <div class="tablenav top">
                         <el-table
                             :data="items"
@@ -84,44 +85,62 @@
                                             <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a> |
                                         </span>
                                         <span class="ff_entries">
-                                         <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a> |
-                                    </span>
+                                             <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a> |
+                                        </span>
+                                        <span v-if="scope.row.conversion_preview" class="ff_entries">
+                                             <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a> |
+                                        </span>
                                         <span class="ff_entries">
-                                         <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
-                                    </span>
+                                             <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
+                                        </span>
+
                                         <span class="ff_duplicate">
-                                         <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
-                                                 $t('Duplicate')
-                                             }}</a> |
-                                    </span>
+                                             <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
+                                                     $t('Duplicate')
+                                                 }}</a> |
+                                        </span>
                                         <span class="trash">
-                                        <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                            <a slot="icon">{{ $t('Delete') }}</a>
-                                        </remove>
-                                    </span>
+                                            <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
+                                                <a slot="icon">{{ $t('Delete') }}</a>
+                                            </remove>
+                                        </span>
                                     </div>
                                 </template>
                             </el-table-column>
 
-                            <el-table-column :label="$t('Short Code')" width="260">
-                                <el-tooltip class="item"
-                                            slot-scope="scope"
-                                            effect="dark"
-                                            content="Click to copy shortcode"
-                                            title="Click to copy shortcode"
-                                            placement="top">
-                                    <code class="copy"
-                                          :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
-                                        <i class="el-icon-document"></i> [fluentform id="{{ scope.row.id }}"]
-                                    </code>
-                                </el-tooltip>
+                            <el-table-column :label="$t('Short Code')" width="280">
+                                <template slot-scope="scope">
+                                    <el-tooltip class="item classic_shortcode shortcode_btn"
+                                                effect="dark"
+                                                content="Click to copy shortcode"
+                                                title="Click to copy shortcode"
+                                                placement="top">
+                                        <code class="copy"
+                                              :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
+                                            <i class="el-icon-document"></i> [fluentform id="{{ scope.row.id }}"]
+                                        </code>
+                                    </el-tooltip>
+                                    <el-tooltip class="item conversational_shortcode shortcode_btn"
+                                                effect="dark"
+                                                content="Click to copy conversational form shortcode"
+                                                title="Click to copy shortcode"
+                                                v-if="scope.row.conversion_preview"
+                                                placement="top">
+                                        <code class="copy"
+                                              :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                            <i class="el-icon-document"></i> [fluentform type="conversational" id="{{
+                                            scope.row.id }}"]
+                                        </code>
+                                    </el-tooltip>
+                                </template>
+
                             </el-table-column>
 
                             <el-table-column width="150" :label="$t('Entries')">
                                 <template slot-scope="scope">
                                     <a :href="scope.row.entries_url"><span
                                         v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
-                                            scope.row.total_Submissions
+                                        scope.row.total_Submissions
                                         }}</a>
                                 </template>
                             </el-table-column>

@@ -86,7 +86,7 @@ class Form
         $forms = $query->paginate();
 
         foreach ($forms['data'] as $form) {
-            $form->preview_url = site_url('?fluent_forms_pages=1&preview_id=' . $form->id) . '#ff_preview';;
+            $form->preview_url = Helper::getPreviewUrl($form->id, 'classic');
             $form->edit_url = $this->getAdminPermalink('editor', $form);
             $form->settings_url = $this->getSettingsUrl($form);
             $form->entries_url = $this->getAdminPermalink('entries', $form);
@@ -96,6 +96,9 @@ class Form
             $form->total_Submissions = $this->getSubmissionCount($form->id);
             $form->unread_count = $this->getUnreadCount($form->id);
             $form->conversion = $this->getConversionRate($form);
+            if(Helper::isConversionForm($form->id)) {
+                $form->conversion_preview = Helper::getPreviewUrl($form->id, 'conversational');
+            }
             unset($form->form_fields);
         }
 

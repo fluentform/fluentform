@@ -63,6 +63,24 @@
     }
   }
 
+  .ffc_design_elements {
+    .fcc_eq_line .el-form-item__label {
+      line-height: 120%;
+    }
+    .el-form-item.fcc_label_top .el-form-item__label {
+      width: 100% !important;
+      display: block;
+      line-height: 100%;
+      float: none;
+    }
+
+    .el-form-item.fcc_label_top .el-form-item__content {
+      width: 100%;
+      margin-left: 0 !important;
+      display: block;
+    }
+  }
+
 }
 
 div#ff_conversation_form_design_app {
