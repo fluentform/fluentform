@@ -12,7 +12,7 @@
                     <span class="white-container dashicons dashicons-arrow-right-alt2"></span>
                 </div>
                 <span v-if="has_pro" class="url-bar white-container">
-                    FluentForm Preview
+                    {{ preview_url }}
                 </span>
                 <span v-else class="url-bar bar-warning white-container">
                     Design Customization is only available on Pro Version of Fluent Forms. <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form">Buy Pro</a>
@@ -47,7 +47,7 @@ export default {
             const that = this;
             this.iframe = jQuery('<iframe/>', {
                 id: 'fcc_design_preview',
-                src: this.preview_url,
+                src: this.preview_url + '&doing_preview=1',
                 style: 'display:none;width:100%;height:600px',
                 load: function () {
                     const frame = jQuery(this);

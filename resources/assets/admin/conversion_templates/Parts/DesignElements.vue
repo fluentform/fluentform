@@ -1,6 +1,6 @@
 <template>
     <div class="ffc_design_elements">
-        <el-form label-position="left" label-width="150px" :data="design_settings">
+        <el-form label-position="left" label-width="220px" :data="design_settings">
             <el-form-item label="Questions">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.question_color = color; }"
@@ -34,6 +34,9 @@
             <el-form-item v-if="design_settings.background_image" label="BG Brightness">
                 <el-slider :min="-100" input-size="mini" :max="100"
                            v-model="design_settings.background_brightness"></el-slider>
+            </el-form-item>
+            <el-form-item label="Hide Images on Mobile Devices">
+                <el-switch active-value="yes" inactive-value="no" v-model="design_settings.hide_media_on_mobile"></el-switch>
             </el-form-item>
 
             <el-form-item label="Disable Branding">
