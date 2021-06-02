@@ -8,7 +8,7 @@
                 </el-radio>
             </el-radio-group>
         </el-form-item>
-        <template v-if="pref.layout != 'default'">
+        <template v-if="pref.layout != 'default' && pref.layout != 'media_raw_html'">
             <el-form-item>
                 <el-label slot="label" label="Media" helpText="Set the media image that you want to set for this input"></el-label>
                 <photo-widget enable_clear="yes" design_mode="horizontal" v-model="pref.media"/>
@@ -31,6 +31,12 @@
             <el-form-item>
                 <el-label slot="label" label="Media Alt Text" helpText="Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend"></el-label>
                 <el-input type="textarea" v-model="pref.alt_text" show-input></el-input>
+            </el-form-item>
+        </template>
+        <template v-else-if="pref.layout == 'media_raw_html'">
+            <el-form-item>
+                <el-label slot="label" label="HTML to Show" helpText="Please provide your raw html that you want to show at the side of the form"></el-label>
+                <el-input :rows="8" type="textarea" v-model="pref.raw_html" show-input></el-input>
             </el-form-item>
         </template>
     </div>

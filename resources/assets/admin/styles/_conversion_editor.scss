@@ -203,4 +203,22 @@ $editorBg: #fafafa;
     display: block !important;
   }
 
+  .fcc_pro_message {
+    margin: 10px 0;
+    background: #fef6f1;
+    padding: 15px;
+    text-align: center;
+    font-size: 13px;
+    a {
+      display: block;
+      margin-top: 10px;
+    }
+  }
+
+  .ffc_raw_content {
+    max-height: 250px;
+    max-width: 60%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
 }

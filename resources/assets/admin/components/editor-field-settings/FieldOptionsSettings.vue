@@ -44,6 +44,10 @@
                             :listItem="listItem">
                         </component>
                     </template>
+                    <div v-if="!hasPro" class="fcc_pro_message">
+                        Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro
+                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>
+                    </div>
                 </div>
             </transition>
         </template>
@@ -157,7 +161,8 @@ export default {
     },
     data() {
         return {
-            optionFieldsSection: 'generalEditOptions'
+            optionFieldsSection: 'generalEditOptions',
+            hasPro: !!window.FluentFormApp.hasPro
         }
     },
     computed: {
@@ -270,6 +275,13 @@ export default {
                 'container_class',
                 'class'
             ];
+
+            if(!this.hasPro) {
+                unsupportedSettings.push('conditional_logics');
+            }
+
+            console.log(key);
+
             return unsupportedSettings.indexOf(key) === -1;
         }
     },

@@ -1,6 +1,9 @@
 <template>
     <div class="ff_conv_media_preview">
-        <div :style="{ filter:  brightness }" class="fcc_block_media_attachment" :class="'fc_i_layout_' + pref.layout">
+        <div v-if="pref.layout == 'media_raw_html'" class="ffc_block_raw_html">
+            <div class="ffc_raw_content" v-html="pref.raw_html" />
+        </div>
+        <div v-else :style="{ filter:  brightness }" class="fcc_block_media_attachment" :class="'fc_i_layout_' + pref.layout">
             <picture class="fc_image_holder">
                 <img :style="{ 'object-position': imagePositionCSS }" :src="pref.media" />
             </picture>
