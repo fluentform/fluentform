@@ -77,7 +77,6 @@ class Converter
                 $question['options'] = ArrayHelper::get($field, 'settings.advanced_options', []);
                 $question['nextStepOnAnswer'] = true;
             } elseif ($field['element'] === 'custom_html') {
-//				$question['content'] = strip_tags(ArrayHelper::get($field, 'settings.html_codes', []));
                 $question['content'] = ArrayHelper::get($field, 'settings.html_codes', '');
             } elseif ($field['element'] === 'phone') {
                 if (defined('FLUENTFORMPRO')) {
@@ -96,19 +95,21 @@ class Converter
             } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
 	            $question['options'] = [
 		            [
-			            'label' => 'I accept',
+			            'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
 			            'value' => 'on',
 		            ],
 		            [
-			            'label' => "I don't accept",
+			            'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I accept'),
 			            'value' => 'off',
 		            ]
 	            ];
 
 	            $question['nextStepOnAnswer'] = true;
                 $question['title'] = ArrayHelper::get($field, 'settings.tnc_html');
-            } elseif ($field['element'] === 'gdpr_agreement') {
-                $question['required'] = true;
+                if ($field['element'] === 'gdpr_agreement') {
+                    $question['required'] = true;
+                }
+
             } elseif ($field['element'] === 'ratings') {
             	$question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
             	$question['options'] = ArrayHelper::get($field, 'options', []);
@@ -122,7 +123,6 @@ class Converter
             }
         }
         $form->questions = $questions;
-//		dd($form);
 
         return $form;
     }
