@@ -101,6 +101,10 @@ class Converter
                 $question['title'] = ArrayHelper::get($field, 'settings.tnc_html');
             } elseif ($field['element'] === 'gdpr_agreement') {
                 $question['required'] = true;
+            } elseif ($field['element'] === 'ratings') {
+            	$question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
+            	$question['options'] = ArrayHelper::get($field, 'options', []);
+	            $question['nextStepOnAnswer'] = true;
             }
             if ($question['type']) {
                 $questions[] = $question;
@@ -133,7 +137,8 @@ class Converter
             'input_password'        => 'FlowFormPasswordType',
             'custom_html'           => 'FlowFormSectionBreakType',
             'input_text'            => 'FlowFormTextType',
-            'input_url'             => 'FlowFormUrlType'
+            'input_url'             => 'FlowFormUrlType',
+	        'ratings'               => 'FlowFormRateType'
         ];
 
         if (defined('FLUENTFORMPRO')) {
