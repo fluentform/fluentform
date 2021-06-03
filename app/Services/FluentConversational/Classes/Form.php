@@ -77,7 +77,9 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
             'form_id'     => $formId,
-            'preview_url' => site_url('?fluent-form=' . $formId)
+            'preview_url' => site_url('?fluent-form=' . $formId),
+            'fonts'       => Fonts::getFonts(),
+            'has_pro' => defined('FLUENTFORMPRO')
         ]);
 
         wp_enqueue_style(
@@ -235,7 +237,7 @@ class Form
             'background_image'      => '',
             'background_brightness' => 0,
             'disable_branding'      => 'no',
-            'hide_media_on_mobile' => 'no'
+            'hide_media_on_mobile'  => 'no'
         ];
 
         return wp_parse_args($settings, $defaults);
@@ -249,6 +251,8 @@ class Form
             'description'    => '',
             'featured_image' => '',
             'share_key'      => '',
+            'google_font_href' => '',
+            'font_css' => '',
             'i18n'           => [
                 'skip_btn'             => 'SKIP',
                 'confirm_btn'          => 'OK',
@@ -273,7 +277,7 @@ class Form
     private function getGeneratedCss($formId)
     {
         $prefix = '.ff_conv_app_' . $formId;
-        if(defined('FLUENTFORMPRO')) {
+        if (defined('FLUENTFORMPRO')) {
             $css = Helper::getFormMeta($formId, $this->metaKey . '_generated_css', '');
             if ($css) {
                 return $css;
