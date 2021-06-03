@@ -8,6 +8,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "dependencies": {
+        "swiped-events": "^1.1.4",
         "vue": "^2.6.11",
         "vue-textarea-autosize": "^1.1.1",
         "vue-the-mask": "^0.11.1",

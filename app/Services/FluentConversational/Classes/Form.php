@@ -17,7 +17,6 @@ class Form
 
     public function boot()
     {
-
         add_action('wp', [$this, 'render'], 100);
 
         add_action('wp_ajax_ff_get_conversational_form_fields', [$this, 'get_setting_fields']);
