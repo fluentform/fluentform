@@ -122,6 +122,7 @@ class Converter
                 $form->submit_button = $field;
             }
         }
+
         $form->questions = $questions;
 
         return $form;
