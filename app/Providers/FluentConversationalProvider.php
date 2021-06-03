@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Providers;
 
-use FluentConversational\Form;
+use FluentForm\App\Services\FluentConversational\Classes\Form;
 use FluentForm\Framework\Foundation\Provider;
 
 class FluentConversationalProvider extends Provider

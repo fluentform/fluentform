@@ -1,0 +1,609 @@
+<?php
+
+namespace FluentForm\App\Services\FluentConversational\Classes;
+
+use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
+use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\View;
+
+class Form
+{
+    protected $addOnKey = 'conversational_forms';
+
+    protected $metaKey = 'ffc_form_settings';
+
+    public function boot()
+    {
+
+        add_action('wp', [$this, 'render'], 100);
+
+        add_action('wp_ajax_ff_get_conversational_form_fields', [$this, 'get_setting_fields']);
+
+        add_action('wp_ajax_ff_get_conversational_form_settings', [$this, 'getSettingsAjax']);
+
+        add_action('wp_ajax_ff_store_conversational_form_settings', [$this, 'saveSettingsAjax']);
+
+        add_filter('fluent_editor_components', array($this, 'filterAcceptedFields'), 999, 2);
+
+        add_filter('fluentform_form_admin_menu', array($this, 'pushDesignTab'), 10, 2);
+
+        add_filter('ff_fluentform_form_application_view_conversational_design', array($this, 'renderDesignSettings'), 10, 1);
+
+        // elements
+        new WelcomeScreen();
+
+    }
+
+    public function pushDesignTab($menuItems, $formId)
+    {
+        if (!Helper::isConversionForm($formId)) {
+            return $menuItems;
+        }
+
+        $newItems = array_slice($menuItems, 0, 1, true) + [
+                'conversational_design' => array(
+                    'slug'  => 'conversational_design',
+                    'title' => __('Design', 'fluentform'),
+                    'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=conversational_design')
+                )
+            ] + array_slice($menuItems, 1, count($menuItems) - 1, true);
+
+        return $newItems;
+    }
+
+    public function renderDesignSettings($formId)
+    {
+        if (!Helper::isConversionForm($formId)) {
+            echo 'Sorry! This is not a conversational form';
+            return;
+        }
+
+        if (function_exists('wp_enqueue_editor')) {
+            add_filter('user_can_richedit', '__return_true');
+            wp_enqueue_editor();
+            wp_enqueue_media();
+        }
+
+        wp_enqueue_script(
+            'fluent_forms_conversational_design',
+            fluentformMix('js/conversational_design.js'),
+            array('jquery'),
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
+            'form_id'     => $formId,
+            'preview_url' => site_url('?fluent-form=' . $formId)
+        ]);
+
+        wp_enqueue_style(
+            'fluent_forms_conversion_style',
+            fluentformMix('css/conversational_design.css'),
+            array(),
+            FLUENTFORM_VERSION
+        );
+
+        echo '<div id="ff_conversation_form_design_app"><design-skeleton><h1 style="text-align: center; margin: 60px 0px;">Loading App Please wait....</h1></design-skeleton></div>';
+    }
+
+    public function getSettingsAjax()
+    {
+        $formId = intval($_REQUEST['form_id']);
+
+        Acl::verify('fluentform_forms_manager', $formId);
+
+        $designSettings = $this->getDesignSettings($formId);
+        $meta_settings = $this->getMetaSettings($formId);
+
+        wp_send_json_success([
+            'design_settings' => $designSettings,
+            'meta_settings'   => $meta_settings,
+            'has_pro'         => defined('FLUENTFORMPRO')
+        ]);
+    }
+
+    public function saveSettingsAjax()
+    {
+        $formId = intval($_REQUEST['form_id']);
+
+        Acl::verify('fluentform_forms_manager', $formId);
+
+        $settings = wp_unslash($_REQUEST['design_settings']);
+        Helper::setFormMeta($formId, $this->metaKey . '_design', $settings);
+        $generatedCss = wp_strip_all_tags(wp_unslash($_REQUEST['generated_css']));
+        if ($generatedCss) {
+            Helper::setFormMeta($formId, $this->metaKey . '_generated_css', $generatedCss);
+        }
+
+        $meta = wp_unslash(ArrayHelper::get($_REQUEST, 'meta_settings', []));
+        if ($meta) {
+            Helper::setFormMeta($formId, $this->metaKey . '_meta', $meta);
+        }
+
+        $params = [
+            'fluent-form' => $formId
+        ];
+
+        if (!empty($meta['share_key'])) {
+            $params['form'] = $meta['share_key'];
+        }
+
+        $shareUrl = add_query_arg($params, site_url());
+
+        wp_send_json_success([
+            'message'   => __('Settings successfully updated'),
+            'share_url' => $shareUrl
+        ]);
+    }
+
+    public function get_setting_fields()
+    {
+        $fields = [
+            [
+                'key'       => 'title',
+                'label'     => 'Title',
+                'component' => 'text',
+                'tips'      => 'The title of your Conversational Form'
+            ],
+            [
+                'key'       => 'description',
+                'label'     => 'Description',
+                'component' => 'wp-editor',
+                'tips'      => 'Description below the form title',
+            ],
+            [
+                'key'       => 'after_complete_message',
+                'label'     => 'Complete Message',
+                'component' => 'wp-editor',
+                'tips'      => 'Show message after form is completed and before submission',
+            ],
+            [
+                'key'       => 'header_color',
+                'label'     => 'Header',
+                'component' => 'color_picker',
+                'tips'      => 'Header color of the page',
+            ],
+            [
+                'key'       => 'background_color',
+                'label'     => 'Background',
+                'component' => 'color_picker',
+                'tips'      => 'Background color of the page',
+            ],
+            [
+                'key'       => 'questions',
+                'label'     => 'Questions',
+                'component' => 'color_picker',
+                'tips'      => 'Choose questions Color for your form',
+            ],
+            [
+                'key'       => 'answers',
+                'label'     => 'Answers',
+                'component' => 'color_picker',
+                'tips'      => 'Choose answers Color for your form',
+            ],
+            [
+                'key'       => 'bttn_color',
+                'label'     => 'Buttons',
+                'component' => 'color_picker',
+                'tips'      => 'Choose Button Color for your form steps',
+            ],
+            [
+                'key'       => 'bttn_text',
+                'label'     => 'Buttons Text',
+                'tips'      => 'Choose button text color for your form ',
+                'component' => 'color_picker'
+            ],
+            [
+                'key'            => 'disable_step_navigation',
+                'label'          => 'Step Navigation',
+                'tips'           => 'Disable Step Navigation',
+                'component'      => 'checkbox-single',
+                'checkbox_label' => 'Disable step navigation'
+            ],
+            [
+                'key'       => 'logo',
+                'label'     => 'Form Logo',
+                'tips'      => 'You may upload your logo and it will show on the top of the page',
+                'component' => 'image_widget'
+            ],
+            [
+                'key'       => 'background_image',
+                'label'     => 'Background Image',
+                'tips'      => ' You may upload Background image',
+                'component' => 'image_widget'
+            ],
+        ];
+        wp_send_json_success([
+            'settings_fields' => $fields,
+        ], 200);
+    }
+
+    public function getDesignSettings($formId)
+    {
+        $settings = Helper::getFormMeta($formId, $this->metaKey . '_design', []);
+
+        $defaults = [
+            'background_color'      => '#FFFFFF',
+            'question_color'        => '#191919',
+            'answer_color'          => '#0445AF',
+            'button_color'          => '#0445AF',
+            'button_text_color'     => '#FFFFFF',
+            'background_image'      => '',
+            'background_brightness' => 0,
+            'disable_branding'      => 'no',
+            'hide_media_on_mobile' => 'no'
+        ];
+
+        return wp_parse_args($settings, $defaults);
+    }
+
+    public function getMetaSettings($formId)
+    {
+        $settings = Helper::getFormMeta($formId, $this->metaKey . '_meta', []);
+        $defaults = [
+            'title'          => '',
+            'description'    => '',
+            'featured_image' => '',
+            'share_key'      => '',
+            'i18n'           => [
+                'skip_btn'             => 'SKIP',
+                'confirm_btn'          => 'OK',
+                'continue'             => 'Continue',
+                'keyboard_instruction' => 'Press <b>Enter ↵</b>',
+                'multi_select_hint'    => 'Choose as many as you like',
+                'single_select_hint'   => 'Choose one option',
+                'progress_text'        => '{percent}% completed',
+                'long_text_help'       => '<b>Shift ⇧</b> + <b>Enter ↵</b> to make a line break.',
+                'invalid_prompt'       => 'Please fill out the field correctly'
+            ]
+        ];
+
+        if (!$settings || empty($settings['title'])) {
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+            $settings['title'] = $form->title;
+        }
+
+        return wp_parse_args($settings, $defaults);
+    }
+
+    private function getGeneratedCss($formId)
+    {
+        $prefix = '.ff_conv_app_' . $formId;
+        if(defined('FLUENTFORMPRO')) {
+            $css = Helper::getFormMeta($formId, $this->metaKey . '_generated_css', '');
+            if ($css) {
+                return $css;
+            }
+        }
+
+        return $prefix . ' { background-color: #FFFFFF; } ' . $prefix . ' .ffc-counter-div span { color: #0445AF; } ' . $prefix . ' .ffc-counter-div .counter-icon-span svg { fill: #0445AF !important; } ' . $prefix . ' .f-label-wrap { color: #0445AF !important; } ' . $prefix . ' .f-label-wrap .f-key { border-color: #0445AF !important; } ' . $prefix . ' .f-answer .f-radios-wrap ul li { background-color: rgba(4,69,175, 0.1) !important; } ' . $prefix . ' .f-answer input, ' . $prefix . ' .f-answer textarea { color: #0445AF !important; } ' . $prefix . ' .fh2 .f-text { color: #191919; } ' . $prefix . ' .fh2 .f-tagline { color: rgba(25,25,25, 0.70); } ' . $prefix . ' .q-inner .o-btn-action { background-color: #0445AF; } ' . $prefix . ' .q-inner .o-btn-action span { color: #FFFFFF; }';
+    }
+
+    public function render()
+    {
+        if ((isset($_GET['fluent-form'])) && !wp_doing_ajax()) {
+
+            $formId = intval(ArrayHelper::get($_REQUEST, 'fluent-form'));
+
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+            if (!$form) {
+                return '';
+            }
+
+            $form = Converter::convert($form);
+            $submitCss = $this->getSubmitBttnStyle($form);
+
+            wp_enqueue_script(
+                'fluent_forms_conversational_form',
+                FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
+                array(),
+                FLUENTFORM_VERSION,
+                true
+            );
+
+            $designSettings = $this->getDesignSettings($formId);
+
+            $metaSettings = $this->getMetaSettings($formId);
+            wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
+                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
+                'ajaxurl'                  => admin_url('admin-ajax.php'),
+                'form'                     => $form,
+                'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
+                'i18n'                     => $metaSettings['i18n'],
+                'design'                   => $designSettings
+            ]);
+
+            $this->printLoadedScripts();
+
+            echo View::make('public.conversational-form', [
+                'generated_css' => $this->getGeneratedCss($formId),
+                'design'        => $designSettings,
+                'submit_css'    => $submitCss,
+                'form_id'       => $formId,
+                'meta'          => $metaSettings,
+                'loader_gif'    => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/loader.gif'
+            ]);
+
+            exit(200);
+        }
+    }
+
+    public function isEnabled()
+    {
+        $globalModules = get_option('fluentform_global_modules_status');
+
+        $addOn = ArrayHelper::get($globalModules, $this->addOnKey);
+
+        if (!$addOn || $addOn == 'yes') {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getSubmitBttnStyle($form)
+    {
+        $data = $form->submit_button;
+        $styles = '';
+        if (ArrayHelper::get($data, 'settings.button_style') == '') {
+            // it's a custom button
+            $buttonActiveStyles = ArrayHelper::get($data, 'settings.normal_styles', []);
+            $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
+            $activeStates = '';
+            foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
+                if (!$styleValue) {
+                    continue;
+                }
+                if ($styleAtr == 'borderRadius') {
+                    $styleValue .= 'px';
+                }
+                $activeStates .= ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $styleAtr)), '_') . ':' . $styleValue . ';';
+            }
+            if ($activeStates) {
+                $styles .= ' .ff-btn-submit { ' . $activeStates . ' }';
+            }
+            $hoverStates = '';
+            foreach ($buttonHoverStyles as $styleAtr => $styleValue) {
+                if (!$styleValue) {
+                    continue;
+                }
+                if ($styleAtr == 'borderRadius') {
+                    $styleValue .= 'px';
+                }
+                $hoverStates .= ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $styleAtr)), '-') . ':' . $styleValue . ';';
+            }
+            if ($hoverStates) {
+                $styles .= ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
+            }
+        } else {
+            $styles .= ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
+        }
+        return $styles;
+    }
+
+    public function filterAcceptedFields($components, $formId)
+    {
+        if (!Helper::isConversionForm($formId)) {
+            return $components;
+        }
+
+        $generalFields = ArrayHelper::get($components, 'general', []);
+        $advancedFields = ArrayHelper::get($components, 'advanced', []);
+
+        $acceptedFieldElements = [
+            'input_email',
+            'input_text',
+            'textarea',
+            'select_country',
+            'input_number',
+            'select',
+            'input_radio',
+            'input_checkbox',
+            'select',
+            'input_url',
+            'input_date',
+            'custom_html',
+            'phone',
+            'section_break',
+            'terms_and_condition',
+            'ratings',
+            'input_password'
+        ];
+
+        $elements = [];
+
+        $allFields = array_merge($generalFields, $advancedFields);
+
+        foreach ($allFields as $field) {
+            $element = $field['element'];
+            if (in_array($element, $acceptedFieldElements)) {
+                $field['style_pref'] = [
+                    'layout'           => 'default',
+                    'media'            => '',
+                    'brightness'       => 0,
+                    'alt_text'         => '',
+                    'media_x_position' => 50,
+                    'media_y_position' => 50
+                ];
+
+                $elements[] = $field;
+            }
+        }
+        $elements = apply_filters('fluent_conversational_editor_elements', $elements, $formId);
+
+        //   dd($elements); die();
+
+        return [
+            'general' => $elements
+        ];
+    }
+
+    public function printLoadedScripts()
+    {
+        $jsScripts = $this->getRegisteredScripts();
+        if ($jsScripts) {
+            $jsTypeAttr = current_theme_supports('html5', 'script') ? '' : " type='text/javascript'";
+            add_action('fluentform_conversational_frame_footer', function () use ($jsScripts, $jsTypeAttr) {
+                foreach ($jsScripts as $handle => $jsScript) {
+                    if (empty($jsScript->src)) {
+                        continue;
+                    }
+                    if ($data = ArrayHelper::get($jsScript->extra, 'data')) {
+                        printf("<script%s id='%s-js-extra'>\n", $jsTypeAttr, esc_attr($handle));
+                        echo "$data\n";
+                        echo "</script>\n";
+                    }
+                    $src = esc_attr($jsScript->src);
+                    $src = add_query_arg('ver', $jsScript->ver, $src);
+                    echo "<script{$jsTypeAttr} id='" . esc_attr($handle) . "' src='" . $src . "'></script>\n";
+                }
+            }, 1);
+        }
+
+        $cssStyles = $this->getRegisteredStyles();
+        if ($cssStyles) {
+            $cssTypeAttr = current_theme_supports('html5', 'style') ? '' : ' type="text/css"';
+            add_action('fluentform_conversational_frame_head', function () use ($cssStyles, $cssTypeAttr) {
+                foreach ($cssStyles as $styleName => $cssStyle) {
+                    if (empty($cssStyle->src)) {
+                        continue;
+                    }
+                    $src = esc_attr($cssStyle->src);
+                    $src = add_query_arg('ver', $cssStyle->ver, $src);
+
+                    echo "<link rel='stylesheet' id='" . esc_attr($styleName) . "' href='" . $src . "'{$cssTypeAttr} media='all' />\n";
+                }
+            });
+        }
+    }
+
+    private function getRegisteredScripts()
+    {
+        global $wp_scripts;
+
+        if (!$wp_scripts) {
+            return [];
+        }
+
+        $jsScripts = [];
+
+        $pluginUrl = plugins_url() . '/fluentform';
+
+        foreach ($wp_scripts->queue as $script) {
+            $item = $wp_scripts->registered[$script];
+            $src = $wp_scripts->registered[$script]->src;
+
+            if (!strpos($src, $pluginUrl) === false) {
+                continue;
+            }
+
+            foreach ($item->deps as $dep) {
+                if (!isset($items[$dep])) {
+                    $child = $wp_scripts->registered[$dep];
+                    if ($child->src) {
+                        $jsScripts[$dep] = $child;
+                    } else {
+                        // this core file maybe
+                        $childDependencies = $child->deps;
+                        foreach ($childDependencies as $childDependency) {
+                            $childX = $wp_scripts->registered[$childDependency];
+                            if ($childX->src) {
+                                $jsScripts[$childDependency] = $childX;
+                            }
+                        }
+                    }
+                }
+            }
+            $jsScripts[$script] = $item;
+        }
+
+        return $jsScripts;
+    }
+
+    private function getRegisteredStyles()
+    {
+        $wp_styles = wp_styles();
+        if (!$wp_styles) {
+            return [];
+        }
+
+        $cssStyles = [];
+
+        $pluginUrl = plugins_url() . '/fluentform';
+
+        foreach ($wp_styles->queue as $style) {
+            $item = $wp_styles->registered[$style];
+            $src = $wp_styles->registered[$style]->src;
+
+            if (!strpos($src, $pluginUrl) === false) {
+                continue;
+            }
+
+            foreach ($item->deps as $dep) {
+                if (!isset($items[$dep])) {
+                    $child = $wp_styles->registered[$dep];
+                    if ($child->src) {
+                        $cssStyles[$dep] = $child;
+                    } else {
+                        // this core file maybe
+                        $childDependencies = $child->deps;
+                        foreach ($childDependencies as $childDependency) {
+                            $childX = $wp_styles->registered[$childDependency];
+                            if ($childX->src) {
+                                $cssStyles[$childDependency] = $childX;
+                            }
+                        }
+                    }
+                }
+            }
+            $cssStyles[$style] = $item;
+        }
+
+        return $cssStyles;
+    }
+
+    public function renderShortcode($form)
+    {
+        $formId = $form->id;
+        $form = Converter::convert($form);
+        $submitCss = $this->getSubmitBttnStyle($form);
+
+        wp_enqueue_script(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
+            array(),
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        $metaSettings = $this->getMetaSettings($formId);
+        $designSettings = $this->getDesignSettings($formId);
+        $instanceId = $form->instance_index;
+        $varName = 'fluent_forms_global_var_' . $instanceId;
+        wp_localize_script('fluent_forms_conversational_form', $varName, [
+            'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
+            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'form'                     => $form,
+            'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
+            'i18n'                     => $metaSettings['i18n'],
+            'form_id'                  => $form->id,
+            'is_inline_form'           => true,
+            'design'                   => $designSettings
+        ]);
+
+        return View::make('public.conversational-form-inline', [
+            'generated_css'   => $this->getGeneratedCss($formId),
+            'design'          => $designSettings,
+            'submit_css'      => $submitCss,
+            'form_id'         => $formId,
+            'meta'            => $metaSettings,
+            'global_var_name' => $varName,
+            'instance_id'     => $instanceId,
+            'is_inline'       => 'yes'
+        ]);
+    }
+}
