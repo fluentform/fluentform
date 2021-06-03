@@ -1,6 +1,22 @@
 <template>
     <div class="ffc_design_elements">
         <el-form label-position="left" label-width="220px" :data="design_settings">
+            <el-form-item class="fcc_label_top" label="Font">
+                <el-select size="mini" style="width: 100%; margin-top: 10px; margin-bottom: 10px;" v-model="design_settings.font_family" clearable filterable placeholder="Use System Default">
+                    <el-option-group
+                        v-for="(groups, groupName) in fonts"
+                        :key="groupName"
+                        :label="groupName">
+                        <el-option
+                            v-for="(item,itemName) in groups"
+                            :key="itemName"
+                            :label="itemName"
+                            :value="itemName">
+                        </el-option>
+                    </el-option-group>
+                </el-select>
+                <p style="text-align: left; font-style: italic; " v-if="design_settings.font_family">Select Font will apply only for landing page UI.</p>
+            </el-form-item>
             <el-form-item label="Questions">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.question_color = color; }"
@@ -55,7 +71,7 @@ import PhotoUploader from '../../../common/PhotoUploader';
 
 export default {
     name: 'DesignElement',
-    props: ['design_settings', 'has_pro'],
+    props: ['design_settings', 'has_pro', 'fonts'],
     components: {
         PhotoUploader
     },

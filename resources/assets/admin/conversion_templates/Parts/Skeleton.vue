@@ -10,7 +10,7 @@
                     </ul>
                 </div>
                 <div v-loading="saving" class="ffc_sidebar_body">
-                    <design-elements :has_pro="has_pro" v-if="active_tab == 'design'" :design_settings="design_settings"/>
+                    <design-elements :has_pro="has_pro" :fonts="fonts" v-if="active_tab == 'design'" :design_settings="design_settings"/>
                     <div style="padding-top: 20px;" v-else-if="active_tab == 'meta'">
                         <p>Set your social sharing meta texts and form messages here</p>
                     </div>
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="ffc_design_container">
-                <design-preview :has_pro="has_pro" v-if="active_tab == 'design'" @css_generated="(css) => { generated_css = css; }"
+                <design-preview :meta_settings="meta_settings" :has_pro="has_pro" v-if="active_tab == 'design'" :fonts="fonts" @css_generated="(css) => { generated_css = css; }"
                                 :design_settings="design_settings"
                                 :form_id="form_id"/>
                 <meta-setting-view v-else-if="active_tab == 'meta'" :meta_settings="meta_settings"/>
@@ -59,7 +59,8 @@ export default {
             saving: false,
             loading: true,
             share_url: '',
-            has_pro: true
+            has_pro: !!window.ffc_conv_vars.has_pro,
+            fonts: window.ffc_conv_vars.fonts
         }
     },
     methods: {

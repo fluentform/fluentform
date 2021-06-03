@@ -8,6 +8,9 @@ import {
     Row,
     Col,
     FormItem,
+    Select,
+    OptionGroup,
+    Option,
     Slider,
     Button,
     Loading,
@@ -22,6 +25,9 @@ Vue.use(Row);
 Vue.use(Col);
 Vue.use(FormItem);
 Vue.use(ColorPicker);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(OptionGroup);
 Vue.use(Slider);
 Vue.use(Switch);
 Vue.use(Button);
