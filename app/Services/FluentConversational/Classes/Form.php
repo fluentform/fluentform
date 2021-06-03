@@ -19,8 +19,6 @@ class Form
     {
         add_action('wp', [$this, 'render'], 100);
 
-        add_action('wp_ajax_ff_get_conversational_form_fields', [$this, 'get_setting_fields']);
-
         add_action('wp_ajax_ff_get_conversational_form_settings', [$this, 'getSettingsAjax']);
 
         add_action('wp_ajax_ff_store_conversational_form_settings', [$this, 'saveSettingsAjax']);
@@ -30,6 +28,8 @@ class Form
         add_filter('fluentform_form_admin_menu', array($this, 'pushDesignTab'), 10, 2);
 
         add_filter('ff_fluentform_form_application_view_conversational_design', array($this, 'renderDesignSettings'), 10, 1);
+
+        add_filter('fluent_editor_element_settings_placement', array($this, 'maybeAlterPlacement'), 10, 2);
 
         // elements
         new WelcomeScreen();
@@ -139,88 +139,6 @@ class Form
             'message'   => __('Settings successfully updated'),
             'share_url' => $shareUrl
         ]);
-    }
-
-    public function get_setting_fields()
-    {
-        $fields = [
-            [
-                'key'       => 'title',
-                'label'     => 'Title',
-                'component' => 'text',
-                'tips'      => 'The title of your Conversational Form'
-            ],
-            [
-                'key'       => 'description',
-                'label'     => 'Description',
-                'component' => 'wp-editor',
-                'tips'      => 'Description below the form title',
-            ],
-            [
-                'key'       => 'after_complete_message',
-                'label'     => 'Complete Message',
-                'component' => 'wp-editor',
-                'tips'      => 'Show message after form is completed and before submission',
-            ],
-            [
-                'key'       => 'header_color',
-                'label'     => 'Header',
-                'component' => 'color_picker',
-                'tips'      => 'Header color of the page',
-            ],
-            [
-                'key'       => 'background_color',
-                'label'     => 'Background',
-                'component' => 'color_picker',
-                'tips'      => 'Background color of the page',
-            ],
-            [
-                'key'       => 'questions',
-                'label'     => 'Questions',
-                'component' => 'color_picker',
-                'tips'      => 'Choose questions Color for your form',
-            ],
-            [
-                'key'       => 'answers',
-                'label'     => 'Answers',
-                'component' => 'color_picker',
-                'tips'      => 'Choose answers Color for your form',
-            ],
-            [
-                'key'       => 'bttn_color',
-                'label'     => 'Buttons',
-                'component' => 'color_picker',
-                'tips'      => 'Choose Button Color for your form steps',
-            ],
-            [
-                'key'       => 'bttn_text',
-                'label'     => 'Buttons Text',
-                'tips'      => 'Choose button text color for your form ',
-                'component' => 'color_picker'
-            ],
-            [
-                'key'            => 'disable_step_navigation',
-                'label'          => 'Step Navigation',
-                'tips'           => 'Disable Step Navigation',
-                'component'      => 'checkbox-single',
-                'checkbox_label' => 'Disable step navigation'
-            ],
-            [
-                'key'       => 'logo',
-                'label'     => 'Form Logo',
-                'tips'      => 'You may upload your logo and it will show on the top of the page',
-                'component' => 'image_widget'
-            ],
-            [
-                'key'       => 'background_image',
-                'label'     => 'Background Image',
-                'tips'      => ' You may upload Background image',
-                'component' => 'image_widget'
-            ],
-        ];
-        wp_send_json_success([
-            'settings_fields' => $fields,
-        ], 200);
     }
 
     public function getDesignSettings($formId)
@@ -433,6 +351,13 @@ class Form
                     'media_y_position' => 50
                 ];
 
+                if($element == 'terms_and_condition') {
+                    $existingSettings = $field['settings'];
+                    $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
+                    $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                    $field['settings'] = $existingSettings;
+                }
+
                 $elements[] = $field;
             }
         }
@@ -608,5 +533,33 @@ class Form
             'instance_id'     => $instanceId,
             'is_inline'       => 'yes'
         ]);
+    }
+
+    public function maybeAlterPlacement($placements, $form)
+    {
+        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
+            return $placements;
+        }
+
+        $placements['terms_and_condition']['general'] = [
+            'admin_field_label',
+            'validation_rules',
+            'tnc_html',
+            'tc_agree_text',
+            'tc_dis_agree_text'
+        ];
+
+        $placements['terms_and_condition']['generalExtras'] = [
+            'tc_agree_text' => [
+                'template'  => 'inputText',
+                'label'     => 'Agree Button Text',
+            ],
+            'tc_dis_agree_text' => [
+                'template'  => 'inputText',
+                'label'     => 'Disagree Button Text',
+            ]
+        ];
+
+        return $placements;
     }
 }
