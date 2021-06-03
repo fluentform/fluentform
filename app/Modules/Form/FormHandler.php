@@ -77,6 +77,13 @@ class FormHandler
 
         $this->setForm($formId);
 
+        if (!$this->form) {
+            wp_send_json([
+                'errors' => [],
+                'message' => 'Sorry, No corresponding form found'
+            ], 423);
+        }
+
         // Parse the form and get the flat inputs with validations.
         $fields = FormFieldsParser::getInputs($this->form, ['rules', 'raw']);
 
@@ -168,6 +175,7 @@ class FormHandler
 
             $form->settings = $formSettings ? json_decode($formSettings->value, true) : [];
         }
+
 
         $confirmation = apply_filters(
             'fluentform_form_submission_confirmation',
@@ -346,7 +354,7 @@ class FormHandler
         }
 
         if ($errors) {
-            wp_send_json(['errors' => $errors], 422);
+            wp_send_json(['errors' => $errors], 423);
         }
 
         return true;

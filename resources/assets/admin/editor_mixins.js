@@ -143,5 +143,10 @@ export default {
         _startCase(string) {
             return _ff.startCase(string);
         }
+    },
+    data() {
+        return {
+            is_conversion_form: !!window.FluentFormApp.is_conversion_form
+        }
     }
 };

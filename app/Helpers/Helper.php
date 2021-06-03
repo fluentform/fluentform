@@ -474,7 +474,7 @@ class Helper
         $inputNames = self::getFieldNamesStatuses($items);
         $uniqueNames = array_unique($inputNames);
 
-        if(count($inputNames) == count($uniqueNames)) {
+        if (count($inputNames) == count($uniqueNames)) {
             return [];
         }
 
@@ -486,20 +486,55 @@ class Helper
         $names = [];
 
         foreach ($fields as $field) {
-            if(ArrayHelper::get($field, 'element') == 'container') {
+            if (ArrayHelper::get($field, 'element') == 'container') {
                 $columns = ArrayHelper::get($field, 'columns', []);
                 foreach ($columns as $column) {
                     $columnInputs = self::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
                     $names = array_merge($names, $columnInputs);
                 }
             } else {
-                if($name = ArrayHelper::get($field, 'attributes.name')) {
+                if ($name = ArrayHelper::get($field, 'attributes.name')) {
                     $names[] = $name;
                 }
             }
         }
 
         return $names;
+    }
 
+    public static function isConversionForm($formId)
+    {
+        static $cache = [];
+        if (isset($cache[$formId])) {
+            return $cache[$formId];
+        }
+
+        $cache[$formId] = self::getFormMeta($formId, 'is_conversion_form') == 'yes';
+        return $cache[$formId];
+    }
+
+    public static function getPreviewUrl($formId, $type = '')
+    {
+        if ($type == 'conversational') {
+            return self::getConversionUrl($formId);
+        } else if ($type == 'classic') {
+            return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $formId) . '#ff_preview';
+        } else {
+            if (self::isConversionForm($formId)) {
+                return self::getConversionUrl($formId);
+            }
+        }
+
+        return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $formId) . '#ff_preview';
+    }
+
+    private static function getConversionUrl($formId)
+    {
+        $meta = self::getFormMeta($formId, 'ffc_form_settings_meta', []);
+        $key = ArrayHelper::get($meta, 'share_key', '');
+        if($key) {
+            return site_url('?fluent-form=' . $formId.'&form='.$key);
+        }
+        return site_url('?fluent-form=' . $formId);
     }
 }

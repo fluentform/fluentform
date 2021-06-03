@@ -82,7 +82,7 @@ Vue.mixin({
 new Vue({
     el: '#ff_all_forms_app',
     components: {
-        'ff_all_forms_table': AllForms  
+        'ff_all_forms_table': AllForms
     },
     data: {},
     beforeCreate() {

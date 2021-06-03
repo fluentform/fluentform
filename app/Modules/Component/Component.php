@@ -137,13 +137,14 @@ class Component
      */
     public function index()
     {
-        $this->app->doAction(
-            'fluent_editor_init',
-            $components = $this->app->make('components')
-        );
+        $formId = intval($_REQUEST['formId']);
+        $components = $this->app->make('components');
+
+        $this->app->doAction( 'fluent_editor_init', $components );
 
         $editorComponents = $components->sort()->toArray();
-        $editorComponents = $this->app->applyFilters('fluent_editor_components', $editorComponents);
+        $editorComponents = apply_filters('fluent_editor_components', $editorComponents, $formId);
+
         $countries = $this->app->load($this->app->appPath('Services/FormBuilder/CountryNames.php'));
 
         wp_send_json_success(array(
@@ -278,10 +279,12 @@ class Component
                 'id' => null,
                 'title' => null,
                 'permission' => '',
+                'type' => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ), $atts);
 
             $atts = shortcode_atts($shortcodeDefaults, $atts);
+
             return $this->renderForm($atts);
         });
 
@@ -482,10 +485,16 @@ class Component
             return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
         }
 
+
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
 
         $form->instance_css_class = $instanceCssClass;
         $form->instance_index = Helper::$formInstance;
+
+
+        if($atts['type'] == 'conversational') {
+            return (new \FluentConversational\Form())->renderShortcode($form);
+        }
 
         $formBuilder = $this->app->make('formBuilder');
         $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);

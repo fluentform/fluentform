@@ -25,6 +25,16 @@ class Predefined extends Form
                 'json'       => '[{"id":"132","title":"Blank Form","form":{"fields":[],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit Form","img_url":""}},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline","asteriskPlacement": "asterisk-right"}},"notifications":{"name":"Admin Notification Email","sendTo":{"type":"email","email":"{wp.admin_email}","field":"email","routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"[{inputs.names}] New Form Submission","message":"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]'
             ),
 
+            'conversational' => array(
+                'screenshot' => App::publicUrl('img/forms/conversational.gif'),
+                'createable' => true,
+                'title'      => 'Conversational Form',
+                'brief'      => 'Create Smart form UI',
+                'category'   => 'Basic',
+                'tags'       => ['contact', 'typeform', 'conversational', 'form'],
+                'json'       => '[{"id":"8","title":"Conversational Form","status":"published","appearance_settings":null,"form_fields":{"fields":[{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text","value":"","class":"","placeholder":"eg: John Doe","maxlength":""},"settings":{"container_class":"","label":"Your Name","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[],"is_unique":"no","unique_validation_message":"This value need to be unique."},"editor_options":{"title":"Simple Text","icon_class":"ff-edit-text","template":"inputText"},"style_pref":{"layout":"default","media":"","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264130200.4393750282723139"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":"Email Address"},"settings":{"container_class":"","label":"Email","label_placement":"","help_message":"Please Provide your Email Address","admin_field_label":"Email Address","validation_rules":{"required":{"value":true,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"is_unique":"no","unique_validation_message":"Email address need to be unique."},"editor_options":{"title":"Email Address","icon_class":"ff-edit-email","template":"inputText"},"style_pref":{"layout":"default","media":"","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264372080.5731140635572141"},{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text_1","value":"","class":"","placeholder":"Query Subject","maxlength":""},"settings":{"container_class":"","label":"Subject","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[],"is_unique":"no","unique_validation_message":"This value need to be unique."},"editor_options":{"title":"Simple Text","icon_class":"ff-edit-text","template":"inputText"},"style_pref":{"layout":"default","media":"","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264620550.8688317001333026"},{"index":3,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"Your Query","rows":3,"cols":2,"maxlength":""},"settings":{"container_class":"","label":"Your Query","admin_field_label":"Query","label_placement":"","help_message":"Please let us know details about your query","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Text Area","icon_class":"ff-edit-textarea","template":"inputTextarea"},"style_pref":{"layout":"default","media":"","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264839650.04799061605619115"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit","img_url":""},"normal_styles":{"backgroundColor":"#409EFF","borderColor":"#409EFF","color":"#ffffff","borderRadius":"","minWidth":""},"hover_styles":{"backgroundColor":"#ffffff","borderColor":"#409EFF","color":"#409EFF","borderRadius":"","minWidth":""},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"has_payment":"0","type":"form","conditions":null,"created_by":"1","created_at":"2021-06-01 05:25:54","updated_at":"2021-06-01 05:48:59","metas":[{"meta_key":"formSettings","value":"{\"confirmation\":{\"redirectTo\":\"samePage\",\"messageToShow\":\"<h2>Thank you for your message. We will get in touch with you shortly<\/h2>\",\"customPage\":null,\"samePageFormBehavior\":\"hide_form\",\"customUrl\":null},\"restrictions\":{\"limitNumberOfEntries\":{\"enabled\":false,\"numberOfEntries\":null,\"period\":\"total\",\"limitReachedMsg\":\"Maximum number of entries exceeded.\"},\"scheduleForm\":{\"enabled\":false,\"start\":null,\"end\":null,\"pendingMsg\":\"Form submission is not started yet.\",\"expiredMsg\":\"Form submission is now closed.\",\"selectedDays\":[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]},\"requireLogin\":{\"enabled\":false,\"requireLoginMsg\":\"You must be logged in to submit the form.\"},\"denyEmptySubmission\":{\"enabled\":false,\"message\":\"Sorry, you cannot submit an empty form. Let us hear what you wanna say.\"}},\"layout\":{\"labelPlacement\":\"top\",\"helpMessagePlacement\":\"with_label\",\"errorMessagePlacement\":\"inline\",\"asteriskPlacement\":\"asterisk-right\"},\"delete_entry_on_submission\":\"no\",\"appendSurveyResult\":{\"enabled\":false,\"showLabel\":false,\"showCount\":false}}"},{"meta_key":"notifications","value":"{\"name\":\"Admin Notification Email\",\"sendTo\":{\"type\":\"email\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] New Form Submission\",\"message\":\"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\"}"},{"meta_key":"is_conversion_form","value":"yes"},{"meta_key":"step_data_persistency_status","value":"no"},{"meta_key":"_primary_email_field","value":"email"}]}]'
+            ),
+
             'basic_contact_form' => array(
                 'screenshot' => App::publicUrl('img/forms/contact_form.png'),
                 'createable' => true,
@@ -58,7 +68,7 @@ class Predefined extends Form
                 'json'       => '[{"id":"4","title":"Support Form","form":{"fields":[{"index":2,"element":"input_name","attributes":{"name":"names","data-type":"name-element"},"settings":{"container_class":"","admin_field_label":"","conditional_logics":[]},"fields":{"first_name":{"element":"input_text","attributes":{"type":"text","name":"first_name","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"First Name","help_message":"","visible":true,"validation_rules":{"required":{"value":true,"message":"First Name field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"middle_name":{"element":"input_text","attributes":{"type":"text","name":"middle_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Middle Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"last_name":{"element":"input_text","attributes":{"type":"text","name":"last_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Last Name","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}}},"editor_options":{"title":"Name Fields","element":"name-fields","icon_class":"icon-user","template":"nameFields"},"uniqElKey":"el_1516797727681"},{"index":7,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":"you@domain.com"},"settings":{"container_class":"","label":"Email","label_placement":"","help_message":"","validation_rules":{"required":{"value":true,"message":"Email field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":[]},"editor_options":{"title":"Email","icon_class":"icon-envelope-o","template":"inputText"},"uniqElKey":"el_1516797731343"},{"index":3,"element":"select","attributes":{"name":"department","value":"","id":"","class":""},"settings":{"label":"Department","help_message":"","container_class":"","label_placement":"","placeholder":"- Select Department -","validation_rules":{"required":{"value":true,"message":"Department field is required"}},"conditional_logics":[]},"options":{"Web Design":"Web Design","Web Development":"Web Development","WordPress Development":"WordPress Development","DevOps":"DevOps"},"editor_options":{"title":"Dropdown","icon_class":"icon-caret-square-o-down","element":"select","template":"select"},"uniqElKey":"el_1516797735245"},{"index":1,"element":"input_text","attributes":{"type":"text","name":"subject","value":"","class":"","placeholder":"Type your subject"},"settings":{"container_class":"","label":"Subject","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":true,"message":"Subject field is required"}},"conditional_logics":[]},"editor_options":{"title":"Text Input","icon_class":"icon-text-width","template":"inputText"},"uniqElKey":"el_1516797770161"},{"index":2,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"","rows":4,"cols":2},"settings":{"container_class":"","label":"Description","label_placement":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Textarea","icon_class":"icon-paragraph","template":"inputTextarea"},"uniqElKey":"el_1516797774136"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit Form","img_url":""}},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline"}},"notifications":{"name":"Support Form Notification","sendTo":{"type":"email","email":"{wp.admin_email}","field":null,"routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"{inputs.subject}, Support Form","message":"<p>{all_data}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]'
             ),
 
-            'polling_form' => array(
+            'polling_form'                          => array(
                 'screenshot' => App::publicUrl('img/forms/polling_form.png'),
                 'createable' => true,
                 'title'      => 'Polling Form',
@@ -69,7 +79,7 @@ class Predefined extends Form
             ),
 
             //form number : 55
-            'product_order_form' => array(
+            'product_order_form'                    => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Product Order Form',
@@ -81,19 +91,19 @@ class Predefined extends Form
             ),
 
             //form number : 58
-            'online_service_order_form' => array(
+            'online_service_order_form'             => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Online Service Order Form',
                 'is_pro'     => false,
                 'brief'      => 'This form can be used to create an online service order. (Payment Module is required)',
                 'category'   => "Product",
-                'tag'        => ["Order", "service", "online help", "handyman","payment"],
+                'tag'        => ["Order", "service", "online help", "handyman", "payment"],
                 'json'       => '[{"id":"204","title":"Service Order Form","status":"published","appearance_settings":null,"form_fields":{"fields":[{"index":0,"element":"input_name","attributes":{"name":"names","data-type":"name-element"},"settings":{"container_class":"","admin_field_label":"Name","conditional_logics":[],"label_placement":"top"},"fields":{"first_name":{"element":"input_text","attributes":{"type":"text","name":"first_name","value":"","id":"","class":"","placeholder":"First Name","maxlength":""},"settings":{"container_class":"","label":"First Name","help_message":"","visible":true,"validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"middle_name":{"element":"input_text","attributes":{"type":"text","name":"middle_name","value":"","id":"","class":"","placeholder":"Middle Name","required":false,"maxlength":""},"settings":{"container_class":"","label":"Middle Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"last_name":{"element":"input_text","attributes":{"type":"text","name":"last_name","value":"","id":"","class":"","placeholder":"Last Name","required":false,"maxlength":""},"settings":{"container_class":"","label":"Last Name","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}}},"editor_options":{"title":"Name Fields","element":"name-fields","icon_class":"ff-edit-name","template":"nameFields"},"uniqElKey":"el_15924974034200.26712438122064186"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":"Email Address"},"settings":{"container_class":"","label":"Email","label_placement":"","help_message":"","admin_field_label":"","validation_rules":{"required":{"value":true,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":[],"is_unique":"no","unique_validation_message":"Email address need to be unique."},"editor_options":{"title":"Email Address","icon_class":"ff-edit-email","template":"inputText"},"uniqElKey":"el_15924974402130.012591725433457768"},{"index":1,"element":"container","attributes":[],"settings":{"container_class":""},"columns":[{"fields":[{"index":8,"element":"multi_payment_component","attributes":{"type":"radio","name":"payment_input","value":""},"settings":{"container_class":"","label":"Choose Service","admin_field_label":"Product","label_placement":"","display_type":"","help_message":"","is_payment_field":"yes","pricing_options":[{"label":"Service Item 1 - $10\/hour","value":10,"image":""},{"label":"Service Item 2 - $19\/hour","value":"19"},{"label":"Service Item 3- $29\/hour","value":"29"}],"price_label":"Price:","enable_quantity":false,"enable_image_input":false,"is_element_lock":false,"layout_class":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Payment Field","icon_class":"ff-edit-shopping-cart","element":"input-radio","template":"inputMultiPayment"},"uniqElKey":"el_1592502076962"}]},{"fields":[{"index":6,"element":"item_quantity_component","attributes":{"type":"number","name":"item-quantity","value":"1","id":"","class":"","placeholder":"Hours","data-quantity_item":"yes"},"settings":{"container_class":"","is_payment_field":"yes","label":"How Many Hours?","admin_field_label":"Hours","label_placement":"","help_message":"","number_step":"","prefix_label":"","suffix_label":"","target_product":"payment_input","validation_rules":{"required":{"value":true,"message":"This field is required"},"numeric":{"value":true,"message":"This field must contain numeric value"},"min":{"value":"1","message":"Minimum value is "},"max":{"value":"","message":"Maximum value is "}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Item Quantity","icon_class":"ff-edit-keyboard-o","template":"inputText"},"uniqElKey":"el_15925020855320.9400112640060003"}]}],"editor_options":{"title":"Two Column Container","icon_class":"ff-edit-column-2"},"uniqElKey":"el_15925020745170.6041197871212416"},{"index":10,"element":"payment_method","attributes":{"name":"payment_method","type":"radio","value":""},"settings":{"container_class":"","label":"Choose Payment Method","default_method":"","label_placement":"","help_message":"","payment_methods":{"stripe":{"title":"Credit\/Debit Card (Stripe)","enabled":"yes","method_value":"stripe","settings":{"option_label":{"type":"text","template":"inputText","value":"Pay with Card (Stripe)","label":"Method Label"},"require_billing_info":{"type":"checkbox","template":"inputYesNoCheckbox","value":"no","label":"Require Billing info"},"require_shipping_info":{"type":"checkbox","template":"inputYesNoCheckbox","value":"no","label":"Collect Shipping Info"}}},"paypal":{"title":"PayPal","enabled":"yes","method_value":"paypal","settings":{"option_label":{"type":"text","template":"inputText","value":"Pay with PayPal","label":"Method Label"},"require_shipping_address":{"type":"checkbox","template":"inputYesNoCheckbox","value":"no","label":"Require Shipping Address"}}},"test":{"title":"Offline Payment","enabled":"yes","method_value":"test","settings":{"option_label":{"type":"text","template":"inputText","value":"Test Payment","label":"Method Label"}}}},"admin_field_label":"","conditional_logics":[]},"editor_options":{"title":"Payment Method Field","icon_class":"ff-edit-credit-card","template":"inputPaymentMethods"},"uniqElKey":"el_15924975611200.8035560583323771"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Purchase {payment_total}","img_url":""},"normal_styles":{"backgroundColor":"#409EFF","borderColor":"#409EFF","color":"#ffffff","borderRadius":"","minWidth":""},"hover_styles":{"backgroundColor":"#ffffff","borderColor":"#409EFF","color":"#409EFF","borderRadius":"","minWidth":""},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"has_payment":"1","type":"form","conditions":null,"created_by":"1","created_at":"2020-06-18 23:40:30","updated_at":"2020-06-18 23:44:57","metas":[{"meta_key":"formSettings","value":"{\"confirmation\":{\"redirectTo\":\"samePage\",\"messageToShow\":\"<p>Thank you for your order<\/p> <p>{payment.receipt}<\/p>\",\"customPage\":null,\"samePageFormBehavior\":\"hide_form\",\"customUrl\":null},\"restrictions\":{\"limitNumberOfEntries\":{\"enabled\":false,\"numberOfEntries\":null,\"period\":\"total\",\"limitReachedMsg\":\"Maximum number of entries exceeded.\"},\"scheduleForm\":{\"enabled\":false,\"start\":null,\"end\":null,\"pendingMsg\":\"Form submission is not started yet.\",\"expiredMsg\":\"Form submission is now closed.\"},\"requireLogin\":{\"enabled\":false,\"requireLoginMsg\":\"You must be logged in to submit the form.\"},\"denyEmptySubmission\":{\"enabled\":false,\"message\":\"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say.\"}},\"layout\":{\"labelPlacement\":\"top\",\"helpMessagePlacement\":\"with_label\",\"errorMessagePlacement\":\"inline\",\"asteriskPlacement\":\"asterisk-right\"},\"delete_entry_on_submission\":\"no\",\"appendSurveyResult\":{\"enabled\":false,\"showLabel\":false,\"showCount\":false}}"},{"meta_key":"notifications","value":"{\"name\":\"New Order Notification to Admin\",\"sendTo\":{\"type\":\"email\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] New Form Submission\",\"message\":\"<h4>Order Items<\/h4> <p>{payment.order_items}<\/p> <h4>Other Data:<\/h4> <p>{all_data}<\/p> <p>This form submitted at: {embed_post.permalink}<\/p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\",\"attachments\":[],\"pdf_attachments\":[]}"},{"meta_key":"step_data_persistency_status","value":"no"},{"meta_key":"_payment_settings","value":"{\"currency\":\"USD\",\"push_meta_to_stripe\":\"no\",\"receipt_email\":\"email\",\"transaction_type\":\"product\",\"stripe_checkout_methods\":[\"card\"],\"stripe_meta_data\":[{\"item_value\":\"\",\"label\":\"\"}]}"},{"meta_key":"notifications","value":"{\"name\":\"Email To Customer\",\"sendTo\":{\"type\":\"field\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] Your Order Receipt\",\"message\":\"<p>{payment.receipt}<\/p> <p>Thank you<\/p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\",\"attachments\":[],\"pdf_attachments\":[]}"},{"meta_key":"advancedValidationSettings","value":"{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":\"\",\"operator\":\"=\",\"value\":\"\"}],\"error_message\":\"\",\"validation_type\":\"fail_on_condition_met\"}"},{"meta_key":"report_data_migrated","value":"\"yes\""}]}]'
             ),
 
             //form number : 60
-            'payment_donation_form' => array(
+            'payment_donation_form'                 => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Online Donation Form',
@@ -106,7 +116,7 @@ class Predefined extends Form
 
 
             //form number : 61
-            'order_bump_form' => array(
+            'order_bump_form'                       => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Order Bump Example Form',
@@ -118,7 +128,7 @@ class Predefined extends Form
             ),
 
             //form number : 62
-            'student_survey_form' => array(
+            'student_survey_form'                   => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Student Survey Form',
@@ -130,7 +140,7 @@ class Predefined extends Form
             ),
 
             //form number : 63
-            'classroom_observation_form' => array(
+            'classroom_observation_form'            => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Classroom Observation Form',
@@ -142,7 +152,7 @@ class Predefined extends Form
             ),
 
             //form number : 64
-            'client_satisfaction_survey_form' => array(
+            'client_satisfaction_survey_form'       => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Client Satisfaction Survey Form',
@@ -154,7 +164,7 @@ class Predefined extends Form
             ),
 
             //form number : 67
-            'customer_complaint_form' => array(
+            'customer_complaint_form'               => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Customer Complaint Form',
@@ -167,7 +177,7 @@ class Predefined extends Form
             ),
 
             //form number : 68
-            'course_evaluation_survey_form' => array(
+            'course_evaluation_survey_form'         => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Course Evaluation Survey form',
@@ -180,7 +190,7 @@ class Predefined extends Form
             ),
 
             //form number : 70
-            'market_research_survey_form' => array(
+            'market_research_survey_form'           => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Market Research Survey Form',
@@ -205,7 +215,7 @@ class Predefined extends Form
             ),
 
             //form number : 72
-            'university_enrollment_form' => array(
+            'university_enrollment_form'            => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'University Enrollment Form',
@@ -218,7 +228,7 @@ class Predefined extends Form
             ),
 
             //form number : 74
-            'volunteer_signup_form' => array(
+            'volunteer_signup_form'                 => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Volunteer sign up form',
@@ -230,7 +240,7 @@ class Predefined extends Form
             ),
 
             //form number : 76
-            'donation_form' => array(
+            'donation_form'                         => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Donation Form',
@@ -242,7 +252,7 @@ class Predefined extends Form
             ),
 
             //form number : 78
-            'graphic_designer_contact_form' => array(
+            'graphic_designer_contact_form'         => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Graphic Designer Contact Form',
@@ -254,7 +264,7 @@ class Predefined extends Form
             ),
 
             //form number : 79
-            'multi_file_upload_form' => array(
+            'multi_file_upload_form'                => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Multi file upload form',
@@ -266,7 +276,7 @@ class Predefined extends Form
             ),
 
             //form number : 81
-            'highschool_transcript_request_from' => array(
+            'highschool_transcript_request_from'    => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'High School Transcript Request From',
@@ -278,7 +288,7 @@ class Predefined extends Form
             ),
 
             //form number : 82
-            'partnership_application_form' => array(
+            'partnership_application_form'          => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Partnership application form',
@@ -291,7 +301,7 @@ class Predefined extends Form
             ),
 
             //form number : 83
-            'employee_evaluation_form' => array(
+            'employee_evaluation_form'              => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Employee Evaluation Form',
@@ -304,7 +314,7 @@ class Predefined extends Form
             ),
 
             //form number : 85
-            'party_invite_form' => array(
+            'party_invite_form'                     => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Party Invite Form',
@@ -316,7 +326,7 @@ class Predefined extends Form
             ),
 
             //form number : 87
-            'software_survey_form' => array(
+            'software_survey_form'                  => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Software Survey Form',
@@ -328,7 +338,7 @@ class Predefined extends Form
             ),
 
             //form number : 88
-            'hardware_request_form' => array(
+            'hardware_request_form'                 => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Hardware Request Form',
@@ -352,7 +362,7 @@ class Predefined extends Form
             ),
 
             //form number : 92
-            'finance_application_form' => array(
+            'finance_application_form'              => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Finance Application Form',
@@ -364,7 +374,7 @@ class Predefined extends Form
             ),
 
             //form number : 94
-            'blood_donation_form' => array(
+            'blood_donation_form'                   => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Blood Donation Form',
@@ -376,7 +386,7 @@ class Predefined extends Form
             ),
 
             //form number : 95
-            'room_booking_form' => array(
+            'room_booking_form'                     => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Room Booking Form',
@@ -388,7 +398,7 @@ class Predefined extends Form
             ),
 
             //form number : 96
-            'marriage_gift_registration' => array(
+            'marriage_gift_registration'            => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Marriage Gift Registration',
@@ -400,7 +410,7 @@ class Predefined extends Form
             ),
 
             //form number : 97
-            'accident_report_form' => array(
+            'accident_report_form'                  => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Accident Report Form',
@@ -412,7 +422,7 @@ class Predefined extends Form
             ),
 
             //form number : 98
-            'bug_report_form' => array(
+            'bug_report_form'                       => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Bug Report From',
@@ -424,7 +434,7 @@ class Predefined extends Form
             ),
 
             //form number : 100
-            'check_request_form' => array(
+            'check_request_form'                    => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Check Request Form',
@@ -436,7 +446,7 @@ class Predefined extends Form
             ),
 
             //form number : 120
-            'quote_request_form' => array(
+            'quote_request_form'                    => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Quote Request Form',
@@ -447,7 +457,7 @@ class Predefined extends Form
                 'json'       => '[{"id":"120","title":"Quote request (final)","form":{"fields":[{"index":1,"element":"section_break","attributes":{"id":"","class":""},"settings":{"label":"REQUEST FOR QUOTE","description":"","align":"left","conditional_logics":[]},"editor_options":{"title":"Section Break","icon_class":"icon-puzzle-piece","template":"sectionBreak"},"uniqElKey":"el_1570709716273"},{"index":13,"element":"input_date","attributes":{"type":"text","name":"datetime","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Date","admin_field_label":"","label_placement":"","date_format":"m\/d\/Y","help_message":"","is_time_enabled":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Time & Date","icon_class":"icon-calendar-o","template":"inputText"},"uniqElKey":"el_1570709737257"},{"index":1,"element":"section_break","attributes":{"id":"","class":""},"settings":{"label":"","description":"","align":"left","conditional_logics":[]},"editor_options":{"title":"Section Break","icon_class":"icon-puzzle-piece","template":"sectionBreak"},"uniqElKey":"el_1570709776789"},{"index":1,"element":"section_break","attributes":{"id":"","class":""},"settings":{"label":"CONTACT INFORMATION","description":"","align":"left","conditional_logics":[]},"editor_options":{"title":"Section Break","icon_class":"icon-puzzle-piece","template":"sectionBreak"},"uniqElKey":"el_1570709794267"},{"index":0,"element":"input_name","attributes":{"name":"names","data-type":"name-element"},"settings":{"container_class":"","admin_field_label":"Name","conditional_logics":[]},"fields":{"first_name":{"element":"input_text","attributes":{"type":"text","name":"first_name","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"First Name","help_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"middle_name":{"element":"input_text","attributes":{"type":"text","name":"middle_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Middle Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"last_name":{"element":"input_text","attributes":{"type":"text","name":"last_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Last Name","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}}},"editor_options":{"title":"Name Fields","element":"name-fields","icon_class":"icon-user","template":"nameFields"},"uniqElKey":"el_1570709814795"},{"index":4,"element":"address","attributes":{"id":"","class":"","name":"address1","data-type":"address-element"},"settings":{"label":"Address","admin_field_label":"","conditional_logics":[]},"fields":{"address_line_1":{"element":"input_text","attributes":{"type":"text","name":"address_line_1","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Address Line 1","admin_field_label":"","help_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"address_line_2":{"element":"input_text","attributes":{"type":"text","name":"address_line_2","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Address Line 2","admin_field_label":"","help_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"city":{"element":"input_text","attributes":{"type":"text","name":"city","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"City","admin_field_label":"","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"state":{"element":"input_text","attributes":{"type":"text","name":"state","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"State","admin_field_label":"","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"zip":{"element":"input_text","attributes":{"type":"text","name":"zip","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Zip Code","admin_field_label":"","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"country":{"element":"select_country","attributes":{"name":"country","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Country","admin_field_label":"","help_message":"","error_message":"","visible":true,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"country_list":{"active_list":"all","visible_list":[],"hidden_list":[]},"conditional_logics":[]},"options":{"BD":"Bangladesh","US":"US of America"},"editor_options":{"title":"Country List","element":"country-list","icon_class":"icon-text-width","template":"selectCountry"}}},"editor_options":{"title":"Address Fields","element":"address-fields","icon_class":"icon-credit-card","template":"addressFields"},"uniqElKey":"el_1570709821047"},{"index":7,"element":"form_step","attributes":{"id":"","class":""},"settings":{"prev_btn":{"type":"default","text":"Previous","img_url":""},"next_btn":{"type":"default","text":"Next","img_url":""}},"editor_options":{"title":"Form Step","icon_class":"ff-edit-step","template":"formStep"},"uniqElKey":"el_1570860545019"},{"index":1,"element":"section_break","attributes":{"id":"","class":""},"settings":{"label":"PRODUCTS","description":"","align":"left","conditional_logics":[]},"editor_options":{"title":"Section Break","icon_class":"icon-puzzle-piece","template":"sectionBreak"},"uniqElKey":"el_1570709834544"},{"index":3,"element":"custom_html","attributes":[],"settings":{"html_codes":"<p>ITEM 1<\/p>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Custom HTML","icon_class":"icon-code","template":"customHTML"},"uniqElKey":"el_1570710083917"},{"index":1,"element":"container","attributes":[],"settings":[],"columns":[{"fields":[{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text","value":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Product Name:","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Simple Text","icon_class":"icon-text-width","template":"inputText"},"uniqElKey":"el_1570710076041"}]},{"fields":[{"index":7,"element":"select","attributes":{"name":"dropdown","value":"","id":"","class":""},"settings":{"label":"Quantity","admin_field_label":"","help_message":"","container_class":"","label_placement":"","placeholder":"- Select -","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"options":{"1":"1","2":"2","3":"3","4":"4","5":"5","6":"6"},"editor_options":{"title":"Dropdown","icon_class":"icon-caret-square-o-down","element":"select","template":"select"},"uniqElKey":"el_1570709979534"}]}],"editor_options":{"title":"Two Column Container","icon_class":"icon-columns"},"uniqElKey":"el_1570709935743"},{"index":3,"element":"custom_html","attributes":[],"settings":{"html_codes":"<p>ITEM 2<\/p>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Custom HTML","icon_class":"icon-code","template":"customHTML"},"uniqElKey":"el_1570710203341"},{"index":1,"element":"container","attributes":[],"settings":[],"columns":[{"fields":[{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text_4","value":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Product Name:","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Simple Text","icon_class":"icon-text-width","template":"inputText"},"uniqElKey":"el_1570710076041"}]},{"fields":[{"index":7,"element":"select","attributes":{"name":"dropdown_4","value":"","id":"","class":""},"settings":{"label":"Quantity","admin_field_label":"","help_message":"","container_class":"","label_placement":"","placeholder":"- Select -","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"options":{"1":"1","2":"2","3":"3","4":"4","5":"5","6":"6"},"editor_options":{"title":"Dropdown","icon_class":"icon-caret-square-o-down","element":"select","template":"select"},"uniqElKey":"el_1570709979534"}]}],"editor_options":{"title":"Two Column Container","icon_class":"icon-columns"},"uniqElKey":"el_1570710195267"},{"index":3,"element":"custom_html","attributes":[],"settings":{"html_codes":"<p>ITEM 3<\/p>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Custom HTML","icon_class":"icon-code","template":"customHTML"},"uniqElKey":"el_1570710208172"},{"index":1,"element":"container","attributes":[],"settings":[],"columns":[{"fields":[{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text_3","value":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Product Name:","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Simple Text","icon_class":"icon-text-width","template":"inputText"},"uniqElKey":"el_1570710076041"}]},{"fields":[{"index":7,"element":"select","attributes":{"name":"dropdown_3","value":"","id":"","class":""},"settings":{"label":"Quantity","admin_field_label":"","help_message":"","container_class":"","label_placement":"","placeholder":"- Select -","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"options":{"1":"1","2":"2","3":"3","4":"4","5":"5","6":"6"},"editor_options":{"title":"Dropdown","icon_class":"icon-caret-square-o-down","element":"select","template":"select"},"uniqElKey":"el_1570709979534"}]}],"editor_options":{"title":"Two Column Container","icon_class":"icon-columns"},"uniqElKey":"el_1570710194731"},{"index":3,"element":"custom_html","attributes":[],"settings":{"html_codes":"<p>NOTES<\/p>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Custom HTML","icon_class":"icon-code","template":"customHTML"},"uniqElKey":"el_1570710260879"},{"index":3,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"","rows":4,"cols":2},"settings":{"container_class":"","label":"Additional comments or questions:","admin_field_label":"","label_placement":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Text Area","icon_class":"icon-paragraph","template":"inputTextarea"},"uniqElKey":"el_1570710276122"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit Form","img_url":""}},"editor_options":{"title":"Submit Button"}},"stepsWrapper":{"stepStart":{"element":"step_start","attributes":{"id":"","class":""},"settings":{"progress_indicator":"","step_titles":[]},"editor_options":{"title":"Start Paging"}},"stepEnd":{"element":"step_end","attributes":{"id":"","class":""},"settings":{"prev_btn":{"type":"default","text":"Previous","img_url":""}},"editor_options":{"title":"End Paging"}}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline"}},"notifications":{"name":"Admin Notification Email","sendTo":{"type":"email","email":"{wp.admin_email}","field":"email","routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"[{inputs.names}] New Form Submission","message":"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]'
             ),
 
-            'pricing_survey' => array(
+            'pricing_survey'                 => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Pricing Survey Form',
@@ -473,7 +483,7 @@ class Predefined extends Form
             ),
 
             //form number : 116
-            'birthday_invitation_party' => array(
+            'birthday_invitation_party'      => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Birthday invitation Party Form',
@@ -484,7 +494,7 @@ class Predefined extends Form
                 'json'       => '[{"id":"116","title":"Birthday invitation Party Form","form":{"fields":[{"index":3,"element":"custom_html","attributes":[],"settings":{"html_codes":"<h2 style=\"color: #3a7ec2; text-align: center;\">Join Birthday Party\u00a0<\/h2>\n<p><img class=\"alignnone\" src=\"https:\/\/www.sweetfrog.com\/assets\/img\/party\/birthdayParty.png\" \/><\/p>\n<p>&nbsp;<\/p>\n<p style=\"text-align: center;\"><span style=\"color: #3e48ab;\"><strong>Date : December<\/strong> 05, 2019\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0<strong>Time: <\/strong>12:00 am\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 <strong>Address : 3491 Henry Ford Avenue, Tulsa, OK, Oklahoma, 74120<\/strong><\/span><\/p>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Custom HTML","icon_class":"icon-code","template":"customHTML"},"uniqElKey":"el_1570707016847"},{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text","value":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Name","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Simple Text","icon_class":"icon-text-width","template":"inputText"},"uniqElKey":"el_1570707130166"},{"index":30,"element":"phone","attributes":{"name":"phone","class":"","value":"","type":"tel","placeholder":""},"settings":{"container_class":"","placeholder":"","int_tel_number":"with_extended_validation","label":"Phone","label_placement":"","help_message":"","admin_field_label":"","validation_rules":{"required":{"value":false,"message":"This field is required"},"valid_phone_number":{"value":false,"message":"Phone number is not valid"}},"conditional_logics":[]},"editor_options":{"title":"Phone Field","icon_class":"el-icon-phone-outline","template":"inputText"},"uniqElKey":"el_1570707183830"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Email","label_placement":"","help_message":"","admin_field_label":"","validation_rules":{"required":{"value":false,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":[]},"editor_options":{"title":"Email Address","icon_class":"icon-envelope-o","template":"inputText"},"uniqElKey":"el_1570707134702"},{"index":10,"element":"select","attributes":{"name":"skills","value":[],"id":"","class":"","multiple":true},"settings":{"help_message":"","container_class":"","label":"Food type","admin_field_label":"","label_placement":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"options":{"Vegan":"Vegan","Non Vegan":"Non Vegan"},"editor_options":{"title":"Multiple Choice","icon_class":"icon-list-ul","element":"select","template":"select"},"uniqElKey":"el_1570707343485"},{"index":7,"element":"select","attributes":{"name":"dropdown","value":"","id":"","class":""},"settings":{"label":"How many people you will come with?","admin_field_label":"","help_message":"","container_class":"","label_placement":"","placeholder":"- Select -","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"options":{"One":"One","Two":"Two","Three":"Three","Four":"Four","Five":"Five"},"editor_options":{"title":"Dropdown","icon_class":"icon-caret-square-o-down","element":"select","template":"select"},"uniqElKey":"el_1570707535809"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit Form","img_url":""},"normal_styles":{},"hover_styles":{},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline"}},"notifications":{"name":"Admin Notification Email","sendTo":{"type":"email","email":"{wp.admin_email}","field":"email","routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"[{inputs.names}] New Form Submission","message":"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]'
             ),
 
-            'vehicle_inspection_form' => array(
+            'vehicle_inspection_form'              => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Vehicle Inspection Form',
@@ -496,7 +506,7 @@ class Predefined extends Form
             ),
 
             //form number : 114
-            'workshop_registration_form' => array(
+            'workshop_registration_form'           => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Workshop Registration Form',
@@ -508,7 +518,7 @@ class Predefined extends Form
             ),
 
             //form number : 113
-            'social_service_home_visit_form' => array(
+            'social_service_home_visit_form'       => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Social Service Home Visit Form',
@@ -521,7 +531,7 @@ class Predefined extends Form
             ),
 
             //form number : 112
-            'it_service_request_form' => array(
+            'it_service_request_form'              => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'IT Service Request Form',
@@ -533,7 +543,7 @@ class Predefined extends Form
             ),
 
             //form number : 111
-            'handicap_parking_request_form' => array(
+            'handicap_parking_request_form'        => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Handicap Parking Request Form',
@@ -546,7 +556,7 @@ class Predefined extends Form
             ),
 
             //form number : 109
-            'sponsor_request_form' => array(
+            'sponsor_request_form'                 => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Sponsor Request Form',
@@ -558,7 +568,7 @@ class Predefined extends Form
             ),
 
             //form number : 107
-            'annual_vehicles_inspection_form' => array(
+            'annual_vehicles_inspection_form'      => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Annual Vehicles Inspection Form',
@@ -570,7 +580,7 @@ class Predefined extends Form
             ),
 
             //form number : 106
-            'finance_department_analysis_form' => array(
+            'finance_department_analysis_form'     => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Finance Department Analysis Form',
@@ -594,7 +604,7 @@ class Predefined extends Form
             ),
 
             //form number : 103
-            'confidential_morbidity_form' => array(
+            'confidential_morbidity_form'          => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Confidential Morbidity Form',
@@ -608,7 +618,7 @@ class Predefined extends Form
             ),
 
             //form number : 102
-            'complaint_form' => array(
+            'complaint_form'                       => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Complaint form',
@@ -620,7 +630,7 @@ class Predefined extends Form
             ),
 
             //form number : 101
-            'charity_dinner_party_form' => array(
+            'charity_dinner_party_form'            => array(
                 'screenshot' => '',
                 'createable' => true,
                 'title'      => 'Charity Dinner Party Form',
@@ -779,6 +789,18 @@ class Predefined extends Form
         return apply_filters('fluentform_predefined_forms', $forms);
     }
 
+    private function getBlankConversationalForm()
+    {
+        return [
+            'screenshot' => '',
+            'createable' => true,
+            'title'      => 'Conversational Form',
+            'brief'      => 'Create Smart form UI',
+            'category'   => 'Basic',
+            'tags'       => ['contact', 'typeform', 'conversational', 'form'],
+            'json'       => '[{"id":"12","title":"Conversational Form","status":"published","appearance_settings":null,"form_fields":{"fields":[],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit","img_url":""},"normal_styles":{"backgroundColor":"#409EFF","borderColor":"#409EFF","color":"#ffffff","borderRadius":"","minWidth":""},"hover_styles":{"backgroundColor":"#ffffff","borderColor":"#409EFF","color":"#409EFF","borderRadius":"","minWidth":""},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"has_payment":"0","type":"form","conditions":null,"created_by":"1","created_at":"2021-06-01 06:04:42","updated_at":"2021-06-01 06:05:49","metas":[{"meta_key":"formSettings","value":"{\"confirmation\":{\"redirectTo\":\"samePage\",\"messageToShow\":\"<h2>Thank you for your message. We will get in touch with you shortly</h2>\",\"customPage\":null,\"samePageFormBehavior\":\"hide_form\",\"customUrl\":null},\"restrictions\":{\"limitNumberOfEntries\":{\"enabled\":false,\"numberOfEntries\":null,\"period\":\"total\",\"limitReachedMsg\":\"Maximum number of entries exceeded.\"},\"scheduleForm\":{\"enabled\":false,\"start\":null,\"end\":null,\"pendingMsg\":\"Form submission is not started yet.\",\"expiredMsg\":\"Form submission is now closed.\",\"selectedDays\":[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]},\"requireLogin\":{\"enabled\":false,\"requireLoginMsg\":\"You must be logged in to submit the form.\"},\"denyEmptySubmission\":{\"enabled\":false,\"message\":\"Sorry, you cannot submit an empty form. Let us hear what you wanna say.\"}},\"layout\":{\"labelPlacement\":\"top\",\"helpMessagePlacement\":\"with_label\",\"errorMessagePlacement\":\"inline\",\"asteriskPlacement\":\"asterisk-right\"},\"delete_entry_on_submission\":\"no\",\"appendSurveyResult\":{\"enabled\":false,\"showLabel\":false,\"showCount\":false}}"},{"meta_key":"notifications","value":"{\"name\":\"Admin Notification Email\",\"sendTo\":{\"type\":\"email\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] New Form Submission\",\"message\":\"<p>{all_data}</p> <p>This form submitted at: {embed_post.permalink}</p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\"}"},{"meta_key":"is_conversion_form","value":"yes"}]}]'];
+    }
+
     /**
      * Fetch simplified information for all predefined forms
      */
@@ -801,16 +823,16 @@ class Predefined extends Form
                 $data[$item['category']] = [];
             }
 
-            $itemClass = 'item_'.str_replace([' ', '&', '/'], '_', strtolower($item['category']));
-            
-            if(empty($item['screenshot'])) {
+            $itemClass = 'item_' . str_replace([' ', '&', '/'], '_', strtolower($item['category']));
+
+            if (empty($item['screenshot'])) {
                 $itemClass .= ' item_no_image';
             } else {
                 $itemClass .= ' item_has_image';
             }
 
             $data[$item['category']][$key] = array(
-                'class' => $itemClass,
+                'class'      => $itemClass,
                 'tags'       => $item['tag'],
                 'title'      => $item['title'],
                 'brief'      => $item['brief'],
@@ -823,8 +845,8 @@ class Predefined extends Form
         }
 
         wp_send_json([
-            'forms' => $data,
-            'categories' => array_keys($data),
+            'forms'                     => $data,
+            'categories'                => array_keys($data),
             'predefined_dropDown_forms' => apply_filters('fluentform-predefined-dropDown-forms', [
                 'post' => [
                     'title' => 'Post Form',
@@ -841,7 +863,11 @@ class Predefined extends Form
     {
         $predefined = $this->request->get('predefined');
 
-        $predefinedForm = ArrayHelper::get($this->getPredefinedForms(), $predefined);
+        if ($this->request->get('type') == 'blank_conversational') {
+            $predefinedForm = $this->getBlankConversationalForm();
+        } else {
+            $predefinedForm = ArrayHelper::get($this->getPredefinedForms(), $predefined);
+        }
 
         if ($predefinedForm) {
             $predefinedForm = json_decode($predefinedForm['json'], true)[0];
@@ -850,13 +876,13 @@ class Predefined extends Form
                 'title' => $this->request->get('title', $predefinedForm['title'])
             ]);
 
-            if(isset($predefinedForm['form_fields'])) {
+            if (isset($predefinedForm['form_fields'])) {
                 $this->formFields = json_encode($predefinedForm['form_fields']);
-            } else if(isset($predefinedForm['form'])) {
+            } else if (isset($predefinedForm['form'])) {
                 $this->formFields = json_encode($predefinedForm['form']);
             }
 
-            if(isset($predefinedForm['formSettings'])) {
+            if (isset($predefinedForm['formSettings'])) {
                 $this->defaultSettings = $predefinedForm['formSettings'];
             }
 
@@ -865,15 +891,15 @@ class Predefined extends Form
                 $this->defaultNotifications = $predefinedForm['notifications'];
             }
 
-            if(isset($predefinedForm['metas'])) {
+            if (isset($predefinedForm['metas'])) {
                 $this->metas = $predefinedForm['metas'];
             }
 
-            if(!empty($predefinedForm['has_payment'])) {
+            if (!empty($predefinedForm['has_payment'])) {
                 $this->hasPayment = 1;
             }
 
-            if(!empty($predefinedForm['type'])) {
+            if (!empty($predefinedForm['type'])) {
                 $this->formType = $predefinedForm['type'];
             }
 

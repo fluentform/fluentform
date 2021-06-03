@@ -42,7 +42,7 @@
                         style="max-width: 64px; max-height: 32px; overflow: hidden;"
                         v-if="editItem.settings.enable_image_input && hasImageSupport"
                     >
-                        <photo-widget v-model="option.image" />
+                        <photo-widget enable_clear="yes" v-model="option.image" />
                     </div>
 
                     <div>

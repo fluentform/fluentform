@@ -59,7 +59,7 @@
             <div class="bulk_editor_wrapper">
                 <h4>Please provide the value as LABEL:VALUE as each line.</h4>
                 <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
-                <p>You can simply give value only the sustem will convert the label as value</p>
+                <p>You can simply give value only the system will convert the label as value</p>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button size="mini" @click="bulkEditVisible = false">Cancel</el-button>

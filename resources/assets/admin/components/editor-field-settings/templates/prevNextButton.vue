@@ -1,6 +1,6 @@
 <template>
 <div>
-    <el-form-item>
+    <el-form-item v-if="!is_conversion_form">
         <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
 
         <el-radio-group v-model="editItem.settings[prop].type">

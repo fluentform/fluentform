@@ -16,6 +16,7 @@ return array(
 				'FluentForm\App\Providers\CommonProvider',
 				'FluentForm\App\Providers\FormBuilderProvider',
                 'FluentForm\App\Providers\WpFluentProvider',
+				'FluentForm\App\Providers\FluentConversationalProvider',
 			),
 			
 			'backend' => array(

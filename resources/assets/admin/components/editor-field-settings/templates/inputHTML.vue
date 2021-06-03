@@ -15,7 +15,7 @@
                     <li><code>{payment_total}</code>: to display total payment amount</li>
                 </ul>
             </template>
-            <div>
+            <div v-if="!is_conversion_form">
                 <p>Dynamic SmartCodes</p>
                 <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
                     <li><code>{dynamic.YOUR_INPUT_NAME}</code>: to show data from any input</li>

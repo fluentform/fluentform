@@ -1140,7 +1140,7 @@ $defaultElements = array(
             ),
             'settings' => array(
                 'label' => __('GDPR Agreement', 'fluentform'),
-                'tnc_html' => __('I consent to having this website store my submitted information so they can respond to my inquiry', 'fluentform'),
+                'tnc_html' => __('I consent to have this website store my submitted information so they can respond to my inquiry', 'fluentform'),
                 'admin_field_label' => __('GDPR Agreement', 'fluentform'),
                 'has_checkbox' => true,
                 'container_class' => '',

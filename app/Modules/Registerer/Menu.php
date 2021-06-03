@@ -434,7 +434,6 @@ class Menu
     private function renderFormInnerPages()
     {
         $form_id = intval($_GET['form_id']);
-
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
 
         if (!$form) {
@@ -464,6 +463,7 @@ class Menu
         );
 
         $formAdminMenus = apply_filters('fluentform_form_admin_menu', $formAdminMenus, $form_id, $form);
+
 
         $route = sanitize_key($_GET['route']);
 
@@ -684,11 +684,15 @@ class Menu
 
         $searchTags = apply_filters( 'fluent_editor_element_search_tags', $searchTags, $form );
 
+        $elementPlacements = apply_filters('fluent_editor_element_settings_placement',
+            $this->app->load( $this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php') ), $form
+        );
+
         wp_localize_script('fluentform_editor_script', 'FluentFormApp', apply_filters('fluentform_editor_vars', array(
             'plugin' => $pluginSlug,
             'form_id' => $formId,
             'plugin_public_url' => $this->app->publicUrl(),
-            'preview_url' => $this->getFormPreviewUrl($formId),
+            'preview_url' => Helper::getPreviewUrl($formId),
             'form' => $form,
             'hasPro' => defined('FLUENTFORMPRO'),
             'countries' => $this->app->load(
@@ -704,12 +708,11 @@ class Menu
 
             'element_search_tags' => $searchTags,
 
-            'element_settings_placement' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php')
-            ),
+            'element_settings_placement' => $elementPlacements,
             'all_forms_url' => admin_url('admin.php?page=fluent_forms'),
             'has_payment_features' => !defined('FLUENTFORMPRO'),
             'upgrade_url' => fluentform_upgrade_url(),
+            'is_conversion_form' => Helper::isConversionForm($formId)
         )));
     }
 
@@ -768,20 +771,24 @@ class Menu
         View::render('admin.transfer.index');
     }
 
-
-    private function getFormPreviewUrl($form_id)
-    {
-        return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $form_id) . '#ff_preview';
-    }
-
     public function addPreviewButton($formId)
     {
-        echo '<a target="_blank" class="el-button el-button--small" href="' . $this->getFormPreviewUrl($formId) . '">Preview & Design</a>';
+        $previewText = __('Preview & Design', 'fluent-form');
+        $previewUrl = Helper::getPreviewUrl($formId);
+        if($isConversational = Helper::isConversionForm($formId)) {
+            $previewText = __('Preview', 'fluent-form');
+        }
+
+        echo '<a target="_blank" class="el-button el-button--small" href="' . $previewUrl . '">'.$previewText.'</a>';
     }
 
     public function addCopyShortcodeButton($formId)
     {
-        echo '<button style="background:#dedede;color:#545454;padding:5px;" title="Click to Copy" class="btn copy" data-clipboard-text=\'[fluentform id="' . $formId . '"]\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> [fluentform id="' . $formId . '"]</button>';
+        $shortcode = '[fluentform id="' . $formId . '"]';
+        if(Helper::isConversionForm($formId)) {
+            $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
+        }
+        echo '<button style="background:#dedede;color:#545454;padding:5px;max-width: 200px;overflow: hidden;" title="Click to Copy" class="btn copy" data-clipboard-text=\''.$shortcode.'\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> '.$shortcode.'</button>';
         return;
     }
 

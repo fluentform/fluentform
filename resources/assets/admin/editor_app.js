@@ -291,6 +291,9 @@ new Vue({
     mounted() {
         this.prepareForm();
         this.loadEditorShortcodes(this.form_id);
+        if(this.is_conversion_form) {
+            jQuery('#wpcontent').addClass('ff_conversion_editor');
+        }
     },
     beforeCreate() {
         // Event listener for page title updater

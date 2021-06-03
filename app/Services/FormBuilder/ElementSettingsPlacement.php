@@ -11,8 +11,7 @@
  * @version     2.5.0
  */
 
-
-$element_settings_placement = array(
+return array(
     'input_name' => array(
         'general' => array(
             'admin_field_label',
@@ -481,6 +480,3 @@ $element_settings_placement = array(
     )
 );
 
-return apply_filters(
-    'fluent_editor_element_settings_placement', $element_settings_placement
-);
