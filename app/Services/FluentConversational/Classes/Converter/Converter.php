@@ -42,7 +42,15 @@ class Converter
 	            'conditional_logics' => self::parseConditionalLogic($field)
             ];
 
-            if ($field['element'] === 'welcome_screen') {
+            if ($field['element'] === 'input_text') {
+	            $mask = ArrayHelper::get($field, 'settings.temp_mask');
+
+	            $mask = $mask === 'custom' ? ArrayHelper::get($field, 'attributes.data-mask') : $mask;
+
+            	if ($mask) {
+            		$question['mask'] = $mask;
+	            }
+            } elseif ($field['element'] === 'welcome_screen') {
                 $question['settings'] = ArrayHelper::get($field, 'settings', []);
                 $question['subtitle'] = ArrayHelper::get($field, 'settings.description');
                 $question['required'] = false;
