@@ -493,7 +493,7 @@ class Component
 
 
         if($atts['type'] == 'conversational') {
-            return (new \FluentConversational\Form())->renderShortcode($form);
+            return (new \FluentForm\App\Services\FluentConversational\Classes\Form())->renderShortcode($form);
         }
 
         $formBuilder = $this->app->make('formBuilder');
