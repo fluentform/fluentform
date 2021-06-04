@@ -78,8 +78,8 @@ export default {
     props: ['meta_settings', 'share_url'],
     data() {
         return {
-            smart_shortcode: '[fluentform type="conversational" id="5"]',
-            classic_shortcode: '[fluentform id="5"]',
+            smart_shortcode: '[fluentform type="conversational" id="'+window.ffc_conv_vars.form_id+'"]',
+            classic_shortcode: '[fluentform id="'+window.ffc_conv_vars.form_id+'"]',
         }
     },
     methods: {
