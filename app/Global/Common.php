@@ -104,6 +104,9 @@ if (!function_exists('fluentFormSanitizer')) {
     function fluentFormSanitizer($input, $attribute = null, $fields = [])
     {
         if (is_string($input)) {
+            if (ArrayHelper::get($fields, $attribute . '.element') === 'email') {
+                $input = strtolower($input);
+            }
             if (ArrayHelper::get($fields, $attribute . '.element') === 'post_content') {
                 return wp_kses_post($input);
             } else if (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
