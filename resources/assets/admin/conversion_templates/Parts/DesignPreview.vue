@@ -101,7 +101,9 @@ export default {
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected { background-color: ${this.hexToRGBA(settings.answer_color, '0.3')} !important; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: ${settings.answer_color} !important; color: white; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected svg { fill: ${settings.answer_color} !important; }`;
-                css += `${prefix} .f-answer input, ${prefix} .f-answer textarea { color: ${settings.answer_color} !important; }`;
+                css += `${prefix} .f-answer input, ${prefix} .f-answer textarea{ color: ${settings.answer_color} !important; box-shadow: ${settings.answer_color}  0px 1px; }`;
+                css += `${prefix} .f-answer input:focus, ${prefix} .f-answer textarea:focus { box-shadow: ${settings.answer_color}  0px 2px !important; }`;
+                css += `${prefix} .f-answer textarea::placeholder, ${prefix} .f-answer input::placeholder { color: ${settings.answer_color} !important; }`;
             }
 
             if (settings.question_color) {
@@ -112,8 +114,8 @@ export default {
             if (settings.button_color) {
                 css += `${prefix} .q-inner .o-btn-action, ${prefix} .footer-inner-wrap .f-nav { background-color: ${settings.button_color}; }`;
                 css += `${prefix} .q-inner .o-btn-action span, ${prefix} .footer-inner-wrap .f-nav a { color: ${settings.button_text_color}; }`;
+                css += ` ${prefix} .f-enter .f-enter-desc { color: ${settings.button_color}; }`;
                 css += `${prefix} .footer-inner-wrap .f-nav a svg { fill: ${settings.button_text_color}; }`;
-
             }
 
             if (settings.background_image) {

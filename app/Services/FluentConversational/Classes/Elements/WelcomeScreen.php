@@ -103,7 +103,6 @@ class WelcomeScreen extends BaseFieldManager
         return $types;
     }
 
-
     public function render($data, $form)
     {
         $elementName = $data['element'];

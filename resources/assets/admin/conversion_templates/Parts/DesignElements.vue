@@ -55,6 +55,10 @@
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.hide_media_on_mobile"></el-switch>
             </el-form-item>
 
+            <el-form-item class="fcc_eq_line" label="Disable Scroll to Next">
+                <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_scroll_to_next"></el-switch>
+            </el-form-item>
+
             <el-form-item label="Disable Branding">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_branding"></el-switch>
             </el-form-item>
