@@ -28,7 +28,7 @@
                                 :design_settings="design_settings"
                                 :form_id="form_id"/>
                 <meta-setting-view v-else-if="active_tab == 'meta'" :meta_settings="meta_settings"/>
-                <sharing-view v-else-if="active_tab == 'share'" :share_url="share_url" :meta_settings="meta_settings"/>
+                <sharing-view v-else-if="active_tab == 'share'" :form_id="form_id" :share_url="share_url" :meta_settings="meta_settings"/>
             </div>
         </template>
         <h3 v-else>Loading Design... Please wait</h3>

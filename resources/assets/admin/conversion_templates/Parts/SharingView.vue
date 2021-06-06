@@ -7,7 +7,9 @@
                     <h3>Share Via Direct URL</h3>
                     <p>Get the link or share on social sites</p>
                     <el-input size="mini" v-model="share_url" :readonly="true">
-                        <el-button type="success" @click="copyText()" class="copy_share" :data-clipboard-text='share_url' slot="append" icon="el-icon-document-copy"></el-button>
+                        <el-button type="success" @click="copyText()" class="copy_share"
+                                   :data-clipboard-text='share_url' slot="append"
+                                   icon="el-icon-document-copy"></el-button>
                     </el-input>
                     <ul class="fcc_inline_social">
                         <li>
@@ -23,7 +25,8 @@
                             </a>
                         </li>
                         <li>
-                            <a :href="'https://www.linkedin.com/shareArticle?' + getLinkedInParams()" target="_blank" rel="nofollow">
+                            <a :href="'https://www.linkedin.com/shareArticle?' + getLinkedInParams()" target="_blank"
+                               rel="nofollow">
                                 <span class="dashicons dashicons-linkedin"></span>
                             </a>
                         </li>
@@ -42,7 +45,9 @@
                     <h3>Shortcode for Conversational Form</h3>
                     <p>Use this following shortcode in your Page or Post</p>
                     <el-input size="mini" v-model="smart_shortcode" :readonly="true">
-                        <el-button type="success" @click="copyText()" class="copy_share" :data-clipboard-text='smart_shortcode' slot="append" icon="el-icon-document-copy"></el-button>
+                        <el-button type="success" @click="copyText()" class="copy_share"
+                                   :data-clipboard-text='smart_shortcode' slot="append"
+                                   icon="el-icon-document-copy"></el-button>
                     </el-input>
                 </div>
             </el-col>
@@ -51,7 +56,8 @@
                     <h3>Shortcode for Classic Form</h3>
                     <p>Use this following shortcode in your Page or Post</p>
                     <el-input size="mini" v-model="classic_shortcode" :readonly="true">
-                        <el-button @click="copyText()" class="copy_share" :data-clipboard-text='classic_shortcode' slot="append" icon="el-icon-document-copy"></el-button>
+                        <el-button @click="copyText()" class="copy_share" :data-clipboard-text='classic_shortcode'
+                                   slot="append" icon="el-icon-document-copy"></el-button>
                     </el-input>
                 </div>
             </el-col>
@@ -60,7 +66,8 @@
             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
                     <h3>Embed via HTMl Code</h3>
-                    <p>Want to use this form in another domain or another site or even outside WordPress? Use the following code</p>
+                    <p>Want to use this form in another domain or another site or even outside WordPress? Use the
+                        following code</p>
                     <textarea style="width: 100%" type="textarea" :rows="5" :readonly="true">
 <iframe id="fluentform" width="100%" height="500px" style="min-height: 500px;with: 100%" frameborder="0" src="{{share_url}}&embedded=1"></iframe></textarea>
 
@@ -75,32 +82,33 @@
 <script type="text/babel">
 export default {
     name: 'SharingView',
-    props: ['meta_settings', 'share_url'],
-    data() {
-        return {
-            smart_shortcode: '[fluentform type="conversational" id="5"]',
-            classic_shortcode: '[fluentform id="5"]',
+    props: ['meta_settings', 'share_url', 'form_id'],
+    computed: {
+        smart_shortcode() {
+            return '[fluentform type="conversational" id="' + this.form_id + '"]';
+        },
+        classic_shortcode() {
+            return '[fluentform id="' + this.form_id + '"]';
         }
     },
     methods: {
         getTwitterParams() {
             let url = encodeURIComponent(this.share_url);
-            return 'url='+url+'&text='+ 'Would you please fill in this form%0aI really appreciate it!%0avia @Fluent_Forms%0a';
+            return 'url=' + url + '&text=' + 'Would you please fill in this form%0aI really appreciate it!%0avia @Fluent_Forms%0a';
         },
-        getLinkedInParams()
-        {
+        getLinkedInParams() {
             let url = encodeURIComponent(this.share_url);
-            return 'url='+url+'&title=';
+            return 'url=' + url + '&title=';
         },
         getMailUrl() {
-            return 'mailto:?subject=Could you take a moment to fill in this form?&body=We would really appreciate it if you filled in this Form:%0A→ '+encodeURIComponent(this.share_url)+'%0A%0AThank+you!';
+            return 'mailto:?subject=Could you take a moment to fill in this form?&body=We would really appreciate it if you filled in this Form:%0A→ ' + encodeURIComponent(this.share_url) + '%0A%0AThank+you!';
         },
         copyText() {
 
         }
     },
     mounted() {
-        if(!window.ffc_share_clip_inited) {
+        if (!window.ffc_share_clip_inited) {
             window.ffc_share_clip_inited = true;
             const clipboard = new ClipboardJS('.copy_share');
             clipboard.on('success', (e) => {

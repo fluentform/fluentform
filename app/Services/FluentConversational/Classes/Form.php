@@ -78,7 +78,7 @@ class Form
             'form_id'     => $formId,
             'preview_url' => site_url('?fluent-form=' . $formId),
             'fonts'       => Fonts::getFonts(),
-            'has_pro' => defined('FLUENTFORMPRO')
+            'has_pro'     => defined('FLUENTFORMPRO')
         ]);
 
         wp_enqueue_style(
@@ -164,13 +164,13 @@ class Form
     {
         $settings = Helper::getFormMeta($formId, $this->metaKey . '_meta', []);
         $defaults = [
-            'title'          => '',
-            'description'    => '',
-            'featured_image' => '',
-            'share_key'      => '',
+            'title'            => '',
+            'description'      => '',
+            'featured_image'   => '',
+            'share_key'        => '',
             'google_font_href' => '',
-            'font_css' => '',
-            'i18n'           => [
+            'font_css'         => '',
+            'i18n'             => [
                 'skip_btn'             => 'SKIP',
                 'confirm_btn'          => 'OK',
                 'continue'             => 'Continue',
@@ -201,7 +201,7 @@ class Form
             }
         }
 
-        return $prefix.' { background-color: #FFFFFF; } '.$prefix.' .ffc-counter-div span { color: #0445AF; } '.$prefix.' .ffc-counter-div .counter-icon-span svg { fill: #0445AF !important; } '.$prefix.' .f-label-wrap { color: #0445AF !important; } '.$prefix.' .f-label-wrap .f-key { border-color: #0445AF !important; } '.$prefix.' .f-answer .f-radios-wrap ul li { background-color: rgba(4,69,175, 0.1) !important; } '.$prefix.' .f-answer .f-radios-wrap ul li.f-selected { background-color: rgba(4,69,175, 0.3) !important; } '.$prefix.' .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: #0445AF !important; color: white; } '.$prefix.' .f-answer .f-radios-wrap ul li.f-selected svg { fill: #0445AF !important; } '.$prefix.' .f-answer input, '.$prefix.' .f-answer textarea{ color: #0445AF !important; box-shadow: #0445AF  0px 1px; } '.$prefix.' .f-answer input:focus, '.$prefix.' .f-answer textarea:focus { box-shadow: #0445AF  0px 2px !important; } '.$prefix.' .f-answer textarea::placeholder, '.$prefix.' .f-answer input::placeholder { color: #0445AF !important; } '.$prefix.' .fh2 .f-text { color: #191919; } '.$prefix.' .fh2 .f-tagline { color: rgba(25,25,25, 0.70); } '.$prefix.' .q-inner .o-btn-action, '.$prefix.' .footer-inner-wrap .f-nav { background-color: #0445AF; } '.$prefix.' .q-inner .o-btn-action span, '.$prefix.' .footer-inner-wrap .f-nav a { color: #FFFFFF; } '.$prefix.' .f-enter .f-enter-desc { color: #0445AF; } '.$prefix.' .footer-inner-wrap .f-nav a svg { fill: #FFFFFF; }';
+        return $prefix . ' { background-color: #FFFFFF; } ' . $prefix . ' .ffc-counter-div span { color: #0445AF; } ' . $prefix . ' .ffc-counter-div .counter-icon-span svg { fill: #0445AF !important; } ' . $prefix . ' .f-label-wrap { color: #0445AF !important; } ' . $prefix . ' .f-label-wrap .f-key { border-color: #0445AF !important; } ' . $prefix . ' .f-answer .f-radios-wrap ul li { background-color: rgba(4,69,175, 0.1) !important; } ' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected { background-color: rgba(4,69,175, 0.3) !important; } ' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: #0445AF !important; color: white; } ' . $prefix . ' .f-answer .f-radios-wrap ul li.f-selected svg { fill: #0445AF !important; } ' . $prefix . ' .f-answer input, ' . $prefix . ' .f-answer textarea{ color: #0445AF !important; box-shadow: #0445AF  0px 1px; } ' . $prefix . ' .f-answer input:focus, ' . $prefix . ' .f-answer textarea:focus { box-shadow: #0445AF  0px 2px !important; } ' . $prefix . ' .f-answer textarea::placeholder, ' . $prefix . ' .f-answer input::placeholder { color: #0445AF !important; } ' . $prefix . ' .fh2 .f-text { color: #191919; } ' . $prefix . ' .fh2 .f-tagline { color: rgba(25,25,25, 0.70); } ' . $prefix . ' .q-inner .o-btn-action, ' . $prefix . ' .footer-inner-wrap .f-nav { background-color: #0445AF; } ' . $prefix . ' .q-inner .o-btn-action span, ' . $prefix . ' .footer-inner-wrap .f-nav a { color: #FFFFFF; } ' . $prefix . ' .f-enter .f-enter-desc { color: #0445AF; } ' . $prefix . ' .footer-inner-wrap .f-nav a svg { fill: #FFFFFF; }';
     }
 
     public function render()
@@ -235,7 +235,8 @@ class Form
                 'form'                     => $form,
                 'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
                 'i18n'                     => $metaSettings['i18n'],
-                'design'                   => $designSettings
+                'design'                   => $designSettings,
+                'extra_inputs'             => $this->getExtraHiddenInputs($formId)
             ]);
 
             $this->printLoadedScripts();
@@ -351,7 +352,7 @@ class Form
                     'media_y_position' => 50
                 ];
 
-                if($element == 'terms_and_condition') {
+                if ($element == 'terms_and_condition') {
                     $existingSettings = $field['settings'];
                     $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
                     $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
@@ -520,7 +521,8 @@ class Form
             'i18n'                     => $metaSettings['i18n'],
             'form_id'                  => $form->id,
             'is_inline_form'           => true,
-            'design'                   => $designSettings
+            'design'                   => $designSettings,
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId)
         ]);
 
         return View::make('public.conversational-form-inline', [
@@ -550,16 +552,25 @@ class Form
         ];
 
         $placements['terms_and_condition']['generalExtras'] = [
-            'tc_agree_text' => [
-                'template'  => 'inputText',
-                'label'     => 'Agree Button Text',
+            'tc_agree_text'     => [
+                'template' => 'inputText',
+                'label'    => 'Agree Button Text',
             ],
             'tc_dis_agree_text' => [
-                'template'  => 'inputText',
-                'label'     => 'Disagree Button Text',
+                'template' => 'inputText',
+                'label'    => 'Disagree Button Text',
             ]
         ];
 
         return $placements;
+    }
+
+    private function getExtraHiddenInputs($formId)
+    {
+        return [
+            '__fluent_form_embded_post_id'                => get_the_ID(),
+            '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
+            '_wp_http_referer'                            => esc_attr(wp_unslash($_SERVER['REQUEST_URI']))
+        ];
     }
 }
