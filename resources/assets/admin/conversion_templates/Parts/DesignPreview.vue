@@ -95,7 +95,7 @@ export default {
             if (settings.answer_color) {
                 css += `${prefix} .ffc-counter-div span { color: ${settings.answer_color}; }`;
                 css += `${prefix} .ffc-counter-div .counter-icon-span svg { fill: ${settings.answer_color} !important; }`;
-                css += `${prefix} .f-label-wrap { color: ${settings.answer_color} !important; }`;
+                css += `${prefix} .f-label-wrap, ${prefix} .f-answer { color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-label-wrap .f-key { border-color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')} !important; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected { background-color: ${this.hexToRGBA(settings.answer_color, '0.3')} !important; }`;
@@ -104,11 +104,12 @@ export default {
                 css += `${prefix} .f-answer input, ${prefix} .f-answer textarea{ color: ${settings.answer_color} !important; box-shadow: ${settings.answer_color}  0px 1px; }`;
                 css += `${prefix} .f-answer input:focus, ${prefix} .f-answer textarea:focus { box-shadow: ${settings.answer_color}  0px 2px !important; }`;
                 css += `${prefix} .f-answer textarea::placeholder, ${prefix} .f-answer input::placeholder { color: ${settings.answer_color} !important; }`;
+                css += `${prefix} .text-success { color: ${settings.answer_color} !important; }`;
             }
 
             if (settings.question_color) {
                 css += `${prefix} .fh2 .f-text { color: ${settings.question_color}; }`
-                css += `${prefix} .fh2 .f-tagline { color: ${this.hexToRGBA(settings.question_color, '0.70')}; }`
+                css += `${prefix} .fh2 .f-tagline, ${prefix} .f-sub .f-help { color: ${this.hexToRGBA(settings.question_color, '0.70')}; }`
             }
 
             if (settings.button_color) {
@@ -132,6 +133,8 @@ export default {
 
                 css += `${prefix}:before { content: ' '; opacity: ${opacity}; background-image: ${imagePropertyCss} url("${settings.background_image}"); }`;
             }
+
+            css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected .f-key { color: ${settings.background_color}; }`;
 
             if (settings.disable_branding == 'yes') {
                 css += `${prefix} .footer-inner-wrap .f-nav a.ffc_power { display: none !important; }`;
