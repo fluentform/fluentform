@@ -311,4 +311,9 @@ class FormDataParser
         return $html.'</ul>';
 
     }
+
+    public static function resetData()
+    {
+        static::$data = null;
+    }
 }

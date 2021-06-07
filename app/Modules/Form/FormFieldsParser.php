@@ -110,4 +110,10 @@ class FormFieldsParser
 
         return static::$forms[$form->id][$method];
     }
+
+    public static function resetData()
+    {
+        static::$forms = [];
+        static::$formsWith = [];
+    }
 }

@@ -380,5 +380,16 @@ class ShortCodeParser
     {
         return static::$store['original_inputs'];
     }
+
+    public static function resetData()
+    {
+        self::$form = null;
+        self::$entry = null;
+        self::$browser = null;
+        self::$formFields = null;
+
+        FormFieldsParser::resetData();
+        FormDataParser::resetData();
+    }
 }
 
