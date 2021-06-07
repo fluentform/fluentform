@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
+use FluentForm\App\Modules\Form\Settings\FormCssJs;
 use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
@@ -216,6 +217,7 @@ class Form
             }
 
             $form = Converter::convert($form);
+
             $submitCss = $this->getSubmitBttnStyle($form);
 
             wp_enqueue_script(
@@ -246,8 +248,7 @@ class Form
                 'design'        => $designSettings,
                 'submit_css'    => $submitCss,
                 'form_id'       => $formId,
-                'meta'          => $metaSettings,
-                'loader_gif'    => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/loader.gif'
+                'meta'          => $metaSettings
             ]);
 
             exit(200);
@@ -269,8 +270,10 @@ class Form
 
     private function getSubmitBttnStyle($form)
     {
+
         $data = $form->submit_button;
         $styles = '';
+
         if (ArrayHelper::get($data, 'settings.button_style') == '') {
             // it's a custom button
             $buttonActiveStyles = ArrayHelper::get($data, 'settings.normal_styles', []);
@@ -304,6 +307,13 @@ class Form
         } else {
             $styles .= ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
         }
+        
+        if (defined('FLUENTFORMPRO')) {
+            $customCssJsClass = new FormCssJs();
+            $customCss = $customCssJsClass->getCss($form->id);
+            $styles .= $customCss;
+        }
+
         return $styles;
     }
 

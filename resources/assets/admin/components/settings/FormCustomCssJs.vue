@@ -37,6 +37,7 @@
                             <h3>Custom Javascript</h3>
                             <p>Your additional JS code will run after this form initialized. Please provide valid
                                 javascript code. Invalid JS code may break the Form.</p>
+                            <p v-if="is_conversion_form" style="color: red">Please note that, In Conversational Form Style, Custom Javascript will not work</p>
                         </div>
                         <hr/>
                         <div v-if="!fetching" class="sub_section_body">
@@ -72,7 +73,8 @@
                 fetching: false,
                 saving: false,
                 custom_css: '',
-                custom_js: ''
+                custom_js: '',
+                is_conversion_form: !!window.FluentFormApp.is_conversion_form
             }
         },
         methods: {

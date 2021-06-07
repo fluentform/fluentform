@@ -40,6 +40,37 @@ class FormCssJs
         }
     }
 
+    public function getCss($formId)
+    {
+        $cssMeta = wpFluent()->table('fluentform_form_meta')
+            ->where('form_id', $formId)
+            ->where('meta_key', '_custom_form_css')
+            ->first();
+
+        if(!$cssMeta || !$cssMeta->value) {
+            return '';
+        }
+
+        $css = $cssMeta->value;
+        $css = str_replace('{form_id}', $formId, $css);
+        $css = str_replace('FF_ID', $formId, $css);
+        return $this->escCss($css);
+    }
+
+    public function getJs($formId)
+    {
+        $jsMeta = wpFluent()->table('fluentform_form_meta')
+            ->where('form_id', $formId)
+            ->where('meta_key', '_custom_form_js')
+            ->first();
+
+        if(!$jsMeta || !$jsMeta->value) {
+            return '';
+        }
+        
+        return $jsMeta->value;
+    }
+
     public function addCss($formId, $css, $cssId = 'fluentform_custom_css')
     {
         if ($css) {

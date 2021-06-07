@@ -566,7 +566,8 @@ class Menu
             'hasPDF' => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM' => defined('FLUENTCRM'),
             'upgrade_url' => fluentform_upgrade_url(),
-            'ace_path_url' => $this->app->publicUrl('libs/ace')
+            'ace_path_url' => $this->app->publicUrl('libs/ace'),
+            'is_conversion_form' => Helper::isConversionForm($form_id)
         ));
 
         View::render('admin.form.settings', array(
