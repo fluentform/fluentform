@@ -68,7 +68,7 @@ class FormHandler
         // Parse the url encoded data from the request object.
         parse_str($this->app->request->get('data'), $data);
 
-        $data['_wp_http_referer'] = urldecode( $data['_wp_http_referer']);
+        $data['_wp_http_referer'] = urldecode( $data['_wp_http_referer'] );
 
         // Merge it back again to the request object.
         $this->app->request->merge(['data' => $data]);

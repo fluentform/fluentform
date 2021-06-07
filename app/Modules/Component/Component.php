@@ -485,7 +485,6 @@ class Component
             return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
         }
 
-
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
 
         $form->instance_css_class = $instanceCssClass;

@@ -395,7 +395,7 @@ class Entries extends EntryQuery
      * @return array
      * @todo: Implement Caching mechanism so we don't have to parse these things for every request
      */
-    private function getFormInputsAndLabels($form, $with = ['admin_label', 'raw'])
+    public function getFormInputsAndLabels($form, $with = ['admin_label', 'raw'])
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, $with);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);

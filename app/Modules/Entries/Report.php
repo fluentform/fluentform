@@ -33,6 +33,14 @@ class Report
 
         $form = $this->formModel->find($formId);
 
+        $report = $this->generateReport($form, $statuses);
+
+        wp_send_json_success($report);
+    }
+
+
+    public function generateReport($form, $statuses = [])
+    {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'element', 'options']);
 
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
@@ -54,10 +62,10 @@ class Report
         $formSubFieldInputs = array_intersect($reportableInputs, array_values($elements));
 
         if (!$formReportableInputs && !$formSubFieldInputs) {
-            wp_send_json_success([
+            return [
                 'report_items'  => (object)[],
                 'total_entries' => 0
-            ], 423);
+            ];
         }
 
         $inputs = [];
@@ -80,9 +88,9 @@ class Report
             ];
         }
 
-        $reports = $this->getInputReport($formId, array_keys($inputs), $whereClasuses);
+        $reports = $this->getInputReport($form->id, array_keys($inputs), $whereClasuses);
 
-        $subFieldReports = $this->getSubFieldInputReport($formId, array_keys($subfieldInputs), $whereClasuses);
+        $subFieldReports = $this->getSubFieldInputReport($form->id, array_keys($subfieldInputs), $whereClasuses);
 
         $reports = array_merge($reports, $subFieldReports);
 
@@ -92,14 +100,13 @@ class Report
             $reports[$reportKey]['options'] = $formInputs[$reportKey]['options'];
         }
 
-        wp_send_json_success([
+        return [
             'report_items'  => $reports,
-            'total_entries' => $this->getEntryCounts($formId, $statuses),
-            'browsers'      => $this->getbrowserCounts($formId, $statuses),
-            'devices'       => $this->getDeviceCounts($formId, $statuses),
-        ], 200);
+            'total_entries' => $this->getEntryCounts($form->id, $statuses),
+            'browsers'      => $this->getbrowserCounts($form->id, $statuses),
+            'devices'       => $this->getDeviceCounts($form->id, $statuses),
+        ];
     }
-
 
     public function getInputReport($formId, $fieldNames, $whereClasuses)
     {

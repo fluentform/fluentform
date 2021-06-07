@@ -528,13 +528,33 @@ class Helper
         return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $formId) . '#ff_preview';
     }
 
+    public static function getFormAdminPermalink($route, $form)
+    {
+        $baseUrl = admin_url('admin.php?page=fluent_forms');
+        return $baseUrl . '&route=' . $route . '&form_id=' . $form->id;
+    }
+
+    public static function getFormSettingsUrl($form)
+    {
+        $baseUrl = admin_url('admin.php?page=fluent_forms');
+        return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#basic_settings';
+    }
+
     private static function getConversionUrl($formId)
     {
         $meta = self::getFormMeta($formId, 'ffc_form_settings_meta', []);
         $key = ArrayHelper::get($meta, 'share_key', '');
-        if($key) {
-            return site_url('?fluent-form=' . $formId.'&form='.$key);
+        if ($key) {
+            return site_url('?fluent-form=' . $formId . '&form=' . $key);
         }
         return site_url('?fluent-form=' . $formId);
+    }
+
+    private function unreadCount($formId)
+    {
+        return wpFluent()->table('fluentform_submissions')
+            ->where('status', 'unread')
+            ->where('form_id', $formId)
+            ->count();
     }
 }

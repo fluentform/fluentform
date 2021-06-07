@@ -63,82 +63,18 @@ class Form
      */
     public function index()
     {
-        $search = $this->request->get('search');
-        $status = $this->request->get('status');
-
-        $shortColumn = $this->request->get('sort_column', 'id');
-        $sortBy = $this->request->get('sort_by', 'DESC');
-
-        $query = wpFluent()->table('fluentform_forms')
-            ->orderBy($shortColumn, $sortBy);
-
-        if ($status && $status != 'all') {
-            $query->where('status', $status);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('id', 'LIKE', '%' . $search . '%');
-                $q->orWhere('title', 'LIKE', '%' . $search . '%');
-            });
-        }
-
-        $forms = $query->paginate();
-
-        foreach ($forms['data'] as $form) {
-            $form->preview_url = Helper::getPreviewUrl($form->id, 'classic');
-            $form->edit_url = $this->getAdminPermalink('editor', $form);
-            $form->settings_url = $this->getSettingsUrl($form);
-            $form->entries_url = $this->getAdminPermalink('entries', $form);
-            $form->analytics_url = $this->getAdminPermalink('analytics', $form);
-            $form->total_views = $this->getFormViewCount($form->id);
-            $form->total_views = $this->getFormViewCount($form->id);
-            $form->total_Submissions = $this->getSubmissionCount($form->id);
-            $form->unread_count = $this->getUnreadCount($form->id);
-            $form->conversion = $this->getConversionRate($form);
-            if(Helper::isConversionForm($form->id)) {
-                $form->conversion_preview = Helper::getPreviewUrl($form->id, 'conversational');
-            }
-            unset($form->form_fields);
-        }
+        $forms = fluentFormApi('forms')->forms([
+            'search' => $this->request->get('search'),
+            'status' => $this->request->get('status'),
+            'sort_column' => $this->request->get('sort_column', 'id'),
+            'sort_by' => $this->request->get('sort_by', 'DESC'),
+            'per_page' => $this->request->get('per_page', 10),
+            'page' => $this->request->get('page', 1),
+        ]);
 
         wp_send_json($forms, 200);
     }
 
-    private function getFormViewCount($formId)
-    {
-        $hasCount = wpFluent()
-            ->table('fluentform_form_meta')
-            ->where('meta_key', '_total_views')
-            ->where('form_id', $formId)
-            ->first();
-
-        if ($hasCount) {
-            return intval($hasCount->value);
-        }
-
-        return 0;
-    }
-
-    private function getSubmissionCount($formID)
-    {
-        return wpFluent()
-            ->table('fluentform_submissions')
-            ->where('form_id', $formID)
-            ->where('status', '!=', 'trashed')
-            ->count();
-    }
-
-    private function getConversionRate($form)
-    {
-        if (!$form->total_Submissions)
-            return 0;
-
-        if (!$form->total_views)
-            return 0;
-
-        return ceil(($form->total_Submissions / $form->total_views) * 100);
-    }
 
     /**
      * Create a form from backend/editor
@@ -598,11 +534,4 @@ class Form
         wp_send_json($forms, 200);
     }
 
-    private function getUnreadCount($formId)
-    {
-        return wpFluent()->table('fluentform_submissions')
-            ->where('status', 'unread')
-            ->where('form_id', $formId)
-            ->count();
-    }
 }
