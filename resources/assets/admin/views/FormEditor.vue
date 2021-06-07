@@ -274,7 +274,7 @@
                                         <div v-show="optionFieldsSection == 'general'"
                                              class="option-fields-section--content">
                                             <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
-                                                 class="v-row mb15">
+                                                 class="v-row mb15" :class="'ff_items_'+itemMockList.length">
                                                 <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
                                                     <vddl-draggable
                                                         class="btn-element"

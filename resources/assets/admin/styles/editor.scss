@@ -940,3 +940,14 @@ mark {
   word-break: break-word;
   white-space: break-spaces;
 }
+
+.v-row {
+  &.ff_items_1, &.ff_items_2{
+    .v-col--33 {
+      padding-right: 15px;
+    }
+  }
+  .v-col--50:last-child {
+    padding-right: 15px;
+  }
+}
