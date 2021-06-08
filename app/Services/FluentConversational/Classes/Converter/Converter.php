@@ -59,6 +59,14 @@ class Converter
             } elseif ($field['element'] === 'select') {
                 $question['options'] = ArrayHelper::get($field, 'settings.advanced_options', []);
                 $question['placeholder'] = ArrayHelper::get($field, 'settings.placeholder', null);
+                $isMultiple = ArrayHelper::get($field, 'attributes.multiple', false);
+
+                if ($isMultiple) {
+                	$question['type'] = $allowedFields['select_multiple'];
+	                $question['multiple'] = true;
+	                $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', false);
+	                $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
+                }
             } elseif ($field['element'] === 'select_country') {
                 $options = array();
                 $countries = getFluentFormCountryList();
@@ -134,6 +142,7 @@ class Converter
             'welcome_screen'        => 'FlowFormWelcomeScreenType',
             'input_date'            => 'FlowFormDateType',
             'select'                => 'FlowFormDropdownType',
+            'select_multiple'       => 'FlowFormDropdownMultipleType',
             'select_country'        => 'FlowFormDropdownType',
             'input_email'           => 'FlowFormEmailType',
             'textarea'              => 'FlowFormLongTextType',
