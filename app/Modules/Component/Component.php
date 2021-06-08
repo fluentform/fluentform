@@ -205,10 +205,6 @@ class Component
                 'disabled' => true
             );
 
-            $disabled['custom_submit_button'] = array(
-                'disabled' => true
-            );
-
             $disabled['rangeslider'] = array(
                 'disabled' => true
             );
