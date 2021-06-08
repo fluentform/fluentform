@@ -47,49 +47,8 @@ if (!function_exists('fluentformMix')) {
      */
     function fluentformMix($path, $manifestDirectory = '')
     {
-        $env = \FluentForm\App::make('config')->app['env'];
-
-        if ($env != 'dev') {
-            $publicUrl = \FluentForm\App::publicUrl();
-
-            return $publicUrl . $path;
-        }
-
-        static $manifests = [];
-
-        if (substr($path, 0, 1) !== '/') {
-            $path = "/" . $path;
-        }
-
-        if ($manifestDirectory && substr($manifestDirectory, 0, 1) !== '/') {
-            $manifestDirectory = "/" . $manifestDirectory;
-        }
-
-        $publicPath = \FluentForm\App::publicPath();
-        if (file_exists($publicPath . '/hot')) {
-            return (is_ssl() ? "https" : "http") . "://localhost:8080" . $path;
-        }
-
-        $manifestPath = $publicPath . $manifestDirectory . 'mix-manifest.json';
-
-        if (!isset($manifests[$manifestPath])) {
-            if (!file_exists($manifestPath)) {
-                throw new Exception('The Mix manifest does not exist.');
-            }
-
-            $manifests[$manifestPath] = json_decode(file_get_contents($manifestPath), true);
-        }
-
-        $manifest = $manifests[$manifestPath];
-
-        if (!isset($manifest[$path])) {
-            throw new Exception(
-                "Unable to locate Mix file: " . $path . ". Please check your " .
-                'webpack.mix.js output paths and try again.'
-            );
-        }
-
-        return \FluentForm\App::publicUrl($manifestDirectory . $manifest[$path]);
+        $publicUrl = \FluentForm\App::publicUrl();
+        return $publicUrl . $path;
     }
 }
 

@@ -431,11 +431,11 @@ class Component
         } else if ($formTitle = $atts['title']) {
             $form = wpFluent()->table('fluentform_forms')->where('title', $formTitle)->first();
         } else {
-            return;
+            return '';
         }
 
         if (!$form) {
-            return;
+            return '';
         }
 
         if (!empty($atts['permission'])) {
@@ -458,13 +458,13 @@ class Component
             ->first();
 
         if (!$formSettings) {
-            return;
+            return '';
         }
 
         $form->fields = json_decode($form->form_fields, true);
 
         if (!$form->fields['fields']) {
-            return;
+            return '';
         }
 
         $form->settings = json_decode($formSettings->value, true);
@@ -480,7 +480,7 @@ class Component
         if (is_array($isRenderable) && !$isRenderable['status']) {
             return "<div id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
         }
-
+        
         $instanceCssClass = Helper::getFormInstaceClass($form->id);
 
         $form->instance_css_class = $instanceCssClass;
@@ -588,6 +588,7 @@ class Component
                 (new \FluentForm\App\Modules\Form\Analytics($this->app))->record($form->id);
             }
         }
+
         return $output . $otherScripts;
     }
 

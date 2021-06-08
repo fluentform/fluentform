@@ -216,7 +216,29 @@ class Form
                 return '';
             }
 
+            $metaSettings = $this->getMetaSettings($formId);
+
+            $shareKey = ArrayHelper::get($metaSettings, 'share_key');
+            if($shareKey) {
+                $providedKey = ArrayHelper::get($_REQUEST, 'form');
+                if($providedKey != $shareKey) {
+                    return '';
+                }
+            }
+
             $form = Converter::convert($form);
+
+            $formSettings = wpFluent()
+                ->table('fluentform_form_meta')
+                ->where('form_id', $form->id)
+                ->where('meta_key', 'formSettings')
+                ->first();
+
+            if (!$formSettings) {
+                return '';
+            }
+
+            $form->settings = json_decode($formSettings->value, true);
 
             $submitCss = $this->getSubmitBttnStyle($form);
 
@@ -230,7 +252,6 @@ class Form
 
             $designSettings = $this->getDesignSettings($formId);
 
-            $metaSettings = $this->getMetaSettings($formId);
             wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
                 'ajaxurl'                  => admin_url('admin-ajax.php'),
@@ -242,6 +263,27 @@ class Form
             ]);
 
             $this->printLoadedScripts();
+
+
+            $isRenderable = array(
+                'status' => true,
+                'message' => ''
+            );
+
+            $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
+
+            if (is_array($isRenderable) && !$isRenderable['status']) {
+                if (!Acl::hasAnyFormPermission($form->id)) {
+                    echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</h1>";
+                    die();
+                }
+            }
+
+            if (!apply_filters('fluentform-disabled_analytics', false)) {
+                if (!Acl::hasAnyFormPermission($form->id)) {
+                    (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
+                }
+            }
 
             echo View::make('public.conversational-form', [
                 'generated_css' => $this->getGeneratedCss($formId),
@@ -355,7 +397,7 @@ class Form
             if (in_array($element, $acceptedFieldElements)) {
                 $field['style_pref'] = [
                     'layout'           => 'default',
-                    'media'            => '',
+                    'media'            => $this->getRandomPhoto(),
                     'brightness'       => 0,
                     'alt_text'         => '',
                     'media_x_position' => 50,
@@ -373,8 +415,6 @@ class Form
             }
         }
         $elements = apply_filters('fluent_conversational_editor_elements', $elements, $formId);
-
-        //   dd($elements); die();
 
         return [
             'general' => $elements
@@ -535,6 +575,12 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId)
         ]);
 
+        if (!apply_filters('fluentform-disabled_analytics', false)) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
+                (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
+            }
+        }
+
         return View::make('public.conversational-form-inline', [
             'generated_css'   => $this->getGeneratedCss($formId),
             'design'          => $designSettings,
@@ -582,5 +628,23 @@ class Form
             '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
             '_wp_http_referer'                            => esc_attr(wp_unslash($_SERVER['REQUEST_URI']))
         ];
+    }
+
+    private function getRandomPhoto()
+    {
+        $photos = [
+            'demo_1.jpg',
+            'demo_2.jpg',
+            'demo_3.jpg',
+            'demo_4.jpg',
+            'demo_5.jpg'
+        ];
+
+        $selected = array_rand($photos, 1);
+
+        $photoName = $photos[$selected];
+
+        return fluentformMix('img/conversational/'.$photoName);
+
     }
 }

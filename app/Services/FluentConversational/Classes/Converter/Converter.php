@@ -21,17 +21,17 @@ class Converter
         $allowedFields = static::fieldTypes();
         foreach ($fields as $field) {
             $question = [
-                'id'            => $field['uniqElKey'],
-                'name'          => ArrayHelper::get($field, 'attributes.name'),
-                'title'         => ArrayHelper::get($field, 'settings.label'),
-                'type'          => ArrayHelper::get($allowedFields, $field['element']),
-                'ff_input_type' => $field['element'],
-                'placeholder'   => ArrayHelper::get($field, 'attributes.placeholder'),
-                'required'      => ArrayHelper::get($field, 'settings.validation_rules.required.value'),
-                'requiredMsg'      => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
-                'answer'        => self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form),
-                'tagline'       => ArrayHelper::get($field, 'settings.help_message'),
-                'style_pref'    => ArrayHelper::get($field, 'style_pref', [
+                'id'                 => $field['uniqElKey'],
+                'name'               => ArrayHelper::get($field, 'attributes.name'),
+                'title'              => ArrayHelper::get($field, 'settings.label'),
+                'type'               => ArrayHelper::get($allowedFields, $field['element']),
+                'ff_input_type'      => $field['element'],
+                'placeholder'        => ArrayHelper::get($field, 'attributes.placeholder'),
+                'required'           => ArrayHelper::get($field, 'settings.validation_rules.required.value'),
+                'requiredMsg'        => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
+                'answer'             => self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form),
+                'tagline'            => ArrayHelper::get($field, 'settings.help_message'),
+                'style_pref'         => ArrayHelper::get($field, 'style_pref', [
                     'layout'           => 'default',
                     'media'            => '',
                     'brightness'       => 0,
@@ -39,17 +39,17 @@ class Converter
                     'media_x_position' => 50,
                     'media_y_position' => 50
                 ]),
-	            'conditional_logics' => self::parseConditionalLogic($field)
+                'conditional_logics' => self::parseConditionalLogic($field)
             ];
 
             if ($field['element'] === 'input_text') {
-	            $mask = ArrayHelper::get($field, 'settings.temp_mask');
+                $mask = ArrayHelper::get($field, 'settings.temp_mask');
 
-	            $mask = $mask === 'custom' ? ArrayHelper::get($field, 'attributes.data-mask') : $mask;
+                $mask = $mask === 'custom' ? ArrayHelper::get($field, 'attributes.data-mask') : $mask;
 
-            	if ($mask) {
-            		$question['mask'] = $mask;
-	            }
+                if ($mask) {
+                    $question['mask'] = $mask;
+                }
             } elseif ($field['element'] === 'welcome_screen') {
                 $question['settings'] = ArrayHelper::get($field, 'settings', []);
                 $question['subtitle'] = ArrayHelper::get($field, 'settings.description');
@@ -57,7 +57,7 @@ class Converter
 //				$question['css'] = (new \FluentConversational\Form)->getSubmitBttnStyle($field);
 
             } elseif ($field['element'] === 'select') {
-                $question['options'] = ArrayHelper::get($field, 'settings.advanced_options', []);
+                $question['options'] = self::getAdvancedOptions($field);
                 $question['placeholder'] = ArrayHelper::get($field, 'settings.placeholder', null);
                 $isMultiple = ArrayHelper::get($field, 'attributes.multiple', false);
 
@@ -79,10 +79,10 @@ class Converter
                 $question['options'] = $options;
                 $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', null);
             } elseif ($field['element'] === 'input_checkbox') {
-                $question['options'] = ArrayHelper::get($field, 'settings.advanced_options', []);
+                $question['options'] = self::getAdvancedOptions($field);;
                 $question['multiple'] = true;
             } elseif ($field['element'] === 'input_radio') {
-                $question['options'] = ArrayHelper::get($field, 'settings.advanced_options', []);
+                $question['options'] = self::getAdvancedOptions($field);
                 $question['nextStepOnAnswer'] = true;
             } elseif ($field['element'] === 'custom_html') {
                 $question['content'] = ArrayHelper::get($field, 'settings.html_codes', '');
@@ -101,27 +101,27 @@ class Converter
                 $question['min'] = ArrayHelper::get($field, 'settings.validation_rules.min.value');
                 $question['max'] = ArrayHelper::get($field, 'settings.validation_rules.max.value');
             } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
-	            $question['options'] = [
-		            [
-			            'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
-			            'value' => 'on',
-		            ],
-		            [
-			            'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I accept'),
-			            'value' => 'off',
-		            ]
-	            ];
+                $question['options'] = [
+                    [
+                        'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
+                        'value' => 'on',
+                    ],
+                    [
+                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I accept'),
+                        'value' => 'off',
+                    ]
+                ];
 
-	            $question['nextStepOnAnswer'] = true;
+                $question['nextStepOnAnswer'] = true;
                 $question['title'] = ArrayHelper::get($field, 'settings.tnc_html');
                 if ($field['element'] === 'gdpr_agreement') {
                     $question['required'] = true;
                 }
 
             } elseif ($field['element'] === 'ratings') {
-            	$question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
-            	$question['options'] = ArrayHelper::get($field, 'options', []);
-	            $question['nextStepOnAnswer'] = true;
+                $question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
+                $question['options'] = ArrayHelper::get($field, 'options', []);
+                $question['nextStepOnAnswer'] = true;
             }
             if ($question['type']) {
                 $questions[] = $question;
@@ -156,7 +156,7 @@ class Converter
             'custom_html'           => 'FlowFormSectionBreakType',
             'input_text'            => 'FlowFormTextType',
             'input_url'             => 'FlowFormUrlType',
-	        'ratings'               => 'FlowFormRateType'
+            'ratings'               => 'FlowFormRateType'
         ];
 
         if (defined('FLUENTFORMPRO')) {
@@ -303,24 +303,36 @@ class Converter
     {
         $logics = ArrayHelper::get($field, 'settings.conditional_logics', []);
 
-        if(!$logics || !$logics['status']) {
+        if (!$logics || !$logics['status']) {
             return [];
         }
 
         $validConditions = [];
         foreach ($logics['conditions'] as $condition) {
-            if(empty($condition['field']) || empty($condition['operator'])) {
+            if (empty($condition['field']) || empty($condition['operator'])) {
                 continue;
             }
             $validConditions[] = $condition;
         }
 
-        if(!$validConditions) {
+        if (!$validConditions) {
             return [];
         }
 
         $logics['conditions'] = $validConditions;
 
         return $logics;
+    }
+
+    private static function getAdvancedOptions($field)
+    {
+        $options = ArrayHelper::get($field, 'settings.advanced_options', []);
+
+        if($options && ArrayHelper::get($field, 'settings.randomize_options') == 'yes') {
+            shuffle($options);
+        }
+
+        return $options;
+
     }
 }
