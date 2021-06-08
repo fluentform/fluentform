@@ -355,7 +355,7 @@ class Form
             if (in_array($element, $acceptedFieldElements)) {
                 $field['style_pref'] = [
                     'layout'           => 'default',
-                    'media'            => '',
+                    'media'            => $this->getRandomPhoto(),
                     'brightness'       => 0,
                     'alt_text'         => '',
                     'media_x_position' => 50,
@@ -373,8 +373,6 @@ class Form
             }
         }
         $elements = apply_filters('fluent_conversational_editor_elements', $elements, $formId);
-
-        //   dd($elements); die();
 
         return [
             'general' => $elements
@@ -582,5 +580,23 @@ class Form
             '_fluentform_' . $formId . '_fluentformnonce' => wp_create_nonce('fluentform-submit-form'),
             '_wp_http_referer'                            => esc_attr(wp_unslash($_SERVER['REQUEST_URI']))
         ];
+    }
+
+    private function getRandomPhoto()
+    {
+        $photos = [
+            'demo_1.jpg',
+            'demo_2.jpg',
+            'demo_3.jpg',
+            'demo_4.jpg',
+            'demo_5.jpg'
+        ];
+
+        $selected = array_rand($photos, 1);
+
+        $photoName = $photos[$selected];
+
+        return fluentformMix('img/conversational/'.$photoName);
+
     }
 }
