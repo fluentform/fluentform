@@ -32,7 +32,7 @@ class Activator
             }
         } else {
             $this->migrate();
-            $this->maybeMigrateDefaultForms();
+          //  $this->maybeMigrateDefaultForms();
         }
 
         self::setCronSchedule();
