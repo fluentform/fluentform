@@ -18,6 +18,8 @@ class Converter
 
         $questions = [];
 
+        $imagePreloads = [];
+
         $allowedFields = static::fieldTypes();
         foreach ($fields as $field) {
             $question = [
@@ -41,6 +43,13 @@ class Converter
                 ]),
                 'conditional_logics' => self::parseConditionalLogic($field)
             ];
+
+            if(ArrayHelper::get($question, 'style_pref.layout') != 'default') {
+                $media = ArrayHelper::get($question, 'style_pref.media');
+                if($media) {
+                    $imagePreloads[] = $media;
+                }
+            }
 
             if ($field['element'] === 'input_text') {
                 $mask = ArrayHelper::get($field, 'settings.temp_mask');
@@ -132,6 +141,8 @@ class Converter
         }
 
         $form->questions = $questions;
+
+        $form->image_preloads = $imagePreloads;
 
         return $form;
     }

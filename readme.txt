@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.7.2
 Requires PHP: 5.6
-Stable tag: 3.6.74
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,7 @@ Fluent Forms helps you create hassle-free contact forms, subscription forms, or 
 
 ==Amazing Features==
 
+* Conversational Forms and Classic Form Builder
 * Drag & Drop Contact Form Builder
 * Multi-column Contact Form Layout
 * Smart Conditional Logic Form Fields
@@ -56,6 +57,14 @@ Here goes a list of all the Premium features you will be enjoying in WP Fluent F
 
 == Super Fast Contact Forms ==
 WP Fluent Forms is built for speed. It does not slow down your site nor load lots of css & js. A standard form only loads less than 30KB css and js combined, which is the lowest among all the form builders out there. WP Fluent Forms will outperform a big way if you compare with all the form builders plugin. Most of the form builders plugin loads at least 300KB assets to load a simple form where WP Fluent Forms load 10% of the average size. Build the fastest contact forms and web forms in minutes.
+
+== Conversational Forms ==
+Fluent Forms v4.0 is live, and it's more powerful than ever! With the most awaited Conversational Forms, the plugin became your no. 1 choice to build next-level WordPress forms.
+
+[youtube https://www.youtube.com/watch?v=lLQWsjqrGtg]
+
+With Conversational Form Style you can easily build awesome high converting type styled forms easily. It's completely free.
+[View Conversational Form Demo](https://fluentforms.com/?fluent-form=138)
 
 == Built-in Data Analysis Tool ==
 In version 3.0.0, we have added the most exciting features that no other form plugins provide, and that is built-in data visualization tool. Using the data visualization module, you can analyze your data from your web and contact forms, analyze the data using a pie-chart, bar chart, tabular view. Using Ninja Tables plugin you can even show the submitted data in the frontend.
@@ -321,6 +330,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 11. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.0.0 (Date: June 08, 2021) =
+* Introducing Conversational Form Style
+* Dedicated landing page for Conversational Form
+* Added Layout Option for Conversational Form
+* Bulk Resend Notification Fixed
+* Various Integration Improvements
+* Editor UI improvements
+* PHP 8.0 Support
+* PHP API
+* Custom Submit Button
 
 = 3.6.74 (Date: May 27, 2021) =
 * Hot Fix: Form hide issue fixed after submission

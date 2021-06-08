@@ -219,9 +219,9 @@ class Form
             $metaSettings = $this->getMetaSettings($formId);
 
             $shareKey = ArrayHelper::get($metaSettings, 'share_key');
-            if($shareKey) {
+            if ($shareKey) {
                 $providedKey = ArrayHelper::get($_REQUEST, 'form');
-                if($providedKey != $shareKey) {
+                if ($providedKey != $shareKey) {
                     return '';
                 }
             }
@@ -255,7 +255,13 @@ class Form
             wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
                 'ajaxurl'                  => admin_url('admin-ajax.php'),
-                'form'                     => $form,
+                'form'                     => [
+                    'id'             => $form->id,
+                    'questions'      => $form->questions,
+                    'image_preloads' => $form->image_preloads,
+                    'submit_button'  => $form->submit_button
+                ],
+                'form_id'                  => $form->id,
                 'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
                 'i18n'                     => $metaSettings['i18n'],
                 'design'                   => $designSettings,
@@ -266,7 +272,7 @@ class Form
 
 
             $isRenderable = array(
-                'status' => true,
+                'status'  => true,
                 'message' => ''
             );
 
@@ -290,7 +296,8 @@ class Form
                 'design'        => $designSettings,
                 'submit_css'    => $submitCss,
                 'form_id'       => $formId,
-                'meta'          => $metaSettings
+                'meta'          => $metaSettings,
+                'form'          => $form
             ]);
 
             exit(200);
@@ -349,7 +356,7 @@ class Form
         } else {
             $styles .= ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
         }
-        
+
         if (defined('FLUENTFORMPRO')) {
             $customCssJsClass = new FormCssJs();
             $customCss = $customCssJsClass->getCss($form->id);
@@ -566,7 +573,12 @@ class Form
         wp_localize_script('fluent_forms_conversational_form', $varName, [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'form'                     => $form,
+            'form'                     => [
+                'id'             => $form->id,
+                'questions'      => $form->questions,
+                'image_preloads' => $form->image_preloads,
+                'submit_button'  => $form->submit_button
+            ],
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
             'form_id'                  => $form->id,
@@ -644,7 +656,7 @@ class Form
 
         $photoName = $photos[$selected];
 
-        return fluentformMix('img/conversational/'.$photoName);
+        return fluentformMix('img/conversational/' . $photoName);
 
     }
 }
