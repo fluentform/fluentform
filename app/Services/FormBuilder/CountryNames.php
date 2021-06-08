@@ -267,4 +267,9 @@ $country_names = array(
     'ZW' => __('Zimbabwe', 'fluentform'),
 );
 
-return apply_filters('fluent_editor_countries', $country_names);
+
+$country_names = apply_filters('fluent_editor_countries', $country_names);
+
+asort($country_names);
+
+return $country_names;

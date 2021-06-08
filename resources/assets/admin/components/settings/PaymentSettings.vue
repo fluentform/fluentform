@@ -159,6 +159,21 @@
                         <p>You can find the API keys to <a target="_blank" rel="noopener" href="https://dashboard.stripe.com/apikeys">Stripe Dashboard</a></p>
                     </div>
 
+                    <el-form-item>
+                        <template slot="label">
+                            Statement Description
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Statement Description</h3>
+                                    <p>
+                                        Provide the statement description. If you keep it empty then your form name will be set
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-input placeholder="Statement Description" type="text" size="small" v-model="settings.stripe_descriptor" />
+                    </el-form-item>
                 </div>
 
                 <div style="margin-top: 20px;" class="ff_card_block" v-if="payment_methods.paypal">
