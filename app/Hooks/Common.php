@@ -405,3 +405,6 @@ $app->addFilter('fluentform_response_render_input_number', function ($response, 
     }
     return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
 }, 10, 4);
+
+
+new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();

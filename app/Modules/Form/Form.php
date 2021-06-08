@@ -78,9 +78,9 @@ class Form
 
     /**
      * Create a form from backend/editor
-     * @return void
+     * @return void|array
      */
-    public function store()
+    public function store($returnJSON = true)
     {
         $type = $this->request->get('type', $this->formType);
         $title = $this->request->get('title', 'My New Form');
@@ -149,11 +149,17 @@ class Form
 
         do_action('fluentform_inserted_new_form', $formId, $insertData);
 
-        wp_send_json_success(array(
+        $data = array(
             'formId' => $formId,
             'redirect_url' => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=editor'),
             'message' => __('Successfully created a form.', 'fluentform')
-        ), 200);
+        );
+
+        if($returnJSON) {
+            wp_send_json_success($data, 200);
+        }
+
+        return $data;
     }
 
     public function getFormsDefaultSettings($formId = false)

@@ -871,44 +871,49 @@ class Predefined extends Form
 
         if ($predefinedForm) {
             $predefinedForm = json_decode($predefinedForm['json'], true)[0];
-
-            $this->request->merge([
-                'title' => $this->request->get('title', $predefinedForm['title'])
-            ]);
-
-            if (isset($predefinedForm['form_fields'])) {
-                $this->formFields = json_encode($predefinedForm['form_fields']);
-            } else if (isset($predefinedForm['form'])) {
-                $this->formFields = json_encode($predefinedForm['form']);
-            }
-
-            if (isset($predefinedForm['formSettings'])) {
-                $this->defaultSettings = $predefinedForm['formSettings'];
-            }
-
-
-            if (isset($predefinedForm['notifications'])) {
-                $this->defaultNotifications = $predefinedForm['notifications'];
-            }
-
-            if (isset($predefinedForm['metas'])) {
-                $this->metas = $predefinedForm['metas'];
-            }
-
-            if (!empty($predefinedForm['has_payment'])) {
-                $this->hasPayment = 1;
-            }
-
-            if (!empty($predefinedForm['type'])) {
-                $this->formType = $predefinedForm['type'];
-            }
-
-            $this->store();
+            $returnData = $this->createForm($predefinedForm);
+            wp_send_json_success($returnData, 200);
         }
 
         wp_send_json_error([
             'message' => __("The selected template couldn't be found.", 'fluentform')
         ], 422);
+    }
+
+
+    public function createForm($predefinedForm)
+    {
+        $this->request->merge([
+            'title' => $this->request->get('title', $predefinedForm['title'])
+        ]);
+
+        if (isset($predefinedForm['form_fields'])) {
+            $this->formFields = json_encode($predefinedForm['form_fields']);
+        } else if (isset($predefinedForm['form'])) {
+            $this->formFields = json_encode($predefinedForm['form']);
+        }
+
+        if (isset($predefinedForm['formSettings'])) {
+            $this->defaultSettings = $predefinedForm['formSettings'];
+        }
+
+        if (isset($predefinedForm['notifications'])) {
+            $this->defaultNotifications = $predefinedForm['notifications'];
+        }
+
+        if (isset($predefinedForm['metas'])) {
+            $this->metas = $predefinedForm['metas'];
+        }
+
+        if (!empty($predefinedForm['has_payment'])) {
+            $this->hasPayment = 1;
+        }
+
+        if (!empty($predefinedForm['type'])) {
+            $this->formType = $predefinedForm['type'];
+        }
+
+        return $this->store(false);
     }
 
 }

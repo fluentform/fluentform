@@ -44,7 +44,7 @@
                             :listItem="listItem">
                         </component>
                     </template>
-                    <div v-if="!hasPro" class="fcc_pro_message">
+                    <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
                         Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro
                         <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>
                     </div>
@@ -162,7 +162,8 @@ export default {
     data() {
         return {
             optionFieldsSection: 'generalEditOptions',
-            hasPro: !!window.FluentFormApp.hasPro
+            hasPro: !!window.FluentFormApp.hasPro,
+            is_conversion_form: !!window.FluentFormApp.is_conversion_form
         }
     },
     computed: {
