@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms - Best Form Plugin for WordPress\n"
 "POT-Creation-Date: 2020-08-24 12:05+0000\n"
-"PO-Revision-Date: 2021-05-21 11:12+0000\n"
+"PO-Revision-Date: 2021-06-08 16:06+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid " List is required"
 msgstr " Liste erforderlich"
 
-#: app/Modules/Component/Component.php:951
+#: app/Modules/Component/Component.php:956
 msgid " to "
 msgstr " bis "
 
@@ -44,11 +44,11 @@ msgstr "-- Formular auswählen --"
 msgid "...."
 msgstr "...."
 
-#: app/Modules/Component/Component.php:521
+#: app/Modules/Component/Component.php:525
 msgid "0% Completed"
 msgstr "0% abgeschlossen"
 
-#: app/Modules/Component/Component.php:520
+#: app/Modules/Component/Component.php:524
 msgid "100% Completed"
 msgstr "100% abgeschlossen"
 
@@ -64,7 +64,7 @@ msgstr "23/03/2018 23:59:59"
 msgid "23:59:59"
 msgstr "23:59:59"
 
-#: app/Modules/Registerer/Menu.php:466
+#: app/Modules/Registerer/Menu.php:440
 msgid "<h2>No form found</h2>"
 msgstr "<h2>Kein Formular gefunden</h2>"
 
@@ -189,7 +189,7 @@ msgstr "Erlaubte Bildtypen stimmen nicht überein"
 msgid "Allowed Images"
 msgstr "Erlaubte Bildformate"
 
-#: app/Modules/Component/Component.php:956
+#: app/Modules/Component/Component.php:961
 msgid "AM"
 msgstr "AM"
 
@@ -229,11 +229,11 @@ msgstr "Anwenden von Stilen"
 msgid "Apply styles provided here"
 msgstr "Hier bereitgestellte Stile anwenden"
 
-#: app/Modules/Component/Component.php:892
+#: app/Modules/Component/Component.php:897
 msgid "Apr"
 msgstr "Apr"
 
-#: app/Modules/Component/Component.php:906
+#: app/Modules/Component/Component.php:911
 msgid "April"
 msgstr "April"
 
@@ -257,11 +257,11 @@ msgstr "Audio"
 msgid "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
 msgstr "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
 
-#: app/Modules/Component/Component.php:896
+#: app/Modules/Component/Component.php:901
 msgid "Aug"
 msgstr "Aug"
 
-#: app/Modules/Component/Component.php:910
+#: app/Modules/Component/Component.php:915
 msgid "August"
 msgstr "August"
 
@@ -449,7 +449,7 @@ msgid "Button Style"
 msgstr "Button Stil"
 
 #: app/Services/FormBuilder/ElementCustomization.php:195
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:399
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:398
 msgid "Button Text"
 msgstr "Button Text"
 
@@ -554,7 +554,7 @@ msgstr ""
 msgid "Clear value if not match the mask"
 msgstr ""
 
-#: app/Modules/Component/Component.php:954
+#: app/Modules/Component/Component.php:959
 msgid "Click to toggle"
 msgstr "Zum Aus-/Einklappen klicken"
 
@@ -699,7 +699,7 @@ msgstr "Währung"
 msgid "Custom"
 msgstr "Benutzerdefiniert"
 
-#: app/Modules/Form/Settings/FormCssJs.php:121
+#: app/Modules/Form/Settings/FormCssJs.php:152
 msgid "Custom CSS and JS successfully updated"
 msgstr "BenutzerdefinierteS CSS und JS erfolgreich aktualisiert"
 
@@ -751,11 +751,11 @@ msgstr "Datum / Uhrzeit"
 msgid "Date Format"
 msgstr "Datumsformat"
 
-#: app/Modules/Component/Component.php:900
+#: app/Modules/Component/Component.php:905
 msgid "Dec"
 msgstr "Dez"
 
-#: app/Modules/Component/Component.php:914
+#: app/Modules/Component/Component.php:919
 msgid "December"
 msgstr "Dezember"
 
@@ -785,13 +785,17 @@ msgstr "Dänemark"
 #: app/Modules/Widgets/FluentFormWidget.php:302
 #: app/Modules/Widgets/FluentFormWidget.php:1234
 #: app/Services/FormBuilder/ElementCustomization.php:190
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:468
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:467
 msgid "Description"
 msgstr "Beschreibung"
 
 #: app/Services/FormBuilder/ElementCustomization.php:191
 msgid "Description will be shown to the user as normal text content."
 msgstr "Die Beschreibung wird dem Benutzer als normaler Textinhalt angezeigt."
+
+#: app/Services/FluentConversational/Classes/Form.php:49
+msgid "Design"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:51
 msgid ""
@@ -847,7 +851,7 @@ msgstr ""
 msgid "Ecuador"
 msgstr "Ecuador"
 
-#: app/Modules/Registerer/Menu.php:443
+#: app/Modules/Registerer/Menu.php:447
 msgid "Editor"
 msgstr "Editor"
 
@@ -923,7 +927,7 @@ msgstr ""
 "loggen Sie sich in Ihr MailChimp-Konto ein und gehen Sie zu <br>Profil -> "
 "Extras -> Api-Schlüssel"
 
-#: app/Modules/Registerer/Menu.php:322 app/Modules/Registerer/Menu.php:456
+#: app/Modules/Registerer/Menu.php:322 app/Modules/Registerer/Menu.php:460
 #: resources/views/email/report/body.php:148
 msgid "Entries"
 msgstr "Einträge"
@@ -964,7 +968,7 @@ msgstr ""
 msgid "EU Style without Decimal (EX: 123.456.789)"
 msgstr ""
 
-#: app/Modules/Activator.php:137
+#: app/Modules/Activator.php:138
 msgid "Every 5 Minutes (FluentForm)"
 msgstr "Alle 5 Minuten (FluentForm)"
 
@@ -992,11 +996,11 @@ msgstr "Falklandinseln"
 msgid "Faroe Islands"
 msgstr "Färöer Inseln"
 
-#: app/Modules/Component/Component.php:890
+#: app/Modules/Component/Component.php:895
 msgid "Feb"
 msgstr "Feb"
 
-#: app/Modules/Component/Component.php:904
+#: app/Modules/Component/Component.php:909
 msgid "February"
 msgstr "Februar"
 
@@ -1087,7 +1091,7 @@ msgstr "Bilden"
 msgid "Form Container"
 msgstr ""
 
-#: app/Modules/Form/Form.php:540
+#: app/Modules/Form/Form.php:485
 msgid "Form has been successfully duplicated."
 msgstr "Das Formular wurde erfolgreich dupliziert."
 
@@ -1113,15 +1117,15 @@ msgid "Form step titles, user will see each title in each step."
 msgstr ""
 "Formularschritttitel, Benutzer wird jeden Titel in jedem Schritt angezeigt."
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:400
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:399
 msgid "Form submission button text."
 msgstr "Formularübermittlungsschaltflächentext."
 
-#: app/Modules/Form/Form.php:242
+#: app/Modules/Form/Form.php:187
 msgid "Form submission is not started yet."
 msgstr "Die Formularübermittlung wurde noch nicht gestartet."
 
-#: app/Modules/Form/Form.php:243
+#: app/Modules/Form/Form.php:188
 msgid "Form submission is now closed."
 msgstr "Die Formularabgabe ist nun abgeschlossen."
 
@@ -1145,11 +1149,11 @@ msgstr "Französisch-Polynesien"
 msgid "French Southern Territories"
 msgstr "Französische Süd- und Antarktisgebiete"
 
-#: app/Modules/Component/Component.php:933
+#: app/Modules/Component/Component.php:938
 msgid "Fri"
 msgstr "Fr"
 
-#: app/Modules/Component/Component.php:924
+#: app/Modules/Component/Component.php:929
 msgid "Friday"
 msgstr "Freitag"
 
@@ -1361,7 +1365,7 @@ msgid "HTTP Referer URL"
 msgstr "HTTP-Verweis-URL"
 
 #. Author URI of the plugin
-msgid "https://wpfluentforms.com"
+msgid "https://fluentforms.com"
 msgstr ""
 
 #. URI of the plugin
@@ -1372,13 +1376,25 @@ msgstr "https://wpmanageninja.com/wp-fluent-form/"
 msgid "Hungary"
 msgstr "Ungarn"
 
+#: app/Services/FluentConversational/Classes/Form.php:416
+msgid "I accept"
+msgstr ""
+
 #: app/Services/FormBuilder/DefaultElements.php:1143
+#, fuzzy
+#| msgid ""
+#| "I consent to having this website store my submitted information so they "
+#| "can respond to my inquiry"
 msgid ""
-"I consent to having this website store my submitted information so they can "
+"I consent to have this website store my submitted information so they can "
 "respond to my inquiry"
 msgstr ""
 "Ich stimme zu, dass die von mir übermittelten Informationen gespeichert "
 "werden, damit meine Anfrage beantwortet werden kann"
+
+#: app/Services/FluentConversational/Classes/Form.php:417
+msgid "I don't accept"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:119
 msgid "Iceland"
@@ -1559,11 +1575,11 @@ msgstr "Elfenbeinküste"
 msgid "Jamaica"
 msgstr "Jamaika"
 
-#: app/Modules/Component/Component.php:889
+#: app/Modules/Component/Component.php:894
 msgid "Jan"
 msgstr "Jan"
 
-#: app/Modules/Component/Component.php:903
+#: app/Modules/Component/Component.php:908
 msgid "January"
 msgstr "Januar"
 
@@ -1584,19 +1600,19 @@ msgstr "Jordanien"
 msgid "JPG"
 msgstr "JPG"
 
-#: app/Modules/Component/Component.php:895
+#: app/Modules/Component/Component.php:900
 msgid "Jul"
 msgstr "Jul"
 
-#: app/Modules/Component/Component.php:909
+#: app/Modules/Component/Component.php:914
 msgid "July"
 msgstr "Juli"
 
-#: app/Modules/Component/Component.php:894
+#: app/Modules/Component/Component.php:899
 msgid "Jun"
 msgstr "Jun"
 
-#: app/Modules/Component/Component.php:908
+#: app/Modules/Component/Component.php:913
 msgid "June"
 msgstr "Juni"
 
@@ -1708,7 +1724,7 @@ msgstr ""
 msgid "Lithuania"
 msgstr "Litauen"
 
-#: app/Modules/Component/Component.php:525
+#: app/Modules/Component/Component.php:529
 msgid "Loading..."
 msgstr ""
 
@@ -1792,11 +1808,11 @@ msgstr "Malta"
 msgid "Managing form submissions"
 msgstr "Verwalten von Formularübermittlungen"
 
-#: app/Modules/Component/Component.php:891
+#: app/Modules/Component/Component.php:896
 msgid "Mar"
 msgstr "Mär"
 
-#: app/Modules/Component/Component.php:905
+#: app/Modules/Component/Component.php:910
 msgid "March"
 msgstr "März"
 
@@ -1885,8 +1901,8 @@ msgstr "Maximalwert für das Eingabefeld."
 msgid "Maximum value is "
 msgstr "Maximalwert ist "
 
-#: app/Modules/Component/Component.php:893
-#: app/Modules/Component/Component.php:907
+#: app/Modules/Component/Component.php:898
+#: app/Modules/Component/Component.php:912
 msgid "May"
 msgstr "Mai"
 
@@ -1928,7 +1944,7 @@ msgstr "Mindestwert ist "
 msgid "Moldova"
 msgstr "Moldawien"
 
-#: app/Modules/Component/Component.php:929
+#: app/Modules/Component/Component.php:934
 msgid "Mon"
 msgstr "Mo"
 
@@ -1936,7 +1952,7 @@ msgstr "Mo"
 msgid "Monaco"
 msgstr "Monaco"
 
-#: app/Modules/Component/Component.php:920
+#: app/Modules/Component/Component.php:925
 msgid "Monday"
 msgstr "Montag"
 
@@ -1984,7 +2000,7 @@ msgstr "Myanmar"
 msgid "Name Attribute"
 msgstr "Namensattribut"
 
-#: app/Modules/Form/Form.php:558
+#: app/Modules/Form/Form.php:503
 #, php-format
 msgid "Name attribute %s has duplicate value."
 msgstr ""
@@ -2029,7 +2045,7 @@ msgstr "Weiter"
 msgid "Next Button"
 msgstr "Weiter Schaltfläche"
 
-#: app/Modules/Component/Component.php:886
+#: app/Modules/Component/Component.php:891
 msgid "Next Month"
 msgstr "Nächster Monat"
 
@@ -2061,15 +2077,15 @@ msgstr "Niue"
 msgid "No"
 msgstr "Nein"
 
-#: app/Modules/Component/Component.php:526
+#: app/Modules/Component/Component.php:530
 msgid "No choices to choose from"
 msgstr ""
 
-#: app/Modules/Component/Component.php:524
+#: app/Modules/Component/Component.php:528
 msgid "No results found"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:369 app/Modules/Acl/Acl.php:133
+#: app/Modules/Form/FormHandler.php:377 app/Modules/Acl/Acl.php:133
 msgid "Nonce verification failed, please try again."
 msgstr "Nonce-Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut."
 
@@ -2107,11 +2123,11 @@ msgstr "Norwegen"
 msgid "Note has been successfully added"
 msgstr "Hinweis wurde erfolgreich hinzugefügt"
 
-#: app/Modules/Component/Component.php:899
+#: app/Modules/Component/Component.php:904
 msgid "Nov"
 msgstr "Nov"
 
-#: app/Modules/Component/Component.php:913
+#: app/Modules/Component/Component.php:918
 msgid "November"
 msgstr "November"
 
@@ -2124,11 +2140,11 @@ msgstr ""
 msgid "Numeric Field"
 msgstr "Numerisches Feld"
 
-#: app/Modules/Component/Component.php:898
+#: app/Modules/Component/Component.php:903
 msgid "Oct"
 msgstr "Okt"
 
-#: app/Modules/Component/Component.php:912
+#: app/Modules/Component/Component.php:917
 msgid "October"
 msgstr "Oktober"
 
@@ -2320,7 +2336,7 @@ msgstr ""
 "Bitte validieren Sie zuerst Ihre reCaptcha und klicken Sie dann auf "
 "Speichern."
 
-#: app/Modules/Component/Component.php:957
+#: app/Modules/Component/Component.php:962
 msgid "PM"
 msgstr "PM"
 
@@ -2345,7 +2361,7 @@ msgstr "Vordefinierte Formularfelder"
 msgid "Prefix Label"
 msgstr "Präfix Label"
 
-#: app/Modules/Component/Component.php:527
+#: app/Modules/Component/Component.php:531
 msgid "Press to select"
 msgstr ""
 
@@ -2362,7 +2378,7 @@ msgstr "Zurück"
 msgid "Previous Button"
 msgstr "„Zurück“-Schaltfläche"
 
-#: app/Modules/Component/Component.php:885
+#: app/Modules/Component/Component.php:890
 msgid "Previous Month"
 msgstr "Vorheriger Monat"
 
@@ -2434,7 +2450,7 @@ msgstr "Bewertungen"
 msgid "reCaptcha"
 msgstr "reCaptcha"
 
-#: app/Modules/Form/FormHandler.php:419
+#: app/Modules/Form/FormHandler.php:427
 msgid "reCaptcha verification failed, please try again."
 msgstr "reCaptcha-Überprüfung fehlgeschlagen, versuchen Sie es erneut."
 
@@ -2529,11 +2545,11 @@ msgstr "Samoa"
 msgid "San Marino"
 msgstr "San Marino"
 
-#: app/Modules/Component/Component.php:934
+#: app/Modules/Component/Component.php:939
 msgid "Sat"
 msgstr "Sa"
 
-#: app/Modules/Component/Component.php:925
+#: app/Modules/Component/Component.php:930
 msgid "Saturday"
 msgstr "Samstag"
 
@@ -2546,7 +2562,7 @@ msgstr "Saudi-Arabien"
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: app/Modules/Component/Component.php:953
+#: app/Modules/Component/Component.php:958
 msgid "Scroll to increment"
 msgstr "Scrollen zum erhöhen"
 
@@ -2633,11 +2649,11 @@ msgstr "Ausgewählte Logs erfolgreich gelöscht"
 msgid "Senegal"
 msgstr "Senegal"
 
-#: app/Modules/Component/Component.php:897
+#: app/Modules/Component/Component.php:902
 msgid "Sep"
 msgstr "Sep"
 
-#: app/Modules/Component/Component.php:911
+#: app/Modules/Component/Component.php:916
 msgid "September"
 msgstr "September"
 
@@ -2661,7 +2677,7 @@ msgstr "Einrichten von E-Mail-Benachrichtigungen"
 msgid "Setting up form submission confirmation"
 msgstr "Einrichten der Formularübermittlungsbestätigung"
 
-#: app/Modules/Registerer/Menu.php:449
+#: app/Modules/Registerer/Menu.php:453
 msgid "Settings & Integrations"
 msgstr "Einstellungen & Integrationen"
 
@@ -2807,13 +2823,13 @@ msgstr ""
 "Es tut uns leid, Sie können Berechtigungen nicht aktualisieren. Nur "
 "Administratoren können Berechtigungen aktualisieren"
 
-#: app/Modules/Form/Form.php:251
+#: app/Modules/Form/Form.php:196
 msgid "Sorry, you cannot submit an empty form. Let's hear what you wanna say."
 msgstr ""
 "Sie können leider kein leeres Formular senden. Lassen Sie uns hören, was Sie "
 "sagen wollen."
 
-#: app/Modules/Component/Component.php:281
+#: app/Modules/Component/Component.php:279
 msgid "Sorry, You do not have permission to view this form"
 msgstr "Sie sind leider nicht berechtigt, dieses Formular anzuzeigen"
 
@@ -2863,7 +2879,7 @@ msgstr "Bundesland"
 msgid "Step"
 msgstr "Schritt"
 
-#: app/Modules/Component/Component.php:508
+#: app/Modules/Component/Component.php:512
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr "Schritt %activeStep% von %totalStep% - %stepTitle%"
 
@@ -2879,6 +2895,10 @@ msgstr "Schritttitel"
 msgid "Steps"
 msgstr "Schritte"
 
+#: app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php:36
+msgid "Sub Heading"
+msgstr ""
+
 #: app/Services/FormBuilder/EditorShortCode.php:69
 msgid "Submission Admin View URL"
 msgstr "Submission Admin URL anzeigen"
@@ -2891,7 +2911,7 @@ msgstr "Erstellungsdatum der Übermittlung"
 msgid "Submission ID"
 msgstr "Übermittlungs ID"
 
-#: app/Modules/Form/FormHandler.php:385
+#: app/Modules/Form/FormHandler.php:393
 msgid "Submission marked as spammed. Please try again"
 msgstr "Als Spam markierte Einsendung. Bitte versuchen Sie es erneut"
 
@@ -2920,11 +2940,11 @@ msgstr "Gerät des Absenders"
 msgid "Success Message"
 msgstr ""
 
-#: app/Modules/Form/Form.php:216
+#: app/Modules/Form/Form.php:155
 msgid "Successfully created a form."
 msgstr "Das Formular wurde erfolgreich erstellt."
 
-#: app/Modules/Form/Form.php:442
+#: app/Modules/Form/Form.php:387
 msgid "Successfully deleted the form."
 msgstr "Das Formular wurde erfolgreich gelöscht."
 
@@ -2940,11 +2960,11 @@ msgstr "Sudan"
 msgid "Suffix Label"
 msgstr "Suffix Beschriftung"
 
-#: app/Modules/Component/Component.php:928
+#: app/Modules/Component/Component.php:933
 msgid "Sun"
 msgstr "So"
 
-#: app/Modules/Component/Component.php:919
+#: app/Modules/Component/Component.php:924
 msgid "Sunday"
 msgstr "Sonntag"
 
@@ -3037,7 +3057,7 @@ msgstr ""
 msgid "Thailand"
 msgstr "Thailand"
 
-#: app/Modules/Form/Form.php:225
+#: app/Modules/Form/Form.php:170
 msgid "Thank you for your message. We will get in touch with you shortly"
 msgstr ""
 "Vielen Dank für Ihre Nachricht. Wir werden uns in Kürze mit Ihnen in "
@@ -3055,12 +3075,12 @@ msgstr "Das Feld Bestätigungstyp ist erforderlich."
 msgid "The file size limit uploaded by the user."
 msgstr "Die vom Benutzer hochgeladene Dateigrößenbeschränkung."
 
-#: app/Modules/Component/Component.php:450
+#: app/Modules/Component/Component.php:449
 #, php-format
 msgid "The form can be filled in the actual <a href=\"%s\">website url</a>."
 msgstr ""
 
-#: app/Modules/Form/Form.php:423
+#: app/Modules/Form/Form.php:368
 msgid "The form is successfully updated."
 msgstr "Das Formular wurde erfolgreich aktualisiert."
 
@@ -3183,11 +3203,11 @@ msgstr "Dies wird als Schaltflächentext für die Upload-Datei sichtbar."
 msgid "Three Column Container"
 msgstr "Dreispaltiger Container"
 
-#: app/Modules/Component/Component.php:932
+#: app/Modules/Component/Component.php:937
 msgid "Thu"
 msgstr "Do"
 
-#: app/Modules/Component/Component.php:923
+#: app/Modules/Component/Component.php:928
 msgid "Thursday"
 msgstr "Donnerstag"
 
@@ -3237,11 +3257,11 @@ msgstr "Trello"
 msgid "Trinidad and Tobago"
 msgstr "Trinidad und Tobago"
 
-#: app/Modules/Component/Component.php:930
+#: app/Modules/Component/Component.php:935
 msgid "Tue"
 msgstr "Di"
 
-#: app/Modules/Component/Component.php:921
+#: app/Modules/Component/Component.php:926
 msgid "Tuesday"
 msgstr "Dienstag"
 
@@ -3320,7 +3340,7 @@ msgstr "Amerikanische Jungferninseln"
 msgid "Upgrade to Pro"
 msgstr "Upgrade auf die Pro-Version"
 
-#: app/Modules/Component/Component.php:522
+#: app/Modules/Component/Component.php:526
 msgid "Uploading"
 msgstr "Hochladen"
 
@@ -3432,17 +3452,25 @@ msgstr "Web-Hooks"
 msgid "Website URL"
 msgstr "Website URL"
 
-#: app/Modules/Component/Component.php:931
+#: app/Modules/Component/Component.php:936
 msgid "Wed"
 msgstr "Mi"
 
-#: app/Modules/Component/Component.php:922
+#: app/Modules/Component/Component.php:927
 msgid "Wednesday"
 msgstr "Mittwoch"
 
 #: resources/views/email/report/body.php:123
 msgid "Weekly Email Summary of Your Forms"
 msgstr "Wöchentliche E-Mail-Zusammenfassung Ihrer Formulare"
+
+#: app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php:35
+msgid "Welcome Heading"
+msgstr ""
+
+#: app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php:65
+msgid "Welcome Screen"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:263
 msgid "Western Sahara"
@@ -3453,7 +3481,7 @@ msgstr "Westsahara"
 msgid "Width"
 msgstr ""
 
-#: app/Modules/Component/Component.php:952
+#: app/Modules/Component/Component.php:957
 msgid "Wk"
 msgstr "Wk"
 
@@ -3465,7 +3493,7 @@ msgstr "WordPress Hook Name, um etwas an diesem Ort zu platzieren."
 msgid "WP Fluent Forms Widget"
 msgstr "WP Fluent Forms Widget"
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:469
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:468
 msgid "Write HTML content for GDPR agreement checkbox"
 msgstr "HTML-Inhalt für das Kontrollkästchen DSGVO-Vereinbarung"
 
@@ -3479,7 +3507,7 @@ msgstr "HTML-Inhalt für das Kontrollkästchen Bedingungen & Bedingung schreiben
 msgid "Write your own mask for this input"
 msgstr "Schreiben Sie Ihre eigene Maske für dieses Eingabefeld"
 
-#: app/Modules/Component/Component.php:959
+#: app/Modules/Component/Component.php:964
 msgid "Year"
 msgstr "Jahr"
 
