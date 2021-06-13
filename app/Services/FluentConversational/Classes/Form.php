@@ -242,6 +242,13 @@ class Form
 
             $submitCss = $this->getSubmitBttnStyle($form);
 
+            wp_enqueue_style(
+            	'fluent_forms_conversational_form',
+	            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
+	            array(),
+	            FLUENTFORM_VERSION
+            );
+
             wp_enqueue_script(
                 'fluent_forms_conversational_form',
                 FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
@@ -557,6 +564,13 @@ class Form
         $formId = $form->id;
         $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
+
+	    wp_enqueue_style(
+		    'fluent_forms_conversational_form',
+		    FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
+		    array(),
+		    FLUENTFORM_VERSION
+	    );
 
         wp_enqueue_script(
             'fluent_forms_conversational_form',
