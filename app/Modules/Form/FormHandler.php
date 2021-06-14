@@ -418,7 +418,13 @@ class FormHandler
     private function validateReCaptcha()
     {
         if (FormFieldsParser::hasElement($this->form, 'recaptcha')) {
-            $isValid = ReCaptcha::validate(Arr::get($this->formData, 'g-recaptcha-response'));
+            $keys = get_option('_fluentform_reCaptcha_details');
+            $token = Arr::get($this->formData, 'g-recaptcha-response');
+            $version = 'v2_visible';
+            if(!empty($keys['api_version'])) {
+                $version = $keys['api_version'];
+            }
+            $isValid = ReCaptcha::validate($token, $keys['secretKey'], $version);
 
             if (!$isValid) {
                 wp_send_json([

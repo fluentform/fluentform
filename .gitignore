@@ -10,3 +10,4 @@ svn
 svn.php
 /public/*
 package-lock.json
+public_build

@@ -14,7 +14,7 @@ class ReCaptcha
      *
      * @return bool
      */
-    public static function validate($token, $secret = null)
+    public static function validate($token, $secret = null, $version = 'v2_visible')
     {
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
@@ -28,11 +28,18 @@ class ReCaptcha
             ],
         ]);
 
+
         $isValid = false;
 
         if (! is_wp_error($response)) {
             $result = json_decode(wp_remote_retrieve_body($response));
-            $isValid = $result->success;
+            if($version == 'v3_invisible') {
+                $score = $result->score;
+                $checkScore = apply_filters('fluentforms_recaptcha_v3_ref_score', 0.5);
+                $isValid = $score >= $checkScore;
+            } else {
+                $isValid = $result->success;
+            }
         }
 
         return $isValid;

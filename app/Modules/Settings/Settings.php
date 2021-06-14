@@ -80,6 +80,27 @@ class Settings
             ], 200);
         }
 
+        $version = ArrayHelper::get($data, 'api_version');
+        if($version == 'v3_invisible') {
+            $captchaData = [
+                'siteKey'   => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
+                'secretKey' => sanitize_text_field(ArrayHelper::get($data, 'secretKey')),
+                'api_version' => $version
+            ];
+
+            // Update the reCaptcha details with siteKey & secretKey.
+            update_option('_fluentform_reCaptcha_details', $captchaData, 'no');
+
+            // Update the reCaptcha validation status.
+            update_option('_fluentform_reCaptcha_keys_status', true, 'no');
+
+            wp_send_json_success([
+                'message' => __('Your reCaptcha credential has been saved. Please test a real form with recaptcha enabled', 'fluentform'),
+                'status'  => true
+            ], 200);
+
+        }
+
         $token = ArrayHelper::get($data, 'token');
         $secretKey = ArrayHelper::get($data, 'secretKey');
 
