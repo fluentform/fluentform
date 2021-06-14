@@ -65,7 +65,7 @@
         <el-row :gutter="30">
             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
-                    <h3>Embed via HTMl Code</h3>
+                    <h3>Embed via HTML Code</h3>
                     <p>Want to use this form in another domain or another site or even outside WordPress? Use the
                         following code</p>
                     <textarea style="width: 100%" type="textarea" :rows="5" :readonly="true">
