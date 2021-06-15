@@ -92,14 +92,11 @@ class Converter
 			} elseif ($field['element'] === 'input_checkbox') {
 				$question['options'] = self::getAdvancedOptions($field);;
 				$question['multiple'] = true;
-				$pictureMode = ArrayHelper::get($field, 'settings.enable_image_input');
-
-				if ($pictureMode) {
-					$question['type'] = $allowedFields['MultiplePictureChoice'];
-				}
+				$question = static::hasPictureMode($field, $question);
 			} elseif ($field['element'] === 'input_radio') {
 				$question['options'] = self::getAdvancedOptions($field);
 				$question['nextStepOnAnswer'] = true;
+				$question = static::hasPictureMode($field, $question);
 			} elseif ($field['element'] === 'custom_html') {
 				$question['content'] = ArrayHelper::get($field, 'settings.html_codes', '');
 			} elseif ($field['element'] === 'section_break') {
@@ -186,6 +183,17 @@ class Converter
 		}
 
 		return $fieldTypes;
+	}
+
+	public static function hasPictureMode($field, $question)
+	{
+		$pictureMode = ArrayHelper::get($field, 'settings.enable_image_input');
+
+		if ($pictureMode) {
+			$question['type'] =  static::fieldTypes()['MultiplePictureChoice'];
+		}
+
+		return $question;
 	}
 
 	public static function hex2rgb($color, $opacity = 0.3)
