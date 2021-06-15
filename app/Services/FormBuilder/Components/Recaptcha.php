@@ -15,20 +15,52 @@ class Recaptcha extends BaseComponent
         $elementName = $data['element'];
         $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
 
-        wp_enqueue_script(
-			'google-recaptcha',
-			'https://www.google.com/recaptcha/api.js',
-			array(),
-			FLUENTFORM_VERSION,
-			true
-		);
 
 		$key = get_option('_fluentform_reCaptcha_details');
+		$apiVersion = 'v2_visible';
 		if($key && isset($key['siteKey'])) {
 			$siteKey = $key['siteKey'];
 		} else {
 			$siteKey = '';
 		}
+
+		if(!$siteKey) {
+		    return false;
+        }
+
+		if(!empty($key['api_version'])) {
+            $apiVersion = $key['api_version'];
+        }
+
+		if($apiVersion == 'v3_invisible') {
+            wp_enqueue_script(
+                'google-recaptcha',
+                'https://www.google.com/recaptcha/api.js?render='.$siteKey,
+                array(),
+                FLUENTFORM_VERSION,
+                true
+            );
+
+            add_filter('fluentform_form_class', function ($formClass) {
+                $formClass .= ' ff_has_v3_recptcha';
+                return $formClass;
+            });
+
+            add_filter('fluent_form_html_attributes', function ($atts) use ($siteKey) {
+                $atts['data-recptcha_key'] = $siteKey;
+                return $atts;
+            });
+
+            return ;
+        }
+
+        wp_enqueue_script(
+            'google-recaptcha',
+            'https://www.google.com/recaptcha/api.js',
+            array(),
+            FLUENTFORM_VERSION,
+            true
+        );
 
 		$recaptchaBlock = "<div
 		data-sitekey='{$siteKey}'
@@ -40,7 +72,7 @@ class Recaptcha extends BaseComponent
 		if (!empty($data['settings']['label'])) {
 			$label = "<div class='ff-el-input--label'><label>{$data['settings']['label']}</label></div>";
 		}
-		
+
 		$el = "<div class='ff-el-input--content'><div data-fluent_id='".$form->id."' name='g-recaptcha-response'>{$recaptchaBlock}</div></div>";
 		$atts = $this->buildAttributes(
 			\FluentForm\Framework\Helpers\ArrayHelper::except($data['attributes'], 'name')
