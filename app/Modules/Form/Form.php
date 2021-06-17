@@ -405,6 +405,10 @@ class Form
             ->where('form_id', $formId)
             ->delete();
 
+        wpFluent()->table('fluentform_form_meta')
+            ->where('form_id', $formId)
+            ->delete();
+
         wpFluent()->table('fluentform_form_analytics')
             ->where('form_id', $formId)
             ->delete();
