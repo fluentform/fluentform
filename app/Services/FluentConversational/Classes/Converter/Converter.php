@@ -31,6 +31,8 @@ class Converter
 				'placeholder'        => ArrayHelper::get($field, 'attributes.placeholder'),
 				'required'           => ArrayHelper::get($field, 'settings.validation_rules.required.value'),
 				'requiredMsg'        => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
+				'errorMessage'       => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
+				'validationRules'    => ArrayHelper::get($field, 'settings.validation_rules'),
 				'answer'             => self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form),
 				'tagline'            => ArrayHelper::get($field, 'settings.help_message'),
 				'style_pref'         => ArrayHelper::get($field, 'style_pref', [
@@ -68,13 +70,12 @@ class Converter
 			} elseif ($field['element'] === 'select') {
 				$question['options'] = self::getAdvancedOptions($field);
 				$question['placeholder'] = ArrayHelper::get($field, 'settings.placeholder', null);
+				$question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
 				$isMultiple = ArrayHelper::get($field, 'attributes.multiple', false);
 
 				if ($isMultiple) {
-					$question['type'] = $allowedFields['select_multiple'];
 					$question['multiple'] = true;
 					$question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', false);
-					$question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
 					$question['max_selection'] = ArrayHelper::get($field, 'settings.max_selection');
 					$question['max_selection'] = $question['max_selection'] ? intval($question['max_selection']) : 0;
 				}
@@ -89,6 +90,7 @@ class Converter
 				}
 				$question['options'] = $options;
 				$question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', null);
+				$question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
 			} elseif ($field['element'] === 'input_checkbox') {
 				$question['options'] = self::getAdvancedOptions($field);;
 				$question['multiple'] = true;
@@ -116,6 +118,8 @@ class Converter
 			} elseif ($field['element'] === 'input_number') {
 				$question['min'] = ArrayHelper::get($field, 'settings.validation_rules.min.value');
 				$question['max'] = ArrayHelper::get($field, 'settings.validation_rules.max.value');
+				$question['min'] = is_numeric($question['min']) ? $question['min'] : null;
+				$question['max'] = is_numeric($question['max']) ? $question['max'] : null;
 			} elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
 				$question['options'] = [
 					[
@@ -160,7 +164,6 @@ class Converter
 			'welcome_screen'        => 'FlowFormWelcomeScreenType',
 			'input_date'            => 'FlowFormDateType',
 			'select'                => 'FlowFormDropdownType',
-			'select_multiple'       => 'FlowFormDropdownMultipleType',
 			'select_country'        => 'FlowFormDropdownType',
 			'input_email'           => 'FlowFormEmailType',
 			'textarea'              => 'FlowFormLongTextType',
