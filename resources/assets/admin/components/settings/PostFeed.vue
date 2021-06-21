@@ -183,126 +183,37 @@
                 </div>
 
                 <template v-if="post_settings.has_acf">
-                    <div class="meta_fields_mapping">
-                        <strong style="font-size: 18px;">Advanced Custom Fields (ACF) Mapping</strong>
-                    </div>
-                    <hr style="clear:both;margin:20px 0;">
-                    <div>
-                        <strong style="font-size: 14px;">General Fields</strong>
-                        <el-button
-                                type="primary"
-                                size="mini"
-                                icon="el-icon-plus"
-                                class="pull-right"
-                                @click="addAcfMetaFieldMapping"
-                        >Add Another General Field
-                        </el-button>
-                    </div>
-                    <br />
-
-                    <table v-if="feed.value.acf_mappings.length" class="ff-table">
-                        <thead>
-                        <tr>
-                            <th>ACF Field</th>
-                            <th>Form Field</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(mapField,index) in feed.value.acf_mappings" :key="index">
-                            <td>
-                                <el-select v-model="mapField.field_key" size="mini" placeholder="Select ACF Field">
-                                    <el-option v-for="(field, fieldKey) in post_settings.acf_fields" :key="fieldKey"
-                                               :label="field.label" :value="fieldKey"></el-option>
-                                </el-select>
-                            </td>
-                            <td>
-                                <inputPopover
-                                        fieldType="text"
-                                        :data="editorShortcodes"
-                                        v-model="mapField.field_value"
-                                />
-                            </td>
-                            <td>
-                                <el-button
-                                        type="danger"
-                                        size="mini"
-                                        icon="el-icon-close"
-                                        style="margin-top:4px;"
-                                        @click="deleteAcfMapping(index)"
-                                />
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div v-else class="no-mapping-alert">
-                        There is no mapping of ACF General Meta fields.
-                    </div>
-
-                    <template>
-                        <hr style="clear:both;margin:30px 0;">
-                        <div>
-                            <strong style="font-size: 14px;">Advanced ACF Fields</strong>
-                            <el-button
-                                    type="primary"
-                                    size="mini"
-                                    icon="el-icon-plus"
-                                    class="pull-right"
-                                    @click="addAcfAdvancedMetaFieldMapping()"
-                            >Add Another Advanced Field
-                            </el-button>
-                        </div>
-                        <br />
-                        <table v-if="feed.value.advanced_acf_mappings && feed.value.advanced_acf_mappings.length" class="ff-table">
-                            <thead>
-                            <tr>
-                                <th>ACF Field</th>
-                                <th>Form Field</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="(mapField,index) in feed.value.advanced_acf_mappings" :key="index">
-                                <td>
-                                    <el-select @change="mapField.field_value = ''" v-model="mapField.field_key"
-                                               size="mini" placeholder="Select ACF Field">
-                                        <el-option v-for="(field, fieldKey) in post_settings.acf_fields_advanced"
-                                                   :key="fieldKey" :label="field.label" :value="fieldKey"></el-option>
-                                    </el-select>
-                                </td>
-                                <td>
-                                    <p v-if="!mapField.field_key">Select ACF Field First</p>
-                                    <template v-else>
-                                        <el-select v-model="mapField.field_value" placeholder="Select Form Field"
-                                                   clearable>
-                                            <el-option
-                                                    v-for="(formField,fieldName) in getFilteredFields(mapField.field_key)"
-                                                    :key="fieldName" :value="fieldName"
-                                                    :label="formField.admin_label"></el-option>
-                                        </el-select>
-                                        <small>{{post_settings.acf_fields_advanced[mapField.field_key].help_message}}</small>
-                                    </template>
-
-                                </td>
-                                <td>
-                                    <el-button
-                                            type="danger"
-                                            size="mini"
-                                            icon="el-icon-close"
-                                            style="margin-top:4px;"
-                                            @click="deleteAdvancedAcfMapping(index)"
-                                    />
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <div v-else class="no-mapping-alert">
-                            There is no advanced field mapping for this section.
-                        </div>
-                    </template>
+                    <post-meta-plugin-mapping
+                        :general_settings="feed.value.acf_mappings"
+                        :advanced_settings="feed.value.advanced_acf_mappings"
+                        :labels="{
+                        section_title: 'ACF Plugin Mapping',
+                        remote_label: 'ACF Field',
+                        local_label: 'Form Field (Value)'
+                    }"
+                        :general_fields="post_settings.acf_fields"
+                        :advanced_fields="post_settings.acf_fields_advanced"
+                        :form_fields="form_fields"
+                        :editorShortcodes="editorShortcodes" />
+                    <hr style="margin: 20px">
                 </template>
 
-                <hr style="margin: 20px">
+                <template v-if="post_settings.has_metabox">
+                    <post-meta-plugin-mapping
+                        :general_settings="feed.value.metabox_mappings"
+                        :advanced_settings="feed.value.advanced_metabox_mappings"
+                        :labels="{
+                        section_title: 'MetaBox (MB) Plugin Mapping',
+                        remote_label: 'MetaBox (MB) Field',
+                        local_label: 'Form Field (Value)'
+                    }"
+                        :general_fields="post_settings.metabox_fields"
+                        :advanced_fields="post_settings.metabox_fields_advanced"
+                        :form_fields="form_fields"
+                        :editorShortcodes="editorShortcodes" />
+                    <hr style="margin: 20px">
+                </template>
+
                 <filter-fields :fields="form_fields"
                                :conditionals="feed.value.conditionals"
                                :disabled="false"
@@ -337,13 +248,15 @@
 <script type="text/babel">
     import inputPopover from '../input-popover.vue';
     import FilterFields from './Includes/FilterFields.vue';
+    import PostMetaPluginMapping from './_PostMetaPluginsMapping';
     import each from 'lodash/each';
 
     export default {
         name: 'PostFeed',
         components: {
             inputPopover,
-            FilterFields
+            FilterFields,
+            PostMetaPluginMapping
         },
         props: [
             'feed',

@@ -228,7 +228,7 @@ jQuery(document).ready(function () {
                                 return;
                             }
 
-                            $theForm.trigger('fluentform_submission_success', {
+                            $theForm.triggerHandler('fluentform_submission_success', {
                                 form: $theForm,
                                 config: form,
                                 response: res
