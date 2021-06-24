@@ -493,6 +493,7 @@ class Component
 
         $formBuilder = $this->app->make('formBuilder');
         $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);
+
         $output = $this->replaceEditorSmartCodes($output, $form);
 
         if (!wp_script_is('fluent-form-submission', 'registered')) {

@@ -111,7 +111,7 @@ Vue.mixin({
 
 import Slack from './components/settings/Slack.vue';
 import Zapier from './components/settings/Zapier.vue';
-import LandingPages from './components/settings/LandingPages.vue';
+import LandingPages from './components/settings/LandingPage/index.vue';
 import PostFeeds from './components/settings/PostFeeds.vue';
 import BasicSettings from './components/settings/FormSettings.vue';
 import Confirmations from './components/settings/Confirmations.vue';

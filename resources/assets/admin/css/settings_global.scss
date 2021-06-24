@@ -3,14 +3,13 @@
 @import "../styles/_el_customize.scss";
 
 @import "../styles/entries";
+@import "../conversion_templates/browser_frame";
 
 .ff_form_application_container {
     .ff_settings_wrapper {
         padding-top: 20px;
     }
 }
-
-
 
 .el-text-primary {
     color: #20A0FF;
@@ -632,4 +631,101 @@ table.ff_routing_table tr {
     padding: 10px 20px 20px;
     background: #fffaf3;
     border-radius: 10px;
+}
+
+.ff_landing {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 80vh;
+    background: rgb(250, 250, 250);
+    .ff_landing_sidebar {
+        width: 350px;
+        background-color: white;
+        border: 1px solid #e2e4e7;
+        .ffc_sidebar_header {
+            width: 350px;
+        }
+        .ffc_sidebar_body {
+            padding: 0px 15px 10px 15px;
+            .el-form-item {
+                margin-bottom: 5px;
+            }
+            .ffc_design_submit {
+                margin-top: 30px;
+                text-align: center;
+            }
+        }
+    }
+    .ffc_design_container {
+        width: 100%;
+        padding: 0;
+    }
+
+    .ffc_sidebar_header ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        justify-content: space-evenly;
+        align-items: center;
+        border-bottom: 1px solid #e2e4e7;
+        li {
+            padding: 10px 5px;
+            cursor: pointer;
+            &.ffc_active {
+                color: #409eff;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .ffc_design_elements {
+        .fcc_eq_line .el-form-item__label {
+            line-height: 120%;
+        }
+        .el-form-item.fcc_label_top .el-form-item__label {
+            width: 100% !important;
+            display: block;
+            line-height: 100%;
+            float: none;
+        }
+
+        .el-form-item.fcc_label_top .el-form-item__content {
+            width: 100%;
+            margin-left: 0 !important;
+            display: block;
+        }
+    }
+}
+
+
+ul.fcc_inline_social {
+    margin: 20px 0;
+    padding: 0;
+    li {
+        display: inline-block;
+        margin-right: 10px;
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.fcc_card {
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.06) 0px 2px 12px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.copy_share.fc_copy_success {
+    background: #409eff !important;
+    color: white !important;
+    padding: 8px 20px;
 }

@@ -31,7 +31,6 @@
                 inactive-text="Mobile">
             </el-switch>
         </div>
-
     </div>
 </template>
 

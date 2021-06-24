@@ -149,7 +149,6 @@ add_action('wp_print_scripts', function () {
                     wp_dequeue_script($wp_scripts->registered[$script]->handle);
                 }
             }
-
         }
     }
 }, 1);

@@ -544,10 +544,14 @@ class Helper
     {
         $meta = self::getFormMeta($formId, 'ffc_form_settings_meta', []);
         $key = ArrayHelper::get($meta, 'share_key', '');
-        if ($key) {
-            return site_url('?fluent-form=' . $formId . '&form=' . $key);
+        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+        if($paramKey == 'form') {
+            $paramKey = 'fluent-form';
         }
-        return site_url('?fluent-form=' . $formId);
+        if ($key) {
+            return site_url('?'.$paramKey.'=' . $formId . '&form=' . $key);
+        }
+        return site_url('?'.$paramKey.'=' . $formId);
     }
 
     private function unreadCount($formId)

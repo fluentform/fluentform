@@ -75,9 +75,14 @@ class Form
             true
         );
 
+        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+        if ($paramKey == 'form') {
+            $paramKey = 'fluent-form';
+        }
+
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
             'form_id'     => $formId,
-            'preview_url' => site_url('?fluent-form=' . $formId),
+            'preview_url' => site_url('?' . $paramKey . '=' . $formId),
             'fonts'       => Fonts::getFonts(),
             'has_pro'     => defined('FLUENTFORMPRO')
         ]);
@@ -207,107 +212,15 @@ class Form
 
     public function render()
     {
-        if ((isset($_GET['fluent-form'])) && !wp_doing_ajax()) {
+        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+        if ($paramKey == 'form') {
+            $paramKey = 'fluent-form';
+        }
 
-            $formId = intval(ArrayHelper::get($_REQUEST, 'fluent-form'));
-
-            $form = wpFluent()->table('fluentform_forms')->find($formId);
-            if (!$form) {
-                return '';
-            }
-
-            $metaSettings = $this->getMetaSettings($formId);
-
-            $shareKey = ArrayHelper::get($metaSettings, 'share_key');
-            if ($shareKey) {
-                $providedKey = ArrayHelper::get($_REQUEST, 'form');
-                if ($providedKey != $shareKey) {
-                    return '';
-                }
-            }
-
-            $form = Converter::convert($form);
-
-            $formSettings = wpFluent()
-                ->table('fluentform_form_meta')
-                ->where('form_id', $form->id)
-                ->where('meta_key', 'formSettings')
-                ->first();
-
-            if (!$formSettings) {
-                return '';
-            }
-
-            $form->settings = json_decode($formSettings->value, true);
-
-            $submitCss = $this->getSubmitBttnStyle($form);
-
-            wp_enqueue_style(
-            	'fluent_forms_conversational_form',
-	            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
-	            array(),
-	            FLUENTFORM_VERSION
-            );
-
-            wp_enqueue_script(
-                'fluent_forms_conversational_form',
-                FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-                array(),
-                FLUENTFORM_VERSION,
-                true
-            );
-
-            $designSettings = $this->getDesignSettings($formId);
-
-            wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
-                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => admin_url('admin-ajax.php'),
-                'form'                     => [
-                    'id'             => $form->id,
-                    'questions'      => $form->questions,
-                    'image_preloads' => $form->image_preloads,
-                    'submit_button'  => $form->submit_button
-                ],
-                'form_id'                  => $form->id,
-                'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
-                'i18n'                     => $metaSettings['i18n'],
-                'design'                   => $designSettings,
-                'extra_inputs'             => $this->getExtraHiddenInputs($formId)
-            ]);
-
-            $this->printLoadedScripts();
-
-
-            $isRenderable = array(
-                'status'  => true,
-                'message' => ''
-            );
-
-            $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
-
-            if (is_array($isRenderable) && !$isRenderable['status']) {
-                if (!Acl::hasAnyFormPermission($form->id)) {
-                    echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</h1>";
-                    die();
-                }
-            }
-
-            if (!apply_filters('fluentform-disabled_analytics', false)) {
-                if (!Acl::hasAnyFormPermission($form->id)) {
-                    (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
-                }
-            }
-
-            echo View::make('public.conversational-form', [
-                'generated_css' => $this->getGeneratedCss($formId),
-                'design'        => $designSettings,
-                'submit_css'    => $submitCss,
-                'form_id'       => $formId,
-                'meta'          => $metaSettings,
-                'form'          => $form
-            ]);
-
-            exit(200);
+        if ((isset($_GET[$paramKey])) && !wp_doing_ajax()) {
+            $formId = intval(ArrayHelper::get($_REQUEST, $paramKey));
+            $shareKey = ArrayHelper::get($_REQUEST, 'form');
+            $this->renderFormHtml($formId, $shareKey);
         }
     }
 
@@ -477,10 +390,10 @@ class Form
     private function getRegisteredScripts()
     {
         global $wp_scripts;
-
         if (!$wp_scripts) {
             return [];
         }
+
 
         $jsScripts = [];
 
@@ -565,12 +478,12 @@ class Form
         $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
 
-	    wp_enqueue_style(
-		    'fluent_forms_conversational_form',
-		    FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
-		    array(),
-		    FLUENTFORM_VERSION
-	    );
+        wp_enqueue_style(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
+            array(),
+            FLUENTFORM_VERSION
+        );
 
         wp_enqueue_script(
             'fluent_forms_conversational_form',
@@ -672,5 +585,105 @@ class Form
 
         return fluentformMix('img/conversational/' . $photoName);
 
+    }
+
+    private function renderFormHtml($formId, $providedKey = '')
+    {
+        $form = wpFluent()->table('fluentform_forms')->find($formId);
+        if (!$form) {
+            return '';
+        }
+
+        $metaSettings = $this->getMetaSettings($formId);
+
+        $shareKey = ArrayHelper::get($metaSettings, 'share_key');
+        if ($shareKey) {
+            if ($providedKey != $shareKey && !Acl::hasAnyFormPermission($formId)) {
+                return '';
+            }
+        }
+
+        $form = Converter::convert($form);
+
+        $formSettings = wpFluent()
+            ->table('fluentform_form_meta')
+            ->where('form_id', $form->id)
+            ->where('meta_key', 'formSettings')
+            ->first();
+
+        if (!$formSettings) {
+            return '';
+        }
+
+        $form->settings = json_decode($formSettings->value, true);
+
+        $submitCss = $this->getSubmitBttnStyle($form);
+
+        wp_enqueue_style(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
+            array(),
+            FLUENTFORM_VERSION
+        );
+
+        wp_enqueue_script(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
+            array(),
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        $designSettings = $this->getDesignSettings($formId);
+
+        wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
+            'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
+            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'form'                     => [
+                'id'             => $form->id,
+                'questions'      => $form->questions,
+                'image_preloads' => $form->image_preloads,
+                'submit_button'  => $form->submit_button
+            ],
+            'form_id'                  => $form->id,
+            'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
+            'i18n'                     => $metaSettings['i18n'],
+            'design'                   => $designSettings,
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId)
+        ]);
+
+        $this->printLoadedScripts();
+
+
+        $isRenderable = array(
+            'status'  => true,
+            'message' => ''
+        );
+
+        $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
+
+        if (is_array($isRenderable) && !$isRenderable['status']) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
+                echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</h1>";
+                die();
+            }
+        }
+
+        if (!apply_filters('fluentform-disabled_analytics', false)) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
+                (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
+            }
+        }
+
+        echo View::make('public.conversational-form', [
+            'generated_css' => $this->getGeneratedCss($formId),
+            'design'        => $designSettings,
+            'submit_css'    => $submitCss,
+            'form_id'       => $formId,
+            'meta'          => $metaSettings,
+            'form'          => $form
+        ]);
+
+        exit(200);
     }
 }

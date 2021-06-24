@@ -32,7 +32,7 @@
             margin: 0;
             padding: 0;
             max-width: 100vw;
-            font-family: sans-serif
+            font-family: sans-serif;
         }
 
         a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
@@ -81,7 +81,6 @@
     <?php do_action('fluentform_conversational_frame_head'); ?>
     <style id="ffc_generated_css" type="text/css">
         <?php echo $generated_css; ?>
-
     </style>
 
     <style id="ffc_font_css" type="text/css">
@@ -100,7 +99,6 @@
             align-items: center;
             flex-direction: column;
         }
-
         .ffc_loading_screen h2 {
             font-size: 30px;
             margin-top: 20px;
