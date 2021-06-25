@@ -116,11 +116,9 @@ export default function ($, $theForm) {
                 } else if (itemKey.indexOf('{payment.') != -1) {
                     let inputName = itemKey.replace(/{payment.|}/g, '');
                     let $elem = $theForm.find(':input[data-name=' + inputName + ']');
-                    console.log($elem);
                     let value = 0;
                     if ($elem.length && isAccessible($elem)) {
                         let elementType = $elem[0].type;
-                        console.log(elementType);
                         if (elementType == 'radio') {
                             let $element = $theForm.find('input[name=' + inputName + ']:checked');
                             value = $element.attr('data-payment_value');
@@ -156,6 +154,7 @@ export default function ($, $theForm) {
             });
             let calculatedValue = '';
             try {
+                formula = formula.replace(/\n/g, "");
                 calculatedValue = mexp.eval(formula);
                 if (isNaN(calculatedValue)) {
                     calculatedValue = '';
@@ -167,7 +166,7 @@ export default function ($, $theForm) {
                     }
                 }
             } catch (error) {
-                console.log(error);
+                console.log(error, field);
             }
 
             if ($field[0].type == 'text') {
@@ -217,7 +216,7 @@ export default function ($, $theForm) {
     var initNumberCalculations = function () {
         $theForm.find(
             'input[type=number],input[data-calc_value],select[data-calc_value],.ff_numeric,.ff_payment_item'
-        ).on('change keyup', doCalculation).trigger('change');
+        ).on('change keyup', doCalculation);
 
         doCalculation();
 
