@@ -256,11 +256,11 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         if (!isset($item['settings']['number_step'])) {
             $item['settings']['number_step'] = '';
         }
-        if (!isset($item['settings']['prefix_label'])) {
-            $item['settings']['prefix_label'] = '';
-        }
         if (!isset($item['settings']['numeric_formatter'])) {
             $item['settings']['numeric_formatter'] = '';
+        }
+        if (!isset($item['settings']['prefix_label'])) {
+            $item['settings']['prefix_label'] = '';
         }
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
@@ -274,6 +274,12 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         }
         if (!isset($item['settings']['unique_validation_message'])) {
             $item['settings']['unique_validation_message'] = __('Email address need to be unique.', 'fluentform');
+        }
+        if (!isset($item['settings']['prefix_label'])) {
+            $item['settings']['prefix_label'] = '';
+        }
+        if (!isset($item['settings']['suffix_label'])) {
+            $item['settings']['suffix_label'] = '';
         }
         return $item;
     });
@@ -293,6 +299,13 @@ add_action('fluentform_loading_editor_assets', function ($form) {
             if (!isset($item['settings']['unique_validation_message'])) {
                 $item['settings']['unique_validation_message'] = __('This field value need to be unique.', 'fluentform');
             }
+        }
+
+        if (!isset($item['settings']['prefix_label'])) {
+            $item['settings']['prefix_label'] = '';
+        }
+        if (!isset($item['settings']['suffix_label'])) {
+            $item['settings']['suffix_label'] = '';
         }
 
         return $item;
