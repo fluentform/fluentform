@@ -56,7 +56,9 @@ class Checkable extends BaseComponent
         $hasImageOption = ArrayHelper::get($data, 'settings.enable_image_input');
 
         if($hasImageOption) {
-            $data['settings']['container_class'] .= '';
+            if(empty($data['settings']['layout_class'])) {
+                $data['settings']['layout_class'] = 'ff_list_buttons';
+            }
             $elMarkup .= '<div class="ff_el_checkable_photo_holders">';
         }
 

@@ -79,7 +79,7 @@
 
   .ff-el-group {
     &.ff_list_buttons {
-      .ff-el-form-check:not(.ff-el-image-holder) {
+      .ff-el-form-check {
         label {
           margin: 0;
         }
@@ -96,6 +96,7 @@
           position: absolute;
           margin: 0;
           z-index: -1;
+          display: none;
         }
 
         span {
@@ -124,6 +125,20 @@
 
           &:hover {
             color: #409eff;
+          }
+        }
+
+        &.ff-el-image-holder {
+          border: 1px solid #dcdfe5;
+          overflow: hidden;
+          span {
+            width: 100%;
+            border: none !important;
+            margin-left: -1px;
+            border-radius: 0 !important;
+          }
+          &.ff_item_selected {
+            border-color: #409eff;
           }
         }
 
