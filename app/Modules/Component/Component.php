@@ -268,7 +268,7 @@ class Component
     public function addFluentFormShortCode()
     {
         
-        add_action('wp_enqueue_scripts', array($this, 'registerScripts'), 999);
+        add_action('wp_enqueue_scripts', array($this, 'registerScripts'), 9);
 
         $this->app->addShortCode('fluentform', function ($atts, $content) {
             $shortcodeDefaults = apply_filters('fluentform_shortcode_defaults', array(

@@ -6,9 +6,9 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
-use \Elementor\Scheme_Typography as Scheme_Typography;
+use \Elementor\Core\Schemes\Typography as Scheme_Typography;
 use Elementor\Group_Control_Background;
-use \Elementor\Scheme_Color;
+use \Elementor\Core\Schemes\Color as Scheme_Color;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
@@ -55,23 +55,23 @@ class FluentFormWidget extends Widget_Base {
 
     protected function _register_controls()
     {
-          $this->register_general_controls();
-          $this->register_error_controls();
-          $this->register_title_description_style_controls();
-          $this->register_form_container_style_controls();
-          $this->register_label_style_controls();
-          $this->register_input_textarea_style_controls();
-          $this->register_placeholder_style_controls();
-          $this->register_radio_checkbox_style_controls();
-          $this->register_terms_gdpr_style_controls();
-          $this->register_section_break_style_controls();
-          $this->register_checkbox_grid_style_controls();
-          $this->register_address_line_style_controls();
-          $this->register_image_upload_style_controls();
-          $this->register_pagination_style_controls();
-          $this->register_submit_button_style_controls();
-          $this->register_success_message_style_controls();
-          $this->register_errors_style_controls();
+        $this->register_general_controls();
+        $this->register_error_controls();
+        $this->register_title_description_style_controls();
+        $this->register_form_container_style_controls();
+        $this->register_label_style_controls();
+        $this->register_input_textarea_style_controls();
+        $this->register_placeholder_style_controls();
+        $this->register_radio_checkbox_style_controls();
+        $this->register_terms_gdpr_style_controls();
+        $this->register_section_break_style_controls();
+        $this->register_checkbox_grid_style_controls();
+        $this->register_address_line_style_controls();
+        $this->register_image_upload_style_controls();
+        $this->register_pagination_style_controls();
+        $this->register_submit_button_style_controls();
+        $this->register_success_message_style_controls();
+        $this->register_errors_style_controls();
     }
 
     protected function register_general_controls(){
@@ -842,7 +842,7 @@ class FluentFormWidget extends Widget_Base {
     }
     protected function register_terms_gdpr_style_controls()
     {
-        
+
         $this->start_controls_section(
             'section_form_terms_gdpr_style',
             [
@@ -850,7 +850,7 @@ class FluentFormWidget extends Widget_Base {
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
-    
+
         $this->add_responsive_control(
             'form_terms_gdpr_alignment',
             [
@@ -874,14 +874,14 @@ class FluentFormWidget extends Widget_Base {
                 'selectors' => [ '{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c' => 'text-align: {{VALUE}};'],
             ]
         );
-        
+
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'form_terms_gdpr_typography',
                 'label' => __('Typography', 'fluentform'),
                 'selector' => '{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c ',
-               
+
             ]
         );
         $this->add_control(
@@ -893,10 +893,10 @@ class FluentFormWidget extends Widget_Base {
                 'selectors' => ['{{WRAPPER}} .fluentform-widget-wrapper .ff_t_c ' => 'color: {{VALUE}};'],
             ]
         );
-        
+
         $this->end_controls_section();
     }
-    
+
     protected function register_placeholder_style_controls(){
         $this->start_controls_section(
             'section_placeholder_style',
@@ -2466,5 +2466,5 @@ class FluentFormWidget extends Widget_Base {
      * @access protected
      */
     protected function _content_template() {}
-    
+
 }

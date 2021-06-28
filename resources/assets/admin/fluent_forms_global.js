@@ -23,6 +23,8 @@
             return $.post(url, data);
         }
     }
-
     window.FluentFormsGlobal = new FluentFormsGlobal();
+
+    jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').remove();
+
 })(jQuery)
