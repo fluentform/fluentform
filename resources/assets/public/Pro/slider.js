@@ -161,7 +161,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         if (stepResume) {
             updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
         }
-        ;
 
         isPopulatingStepData = false;
     };

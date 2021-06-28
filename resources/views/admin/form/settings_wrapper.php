@@ -2,7 +2,7 @@
 	<div class="ff_settings_sidebar">
 		<ul class="ff_settings_list">
 			<?php
-				$settings_base_url = admin_url('admin.php?page=fluent_forms&form_id='.$form_id.'&route=settings');
+				$settings_base_url = admin_url('admin.php?page=fluent_forms&form_id='.$form_id.'&route=settings&sub_route=form_settings');
 			?>
 			<?php foreach ($settings_menus as $settings_menu): ?>
 
@@ -11,7 +11,7 @@
                         <?php
                             $route = $settings_menu['route'];
                         ?>
-                        <a href="#<?php echo $route; ?>">
+                        <a data-route_key="<?php echo sanitize_key($route); ?>" href="<?php echo $settings_base_url; ?>#<?php echo $route; ?>">
                             <?php echo $settings_menu['title']; ?>
                         </a>
                     <?php else: ?>

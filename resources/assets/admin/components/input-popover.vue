@@ -22,7 +22,7 @@
 
     <div v-if="fieldType == 'textarea'" class="input-textarea-value">
         <i class="icon el-icon-tickets" v-popover:input-popover></i>
-        <el-input :placeholder="placeholder" type="textarea" v-model="model"></el-input>
+        <el-input :rows="rows" :placeholder="placeholder" type="textarea" v-model="model"></el-input>
     </div>
 
     <el-input :placeholder="placeholder" v-else v-model="model" :type="fieldType">
@@ -56,6 +56,10 @@ export default {
         attrName: {
             type: String,
             default: 'attribute_name'
+        },
+        rows: {
+            type: String,
+            default: 2
         }
     },
     data() {

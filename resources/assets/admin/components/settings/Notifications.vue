@@ -167,14 +167,22 @@
 
             <!--message-->
             <el-form-item label="Email Body" class="is-required" :class="errors.has('message') ? 'is-error' : ''">
+                <input-popover :rows="10" v-if="selected.value.asPlainText == 'yes'" fieldType="textarea"
+                               v-model="selected.value.message"
+                               placeholder="Email Body HTML"
+                               :data="editorShortcodes"
+                ></input-popover>
                 <wp_editor
+                    v-else
                     :editorShortcodes="emailBodyeditorShortcodes"
                     :height="300"
                     v-model="selected.value.message">
                 </wp_editor>
                 <error-view field="message" :errors="errors"></error-view>
+                <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="selected.value.asPlainText">
+                    Send Email as RAW HTML Format
+                </el-checkbox>
             </el-form-item>
-
             <!-- FilterFields -->
             <el-form-item>
                 <template slot="label">
@@ -243,9 +251,6 @@
                 <p v-if="selected.value.pdf_attachments && selected.value.pdf_attachments.length">You should use SMTP so
                     send attachment via email otherwise, It may go to spam</p>
             </el-form-item>
-
-            <el-checkbox true-label="yes" false-label="no" v-model="selected.value.asPlainText">Send Email as Classic Template
-            </el-checkbox>
 
             <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
@@ -378,7 +383,6 @@
                 </el-collapse-item>
 
             </el-collapse>
-
 
             <div class="text-right">
                 <el-button

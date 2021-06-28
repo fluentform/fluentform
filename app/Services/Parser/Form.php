@@ -46,7 +46,7 @@ class Form
     /**
      * Set input types of the form.
      *
-     * @param  array                                $types
+     * @param array $types
      * @return \FluentForm\App\Services\Parser\Form $this
      */
     public function setInputTypes($types = [])
@@ -87,7 +87,7 @@ class Form
     /**
      * Get form fields.
      *
-     * @param  boolean $asArray
+     * @param boolean $asArray
      * @return array
      */
     public function getFields($asArray = false)
@@ -96,14 +96,14 @@ class Form
 
         $default = $asArray ? [] : null;
 
-        return Arr::get((array) $fields, 'fields', $default);
+        return Arr::get((array)$fields, 'fields', $default);
     }
 
     /**
      * Get flatten form inputs. Flatten implies that all
      * of the form fields will be in a simple array.
      *
-     * @param  array $with
+     * @param array $with
      * @return array
      */
     public function getInputs($with = [])
@@ -124,7 +124,7 @@ class Form
      * Get the inputs just as they setup in the form editor.
      * e.g. `names` as `names` not with the child fields.
      *
-     * @param  array $with
+     * @param array $with
      * @return array
      */
     public function getEntryInputs($with = ['admin_label'])
@@ -175,7 +175,7 @@ class Form
     /**
      * Get admin labels of the form fields.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return array
      */
     public function getAdminLabels($fields = [])
@@ -194,8 +194,8 @@ class Form
     /**
      * Get admin labels of the form fields.
      *
-     * @param  array $inputs
-     * @param  array $fields
+     * @param array $inputs
+     * @param array $fields
      * @return array
      */
     public function getValidations($inputs, $fields = [])
@@ -214,13 +214,13 @@ class Form
     /**
      * Get an element by it's name.
      *
-     * @param  string|array $name
-     * @param  array        $with
+     * @param string|array $name
+     * @param array $with
      * @return array
      */
     public function getElement($name, $with = [])
     {
-        $this->inputTypes = (array) $name;
+        $this->inputTypes = (array)$name;
 
         return $this->getInputs($with);
     }
@@ -228,7 +228,7 @@ class Form
     /**
      * Determine whether the form has an element.
      *
-     * @param  string $name
+     * @param string $name
      * @return bool
      */
     public function hasElement($name)
@@ -239,7 +239,7 @@ class Form
     /**
      * Determine whether the form has any required fields.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return bool
      */
     public function hasRequiredFields($fields = [])
@@ -259,7 +259,7 @@ class Form
             }
         }
 
-        return (boolean) $exist;
+        return (boolean)$exist;
     }
 
 
@@ -272,13 +272,14 @@ class Form
     public function getPaymentFields($with = ['element'])
     {
         $fields = $this->getInputs($with);
-        $paymentElements = [
-            'custom_payment_component',
-            'multi_payment_component',
-            'payment_method',
-            'item_quantity_component',
-            'payment_coupon'
-        ];
+        $paymentElements = apply_filters('fluentform_form_payment_fields',
+            [
+                'custom_payment_component',
+                'multi_payment_component',
+                'payment_method',
+                'item_quantity_component',
+                'payment_coupon'
+            ]);
 
         return array_filter($fields, function ($field) use ($paymentElements) {
             return in_array($field['element'], $paymentElements);
@@ -293,10 +294,11 @@ class Form
     public function getPaymentInputFields($with = ['element'])
     {
         $fields = $this->getInputs($with);
-        $paymentElements = [
+
+        $paymentElements = apply_filters('fluentform_form_payment_inputs', [
             'custom_payment_component',
             'multi_payment_component'
-        ];
+        ]);
 
         return array_filter($fields, function ($field) use ($paymentElements) {
             return in_array($field['element'], $paymentElements);
@@ -312,13 +314,17 @@ class Form
     {
         $fields = $this->getInputs(['element']);
 
-        $paymentElements = [
-            'custom_payment_component',
-            'multi_payment_component',
-            'payment_method'
-        ];
+        $paymentElements = apply_filters('fluentform_form_payment_fields',
+            [
+                'custom_payment_component',
+                'multi_payment_component',
+                'payment_method',
+                'item_quantity_component',
+                'payment_coupon'
+            ]);
+
         foreach ($fields as $field) {
-            if(in_array($field['element'], $paymentElements)) {
+            if (in_array($field['element'], $paymentElements)) {
                 return true;
             }
         }
@@ -332,14 +338,14 @@ class Form
      *
      * @param $element
      * @param $attribute
-     * @param  array      $with
+     * @param array $with
      * @return array|null
      */
     public function getField($element, $attribute, $with = [])
     {
         $element = $this->getElement($element, $with);
 
-        return array_intersect_key($element, array_flip((array) $attribute));
+        return array_intersect_key($element, array_flip((array)$attribute));
     }
 
 
