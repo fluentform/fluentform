@@ -69,6 +69,7 @@ jQuery(document).ready(function () {
              */
             return (function (validator) {
 
+                var isSending = false;
                 /**
                  * Register all the event handlers
                  *
@@ -208,6 +209,14 @@ jQuery(document).ready(function () {
 
                     const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
+                    if (this.isSending) {
+                        return;
+                    }
+
+                    var that = this;
+
+                    this.isSending = true;
+
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
                             if (!res || !res.data || !res.data.result) {
@@ -310,6 +319,7 @@ jQuery(document).ready(function () {
                             }
                         })
                         .always(function (res) {
+                            that.isSending = false;
                             $theForm
                                 .find('.ff-btn-submit')
                                 .removeClass('disabled')
