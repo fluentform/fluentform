@@ -382,7 +382,6 @@ class Form
 
         $maybeErrors = $this->deleteFormAssests($formId);
 
-
         wp_send_json([
             'message' => __('Successfully deleted the form.', 'fluentform'),
             'errors' => $maybeErrors
@@ -415,7 +414,7 @@ class Form
 
         wpFluent()->table('fluentform_logs')
             ->where('parent_source_id', $formId)
-            ->whereIn('source_type', ['submission_item', 'form_item'])
+            ->whereIn('source_type', ['submission_item', 'form_item', 'draft_submission_meta'])
             ->delete();
 
         ob_start();

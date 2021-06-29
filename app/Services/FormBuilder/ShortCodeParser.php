@@ -261,6 +261,11 @@ class ShortCodeParser
     protected static function getSubmissionData($key)
     {
         $entry = static::getEntry();
+
+        if(empty($entry->id)) {
+            return  '';
+        }
+
         if (property_exists($entry, $key)) {
             if ($key == 'total_paid' || $key == 'payment_total') {
                 return round($entry->{$key} / 100, 2);

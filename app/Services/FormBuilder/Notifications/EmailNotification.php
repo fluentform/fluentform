@@ -54,16 +54,18 @@ class EmailNotification
         $subject = apply_filters('fluentform_email_subject', $notification['subject'], $notification, $submittedData, $form);
 
         if (!$sendAddresses || !$subject) {
-            do_action('ff_log_data', [
-                'parent_source_id' => $form->id,
-                'source_type'      => 'submission_item',
-                'source_id'        => $entryId,
-                'component'        => 'EmailNotification',
-                'status'           => 'error',
-                'title'            => 'Email sending skipped',
-                'description'      => "Email skipped to send because email/subject may not valid.<br />Subject: {$notification['subject']}. <br/>Email: " . implode(', ', $sendAddresses),
-            ]);
-            return false;
+            if($entryId) {
+                do_action('ff_log_data', [
+                    'parent_source_id' => $form->id,
+                    'source_type'      => 'submission_item',
+                    'source_id'        => $entryId,
+                    'component'        => 'EmailNotification',
+                    'status'           => 'error',
+                    'title'            => 'Email sending skipped',
+                    'description'      => "Email skipped to send because email/subject may not valid.<br />Subject: {$notification['subject']}. <br/>Email: " . implode(', ', $sendAddresses),
+                ]);
+            }
+            return null;
         }
 
         $headers = $this->getHeaders($notification, $isSendAsPlain);
