@@ -58,7 +58,7 @@ export default {
             default: 'attribute_name'
         },
         rows: {
-            type: String,
+            type: Number,
             default: 2
         }
     },
