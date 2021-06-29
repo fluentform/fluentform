@@ -833,7 +833,7 @@ class Predefined extends Form
 
             $data[$item['category']][$key] = array(
                 'class'      => $itemClass,
-                'tags'       => $item['tag'],
+                'tags'       => isset($item['tag']) ? $item['tag'] : '',
                 'title'      => $item['title'],
                 'brief'      => $item['brief'],
                 'category'   => $item['category'],

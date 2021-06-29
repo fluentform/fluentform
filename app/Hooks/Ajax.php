@@ -297,6 +297,12 @@ $app->addAdminAjaxAction('fluentform-import-forms', function () use ($app) {
     (new \FluentForm\App\Modules\Form\Transfer($app))->import();
 });
 
+$app->addAdminAjaxAction('fluentform-import-forms-other', function () use ($app) {
+    Acl::verify('fluentform_settings_manager');
+    \FluentForm\App\Services\Migrator\BaseMigrator::init();
+
+});
+
 $app->addAdminAjaxAction('fluentform-get-all-forms', function () use ($app) {
     Acl::verify(['fluentform_settings_manager', 'fluentform_forms_manager']);
     (new \FluentForm\App\Modules\Form\Form($app))->getAllForms();

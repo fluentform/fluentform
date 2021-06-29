@@ -30,6 +30,32 @@
 
                 <input type="file" id="fileUpload" @click="clear">
             </el-form-item>
+            <!--Select File-->
+            <el-form-item>
+                <template slot="label">
+                    Other Form Types
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Select File</h3>
+                            <p>
+                                Click the Choose File button to upload a <br>
+                                Fluent Forms export file from your computer.
+                            </p>
+                        </div>
+
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                </template>
+
+                <div>
+                    <el-button v-for="(type,key) in formTypes" :key="key" size="small" class="" type="info" icon="el-icon-files"
+                               @click="importOtherForms(key)" :loading="importing"
+                    >
+                        Import  {{type}}
+                    </el-button>
+
+                </div>
+            </el-form-item>
             <el-form-item>
                 <el-button size="medium" class="pull-right" type="success" icon="el-icon-success"
                            @click="importForms" :loading="importing"
@@ -70,7 +96,11 @@
                 forms: this.app.forms,
                 selected: [],
                 importing: false,
-                importedForms: false
+                importedForms: false,
+                formTypes:{
+                    'gravityform': 'Gravity Forms',
+                    'caldera': 'Caldera Forms',
+                }
             }
         },
         methods: {
@@ -114,6 +144,41 @@
                         this.$notify.error({
                             title: 'Error',
                             message: error.responseJSON.message,
+                            offset: 30
+                        });
+
+                        this.clear();
+                    }
+                });
+            },
+            importOtherForms(key){
+                let data = {
+                    action : 'fluentform-import-forms-other',
+                    fluent_forms_admin_nonce : window.fluent_forms_global_var.fluent_forms_admin_nonce,
+                    type :key
+                }
+
+                jQuery.ajax({
+                    url: ajaxurl,
+                    data: data,
+                    type: 'POST',
+                    success: (response) => {
+                        this.importing = false;
+                        this.importedForms = response.inserted_forms;
+                        this.$notify.success({
+                            title: 'Success',
+                            message: response.message,
+                            offset: 30
+                        });
+
+                        this.clear();
+                    },
+                    error: (error) => {
+                        this.importing = false;
+                        console.log(error.responseJSON)
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.responseJSON.data.message,
                             offset: 30
                         });
 
