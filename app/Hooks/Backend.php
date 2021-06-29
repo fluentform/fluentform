@@ -226,14 +226,14 @@ add_action('fluentform_loading_editor_assets', function ($form) {
 
     add_filter('fluentform_editor_init_element_input_text', function ($element) {
         if (!isset($element['attributes']['maxlength'])) {
-            $element['settings']['maxlength'] = '';
+            $element['attributes']['maxlength'] = '';
         }
         return $element;
     });
 
     add_filter('fluentform_editor_init_element_textarea', function ($element) {
         if (!isset($element['attributes']['maxlength'])) {
-            $element['settings']['maxlength'] = '';
+            $element['attributes']['maxlength'] = '';
         }
         return $element;
     });
