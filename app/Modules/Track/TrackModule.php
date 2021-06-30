@@ -6,13 +6,13 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
 class TrackModule
 {
-	private $apiUrl = 'https://wpfluentform.com';
+	private $apiUrl = 'https://fluentform.com';
 	private $initialConsentKey = '_fluentform_notice_pref';
 	private $newsletterDelayTimeStamp = 172800; // 7 days
 	
 	public function initTrack()
 	{
-		if( AdminNotice::shouldShowNotice('track_data_notice') && !$this->isLocalhost() ) {
+		if( AdminNotice::shouldShowNotice('track_data_notice') && $this->isLocalhost() ) {
 			$this->showInitialConsent();
 		}
 	}

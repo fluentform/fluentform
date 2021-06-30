@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-08 16:05+0000\n"
+"POT-Creation-Date: 2021-06-30 11:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid " List is required"
 msgstr ""
 
-#: app/Modules/Component/Component.php:956
+#: app/Modules/Component/Component.php:957
 msgid " to "
 msgstr ""
 
@@ -26,7 +26,7 @@ msgstr ""
 msgid "(truncated)"
 msgstr ""
 
-#: app/Hooks/Backend.php:113
+#: app/Hooks/Backend.php:114
 msgid "-- Select a form --"
 msgstr ""
 
@@ -35,11 +35,11 @@ msgstr ""
 msgid "...."
 msgstr ""
 
-#: app/Modules/Component/Component.php:525
+#: app/Modules/Component/Component.php:526
 msgid "0% Completed"
 msgstr ""
 
-#: app/Modules/Component/Component.php:524
+#: app/Modules/Component/Component.php:525
 msgid "100% Completed"
 msgstr ""
 
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1207
+#: app/Services/FormBuilder/DefaultElements.php:1213
 msgid "Action Hook"
 msgstr ""
 
@@ -87,12 +87,12 @@ msgstr ""
 msgid "Adding a new form"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:277
+#: app/Services/FormBuilder/DefaultElements.php:283
 msgid "Address"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:308
-#: app/Services/FormBuilder/DefaultElements.php:469
+#: app/Services/FormBuilder/DefaultElements.php:475
 msgid "Address Fields"
 msgstr ""
 
@@ -100,13 +100,13 @@ msgstr ""
 msgid "Address Line"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:290
-#: app/Services/FormBuilder/DefaultElements.php:294
+#: app/Services/FormBuilder/DefaultElements.php:296
+#: app/Services/FormBuilder/DefaultElements.php:300
 msgid "Address Line 1"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:318
-#: app/Services/FormBuilder/DefaultElements.php:322
+#: app/Services/FormBuilder/DefaultElements.php:324
+#: app/Services/FormBuilder/DefaultElements.php:328
 msgid "Address Line 2"
 msgstr ""
 
@@ -167,7 +167,7 @@ msgstr ""
 msgid "Allowed Files"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:828
+#: app/Services/FormBuilder/DefaultElements.php:834
 msgid "Allowed image types does not match"
 msgstr ""
 
@@ -176,11 +176,11 @@ msgstr ""
 msgid "Allowed Images"
 msgstr ""
 
-#: app/Modules/Component/Component.php:961
+#: app/Modules/Component/Component.php:962
 msgid "AM"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:968
+#: app/Services/FormBuilder/DefaultElements.php:974
 msgid "Amazing"
 msgstr ""
 
@@ -216,11 +216,11 @@ msgstr ""
 msgid "Apply styles provided here"
 msgstr ""
 
-#: app/Modules/Component/Component.php:897
+#: app/Modules/Component/Component.php:898
 msgid "Apr"
 msgstr ""
 
-#: app/Modules/Component/Component.php:911
+#: app/Modules/Component/Component.php:912
 msgid "April"
 msgstr ""
 
@@ -244,11 +244,11 @@ msgstr ""
 msgid "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
 msgstr ""
 
-#: app/Modules/Component/Component.php:901
+#: app/Modules/Component/Component.php:902
 msgid "Aug"
 msgstr ""
 
-#: app/Modules/Component/Component.php:915
+#: app/Modules/Component/Component.php:916
 msgid "August"
 msgstr ""
 
@@ -260,7 +260,7 @@ msgstr ""
 msgid "Austria"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:967
+#: app/Services/FormBuilder/DefaultElements.php:973
 msgid "Awesome"
 msgstr ""
 
@@ -436,7 +436,7 @@ msgid "Button Style"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:195
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:398
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:402
 msgid "Button Text"
 msgstr ""
 
@@ -478,11 +478,11 @@ msgstr ""
 msgid "Chad"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:672
+#: app/Services/FormBuilder/DefaultElements.php:678
 msgid "Check Box"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1024
+#: app/Services/FormBuilder/DefaultElements.php:1030
 msgid "Checkable Grid"
 msgstr ""
 
@@ -491,12 +491,12 @@ msgstr ""
 msgid "Checkbox"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:634
+#: app/Services/FormBuilder/DefaultElements.php:640
 msgid "Checkbox Field"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1317
-#: app/Services/FormBuilder/DefaultElements.php:1003
+#: app/Services/FormBuilder/DefaultElements.php:1009
 msgid "Checkbox Grid"
 msgstr ""
 
@@ -516,8 +516,8 @@ msgstr ""
 msgid "Christmas Island"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:346
-#: app/Services/FormBuilder/DefaultElements.php:350
+#: app/Services/FormBuilder/DefaultElements.php:352
+#: app/Services/FormBuilder/DefaultElements.php:356
 msgid "City"
 msgstr ""
 
@@ -537,7 +537,7 @@ msgstr ""
 msgid "Clear value if not match the mask"
 msgstr ""
 
-#: app/Modules/Component/Component.php:959
+#: app/Modules/Component/Component.php:960
 msgid "Click to toggle"
 msgstr ""
 
@@ -616,13 +616,13 @@ msgstr ""
 msgid "Costa Rica"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:438
-#: app/Services/FormBuilder/DefaultElements.php:895
+#: app/Services/FormBuilder/DefaultElements.php:444
+#: app/Services/FormBuilder/DefaultElements.php:901
 msgid "Country"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:372
-#: app/Services/FormBuilder/DefaultElements.php:917
+#: app/Services/FormBuilder/DefaultElements.php:923
 msgid "Country List"
 msgstr ""
 
@@ -682,7 +682,7 @@ msgstr ""
 msgid "Custom CSS/JS"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:933
+#: app/Services/FormBuilder/DefaultElements.php:939
 msgid "Custom HTML"
 msgstr ""
 
@@ -690,7 +690,7 @@ msgstr ""
 msgid "Custom Mask"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1426
+#: app/Services/FormBuilder/DefaultElements.php:1432
 msgid "Custom Payment Amount"
 msgstr ""
 
@@ -718,7 +718,7 @@ msgstr ""
 msgid "Date (mm/dd/yyyy)"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:773
+#: app/Services/FormBuilder/DefaultElements.php:779
 msgid "Date / Time"
 msgstr ""
 
@@ -726,11 +726,11 @@ msgstr ""
 msgid "Date Format"
 msgstr ""
 
-#: app/Modules/Component/Component.php:905
+#: app/Modules/Component/Component.php:906
 msgid "Dec"
 msgstr ""
 
-#: app/Modules/Component/Component.php:919
+#: app/Modules/Component/Component.php:920
 msgid "December"
 msgstr ""
 
@@ -760,7 +760,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:302
 #: app/Modules/Widgets/FluentFormWidget.php:1234
 #: app/Services/FormBuilder/ElementCustomization.php:190
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:467
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:471
 msgid "Description"
 msgstr ""
 
@@ -808,8 +808,8 @@ msgstr ""
 msgid "Double Optin Settings"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:537
-#: app/Services/FormBuilder/DefaultElements.php:568
+#: app/Services/FormBuilder/DefaultElements.php:543
+#: app/Services/FormBuilder/DefaultElements.php:574
 msgid "Dropdown"
 msgstr ""
 
@@ -845,11 +845,11 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:162
+#: app/Services/FormBuilder/DefaultElements.php:164
 msgid "Email Address"
 msgstr ""
 
-#: app/Hooks/Backend.php:277 app/Services/FormBuilder/DefaultElements.php:159
+#: app/Hooks/Backend.php:277 app/Services/FormBuilder/DefaultElements.php:161
 msgid "Email address need to be unique."
 msgstr ""
 
@@ -960,11 +960,11 @@ msgstr ""
 msgid "Faroe Islands"
 msgstr ""
 
-#: app/Modules/Component/Component.php:895
+#: app/Modules/Component/Component.php:896
 msgid "Feb"
 msgstr ""
 
-#: app/Modules/Component/Component.php:909
+#: app/Modules/Component/Component.php:910
 msgid "February"
 msgstr ""
 
@@ -981,8 +981,8 @@ msgstr ""
 msgid "Fiji"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:851
-#: app/Services/FormBuilder/DefaultElements.php:878
+#: app/Services/FormBuilder/DefaultElements.php:857
+#: app/Services/FormBuilder/DefaultElements.php:884
 msgid "File Upload"
 msgstr ""
 
@@ -999,7 +999,7 @@ msgstr ""
 msgid "First Name"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1302
+#: app/Services/FormBuilder/DefaultElements.php:1308
 msgid "Five Column Container"
 msgstr ""
 
@@ -1022,11 +1022,11 @@ msgstr ""
 msgid "Fluent Forms Global Settings"
 msgstr ""
 
-#: app/Hooks/Backend.php:70
+#: app/Hooks/Backend.php:71
 msgid "Fluent Forms Latest Form Submissions"
 msgstr ""
 
-#: app/Hooks/Backend.php:306
+#: app/Hooks/Backend.php:319
 msgid "Fluent Forms PDF"
 msgstr ""
 
@@ -1055,7 +1055,7 @@ msgstr ""
 msgid "Form Container"
 msgstr ""
 
-#: app/Modules/Form/Form.php:485
+#: app/Modules/Form/Form.php:488
 msgid "Form has been successfully duplicated."
 msgstr ""
 
@@ -1071,7 +1071,7 @@ msgstr ""
 msgid "Form Settings"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1099
+#: app/Services/FormBuilder/DefaultElements.php:1105
 msgid "Form Step"
 msgstr ""
 
@@ -1080,7 +1080,7 @@ msgstr ""
 msgid "Form step titles, user will see each title in each step."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:399
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:403
 msgid "Form submission button text."
 msgstr ""
 
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Form submission is now closed."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1282
+#: app/Services/FormBuilder/DefaultElements.php:1288
 msgid "Four Column Container"
 msgstr ""
 
@@ -1112,11 +1112,11 @@ msgstr ""
 msgid "French Southern Territories"
 msgstr ""
 
-#: app/Modules/Component/Component.php:938
+#: app/Modules/Component/Component.php:939
 msgid "Fri"
 msgstr ""
 
-#: app/Modules/Component/Component.php:929
+#: app/Modules/Component/Component.php:930
 msgid "Friday"
 msgstr ""
 
@@ -1136,9 +1136,9 @@ msgstr ""
 msgid "GDPR , Terms & Condition "
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1142
-#: app/Services/FormBuilder/DefaultElements.php:1144
-#: app/Services/FormBuilder/DefaultElements.php:1157
+#: app/Services/FormBuilder/DefaultElements.php:1148
+#: app/Services/FormBuilder/DefaultElements.php:1150
+#: app/Services/FormBuilder/DefaultElements.php:1163
 msgid "GDPR Agreement"
 msgstr ""
 
@@ -1172,7 +1172,7 @@ msgstr ""
 msgid "Global Settings"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:965
+#: app/Services/FormBuilder/DefaultElements.php:971
 msgid "Good"
 msgstr ""
 
@@ -1263,7 +1263,7 @@ msgid ""
 "Help message will be shown as tooltip next to sidebar or below the field."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:988
+#: app/Services/FormBuilder/DefaultElements.php:994
 msgid "Hidden Field"
 msgstr ""
 
@@ -1333,17 +1333,17 @@ msgstr ""
 msgid "Hungary"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:416
+#: app/Services/FluentConversational/Classes/Form.php:336
 msgid "I accept"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1143
+#: app/Services/FormBuilder/DefaultElements.php:1149
 msgid ""
 "I consent to have this website store my submitted information so they can "
 "respond to my inquiry"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:417
+#: app/Services/FluentConversational/Classes/Form.php:337
 msgid "I don't accept"
 msgstr ""
 
@@ -1405,8 +1405,8 @@ msgid "If you would like to pre-populate the value of a field, enter it here."
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1541
-#: app/Services/FormBuilder/DefaultElements.php:807
-#: app/Services/FormBuilder/DefaultElements.php:834
+#: app/Services/FormBuilder/DefaultElements.php:813
+#: app/Services/FormBuilder/DefaultElements.php:840
 msgid "Image Upload"
 msgstr ""
 
@@ -1458,7 +1458,7 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:872
+#: app/Services/FormBuilder/DefaultElements.php:878
 msgid "Invalid file type"
 msgstr ""
 
@@ -1498,7 +1498,7 @@ msgstr ""
 msgid "Item has been removed from favorites"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1437
+#: app/Services/FormBuilder/DefaultElements.php:1443
 msgid "Item Quantity"
 msgstr ""
 
@@ -1514,11 +1514,11 @@ msgstr ""
 msgid "Jamaica"
 msgstr ""
 
-#: app/Modules/Component/Component.php:894
+#: app/Modules/Component/Component.php:895
 msgid "Jan"
 msgstr ""
 
-#: app/Modules/Component/Component.php:908
+#: app/Modules/Component/Component.php:909
 msgid "January"
 msgstr ""
 
@@ -1539,19 +1539,19 @@ msgstr ""
 msgid "JPG"
 msgstr ""
 
-#: app/Modules/Component/Component.php:900
+#: app/Modules/Component/Component.php:901
 msgid "Jul"
 msgstr ""
 
-#: app/Modules/Component/Component.php:914
+#: app/Modules/Component/Component.php:915
 msgid "July"
 msgstr ""
 
-#: app/Modules/Component/Component.php:899
+#: app/Modules/Component/Component.php:900
 msgid "Jun"
 msgstr ""
 
-#: app/Modules/Component/Component.php:913
+#: app/Modules/Component/Component.php:914
 msgid "June"
 msgstr ""
 
@@ -1662,7 +1662,7 @@ msgstr ""
 msgid "Lithuania"
 msgstr ""
 
-#: app/Modules/Component/Component.php:529
+#: app/Modules/Component/Component.php:530
 msgid "Loading..."
 msgstr ""
 
@@ -1737,11 +1737,11 @@ msgstr ""
 msgid "Managing form submissions"
 msgstr ""
 
-#: app/Modules/Component/Component.php:896
+#: app/Modules/Component/Component.php:897
 msgid "Mar"
 msgstr ""
 
-#: app/Modules/Component/Component.php:910
+#: app/Modules/Component/Component.php:911
 msgid "March"
 msgstr ""
 
@@ -1771,8 +1771,8 @@ msgid "Martinique"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:436
-#: app/Services/FormBuilder/DefaultElements.php:213
-#: app/Services/FormBuilder/DefaultElements.php:229
+#: app/Services/FormBuilder/DefaultElements.php:217
+#: app/Services/FormBuilder/DefaultElements.php:235
 msgid "Mask Input"
 msgstr ""
 
@@ -1813,8 +1813,8 @@ msgstr ""
 msgid "Max Width"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:820
-#: app/Services/FormBuilder/DefaultElements.php:864
+#: app/Services/FormBuilder/DefaultElements.php:826
+#: app/Services/FormBuilder/DefaultElements.php:870
 msgid "Maximum file size limit is 1MB"
 msgstr ""
 
@@ -1826,12 +1826,12 @@ msgstr ""
 msgid "Maximum value for the input field."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:511
+#: app/Services/FormBuilder/DefaultElements.php:517
 msgid "Maximum value is "
 msgstr ""
 
-#: app/Modules/Component/Component.php:898
-#: app/Modules/Component/Component.php:912
+#: app/Modules/Component/Component.php:899
+#: app/Modules/Component/Component.php:913
 msgid "May"
 msgstr ""
 
@@ -1865,7 +1865,7 @@ msgstr ""
 msgid "Minimum value for the input field."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:507
+#: app/Services/FormBuilder/DefaultElements.php:513
 msgid "Minimum value is "
 msgstr ""
 
@@ -1873,7 +1873,7 @@ msgstr ""
 msgid "Moldova"
 msgstr ""
 
-#: app/Modules/Component/Component.php:934
+#: app/Modules/Component/Component.php:935
 msgid "Mon"
 msgstr ""
 
@@ -1881,7 +1881,7 @@ msgstr ""
 msgid "Monaco"
 msgstr ""
 
-#: app/Modules/Component/Component.php:925
+#: app/Modules/Component/Component.php:926
 msgid "Monday"
 msgstr ""
 
@@ -1913,11 +1913,11 @@ msgstr ""
 msgid "Multi-step form's previous button"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:720
+#: app/Services/FormBuilder/DefaultElements.php:726
 msgid "Multiple Choice"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:692
+#: app/Services/FormBuilder/DefaultElements.php:698
 msgid "Multiselect"
 msgstr ""
 
@@ -1929,7 +1929,7 @@ msgstr ""
 msgid "Name Attribute"
 msgstr ""
 
-#: app/Modules/Form/Form.php:503
+#: app/Modules/Form/Form.php:506
 #, php-format
 msgid "Name attribute %s has duplicate value."
 msgstr ""
@@ -1966,7 +1966,7 @@ msgstr ""
 msgid "New Zealand"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1094
+#: app/Services/FormBuilder/DefaultElements.php:1100
 msgid "Next"
 msgstr ""
 
@@ -1974,7 +1974,7 @@ msgstr ""
 msgid "Next Button"
 msgstr ""
 
-#: app/Modules/Component/Component.php:891
+#: app/Modules/Component/Component.php:892
 msgid "Next Month"
 msgstr ""
 
@@ -1982,7 +1982,7 @@ msgstr ""
 msgid "Nicaragua"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:964
+#: app/Services/FormBuilder/DefaultElements.php:970
 msgid "Nice"
 msgstr ""
 
@@ -2006,15 +2006,15 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: app/Modules/Component/Component.php:530
+#: app/Modules/Component/Component.php:531
 msgid "No choices to choose from"
 msgstr ""
 
-#: app/Modules/Component/Component.php:528
+#: app/Modules/Component/Component.php:529
 msgid "No results found"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:377 app/Modules/Acl/Acl.php:133
+#: app/Modules/Form/FormHandler.php:382 app/Modules/Acl/Acl.php:133
 msgid "Nonce verification failed, please try again."
 msgstr ""
 
@@ -2052,11 +2052,11 @@ msgstr ""
 msgid "Note has been successfully added"
 msgstr ""
 
-#: app/Modules/Component/Component.php:904
+#: app/Modules/Component/Component.php:905
 msgid "Nov"
 msgstr ""
 
-#: app/Modules/Component/Component.php:918
+#: app/Modules/Component/Component.php:919
 msgid "November"
 msgstr ""
 
@@ -2064,16 +2064,16 @@ msgstr ""
 msgid "Number Format"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:488
-#: app/Services/FormBuilder/DefaultElements.php:521
+#: app/Services/FormBuilder/DefaultElements.php:494
+#: app/Services/FormBuilder/DefaultElements.php:527
 msgid "Numeric Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:903
+#: app/Modules/Component/Component.php:904
 msgid "Oct"
 msgstr ""
 
-#: app/Modules/Component/Component.php:917
+#: app/Modules/Component/Component.php:918
 msgid "October"
 msgstr ""
 
@@ -2081,7 +2081,7 @@ msgstr ""
 msgid "Odd Item Background Color"
 msgstr ""
 
-#: app/Services/FormBuilder/ShortCodeParser.php:269
+#: app/Services/FormBuilder/ShortCodeParser.php:274
 msgid "Offline"
 msgstr ""
 
@@ -2089,7 +2089,7 @@ msgstr ""
 msgid "Oman"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1227
+#: app/Services/FormBuilder/DefaultElements.php:1233
 msgid "One Column Container"
 msgstr ""
 
@@ -2150,11 +2150,11 @@ msgstr ""
 msgid "Paraguay"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1061
+#: app/Services/FormBuilder/DefaultElements.php:1067
 msgid "Password"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1074
+#: app/Services/FormBuilder/DefaultElements.php:1080
 msgid "Password Field"
 msgstr ""
 
@@ -2162,7 +2162,7 @@ msgstr ""
 msgid "Payment Amount"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1414
+#: app/Services/FormBuilder/DefaultElements.php:1420
 msgid "Payment Field"
 msgstr ""
 
@@ -2254,11 +2254,11 @@ msgstr ""
 msgid "Please select entries first"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:116
+#: app/Modules/Settings/Settings.php:137
 msgid "Please validate your reCaptcha first and then hit save."
 msgstr ""
 
-#: app/Modules/Component/Component.php:962
+#: app/Modules/Component/Component.php:963
 msgid "PM"
 msgstr ""
 
@@ -2283,7 +2283,7 @@ msgstr ""
 msgid "Prefix Label"
 msgstr ""
 
-#: app/Modules/Component/Component.php:531
+#: app/Modules/Component/Component.php:532
 msgid "Press to select"
 msgstr ""
 
@@ -2292,7 +2292,7 @@ msgstr ""
 msgid "Preview Form"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1089
+#: app/Services/FormBuilder/DefaultElements.php:1095
 msgid "Previous"
 msgstr ""
 
@@ -2300,7 +2300,7 @@ msgstr ""
 msgid "Previous Button"
 msgstr ""
 
-#: app/Modules/Component/Component.php:890
+#: app/Modules/Component/Component.php:891
 msgid "Previous Month"
 msgstr ""
 
@@ -2350,8 +2350,8 @@ msgstr ""
 msgid "Radio Buttons"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:585
-#: app/Services/FormBuilder/DefaultElements.php:617
+#: app/Services/FormBuilder/DefaultElements.php:591
+#: app/Services/FormBuilder/DefaultElements.php:623
 msgid "Radio Field"
 msgstr ""
 
@@ -2359,16 +2359,16 @@ msgstr ""
 msgid "Random String with Prefix"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:949
-#: app/Services/FormBuilder/DefaultElements.php:971
+#: app/Services/FormBuilder/DefaultElements.php:955
+#: app/Services/FormBuilder/DefaultElements.php:977
 msgid "Ratings"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1172
+#: app/Services/FormBuilder/DefaultElements.php:1178
 msgid "reCaptcha"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:427
+#: app/Modules/Form/FormHandler.php:438
 msgid "reCaptcha verification failed, please try again."
 msgstr ""
 
@@ -2463,11 +2463,11 @@ msgstr ""
 msgid "San Marino"
 msgstr ""
 
-#: app/Modules/Component/Component.php:939
+#: app/Modules/Component/Component.php:940
 msgid "Sat"
 msgstr ""
 
-#: app/Modules/Component/Component.php:930
+#: app/Modules/Component/Component.php:931
 msgid "Saturday"
 msgstr ""
 
@@ -2480,13 +2480,13 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: app/Modules/Component/Component.php:958
+#: app/Modules/Component/Component.php:959
 msgid "Scroll to increment"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1172
-#: app/Services/FormBuilder/DefaultElements.php:1037
 #: app/Services/FormBuilder/DefaultElements.php:1043
+#: app/Services/FormBuilder/DefaultElements.php:1049
 msgid "Section Break"
 msgstr ""
 
@@ -2514,8 +2514,8 @@ msgid ""
 "your choice."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:433
-#: app/Services/FormBuilder/DefaultElements.php:891
+#: app/Services/FormBuilder/DefaultElements.php:439
+#: app/Services/FormBuilder/DefaultElements.php:897
 msgid "Select Country"
 msgstr ""
 
@@ -2561,11 +2561,11 @@ msgstr ""
 msgid "Senegal"
 msgstr ""
 
-#: app/Modules/Component/Component.php:902
+#: app/Modules/Component/Component.php:903
 msgid "Sep"
 msgstr ""
 
-#: app/Modules/Component/Component.php:916
+#: app/Modules/Component/Component.php:917
 msgid "September"
 msgstr ""
 
@@ -2607,7 +2607,7 @@ msgid "Seychelles"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:224
-#: app/Services/FormBuilder/DefaultElements.php:1190
+#: app/Services/FormBuilder/DefaultElements.php:1196
 msgid "Shortcode"
 msgstr ""
 
@@ -2647,7 +2647,7 @@ msgstr ""
 msgid "Sierra Leone"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:195
+#: app/Services/FormBuilder/DefaultElements.php:199
 msgid "Simple Text"
 msgstr ""
 
@@ -2663,7 +2663,7 @@ msgstr ""
 msgid "Site URL"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1323
+#: app/Services/FormBuilder/DefaultElements.php:1329
 msgid "Six Column Container"
 msgstr ""
 
@@ -2703,7 +2703,7 @@ msgstr ""
 msgid "Somalia"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1038
+#: app/Services/FormBuilder/DefaultElements.php:1044
 msgid "Some description about this section"
 msgstr ""
 
@@ -2739,7 +2739,7 @@ msgstr ""
 msgid "Sorry, You do not have permission to view this form"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:113
+#: app/Modules/Settings/Settings.php:134
 msgid "Sorry, Your reCaptcha is not valid, Please try again"
 msgstr ""
 
@@ -2776,8 +2776,8 @@ msgstr ""
 msgid "Sri Lanka"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:375
-#: app/Services/FormBuilder/DefaultElements.php:379
+#: app/Services/FormBuilder/DefaultElements.php:381
+#: app/Services/FormBuilder/DefaultElements.php:385
 msgid "State"
 msgstr ""
 
@@ -2785,7 +2785,7 @@ msgstr ""
 msgid "Step"
 msgstr ""
 
-#: app/Modules/Component/Component.php:512
+#: app/Modules/Component/Component.php:513
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr ""
 
@@ -2817,7 +2817,7 @@ msgstr ""
 msgid "Submission ID"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:393
+#: app/Modules/Form/FormHandler.php:398
 msgid "Submission marked as spammed. Please try again"
 msgstr ""
 
@@ -2850,7 +2850,7 @@ msgstr ""
 msgid "Successfully created a form."
 msgstr ""
 
-#: app/Modules/Form/Form.php:387
+#: app/Modules/Form/Form.php:386
 msgid "Successfully deleted the form."
 msgstr ""
 
@@ -2866,11 +2866,11 @@ msgstr ""
 msgid "Suffix Label"
 msgstr ""
 
-#: app/Modules/Component/Component.php:933
+#: app/Modules/Component/Component.php:934
 msgid "Sun"
 msgstr ""
 
-#: app/Modules/Component/Component.php:924
+#: app/Modules/Component/Component.php:925
 msgid "Sunday"
 msgstr ""
 
@@ -2915,15 +2915,15 @@ msgid "Tanzania"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:160
-#: app/Services/FormBuilder/DefaultElements.php:1127
+#: app/Services/FormBuilder/DefaultElements.php:1133
 msgid "Terms & Conditions"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1116
+#: app/Services/FormBuilder/DefaultElements.php:1122
 msgid "Terms and Conditions"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:262
+#: app/Services/FormBuilder/DefaultElements.php:268
 msgid "Text Area"
 msgstr ""
 
@@ -2943,11 +2943,11 @@ msgstr ""
 msgid "Text Indent"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:180
+#: app/Services/FormBuilder/DefaultElements.php:182
 msgid "Text Input"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:249
+#: app/Services/FormBuilder/DefaultElements.php:255
 msgid "Textarea"
 msgstr ""
 
@@ -3019,47 +3019,47 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:53
 #: app/Services/FormBuilder/DefaultElements.php:83
 #: app/Services/FormBuilder/DefaultElements.php:113
-#: app/Services/FormBuilder/DefaultElements.php:150
-#: app/Services/FormBuilder/DefaultElements.php:187
-#: app/Services/FormBuilder/DefaultElements.php:223
-#: app/Services/FormBuilder/DefaultElements.php:256
-#: app/Services/FormBuilder/DefaultElements.php:301
-#: app/Services/FormBuilder/DefaultElements.php:329
-#: app/Services/FormBuilder/DefaultElements.php:358
-#: app/Services/FormBuilder/DefaultElements.php:387
-#: app/Services/FormBuilder/DefaultElements.php:417
-#: app/Services/FormBuilder/DefaultElements.php:446
-#: app/Services/FormBuilder/DefaultElements.php:499
-#: app/Services/FormBuilder/DefaultElements.php:561
-#: app/Services/FormBuilder/DefaultElements.php:610
-#: app/Services/FormBuilder/DefaultElements.php:665
-#: app/Services/FormBuilder/DefaultElements.php:714
-#: app/Services/FormBuilder/DefaultElements.php:745
-#: app/Services/FormBuilder/DefaultElements.php:783
-#: app/Services/FormBuilder/DefaultElements.php:815
-#: app/Services/FormBuilder/DefaultElements.php:859
-#: app/Services/FormBuilder/DefaultElements.php:903
-#: app/Services/FormBuilder/DefaultElements.php:959
-#: app/Services/FormBuilder/DefaultElements.php:1010
-#: app/Services/FormBuilder/DefaultElements.php:1068
-#: app/Services/FormBuilder/DefaultElements.php:1121
-#: app/Services/FormBuilder/DefaultElements.php:1150
+#: app/Services/FormBuilder/DefaultElements.php:152
+#: app/Services/FormBuilder/DefaultElements.php:191
+#: app/Services/FormBuilder/DefaultElements.php:229
+#: app/Services/FormBuilder/DefaultElements.php:262
+#: app/Services/FormBuilder/DefaultElements.php:307
+#: app/Services/FormBuilder/DefaultElements.php:335
+#: app/Services/FormBuilder/DefaultElements.php:364
+#: app/Services/FormBuilder/DefaultElements.php:393
+#: app/Services/FormBuilder/DefaultElements.php:423
+#: app/Services/FormBuilder/DefaultElements.php:452
+#: app/Services/FormBuilder/DefaultElements.php:505
+#: app/Services/FormBuilder/DefaultElements.php:567
+#: app/Services/FormBuilder/DefaultElements.php:616
+#: app/Services/FormBuilder/DefaultElements.php:671
+#: app/Services/FormBuilder/DefaultElements.php:720
+#: app/Services/FormBuilder/DefaultElements.php:751
+#: app/Services/FormBuilder/DefaultElements.php:789
+#: app/Services/FormBuilder/DefaultElements.php:821
+#: app/Services/FormBuilder/DefaultElements.php:865
+#: app/Services/FormBuilder/DefaultElements.php:909
+#: app/Services/FormBuilder/DefaultElements.php:965
+#: app/Services/FormBuilder/DefaultElements.php:1016
+#: app/Services/FormBuilder/DefaultElements.php:1074
+#: app/Services/FormBuilder/DefaultElements.php:1127
+#: app/Services/FormBuilder/DefaultElements.php:1156
 msgid "This field is required"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:154
+#: app/Services/FormBuilder/DefaultElements.php:156
 msgid "This field must contain a valid email"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:749
+#: app/Services/FormBuilder/DefaultElements.php:755
 msgid "This field must contain a valid url"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:503
+#: app/Services/FormBuilder/DefaultElements.php:509
 msgid "This field must contain numeric value"
 msgstr ""
 
-#: app/Hooks/Backend.php:295
+#: app/Hooks/Backend.php:301
 msgid "This field value need to be unique."
 msgstr ""
 
@@ -3087,7 +3087,7 @@ msgstr ""
 msgid "This is the field title the user will see when filling out the form."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:192
+#: app/Services/FormBuilder/DefaultElements.php:196
 msgid "This value need to be unique."
 msgstr ""
 
@@ -3095,19 +3095,19 @@ msgstr ""
 msgid "This will be visible as button text for upload file."
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1263
+#: app/Services/FormBuilder/DefaultElements.php:1269
 msgid "Three Column Container"
 msgstr ""
 
-#: app/Modules/Component/Component.php:937
+#: app/Modules/Component/Component.php:938
 msgid "Thu"
 msgstr ""
 
-#: app/Modules/Component/Component.php:928
+#: app/Modules/Component/Component.php:929
 msgid "Thursday"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:789
+#: app/Services/FormBuilder/DefaultElements.php:795
 msgid "Time & Date"
 msgstr ""
 
@@ -3153,11 +3153,11 @@ msgstr ""
 msgid "Trinidad and Tobago"
 msgstr ""
 
-#: app/Modules/Component/Component.php:935
+#: app/Modules/Component/Component.php:936
 msgid "Tue"
 msgstr ""
 
-#: app/Modules/Component/Component.php:926
+#: app/Modules/Component/Component.php:927
 msgid "Tuesday"
 msgstr ""
 
@@ -3181,7 +3181,7 @@ msgstr ""
 msgid "Tuvalu"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:1245
+#: app/Services/FormBuilder/DefaultElements.php:1251
 msgid "Two Column Container"
 msgstr ""
 
@@ -3236,11 +3236,11 @@ msgstr ""
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: app/Modules/Component/Component.php:526
+#: app/Modules/Component/Component.php:527
 msgid "Uploading"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:738
+#: app/Services/FormBuilder/DefaultElements.php:744
 msgid "URL"
 msgstr ""
 
@@ -3320,7 +3320,7 @@ msgstr ""
 msgid "Venezuela"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:966
+#: app/Services/FormBuilder/DefaultElements.php:972
 msgid "Very Good"
 msgstr ""
 
@@ -3344,15 +3344,15 @@ msgstr ""
 msgid "Web Hooks"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:755
+#: app/Services/FormBuilder/DefaultElements.php:761
 msgid "Website URL"
 msgstr ""
 
-#: app/Modules/Component/Component.php:936
+#: app/Modules/Component/Component.php:937
 msgid "Wed"
 msgstr ""
 
-#: app/Modules/Component/Component.php:927
+#: app/Modules/Component/Component.php:928
 msgid "Wednesday"
 msgstr ""
 
@@ -3377,7 +3377,7 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: app/Modules/Component/Component.php:957
+#: app/Modules/Component/Component.php:958
 msgid "Wk"
 msgstr ""
 
@@ -3389,7 +3389,7 @@ msgstr ""
 msgid "WP Fluent Forms Widget"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:468
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:472
 msgid "Write HTML content for GDPR agreement checkbox"
 msgstr ""
 
@@ -3403,7 +3403,7 @@ msgstr ""
 msgid "Write your own mask for this input"
 msgstr ""
 
-#: app/Modules/Component/Component.php:964
+#: app/Modules/Component/Component.php:965
 msgid "Year"
 msgstr ""
 
@@ -3419,11 +3419,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:868
+#: app/Services/FormBuilder/DefaultElements.php:874
 msgid "You can upload maximum 1 file"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:824
+#: app/Services/FormBuilder/DefaultElements.php:830
 msgid "You can upload maximum 1 image"
 msgstr ""
 
@@ -3449,7 +3449,7 @@ msgstr ""
 msgid "Your API Key is valid"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:192
+#: app/Modules/Settings/Settings.php:213
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:119
 msgid "Your mailchimp api key has been verfied and successfully set"
 msgstr ""
@@ -3462,11 +3462,17 @@ msgstr ""
 msgid "Your Mailchimp API Key is valid"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:122
+#: app/Modules/Settings/Settings.php:98
+msgid ""
+"Your reCaptcha credential has been saved. Please test a real form with "
+"recaptcha enabled"
+msgstr ""
+
+#: app/Modules/Settings/Settings.php:143
 msgid "Your reCaptcha details are already valid, So no need to save again."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:109
+#: app/Modules/Settings/Settings.php:130
 msgid "Your reCaptcha is valid and saved."
 msgstr ""
 
@@ -3474,7 +3480,7 @@ msgstr ""
 msgid "Your reCaptcha settings are deleted."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:163
+#: app/Modules/Settings/Settings.php:184
 msgid "Your settings has been updated"
 msgstr ""
 
@@ -3498,7 +3504,7 @@ msgstr ""
 msgid "Zimbabwe"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:404
+#: app/Services/FormBuilder/DefaultElements.php:410
 msgid "Zip"
 msgstr ""
 
@@ -3510,6 +3516,6 @@ msgstr ""
 msgid "Zip Archives (zip, gz, gzip, rar, 7z)"
 msgstr ""
 
-#: app/Services/FormBuilder/DefaultElements.php:409
+#: app/Services/FormBuilder/DefaultElements.php:415
 msgid "Zip Code"
 msgstr ""

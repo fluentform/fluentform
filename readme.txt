@@ -4,15 +4,15 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.7.2
 Requires PHP: 5.6
-Stable tag: 4.0.1
+Stable tag: 4.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The Fastest and Best Contact Form Builder Plugin for WordPress. Drag and drop form builder plugin with all premium features.
+The Fastest Contact Form Builder Plugin for WordPress. Drag and drop contact form builder plugin with all premium features.
 
 == Description ==
 
-= The Best and Fastest Contact Form Builder Plugin - Fluent Forms =
+= The Best and Fastest Contact Form Builder Plugin by Fluent Forms =
 
 **WP Fluent Forms** is the ultimate user-friendly, **customizable drag-and-drop WordPress Contact Form Plugin** that offers you all the premium features, plus many more completely unique additional features. A perfect **WordPress Form builder** plugin should be developed in a way, so that you don’t have to code every time you need to integrate a form in your website, but can be set up in minutes. And that’s why, we have developed WP Fluent Forms for you.
 
@@ -105,7 +105,7 @@ Customizing your subscription forms has never been easier. According to your nee
 If you are interested in having a peak under the hood and see if it can be made more useful, we have that option too!
 
 == MANAGE YOUR SUBSCRIPTIONS SMARTLY ==
-You aren’t installing a form builder plugin to lure in 5-10 subscribers, right? What do you do when thousands of visitors subscribe to your website? You will need a smart system to handle such an influx. That is where WP Fluent Forms can help you manage things easily. Managing your submitted data has never been easier!
+You are not installing a form builder plugin to lure in 5-10 subscribers, right? What do you do when thousands of visitors subscribe to your website? You will need a smart system to handle such an influx. That is where WP Fluent Forms can help you manage things easily. Managing your submitted data has never been easier!
 With WP Fluent Forms, you can organize your submitted entries according to their value and export the whole list with just a click, or you can integrate with **slack**, **MailChimp**, and 16 more.
 
 == Form Fields available in WP Fluent Forms ==
@@ -148,6 +148,8 @@ With WP Fluent Forms, you can organize your submitted entries according to their
 - Post Creation Fields
 - PayPal Payments
 - Credit Card Payments Via Stripe
+- Accept Payments Via RazorPay
+- Accept Payments Via Mollie
 
 **Advanced Form Styler (Pro)**
 Advanced form styler is our most amazing feature of 2019 and we are so much excited about it and I am sure our users will love it. Using this styler, you can easily style every element of a form.
@@ -181,8 +183,8 @@ Here are the few forms from those that we have packed for you:
 * **Website Feedback Form** - To make effective for your site users, you may get the feedback and suggestions using this sample form.
 * **Comment & Rating Form** - Get user ratings and feedback instantly.
 * **User Registration Form (pro)** - Create user and make automatic login as part of the form submission process.
-* **Donation Form (pro)** - Let your users input the donation amount and donate via paypal/stripe as a form submission process.
-* **Payment Form (pro)** - You can easily process payments using Fluent Forms. PayPal and Stripe available as payment methods.
+* **Donation Form (pro)** - Let your users input the donation amount and donate via paypal, Stripe, RazorPay and Mollie as a form submission process.
+* **Payment Form (pro)** - You can easily process payments using Fluent Forms. PayPal, Stripe, RazorPay and Mollie available as payment methods.
 
 ==Pro Integrations ==
 <ul>
@@ -212,6 +214,8 @@ Here are the few forms from those that we have packed for you:
 <li>Post/CPT integration - Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>
 <li>PayPal - Create PayPal forms to easily collect payments, donations, and online orders. Sale your items easily using WordPress Forms</li>
 <li>Stripe - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
+<li>Mollie - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
+<li>RazorPay - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 </ul>
 
 == PAYMENT FORM, DONATION FORM, ORDER FORM, AND MORE ==
@@ -276,6 +280,7 @@ WP Fluent Forms Documentation comes with a detailed step-by-step instruction of 
 	<li><a href="https://wordpress.org/plugins/wp-payment-form/" target="_blank">WPPayForm - Stripe Payments Plugin for WordPress</a></li>
 	<li><a href="https://wordpress.org/plugins/mautic-for-fluent-forms/" target="_blank">Mautic Integration For Fluent Forms</a></li>
 	<li><a href="https://wordpress.org/plugins/fluentforms-pdf/" target="_blank">Fluent Forms PDF - PDF Entries for Fluent Forms</a></li>
+	<li><a href="https://wordpress.org/plugins/fluent-smtp/" target="_blank">FluentSMTP - The Most Advanced SMTP, SES Plugin for WordPress</a></li>
 </ul>
 
 == Installation ==
@@ -333,6 +338,15 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.1.0 (Date: June 30, 2021) =
+* Improvements on Conversational Forms
+* Introducing ReCaptcha V3
+* Elementor Integration Widget Improvements
+* Added prefix and suffix to text, email, mask inputs
+* Integration Improvements
+* Other CRON related issues fixed
+* Custom RAW HTML Email Body for advanced or simple designs
 
 = 4.0.0 (Date: June 08, 2021) =
 * Introducing Conversational Form Style

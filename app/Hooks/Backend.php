@@ -8,6 +8,7 @@
  * Regitser All Admin Scripts but don't load it
  */
 
+
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
 }, 9);
