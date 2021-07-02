@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\Migrator;
 
+use Caldera_Forms_Forms;
 use FluentForm\App\Modules\Form\Form;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -24,148 +25,164 @@ class CalderaMigrator extends BaseMigrator
     {
         $forms = [];
 
-        $items = \Caldera_Forms_Forms::get_forms();
+        $items = Caldera_Forms_Forms::get_forms();
 
         foreach ($items as $item) {
-            $forms[] = \Caldera_Forms_Forms::get_form($item);
+            $forms[] = Caldera_Forms_Forms::get_form($item);
         }
-
         return $forms;
     }
-
+    //todo name
     public function getFields($form)
     {
         $fluentFields = [];
-        $fields = \Caldera_Forms_Forms::get_fields($form);
-        $i = 0;
+        $fields = Caldera_Forms_Forms::get_fields($form);
+        $order = [];
+        //set fields index for serial
+        $j = 0;
+        foreach ($form['layout_grid']['fields'] as $key=>$value){
+            $order[$key] = $j++;
+        }
+        //set fields index for serial
         foreach ($fields as $name => $field) {
-            if (isset($field['config']['type_override']) && $field['config']['type_override']) {
+            if ( ArrayHelper::get($field,'config.type_override')) {
                 $field['type'] = $field['config']['type_override'];
             }
 
-            switch ($field['type']) {
-                case 'text':
+            $args = [
+                'uniqElKey'   => $field['ID'],
+                'index'       => $order[ $field['ID'] ], // get the order id
+                'required'    => isset($field['required']) ? true : false,
+                'label'       => $field['label'],
+                'name'        => $field['slug'],
+                'placeholder' => ArrayHelper::get($field, 'placeholder'),
+                'class'       => $field['config']['custom_class'],
+                'value'       => ArrayHelper::get($field, 'config.default'),
+            ];
+            $type = ArrayHelper::get($this->fieldTypes(), $field['type'], '');
+            switch ($type) {
+                case 'input_text':
                 case 'email':
-                case 'textarea':
-                case 'url':
-                case 'phone_better':
-                case 'paragraph':
-
-                    if ($field['type'] == 'phone_better') {
-                        $field['type'] = 'text';
-                    }
-
-                    if ($field['type'] == 'paragraph') {
-                        $field['type'] = 'textarea';
-                    }
-
-                    $fluentFields[] = $this->getFluentClassicField($field['type'], [
-                        'uniqElKey' => $field['ID'],
-                        'index'     => $i++,
-                        'required'  => isset($field['required']) ? true : false,
-                        'label'     => $field['label'],
-                        'name'      => $field['slug'],
-                        'css'       => $field['config']['custom_class'],
-                    ]);
-                    break;
-
+                case 'input_textarea':
+                case 'input_url':
+                case 'color_picker':
+                case 'section_break':
                 case 'select':
-                case 'radio':
-                case 'checkbox':
+                case 'input_radio':
+                case 'input_checkbox':
                 case 'dropdown':
-                    $fluentFields[] = $this->getFluentClassicField($field['type'], [
-                        'uniqElKey' => $field['ID'],
-                        'index'     => $i++,
-                        'required'  => isset($field['required']) ? true : false,
-                        'label'     => $field['label'],
-                        'name'      => $field['slug'],
-                        'css'       => $field['config']['custom_class'],
-                        'options'   => $this->getOptions(ArrayHelper::get($field, 'config.option', [])),
-                    ]);
-                    break;
-                case 'date_picker':
-                    $fluentFields[] = $this->getFluentClassicField($field['type'], [
-                        'uniqElKey' => $field['ID'],
-                        'index'     => $i++,
-                        'required'  => isset($field['required']) ? true : false,
-                        'label'     => $field['label'],
-                        'name'      => $field['slug'],
-                        'css'       => $field['config']['custom_class'],
-                        'format'    => Arrayhelper::get($field, 'config.format'),
-                    ]);
-                    break;
-                case 'range':
-                case 'number':
-                    $fluentFields[] = $this->getFluentClassicField($field['type'], [
-                        'required'        => isset($field['required']) ? true : false,
-                        'label'           => $field['label'],
-                        'name'            => $field['slug'],
-                        'css'             => $field['config']['custom_class'],
-                        'step_text_field' => $field['config']['step'],
-                        'min_value_field' => $field['config']['min'],
-                        'max_value_field' => $field['config']['max'],
-                    ]);
-
-                    break;
-
-                case 'star_rating':
-
-                    if (empty($field['config']['number'])) {
-                        $field['config']['number'] = 5;
+                    $args['options'] = $this->getOptions(ArrayHelper::get($field, 'config.option',[]));
+                    $args['enable_select_2'] = ArrayHelper::get($field, 'type') == 'filtered_select2' ? 'yes' : 'no';
+                    $isBttnType = ArrayHelper::get($field, 'type') == 'toggle_switch' ? true : false;
+                    if($isBttnType){
+                        $args['layout_class'] ='ff_list_buttons'; //btn type chkbox
                     }
-
-                    $fluentFields[] = $this->getFluentClassicField('ratings', [
-                        'required' => isset($field['required']) ? true : false,
-                        'label'    => $field['label'],
-                        'name'     => $field['slug'],
-                        'css'      => $field['config']['custom_class'],
-                        'options'  => array_combine(range(1, $field['config']['number']), range(1, $field['config']['number'])),
-                    ]);
-
+                    break;
+                case 'input_date':
+                    $args['format'] = Arrayhelper::get($field, 'config.format');
+                    break;
+                case 'input_number':
+                case 'rangeslider':
+                    $args['step'] = $field['config']['step'];
+                    $args['min'] = $field['config']['step'];
+                    $args['max'] = $field['config']['step'];
+                    break;
+                case 'input_mask':
+                    $args['mask'] = str_replace('9', '0', $field['config']['custom']);//replace mask 9 with 0 for numbers
+                    break;
+                case 'ratings':
+                    $number = ArrayHelper::get($field, 'config.number', 5);
+                    $args['options'] = array_combine(range(1, $number), range(1, $number));
+                    break;
+                case 'input_file':
+                    $byte = ArrayHelper::get($field, 'config.max_upload',6000);
+                    $kb = round($byte / 1000);
+                    $args['help_message'] = $field['caption'];
+                    $args['allowed_file_types'] = $this->getFileTypes($field);
+                    $args['max_size_unit'] = 'KB';
+                    $args['max_file_size'] = $kb;
+                    $args['max_file_count'] = ArrayHelper::isTrue($field, 'config.multi_upload') ? 5 : 1; //limit 5 for unlimited files
+                    $args['upload_btn_text'] = ArrayHelper::get($field, 'config.multi_upload_text') ?: 'File Upload';
+                    break;
+                case 'custom_html':
+                    $args['html_codes'] = $field['config']['default'];
                     break;
 
-                case 'advanced_file':
-
-                    $fluentFields[] = $this->getFluentClassicField('file', [
-                        'required'     => isset($field['required']) ? true : false,
-                        'label'        => $field['label'],
-                        'name'         => $field['slug'],
-                        'css'          => $field['config']['custom_class'],
-                        'help_message' => $field['caption'],
-                    ]);
-
+                case 'gdpr_agreement': // ??
+                    $args['tnc_html'] = $field['config']['agreement'];
                     break;
-
                 case 'button':
+                    if($field['config']['type']!='submit'){
+                        break; //other buttons todo
+                    }
                     $this->submitBtn = $this->getSubmitBttn([
                         'uniqElKey' => $field['ID'],
-                        'index'     => $i++,
                         'label'     => $field['label'],
-                        'css'       => $field['config']['custom_class'],
+                        'class'     => $field['config']['custom_class'],
                     ]);
                     break;
-
             }
+            $fluentFields[] = $this->getFluentClassicField($type, $args);
         }
-        $formattedFields = [
+        //sort usig the order index value
+        usort($fluentFields, function($a, $b) {
+            return $a['index'] - $b['index'];
+        });
+        return [
             'fields'       => array_filter($fluentFields),
             'submitButton' => $this->submitBtn
         ];
-        return $formattedFields;
     }
 
-    public function getOptions($options = [])
+    public function fieldTypes()
+    {
+        //todo pro fields ??
+        $fieldTypes = [
+            'email'            => 'email',
+            'text'             => 'input_text',
+            'hidden'           => 'input_hidden',
+            'textarea'         => 'input_textarea',
+            'paragraph'        => 'input_textarea',
+            'wysiwyg'          => 'input_textarea',
+            'url'              => 'input_url',
+            'color_picker'     => 'color_picker',
+            'phone_better'     => 'phone',
+            'phone'            => 'input_mask',
+            'select'           => 'select',
+            'dropdown'         => 'select',
+            'filtered_select2' => 'select',
+            'radio'            => 'input_radio',
+            'checkbox'         => 'input_checkbox',
+            'toggle_switch'    => 'input_checkbox',
+            'date_picker'      => 'input_date',
+            'range'            => 'input_number',
+            'number'           => 'input_number',
+            'rangeslider'      => 'rangeslider',
+            'star_rating'      => 'ratings',
+            'file'             => 'input_file',
+            'cf2_file'         => 'input_file',
+            'html'             => 'custom_html',
+            'section_break'    => 'section_break',
+            'gdpr'             => 'gdpr_agreement',
+            'button'           => 'button',
+
+        ];
+
+//        if (defined('FLUENTFORMPRO')) {
+//
+//        }
+
+        return $fieldTypes;
+    }
+
+    public function getOptions($options)
     {
         $formattedOptions = [];
-
         foreach ($options as $key => $option) {
-            $label = !empty($option['label']) ? $option['label'] : 'Item - ' . $key;
-            $value = !empty($option['value']) ? $option['value'] : $label;
-
             $formattedOptions[] = [
-                'label'      => $label,
-                'value'      => $value,
-                'calc_value' => '',
+                'label'      => ArrayHelper::get($option, 'label', 'Item -' . $key),
+                'value'      => ArrayHelper::get($option, 'value'),
+                'calc_value' => ArrayHelper::get($option, 'calc_value'),
                 'id'         => $key
             ];
         }
@@ -173,9 +190,25 @@ class CalderaMigrator extends BaseMigrator
         return $formattedOptions;
     }
 
+    private function getFileTypes($field)
+    {
+        //todo
+        $formattedTypes = explode(',', ArrayHelper::get($field, 'config.allowed', ''));
+
+        $fileTypeOptions = [];
+        foreach ($formattedTypes as $format) {
+            if (!empty($format) && (strpos('jpg|jpeg|gif|png|bmp', $format) != false)) {
+                $fileTypeOptions[] = 'jpg|jpeg|gif|png|bmp';
+            }
+        }
+
+        return array_unique($fileTypeOptions);
+    }
+
     /**
      * @param $form
      * @return array default parsed form metas
+     * @throws \Exception
      */
     public function getFormMetas($form)
     {
@@ -203,10 +236,11 @@ class CalderaMigrator extends BaseMigrator
         $notifications =
             [
                 'sendTo'      => [
-                    'type'    => 'email',
-                    'email'   => '{wp.admin_email}',
-                    'field'   => 'email',
-                    'routing' => '',
+                    'type'      => 'email',
+                    'email'     => '{wp.admin_email}',
+                    'fromEmail' => '',
+                    'field'     => 'email',
+                    'routing'   => '',
                 ],
                 'enabled'     => $form['mailer']['on_insert'] ? true : false,
                 'name'        => 'Admin Notification',
@@ -215,9 +249,9 @@ class CalderaMigrator extends BaseMigrator
                 'replyTo'     => '{field:your-email}',
                 'message'     => " <p>{all_data}</p>\n
                                     <p>This form submitted at: {embed_post.permalink}</p>",
-                'fromName'    => '',
+                'fromName'    => ArrayHelper::get($form, 'mailer.sender_name'),
                 'fromAddress' => '',
-                'bcc'         => '',
+                'bcc'         => ArrayHelper::get($form, 'mailer.bcc_to'),
             ];
         return [
             'formSettings'               => [
@@ -230,7 +264,6 @@ class CalderaMigrator extends BaseMigrator
             'notifications'              => $notifications
         ];
     }
-
 
     protected function getFormId($form)
     {

@@ -4,8 +4,6 @@ namespace FluentForm\App\Services\Migrator;
 
 use FluentForm\App\Modules\Form\Form;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Framework\Request\File;
-use FluentValidator\Arr;
 
 abstract class BaseMigrator
 {
@@ -25,9 +23,7 @@ abstract class BaseMigrator
         new CalderaMigrator();
 
         $type = sanitize_text_field($_REQUEST['type']);
-        $migrators = [
-            'caldera'
-        ];
+        $migrators = ['caldera'];
         if (!$type || !in_array($type, $migrators)) {
             wp_send_json_error([
                 'message' => __("Error. Unsupported migration", 'fluentform')
@@ -48,7 +44,7 @@ abstract class BaseMigrator
         }
 
         $imported = 0;
-        $refs = [];
+        $refs = []; //todo
         $forms = $this->getForms();
 
         if (!$forms) {
@@ -62,8 +58,6 @@ abstract class BaseMigrator
             $insertedForms = [];
             if ($forms && is_array($forms)) {
                 foreach ($forms as $formItem) {
-
-
                     // First of all make the form object.
                     $formFields = json_encode([]);
                     if ($fields = $this->getFields($formItem)) {
@@ -73,7 +67,6 @@ abstract class BaseMigrator
                             'message' => __('Export Error !!', 'fluentform')
                         ], 422);
                     }
-
                     $form = [
                         'title'       => $this->getFormName($formItem),
                         'form_fields' => $formFields,
@@ -82,7 +75,6 @@ abstract class BaseMigrator
                         'type'        => 'form', //todo
                         'created_by'  => get_current_user_id()
                     ];
-
                     $form['conditions'] = ''; //todo
                     $form['appearance_settings'] = ''; //todo
 
@@ -96,22 +88,17 @@ abstract class BaseMigrator
                     //get form metas
                     $metas = $this->getFormMetas($formItem);
                     if (isset($metas)) {
-
                         foreach ($metas as $metaKey => $metaData) {
                             $settings = [
                                 'form_id'  => $formId,
                                 'meta_key' => $metaKey,
-                                'value'    => \json_encode($metaData)
+                                'value'    => json_encode($metaData)
                             ];
                             wpFluent()->table('fluentform_form_meta')->insert($settings);
                         }
-
                     }
-
                     do_action('fluentform_form_imported', $formId);
-
                 }
-
                 wp_send_json([
                     'message'        => __('You forms has been successfully imported.', 'fluentform'),
                     'inserted_forms' => $insertedForms
@@ -154,46 +141,47 @@ abstract class BaseMigrator
             'conditional_logics' => [],
             'container_class'    => '',
             'id'                 => '',
+            'number_step'        => '',
+            'step'               => '1',
+            'min'                => '0',
+            'max'                => '10',
+            'mask'               => '',
+            'enable_select_2'    => '',
+            'is_button_type'     => '',
+            'max_file_count'     => '',
+            'max_file_size'      => '',
+            'upload_btn_text'    => '',
+            'allowed_file_types' => '',
+            'max_size_unit'      => '',
+            'html_codes'         => '',
+            'section_break_desc' => '',
+            'tnc_html'           => '',
+            'prefix'             => '',
+            'suffix'             => '',
+            'layout_class'       => '',
+
+
         ];
 
         $args = wp_parse_args($args, $defaults);
         //common attr //todo refact
-        $commonConfig = [
-        ];
-        if (!ArrayHelper::exists(self::defaultFields($args), $field)) {
-            return;
-        }
-        $fieldConfig = '';
-        if ($field == 'text') {
-            $fieldConfig = ArrayHelper::get(self::defaultFields($args), 'text');
-        } elseif ($field == 'email') {
-            $fieldConfig = ArrayHelper::get(self::defaultFields($args), 'email');
-        } elseif ($field == 'textarea') {
-            $fieldConfig = ArrayHelper::get(self::defaultFields($args), 'textarea');
-        } elseif ($field == 'dropdown') {
-            $fieldConfig = ArrayHelper::get(self::defaultFields($args), 'dropdown');
-        } elseif ($field == 'multiselect') {
-        } elseif ($field == 'date_picker' || $field == 'date') {
-            $fieldConfig = ArrayHelper::get(self::defaultFields($args), 'date_picker');
-        } elseif ($field == 'range' || $field == 'number' || $field == 'url' || $field == 'checkbox' || $field == 'radio' || $field == 'hidden' || $field == 'section_break' || $field == 'html' || $field == 'toc' || $field == 'recaptcha' || $field == 'file' || $field == 'name' || $field == 'ratings' || $field == 'checkbox_grid' || $field == 'payment_method' || $field == 'total') {
-        } else {
-            return 0;
-        }
+
+        $fieldConfig = ArrayHelper::get(self::defaultFieldConfig($args), $field);
 
         return $fieldConfig;
     }
 
-    public static function defaultFields($args)
+    public static function defaultFieldConfig($args)
     {
         return [
-            'text'        => [
+            'input_text'     => [
                 'index'          => $args['index'],
                 'element'        => 'input_text',
                 'attributes'     => [
                     'type'        => 'text',
                     'name'        => $args['name'],
                     'value'       => $args['value'],
-                    'class'       => $args['css'],
+                    'class'       => $args['class'],
                     'id'          => $args['id'],
                     'placeholder' => $args['placeholder'],
                     'maxlength'   => $args['maxlength'],
@@ -204,7 +192,7 @@ abstract class BaseMigrator
                     'label_placement'           => '',
                     'admin_field_label'         => '',
                     'help_message'              => $args['help_message'],
-                    'conditional_logics'        => '',
+                    'conditional_logics'        => [],
                     'validation_rules'          => [
                         'required' => [
                             'value'   => $args['required'],
@@ -222,14 +210,78 @@ abstract class BaseMigrator
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
             ],
-            'email'       => [
+            'color_picker'   => [
+                'index'          => 15,
+                'element'        => 'color_picker',
+                'attributes'     => [
+                    'type'        => 'text',
+                    'name'        => $args['name'],
+                    'value'       => $args['value'],
+                    'class'       => $args['class'],
+                    'id'          => $args['id'],
+                    'placeholder' => $args['placeholder'],
+                ],
+                'settings'       => [
+                    'label'            => $args['label'],
+                    'validation_rules' => [
+                        'required' => [
+                            'value'   => $args['required'],
+                            'message' => 'This field is required'
+                        ]
+                    ],
+                ],
+                'editor_options' => [
+                    'title'      => 'Color Picker',
+                    'icon_class' => 'ff-edit-tint',
+                    'template'   => 'inputText'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'input_url'      => [
+                'index'          => $args['index'],
+                'element'        => 'input_url',
+                'attributes'     => [
+                    'type'        => 'url',
+                    'name'        => $args['name'],
+                    'value'       => $args['value'],
+                    'class'       => $args['class'],
+                    'id'          => $args['id'],
+                    'placeholder' => $args['placeholder'],
+                ],
+                'settings'       => [
+                    'container_class'    => '',
+                    'label'              => $args['label'],
+                    'label_placement'    => '',
+                    'admin_field_label'  => '',
+                    'help_message'       => $args['help_message'],
+                    'validation_rules'   => [
+                        'required' => [
+                            'value'   => $args['required'],
+                            'message' => 'This field is required'
+                        ],
+                        'url'      => [
+                            'value'   => true,
+                            'message' => __('This field must contain a valid url', 'fluentform'),
+                        ],
+                    ],
+                    'conditional_logics' => [],
+
+                ],
+                'editor_options' => [
+                    'title'      => __('Website URL', 'fluentform'),
+                    'icon_class' => 'ff-edit-website-url',
+                    'template'   => 'inputText'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'email'          => [
                 'index'          => $args['index'],
                 'element'        => 'input_email',
                 'attributes'     => [
                     'type'        => 'email',
                     'name'        => $args['name'],
-                    'value'       => '',
-                    'class'       => $args['css'],
+                    'value'       => $args['value'],
+                    'class'       => $args['class'],
                     'id'          => '',
                     'placeholder' => $args['placeholder'],
                 ],
@@ -239,7 +291,7 @@ abstract class BaseMigrator
                     'label_placement'           => '',
                     'admin_field_label'         => '',
                     'help_message'              => $args['help_message'],
-                    'conditional_logics'        => '',
+                    'conditional_logics'        => [],
                     'validation_rules'          => [
                         'required' => [
                             'value'   => $args['required'],
@@ -261,7 +313,7 @@ abstract class BaseMigrator
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
             ],
-            'textarea'    => [
+            'input_textarea' => [
                 'index'          => $args['index'],
                 'element'        => 'textarea',
                 'attributes'     => [
@@ -279,7 +331,7 @@ abstract class BaseMigrator
                     'label_placement'    => '',
                     'admin_field_label'  => '',
                     'help_message'       => $args['help_message'],
-                    'conditional_logics' => '',
+                    'conditional_logics' => [],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -294,13 +346,13 @@ abstract class BaseMigrator
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
             ],
-            'dropdown'    => [
+            'select'         => [
                 'index'          => $args['index'],
                 'element'        => 'select',
                 'attributes'     => [
                     'name'  => $args['name'],
-                    'value' => '',
-                    'class' => $args['css'],
+                    'value' => $args['value'],
+                    'class' => $args['class'],
                     'id'    => '',
                 ],
                 'settings'       => [
@@ -311,7 +363,7 @@ abstract class BaseMigrator
                     'placeholder'        => $args['placeholder'],
                     'advanced_options'   => $args['options'],
                     'calc_value_status'  => '',
-                    'enable_select_2'    => 'no',
+                    'enable_select_2'    => $args['enable_select_2'],
                     'validation_rules'   => [
                         'required' => [
                             'value'   => $args['required'],
@@ -319,7 +371,7 @@ abstract class BaseMigrator
                         ]
                     ],
                     'randomize_options'  => 'no',
-                    'conditional_logics' => '',
+                    'conditional_logics' => [],
                 ],
                 'editor_options' => [
                     'title'      => 'Dropdown',
@@ -329,14 +381,88 @@ abstract class BaseMigrator
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
             ],
-            'date_picker' => [
+            'input_checkbox' => [
+                'index'          => $args['index'],
+                'element'        => 'input_checkbox',
+                'attributes'     => [
+                    'name'  => $args['name'],
+                    'value' => $args['value'],
+                    'class' => $args['class'],
+                    'id'    => '',
+                    'type'  => 'checkbox'
+                ],
+                'settings'       => [
+                    'container_class'    => '',
+                    'label_placement'    => '',
+                    'label'              => $args['label'],
+                    'help_message'       => $args['help_message'],
+                    'placeholder'        => $args['placeholder'],
+                    'advanced_options'   => $args['options'],
+                    'enable_image_input' => false,
+                    'randomize_options'  => 'no',
+                    'validation_rules'   => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                    ],
+                    'conditional_logics' => [],
+                    'layout_class'       => $args['layout_class']
+                ],
+                'editor_options' => [
+                    'title'      => __('Check Box', 'fluentform'),
+                    'icon_class' => 'ff-edit-checkbox-1',
+                    'template'   => 'inputCheckable'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'input_radio'    => [
+                'index'          => 8,
+                'element'        => 'input_radio',
+                'attributes'     => [
+                    'name'  => $args['name'],
+                    'value' => $args['value'],
+                    'class' => $args['class'],
+                    'type'  => 'radio',
+                ],
+                'settings'       => [
+                    'dynamic_default_value' => '',
+                    'container_class'       => '',
+                    'admin_field_label'     => '',
+                    'label_placement'       => '',
+                    'display_type'          => '',
+                    'randomize_options'     => 'no',
+                    'label'                 => $args['label'],
+                    'help_message'          => $args['help_message'],
+                    'placeholder'           => $args['placeholder'],
+                    'advanced_options'      => $args['options'],
+                    'layout_class'          => $args['is_button_type'] === true ? 'ff_list_buttons' : '',
+                    'calc_value_status'     => false,
+                    'enable_image_input'    => false,
+                    'validation_rules'      => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                    ],
+                    'conditional_logics'    => [],
+                ],
+                'editor_options' => [
+                    'title'      => __('Radio Field', 'fluentform'),
+                    'icon_class' => 'ff-edit-radio',
+                    'element'    => 'input-radio',
+                    'template'   => 'inputCheckable'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'input_date'     => [
                 'element'        => 'input_date',
                 'index'          => $args['index'],
                 'attributes'     => [
                     'name'        => $args['name'],
                     'value'       => '',
                     'type'        => 'text',
-                    'class'       => $args['css'],
+                    'class'       => $args['class'],
                     'placeholder' => $args['placeholder'],
                     'id'          => '',
                 ],
@@ -360,7 +486,312 @@ abstract class BaseMigrator
                     'template'   => 'inputText',
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
-            ]
+            ],
+            'input_mask'     => [
+                'index'          => $args['index'],
+                'element'        => 'input_text',
+                'attributes'     => [
+                    'type'        => 'number',
+                    'name'        => $args['name'],
+                    'value'       => $args['value'],
+                    'class'       => $args['class'],
+                    'id'          => $args['id'],
+                    'placeholder' => $args['placeholder'],
+                    'data-mask'   => $args['mask'],
+                ],
+                'settings'       => [
+                    'container_class'         => '',
+                    'label'                   => $args['label'],
+                    'label_placement'         => '',
+                    'admin_field_label'       => '',
+                    'help_message'            => $args['help_message'],
+                    'prefix_label'            => '',
+                    'suffix_label'            => '',
+                    'temp_mask'               => 'custom',
+                    'data-mask-reverse'       => 'no',
+                    'data-clear-if-not-match' => 'no',
+                    'validation_rules'        => array(
+                        'required' => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentform'),
+                        ]
+                    ),
+                    'conditional_logics'      => [],
+                ],
+                'editor_options' => [
+                    'title'      => __('Mask Input', 'fluentform'),
+                    'icon_class' => 'ff-edit-mask',
+                    'template'   => 'inputText'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'input_number'   => [
+                'index'          => 6,
+                'element'        => 'input_number',
+                'attributes'     => [
+                    'type'        => 'number',
+                    'name'        => 'numeric-field',
+                    'value'       => '',
+                    'id'          => '',
+                    'class'       => '',
+                    'placeholder' => ''
+                ],
+                'settings'       => [
+                    'container_class'      => '',
+                    'label'                => __('Numeric Field', 'fluentform'),
+                    'admin_field_label'    => '',
+                    'label_placement'      => '',
+                    'help_message'         => '',
+                    'number_step'          => '',
+                    'prefix_label'         => '',
+                    'suffix_label'         => '',
+                    'numeric_formatter'    => '',
+                    'validation_rules'     => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                        'numeric'  => [
+                            'value'   => true,
+                            'message' => __('This field must contain numeric value', 'fluentform'),
+                        ],
+                        'min'      => [
+                            'value'   => '',
+                            'message' => __('Minimum value is ', 'fluentform'),
+                        ],
+                        'max'      => [
+                            'value'   => '',
+                            'message' => __('Maximum value is ', 'fluentform'),
+                        ],
+                    ],
+                    'conditional_logics'   => [],
+                    'calculation_settings' => [
+                        'status'  => false,
+                        'formula' => ''
+                    ],
+                ],
+                'editor_options' => [
+                    'title'      => __('Numeric Field', 'fluentform'),
+                    'icon_class' => 'ff-edit-numeric',
+                    'template'   => 'inputText'
+                ],
+            ],
+            'phone'          => [
+                'index'          => $args['index'],
+                'element'        => 'phone',
+                'attributes'     => [
+                    'name'        => $args['name'],
+                    'value'       => $args['value'],
+                    'id'          => $args['id'],
+                    'class'       => $args['class'],
+                    'placeholder' => $args['placeholder'],
+                    'type'        => 'tel'
+                ],
+                'settings'       => [
+                    'container_class'     => '',
+                    'placeholder'         => '',
+                    'int_tel_number'      => 'with_extended_validation',
+                    'auto_select_country' => 'no',
+                    'label'               => $args['label'],
+                    'label_placement'     => '',
+                    'help_message'        => $args['help_message'],
+                    'admin_field_label'   => '',
+                    'phone_country_list'  => array(
+                        'active_list'  => 'all',
+                        'visible_list' => array(),
+                        'hidden_list'  => array(),
+                    ),
+                    'default_country'     => '',
+                    'validation_rules'    => [
+                        'required'           => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentformpro'),
+                        ],
+                        'valid_phone_number' => [
+                            'value'   => false,
+                            'message' => __('Phone number is not valid', 'fluentformpro')
+                        ]
+                    ],
+                    'conditional_logics'  => []
+                ],
+                'editor_options' => [
+                    'title'      => 'Phone Field',
+                    'icon_class' => 'el-icon-phone-outline',
+                    'template'   => 'inputText'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+
+            ],
+            'input_file'     => [
+                'index'          => $args['index'],
+                'element'        => 'input_file',
+                'attributes'     => [
+                    'type'  => 'file',
+                    'name'  => $args['name'],
+                    'value' => '',
+                    'id'    => $args['id'],
+                    'class' => $args['class'],
+                ],
+                'settings'       => [
+                    'container_class'    => '',
+                    'label'              => $args['label'],
+                    'admin_field_label'  => '',
+                    'label_placement'    => '',
+                    'btn_text'           => $args['upload_btn_text'],
+                    'help_message'       => '',
+                    'validation_rules'   => [
+                        'required'           => [
+                            'value'   => $args['required'],
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                        'max_file_size'      => [
+                            'value'      => $args['max_file_size'],
+                            '_valueFrom' => $args['max_size_unit'],
+                            'message'    => __('Maximum file size limit reached', 'fluentform')
+                        ],
+                        'max_file_count'     => [
+                            'value'   => $args['max_file_count'],
+                            'message' => __('Maximum upload limit reached', 'fluentform')
+                        ],
+                        'allowed_file_types' => [
+                            'value'   => $args['allowed_file_types'],
+                            'message' => __('Invalid file type', 'fluentform')
+                        ]
+                    ],
+                    'conditional_logics' => [],
+                ],
+                'editor_options' => [
+                    'title'      => __('File Upload', 'fluentform'),
+                    'icon_class' => 'ff-edit-files',
+                    'template'   => 'inputFile'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'custom_html'    => [
+                'index'          => $args['index'],
+                'element'        => 'custom_html',
+                'attributes'     => [],
+                'settings'       => [
+                    'html_codes'         => $args['html_codes'],
+                    'conditional_logics' => [],
+                    'container_class'    => ''
+                ],
+                'editor_options' => [
+                    'title'      => __('Custom HTML', 'fluentform'),
+                    'icon_class' => 'ff-edit-html',
+                    'template'   => 'customHTML',
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'section_break'  => [
+                'index'          => $args['index'],
+                'element'        => 'section_break',
+                'attributes'     => [
+                    'id'    => $args['id'],
+                    'class' => $args['class'],
+                ],
+                'settings'       => [
+                    'label'              => $args['label'],
+                    'description'        => $args['section_break_desc'],
+                    'align'              => 'left',
+                    'conditional_logics' => [],
+                ],
+                'editor_options' => [
+                    'title'      => __('Section Break', 'fluentform'),
+                    'icon_class' => 'ff-edit-section-break',
+                    'template'   => 'sectionBreak',
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'rangeslider'    => [
+                'index'          => $args['index'],
+                'element'        => 'rangeslider',
+                'attributes'     => [
+                    'min'  => $args['min'],
+                    'max'  => $args['max'],
+                    'type' => 'range'
+                ],
+                'settings'       => [
+                    'number_step'        => $args['step'],
+                    'label'              => $args['label'],
+                    'help_message'       => $args['help_message'],
+                    'conditional_logics' => [],
+                    'validation_rules'   => [
+                        'required' => [
+                            'value'   => $args['required'],
+                            'message' => 'This field is required'
+                        ]
+                    ],
+                ],
+                'editor_options' => [
+                    'title'      => 'Range Slider',
+                    'icon_class' => 'dashicons dashicons-leftright',
+                    'template'   => 'inputSlider'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'ratings'        => [
+                'index'          => $args['index'],
+                'element'        => 'ratings',
+                'attributes'     => [
+                    'class' => $args['class'],
+                    'value' => 0,
+                    'name'  => $args['name'],
+                ],
+                'settings'       => [
+                    'label'              => $args['label'],
+                    'show_text'          => 'no',
+                    'help_message'       => '',
+                    'label_placement'    => '',
+                    'admin_field_label'  => '',
+                    'container_class'    => '',
+                    'conditional_logics' => [],
+                    'validation_rules'   => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                    ],
+                ],
+                'options'        => $args['options'],
+                'editor_options' => [
+                    'title'      => __('Ratings', 'fluentform'),
+                    'icon_class' => 'ff-edit-rating',
+                    'template'   => 'ratings',
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'gdpr_agreement' => [
+                'index'          => $args['index'],
+                'element'        => 'gdpr_agreement',
+                'attributes'     => [
+                    'type'  => 'checkbox',
+                    'name'  => $args['name'],
+                    'value' => false,
+                    'class' => $args['class'] . ' ff_gdpr_field',
+                ],
+                'settings'       => [
+                    'label'                  => $args['label'],
+                    'tnc_html'               => $args['tnc_html'],
+                    'admin_field_label'      => __('GDPR Agreement', 'fluentform'),
+                    'has_checkbox'           => true,
+                    'container_class'        => '',
+                    'validation_rules'       => [
+                        'required' => [
+                            'value'   => true,
+                            'message' => __('This field is required', 'fluentform'),
+                        ],
+                    ],
+                    'required_field_message' => '',
+                    'conditional_logics'     => [],
+                ],
+                'editor_options' => [
+                    'title'      => __('GDPR Agreement', 'fluentform'),
+                    'icon_class' => 'ff-edit-gdpr',
+                    'template'   => 'termsCheckbox'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
         ];
     }
 
@@ -371,21 +802,23 @@ abstract class BaseMigrator
             'element'        => 'button',
             'attributes'     => [
                 'type'  => 'submit',
-                'class' => $args['css']
+                'class' => $args['class']
             ],
             'settings'       => [
                 'container_class'  => '',
                 'align'            => 'left',
                 'button_style'     => 'default',
-                'background_color' => '#409EFF',
                 'button_size'      => 'md',
                 'color'            => '#ffffff',
+                'background_color' => '#409EFF',
                 'button_ui'        => [
                     'type'    => 'default',
                     'text'    => $args['label'],
                     'img_url' => ''
-
                 ],
+                'normal_styles'    => [],
+                'hover_styles'     => [],
+                'current_state'    => "normal_styles"
             ],
             'editor_options' => [
                 'title' => 'Submit Button',
