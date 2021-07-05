@@ -32,6 +32,7 @@ class CalderaMigrator extends BaseMigrator
         }
         return $forms;
     }
+
     //todo name
     public function getFields($form)
     {
@@ -40,24 +41,25 @@ class CalderaMigrator extends BaseMigrator
         $order = [];
         //set fields index for serial
         $j = 0;
-        foreach ($form['layout_grid']['fields'] as $key=>$value){
+        foreach ($form['layout_grid']['fields'] as $key => $value) {
             $order[$key] = $j++;
         }
         //set fields index for serial
         foreach ($fields as $name => $field) {
-            if ( ArrayHelper::get($field,'config.type_override')) {
+            if (ArrayHelper::get($field, 'config.type_override')) {
                 $field['type'] = $field['config']['type_override'];
             }
 
             $args = [
-                'uniqElKey'   => $field['ID'],
-                'index'       => $order[ $field['ID'] ], // get the order id
-                'required'    => isset($field['required']) ? true : false,
-                'label'       => $field['label'],
-                'name'        => $field['slug'],
-                'placeholder' => ArrayHelper::get($field, 'placeholder'),
-                'class'       => $field['config']['custom_class'],
-                'value'       => ArrayHelper::get($field, 'config.default'),
+                'uniqElKey'    => $field['ID'],
+                'index'        => $order[$field['ID']], // get the order id from order array
+                'required'     => isset($field['required']) ? true : false,
+                'label'        => $field['label'],
+                'name'         => $field['slug'],
+                'placeholder'  => ArrayHelper::get($field, 'placeholder'),
+                'class'        => $field['config']['custom_class'],
+                'value'        => ArrayHelper::get($field, 'config.default'),
+                'help_message' => ArrayHelper::get($field, 'caption'),
             ];
             $type = ArrayHelper::get($this->fieldTypes(), $field['type'], '');
             switch ($type) {
@@ -71,11 +73,11 @@ class CalderaMigrator extends BaseMigrator
                 case 'input_radio':
                 case 'input_checkbox':
                 case 'dropdown':
-                    $args['options'] = $this->getOptions(ArrayHelper::get($field, 'config.option',[]));
+                    $args['options'] = $this->getOptions(ArrayHelper::get($field, 'config.option', []));
                     $args['enable_select_2'] = ArrayHelper::get($field, 'type') == 'filtered_select2' ? 'yes' : 'no';
                     $isBttnType = ArrayHelper::get($field, 'type') == 'toggle_switch' ? true : false;
-                    if($isBttnType){
-                        $args['layout_class'] ='ff_list_buttons'; //btn type chkbox
+                    if ($isBttnType) {
+                        $args['layout_class'] = 'ff_list_buttons'; //for btn type chkbox
                     }
                     break;
                 case 'input_date':
@@ -88,6 +90,11 @@ class CalderaMigrator extends BaseMigrator
                     $args['max'] = $field['config']['step'];
                     break;
                 case 'input_mask':
+                    if ($field['type'] == 'text') {
+                        if (!ArrayHelper::isTrue($field,'config.masked')) {
+                            break; // if masked turned of for txt input then no mask
+                        }
+                    }
                     $args['mask'] = str_replace('9', '0', $field['config']['custom']);//replace mask 9 with 0 for numbers
                     break;
                 case 'ratings':
@@ -95,7 +102,7 @@ class CalderaMigrator extends BaseMigrator
                     $args['options'] = array_combine(range(1, $number), range(1, $number));
                     break;
                 case 'input_file':
-                    $byte = ArrayHelper::get($field, 'config.max_upload',6000);
+                    $byte = ArrayHelper::get($field, 'config.max_upload', 6000);
                     $kb = round($byte / 1000);
                     $args['help_message'] = $field['caption'];
                     $args['allowed_file_types'] = $this->getFileTypes($field);
@@ -112,7 +119,7 @@ class CalderaMigrator extends BaseMigrator
                     $args['tnc_html'] = $field['config']['agreement'];
                     break;
                 case 'button':
-                    if($field['config']['type']!='submit'){
+                    if ($field['config']['type'] != 'submit') {
                         break; //other buttons todo
                     }
                     $this->submitBtn = $this->getSubmitBttn([
@@ -124,9 +131,8 @@ class CalderaMigrator extends BaseMigrator
             }
             $fluentFields[] = $this->getFluentClassicField($type, $args);
         }
-        //sort usig the order index value
-        usort($fluentFields, function($a, $b) {
-            return $a['index'] - $b['index'];
+        usort($fluentFields, function ($a, $b) {
+            return $a['index'] - $b['index']; //sort usig the order index value
         });
         return [
             'fields'       => array_filter($fluentFields),
@@ -139,7 +145,7 @@ class CalderaMigrator extends BaseMigrator
         //todo pro fields ??
         $fieldTypes = [
             'email'            => 'email',
-            'text'             => 'input_text',
+            'text'             => 'input_mask',
             'hidden'           => 'input_hidden',
             'textarea'         => 'input_textarea',
             'paragraph'        => 'input_textarea',
@@ -192,7 +198,7 @@ class CalderaMigrator extends BaseMigrator
 
     private function getFileTypes($field)
     {
-        //todo
+        //todo more types
         $formattedTypes = explode(',', ArrayHelper::get($field, 'config.allowed', ''));
 
         $fileTypeOptions = [];
