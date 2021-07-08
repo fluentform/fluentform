@@ -24,9 +24,7 @@ class CalderaMigrator extends BaseMigrator
     public function getForms()
     {
         $forms = [];
-
         $items = Caldera_Forms_Forms::get_forms();
-
         foreach ($items as $item) {
             $forms[] = Caldera_Forms_Forms::get_form($item);
         }
@@ -38,21 +36,14 @@ class CalderaMigrator extends BaseMigrator
     {
         $fluentFields = [];
         $fields = Caldera_Forms_Forms::get_fields($form);
-        $order = [];
-        //set fields index for serial
-        $j = 0;
-        foreach ($form['layout_grid']['fields'] as $key => $value) {
-            $order[$key] = $j++;
-        }
-        //set fields index for serial
+
         foreach ($fields as $name => $field) {
             if (ArrayHelper::get($field, 'config.type_override')) {
                 $field['type'] = $field['config']['type_override'];
             }
-
             $args = [
                 'uniqElKey'    => $field['ID'],
-                'index'        => $order[$field['ID']], // get the order id from order array
+                'index'        => $field['ID'], // get the order id from order array
                 'required'     => isset($field['required']) ? true : false,
                 'label'        => $field['label'],
                 'name'         => $field['slug'],
@@ -91,10 +82,13 @@ class CalderaMigrator extends BaseMigrator
                     break;
                 case 'input_mask':
                     if ($field['type'] == 'text') {
-                        if (!ArrayHelper::isTrue($field,'config.masked')) {
+                        if (!ArrayHelper::isTrue($field, 'config.masked')) {
+                            $args['temp_mask'] = '';
+
                             break; // if masked turned of for txt input then no mask
                         }
                     }
+                    $args['temp_mask'] = 'custom';
                     $args['mask'] = str_replace('9', '0', $field['config']['custom']);//replace mask 9 with 0 for numbers
                     break;
                 case 'ratings':
@@ -103,7 +97,7 @@ class CalderaMigrator extends BaseMigrator
                     break;
                 case 'input_file':
                     $byte = ArrayHelper::get($field, 'config.max_upload', 6000);
-                    $kb = round($byte / 1000);
+                    $kb = ceil($byte / 1000);
                     $args['help_message'] = $field['caption'];
                     $args['allowed_file_types'] = $this->getFileTypes($field);
                     $args['max_size_unit'] = 'KB';
@@ -129,20 +123,17 @@ class CalderaMigrator extends BaseMigrator
                     ]);
                     break;
             }
-            $fluentFields[] = $this->getFluentClassicField($type, $args);
+            $fluentFields[$field['ID']] = $this->getFluentClassicField($type, $args);
         }
-        usort($fluentFields, function ($a, $b) {
-            return $a['index'] - $b['index']; //sort usig the order index value
-        });
+        array_filter($fluentFields);
         return [
-            'fields'       => array_filter($fluentFields),
+            'fields'       => $this->getContainer($form, $fluentFields),
             'submitButton' => $this->submitBtn
         ];
     }
 
     public function fieldTypes()
     {
-        //todo pro fields ??
         $fieldTypes = [
             'email'            => 'email',
             'text'             => 'input_mask',
@@ -167,16 +158,14 @@ class CalderaMigrator extends BaseMigrator
             'star_rating'      => 'ratings',
             'file'             => 'input_file',
             'cf2_file'         => 'input_file',
+            'advanced_file'    => 'input_file',
             'html'             => 'custom_html',
             'section_break'    => 'section_break',
             'gdpr'             => 'gdpr_agreement',
             'button'           => 'button',
-
         ];
 
-//        if (defined('FLUENTFORMPRO')) {
-//
-//        }
+        //todo pro fields remove
 
         return $fieldTypes;
     }
@@ -198,7 +187,7 @@ class CalderaMigrator extends BaseMigrator
 
     private function getFileTypes($field)
     {
-        //todo more types
+        //todo more file types
         $formattedTypes = explode(',', ArrayHelper::get($field, 'config.allowed', ''));
 
         $fileTypeOptions = [];
@@ -207,8 +196,46 @@ class CalderaMigrator extends BaseMigrator
                 $fileTypeOptions[] = 'jpg|jpeg|gif|png|bmp';
             }
         }
-
         return array_unique($fileTypeOptions);
+    }
+
+    private function getContainer($form, $fluentFields)
+    {
+        $containers = [];
+        if (empty($form['layout_grid']['fields'])) {
+            return $fluentFields;
+        }
+        //set fields array with field for inserting into containers
+        foreach ($form['layout_grid']['fields'] as $field_id => $location) {
+            if (isset($fluentFields[$field_id])) {
+                $location = explode(':', $location);
+                $containers[$location[0]][$location[1]]['fields'][] = $fluentFields[$field_id];
+            }
+        }
+
+        $withContainer = [];
+        foreach ($containers as $row => $columns) {
+
+            $colsCount = count($columns);
+            $containerConfig = [
+                'index'          => $row,
+                'element'        => 'container',
+                'settings'       => [
+                    'container_class',
+                    'conditional_logics'
+                ],
+                'element'        => 'container',
+                'editor_options' => [
+                    'title'      => $colsCount . ' Column Container',
+                    'icon_class' => $colsCount . 'dashicons dashicons-align-center'
+                ],
+                'columns'        => $columns,
+                'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
+            ];
+            $withContainer[] = $containerConfig;
+        }
+
+        return array_filter($withContainer);
     }
 
     /**
@@ -270,6 +297,7 @@ class CalderaMigrator extends BaseMigrator
             'notifications'              => $notifications
         ];
     }
+
 
     protected function getFormId($form)
     {

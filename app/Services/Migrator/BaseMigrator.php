@@ -44,6 +44,7 @@ abstract class BaseMigrator
         }
 
         $imported = 0;
+        $failed = [];
         $refs = []; //todo
         $forms = $this->getForms();
 
@@ -63,9 +64,8 @@ abstract class BaseMigrator
                     if ($fields = $this->getFields($formItem)) {
                         $formFields = json_encode($fields);
                     } else {
-                        wp_send_json([
-                            'message' => __('Export Error !!', 'fluentform')
-                        ], 422);
+                        $failed[] = $fields; //push failed form id name
+                        continue;
                     }
                     $form = [
                         'title'       => $this->getFormName($formItem),
@@ -100,7 +100,7 @@ abstract class BaseMigrator
                     do_action('fluentform_form_imported', $formId);
                 }
                 wp_send_json([
-                    'message'        => __('You forms has been successfully imported.', 'fluentform'),
+                    'message'        => __('Your forms has been successfully imported.', 'fluentform'),
                     'inserted_forms' => $insertedForms
                 ], 200);
             }
@@ -146,6 +146,7 @@ abstract class BaseMigrator
             'min'                => '0',
             'max'                => '10',
             'mask'               => '',
+            'temp_mask'          => '',
             'enable_select_2'    => '',
             'is_button_type'     => '',
             'max_file_count'     => '',
@@ -164,8 +165,6 @@ abstract class BaseMigrator
         ];
 
         $args = wp_parse_args($args, $defaults);
-        //common attr //todo refact
-
         $fieldConfig = ArrayHelper::get(self::defaultFieldConfig($args), $field);
 
         return $fieldConfig;
@@ -209,6 +208,23 @@ abstract class BaseMigrator
                     'template'   => 'inputText',
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
+            ],
+            'input_hidden'   => [
+                'index'          => $args['index'],
+                'element'        => 'input_hidden',
+                'attributes'     => [
+                    'type'  => 'hidden',
+                    'name'  => $args['name'],
+                    'value' => $args['value'],
+                ],
+                'settings'       => [
+                    'admin_field_label' => ''
+                ],
+                'editor_options' => [
+                    'title'      => __('Hidden Field', 'fluentform'),
+                    'icon_class' => 'ff-edit-hidden-field',
+                    'template'   => 'inputHidden',
+                ],
             ],
             'color_picker'   => [
                 'index'          => 15,
@@ -417,7 +433,7 @@ abstract class BaseMigrator
                 'uniqElKey'      => $args['uniqElKey'],
             ],
             'input_radio'    => [
-                'index'          => 8,
+                'index'          => $args['index'],
                 'element'        => 'input_radio',
                 'attributes'     => [
                     'name'  => $args['name'],
@@ -491,7 +507,7 @@ abstract class BaseMigrator
                 'index'          => $args['index'],
                 'element'        => 'input_text',
                 'attributes'     => [
-                    'type'        => 'number',
+                    'type'        => 'text',
                     'name'        => $args['name'],
                     'value'       => $args['value'],
                     'class'       => $args['class'],
@@ -507,15 +523,15 @@ abstract class BaseMigrator
                     'help_message'            => $args['help_message'],
                     'prefix_label'            => '',
                     'suffix_label'            => '',
-                    'temp_mask'               => 'custom',
+                    'temp_mask'               => $args['temp_mask'],
                     'data-mask-reverse'       => 'no',
                     'data-clear-if-not-match' => 'no',
-                    'validation_rules'        => array(
+                    'validation_rules'        => [
                         'required' => [
                             'value'   => false,
                             'message' => __('This field is required', 'fluentform'),
                         ]
-                    ),
+                    ],
                     'conditional_logics'      => [],
                 ],
                 'editor_options' => [
