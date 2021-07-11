@@ -808,6 +808,33 @@ abstract class BaseMigrator
                 ],
                 'uniqElKey'      => $args['uniqElKey'],
             ],
+            'form_step'=>[
+                'index'          => $args['index'],
+                'element' =>'form_step',
+                'attributes'=>[
+                    'id'=>'',
+                    'class'=>'',
+                ],
+                'settings'=> [
+                    'prev_btn'=> [
+                        'type'=> 'default',
+                        'text' => 'Previous',
+                        'img_url'=>''
+                    ],
+                    'next_btn'=> [
+                        'type'=> 'default',
+                        'text' => $args['label'],
+                        'img_url'=>''
+                    ]
+                ],
+                'editor_options'=>[
+                    'title'      => 'Form Step',
+                    'icon_class' => 'ff-edit-step',
+                    'template'   => 'formStep'
+                ],
+                'uniqElKey'      => $args['uniqElKey'],
+            ],
+
         ];
     }
 

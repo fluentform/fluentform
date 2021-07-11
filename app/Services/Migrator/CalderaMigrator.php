@@ -36,6 +36,7 @@ class CalderaMigrator extends BaseMigrator
     {
         $fluentFields = [];
         $fields = Caldera_Forms_Forms::get_fields($form);
+        $hasStep = false;
 
         foreach ($fields as $name => $field) {
             if (ArrayHelper::get($field, 'config.type_override')) {
@@ -113,8 +114,13 @@ class CalderaMigrator extends BaseMigrator
                     $args['tnc_html'] = $field['config']['agreement'];
                     break;
                 case 'button':
-                    if ($field['config']['type'] != 'submit') {
-                        break; //other buttons todo
+                    if($field['config']['type'] == 'next'){
+                        $hasStep = true;
+                        $type = 'form_step';
+                        break; //skipped next button ,only one is required
+                    }
+                    elseif ($field['config']['type'] != 'submit') {
+                        break;
                     }
                     $this->submitBtn = $this->getSubmitBttn([
                         'uniqElKey' => $field['ID'],
@@ -126,10 +132,16 @@ class CalderaMigrator extends BaseMigrator
             $fluentFields[$field['ID']] = $this->getFluentClassicField($type, $args);
         }
         array_filter($fluentFields);
-        return [
+        $returnData = [
             'fields'       => $this->getContainer($form, $fluentFields),
             'submitButton' => $this->submitBtn
         ];
+        if($hasStep){
+            //push wrapper config
+            $returnData['stepsWrapper'] = $this->getStepWrapper();
+
+        }
+        return $returnData;
     }
 
     public function fieldTypes()
@@ -205,39 +217,59 @@ class CalderaMigrator extends BaseMigrator
         if (empty($form['layout_grid']['fields'])) {
             return $fluentFields;
         }
-        //set fields array with field for inserting into containers
+        //set fields array map for inserting into containers
         foreach ($form['layout_grid']['fields'] as $field_id => $location) {
             if (isset($fluentFields[$field_id])) {
                 $location = explode(':', $location);
                 $containers[$location[0]][$location[1]]['fields'][] = $fluentFields[$field_id];
             }
         }
-
         $withContainer = [];
         foreach ($containers as $row => $columns) {
 
             $colsCount = count($columns);
-            $containerConfig = [
-                'index'          => $row,
-                'element'        => 'container',
-                'settings'       => [
-                    'container_class',
-                    'conditional_logics'
-                ],
-                'element'        => 'container',
-                'editor_options' => [
-                    'title'      => $colsCount . ' Column Container',
-                    'icon_class' => $colsCount . 'dashicons dashicons-align-center'
-                ],
-                'columns'        => $columns,
-                'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
-            ];
+            $containerConfig = [];
+
+            if($colsCount !=1){
+                //with container
+                $containerConfig[] = [
+                    'index'          => $row,
+                    'element'        => 'container',
+                    'settings'       => [
+                        'container_class',
+                        'conditional_logics'
+                    ],
+                    'element'        => 'container',
+                    'editor_options' => [
+                        'title'      => $colsCount . ' Column Container',
+                        'icon_class' => $colsCount . 'dashicons dashicons-align-center'
+                    ],
+                    'columns'        => $columns,
+                    'uniqElKey'      => 'col' . '_' . md5(uniqid(mt_rand(), true))
+                ];
+            }else{
+                //without container
+                $containerConfig = $columns[1]['fields'];
+
+            }
             $withContainer[] = $containerConfig;
         }
-
-        return array_filter($withContainer);
+        array_filter($withContainer);
+        return  (self::arrayFlat($withContainer));
     }
 
+    public static function arrayFlat($array = null, $depth = 1) {
+        $result = [];
+        if (!is_array($array)) $array = func_get_args();
+        foreach ($array as $key => $value) {
+            if (is_array($value) && $depth) {
+                $result = array_merge($result, self::arrayFlat($value, $depth - 1));
+            } else {
+                $result = array_merge($result, [$key => $value]);
+            }
+        }
+        return $result;
+    }
     /**
      * @param $form
      * @return array default parsed form metas
@@ -307,5 +339,47 @@ class CalderaMigrator extends BaseMigrator
     protected function getFormName($form)
     {
         return $form['name'];
+    }
+
+    private function getStepWrapper()
+    {
+        return [
+            'stepStart'=>[
+                'element' => 'step_start',
+                'attributes'=>[
+                    'id'=>'',
+                    'class'=>'',
+                ],
+                'settings' =>[
+                    'progress_indicator'=>'progress-bar',
+                    'step_titles'=>[],
+                    'disable_auto_focus'=>'no',
+                    'enable_auto_slider'=>'no',
+                    'enable_step_data_persistency'=>'no',
+                    'enable_step_page_resume'=>'no',
+                ],
+                'editor_options'=>[
+                    'title'=> 'Start Paging'
+                ],
+            ],
+            'stepEnd'=>[
+                'element' => 'step_end',
+                'attributes'=>[
+                    'id'=>'',
+                    'class'=>'',
+                ],
+                'settings'=>[
+                    'prev_btn'=>[
+                        'type' =>'default',
+                        'text' => 'Previous',
+                        'img_url'=>''
+                    ]
+                ],
+                'editor_options'=>[
+                    'title'=> 'End Paging'
+                ],
+            ]
+
+        ];
     }
 }
