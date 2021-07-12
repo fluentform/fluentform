@@ -220,7 +220,7 @@ class Form
      */
     public function getElement($name, $with = [])
     {
-        $this->inputTypes = (array)$name;
+        $this->inputTypes = (array) $name;
 
         return $this->getInputs($with);
     }

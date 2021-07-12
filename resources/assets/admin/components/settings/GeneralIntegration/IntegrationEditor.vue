@@ -39,8 +39,6 @@
                                 :placeholder="field.placeholder"
                                 v-model="settings[field.key]"
                             ></el-input>
-                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
-                            <error-view :field="field.key" :errors="errors"></error-view>
                         </template>
 
                         <template v-else-if="field.component == 'list_ajax_options'">
@@ -219,6 +217,10 @@
                             <pre>{{field.component}}</pre>
                             <pre>{{field}}</pre>
                         </template>
+
+                        <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
+                        <error-view :field="field.key" :errors="errors"></error-view>
+
                     </el-form-item>
                 </template>
 
