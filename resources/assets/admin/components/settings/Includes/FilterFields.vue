@@ -50,6 +50,7 @@
                             <el-option value="length_equal" label="Equal to Data Length"></el-option>
                             <el-option value="length_less_than" label="Less than to Data length"></el-option>
                             <el-option value="length_greater_than" label="Greater than to Data Length"></el-option>
+                            <el-option value="test_regex" label="Regex Match"></el-option>
                         </el-option-group>
                     </el-select>
                 </el-col>
