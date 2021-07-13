@@ -34,7 +34,9 @@ class DateTime extends BaseComponent
 
         $elMarkup = "<input data-type-datepicker data-format='" . $dateFormat . "' " . $this->buildAttributes($data['attributes']) . ">";
 
-        $this->getDateFormatConfigJSON($data['settings'], $form, $data['attributes']['id']);
+        $config = $this->getDateFormatConfigJSON($data['settings'], $form);
+        $customConfig = $this->getCustomConfig($data['settings']);
+        $this->loadToFooter($config, $customConfig, $form, $data['attributes']['id']);
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
         echo apply_filters('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
@@ -73,23 +75,18 @@ class DateTime extends BaseComponent
         return $formatted;
     }
 
-    private function getDateFormatConfigJSON($settings, $form, $id)
+    public function getDateFormatConfigJSON($settings, $form)
     {
         $dateFormat = ArrayHelper::get($settings, 'date_format');
+
         if (!$dateFormat) {
             $dateFormat = 'm/d/Y';
-        }
-
-        $customConfigObject = trim(ArrayHelper::get($settings, 'date_config'));
-
-        if(!$customConfigObject || substr($customConfigObject, 0, 1) != '{' || substr($customConfigObject, -1) != '}') {
-            $customConfigObject = '{}';
         }
 
         $hasTime = $this->hasTime($dateFormat);
         $time24 = false;
 
-        if($hasTime && strpos($dateFormat, 'H') !== false) {
+        if ($hasTime && strpos($dateFormat, 'H') !== false) {
             $time24 = true;
         }
 
@@ -101,41 +98,55 @@ class DateTime extends BaseComponent
             'time_24hr' => $time24
         ), $settings, $form);
 
-        $config = json_encode($config, JSON_FORCE_OBJECT);
+        return json_encode($config, JSON_FORCE_OBJECT);
+    }
 
-        add_action('wp_footer', function () use ($config, $customConfigObject, $id, $form) {
-            ?>
+	public function getCustomConfig($settings)
+	{
+		$customConfigObject = trim(ArrayHelper::get($settings, 'date_config'));
+
+		if (!$customConfigObject || substr($customConfigObject, 0, 1) != '{' || substr($customConfigObject, -1) != '}') {
+			$customConfigObject = '{}';
+		}
+
+		return $customConfigObject;
+    }
+
+	private function loadToFooter($config, $customConfigObject, $form, $id)
+	{
+		add_action('wp_footer', function () use ($config, $customConfigObject, $id, $form) {
+			?>
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {
-                   function initPicker() {
-                       if(typeof flatpickr == 'undefined') {
-                           return;
-                       }
-                       flatpickr.localize(window.fluentFormVars.date_i18n);
-                       var config = <?php echo $config; ?>;
-                       try {
-                           var customConfig = <?php echo $customConfigObject; ?>;
-                       } catch (e) {
-                           var customConfig = {};
-                       }
+                    function initPicker() {
+                        if(typeof flatpickr == 'undefined') {
+                            return;
+                        }
+                        flatpickr.localize(window.fluentFormVars.date_i18n);
+                        var config = <?php echo $config; ?>;
+                        try {
+                            var customConfig = <?php echo $customConfigObject; ?>;
+                        } catch (e) {
+                            var customConfig = {};
+                        }
 
-                       var config = $.extend({}, config, customConfig);
-                       if (!config.locale) {
-                           config.locale = 'default';
-                       }
+                        var config = $.extend({}, config, customConfig);
+                        if (!config.locale) {
+                            config.locale = 'default';
+                        }
 
-                       if(jQuery('#<?php echo $id; ?>').length) {
-                           flatpickr('#<?php echo $id; ?>', config);
-                       }
-                   }
+                        if(jQuery('#<?php echo $id; ?>').length) {
+                            flatpickr('#<?php echo $id; ?>', config);
+                        }
+                    }
                     initPicker();
                     $(document).on('reInitExtras', '.<?php echo $form->instance_css_class; ?>', function () {
                         initPicker();
                     });
                 });
             </script>
-            <?php
-        }, 99999);
+			<?php
+		}, 99999);
     }
 
     private function hasTime($string)
