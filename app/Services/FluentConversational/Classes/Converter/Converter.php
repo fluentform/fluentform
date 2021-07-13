@@ -147,10 +147,7 @@ class Converter
 				$app = wpFluentForm();
 				$dateField = new DateTime();
 
-				if (!wp_script_is('flatpickr', 'registered')) {
-					wp_enqueue_style('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.min.css'));
-				}
-
+				wp_enqueue_style('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.min.css'));
 				wp_enqueue_script('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.js'), [], false, true);
 
 				$question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
