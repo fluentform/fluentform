@@ -18,7 +18,7 @@ class Checkable extends BaseComponent
     {
         $elementName = $data['element'];
 
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $data['attributes']['class'] = trim(
             'ff-el-form-check-input ' .

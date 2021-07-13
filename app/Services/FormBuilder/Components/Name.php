@@ -18,7 +18,7 @@ class Name extends Select
     {
         $elementName = $data['element'];
 
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $rootName = $data['attributes']['name'];
 

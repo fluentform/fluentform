@@ -19,7 +19,7 @@ class Address extends BaseComponent
 	public function compile($data, $form)
 	{
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $rootName = $data['attributes']['name'];
 		$hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';

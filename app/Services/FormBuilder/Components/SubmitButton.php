@@ -21,7 +21,7 @@ class SubmitButton extends BaseComponent
         }
 
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $btnSize = 'ff-btn-';
         $color = isset($data['settings']['color']) ? $data['settings']['color'] : '#ffffff';

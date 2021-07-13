@@ -108,7 +108,7 @@ class CustomSubmitButton extends BaseFieldManager
         add_filter('fluentform_is_hide_submit_btn_' . $form->id, '__return_true');
 
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
         $btnSize = 'ff-btn-';
         $color = isset($data['settings']['color']) ? $data['settings']['color'] : '#ffffff';

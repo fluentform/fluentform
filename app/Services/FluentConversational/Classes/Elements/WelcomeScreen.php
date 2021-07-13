@@ -106,7 +106,7 @@ class WelcomeScreen extends BaseFieldManager
     public function render($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $alignment = ArrayHelper::get($data, 'settings.align');
         if($alignment) {

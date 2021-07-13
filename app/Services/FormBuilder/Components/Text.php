@@ -16,7 +16,7 @@ class Text extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
         // </mask input>
         if (isset($data['settings']['temp_mask']) && $data['settings']['temp_mask'] != 'custom') {
