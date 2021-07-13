@@ -141,8 +141,17 @@
                                         <i class="el-icon-info el-text-info"/>
                                     </el-tooltip>
                                 </template>
-                                <wp-editor :height="150" :editor-shortcodes="editorShortcodes"
+                                <input-popover :rows="10" v-if="double_optin.asPlainText == 'yes'" fieldType="textarea"
+                                               v-model="double_optin.email_body"
+                                               placeholder="Double Opt-in Email Body HTML"
+                                               :data="editorShortcodes"
+                                ></input-popover>
+                                <wp-editor v-else :height="150" :editor-shortcodes="editorShortcodes"
                                            v-model="double_optin.email_body"/>
+                                <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="double_optin.asPlainText">
+                                    Send Email as RAW HTML Format
+                                </el-checkbox>
+
                                 <p>Use #confirmation_url# smartcode for double optin confirmation URL</p>
                             </el-form-item>
                         </template>
@@ -450,6 +459,7 @@
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import AdvancedValidation from "./Includes/AdvancedValidation";
     import VideoDoc from '@/common/VideoInstruction.vue';
+    import inputPopover from '../input-popover.vue';
 
     export default {
         name: 'FormSettings',
@@ -469,7 +479,8 @@
             AddConfirmation,
             SurveyResult,
             AdvancedValidation,
-            VideoDoc
+            VideoDoc,
+            inputPopover
         },
         data() {
             return {

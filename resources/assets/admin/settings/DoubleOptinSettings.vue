@@ -60,9 +60,16 @@
                             <i class="el-icon-info el-text-info"/>
                         </el-tooltip>
                     </template>
-                    <wp-editor :height="250"
+                    <el-input v-if="settings.asPlainText == 'yes'" v-model="settings.email_body" type="textarea" :rows="12"></el-input>
+                    <wp-editor v-else :height="250"
                                v-model="settings.email_body"/>
+
+                    <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="settings.asPlainText">
+                        Send Email as RAW HTML Format
+                    </el-checkbox>
+
                     <p>Use #confirmation_url# smartcode for double optin confirmation URL</p>
+
                 </el-form-item>
 
                 <!--from name-->
