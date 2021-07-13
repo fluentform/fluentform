@@ -273,7 +273,6 @@ export default {
                 'suffix_label',
                 'numeric_formatter',
                 'layout_class',
-                'container_class',
                 'class'
             ];
 
