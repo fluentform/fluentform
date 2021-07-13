@@ -93,10 +93,19 @@
             title="Edit your options"
             :visible.sync="bulkEditVisible"
         >
-            <div class="bulk_editor_wrapper">
-                <h4>Please provide the value as LABEL:VALUE as each line.</h4>
-                <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
-                <p>You can simply give value only, the system will convert the label as value</p>
+            <div v-if="bulkEditVisible" class="bulk_editor_wrapper">
+                <h4>Please provide the value as LABEL:VALUE as each line or select from predefined data sets</h4>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <ul class="ff_bulk_option_groups">
+                            <li @click="setOptions(options)" v-for="(options, optionGroup) in editor_options" :key="optionGroup">{{optionGroup}}</li>
+                        </ul>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-input type="textarea" :rows="14" v-model="value_key_pair_text"></el-input>
+                        <p>You can simply give value only the system will convert the label as value</p>
+                    </el-col>
+                </el-row>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button size="mini" @click="bulkEditVisible = false">Cancel</el-button>
@@ -138,7 +147,8 @@
                 bulkEditVisible: false,
                 value_key_pair_text: '',
                 has_pro: !!window.FluentFormApp.hasPro,
-                pro_mock: false
+                pro_mock: false,
+                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json)
             }
         },
         computed: {
@@ -253,6 +263,10 @@
                         offset: 30
                     });
                 }
+            },
+
+            setOptions(options) {
+                this.value_key_pair_text = options.join('\n');
             },
 
             clear() {

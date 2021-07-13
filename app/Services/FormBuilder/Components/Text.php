@@ -62,7 +62,11 @@ class Text extends BaseComponent
                 do_action('ff_rendering_calculation_form', $form, $data);
             } else {
                 if (!apply_filters('fluentform_disable_inputmode', false)) {
-                    $data['attributes']['inputmode'] = 'numeric';
+                    $inputMode = ArrayHelper::get($data, 'attributes.inputmode');
+                    if(!$inputMode) {
+                        $inputMode = 'numeric';
+                    }
+                    $data['attributes']['inputmode'] = $inputMode;
                 }
             }
 

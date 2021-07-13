@@ -394,25 +394,33 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         if (!window.ff_disable_auto_step) {
-            let $activeStepDom = $theForm.find('.fluentform-step.active');
-            let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
-            let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
 
-            if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
-                childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
-                childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
-                hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+            let timeout = 0;
+            if ($theForm.find('.fluentform-step.active .ff_excluded').legth) {
+                timeout = 50;
+            }
 
-                if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
-                    hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
-                    hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
-                    hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+            setTimeout(() => {
+                let $activeStepDom = $theForm.find('.fluentform-step.active');
+                let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
+                let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
+
+                if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
+                    childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
+                    childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
+                    hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+
+                    if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
+                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
+                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
+                        hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                    }
                 }
-            }
 
-            if (childDomCounts == hiddenDomCounts) {
-                $activeStepDom.find('.step-nav button[data-action=' + actionType + ']').click();
-            }
+                if (childDomCounts == hiddenDomCounts) {
+                    $activeStepDom.find('.step-nav button[data-action=' + actionType + ']').click();
+                }
+            }, timeout);
         }
     };
 
