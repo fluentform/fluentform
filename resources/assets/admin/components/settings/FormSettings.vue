@@ -499,7 +499,8 @@
                 helpMessagePlacementOptions: {
                     'with_label': 'Beside Label (Tooltip)',
                     'under_input': 'Below Input Fields',
-                    'on_focus': 'Focus on Element'
+                    'on_focus': 'Focus on Element',
+                    'after_label': 'After Label'
                 },
                 errorMessagesPlacement: {
                     'inline': 'Below Input Fields',

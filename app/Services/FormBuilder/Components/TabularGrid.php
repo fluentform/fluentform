@@ -100,7 +100,7 @@ class TabularGrid extends BaseComponent
 		if ($form->settings['layout']['helpMessagePlacement'] == 'under_input') {
             $elementHelpMessage = $this->getInputHelpMessage($data);
         }
-
+		
         return $elementHelpMessage;
 	}
 
