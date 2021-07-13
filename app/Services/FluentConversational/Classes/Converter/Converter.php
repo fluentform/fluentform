@@ -2,9 +2,10 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
-use FluentForm\App\Services\FluentConversational\Classes\Form;
-use FluentForm\App\Modules\Component\Component;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Services\FormBuilder\Components\DateTime;
+use FluentForm\App\Services\FluentConversational\Classes\Form;
 
 class Converter
 {
@@ -142,6 +143,18 @@ class Converter
 				$question['show_text'] = ArrayHelper::get($field, 'settings.show_text');
 				$question['rateOptions'] = ArrayHelper::get($field, 'options', []);
 				$question['nextStepOnAnswer'] = true;
+			} elseif ($field['element'] === 'input_date') {
+				$app = wpFluentForm();
+				$dateField = new DateTime();
+
+				if (!wp_script_is('flatpickr', 'registered')) {
+					wp_enqueue_style('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.min.css'));
+				}
+
+				wp_enqueue_script('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.js'), [], false, true);
+
+				$question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
+				$question['dateCustomConfig'] = json_decode($dateField->getCustomConfig($field['settings']));
 			}
 			if ($question['type']) {
 				$questions[] = $question;
@@ -193,7 +206,7 @@ class Converter
 		$pictureMode = ArrayHelper::get($field, 'settings.enable_image_input');
 
 		if ($pictureMode) {
-			$question['type'] =  static::fieldTypes()['MultiplePictureChoice'];
+			$question['type'] = static::fieldTypes()['MultiplePictureChoice'];
 		}
 
 		return $question;
