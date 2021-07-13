@@ -729,3 +729,22 @@ ul.fcc_inline_social {
     color: white !important;
     padding: 8px 20px;
 }
+
+.ff_smtp_suggest {
+    display: block;
+    position: relative;
+    padding: 35px 20px 15px;
+    background: #f5f9f9;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    p {
+        font-size: 14px;
+    }
+    .ff_smtp_close {
+        position: absolute;
+        top: 3px;
+        right: 10px;
+        cursor: pointer;
+    }
+}

@@ -17,7 +17,7 @@ class SelectCountry extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
         $data = $this->loadCountries($data);
         $defaultValues = (array)$this->extractValueFromAttributes($data);
@@ -57,7 +57,7 @@ class SelectCountry extends BaseComponent
         $elMarkup .= "</select>";
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
-        echo apply_filters('fluenform_rendering_field_html_' . $elementName, $html, $data, $form);
+        echo apply_filters('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
     }
 
     /**

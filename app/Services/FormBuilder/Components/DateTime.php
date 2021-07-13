@@ -16,7 +16,7 @@ class DateTime extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
         wp_enqueue_script('flatpickr');
         wp_enqueue_style('flatpickr');
@@ -39,7 +39,7 @@ class DateTime extends BaseComponent
         $this->loadToFooter($config, $customConfig, $form, $data['attributes']['id']);
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
-        echo apply_filters('fluenform_rendering_field_html_' . $elementName, $html, $data, $form);
+        echo apply_filters('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
     }
 
 

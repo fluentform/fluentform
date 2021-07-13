@@ -15,7 +15,7 @@ class CustomHtml extends BaseComponent
 	public function compile($data, $form)
 	{
         $elementName = $data['element'];
-        $data = apply_filters('fluenform_rendering_field_data_'.$elementName, $data, $form);
+        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
 		$cls = trim($this->getDefaultContainerClass() .' '.$hasConditions);
@@ -26,7 +26,7 @@ class CustomHtml extends BaseComponent
 			ArrayHelper::except($data['attributes'], 'name')
 		);
 		$html = "<div class='{$cls}' {$atts}>{$data['settings']['html_codes']}</div>";
-        $html = apply_filters('fluenform_rendering_field_html_'.$elementName, $html, $data, $form);
+        $html = apply_filters('fluentform_rendering_field_html_'.$elementName, $html, $data, $form);
         echo $html;
     }
 }

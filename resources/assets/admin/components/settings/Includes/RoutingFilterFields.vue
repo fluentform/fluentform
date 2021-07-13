@@ -41,6 +41,7 @@
                                     <el-option value="doNotContains" label="do not contains"></el-option>
                                     <el-option value="startsWith" label="starts with"></el-option>
                                     <el-option value="endsWith" label="ends with"></el-option>
+                                    <el-option value="test_regex" label="Regex Match"></el-option>
                                 </template>
                             </el-select>
                         </td>

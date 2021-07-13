@@ -45,6 +45,7 @@
                         <option value="doNotContains">not includes</option>
                         <option value="startsWith">starts with</option>
                         <option value="endsWith">ends with</option>
+                        <option value="test_regex">Regex match</option>
                     </template>
                 </select>
 

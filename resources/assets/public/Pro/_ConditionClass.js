@@ -91,6 +91,9 @@ class ConditionApp {
             return val !== null && val.indexOf(item.value) != -1;
         } else if (item.operator == 'doNotContains') {
             return val !== null && val.indexOf(item.value) == -1;
+        } else if(item.operator == 'test_regex') {
+            const globalRegex = new RegExp(item.value, 'g');
+            return  globalRegex.test(val);
         }
         return false;
     }

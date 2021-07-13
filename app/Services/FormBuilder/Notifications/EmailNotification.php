@@ -37,7 +37,7 @@ class EmailNotification
     {
         $isSendAsPlain = ArrayHelper::get($notification, 'asPlainText') == 'yes';
 
-        $isSendAsPlain = apply_filters('fluenform_send_plain_html_email', $isSendAsPlain, $form, $notification);
+        $isSendAsPlain = apply_filters('fluentform_send_plain_html_email', $isSendAsPlain, $form, $notification);
 
         $emailBody = $notification['message'];
 

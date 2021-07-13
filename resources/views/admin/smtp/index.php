@@ -12,7 +12,7 @@
         </p>
         <?php if (!$is_installed): ?>
             <div class="ff_addon_btn_wrapper">
-                <button class="ff_addon_btn intstall_fluentsmtp">Activate FluentSMTP Plugin</button>
+                <button class="ff_addon_btn intstall_fluentsmtp">Install and Activate FluentSMTP Plugin</button>
                 <p style="display: none;" class="ff_addon_installing">Installing FluentSMTP Plugin. Please wait...</p>
             </div>
         <?php else: ?>
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="ff_addon_footer text-center">
-                <button class="ff_addon_btn ff_invert intstall_fluentsmtp">Activate FluentSMTP Plugin</button>
+                <button class="ff_addon_btn ff_invert intstall_fluentsmtp">Install and Activate FluentSMTP Plugin</button>
                 <p style="display: none;" class="ff_addon_installing">Installing FluentSMTP Plugin. Please wait...</p>
             </div>
         </div>

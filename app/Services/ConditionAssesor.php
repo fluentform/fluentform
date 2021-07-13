@@ -101,6 +101,13 @@ class ConditionAssesor
                     $inputValue = strval($inputValue);
                     return strlen($inputValue) > $conditional['value'];
                     break;
+                case 'test_regex':
+                    if(is_array($inputValue)) {
+                        $inputValue = implode(' ', $inputValue);
+                    }
+                    $result = preg_match('/'.$conditional['value'].'/', $inputValue);
+                    return !!$result;
+                    break;
             }
         }
 

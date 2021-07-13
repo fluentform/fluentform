@@ -385,7 +385,7 @@ class Menu
                 array($this, 'renderTransfer')
             );
 
-            // Register import/export sub menu page.
+            // Register FluentSMTP Sub Menu.
             add_submenu_page(
                 'fluent_forms',
                 __('SMTP', 'fluentform'),
@@ -567,7 +567,9 @@ class Menu
             'hasFluentCRM' => defined('FLUENTCRM'),
             'upgrade_url' => fluentform_upgrade_url(),
             'ace_path_url' => $this->app->publicUrl('libs/ace'),
-            'is_conversion_form' => Helper::isConversionForm($form_id)
+            'is_conversion_form' => Helper::isConversionForm($form_id),
+            'has_fluent_smtp' => defined('FLUENTMAIL'),
+            'fluent_smtp_url' => admin_url('admin.php?page=fluent_forms_smtp')
         ));
 
         View::render('admin.form.settings', array(

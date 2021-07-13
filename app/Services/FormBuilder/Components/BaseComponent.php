@@ -197,10 +197,13 @@ class BaseComponent
 
         $labelHelpText = $inputHelpText = '';
 
-        if ($form->settings['layout']['helpMessagePlacement'] == 'with_label') {
+        $labelPlacement = $form->settings['layout']['helpMessagePlacement'];
+        if ($labelPlacement == 'with_label') {
             $labelHelpText = $this->getLabelHelpMessage($data);
-        } elseif ($form->settings['layout']['helpMessagePlacement'] == 'on_focus') {
+        } elseif ($labelPlacement == 'on_focus') {
             $inputHelpText = $this->getInputHelpMessage($data, 'ff-hidden');
+        } else if($labelPlacement == 'after_label') {
+            $inputHelpText = $this->getInputHelpMessage($data, 'ff_ahm');
         } else {
             $inputHelpText = $this->getInputHelpMessage($data);
         }
@@ -222,10 +225,12 @@ class BaseComponent
                 $label,
                 $labelHelpText
             );
-
-            // $labelMarkup = "<div class='".$labelClass."'><label ".$forStr.">".$label."</label> {$labelHelpText}</div>";
         }
 
+        if($labelPlacement == 'after_label') {
+            $elMarkup = $inputHelpText.$elMarkup;
+            $inputHelpText = '';
+        }
 
         return sprintf(
             "<div class='%s'>%s<div class='ff-el-input--content'>%s%s</div></div>",
