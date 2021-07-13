@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 5.7.2
+Tested up to: 5.8.0
 Requires PHP: 5.6
-Stable tag: 4.1.0
+Stable tag: 4.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -338,6 +338,14 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.1.5 (Date: July 13, 2021) =
+- Improvements on Conversational Forms
+- Help Message positioning
+- Predefined Data Set for Checkable Input Fields
+- Raw HTML Email Templates
+- Regex on conditional Logic
+- Other Improvements
 
 = 4.1.0 (Date: June 30, 2021) =
 * Improvements on Conversational Forms
