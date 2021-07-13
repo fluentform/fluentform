@@ -500,7 +500,7 @@
                     'with_label': 'Beside Label (Tooltip)',
                     'under_input': 'Below Input Fields',
                     'on_focus': 'Focus on Element',
-                    'after_label': 'After Label'
+                    'after_label': 'Before input'
                 },
                 errorMessagesPlacement: {
                     'inline': 'Below Input Fields',

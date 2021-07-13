@@ -107,6 +107,6 @@ class SubmitButton extends BaseComponent
 
         $html .= '</div>';
 
-        echo apply_filters('fluenform_rendering_field_html_'.$elementName, $html, $data, $form);
+        echo apply_filters('fluentform_rendering_field_html_'.$elementName, $html, $data, $form);
     }
 }
