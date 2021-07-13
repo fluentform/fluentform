@@ -98,7 +98,6 @@
                 importing: false,
                 importedForms: false,
                 formTypes:{
-                    'gravityform': 'Gravity Forms',
                     'caldera': 'Caldera Forms',
                 }
             }

@@ -117,7 +117,7 @@ class CalderaMigrator extends BaseMigrator
                     if($field['config']['type'] == 'next'){
                         $hasStep = true;
                         $type = 'form_step';
-                        break; //skipped next button ,only one is required
+                        break; //skipped prev button ,only one is required
                     }
                     elseif ($field['config']['type'] != 'submit') {
                         break;
@@ -137,7 +137,7 @@ class CalderaMigrator extends BaseMigrator
             'submitButton' => $this->submitBtn
         ];
         if($hasStep){
-            //push wrapper config
+            //push step wrapper config
             $returnData['stepsWrapper'] = $this->getStepWrapper();
 
         }
@@ -148,7 +148,7 @@ class CalderaMigrator extends BaseMigrator
     {
         $fieldTypes = [
             'email'            => 'email',
-            'text'             => 'input_mask',
+            'text'             => 'input_mask', //text input has mask option
             'hidden'           => 'input_hidden',
             'textarea'         => 'input_textarea',
             'paragraph'        => 'input_textarea',
