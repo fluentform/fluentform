@@ -26,49 +26,58 @@
             </el-col>
         </el-row>
 
-        <!-- Notification Table: 1 -->
-        <el-table v-loading="loading"
-                  element-loading-text="Fetching Notifications..."
-                  v-if="!selected"
-                  :data="notifications"
-                  stripe
-                  class="el-fluid">
+        <template v-if="!selected">
+            <!-- Notification Table: 1 -->
+            <el-table v-loading="loading"
+                      element-loading-text="Fetching Notifications..."
+                      :data="notifications"
+                      stripe
+                      class="el-fluid">
 
-            <el-table-column width="80">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                               v-model="scope.row.value.enabled"
-                    ></el-switch>
-                </template>
-            </el-table-column>
+                <el-table-column width="80">
+                    <template slot-scope="scope">
+                        <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
+                                   v-model="scope.row.value.enabled"
+                        ></el-switch>
+                    </template>
+                </el-table-column>
 
-            <el-table-column width="100" label="Status">
-                <template slot-scope="scope">
-                    <span v-if="scope.row.value.enabled">Enabled</span>
-                    <span v-else style="color:#fa3b3c;">Disabled</span>
-                </template>
-            </el-table-column>
+                <el-table-column width="100" label="Status">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.value.enabled">Enabled</span>
+                        <span v-else style="color:#fa3b3c;">Disabled</span>
+                    </template>
+                </el-table-column>
 
-            <el-table-column prop="value.name" label="Name"></el-table-column>
+                <el-table-column prop="value.name" label="Name"></el-table-column>
 
-            <el-table-column prop="value.subject" label="Subject"></el-table-column>
+                <el-table-column prop="value.subject" label="Subject"></el-table-column>
 
-            <el-table-column width="160" label="Actions" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-tooltip class="item" effect="light" content="Duplicate notification settings" placement="top">
-                        <el-button @click="clone(scope.$index)" type="success"
-                                   icon="el-icon-plus" size="mini"
+                <el-table-column width="160" label="Actions" class-name="action-buttons">
+                    <template slot-scope="scope">
+                        <el-tooltip class="item" effect="light" content="Duplicate notification settings" placement="top">
+                            <el-button @click="clone(scope.$index)" type="success"
+                                       icon="el-icon-plus" size="mini"
+                            ></el-button>
+                        </el-tooltip>
+
+                        <el-button @click="edit(scope.$index)" type="primary"
+                                   icon="el-icon-setting" size="mini"
                         ></el-button>
-                    </el-tooltip>
 
-                    <el-button @click="edit(scope.$index)" type="primary"
-                               icon="el-icon-setting" size="mini"
-                    ></el-button>
+                        <remove @on-confirm="remove(scope.$index, scope.row.id)"></remove>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-                    <remove @on-confirm="remove(scope.$index, scope.row.id)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
+            <div style="margin-top: 50px;" v-if="!has_fluentsmtp && !smtp_closed" class="ff_smtp_suggest">
+                <span @click="closeSmtp()" class="ff_smtp_close">x</span>
+                <p>For better email deliverability, we recommend to use FluentSMTP Plugin (completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered 💯. Built by Fluent Forms devs for you.</p>
+                <a class="el-button el-button--info el-button--small" :href="smtp_page_url">Setup SMTP</a>
+            </div>
+
+        </template>
+
 
         <!-- Notification Editor -->
         <el-form v-else-if="selected" label-width="205px" label-position="left">
@@ -467,7 +476,10 @@ export default {
             },
             errors: new Errors,
             // emailShortcodes: [],
-            activeNotificationCollapse: ''
+            activeNotificationCollapse: '',
+            has_fluentsmtp: !!window.FluentFormApp.has_fluent_smtp,
+            smtp_page_url: window.FluentFormApp.fluent_smtp_url,
+            smtp_closed: false
         }
     },
     computed: {
@@ -685,12 +697,22 @@ export default {
                 })
                 .always(_ => this.loading = false);
         },
+        closeSmtp() {
+            this.smtp_closed = true;
+            if(localStorage) {
+                localStorage.setItem('fluentsmtp_closed', 'yes');
+            }
+
+        }
     },
 
     mounted() {
         // Back to all notifications by clicking on menu item
         jQuery('[data-hash="email_notifications"]').on('click', this.discard);
         jQuery('head title').text('Email Notifications - Fluent Forms');
+        if(localStorage) {
+            this.smtp_closed = !!localStorage.getItem('fluentsmtp_closed');
+        }
     },
     beforeMount() {
         this.fetchNotifications();
