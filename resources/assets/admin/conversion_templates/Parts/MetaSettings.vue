@@ -52,6 +52,9 @@
                         <el-input v-model="meta_settings.i18n.progress_text" type="text" placeholder="EG: {percent}% completed" />
                         <p class="ffc_help">Available Variables: {percent}, {step}, {total}</p>
                     </el-form-item>
+                  <el-form-item label="Invalid Prompt">
+                    <el-input v-model="meta_settings.i18n.invalid_prompt" type="text" placeholder="EG: Please fill out the field correctly" />
+                  </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
