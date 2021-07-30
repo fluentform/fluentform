@@ -44,7 +44,7 @@
                 <el-col :span="12">
                     <el-form-item label="Confirm Button Text">
                         <el-input v-model="meta_settings.i18n.confirm_btn" type="text" placeholder="OK" />
-                    </el-form-item>ls
+                    </el-form-item>
                     <el-form-item label="Hint for Single selection">
                         <el-input v-model="meta_settings.i18n.single_select_hint" type="text" placeholder="EG: Select an option" />
                     </el-form-item>
@@ -55,7 +55,7 @@
                   <el-form-item label="Invalid Prompt">
                     <el-input v-model="meta_settings.i18n.invalid_prompt" type="text" placeholder="EG: Please fill out the field correctly" />
                   </el-form-item>
-                </el-col>gi
+                </el-col>
             </el-row>
         </el-form>
     </div>
