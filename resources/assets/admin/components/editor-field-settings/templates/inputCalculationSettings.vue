@@ -68,7 +68,7 @@
         },
         methods: {
             getItemCode(item) {
-                if (item.element == 'input_number' || item.element == 'rangeslider') {
+                if (item.element == 'input_number' || item.element == 'rangeslider' || (item.element == 'multi_payment_component' && item.attributes.type =='single')) {
                     return '{input.' + item.attributes.name + '}';
                 } else if(item.element == 'select') {
                     return '{select.' + item.attributes.name + '}';
@@ -78,7 +78,7 @@
                     return '{radio.' + item.attributes.name + '}';
                 } else if(item.element == 'repeater_field') {
                     return '{repeat.'+item.attributes.name+'}';
-                } else if(item.element == 'multi_payment_component') {
+                } else if(item.element == 'multi_payment_component' && item.attributes.type !=='single') {
                     return '{payment.'+item.attributes.name+'}';
                 }
             },
