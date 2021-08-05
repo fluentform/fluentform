@@ -895,11 +895,19 @@ class Predefined extends Form
         }
 
         if (isset($predefinedForm['formSettings'])) {
-            $this->defaultSettings = $predefinedForm['formSettings'];
+            $this->defaultSettings = apply_filters('fluentform_create_default_settings', $predefinedForm['formSettings']);
+            $predefinedForm['metas'][] = [
+                'meta_key' => 'formSettings',
+                'value' => json_encode($this->defaultSettings)
+            ];
         }
 
         if (isset($predefinedForm['notifications'])) {
             $this->defaultNotifications = $predefinedForm['notifications'];
+            $predefinedForm['metas'][] = [
+                'meta_key' => 'notifications',
+                'value' => json_encode($this->defaultNotifications)
+            ];
         }
 
         if($predefinedName) {
