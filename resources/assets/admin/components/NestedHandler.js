@@ -33,6 +33,7 @@ import customButton from './templates/customButton.vue'
 import product from './templates/product.vue'
 import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
+import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 
 export default {
     name: 'list',
@@ -81,6 +82,7 @@ export default {
         ff_inputPaymentMethods: paymentMethodHolder,
         ff_customButton: customButton,
         ff_inputMultiPayment: inputMultiPayment,
+        ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields
     },
     data() {

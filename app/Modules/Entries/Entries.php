@@ -355,7 +355,7 @@ class Entries extends EntryQuery
 
         $order_data = false;
 
-        if ($submission->payment_status || $submission->payment_total) {
+        if ($submission->payment_status || $submission->payment_total || $submission->payment_type === 'subscription') {
             $order_data = apply_filters(
                 'fluentform_submission_order_data', false, $submission, $form
             );

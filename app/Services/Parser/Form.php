@@ -278,7 +278,8 @@ class Form
                 'multi_payment_component',
                 'payment_method',
                 'item_quantity_component',
-                'payment_coupon'
+                'payment_coupon',
+	            'subscription_payment_component'
             ]);
 
         return array_filter($fields, function ($field) use ($paymentElements) {
@@ -320,7 +321,8 @@ class Form
                 'multi_payment_component',
                 'payment_method',
                 'item_quantity_component',
-                'payment_coupon'
+                'payment_coupon',
+	            'subscription_payment_component'
             ]);
 
         foreach ($fields as $field) {

@@ -1,6 +1,9 @@
 <template>
-    <div v-if="order_data.order_items.length" class="ff-payment_details">
-        <div class="entry_info_box entry_submission_order_data">
+    <div class="ff-payment_details">
+        <div
+                v-if="order_data.order_items.length"
+                class="entry_info_box entry_submission_order_data"
+        >
             <div class="entry_info_header">
                 <div class="info_box_header">
                     Order Details
@@ -46,7 +49,17 @@
             </div>
         </div>
 
-        <div class="entry_info_box entry_submission_order_data">
+        <subscriptions
+                :discounts="{}"
+                :subscriptions="order_data.subscriptions"
+                :payment_method="submission.payment_method"
+                v-if="order_data.subscriptions && order_data.subscriptions.length"
+        />
+
+        <div
+                v-if="parseFloat(submission.payment_total)"
+                class="entry_info_box entry_submission_order_data"
+        >
             <div class="entry_info_header">
                 <div class="info_box_header">
                     Payment Details
@@ -55,6 +68,39 @@
                 </div>
             </div>
             <div class="entry_info_body">
+                <div class="payment_header subscripton_item">
+                    <div class="payment_head_top">
+                        <div class="payment_header_left">
+                            <div class="head_payment_amount">
+                                <span
+                                        class="pay_amount"
+                                        v-html="formatMoney(submission.payment_total)"
+                                />
+
+                                <span class="payment_currency">
+                                    {{ submission.currency }}
+                                </span>
+
+                                <span :class="'ff_pay_status_badge ff_pay_status_' + submission.payment_status">
+                                    <i :class="getPaymentStatusIcon(submission.payment_status)"/>
+                                    {{submission.payment_status}}
+                                </span>
+
+                                <template v-if="order_data.subscription_payment_total">
+                                    <span>
+                                        &
+                                        <span
+                                                class="pay_amount"
+                                                v-html="formatMoney(order_data.subscription_payment_total)"
+                                        />
+                                        ({{ $t('From Subscriptions') }})
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div v-for="(transaction,index) in order_data.transactions"
                      class="wpf_entry_transaction">
                     <h4 v-show="order_data.transactions.length > 1">Transaction #{{ index+1 }}</h4>
@@ -215,9 +261,14 @@
     </div>
 </template>
 <script type="text/babel">
+    import Subscriptions from "./Subscriptions";
+
     export default {
         name: 'PaymentSummary',
         props: ['order_data', 'submission'],
+        components: {
+            Subscriptions
+        },
         data() {
             return {
                 editingTransaction: false,

@@ -94,6 +94,7 @@ import inputCheckbox from './templates/inputCheckbox.vue';
 import selectOptions from './templates/select-options.vue';
 import advancedOptions from './templates/advanced-options.vue';
 import pricingOptions from './templates/pricing-options.vue';
+import subscriptionOptions from './templates/subscription-options.vue';
 import prevNextButton from './templates/prevNextButton.vue';
 import selectBtnStyle from './templates/selectBtnStyle.vue';
 import customHookName from './templates/customHookName.vue';
@@ -139,6 +140,7 @@ export default {
         ff_selectOptions: selectOptions,
         ff_advancedOptions: advancedOptions,
         ff_pricingOptions: pricingOptions,
+        ff_subscriptionOptions: subscriptionOptions,
         ff_addressFields: addressFields,
         ff_customHookName: customHookName,
         ff_selectBtnStyle: selectBtnStyle,

@@ -145,6 +145,11 @@ $element_customization_settings = array(
         'label' => __('Payment Items', 'fluentform'),
         'help_text' => __('Set your product type and corresponding prices', 'fluentform'),
     ),
+    'subscription_options' => array(
+	    'template' => 'subscriptionOptions',
+	    'label' => __('Subscription Items', 'fluentform'),
+	    'help_text' => __('Set your subscription plans', 'fluentform'),
+    ),
     'validation_rules' => array(
         'template' => 'validationRulesForm',
         'label' => __('Validation Rules', 'fluentform'),

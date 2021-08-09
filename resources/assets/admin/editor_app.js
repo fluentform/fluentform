@@ -32,7 +32,10 @@ import {
     TabPane,
     Tabs,
     Tooltip,
-    Upload
+    Upload,
+    Switch,
+    InputNumber,
+    Card
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -70,6 +73,8 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Tooltip);
 Vue.use(Upload);
+Vue.use(Switch);
+Vue.use(InputNumber);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

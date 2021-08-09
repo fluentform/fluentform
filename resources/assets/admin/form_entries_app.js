@@ -187,7 +187,20 @@ Vue.mixin({
             let amount = cents / 100;
 
             return $symbol + formatMoneyFunc(amount, $decimalPoints, $decimalSeparator, $thousandSeparator);
-        }
+        },
+        getPaymentStatusIcon(status) {
+            if (status === 'pending') {
+                return 'el-icon-time';
+            } else if (status === 'active' || status === 'paid') {
+                return 'el-icon-check';
+            } else if (status === 'failed') {
+                return 'el-icon-error';
+            } else if (status === 'refunded') {
+                return 'el-icon-warning';
+            }
+
+            return '';
+        },
     },
     filters: {
         ucFirst(string) {
@@ -195,12 +208,23 @@ Vue.mixin({
         },
         _startCase(string) {
             return _ff.startCase(string);
-        }
+        },
+        dateFormat(date, format) {
+            if (!format) {
+                format = 'MMM DD, YYYY';
+            }
+
+            const dateString = (date === undefined) ? null : date;
+            const dateObj = moment(dateString);
+
+            return dateObj.isValid() ? dateObj.format(format) : null;
+        },
     }
 });
 
 // Global error handling...
 import Errors from '../common/Errors'
+import moment from "moment";
 
 global.Errors = Errors;
 

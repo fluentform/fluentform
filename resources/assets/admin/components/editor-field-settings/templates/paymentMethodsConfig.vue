@@ -54,6 +54,10 @@
                 </div>
             </div>
         </div>
+
+        <p v-if="noSubscriptionSupportMessage">
+            {{ noSubscriptionSupportMessage }}
+        </p>
     </el-form-item>
 </template>
 
@@ -65,7 +69,7 @@
     import InputRadio from "./inputRadio";
 
     export default {
-        name: 'nameAttribute',
+        name: 'paymentMethodConfig',
         props: ['listItem', 'value'],
         components: {
             InputRadio,
@@ -73,7 +77,30 @@
             elLabel,
             inputText
         },
-        computed: {},
+        computed: {
+            noSubscriptionSupportMessage() {
+                const formHasSubscriptionField = this.$attrs.form_items.find(field => field.element === 'subscription_payment_component');
+
+                let message;
+
+                if (formHasSubscriptionField) {
+                    const gateWays = [];
+                    if (this.value.mollie && this.value.mollie.enabled === 'yes') {
+                        gateWays.push('Mollie');
+                    }
+
+                    if (this.value.razorpay && this.value.razorpay.enabled === 'yes') {
+                        gateWays.push('RazorPay');
+                    }
+
+                    if (gateWays.length) {
+                        message = "We don't have Subscription Field support for " + gateWays.join(' & ');
+                    }
+                }
+
+                return message;
+            }
+        },
         methods: {
             isEmpty,
             toggleAddressFieldInputs(event) {

@@ -577,10 +577,127 @@ ul.entry_item_list {
   box-sizing: border-box;
 }
 .payment_header {
+  box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.1), 0 3px 6px 0 rgba(0, 0, 0, .07);
+  background: rgb(255, 255, 255);
+  padding: 0 20px 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: block;
+  overflow: hidden;
+
   .payment_title {
     display: inline-block;
     margin-right: 20px;
     font-size: 23px;
+  }
+
+  .payment_head_top {
+    width: 100%;
+    overflow: hidden;
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 15px;
+
+    p {
+      padding: 0;
+      margin: 0;
+    }
+
+    p.head_small_title {
+      color: rgb(105, 115, 134);
+      font-size: 14px;
+      padding-bottom: 10px;
+      display: block;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .head_payment_amount {
+      .pay_amount {
+        font-size: 20px;
+        line-height: 28px;
+      }
+    }
+
+    .payment_header_left {
+      width: 48%;
+      float: left;
+    }
+
+    .payment_header_right {
+      width: 48%;
+      float: right;
+      text-align: right;
+    }
+  }
+
+  .payment_head_bottom {
+    margin: 2px -20px 0px;
+    padding: 10px 20px 20px;
+    box-shadow: 0px -2px #e3e8ee;
+    background-color: rgb(247, 250, 252);
+
+    .info_block {
+      display: inline-block;
+      margin-right: 20px;
+      box-shadow: inset -1px 0 #e3e8ee;
+      padding-right: 20px;
+
+      &:last-child {
+        box-shadow: none;
+        padding-right: 0;
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.subscripton_item {
+    margin: -15px -20px 20px;
+    background-color: #f7fafc;
+    &:last-child {
+      margin-bottom: -15px;
+    }
+    .payment_head_bottom {
+      background-color: white;
+    }
+
+    .payment_head_top {
+      background-color: #f7fafc;
+    }
+
+    th {
+      padding: 7px 10px;
+      background: #f1f1f1;
+      font-weight: 500;
+      font-size: 120%;
+    }
+  }
+
+  .ff_pay_status_badge {
+    background-color: #d6ecff;
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: #3d4eac;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    &.ff_pay_status_pending {
+      background-color: rgb(255, 193, 7);
+      color: rgb(255, 255, 255);
+    }
+
+    &.ff_pay_status_failed {
+      background: rgb(244, 67, 54);
+      color: rgb(255, 255, 255);
+    }
+  }
+
+  .table_payment_amount {
+    font-size: 16px;
+  }
+
+  .payment_currency {
+    text-transform: uppercase;
   }
 }
 

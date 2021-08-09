@@ -312,7 +312,7 @@
                             label="Amount"
                             width="120px">
                         <template slot-scope="scope">
-                            <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
+                            <span v-html="formatMoney(scope.row.total_paid, scope.row.currency)"></span>
                         </template>
                     </el-table-column>
                     <el-table-column
