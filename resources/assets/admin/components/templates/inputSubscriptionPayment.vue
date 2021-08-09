@@ -157,13 +157,14 @@
                         hasSignup = true;
                     }
 
+                    let subscriptionAmount = plan.subscription_amount;
                     if (plan.user_input === 'yes') {
-                        plan.subscription_amount = plan.user_input_default_value || 0;
+                        subscriptionAmount = plan.user_input_default_value || 0;
                     }
 
                     const signupFee = this.formatMoney(plan.signup_fee);
-                    const firstIntervalTotal = this.formatMoney(Math.round((plan.signup_fee + plan.subscription_amount) * 100) / 100);
-                    const subscriptionAmount = this.formatMoney(plan.subscription_amount);
+                    const firstIntervalTotal = this.formatMoney(Math.round((plan.signup_fee + subscriptionAmount) * 100) / 100);
+                    subscriptionAmount = this.formatMoney(subscriptionAmount);
                     const billingInterval = plan.billing_interval;
                     const replaces = {
                         '{signup_fee}': signupFee,
