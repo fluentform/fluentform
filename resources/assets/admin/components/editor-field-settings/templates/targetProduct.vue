@@ -20,7 +20,7 @@ export default {
     computed: {
         available_products() {
             let products = {};
-            let productInputElements = ['custom_payment_component', 'multi_payment_component'];
+            let productInputElements = ['custom_payment_component', 'multi_payment_component', 'subscription_payment_component'];
             this.mapElements(this.form_items, (formItem) => {
                 if(productInputElements.indexOf(formItem.element) !== -1) {
                     products[formItem.attributes.name] = formItem.settings.label;
