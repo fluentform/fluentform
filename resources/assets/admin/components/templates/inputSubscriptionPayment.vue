@@ -120,7 +120,7 @@
                     return this.item.settings.subscription_options[this.multiPlanDefault];
                 }
 
-                return {}
+                return null
             }
         },
         methods: {
