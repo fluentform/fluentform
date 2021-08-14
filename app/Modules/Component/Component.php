@@ -557,7 +557,7 @@ class Component
         }
 
         if ($form->has_payment) {
-            do_action('fluentform_rending_payment_form', $form);
+            do_action('fluentform_rendering_payment_form', $form);
         }
 
         $otherScripts = '';

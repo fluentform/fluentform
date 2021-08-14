@@ -177,19 +177,26 @@ jQuery(document).ready(function () {
                         $(formSelector + '_errors').html('');
                         $theForm.find('.error').html('');
                         $theForm.parent().find('.ff-errors-in-stack').hide();
-                        showFormSubmissionProgress($theForm);
 
-                        if($theForm.hasClass('ff_has_v3_recptcha')) {
+                        if ($theForm.hasClass('ff_has_v3_recptcha')) {
                             // we have version 3 recaptcha
                             let siteKey = $theForm.data('recptcha_key');
                             grecaptcha.execute(siteKey, { action: 'submit' }).then((token) => {
                                 formData['data'] += '&' + $.param({
                                     'g-recaptcha-response': token
                                 });
-                                sendData($theForm, formData);
+                                maybeHandleStripeInline($theForm, formData)
+                                    .then(() => {
+                                        showFormSubmissionProgress($theForm);
+                                        sendData($theForm, formData);
+                                    });
                             });
                         } else {
-                            sendData($theForm, formData);
+                            maybeHandleStripeInline($theForm, formData)
+                                .then(() => {
+                                    showFormSubmissionProgress($theForm);
+                                    sendData($theForm, formData);
+                                });
                         }
                     } catch (e) {
                         if (!(e instanceof ffValidationError)) {
@@ -199,6 +206,16 @@ jQuery(document).ready(function () {
                         scrollToFirstError(350);
                     }
                 };
+
+                var maybeHandleStripeInline = function ($theForm, formData) {
+                    return new Promise(function (resolve, reject) {
+                        $theForm.trigger('before_send', {
+                            resolve,
+                            reject,
+                            formData
+                        })
+                    });
+                }
 
                 var sendData = function ($theForm, formData) {
                     function addParameterToURL(param) {
@@ -236,6 +253,7 @@ jQuery(document).ready(function () {
                                 });
                                 return;
                             }
+                            console.log('after next action');
 
                             $theForm.triggerHandler('fluentform_submission_success', {
                                 form: $theForm,
@@ -706,7 +724,8 @@ jQuery(document).ready(function () {
                     showErrorMessages,
                     scrollToFirstError,
                     settings: form,
-                    formSelector: formSelector
+                    formSelector: formSelector,
+                    sendData
                 }
             })(validationFactory);
         };

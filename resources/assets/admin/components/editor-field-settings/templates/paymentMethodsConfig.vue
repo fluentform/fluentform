@@ -39,6 +39,7 @@
                                     :listItem="field"
                                     v-else-if="field.template == 'inputYesNoCheckbox'"
                                     v-model="field.value"
+                                    @input="maybeAddStripeElementID(methodName, fieldKey, field)"
                             />
 
                             <input-radio
@@ -115,6 +116,14 @@
                     $el.addClass('el-icon-caret-bottom');
                     $el.parent().find('.address-field-option__settings').removeClass('is-open');
                     $el.parent().find('.required-checkbox').removeClass('is-open');
+                }
+            },
+
+            maybeAddStripeElementID(method, fieldKey, field) {
+                if (method === 'stripe' && fieldKey === 'embedded_checkout' && field.value === 'yes') {
+                    field.elementID = this.$attrs.editItem.attributes.name + '_stripe_inline';
+                } else {
+                    field.elementID = '';
                 }
             }
         }
