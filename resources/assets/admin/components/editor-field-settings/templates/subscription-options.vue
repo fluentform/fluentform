@@ -95,133 +95,146 @@
                     />
                 </el-form-item>
 
-                <el-form-item>
-                    <elLabel
-                            slot="label"
-                            label="Price"
-                    />
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                label="Price"
+                            />
 
-                    <el-input-number
-                            :min="0"
-                            size="mini"
-                            v-model="item.subscription_amount"
-                            :disabled="item.user_input === 'yes'"
-                    />
-                </el-form-item>
+                            <el-input-number
+                                :min="0"
+                                size="mini"
+                                v-model="item.subscription_amount"
+                                :disabled="item.user_input === 'yes'"
+                            />
+                        </el-form-item>
+                        <el-form-item>
+                            <el-checkbox
+                                true-label="yes"
+                                false-label="no"
+                                v-model="item.user_input"
+                            >
+                                {{ $t('Enable User Input Amount') }}
+                            </el-checkbox>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                label="Billing Interval"
+                            />
 
-                <el-form-item>
-                    <el-checkbox
-                            true-label="yes"
-                            false-label="no"
-                            v-model="item.user_input"
-                    >
-                        {{ $t('Enable User Input Amount') }}
-                    </el-checkbox>
-                </el-form-item>
+                            <el-select
+                                size="mini"
+                                :placeholder="$t('Select')"
+                                v-model="item.billing_interval"
+                            >
+                                <el-option
+                                    v-for="(label,value) in interval_options"
+                                    :key="value"
+                                    :label="label"
+                                    :value="value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
 
                 <template v-if="item.user_input === 'yes'">
                     <el-form-item>
                         <elLabel
-                                slot="label"
-                                label="User Input Amount label"
+                            slot="label"
+                            label="User Input Amount label"
                         />
 
                         <el-input
-                                type="text"
-                                size="mini"
-                                v-model="item.user_input_label"
-                                :placeholder="$t('ex: Please Provide amount/interval')"
+                            type="text"
+                            size="mini"
+                            v-model="item.user_input_label"
+                            :placeholder="$t('ex: Please Provide amount/interval')"
                         />
                     </el-form-item>
+                    <el-row :gutter="20">
+                        <el-col :span="12">
+                            <el-form-item>
+                                <elLabel
+                                    slot="label"
+                                    label="Minimum Amount"
+                                />
 
-                    <el-form-item>
-                        <elLabel
-                                slot="label"
-                                label="Minimum Amount"
-                        />
+                                <el-input-number
+                                    size="mini"
+                                    v-model="item.user_input_min_value"
+                                />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item>
+                                <elLabel
+                                    slot="label"
+                                    label="Default Amount"
+                                />
 
-                        <el-input-number
-                                size="mini"
-                                v-model="item.user_input_min_value"
-                        />
-                    </el-form-item>
-
-                    <el-form-item>
-                        <elLabel
-                                slot="label"
-                                label="Default Amount"
-                        />
-
-                        <el-input-number
-                                size="mini"
-                                v-model="item.user_input_default_value"
-                        />
-                    </el-form-item>
+                                <el-input-number
+                                    size="mini"
+                                    v-model="item.user_input_default_value"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </template>
 
-                <el-form-item>
-                    <elLabel
-                            slot="label"
-                            label="Billing Interval"
-                    />
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                label="Has Signup Fee?"
+                            />
 
-                    <el-select
-                            size="mini"
-                            :placeholder="$t('Select')"
-                            v-model="item.billing_interval"
-                    >
-                        <el-option
-                                v-for="(label,value) in interval_options"
-                                :key="value"
-                                :label="label"
-                                :value="value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+                            <el-switch
+                                active-value="yes"
+                                inactive-value="no"
+                                v-model="item.has_signup_fee"
+                                :disabled="item.has_trial_days === 'yes'"
+                            />
 
-                <el-form-item>
-                    <elLabel
-                            slot="label"
-                            label="Has Signup Fee?"
-                    />
+                            <el-input-number
+                                :min="0"
+                                size="mini"
+                                :placeholder="$t('Signup Fee')"
+                                v-model="item.signup_fee"
+                                v-if="item.has_signup_fee === 'yes'"
+                            />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item>
+                            <elLabel
+                                slot="label"
+                                label="Has Trial Days? (in days)"
+                            />
 
-                    <el-switch
-                            active-value="yes"
-                            inactive-value="no"
-                            v-model="item.has_signup_fee"
-                            :disabled="item.has_trial_days === 'yes'"
-                    />
+                            <el-switch
+                                active-value="yes"
+                                inactive-value="no"
+                                v-model="item.has_trial_days"
+                                :disabled="item.has_signup_fee === 'yes'"
+                            />
 
-                    <el-input-number
-                            :min="0"
-                            size="mini"
-                            :placeholder="$t('Signup Fee')"
-                            v-model="item.signup_fee"
-                            v-if="item.has_signup_fee === 'yes'"
-                    />
-                </el-form-item>
-
-                <el-form-item>
-                    <elLabel
-                            slot="label"
-                            label="Has Trial Days? (in days)"
-                    />
-
-                    <el-switch
-                            active-value="yes"
-                            inactive-value="no"
-                            v-model="item.has_trial_days"
-                            :disabled="item.has_signup_fee === 'yes'"
-                    />
-
-                    <el-input-number
-                            :min="0"
-                            size="mini"
-                            :placeholder="$t('Trial Days')"
-                            v-model="item.trial_days"
-                            v-if="item.has_trial_days === 'yes'"
-                    />
-                </el-form-item>
+                            <el-input-number
+                                :min="0"
+                                size="mini"
+                                :placeholder="$t('Trial Days')"
+                                v-model="item.trial_days"
+                                v-if="item.has_trial_days === 'yes'"
+                            />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
 
                 <el-form-item>
                     <elLabel
