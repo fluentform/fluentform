@@ -4,7 +4,7 @@
             <el-col :md="12"><h2>All Form Integrations</h2></el-col>
             <!--Add Feed-->
             <el-col v-if="!isEmpty(available_integrations)" :md="12" class="action-buttons mb15 clearfix">
-                <el-dropdown type="primary" class="pull-right" @command="add">
+                <el-dropdown type="primary" class="pull-right" @command="add" :hide-on-click="false"  >
                     <el-button size="small" type="primary">
                         Add New Integration<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
