@@ -9,7 +9,15 @@
                         Add New Integration<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(integration,integration_name) in available_integrations" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
+                        <el-dropdown-item >
+                            <el-input
+                                autofocus
+                                placeholder="Please input"
+                                v-model="search_integrations"
+                                clearable>
+                            </el-input>
+                        </el-dropdown-item>
+                        <el-dropdown-item v-for="(integration,integration_name) in filteredIntegrations" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -85,11 +93,15 @@
                 integrations: [],
                 errors: new Errors,
                 available_integrations: {},
+                search_integrations:'',
                 all_module_config_url: ''
             }
         },
         methods: {
-            add(integration_name) {
+            add(integration_name='') {
+                if(!integration_name){
+                    return;
+                }
                 let integration = this.available_integrations[integration_name];
 
                 if(!integration.is_active) {
@@ -193,7 +205,17 @@
             isEmpty
         },
         computed: {
-
+          filteredIntegrations(){
+              const filteredList = Object.entries(this.available_integrations).filter((integration) =>{
+                  if(!this.search_integrations){
+                      return integration;
+                  }
+                  if( this.search_integrations && integration[0].toString().toLowerCase().indexOf(this.search_integrations.toLowerCase()) !== -1){
+                      return integration;
+                  }
+              });
+              return  Object.fromEntries(filteredList);
+          }
         },
         beforeMount() {
             this.getFeeds();
