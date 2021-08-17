@@ -181,7 +181,7 @@ jQuery(document).ready(function () {
                         if ($theForm.hasClass('ff_has_v3_recptcha')) {
                             // we have version 3 recaptcha
                             let siteKey = $theForm.data('recptcha_key');
-                            grecaptcha.execute(siteKey, { action: 'submit' }).then((token) => {
+                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
                                 formData['data'] += '&' + $.param({
                                     'g-recaptcha-response': token
                                 });
@@ -213,7 +213,7 @@ jQuery(document).ready(function () {
                             resolve,
                             reject,
                             formData
-                        })
+                        });
                     });
                 }
 
@@ -298,7 +298,7 @@ jQuery(document).ready(function () {
                                 }
 
                                 // Scroll to success msg if not in viewport
-                                var successMsg = $('#'+formId + '_success');
+                                var successMsg = $('#' + formId + '_success');
                                 if (successMsg.length && !isElementInViewport(successMsg[0])) {
                                     $('html, body').animate({
                                         scrollTop: successMsg.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
@@ -403,6 +403,15 @@ jQuery(document).ready(function () {
 
                     $(document).on('submit', formSelector, function (e) {
                         e.preventDefault();
+                        if (window.ff_sumitting_form) {
+                            return;
+                        }
+                        window.ff_sumitting_form = true;
+
+                        setTimeout(() => {
+                            window.ff_sumitting_form = false;
+                        }, 1500);
+
                         submissionAjaxHandler($(this));
                     });
 
@@ -490,7 +499,7 @@ jQuery(document).ready(function () {
                 /**
                  * Validate inputs
                  *
-                 * @param  jQueryObject target
+                 * @param  elements jQueryObject target
                  * @return void
                  * @throes error
                  */
@@ -506,6 +515,7 @@ jQuery(document).ready(function () {
                     });
 
                     validator().validate(elements, form.rules);
+
                 };
 
                 /**
@@ -1139,7 +1149,7 @@ jQuery(document).ready(function () {
             var $theForm = $(formItem);
             $theForm.attr('data-ff_reinit', 'yes');
             // in elementor is_initialized is called when the page is loaded so removed the condition to check fo it
-    
+
             const formInstance = fluentFormApp($theForm);
             formInstance.reinitExtras();
             if (window.grecaptcha) {
