@@ -11,3 +11,16 @@
 //		}
 //	});
 //}
+
+
+/*
+ * Exclude For WP Rocket Settings
+ */
+if(defined('WP_ROCKET_VERSION')) {
+    add_filter('rocket_excluded_inline_js_content', function ($lines) {
+        $lines[] = 'fluent_form_ff_form_instance';
+        $lines[] = 'fluentFormVars';
+        $lines[] = 'fluentform_payment';
+        return $lines;
+    });
+}
