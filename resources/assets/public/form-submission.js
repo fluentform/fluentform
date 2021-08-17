@@ -208,13 +208,14 @@ jQuery(document).ready(function () {
                 };
 
                 var maybeHandleStripeInline = function ($theForm, formData) {
-                    return new Promise(function (resolve, reject) {
-                        $theForm.trigger('before_send', {
-                            resolve,
-                            reject,
-                            formData
-                        });
+                    const deferred = $.Deferred();
+
+                    $theForm.trigger('before_send', {
+                        deferred,
+                        formData
                     });
+
+                    return deferred.promise();
                 }
 
                 var sendData = function ($theForm, formData) {
@@ -253,7 +254,6 @@ jQuery(document).ready(function () {
                                 });
                                 return;
                             }
-                            console.log('after next action');
 
                             $theForm.triggerHandler('fluentform_submission_success', {
                                 form: $theForm,
