@@ -7,7 +7,7 @@ import formSlider from './Pro/slider';
 import calculation from './Pro/calculations';
 
 (function ($) {
-    $(document).on('fluentform_init', function (e, $theForm, form) {
+    $(document.body).on('fluentform_init', function (e, $theForm, form) {
         const formInstanceSelector = $theForm.attr('data-form_instance');
 
         if (!form) {

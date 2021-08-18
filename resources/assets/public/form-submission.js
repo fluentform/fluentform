@@ -56,7 +56,7 @@ jQuery(document).ready(function () {
 
             if (!form) {
                 console.log('No Fluent form JS vars found!');
-                return;
+                return false;
             }
 
             var formId = form.form_id_selector;
@@ -68,6 +68,8 @@ jQuery(document).ready(function () {
              * @return void
              */
             return (function (validator) {
+
+                var globalValidators = {};
 
                 var isSending = false;
                 /**
@@ -104,6 +106,31 @@ jQuery(document).ready(function () {
                         actionType: actionType
                     });
                 };
+
+                var fireGlobalBeforeSendCallbacks = function ($theForm, formData, callback) {
+                    const processItemsDeferred = [];
+                    const processFunctions = globalValidators;
+
+                    if ($theForm.hasClass('ff_has_v3_recptcha')) {
+                        processFunctions.ff_v3_recptcha = function ($theForm, formData) {
+                            var dfd = jQuery.Deferred();
+                            let siteKey = $theForm.data('recptcha_key');
+                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
+                                formData['data'] += '&' + jQuery.param({
+                                    'g-recaptcha-response': token
+                                });
+                                dfd.resolve();
+                            });
+                            return dfd.promise();
+                        }
+                    }
+
+                    jQuery.each(processFunctions, (itemKey, item) => {
+                        processItemsDeferred.push(item($theForm, formData));
+                    });
+
+                    return jQuery.when.apply(jQuery, processItemsDeferred);
+                }
 
                 var submissionAjaxHandler = function ($theForm) {
                     try {
@@ -172,32 +199,15 @@ jQuery(document).ready(function () {
                             }
                         }
 
-
                         $(formSelector + '_success').remove();
                         $(formSelector + '_errors').html('');
                         $theForm.find('.error').html('');
                         $theForm.parent().find('.ff-errors-in-stack').hide();
 
-                        if ($theForm.hasClass('ff_has_v3_recptcha')) {
-                            // we have version 3 recaptcha
-                            let siteKey = $theForm.data('recptcha_key');
-                            grecaptcha.execute(siteKey, {action: 'submit'}).then((token) => {
-                                formData['data'] += '&' + $.param({
-                                    'g-recaptcha-response': token
-                                });
-                                maybeHandleStripeInline($theForm, formData)
-                                    .then(() => {
-                                        showFormSubmissionProgress($theForm);
-                                        sendData($theForm, formData);
-                                    });
-                            });
-                        } else {
-                            maybeHandleStripeInline($theForm, formData)
-                                .then(() => {
-                                    showFormSubmissionProgress($theForm);
-                                    sendData($theForm, formData);
-                                });
-                        }
+                        fireGlobalBeforeSendCallbacks($theForm, formData).then(() => {
+                            showFormSubmissionProgress($theForm);
+                            sendData($theForm, formData);
+                        });
                     } catch (e) {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
@@ -685,6 +695,7 @@ jQuery(document).ready(function () {
                     $theForm = getTheForm();
                     jQuery(document.body).trigger('fluentform_init', [$theForm, form]);
                     jQuery(document.body).trigger('fluentform_init_' + form.id, [$theForm, form]);
+                    $theForm.trigger('fluentform_init_single', [this, form]);
                     $theForm.find('input.ff-el-form-control').on('keypress', function (e) {
                         return e.which !== 13;
                     });
@@ -724,6 +735,10 @@ jQuery(document).ready(function () {
                     });
                 };
 
+                var addGlobalValidator = function (key, callback) {
+                    globalValidators[key] = callback;
+                }
+
                 return {
                     initFormHandlers,
                     registerFormSubmissionHandler,
@@ -735,7 +750,9 @@ jQuery(document).ready(function () {
                     scrollToFirstError,
                     settings: form,
                     formSelector: formSelector,
-                    sendData
+                    sendData,
+                    addGlobalValidator,
+                    config: form
                 }
             })(validationFactory);
         };

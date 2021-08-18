@@ -9,19 +9,20 @@ class SubmitButton extends BaseComponent
 {
     /**
      * Compile and echo the html element
-     * @param  array $data [element data]
-     * @param  stdClass $form [Form Object]
+     * @param array $data [element data]
+     * @param stdClass $form [Form Object]
      * @return viod
      */
     public function compile($data, $form)
     {
 
-        if(apply_filters('fluentform_is_hide_submit_btn_'.$form->id, false)) {
+        if (apply_filters('fluentform_is_hide_submit_btn_' . $form->id, false)) {
             return '';
         }
 
         $elementName = $data['element'];
-        $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
+
+        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
         $btnSize = 'ff-btn-';
         $color = isset($data['settings']['color']) ? $data['settings']['color'] : '#ffffff';
@@ -37,7 +38,7 @@ class SubmitButton extends BaseComponent
             $data['attributes']['class']
         );
 
-        if($tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex()) {
+        if ($tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex()) {
             $data['attributes']['tabindex'] = $tabIndex;
         }
 
@@ -75,7 +76,7 @@ class SubmitButton extends BaseComponent
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } else {
-            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: '.ArrayHelper::get($data, 'settings.background_color').'; color: '.ArrayHelper::get($data, 'settings.color').'; }';
+            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);
@@ -95,18 +96,18 @@ class SubmitButton extends BaseComponent
             $html .= '<button ' . $atts . '>' . $data['settings']['btn_text'] . '</button>';
         }
 
-        if($styles) {
-            if(did_action('wp_footer')) {
-                $html .= '<style>'.$styles.'</style>';
+        if ($styles) {
+            if (did_action('wp_footer')) {
+                $html .= '<style>' . $styles . '</style>';
             } else {
                 add_action('wp_footer', function () use ($styles) {
-                    echo '<style>'.$styles.'</style>';
+                    echo '<style>' . $styles . '</style>';
                 });
             }
         }
 
         $html .= '</div>';
 
-        echo apply_filters('fluentform_rendering_field_html_'.$elementName, $html, $data, $form);
+        echo apply_filters('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
     }
 }
