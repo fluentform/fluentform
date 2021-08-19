@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-30 11:32+0000\n"
+"POT-Creation-Date: 2021-08-19 14:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -43,19 +43,19 @@ msgstr ""
 msgid "100% Completed"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:453
+#: app/Services/FormBuilder/ElementCustomization.php:458
 msgid "23/03/2018"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:461
+#: app/Services/FormBuilder/ElementCustomization.php:466
 msgid "23/03/2018 23:59:59"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:457
+#: app/Services/FormBuilder/ElementCustomization.php:462
 msgid "23:59:59"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:440
+#: app/Modules/Registerer/Menu.php:441
 msgid "<h2>No form found</h2>"
 msgstr ""
 
@@ -67,12 +67,16 @@ msgstr ""
 msgid "Action Hook"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:411
+#: app/Services/FormBuilder/ElementCustomization.php:416
 msgid "Activating a reversible mask"
 msgstr ""
 
 #: resources/views/admin/transfer/index.php:32
 msgid "Activity Logs"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:862
+msgid "Add a New Form"
 msgstr ""
 
 #: app/Modules/EditorButtonModule.php:19
@@ -91,7 +95,7 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:308
+#: app/Services/FormBuilder/ElementCustomization.php:313
 #: app/Services/FormBuilder/DefaultElements.php:475
 msgid "Address Fields"
 msgstr ""
@@ -114,11 +118,11 @@ msgstr ""
 msgid "Admin Email"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:330
+#: app/Services/FormBuilder/ElementCustomization.php:335
 msgid "Admin Field Label"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:331
+#: app/Services/FormBuilder/ElementCustomization.php:336
 msgid ""
 "Admin field label is field title which will be used for admin field title."
 msgstr ""
@@ -130,6 +134,10 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:18
 msgid "Afghanistan"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:894
+msgid "ago"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:19
@@ -153,12 +161,20 @@ msgstr ""
 msgid "Alignment"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:886
+msgid "All"
+msgstr ""
+
 #: resources/views/admin/global_menu.php:12
 msgid "All Entries"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:305 app/Modules/Registerer/Menu.php:306
-#: resources/views/admin/global_menu.php:9
+#: app/Modules/Registerer/Menu.php:881
+msgid "All Form Entries"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:306 app/Modules/Registerer/Menu.php:307
+#: app/Modules/Registerer/Menu.php:861 resources/views/admin/global_menu.php:9
 msgid "All Forms"
 msgstr ""
 
@@ -208,11 +224,11 @@ msgstr ""
 msgid "Antigua and Barbuda"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:229
+#: app/Services/FormBuilder/ElementCustomization.php:234
 msgid "Apply Styles"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:230
+#: app/Services/FormBuilder/ElementCustomization.php:235
 msgid "Apply styles provided here"
 msgstr ""
 
@@ -287,7 +303,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:2130
 #: app/Modules/Widgets/FluentFormWidget.php:2236
 #: app/Modules/Widgets/FluentFormWidget.php:2289
-#: app/Services/FormBuilder/ElementCustomization.php:391
+#: app/Services/FormBuilder/ElementCustomization.php:396
 msgid "Background Color"
 msgstr ""
 
@@ -407,6 +423,10 @@ msgstr ""
 msgid "British Virgin Islands"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:882
+msgid "Browser"
+msgstr ""
+
 #: app/Services/FormBuilder/CountryNames.php:53
 msgid "Brunei"
 msgstr ""
@@ -435,7 +455,7 @@ msgstr ""
 msgid "Button Style"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:195
+#: app/Services/FormBuilder/ElementCustomization.php:200
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:402
 msgid "Button Text"
 msgstr ""
@@ -466,7 +486,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:865
 #: app/Modules/Widgets/FluentFormWidget.php:1297
 #: app/Modules/Widgets/FluentFormWidget.php:2067
-#: app/Services/FormBuilder/ElementCustomization.php:214
+#: app/Services/FormBuilder/ElementCustomization.php:219
 msgid "Center"
 msgstr ""
 
@@ -482,12 +502,16 @@ msgstr ""
 msgid "Check Box"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:880
+msgid "Check the video intro"
+msgstr ""
+
 #: app/Services/FormBuilder/DefaultElements.php:1030
 msgid "Checkable Grid"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1070
-#: app/Services/FormBuilder/ElementCustomization.php:486
+#: app/Services/FormBuilder/ElementCustomization.php:491
 msgid "Checkbox"
 msgstr ""
 
@@ -521,20 +545,28 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:363
+#: app/Services/FormBuilder/ElementCustomization.php:368
 msgid "Class for the field wrapper. This can be used to style current element."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:368
+#: app/Services/FormBuilder/ElementCustomization.php:373
 msgid "Class for the field. This can be used to style current element."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:426
+#: app/Services/FormBuilder/ElementCustomization.php:431
 msgid "Clear if not match"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:427
+#: app/Services/FormBuilder/ElementCustomization.php:432
 msgid "Clear value if not match the mask"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:879
+msgid "Click Here to Create Your First Form"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:895
+msgid "Click to copy shortcode"
 msgstr ""
 
 #: app/Modules/Component/Component.php:960
@@ -570,7 +602,7 @@ msgstr ""
 msgid "Comoros"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:386
+#: app/Services/FormBuilder/ElementCustomization.php:391
 msgid "Conditional Logic"
 msgstr ""
 
@@ -600,12 +632,24 @@ msgid ""
 "and drop, multi column supported form builder plugin"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:362
+#: app/Services/FormBuilder/ElementCustomization.php:367
 msgid "Container Class"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:205
+#: app/Services/FormBuilder/ElementCustomization.php:210
 msgid "Content Alignment"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:863
+msgid "Conversational Form"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:870
+msgid "Conversational Preview"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:875
+msgid "Conversion"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:72
@@ -621,7 +665,7 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:372
+#: app/Services/FormBuilder/ElementCustomization.php:377
 #: app/Services/FormBuilder/DefaultElements.php:923
 msgid "Country List"
 msgstr ""
@@ -630,11 +674,15 @@ msgstr ""
 msgid "Create a Form First"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:864
+msgid "Create Conversational Form"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:131
 msgid "Create options for the field and checkmark them for default selection."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:387
+#: app/Services/FormBuilder/ElementCustomization.php:392
 msgid ""
 "Create rules to dynamically display or hide this field based on values from "
 "another field."
@@ -670,7 +718,7 @@ msgid "Currency"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:2091
-#: app/Services/FormBuilder/ElementCustomization.php:465
+#: app/Services/FormBuilder/ElementCustomization.php:470
 msgid "Custom"
 msgstr ""
 
@@ -678,7 +726,7 @@ msgstr ""
 msgid "Custom CSS and JS successfully updated"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:526
+#: app/Modules/Registerer/Menu.php:527
 msgid "Custom CSS/JS"
 msgstr ""
 
@@ -686,7 +734,7 @@ msgstr ""
 msgid "Custom HTML"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:401
+#: app/Services/FormBuilder/ElementCustomization.php:406
 msgid "Custom Mask"
 msgstr ""
 
@@ -708,6 +756,10 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:78
 msgid "Czech Republic"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:883
+msgid "Date"
 msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:19
@@ -736,11 +788,11 @@ msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:441
 #: app/Services/FormBuilder/ElementCustomization.php:55
-#: app/Services/FormBuilder/ElementCustomization.php:576
+#: app/Services/FormBuilder/ElementCustomization.php:581
 msgid "Default"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:340
+#: app/Services/FormBuilder/ElementCustomization.php:345
 msgid "Default Value"
 msgstr ""
 
@@ -748,8 +800,12 @@ msgstr ""
 msgid "Define a size of the button"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:353
+#: app/Services/FormBuilder/ElementCustomization.php:358
 msgid "Define Max selections items that a user can select ."
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:873
+msgid "Delete"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:79
@@ -759,12 +815,12 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:124
 #: app/Modules/Widgets/FluentFormWidget.php:302
 #: app/Modules/Widgets/FluentFormWidget.php:1234
-#: app/Services/FormBuilder/ElementCustomization.php:190
+#: app/Services/FormBuilder/ElementCustomization.php:195
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:471
 msgid "Description"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:191
+#: app/Services/FormBuilder/ElementCustomization.php:196
 msgid "Description will be shown to the user as normal text content."
 msgstr ""
 
@@ -778,7 +834,7 @@ msgid ""
 "choosing \"Default\", global label placement setting will be applied."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:249
+#: app/Services/FormBuilder/ElementCustomization.php:254
 msgid "Disable auto focus when changing each page"
 msgstr ""
 
@@ -813,7 +869,11 @@ msgstr ""
 msgid "Dropdown"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:346
+#: app/Modules/Registerer/Menu.php:872
+msgid "Duplicate"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:351
 msgid "Dynamic Default Value"
 msgstr ""
 
@@ -821,7 +881,11 @@ msgstr ""
 msgid "Ecuador"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:447
+#: app/Modules/Registerer/Menu.php:867
+msgid "Edit"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:448
 msgid "Editor"
 msgstr ""
 
@@ -833,7 +897,7 @@ msgstr ""
 msgid "El Salvador"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:367
+#: app/Services/FormBuilder/ElementCustomization.php:372
 msgid "Element Class"
 msgstr ""
 
@@ -853,7 +917,7 @@ msgstr ""
 msgid "Email address need to be unique."
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:488
+#: app/Modules/Registerer/Menu.php:489
 msgid "Email Notifications"
 msgstr ""
 
@@ -869,15 +933,15 @@ msgstr ""
 msgid "Embedded URL"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:254
+#: app/Services/FormBuilder/ElementCustomization.php:259
 msgid "Enable auto page change for single radio field"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:319
+#: app/Services/FormBuilder/ElementCustomization.php:324
 msgid "Enable Multiple Columns"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:259
+#: app/Services/FormBuilder/ElementCustomization.php:264
 msgid "Enable Per step data save (Save and Continue)"
 msgstr ""
 
@@ -891,7 +955,8 @@ msgid ""
 "MailChimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:322 app/Modules/Registerer/Menu.php:460
+#: app/Modules/Registerer/Menu.php:323 app/Modules/Registerer/Menu.php:461
+#: app/Modules/Registerer/Menu.php:869
 #: resources/views/email/report/body.php:148
 msgid "Entries"
 msgstr ""
@@ -972,8 +1037,8 @@ msgstr ""
 msgid "Feed Name is required"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:481
-#: app/Services/FormBuilder/ElementCustomization.php:482
+#: app/Services/FormBuilder/ElementCustomization.php:486
+#: app/Services/FormBuilder/ElementCustomization.php:487
 msgid "Field Type"
 msgstr ""
 
@@ -1010,7 +1075,7 @@ msgid "Fluent Form"
 msgstr ""
 
 #. Name of the plugin
-#: app/Modules/Registerer/Menu.php:283 resources/views/admin/global_menu.php:6
+#: app/Modules/Registerer/Menu.php:284 resources/views/admin/global_menu.php:6
 msgid "Fluent Forms"
 msgstr ""
 
@@ -1030,7 +1095,7 @@ msgstr ""
 msgid "Fluent Forms PDF"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:281
+#: app/Modules/Registerer/Menu.php:282
 msgid "Fluent Forms Pro"
 msgstr ""
 
@@ -1038,14 +1103,15 @@ msgstr ""
 msgid "Focus"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:396
+#: app/Services/FormBuilder/ElementCustomization.php:401
 msgid "Font Color"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:397
+#: app/Services/FormBuilder/ElementCustomization.php:402
 msgid "Font color of the element"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:890
 #: resources/views/email/report/body.php:147
 #: resources/views/email/report/body.php:172
 msgid "Form"
@@ -1067,7 +1133,7 @@ msgstr ""
 msgid "Form restrictions and scheduling"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:482
+#: app/Modules/Registerer/Menu.php:483
 msgid "Form Settings"
 msgstr ""
 
@@ -1075,8 +1141,8 @@ msgstr ""
 msgid "Form Step"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:245
-#: app/Services/FormBuilder/ElementCustomization.php:294
+#: app/Services/FormBuilder/ElementCustomization.php:250
+#: app/Services/FormBuilder/ElementCustomization.php:299
 msgid "Form step titles, user will see each title in each step."
 msgstr ""
 
@@ -1150,7 +1216,7 @@ msgstr ""
 msgid "Germany"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:403 app/Modules/Registerer/Menu.php:404
+#: app/Modules/Registerer/Menu.php:404 app/Modules/Registerer/Menu.php:405
 msgid "Get Help"
 msgstr ""
 
@@ -1167,7 +1233,7 @@ msgstr ""
 msgid "GIF"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:371 app/Modules/Registerer/Menu.php:372
+#: app/Modules/Registerer/Menu.php:372 app/Modules/Registerer/Menu.php:373
 #: resources/views/admin/global_menu.php:22
 msgid "Global Settings"
 msgstr ""
@@ -1188,11 +1254,11 @@ msgstr ""
 msgid "Grenada"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:471
+#: app/Services/FormBuilder/ElementCustomization.php:476
 msgid "Grid Columns"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:476
+#: app/Services/FormBuilder/ElementCustomization.php:481
 msgid "Grid Rows"
 msgstr ""
 
@@ -1254,11 +1320,11 @@ msgstr ""
 msgid "Help & Documentation"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:381
+#: app/Services/FormBuilder/ElementCustomization.php:386
 msgid "Help Message"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:382
+#: app/Services/FormBuilder/ElementCustomization.php:387
 msgid ""
 "Help message will be shown as tooltip next to sidebar or below the field."
 msgstr ""
@@ -1275,6 +1341,10 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:884
+msgid "Hide Chart"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:75
 msgid "Hide Label"
 msgstr ""
@@ -1287,7 +1357,7 @@ msgstr ""
 msgid "Hong Kong"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:167
+#: app/Services/FormBuilder/ElementCustomization.php:172
 msgid "Hook Name"
 msgstr ""
 
@@ -1309,11 +1379,11 @@ msgid ""
 "browser support."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:206
+#: app/Services/FormBuilder/ElementCustomization.php:211
 msgid "How the content will be aligned."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:183
+#: app/Services/FormBuilder/ElementCustomization.php:188
 msgid "HTML Code"
 msgstr ""
 
@@ -1351,28 +1421,32 @@ msgstr ""
 msgid "Iceland"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:562
+#: app/Modules/Registerer/Menu.php:865
+msgid "ID"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:567
 msgid "If validation failed then it will show this message"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:255
+#: app/Services/FormBuilder/ElementCustomization.php:260
 msgid ""
 "If you enable this then for last radio item field will trigger next page "
 "change"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:412
+#: app/Services/FormBuilder/ElementCustomization.php:417
 msgid "If you enable this then it the mask will work as reverse"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:260
+#: app/Services/FormBuilder/ElementCustomization.php:265
 msgid ""
 "If you enable this then on each step change the data current step data will "
 "be persisted in a step form<br />Your users can resume the form where they "
 "left"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:250
+#: app/Services/FormBuilder/ElementCustomization.php:255
 msgid ""
 "If you enable this then on page transition automatic scrolling will be "
 "disabled"
@@ -1383,24 +1457,24 @@ msgid ""
 "If you enable this then options will be searchable by select2 js library"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:422
+#: app/Services/FormBuilder/ElementCustomization.php:427
 msgid "If you enable this then the checkable options will be shuffled"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:265
+#: app/Services/FormBuilder/ElementCustomization.php:270
 msgid ""
 "If you enable this then users will see the form as step page where it has "
 "been left"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:536
+#: app/Services/FormBuilder/ElementCustomization.php:541
 msgid ""
 "If you make it unique then it will validate as unique from previous "
 "submissions of this form"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:341
-#: app/Services/FormBuilder/ElementCustomization.php:347
+#: app/Services/FormBuilder/ElementCustomization.php:346
+#: app/Services/FormBuilder/ElementCustomization.php:352
 msgid "If you would like to pre-populate the value of a field, enter it here."
 msgstr ""
 
@@ -1442,7 +1516,7 @@ msgstr ""
 msgid "Input Width"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:360 app/Modules/Registerer/Menu.php:361
+#: app/Modules/Registerer/Menu.php:361 app/Modules/Registerer/Menu.php:362
 msgid "Integration Modules"
 msgstr ""
 
@@ -1614,7 +1688,7 @@ msgstr ""
 msgid "Latvia"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:571
+#: app/Services/FormBuilder/ElementCustomization.php:576
 msgid "Layout"
 msgstr ""
 
@@ -1629,7 +1703,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:1293
 #: app/Modules/Widgets/FluentFormWidget.php:2063
 #: app/Services/FormBuilder/ElementCustomization.php:71
-#: app/Services/FormBuilder/ElementCustomization.php:210
+#: app/Services/FormBuilder/ElementCustomization.php:215
 msgid "Left"
 msgstr ""
 
@@ -1758,7 +1832,7 @@ msgstr ""
 msgid "Margin Top"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:500
+#: app/Modules/Registerer/Menu.php:501
 msgid "Marketing & CRM Integrations"
 msgstr ""
 
@@ -1770,7 +1844,7 @@ msgstr ""
 msgid "Martinique"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:436
+#: app/Services/FormBuilder/ElementCustomization.php:441
 #: app/Services/FormBuilder/DefaultElements.php:217
 #: app/Services/FormBuilder/DefaultElements.php:235
 msgid "Mask Input"
@@ -1792,19 +1866,19 @@ msgstr ""
 msgid "Max Files Count"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:496
+#: app/Services/FormBuilder/ElementCustomization.php:501
 msgid "Max Repeat inputs"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:352
+#: app/Services/FormBuilder/ElementCustomization.php:357
 msgid "Max Selection"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:335
+#: app/Services/FormBuilder/ElementCustomization.php:340
 msgid "Max text length"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:515
+#: app/Services/FormBuilder/ElementCustomization.php:520
 #: app/Services/FormBuilder/ValidationRuleSettings.php:84
 msgid "Max Value"
 msgstr ""
@@ -1856,7 +1930,7 @@ msgstr ""
 msgid "Middle Name"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:510
+#: app/Services/FormBuilder/ElementCustomization.php:515
 #: app/Services/FormBuilder/ValidationRuleSettings.php:77
 msgid "Min Value"
 msgstr ""
@@ -1905,11 +1979,11 @@ msgstr ""
 msgid "Mozambique"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:304
+#: app/Services/FormBuilder/ElementCustomization.php:309
 msgid "Multi-step form's next button"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:299
+#: app/Services/FormBuilder/ElementCustomization.php:304
 msgid "Multi-step form's previous button"
 msgstr ""
 
@@ -1934,7 +2008,7 @@ msgstr ""
 msgid "Name attribute %s has duplicate value."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:312
+#: app/Services/FormBuilder/ElementCustomization.php:317
 msgid "Name Fields"
 msgstr ""
 
@@ -1958,7 +2032,7 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:315 app/Modules/Registerer/Menu.php:316
+#: app/Modules/Registerer/Menu.php:316 app/Modules/Registerer/Menu.php:317
 msgid "New Form"
 msgstr ""
 
@@ -1970,7 +2044,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:303
+#: app/Services/FormBuilder/ElementCustomization.php:308
 msgid "Next Button"
 msgstr ""
 
@@ -2000,8 +2074,8 @@ msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:103
 #: app/Modules/Widgets/FluentFormWidget.php:945
-#: app/Services/FormBuilder/ElementCustomization.php:238
-#: app/Services/FormBuilder/ElementCustomization.php:549
+#: app/Services/FormBuilder/ElementCustomization.php:243
+#: app/Services/FormBuilder/ElementCustomization.php:554
 #: app/Services/FormBuilder/ValidationRuleSettings.php:69
 msgid "No"
 msgstr ""
@@ -2018,8 +2092,8 @@ msgstr ""
 msgid "Nonce verification failed, please try again."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:287
-#: app/Services/FormBuilder/ElementCustomization.php:441
+#: app/Services/FormBuilder/ElementCustomization.php:292
+#: app/Services/FormBuilder/ElementCustomization.php:446
 msgid "None"
 msgstr ""
 
@@ -2060,7 +2134,7 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:555
+#: app/Services/FormBuilder/ElementCustomization.php:560
 msgid "Number Format"
 msgstr ""
 
@@ -2093,9 +2167,14 @@ msgstr ""
 msgid "One Column Container"
 msgstr ""
 
+#: app/Modules/Component/Component.php:533
+#, php-format
+msgid "Only %%maxItemCount%% values can be added"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:130
 #: app/Services/FormBuilder/ElementCustomization.php:135
-#: app/Services/FormBuilder/ElementCustomization.php:377
+#: app/Services/FormBuilder/ElementCustomization.php:382
 msgid "Options"
 msgstr ""
 
@@ -2103,7 +2182,7 @@ msgstr ""
 msgid "Order Items Table"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:494
+#: app/Modules/Registerer/Menu.php:495
 msgid "Other Confirmations"
 msgstr ""
 
@@ -2193,7 +2272,7 @@ msgstr ""
 msgid "Payment Total"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:346 app/Modules/Registerer/Menu.php:347
+#: app/Modules/Registerer/Menu.php:347 app/Modules/Registerer/Menu.php:348
 #: resources/views/admin/global_menu.php:17
 #: resources/views/admin/global_menu.php:29
 #: resources/views/email/report/body.php:168
@@ -2230,21 +2309,21 @@ msgstr ""
 msgid "Please fix the errors"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:497
+#: app/Services/FormBuilder/ElementCustomization.php:502
 msgid ""
 "Please provide max number of rows the user can fill up for this repeat field."
 " Keep blank/0 for unlimited numbers"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:516
+#: app/Services/FormBuilder/ElementCustomization.php:521
 msgid "Please provide Maximum value"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:511
+#: app/Services/FormBuilder/ElementCustomization.php:516
 msgid "Please provide minimum value"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:521
+#: app/Services/FormBuilder/ElementCustomization.php:526
 msgid ""
 "Please provide step attribute for this field. Give value \"any\" for "
 "floating value"
@@ -2279,12 +2358,16 @@ msgstr ""
 msgid "Predefined form fields"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:525
+#: app/Services/FormBuilder/ElementCustomization.php:530
 msgid "Prefix Label"
 msgstr ""
 
 #: app/Modules/Component/Component.php:532
 msgid "Press to select"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:871
+msgid "Preview"
 msgstr ""
 
 #: resources/views/frameless/edit-entry.php:8
@@ -2296,7 +2379,7 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:298
+#: app/Services/FormBuilder/ElementCustomization.php:303
 msgid "Previous Button"
 msgstr ""
 
@@ -2304,11 +2387,11 @@ msgstr ""
 msgid "Previous Month"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:279
+#: app/Services/FormBuilder/ElementCustomization.php:284
 msgid "Progress Bar"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:274
+#: app/Services/FormBuilder/ElementCustomization.php:279
 msgid "Progress Indicator"
 msgstr ""
 
@@ -2320,12 +2403,12 @@ msgstr ""
 msgid "Progressbar Label"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:526
+#: app/Services/FormBuilder/ElementCustomization.php:531
 msgid ""
 "Provide Input Prefix Label. It will show in the input field as prefix label"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:531
+#: app/Services/FormBuilder/ElementCustomization.php:536
 msgid ""
 "Provide Input Suffix Label. It will show in the input field as suffix label"
 msgstr ""
@@ -2338,7 +2421,7 @@ msgstr ""
 msgid "Qatar"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:490
+#: app/Services/FormBuilder/ElementCustomization.php:495
 msgid "Radio"
 msgstr ""
 
@@ -2364,6 +2447,14 @@ msgstr ""
 msgid "Ratings"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:892
+msgid "Read"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:888
+msgid "Read Only"
+msgstr ""
+
 #: app/Services/FormBuilder/DefaultElements.php:1178
 msgid "reCaptcha"
 msgstr ""
@@ -2372,7 +2463,7 @@ msgstr ""
 msgid "reCaptcha verification failed, please try again."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:325
+#: app/Services/FormBuilder/ElementCustomization.php:330
 msgid "Repeat Fields"
 msgstr ""
 
@@ -2380,11 +2471,11 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:155
+#: app/Services/FormBuilder/ElementCustomization.php:160
 msgid "Required Validation Message"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:264
+#: app/Services/FormBuilder/ElementCustomization.php:269
 msgid "Resume Step from last form session"
 msgstr ""
 
@@ -2399,7 +2490,7 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:1301
 #: app/Modules/Widgets/FluentFormWidget.php:2071
 #: app/Services/FormBuilder/ElementCustomization.php:63
-#: app/Services/FormBuilder/ElementCustomization.php:218
+#: app/Services/FormBuilder/ElementCustomization.php:223
 msgid "Right"
 msgstr ""
 
@@ -2484,6 +2575,14 @@ msgstr ""
 msgid "Scroll to increment"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:878
+msgid "Search"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:877
+msgid "Search Forms"
+msgstr ""
+
 #: app/Modules/Widgets/FluentFormWidget.php:1172
 #: app/Services/FormBuilder/DefaultElements.php:1043
 #: app/Services/FormBuilder/DefaultElements.php:1049
@@ -2498,7 +2597,7 @@ msgstr ""
 msgid "Select a Fluent Form"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:437
+#: app/Services/FormBuilder/ElementCustomization.php:442
 msgid "Select a mask for the input field"
 msgstr ""
 
@@ -2508,7 +2607,7 @@ msgid ""
 "date in this given format."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:275
+#: app/Services/FormBuilder/ElementCustomization.php:280
 msgid ""
 "Select any of them below, user will see progress of form steps according to "
 "your choice."
@@ -2523,13 +2622,13 @@ msgstr ""
 msgid "Select Date Format"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:556
+#: app/Services/FormBuilder/ElementCustomization.php:561
 msgid ""
 "Select the format of numbers that are allowed in this field. You have the "
 "option to use a comma or a dot as the decimal separator."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:572
+#: app/Services/FormBuilder/ElementCustomization.php:577
 msgid "Select the Layout for checkable items"
 msgstr ""
 
@@ -2581,6 +2680,10 @@ msgstr ""
 msgid "Set your product type and corresponding prices"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:151
+msgid "Set your subscription plans"
+msgstr ""
+
 #: app/Modules/DocumentationModule.php:41
 msgid "Setting up email notifications"
 msgstr ""
@@ -2589,7 +2692,11 @@ msgstr ""
 msgid "Setting up form submission confirmation"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:453
+#: app/Modules/Registerer/Menu.php:868
+msgid "Settings"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:454
 msgid "Settings & Integrations"
 msgstr ""
 
@@ -2606,7 +2713,11 @@ msgstr ""
 msgid "Seychelles"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:224
+#: app/Modules/Registerer/Menu.php:874
+msgid "Short Code"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:229
 #: app/Services/FormBuilder/DefaultElements.php:1196
 msgid "Shortcode"
 msgstr ""
@@ -2619,7 +2730,11 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:175
+#: app/Modules/Registerer/Menu.php:885
+msgid "Show Chart"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:180
 msgid "Show Checkbox"
 msgstr ""
 
@@ -2631,15 +2746,15 @@ msgstr ""
 msgid "Show Progressbar"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:540
+#: app/Services/FormBuilder/ElementCustomization.php:545
 msgid "Show Text"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:541
+#: app/Services/FormBuilder/ElementCustomization.php:546
 msgid "Show Text value on selection"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:421
+#: app/Services/FormBuilder/ElementCustomization.php:426
 msgid "Shuffle the available options"
 msgstr ""
 
@@ -2671,7 +2786,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:508
+#: app/Modules/Registerer/Menu.php:509
 msgid "Slack"
 msgstr ""
 
@@ -2691,7 +2806,7 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:391 app/Modules/Registerer/Menu.php:392
+#: app/Modules/Registerer/Menu.php:392 app/Modules/Registerer/Menu.php:393
 msgid "SMTP"
 msgstr ""
 
@@ -2781,7 +2896,11 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:520
+#: app/Modules/Registerer/Menu.php:891
+msgid "Status"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:525
 msgid "Step"
 msgstr ""
 
@@ -2789,15 +2908,15 @@ msgstr ""
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:244
+#: app/Services/FormBuilder/ElementCustomization.php:249
 msgid "Step Title"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:293
+#: app/Services/FormBuilder/ElementCustomization.php:298
 msgid "Step Titles"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:283
+#: app/Services/FormBuilder/ElementCustomization.php:288
 msgid "Steps"
 msgstr ""
 
@@ -2813,6 +2932,7 @@ msgstr ""
 msgid "Submission Create Date"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:889
 #: app/Services/FormBuilder/EditorShortCode.php:61
 msgid "Submission ID"
 msgstr ""
@@ -2830,7 +2950,7 @@ msgid "Submission Status"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:2051
-#: app/Services/FormBuilder/ElementCustomization.php:200
+#: app/Services/FormBuilder/ElementCustomization.php:205
 msgid "Submit Button"
 msgstr ""
 
@@ -2840,6 +2960,10 @@ msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:66
 msgid "Submitter Device"
+msgstr ""
+
+#: app/Services/FormBuilder/ElementCustomization.php:150
+msgid "Subscription Items"
 msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:2281
@@ -2862,7 +2986,7 @@ msgstr ""
 msgid "Sudan"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:530
+#: app/Services/FormBuilder/ElementCustomization.php:535
 msgid "Suffix Label"
 msgstr ""
 
@@ -2914,7 +3038,7 @@ msgstr ""
 msgid "Tanzania"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:160
+#: app/Services/FormBuilder/ElementCustomization.php:165
 #: app/Services/FormBuilder/DefaultElements.php:1133
 msgid "Terms & Conditions"
 msgstr ""
@@ -2967,7 +3091,7 @@ msgstr ""
 msgid "Thank you for your message. We will get in touch with you shortly"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:392
+#: app/Services/FormBuilder/ElementCustomization.php:397
 msgid "The Background color of the element"
 msgstr ""
 
@@ -2988,7 +3112,7 @@ msgstr ""
 msgid "The form is successfully updated."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:336
+#: app/Services/FormBuilder/ElementCustomization.php:341
 msgid "The maximum number of characters the input should accept"
 msgstr ""
 
@@ -3063,11 +3187,11 @@ msgstr ""
 msgid "This field value need to be unique."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:326
+#: app/Services/FormBuilder/ElementCustomization.php:331
 msgid "This is a form field which a user will be able to repeat."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:201
+#: app/Services/FormBuilder/ElementCustomization.php:206
 msgid "This is form submission button."
 msgstr ""
 
@@ -3091,7 +3215,7 @@ msgstr ""
 msgid "This value need to be unique."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:196
+#: app/Services/FormBuilder/ElementCustomization.php:201
 msgid "This will be visible as button text for upload file."
 msgstr ""
 
@@ -3115,6 +3239,7 @@ msgstr ""
 msgid "Timor-Leste"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:866
 #: app/Modules/Widgets/FluentFormWidget.php:111
 #: app/Modules/Widgets/FluentFormWidget.php:228
 msgid "Title"
@@ -3136,7 +3261,7 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:381 app/Modules/Registerer/Menu.php:382
+#: app/Modules/Registerer/Menu.php:382 app/Modules/Registerer/Menu.php:383
 #: resources/views/admin/transfer/index.php:6
 msgid "Tools"
 msgstr ""
@@ -3232,6 +3357,14 @@ msgstr ""
 msgid "United States (US) Virgin Islands"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:893
+msgid "Unread"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:887
+msgid "Unread Only"
+msgstr ""
+
 #: resources/views/admin/global_menu.php:44
 msgid "Upgrade to Pro"
 msgstr ""
@@ -3296,15 +3429,15 @@ msgstr ""
 msgid "Uzbekistan"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:535
+#: app/Services/FormBuilder/ElementCustomization.php:540
 msgid "Validate as Unique"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:561
+#: app/Services/FormBuilder/ElementCustomization.php:566
 msgid "Validation Message for Duplicate"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:150
+#: app/Services/FormBuilder/ElementCustomization.php:155
 msgid "Validation Rules"
 msgstr ""
 
@@ -3334,6 +3467,10 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:261
 msgid "Vietnam"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:876
+msgid "Views"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:262
@@ -3381,7 +3518,7 @@ msgstr ""
 msgid "Wk"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:168
+#: app/Services/FormBuilder/ElementCustomization.php:173
 msgid "WordPress Hook name to hook something in this place."
 msgstr ""
 
@@ -3393,13 +3530,13 @@ msgstr ""
 msgid "Write HTML content for GDPR agreement checkbox"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:161
+#: app/Services/FormBuilder/ElementCustomization.php:166
 msgid "Write HTML content for terms & condition checkbox"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:402
-#: app/Services/FormBuilder/ElementCustomization.php:472
+#: app/Services/FormBuilder/ElementCustomization.php:407
 #: app/Services/FormBuilder/ElementCustomization.php:477
+#: app/Services/FormBuilder/ElementCustomization.php:482
 msgid "Write your own mask for this input"
 msgstr ""
 
@@ -3413,8 +3550,8 @@ msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:102
 #: app/Modules/Widgets/FluentFormWidget.php:944
-#: app/Services/FormBuilder/ElementCustomization.php:234
-#: app/Services/FormBuilder/ElementCustomization.php:545
+#: app/Services/FormBuilder/ElementCustomization.php:239
+#: app/Services/FormBuilder/ElementCustomization.php:550
 #: app/Services/FormBuilder/ValidationRuleSettings.php:65
 msgid "Yes"
 msgstr ""
@@ -3488,11 +3625,11 @@ msgstr ""
 msgid "Your settings has been updated and disconnected"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:225
+#: app/Services/FormBuilder/ElementCustomization.php:230
 msgid "Your shortcode to render desired content in current place."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:184
+#: app/Services/FormBuilder/ElementCustomization.php:189
 msgid "Your valid HTML code will be shown to the user as normal content."
 msgstr ""
 

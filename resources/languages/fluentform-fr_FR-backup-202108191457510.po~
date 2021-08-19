@@ -1,159 +1,156 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Fluent Forms - Best Form Plugin for WordPress\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-24 12:05+0000\n"
-"PO-Revision-Date: 2021-08-19 14:57+0000\n"
-"Last-Translator: \n"
-"Language-Team: Dutch\n"
-"Language: nl_NL\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"PO-Revision-Date: 2021-06-30 11:33+0000\n"
+"Language-Team: French (France)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
+"Last-Translator: \n"
+"Language: fr_FR\n"
 "X-Loco-Version: 2.4.2; wp-5.5"
 
 #: app/Services/Integrations/BaseIntegration.php:103
 msgid " List is required"
-msgstr "Lijst is verplicht"
+msgstr " La liste est nécessaire"
 
 #: app/Modules/Component/Component.php:957
 msgid " to "
-msgstr "naar"
+msgstr " à "
 
 #: app/Services/Integrations/GlobalNotificationManager.php:168
 msgid "(truncated)"
-msgstr "(afgebroken)"
+msgstr ""
 
 #: app/Hooks/Backend.php:114
 msgid "-- Select a form --"
-msgstr "-- Selecteer een formulier --"
+msgstr "-- Sélectionnez un formulaire --"
 
 #: app/Modules/Form/FormDataParser.php:141
 #: app/Modules/Form/FormDataParser.php:192
 msgid "...."
-msgstr "...."
+msgstr "…."
 
 #: app/Modules/Component/Component.php:526
 msgid "0% Completed"
-msgstr "0% voltooid"
+msgstr ""
 
 #: app/Modules/Component/Component.php:525
 msgid "100% Completed"
-msgstr "100% voltooid"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:458
+#: app/Services/FormBuilder/ElementCustomization.php:453
 msgid "23/03/2018"
-msgstr "23/03/2018"
+msgstr "23/03/2019"
 
-#: app/Services/FormBuilder/ElementCustomization.php:466
+#: app/Services/FormBuilder/ElementCustomization.php:461
 msgid "23/03/2018 23:59:59"
-msgstr "23/03/2018 23:59:59"
+msgstr "23/03/2019 23:59:59"
 
-#: app/Services/FormBuilder/ElementCustomization.php:462
+#: app/Services/FormBuilder/ElementCustomization.php:457
+#, fuzzy
 msgid "23:59:59"
 msgstr "23:59:59"
 
-#: app/Modules/Registerer/Menu.php:441
+#: app/Modules/Registerer/Menu.php:440
+#, fuzzy
 msgid "<h2>No form found</h2>"
-msgstr "<h2>Geen formulier gevonden</h2>"
+msgstr "<h2>Aucune forme trouvée</h2>"
 
 #: app/Hooks/Common.php:115
 msgid "Accepted"
-msgstr "Geaccepteerd"
+msgstr "Accepté"
 
 #: app/Services/FormBuilder/DefaultElements.php:1213
 msgid "Action Hook"
-msgstr "Action Hook"
+msgstr "Accroche d’action"
 
-#: app/Services/FormBuilder/ElementCustomization.php:416
+#: app/Services/FormBuilder/ElementCustomization.php:411
 msgid "Activating a reversible mask"
 msgstr ""
 
 #: resources/views/admin/transfer/index.php:32
 msgid "Activity Logs"
-msgstr "Activiteiten log"
-
-#: app/Modules/Registerer/Menu.php:862
-msgid "Add a New Form"
-msgstr ""
+msgstr "Journaux d'activités"
 
 #: app/Modules/EditorButtonModule.php:19
 msgid "Add Form"
-msgstr "Formulier toevoegen"
+msgstr "Ajouter un formulaire"
 
 #: app/Modules/Widgets/SidebarWidgets.php:12
+#, fuzzy
 msgid "Add your form by WP Fluent Forms"
-msgstr "Voeg je formulier toe met WP Fluent Forms"
+msgstr "Ajoutez votre formulaire par WP Fluent Forms"
 
 #: app/Modules/DocumentationModule.php:21
 msgid "Adding a new form"
-msgstr "Nieuw formulier aan het toevoegen"
+msgstr "Ajouter un nouveau formulaire"
 
 #: app/Services/FormBuilder/DefaultElements.php:283
 msgid "Address"
-msgstr "Adres"
+msgstr "Adresse"
 
-#: app/Services/FormBuilder/ElementCustomization.php:313
+#: app/Services/FormBuilder/ElementCustomization.php:308
 #: app/Services/FormBuilder/DefaultElements.php:475
 msgid "Address Fields"
-msgstr "Adresveld"
+msgstr "Champs d’adresse"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1508
 msgid "Address Line"
-msgstr "Adresregel"
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:296
 #: app/Services/FormBuilder/DefaultElements.php:300
 msgid "Address Line 1"
-msgstr "Adresregel 1"
+msgstr "Adresse ligne 1"
 
 #: app/Services/FormBuilder/DefaultElements.php:324
 #: app/Services/FormBuilder/DefaultElements.php:328
 msgid "Address Line 2"
-msgstr "Adresregel 2"
+msgstr "Adresse ligne 2"
 
 #: app/Services/FormBuilder/EditorShortCode.php:14
 msgid "Admin Email"
-msgstr "Admin e-mailadres"
+msgstr "Email de l'administrateur"
 
-#: app/Services/FormBuilder/ElementCustomization.php:335
+#: app/Services/FormBuilder/ElementCustomization.php:330
 msgid "Admin Field Label"
-msgstr "Admin veld label"
+msgstr "Libellé de champ Admin"
 
-#: app/Services/FormBuilder/ElementCustomization.php:336
+#: app/Services/FormBuilder/ElementCustomization.php:331
 msgid ""
 "Admin field label is field title which will be used for admin field title."
 msgstr ""
-"Admin veld label is veld titel die gebruikt wordt voor de Admin veld titel"
+"Le libellé de champ Admin est le titre du champ qui sera utilisé pour le "
+"titre du champ admin."
 
 #: app/Services/FormBuilder/ElementCustomization.php:22
 #: app/Services/FormBuilder/ElementCustomization.php:23
+#, fuzzy
 msgid "Advanced Date Configuration"
-msgstr "Uitgebreide datum configuratie"
+msgstr "Configuration de date avancée"
 
 #: app/Services/FormBuilder/CountryNames.php:18
 msgid "Afghanistan"
-msgstr "Afganistan"
-
-#: app/Modules/Registerer/Menu.php:894
-msgid "ago"
-msgstr ""
+msgstr "Afghanistan"
 
 #: app/Services/FormBuilder/CountryNames.php:19
 #, fuzzy
 #| msgid "Åland Islands"
 msgid "Aland Islands"
-msgstr "Åland eilanden"
+msgstr "Îles d&apos;Åland"
 
 #: app/Services/FormBuilder/CountryNames.php:20
 msgid "Albania"
-msgstr "Albanië"
+msgstr "Albanie"
 
 #: app/Services/FormBuilder/CountryNames.php:21
 msgid "Algeria"
-msgstr "Algerije"
+msgstr "Algérie"
 
 #: app/Modules/Widgets/FluentFormWidget.php:198
 #: app/Modules/Widgets/FluentFormWidget.php:436
@@ -162,38 +159,32 @@ msgstr "Algerije"
 #: app/Modules/Widgets/FluentFormWidget.php:1289
 #: app/Modules/Widgets/FluentFormWidget.php:2059
 msgid "Alignment"
-msgstr "Uitlijning"
-
-#: app/Modules/Registerer/Menu.php:886
-msgid "All"
 msgstr ""
 
 #: resources/views/admin/global_menu.php:12
 msgid "All Entries"
-msgstr "Alle inzendingen"
+msgstr "Toutes les entrées"
 
-#: app/Modules/Registerer/Menu.php:881
-msgid "All Form Entries"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:306 app/Modules/Registerer/Menu.php:307
-#: app/Modules/Registerer/Menu.php:861 resources/views/admin/global_menu.php:9
+#: app/Modules/Registerer/Menu.php:305 app/Modules/Registerer/Menu.php:306
+#: resources/views/admin/global_menu.php:9
 msgid "All Forms"
-msgstr "Alle formulieren"
+msgstr "Liste des formulaires"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:103
 #: app/Services/FormBuilder/ValidationRuleSettings.php:104
 msgid "Allowed Files"
-msgstr "Toegestane bestanden"
+msgstr "Fichiers autorisés"
 
 #: app/Services/FormBuilder/DefaultElements.php:834
+#, fuzzy
 msgid "Allowed image types does not match"
-msgstr "Toegestane afbeeldingsbestanden zijn niet gelijk"
+msgstr "Les types d’images autorisés ne correspondent pas"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:176
 #: app/Services/FormBuilder/ValidationRuleSettings.php:177
+#, fuzzy
 msgid "Allowed Images"
-msgstr "Toegestane afbeeldingen"
+msgstr "Images autorisées"
 
 #: app/Modules/Component/Component.php:962
 msgid "AM"
@@ -201,15 +192,15 @@ msgstr "AM"
 
 #: app/Services/FormBuilder/DefaultElements.php:974
 msgid "Amazing"
-msgstr "Geweldig"
+msgstr "Surprenant"
 
 #: app/Services/FormBuilder/CountryNames.php:22
 msgid "American Samoa"
-msgstr "Amerikaans Samoa "
+msgstr "Samoa américaines"
 
 #: app/Services/FormBuilder/CountryNames.php:23
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "Andorre"
 
 #: app/Services/FormBuilder/CountryNames.php:24
 msgid "Angola"
@@ -221,35 +212,35 @@ msgstr "Anguilla"
 
 #: app/Services/FormBuilder/CountryNames.php:26
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "Antarctique"
 
 #: app/Services/FormBuilder/CountryNames.php:27
 msgid "Antigua and Barbuda"
-msgstr "Antigua en Bermuda"
+msgstr "Antigua-et-Barbuda"
 
-#: app/Services/FormBuilder/ElementCustomization.php:234
+#: app/Services/FormBuilder/ElementCustomization.php:229
 msgid "Apply Styles"
-msgstr "Stijlen toepassen"
+msgstr "Appliquer les styles"
 
-#: app/Services/FormBuilder/ElementCustomization.php:235
+#: app/Services/FormBuilder/ElementCustomization.php:230
 msgid "Apply styles provided here"
-msgstr "Pas hier aangeboden stijlen toe"
+msgstr "Appliquer les styles définis ici"
 
 #: app/Modules/Component/Component.php:898
 msgid "Apr"
-msgstr "Apr"
+msgstr "Avr"
 
 #: app/Modules/Component/Component.php:912
 msgid "April"
-msgstr "April"
+msgstr "Avril"
 
 #: app/Services/FormBuilder/CountryNames.php:28
 msgid "Argentina"
-msgstr "Argentinië"
+msgstr "Argentine"
 
 #: app/Services/FormBuilder/CountryNames.php:29
 msgid "Armenia"
-msgstr "Armenië"
+msgstr "Arménie"
 
 #: app/Services/FormBuilder/CountryNames.php:30
 msgid "Aruba"
@@ -260,32 +251,33 @@ msgid "Audio"
 msgstr "Audio"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:24
+#, fuzzy
 msgid "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
-msgstr "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
+msgstr "Audio (mp3, ondulation, ogg, oga, wma, mka, m4a, ra, mi, midi)"
 
 #: app/Modules/Component/Component.php:902
 msgid "Aug"
-msgstr "Aug"
+msgstr "Août"
 
 #: app/Modules/Component/Component.php:916
 msgid "August"
-msgstr "Augustus"
+msgstr "Août"
 
 #: app/Services/FormBuilder/CountryNames.php:31
 msgid "Australia"
-msgstr "Australië"
+msgstr "Australie"
 
 #: app/Services/FormBuilder/CountryNames.php:32
 msgid "Austria"
-msgstr "Oostenrijk"
+msgstr "Autriche"
 
 #: app/Services/FormBuilder/DefaultElements.php:973
 msgid "Awesome"
-msgstr "Geweldig"
+msgstr "Excellent"
 
 #: app/Services/FormBuilder/CountryNames.php:33
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "Azerbaïdjan"
 
 #: app/Modules/Widgets/FluentFormWidget.php:392
 #: app/Modules/Widgets/FluentFormWidget.php:1785
@@ -293,7 +285,7 @@ msgstr "Azerbaijan"
 #: app/Modules/Widgets/FluentFormWidget.php:1946
 #: app/Modules/Widgets/FluentFormWidget.php:2009
 msgid "Background"
-msgstr "Achtergrond"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:600
 #: app/Modules/Widgets/FluentFormWidget.php:808
@@ -306,9 +298,9 @@ msgstr "Achtergrond"
 #: app/Modules/Widgets/FluentFormWidget.php:2130
 #: app/Modules/Widgets/FluentFormWidget.php:2236
 #: app/Modules/Widgets/FluentFormWidget.php:2289
-#: app/Services/FormBuilder/ElementCustomization.php:396
+#: app/Services/FormBuilder/ElementCustomization.php:391
 msgid "Background Color"
-msgstr "Achtergrond kleuren"
+msgstr "Couleur d’arrière-plan"
 
 #: app/Services/FormBuilder/CountryNames.php:34
 msgid "Bahamas"
@@ -316,7 +308,7 @@ msgstr "Bahamas"
 
 #: app/Services/FormBuilder/CountryNames.php:35
 msgid "Bahrain"
-msgstr "Bahrein"
+msgstr "Bahrain"
 
 #: app/Services/FormBuilder/CountryNames.php:36
 msgid "Bangladesh"
@@ -324,11 +316,11 @@ msgstr "Bangladesh"
 
 #: app/Services/FormBuilder/CountryNames.php:37
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "Barbade"
 
 #: app/Services/FormBuilder/CountryNames.php:38
 msgid "Belarus"
-msgstr "Wit-Rusland"
+msgstr "Biélorussie"
 
 #: app/Services/FormBuilder/CountryNames.php:40
 msgid "Belau"
@@ -336,7 +328,7 @@ msgstr "Belau"
 
 #: app/Services/FormBuilder/CountryNames.php:39
 msgid "Belgium"
-msgstr "België"
+msgstr "Belgique"
 
 #: app/Services/FormBuilder/CountryNames.php:41
 msgid "Belize"
@@ -344,23 +336,23 @@ msgstr "Belize"
 
 #: app/Services/FormBuilder/CountryNames.php:42
 msgid "Benin"
-msgstr "Benin"
+msgstr "Bénin"
 
 #: app/Services/FormBuilder/CountryNames.php:43
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr "Bermudes"
 
 #: app/Services/FormBuilder/CountryNames.php:44
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "Bhoutan"
 
 #: app/Services/FormBuilder/CountryNames.php:45
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr "Bolivie"
 
 #: app/Services/FormBuilder/CountryNames.php:46
 msgid "Bonaire, Saint Eustatius and Saba"
-msgstr "Bonaire, Sint Eustatius en Saba"
+msgstr "Saba, Saint-Eustache et Bonaire"
 
 #: app/Modules/Widgets/FluentFormWidget.php:625
 #: app/Modules/Widgets/FluentFormWidget.php:821
@@ -372,7 +364,7 @@ msgstr "Bonaire, Sint Eustatius en Saba"
 #: app/Modules/Widgets/FluentFormWidget.php:2155
 #: app/Modules/Widgets/FluentFormWidget.php:2312
 msgid "Border"
-msgstr "Rand"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1055
 #: app/Modules/Widgets/FluentFormWidget.php:1149
@@ -380,7 +372,7 @@ msgstr "Rand"
 #: app/Modules/Widgets/FluentFormWidget.php:2018
 #: app/Modules/Widgets/FluentFormWidget.php:2260
 msgid "Border Color"
-msgstr "Rand kleur"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:497
 #: app/Modules/Widgets/FluentFormWidget.php:636
@@ -392,15 +384,15 @@ msgstr "Rand kleur"
 #: app/Modules/Widgets/FluentFormWidget.php:2029
 #: app/Modules/Widgets/FluentFormWidget.php:2165
 msgid "Border Radius"
-msgstr "Afgeronde hoeken"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1033
 msgid "Border Width"
-msgstr "Rand dikte"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:47
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnië-Herzegovina"
+msgstr "Bosnie-Herzégovine"
 
 #: app/Services/FormBuilder/CountryNames.php:48
 msgid "Botswana"
@@ -408,27 +400,23 @@ msgstr "Botswana"
 
 #: app/Services/FormBuilder/ElementCustomization.php:67
 msgid "Bottom"
-msgstr "Onder"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:49
 msgid "Bouvet Island"
-msgstr "Bouvet eiland"
+msgstr "Île Bouvet"
 
 #: app/Services/FormBuilder/CountryNames.php:50
 msgid "Brazil"
-msgstr "Brazilië"
+msgstr "Brésil"
 
 #: app/Services/FormBuilder/CountryNames.php:51
 msgid "British Indian Ocean Territory"
-msgstr "Brits-Indisch oceaan gebied"
+msgstr "Territoires britanniques de l'océan Indien"
 
 #: app/Services/FormBuilder/CountryNames.php:52
 msgid "British Virgin Islands"
-msgstr "Britse Maagden eilanden"
-
-#: app/Modules/Registerer/Menu.php:882
-msgid "Browser"
-msgstr ""
+msgstr "Îles Vierges britanniques"
 
 #: app/Services/FormBuilder/CountryNames.php:53
 msgid "Brunei"
@@ -436,7 +424,7 @@ msgstr "Brunei"
 
 #: app/Services/FormBuilder/CountryNames.php:54
 msgid "Bulgaria"
-msgstr "Bulgarije"
+msgstr "Bulgarie"
 
 #: app/Services/FormBuilder/CountryNames.php:55
 msgid "Burkina Faso"
@@ -448,28 +436,28 @@ msgstr "Burundi"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1902
 msgid "Button"
-msgstr "Knop"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:86
 msgid "Button Size"
-msgstr "Knopgrootte"
+msgstr "Taille du bouton"
 
 #: app/Services/FormBuilder/ElementCustomization.php:81
 msgid "Button Style"
-msgstr "Knopstijl"
+msgstr "Style de bouton"
 
-#: app/Services/FormBuilder/ElementCustomization.php:200
+#: app/Services/FormBuilder/ElementCustomization.php:195
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:402
 msgid "Button Text"
-msgstr "Knoptekst"
+msgstr "Texte du bouton"
 
 #: app/Services/FormBuilder/CountryNames.php:57
 msgid "Cambodia"
-msgstr "Cambodja"
+msgstr "Cambodge"
 
 #: app/Services/FormBuilder/CountryNames.php:58
 msgid "Cameroon"
-msgstr "Kameroen"
+msgstr "Cameroun"
 
 #: app/Services/FormBuilder/CountryNames.php:59
 msgid "Canada"
@@ -477,11 +465,11 @@ msgstr "Canada"
 
 #: app/Services/FormBuilder/CountryNames.php:60
 msgid "Cape Verde"
-msgstr "Kaap Verdië"
+msgstr "Cap Vert"
 
 #: app/Services/FormBuilder/CountryNames.php:61
 msgid "Cayman Islands"
-msgstr "Kaaiman Eilanden"
+msgstr "Îles Caïmans"
 
 #: app/Modules/Widgets/FluentFormWidget.php:206
 #: app/Modules/Widgets/FluentFormWidget.php:449
@@ -489,47 +477,43 @@ msgstr "Kaaiman Eilanden"
 #: app/Modules/Widgets/FluentFormWidget.php:865
 #: app/Modules/Widgets/FluentFormWidget.php:1297
 #: app/Modules/Widgets/FluentFormWidget.php:2067
-#: app/Services/FormBuilder/ElementCustomization.php:219
+#: app/Services/FormBuilder/ElementCustomization.php:214
 msgid "Center"
-msgstr "Midden"
+msgstr "Centre"
 
 #: app/Services/FormBuilder/CountryNames.php:62
 msgid "Central African Republic"
-msgstr "Centraal Afrikaanse Republiek"
+msgstr "République Centrafricaine"
 
 #: app/Services/FormBuilder/CountryNames.php:63
 msgid "Chad"
-msgstr "Tsjaad"
+msgstr "Tchad"
 
 #: app/Services/FormBuilder/DefaultElements.php:678
 msgid "Check Box"
-msgstr "Selectievak"
-
-#: app/Modules/Registerer/Menu.php:880
-msgid "Check the video intro"
-msgstr ""
+msgstr "Case à cocher"
 
 #: app/Services/FormBuilder/DefaultElements.php:1030
 msgid "Checkable Grid"
-msgstr "Aanvinkbaar raster"
+msgstr "Grille vérifiable"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1070
-#: app/Services/FormBuilder/ElementCustomization.php:491
+#: app/Services/FormBuilder/ElementCustomization.php:486
 msgid "Checkbox"
-msgstr "Selectievak"
+msgstr "Case à cocher"
 
 #: app/Services/FormBuilder/DefaultElements.php:640
 msgid "Checkbox Field"
-msgstr "Selectievak veld"
+msgstr "Champ de Case à cocher"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1317
 #: app/Services/FormBuilder/DefaultElements.php:1009
 msgid "Checkbox Grid"
-msgstr "Selectievak raster"
+msgstr "Grille de cases à cocher"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1124
 msgid "Checked"
-msgstr "Geselecteerd"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:64
 msgid "Chile"
@@ -537,56 +521,45 @@ msgstr "Chili"
 
 #: app/Services/FormBuilder/CountryNames.php:65
 msgid "China"
-msgstr "China"
+msgstr "Chine"
 
 #: app/Services/FormBuilder/CountryNames.php:66
 msgid "Christmas Island"
-msgstr "Kersteiland"
+msgstr "Christmas Island"
 
 #: app/Services/FormBuilder/DefaultElements.php:352
 #: app/Services/FormBuilder/DefaultElements.php:356
 msgid "City"
-msgstr "Stad"
+msgstr "Ville"
 
-#: app/Services/FormBuilder/ElementCustomization.php:368
+#: app/Services/FormBuilder/ElementCustomization.php:363
 msgid "Class for the field wrapper. This can be used to style current element."
 msgstr ""
-"Class voor de veldwrapper. Dit kan worden gebruikt om het huidige element te "
-"stylen."
+"Classe pour le conteneur du champ. Ceci peut être utilisé pour le styliser."
 
-#: app/Services/FormBuilder/ElementCustomization.php:373
+#: app/Services/FormBuilder/ElementCustomization.php:368
 msgid "Class for the field. This can be used to style current element."
-msgstr ""
-"Class voor het veld. Dit kan worden gebruikt om het huidige element te "
-"stylen."
+msgstr "Classe pour le champ. Ceci peut être utilisé pour le styliser."
 
-#: app/Services/FormBuilder/ElementCustomization.php:431
+#: app/Services/FormBuilder/ElementCustomization.php:426
 msgid "Clear if not match"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:432
+#: app/Services/FormBuilder/ElementCustomization.php:427
 msgid "Clear value if not match the mask"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:879
-msgid "Click Here to Create Your First Form"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:895
-msgid "Click to copy shortcode"
 msgstr ""
 
 #: app/Modules/Component/Component.php:960
 msgid "Click to toggle"
-msgstr "Klik om te wisselen"
+msgstr "Cliquez ici pour basculer"
 
 #: app/Services/FormBuilder/CountryNames.php:67
 msgid "Cocos (Keeling) Islands"
-msgstr "Cocos (Keeling) eilanden"
+msgstr "Îles Cocos"
 
 #: app/Services/FormBuilder/CountryNames.php:68
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "Colombie"
 
 #: app/Modules/Widgets/FluentFormWidget.php:240
 #: app/Modules/Widgets/FluentFormWidget.php:314
@@ -599,27 +572,27 @@ msgstr "Colombia"
 #: app/Modules/Widgets/FluentFormWidget.php:1997
 #: app/Modules/Widgets/FluentFormWidget.php:2343
 msgid "Color"
-msgstr "Kleur"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:125
 msgid "Columns"
-msgstr "Kolommen"
+msgstr "Colonnes"
 
 #: app/Services/FormBuilder/CountryNames.php:69
 msgid "Comoros"
-msgstr "Comoren"
+msgstr "Comores"
 
-#: app/Services/FormBuilder/ElementCustomization.php:391
+#: app/Services/FormBuilder/ElementCustomization.php:386
 msgid "Conditional Logic"
-msgstr "Voorwaardelijke logica"
+msgstr "Logique conditionnelle"
 
 #: app/Modules/DocumentationModule.php:33
 msgid "Conditional logics"
-msgstr "Voorwaardelijke logica"
+msgstr "Logique conditionnelle"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:130
 msgid "Configuration required!"
-msgstr "Configuratie vereist!"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:70
 msgid "Congo (Brazzaville)"
@@ -634,37 +607,26 @@ msgid "Contact Form - WPManageNinja LLC"
 msgstr ""
 
 #. Description of the plugin
+#, fuzzy
 msgid ""
 "Contact Form By Fluent Forms is the advanced Contact form plugin with drag "
 "and drop, multi column supported form builder plugin"
 msgstr ""
-"Contactformulier van Fluent Forms is de geavanceerde plugin -voor "
-"contactformulieren met drag-and-drop, plug-in voor het maken van formulieren "
-"met meerdere kolommen"
+"Contact Form By Fluent Forms est le plugin de formulaire de contact avancé "
+"avec drag and drop, plugin de fabricant de formulaires supporté à colonnes "
+"multiples"
 
-#: app/Services/FormBuilder/ElementCustomization.php:367
+#: app/Services/FormBuilder/ElementCustomization.php:362
 msgid "Container Class"
-msgstr "Container class"
+msgstr "Class CSS du Container"
 
-#: app/Services/FormBuilder/ElementCustomization.php:210
+#: app/Services/FormBuilder/ElementCustomization.php:205
 msgid "Content Alignment"
-msgstr "Uitlijning inhoud"
-
-#: app/Modules/Registerer/Menu.php:863
-msgid "Conversational Form"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:870
-msgid "Conversational Preview"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:875
-msgid "Conversion"
-msgstr ""
+msgstr "Alignement du contenu"
 
 #: app/Services/FormBuilder/CountryNames.php:72
 msgid "Cook Islands"
-msgstr "Cook eilanden"
+msgstr "Îles Cook"
 
 #: app/Services/FormBuilder/CountryNames.php:73
 msgid "Costa Rica"
@@ -673,42 +635,41 @@ msgstr "Costa Rica"
 #: app/Services/FormBuilder/DefaultElements.php:444
 #: app/Services/FormBuilder/DefaultElements.php:901
 msgid "Country"
-msgstr "Land"
+msgstr "Pays"
 
-#: app/Services/FormBuilder/ElementCustomization.php:377
+#: app/Services/FormBuilder/ElementCustomization.php:372
 #: app/Services/FormBuilder/DefaultElements.php:923
 msgid "Country List"
-msgstr "Lijst met landen"
+msgstr "Liste de pays"
 
 #: app/Modules/Widgets/ElementorWidget.php:52
 msgid "Create a Form First"
-msgstr "Maak eerst een formulier"
-
-#: app/Modules/Registerer/Menu.php:864
-msgid "Create Conversational Form"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:131
 msgid "Create options for the field and checkmark them for default selection."
-msgstr "Maak opties voor het veld en vink ze aan voor standaardselectie."
+msgstr ""
+"Créez des options pour la zone et cochez-les pour la sélection par défaut."
 
-#: app/Services/FormBuilder/ElementCustomization.php:392
+#: app/Services/FormBuilder/ElementCustomization.php:387
 msgid ""
 "Create rules to dynamically display or hide this field based on values from "
 "another field."
 msgstr ""
-"Maak regels om dit veld dynamisch weer te geven of te verbergen op basis van "
-"waarden uit een ander veld."
+"Créez des règles pour afficher ou masquer dynamiquement cette zone en "
+"fonction des valeurs d’une autre zone."
 
 #: app/Services/FormBuilder/ElementCustomization.php:136
+#, fuzzy
 msgid ""
 "Create visual options for the field and checkmark them for default selection."
 msgstr ""
-"Maak visuele opties voor het veld en vink ze aan voor standaardselectie."
+"Créez des options visuelles pour le champ et vérifiez-les pour la sélection "
+"par défaut."
 
 #: app/Services/FormBuilder/CountryNames.php:74
 msgid "Croatia"
-msgstr "Kroatië"
+msgstr "Croatie"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:167
 msgid "CSV"
@@ -716,7 +677,7 @@ msgstr "CSV"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:48
 msgid "CSV (csv)"
-msgstr "CSV (csv)"
+msgstr "CSV (cdv)"
 
 #: app/Services/FormBuilder/CountryNames.php:75
 msgid "Cuba"
@@ -724,119 +685,113 @@ msgstr "Cuba"
 
 #: app/Services/FormBuilder/CountryNames.php:76
 msgid "Cura&ccedil;ao"
-msgstr "Cura&ccedil;ao"
+msgstr "Curaçao"
 
 #: app/Services/FormBuilder/EditorShortCode.php:75
 msgid "Currency"
-msgstr "Valuta"
+msgstr "Devise"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2091
-#: app/Services/FormBuilder/ElementCustomization.php:470
+#: app/Services/FormBuilder/ElementCustomization.php:465
 msgid "Custom"
-msgstr "Op maat"
+msgstr "Personnalisé"
 
 #: app/Modules/Form/Settings/FormCssJs.php:152
 msgid "Custom CSS and JS successfully updated"
-msgstr "Aangepaste CSS en JS zijn succesvol bijgewerkt"
+msgstr "CSS et JS personnalisés bien mises à jour"
 
-#: app/Modules/Registerer/Menu.php:527
+#: app/Modules/Registerer/Menu.php:526
 msgid "Custom CSS/JS"
-msgstr "Aangepaste CSS/JS"
+msgstr "JS/CSS personnalisé"
 
 #: app/Services/FormBuilder/DefaultElements.php:939
 msgid "Custom HTML"
-msgstr "Aangepaste HTML"
+msgstr "HTML personnalisé"
 
-#: app/Services/FormBuilder/ElementCustomization.php:406
+#: app/Services/FormBuilder/ElementCustomization.php:401
 msgid "Custom Mask"
-msgstr "Aangepast maskering"
+msgstr "Masque personnalisé"
 
 #: app/Services/FormBuilder/DefaultElements.php:1432
+#, fuzzy
 msgid "Custom Payment Amount"
-msgstr "Aangepast betalingsbedrag"
+msgstr "Montant du paiement personnalisé"
 
 #: app/Modules/Widgets/FluentFormWidget.php:942
 msgid "Custom Styles"
-msgstr "Aangepaste stijlen"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:100
 msgid "Custom Title & Description"
-msgstr "Aangepaste titel en beschrijving"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:77
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "Chypre"
 
 #: app/Services/FormBuilder/CountryNames.php:78
 msgid "Czech Republic"
-msgstr "Tsjechische Republiek"
-
-#: app/Modules/Registerer/Menu.php:883
-msgid "Date"
-msgstr ""
+msgstr "République Tchèque"
 
 #: app/Services/FormBuilder/EditorShortCode.php:19
 msgid "Date (dd/mm/yyyy)"
-msgstr "Datum (dd/mm/yyyy)"
+msgstr "Date (dd/mm/yyyy)"
 
 #: app/Services/FormBuilder/EditorShortCode.php:18
 msgid "Date (mm/dd/yyyy)"
-msgstr "Datum (mm/dd/yyyy)"
+msgstr "Date (mm/dd/yyyy)"
 
 #: app/Services/FormBuilder/DefaultElements.php:779
 msgid "Date / Time"
-msgstr "Datum/Tijd"
+msgstr "Date / Heure"
 
 #: app/Services/FormBuilder/ElementCustomization.php:110
 msgid "Date Format"
-msgstr "Datumnotatie"
+msgstr "Format de date"
 
 #: app/Modules/Component/Component.php:906
 msgid "Dec"
-msgstr "Dec"
+msgstr "Déc"
 
 #: app/Modules/Component/Component.php:920
 msgid "December"
-msgstr "December"
+msgstr "Décembre"
 
 #: app/Modules/Widgets/FluentFormWidget.php:441
 #: app/Services/FormBuilder/ElementCustomization.php:55
-#: app/Services/FormBuilder/ElementCustomization.php:581
+#: app/Services/FormBuilder/ElementCustomization.php:576
 msgid "Default"
-msgstr "Standaard"
+msgstr "Par défaut"
 
-#: app/Services/FormBuilder/ElementCustomization.php:345
+#: app/Services/FormBuilder/ElementCustomization.php:340
 msgid "Default Value"
-msgstr "Standaard waarde"
+msgstr "Valeur par défaut"
 
 #: app/Services/FormBuilder/ElementCustomization.php:87
+#, fuzzy
 msgid "Define a size of the button"
-msgstr "Standaard afmeting van de knop"
+msgstr "Définir une taille du bouton"
 
-#: app/Services/FormBuilder/ElementCustomization.php:358
+#: app/Services/FormBuilder/ElementCustomization.php:353
 msgid "Define Max selections items that a user can select ."
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:873
-msgid "Delete"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:79
 msgid "Denmark"
-msgstr "Denemarken"
+msgstr "Danemark"
 
 #: app/Modules/Widgets/FluentFormWidget.php:124
 #: app/Modules/Widgets/FluentFormWidget.php:302
 #: app/Modules/Widgets/FluentFormWidget.php:1234
-#: app/Services/FormBuilder/ElementCustomization.php:195
+#: app/Services/FormBuilder/ElementCustomization.php:190
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:471
 msgid "Description"
-msgstr "Omschrijving"
+msgstr "Description"
 
-#: app/Services/FormBuilder/ElementCustomization.php:196
+#: app/Services/FormBuilder/ElementCustomization.php:191
 msgid "Description will be shown to the user as normal text content."
 msgstr ""
-"De beschrijving wordt aan de gebruiker getoond als normale tekstinhoud."
+"La description sera montrée à l’utilisateur comme contenu de texte normal."
 
 #: app/Services/FluentConversational/Classes/Form.php:49
 msgid "Design"
@@ -847,13 +802,14 @@ msgid ""
 "Determine the position of label title where the user will see this. By "
 "choosing \"Default\", global label placement setting will be applied."
 msgstr ""
-"Bepaal de positie van de labeltitel waar de gebruiker dit zal zien. Door "
-"\"Standaard\" te kiezen, wordt de algemene instelling voor labelplaatsing "
-"toegepast."
+"Déterminez la position où l’utilisateur verra le libellé du titre. En "
+"choisissant « Par défaut », les réglages globaux de placement des libellés "
+"seront appliqués."
 
-#: app/Services/FormBuilder/ElementCustomization.php:254
+#: app/Services/FormBuilder/ElementCustomization.php:249
+#, fuzzy
 msgid "Disable auto focus when changing each page"
-msgstr "Schakel autofocus uit bij het wijzigen van elke pagina"
+msgstr "Désactiver l’auto focus lors de la modification de chaque page"
 
 #: app/Services/FormBuilder/CountryNames.php:80
 msgid "Djibouti"
@@ -861,23 +817,23 @@ msgstr "Djibouti"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:136
 msgid "Docs"
-msgstr "Documenten"
+msgstr "Docs"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:36
 msgid ""
 "Docs (doc, ppt, pps, xls, mdb, docx, xlsx, pptx, odt, odp, ods, odg, odc, "
 "odb, odf, rtf, txt)"
 msgstr ""
-"Documenten (doc, ppt, pps, xls, mdb, docx, xlsx, pptx, odt, odp, ods, odg, "
-"odc, odb, odf, rtf, txt)"
+"Docs (doc, ppt, pas, xls, mdr, docx, xlsx, pptx, ont, ode, dos, omg, doc, "
+"ode, odf, rtf, txt)"
 
 #: app/Services/FormBuilder/CountryNames.php:81
 msgid "Dominica"
-msgstr "Dominica"
+msgstr "Dominique"
 
 #: app/Services/FormBuilder/CountryNames.php:82
 msgid "Dominican Republic"
-msgstr "Dominicaanse Republiek"
+msgstr "République Dominicaine"
 
 #: resources/views/admin/settings/index.php:29
 msgid "Double Optin Settings"
@@ -886,129 +842,125 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:543
 #: app/Services/FormBuilder/DefaultElements.php:574
 msgid "Dropdown"
-msgstr "Dropdown"
+msgstr "Liste déroulante"
 
-#: app/Modules/Registerer/Menu.php:872
-msgid "Duplicate"
-msgstr ""
-
-#: app/Services/FormBuilder/ElementCustomization.php:351
+#: app/Services/FormBuilder/ElementCustomization.php:346
 msgid "Dynamic Default Value"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:83
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr "Équateur"
 
-#: app/Modules/Registerer/Menu.php:867
-msgid "Edit"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:448
+#: app/Modules/Registerer/Menu.php:447
 msgid "Editor"
-msgstr "Editor"
+msgstr "Éditeur"
 
 #: app/Services/FormBuilder/CountryNames.php:84
 msgid "Egypt"
-msgstr "Egypte"
+msgstr "Égypte"
 
 #: app/Services/FormBuilder/CountryNames.php:85
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr "Salvador"
 
-#: app/Services/FormBuilder/ElementCustomization.php:372
+#: app/Services/FormBuilder/ElementCustomization.php:367
 msgid "Element Class"
-msgstr "Element class"
+msgstr "Classe de l’élément"
 
 #: app/Services/FormBuilder/ElementCustomization.php:45
 msgid "Element Label"
-msgstr "Element label"
+msgstr "Étiquette de l'élément"
 
 #: app/Services/FormBuilder/DefaultElements.php:143
+#, fuzzy
 msgid "Email"
 msgstr "E-mail"
 
 #: app/Services/FormBuilder/DefaultElements.php:164
 msgid "Email Address"
-msgstr "E-mailadres"
+msgstr "Adresse e-mail"
 
 #: app/Hooks/Backend.php:277 app/Services/FormBuilder/DefaultElements.php:161
 msgid "Email address need to be unique."
-msgstr "E-mailadres moet uniek zijn."
+msgstr "L’adresse courriel doit être unique."
 
-#: app/Modules/Registerer/Menu.php:489
+#: app/Modules/Registerer/Menu.php:488
 msgid "Email Notifications"
-msgstr "E-mail notificaties"
+msgstr "Notifications par email"
 
 #: app/Services/FormBuilder/EditorShortCode.php:20
 msgid "Embedded Post/Page ID"
-msgstr "Ingesloten post- / pagina-ID"
+msgstr "ID Article/Page intégré"
 
 #: app/Services/FormBuilder/EditorShortCode.php:21
 msgid "Embedded Post/Page Title"
-msgstr "Ingesloten post- / paginatitel"
+msgstr "Titre Article/Page intégré"
 
 #: app/Services/FormBuilder/EditorShortCode.php:22
+#, fuzzy
 msgid "Embedded URL"
-msgstr "Ingesloten URL"
+msgstr "URL intégrée"
+
+#: app/Services/FormBuilder/ElementCustomization.php:254
+#, fuzzy
+msgid "Enable auto page change for single radio field"
+msgstr "Activez le changement de page automatique pour le champ radio unique"
+
+#: app/Services/FormBuilder/ElementCustomization.php:319
+msgid "Enable Multiple Columns"
+msgstr "Activer les colonnes multiples"
 
 #: app/Services/FormBuilder/ElementCustomization.php:259
-msgid "Enable auto page change for single radio field"
-msgstr "Schakel automatische paginawijziging in voor één radioveld"
-
-#: app/Services/FormBuilder/ElementCustomization.php:324
-msgid "Enable Multiple Columns"
-msgstr "Schakel meerdere kolommen in"
-
-#: app/Services/FormBuilder/ElementCustomization.php:264
 msgid "Enable Per step data save (Save and Continue)"
-msgstr "Gegevensopslag per stap inschakelen (opslaan en doorgaan)"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:140
 msgid "Enable Searchable Smart Options"
 msgstr ""
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:50
+#, fuzzy
 msgid ""
 "Enter your Mailchimp API Key, if you do not have <br>Please login to your "
 "MailChimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
-"Voer je Mailchimp API-sleutel in, als je er geen <br> hebt. Log dan in bij "
-"je MailChimp-account en ga naar <br> Profiel -> Extra's -> Api Keys"
+"Entrez votre clé aPI Mailchimp, si vous n’avez pas<br>S’il vous plaît "
+"connectez-vous à votre compte MailChimp et aller à<br>Profil -- Extras -- "
+"Api Keys"
 
-#: app/Modules/Registerer/Menu.php:323 app/Modules/Registerer/Menu.php:461
-#: app/Modules/Registerer/Menu.php:869
+#: app/Modules/Registerer/Menu.php:322 app/Modules/Registerer/Menu.php:460
 #: resources/views/email/report/body.php:148
 msgid "Entries"
-msgstr "Inzendingen"
+msgstr "Entrées"
 
 #: app/Services/FormBuilder/CountryNames.php:86
 msgid "Equatorial Guinea"
-msgstr "Equatoriaal-Guinea"
+msgstr "Guinée Équatoriale"
 
 #: app/Services/FormBuilder/CountryNames.php:87
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr "Erythrée"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2335
 msgid "Error Message"
-msgstr "Foutmelding"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:171
 msgid "Error Messages"
-msgstr "Foutmeldingen"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:164
 msgid "Errors"
-msgstr "Fouten"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:88
 msgid "Estonia"
-msgstr "Estland"
+msgstr "Estonie"
 
 #: app/Services/FormBuilder/CountryNames.php:89
 msgid "Ethiopia"
-msgstr "Ethiopië"
+msgstr "Éthiopie"
 
 #: app/Helpers/Helper.php:424
 msgid "EU Style with Decimal (Ex: 123.456,00)"
@@ -1020,196 +972,202 @@ msgstr ""
 
 #: app/Modules/Activator.php:138
 msgid "Every 5 Minutes (FluentForm)"
-msgstr "Elke 5 minuten (FluentForm)"
+msgstr "Toutes les 5 minutes (FluentForm)"
 
 #: app/Hooks/Common.php:324
 msgid "Every 5 minutes (FluentForm)"
-msgstr "Elke 5 minuten (FluentForm)"
+msgstr ""
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:162
 msgid "Executable Files"
-msgstr "Uitvoerbare bestanden"
+msgstr "Fichiers exécutables"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:44
 msgid "Executable Files (exe)"
-msgstr "Uitvoerbare bestanden (.exe)"
+msgstr "Fichiers exécutables (exe)"
 
 #: resources/views/admin/transfer/index.php:18
 msgid "Export Forms"
-msgstr "Formulieren exporteren"
+msgstr "Exporter Formulaires"
 
 #: app/Services/FormBuilder/CountryNames.php:90
 msgid "Falkland Islands"
-msgstr "Falkland Eilanden"
+msgstr "Îles Falkland"
 
 #: app/Services/FormBuilder/CountryNames.php:91
 msgid "Faroe Islands"
-msgstr "Faeröer"
+msgstr "Îles Féroé"
 
 #: app/Modules/Component/Component.php:896
 msgid "Feb"
-msgstr "Feb"
+msgstr "Fév"
 
 #: app/Modules/Component/Component.php:910
 msgid "February"
-msgstr "Februari"
+msgstr "Février"
 
 #: app/Services/Integrations/BaseIntegration.php:102
 msgid "Feed Name is required"
-msgstr "Feednaam is vereist"
+msgstr "Le nom du flux est nécessaire"
 
-#: app/Services/FormBuilder/ElementCustomization.php:486
-#: app/Services/FormBuilder/ElementCustomization.php:487
+#: app/Services/FormBuilder/ElementCustomization.php:481
+#: app/Services/FormBuilder/ElementCustomization.php:482
 msgid "Field Type"
-msgstr "Veld type"
+msgstr "Type de champ"
 
 #: app/Services/FormBuilder/CountryNames.php:92
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "Fidji"
 
 #: app/Services/FormBuilder/DefaultElements.php:857
 #: app/Services/FormBuilder/DefaultElements.php:884
 msgid "File Upload"
-msgstr "Bestand upload"
+msgstr "Téléchargement de fichiers"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1869
 msgid "Filled"
-msgstr "Gevuld"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:93
 msgid "Finland"
-msgstr "Finland"
+msgstr "Finlande"
 
 #: app/Services/FormBuilder/DefaultElements.php:42
 #: app/Services/FormBuilder/DefaultElements.php:47
 msgid "First Name"
-msgstr "Voornaam"
+msgstr "Prénom"
 
 #: app/Services/FormBuilder/DefaultElements.php:1308
+#, fuzzy
 msgid "Five Column Container"
-msgstr "Vijf koloms container"
+msgstr "Conteneur de cinq colonnes"
 
 #: app/Modules/Widgets/FluentFormWidget.php:22
 #: app/Modules/Widgets/FluentFormWidget.php:81
 #: app/Modules/Widgets/FluentFormWidget.php:89
 msgid "Fluent Form"
-msgstr "Fluent Form"
+msgstr ""
 
 #. Name of the plugin
-#: app/Modules/Registerer/Menu.php:284 resources/views/admin/global_menu.php:6
+#: app/Modules/Registerer/Menu.php:283 resources/views/admin/global_menu.php:6
 msgid "Fluent Forms"
 msgstr "Fluent Forms"
 
 #: app/Modules/Entries/Entries.php:434
+#, fuzzy
 msgid "Fluent Forms Bot"
-msgstr "Fluent Forms bot"
+msgstr "Formes fluides Bot"
 
 #: resources/views/admin/settings/index.php:11
 msgid "Fluent Forms Global Settings"
-msgstr "Fluent Forms algemene instellingen"
+msgstr "Réglages globaux de Fluent Forms"
 
 #: app/Hooks/Backend.php:71
 msgid "Fluent Forms Latest Form Submissions"
-msgstr "Fluent Forms nieuwste formulierinzendingen"
+msgstr "Fluent Forms Dernières soumissions de formulaires"
 
 #: app/Hooks/Backend.php:319
 msgid "Fluent Forms PDF"
-msgstr "Fluent Forms PDF"
+msgstr "PDF Fluent Forms"
 
-#: app/Modules/Registerer/Menu.php:282
+#: app/Modules/Registerer/Menu.php:281
 msgid "Fluent Forms Pro"
-msgstr "Fluent Forms Pro"
+msgstr "Fluent Forms PRO"
 
 #: app/Modules/Widgets/FluentFormWidget.php:801
 msgid "Focus"
-msgstr "Focus"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:401
+#: app/Services/FormBuilder/ElementCustomization.php:396
 msgid "Font Color"
-msgstr "Lettertype kleur"
+msgstr "Couleur de la police"
 
-#: app/Services/FormBuilder/ElementCustomization.php:402
+#: app/Services/FormBuilder/ElementCustomization.php:397
+#, fuzzy
 msgid "Font color of the element"
-msgstr "Lettertype kleur van het element"
+msgstr "Couleur de police de l’élément"
 
-#: app/Modules/Registerer/Menu.php:890
 #: resources/views/email/report/body.php:147
 #: resources/views/email/report/body.php:172
 msgid "Form"
-msgstr "Formulier"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:382
 msgid "Form Container"
-msgstr "Formulier container"
+msgstr ""
 
 #: app/Modules/Form/Form.php:488
 msgid "Form has been successfully duplicated."
-msgstr "Formulier is met succes gedupliceerd."
+msgstr "Le formulaire a bien été dupliqué."
 
 #: app/Modules/DocumentationModule.php:29
 msgid "Form layout settings"
-msgstr "Formulierlay-outinstellingen"
+msgstr "Réglages de mise en page du formulaire"
 
 #: app/Modules/DocumentationModule.php:53
 msgid "Form restrictions and scheduling"
-msgstr "Formulierbeperkingen en planning"
+msgstr "Restrictions du formulaire et planification"
 
-#: app/Modules/Registerer/Menu.php:483
+#: app/Modules/Registerer/Menu.php:482
 msgid "Form Settings"
-msgstr "Formulierinstellingen"
+msgstr "Options du formulaire"
 
 #: app/Services/FormBuilder/DefaultElements.php:1105
 msgid "Form Step"
-msgstr "Formulier stap"
+msgstr "Étape du formulaire"
 
-#: app/Services/FormBuilder/ElementCustomization.php:250
-#: app/Services/FormBuilder/ElementCustomization.php:299
+#: app/Services/FormBuilder/ElementCustomization.php:245
+#: app/Services/FormBuilder/ElementCustomization.php:294
+#, fuzzy
 msgid "Form step titles, user will see each title in each step."
-msgstr "Formulier stap titels, gebruiker zal elke titel in elke stap zien."
+msgstr ""
+"Formez des titres d’étape, l’utilisateur verra chaque titre dans chaque "
+"étape."
 
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:403
 msgid "Form submission button text."
-msgstr "Formulier verzendknop tekst."
+msgstr "Texte du bouton de soumission de formulaire."
 
 #: app/Modules/Form/Form.php:187
 msgid "Form submission is not started yet."
-msgstr "Het verzenden van formulier is nog niet begonnen."
+msgstr "La soumission du formulaire n’a pas encore commencée."
 
 #: app/Modules/Form/Form.php:188
 msgid "Form submission is now closed."
-msgstr "Het indienen van formulieren is nu afgesloten."
+msgstr "La soumission du formulaire est maintenant fermée."
 
 #: app/Services/FormBuilder/DefaultElements.php:1288
+#, fuzzy
 msgid "Four Column Container"
-msgstr "Vier koloms container"
+msgstr "Conteneur à quatre colonnes"
 
 #: app/Services/FormBuilder/CountryNames.php:94
 msgid "France"
-msgstr "Frankrijk"
+msgstr "France"
 
 #: app/Services/FormBuilder/CountryNames.php:95
 msgid "French Guiana"
-msgstr "Frans-Guyana"
+msgstr "Guyane Française"
 
 #: app/Services/FormBuilder/CountryNames.php:96
 msgid "French Polynesia"
-msgstr "Frans-Polynesië"
+msgstr "Polynésie Française"
 
 #: app/Services/FormBuilder/CountryNames.php:97
 msgid "French Southern Territories"
-msgstr "Franse zuidelijke gebieden"
+msgstr "Terres Australes Françaises"
 
 #: app/Modules/Component/Component.php:939
 msgid "Fri"
-msgstr "Vrij"
+msgstr "Ven"
 
 #: app/Modules/Component/Component.php:930
 msgid "Friday"
-msgstr "Vrijdag"
+msgstr "Vendredi"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2090
 msgid "Full Width"
-msgstr "Volledige breedte"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:98
 msgid "Gabon"
@@ -1217,7 +1175,7 @@ msgstr "Gabon"
 
 #: app/Services/FormBuilder/CountryNames.php:99
 msgid "Gambia"
-msgstr "Gambia"
+msgstr "Gambie"
 
 #: app/Modules/Widgets/FluentFormWidget.php:849
 msgid "GDPR , Terms & Condition "
@@ -1227,19 +1185,19 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:1150
 #: app/Services/FormBuilder/DefaultElements.php:1163
 msgid "GDPR Agreement"
-msgstr "AVG overeenkomst"
+msgstr "Accord GDPR"
 
 #: app/Services/FormBuilder/CountryNames.php:100
 msgid "Georgia"
-msgstr "Georgië"
+msgstr "Géorgie"
 
 #: app/Services/FormBuilder/CountryNames.php:101
 msgid "Germany"
-msgstr "Duitsland"
+msgstr "Allemagne"
 
-#: app/Modules/Registerer/Menu.php:404 app/Modules/Registerer/Menu.php:405
+#: app/Modules/Registerer/Menu.php:403 app/Modules/Registerer/Menu.php:404
 msgid "Get Help"
-msgstr "Help"
+msgstr "Aide"
 
 #: app/Services/FormBuilder/CountryNames.php:102
 msgid "Ghana"
@@ -1254,18 +1212,18 @@ msgstr "Gibraltar"
 msgid "GIF"
 msgstr "GIF"
 
-#: app/Modules/Registerer/Menu.php:372 app/Modules/Registerer/Menu.php:373
+#: app/Modules/Registerer/Menu.php:371 app/Modules/Registerer/Menu.php:372
 #: resources/views/admin/global_menu.php:22
 msgid "Global Settings"
 msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:971
 msgid "Good"
-msgstr "Goed"
+msgstr "Bon"
 
 #: app/Services/FormBuilder/CountryNames.php:104
 msgid "Greece"
-msgstr "Griekenland"
+msgstr "Grèce"
 
 #: app/Services/FormBuilder/CountryNames.php:105
 msgid "Greenland"
@@ -1273,23 +1231,23 @@ msgstr "Groenland"
 
 #: app/Services/FormBuilder/CountryNames.php:106
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "Grenade"
+
+#: app/Services/FormBuilder/ElementCustomization.php:471
+msgid "Grid Columns"
+msgstr "Colonnes de la grille"
 
 #: app/Services/FormBuilder/ElementCustomization.php:476
-msgid "Grid Columns"
-msgstr "Raster kolommen"
-
-#: app/Services/FormBuilder/ElementCustomization.php:481
 msgid "Grid Rows"
-msgstr "Raster rijen"
+msgstr "Rangées de grille"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1325
 msgid "Grid Table Head"
-msgstr "Raster tabelhoofd"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1409
 msgid "Grid Table Item"
-msgstr "Raster tabelitem"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:107
 msgid "Guadeloupe"
@@ -1305,19 +1263,19 @@ msgstr "Guatemala"
 
 #: app/Services/FormBuilder/CountryNames.php:110
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr "Guernesey"
 
 #: app/Services/FormBuilder/CountryNames.php:111
 msgid "Guinea"
-msgstr "Guinea"
+msgstr "Guinée"
 
 #: app/Services/FormBuilder/CountryNames.php:112
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "Guinée-Bissau"
 
 #: app/Services/FormBuilder/CountryNames.php:113
 msgid "Guyana"
-msgstr "Guyana"
+msgstr "Guyane"
 
 #: app/Services/FormBuilder/CountryNames.php:114
 msgid "Haiti"
@@ -1325,36 +1283,36 @@ msgstr "Haïti"
 
 #: app/Services/FormBuilder/CountryNames.php:115
 msgid "Heard Island and McDonald Islands"
-msgstr "Heard Island and McDonald Islands"
+msgstr "Îles Heard-et-MacDonald"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1368
 #: app/Modules/Widgets/FluentFormWidget.php:1463
 #: app/Modules/Widgets/FluentFormWidget.php:1818
 msgid "Height"
-msgstr "Hoogte"
+msgstr ""
 
 #: resources/views/email/report/body.php:136
 msgid "Hello There,"
-msgstr "Hallo,"
+msgstr ""
 
 #: resources/views/admin/docs/index.php:4
 msgid "Help & Documentation"
-msgstr "Help & Documentatie"
+msgstr "Aide et documentation"
 
-#: app/Services/FormBuilder/ElementCustomization.php:386
+#: app/Services/FormBuilder/ElementCustomization.php:381
 msgid "Help Message"
-msgstr "Hulpbericht"
+msgstr "Message d'aide"
 
-#: app/Services/FormBuilder/ElementCustomization.php:387
+#: app/Services/FormBuilder/ElementCustomization.php:382
 msgid ""
 "Help message will be shown as tooltip next to sidebar or below the field."
 msgstr ""
-"Het hulpbericht wordt weergegeven als knopinfo naast de zijbalk of onder het "
-"veld."
+"Le message d’aide sera affiché comme info-bulle à côté de la barre latérale "
+"ou sous le champ."
 
 #: app/Services/FormBuilder/DefaultElements.php:994
 msgid "Hidden Field"
-msgstr "Verborgen veld"
+msgstr "Champ masqué"
 
 #: app/Modules/Widgets/FluentFormWidget.php:140
 #: app/Modules/Widgets/FluentFormWidget.php:152
@@ -1362,15 +1320,11 @@ msgstr "Verborgen veld"
 #: app/Modules/Widgets/FluentFormWidget.php:1694
 #: app/Modules/Widgets/FluentFormWidget.php:1762
 msgid "Hide"
-msgstr "Verberg"
-
-#: app/Modules/Registerer/Menu.php:884
-msgid "Hide Chart"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:75
 msgid "Hide Label"
-msgstr "Verberg label"
+msgstr "Masquer le libellé"
 
 #: app/Services/FormBuilder/CountryNames.php:116
 msgid "Honduras"
@@ -1380,43 +1334,46 @@ msgstr "Honduras"
 msgid "Hong Kong"
 msgstr "Hong Kong"
 
-#: app/Services/FormBuilder/ElementCustomization.php:172
+#: app/Services/FormBuilder/ElementCustomization.php:167
 msgid "Hook Name"
-msgstr "Hook naam"
+msgstr "Nom de l’accroche"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1623
 #: app/Modules/Widgets/FluentFormWidget.php:1990
 #: app/Modules/Widgets/FluentFormWidget.php:2229
 msgid "Hover"
-msgstr "Hover"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:126
+#, fuzzy
 msgid ""
 "How many cols will textarea take in a form. It's an HTML attributes for "
 "browser support."
 msgstr ""
-"Hoeveelheid kolommen waar het tekstgebied in het formulier uit bestaat. Het "
-"zijn HTML-kenmerken voor browserondersteuning."
+"Combien de cols prendront de textarea dans une forme. Il s’agit d’un "
+"attribut HTML pour le support du navigateur."
 
 #: app/Services/FormBuilder/ElementCustomization.php:121
+#, fuzzy
 msgid ""
 "How many rows will textarea take in a form. It's an HTML attributes for "
 "browser support."
 msgstr ""
-"Hoeveel rijen zal tekstgebied in een formulier innemen. Het zijn HTML-"
-"kenmerken voor browserondersteuning."
+"Combien de lignes prendra textarea dans une forme. Il s’agit d’un attribut "
+"HTML pour le support du navigateur."
 
-#: app/Services/FormBuilder/ElementCustomization.php:211
+#: app/Services/FormBuilder/ElementCustomization.php:206
+#, fuzzy
 msgid "How the content will be aligned."
-msgstr "Hoe de inhoud wordt uitgelijnd."
+msgstr "Comment le contenu sera aligné."
 
-#: app/Services/FormBuilder/ElementCustomization.php:188
+#: app/Services/FormBuilder/ElementCustomization.php:183
 msgid "HTML Code"
-msgstr "HTML code"
+msgstr "Code HTML"
 
 #: app/Services/FormBuilder/EditorShortCode.php:23
 msgid "HTTP Referer URL"
-msgstr "HTTP-verwijzings-URL"
+msgstr "URL de référenceHTTP"
 
 #. Author URI of the plugin
 msgid "https://fluentforms.com"
@@ -1428,7 +1385,7 @@ msgstr "https://wpmanageninja.com/wp-fluent-form/"
 
 #: app/Services/FormBuilder/CountryNames.php:118
 msgid "Hungary"
-msgstr "Hongarije"
+msgstr "Hongrie"
 
 #: app/Services/FluentConversational/Classes/Form.php:336
 msgid "I accept"
@@ -1443,8 +1400,8 @@ msgid ""
 "I consent to have this website store my submitted information so they can "
 "respond to my inquiry"
 msgstr ""
-"Ik stem ermee in dat deze website mijn ingediende informatie opslaat zodat "
-"ze op mijn vraag kunnen reageren"
+"Je consents à ce que ce site stocke mes informations soumises afin qu'ils "
+"puissent répondre à mon enquête"
 
 #: app/Services/FluentConversational/Classes/Form.php:337
 msgid "I don't accept"
@@ -1452,126 +1409,122 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:119
 msgid "Iceland"
-msgstr "Ijsland"
+msgstr "Islande"
 
-#: app/Modules/Registerer/Menu.php:865
-msgid "ID"
-msgstr ""
-
-#: app/Services/FormBuilder/ElementCustomization.php:567
+#: app/Services/FormBuilder/ElementCustomization.php:562
+#, fuzzy
 msgid "If validation failed then it will show this message"
-msgstr "Als de validatie is mislukt, wordt dit bericht weergegeven"
+msgstr "Si la validation a échoué, elle affichera ce message"
 
-#: app/Services/FormBuilder/ElementCustomization.php:260
+#: app/Services/FormBuilder/ElementCustomization.php:255
+#, fuzzy
 msgid ""
 "If you enable this then for last radio item field will trigger next page "
 "change"
 msgstr ""
-"Als je dit inschakelt, wordt voor het laatste radio-itemveld de volgende "
-"pagina gewijzigd"
+"Si vous activez ceci alors pour le dernier champ d’article radio déclenchera "
+"le changement de page suivante"
 
-#: app/Services/FormBuilder/ElementCustomization.php:417
+#: app/Services/FormBuilder/ElementCustomization.php:412
 msgid "If you enable this then it the mask will work as reverse"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:265
+#: app/Services/FormBuilder/ElementCustomization.php:260
 msgid ""
 "If you enable this then on each step change the data current step data will "
 "be persisted in a step form<br />Your users can resume the form where they "
 "left"
 msgstr ""
-"Als je dit inschakelt, worden bij elke stapwijziging de gegevens van de "
-"huidige stapgegevens in een stapvorm bewaard <br /> Je gebruikers kunnen het "
-"formulier hervatten waar ze zijn gebleven"
 
-#: app/Services/FormBuilder/ElementCustomization.php:255
+#: app/Services/FormBuilder/ElementCustomization.php:250
+#, fuzzy
 msgid ""
 "If you enable this then on page transition automatic scrolling will be "
 "disabled"
 msgstr ""
-"Als je dit inschakelt, wordt bij het overschakelen op pagina, automatisch "
-"scrollen uitgeschakeld"
+"Si vous activez cela, alors sur la page de transition défilement automatique "
+"sera désactivé"
 
 #: app/Services/FormBuilder/ElementCustomization.php:141
 msgid ""
 "If you enable this then options will be searchable by select2 js library"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:427
+#: app/Services/FormBuilder/ElementCustomization.php:422
 msgid "If you enable this then the checkable options will be shuffled"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:270
+#: app/Services/FormBuilder/ElementCustomization.php:265
 msgid ""
 "If you enable this then users will see the form as step page where it has "
 "been left"
 msgstr ""
-"Als je dit inschakelt, zien gebruikers het formulier als stappagina waar het "
-"is gebleven"
 
-#: app/Services/FormBuilder/ElementCustomization.php:541
+#: app/Services/FormBuilder/ElementCustomization.php:536
+#, fuzzy
 msgid ""
 "If you make it unique then it will validate as unique from previous "
 "submissions of this form"
 msgstr ""
-"Als je het uniek maakt, wordt het als uniek gevalideerd ten opzichte van "
-"eerdere inzendingen van dit formulier"
+"Si vous le rendez unique, alors il sera validé comme unique à partir des "
+"soumissions précédentes de ce formulaire"
 
-#: app/Services/FormBuilder/ElementCustomization.php:346
-#: app/Services/FormBuilder/ElementCustomization.php:352
+#: app/Services/FormBuilder/ElementCustomization.php:341
+#: app/Services/FormBuilder/ElementCustomization.php:347
 msgid "If you would like to pre-populate the value of a field, enter it here."
-msgstr ""
-"Als je de waarde van een veld vooraf wil invullen, voer je deze hier in."
+msgstr "Si vous souhaitez pré-remplir la valeur d'un champ, entrez-le ici."
 
 #: app/Modules/Widgets/FluentFormWidget.php:1541
 #: app/Services/FormBuilder/DefaultElements.php:813
 #: app/Services/FormBuilder/DefaultElements.php:840
 msgid "Image Upload"
-msgstr "Afbeelding uploaden"
+msgstr "Téléchargement d'Image"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:107
 msgid "Images"
-msgstr "Afbeeldingen"
+msgstr "Images"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:20
 msgid "Images (jpg, jpeg, gif, png, bmp)"
-msgstr "Afbeeldingen (jpg, jpeg, gif, png, bmp)"
+msgstr "Images (jpg, jpeg, gif, png, bmp)"
 
 #: resources/views/admin/transfer/index.php:25
 msgid "Import Forms"
-msgstr "Formulieren importeren"
+msgstr "Importer des formulaires"
 
 #: app/Services/FormBuilder/CountryNames.php:120
 msgid "India"
-msgstr "India"
+msgstr "Inde"
 
 #: app/Services/FormBuilder/CountryNames.php:121
 msgid "Indonesia"
-msgstr "Indonesië"
+msgstr "Indonésie"
 
 #: app/Modules/Widgets/FluentFormWidget.php:557
 msgid "Input & Textarea"
-msgstr "Invoer & Tektsveld"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:692
 msgid "Input Height"
-msgstr "Invoerhoogte"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:673
 msgid "Input Width"
-msgstr "Invoerbreedte"
+msgstr ""
 
-#: app/Modules/Registerer/Menu.php:361 app/Modules/Registerer/Menu.php:362
+#: app/Modules/Registerer/Menu.php:360 app/Modules/Registerer/Menu.php:361
 msgid "Integration Modules"
 msgstr ""
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:259
+#, fuzzy
 msgid "Integration successfully saved"
-msgstr "Integratie succesvol opgeslagen"
+msgstr "Intégration sauvée avec succès"
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:151
+#, fuzzy
 msgid "Integration successfully updated"
-msgstr "Integratie succesvol bijgewerkt"
+msgstr "Intégration mise à jour avec succès"
 
 #: resources/views/admin/global_menu.php:25
 msgid "Integrations"
@@ -1579,11 +1532,11 @@ msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:878
 msgid "Invalid file type"
-msgstr "Ongeldig bestandstype"
+msgstr "Type de fichier invalide"
 
 #: app/Services/FormBuilder/EditorShortCode.php:17
 msgid "IP Address"
-msgstr "IP adres"
+msgstr "Adresse IP"
 
 #: app/Services/FormBuilder/CountryNames.php:122
 msgid "Iran"
@@ -1591,15 +1544,15 @@ msgstr "Iran"
 
 #: app/Services/FormBuilder/CountryNames.php:123
 msgid "Iraq"
-msgstr "Iraq"
+msgstr "Irak"
 
 #: app/Services/FormBuilder/CountryNames.php:124
 msgid "Ireland"
-msgstr "Ierland"
+msgstr "Irlande"
 
 #: app/Services/FormBuilder/CountryNames.php:125
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr "Île de Man"
 
 #: app/Services/FormBuilder/CountryNames.php:126
 msgid "Israel"
@@ -1607,31 +1560,34 @@ msgstr "Israël"
 
 #: app/Services/FormBuilder/CountryNames.php:127
 msgid "Italy"
-msgstr "Italië"
+msgstr "Italie"
 
 #: app/Modules/Entries/Entries.php:619
+#, fuzzy
 msgid "Item has been added to favorites"
-msgstr "Item is toegevoegd aan je favorieten"
+msgstr "L’article a été ajouté aux favoris"
 
 #: app/Modules/Entries/Entries.php:621
+#, fuzzy
 msgid "Item has been removed from favorites"
-msgstr "Item is verwijderd uit je favorieten"
+msgstr "L’article a été supprimé des favoris"
 
 #: app/Services/FormBuilder/DefaultElements.php:1443
 msgid "Item Quantity"
-msgstr "Aantal items"
+msgstr "Quantité"
 
 #: app/Modules/Entries/Entries.php:510
+#, fuzzy
 msgid "Item Successfully deleted"
-msgstr "Item succesvol verwijderd"
+msgstr "Article supprimé avec succès"
 
 #: app/Services/FormBuilder/CountryNames.php:128
 msgid "Ivory Coast"
-msgstr "Ivoorkust"
+msgstr "Côte-d’Ivoire"
 
 #: app/Services/FormBuilder/CountryNames.php:129
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr "Jamaïque"
 
 #: app/Modules/Component/Component.php:895
 msgid "Jan"
@@ -1639,11 +1595,11 @@ msgstr "Jan"
 
 #: app/Modules/Component/Component.php:909
 msgid "January"
-msgstr "januari"
+msgstr "Janvier"
 
 #: app/Services/FormBuilder/CountryNames.php:130
 msgid "Japan"
-msgstr "Japan"
+msgstr "Japon"
 
 #: app/Services/FormBuilder/CountryNames.php:131
 msgid "Jersey"
@@ -1651,7 +1607,7 @@ msgstr "Jersey"
 
 #: app/Services/FormBuilder/CountryNames.php:132
 msgid "Jordan"
-msgstr "Jordanië"
+msgstr "Jordanie"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:181
 #: app/Services/FormBuilder/ValidationRuleSettings.php:195
@@ -1660,27 +1616,27 @@ msgstr "JPG"
 
 #: app/Modules/Component/Component.php:901
 msgid "Jul"
-msgstr "Jul"
+msgstr "Juil"
 
 #: app/Modules/Component/Component.php:915
 msgid "July"
-msgstr "Juli"
+msgstr "Juillet"
 
 #: app/Modules/Component/Component.php:900
 msgid "Jun"
-msgstr "Jun"
+msgstr "Juin"
 
 #: app/Modules/Component/Component.php:914
 msgid "June"
-msgstr "Juni"
+msgstr "Juin"
 
 #: app/Services/FormBuilder/CountryNames.php:133
 msgid "Kazakhstan"
-msgstr "Kazachstan"
+msgstr "Kazakhstan"
 
 #: app/Services/FormBuilder/CountryNames.php:134
 msgid "Kenya"
-msgstr "Kenia"
+msgstr "Kenya"
 
 #: app/Services/FormBuilder/CountryNames.php:135
 msgid "Kiribati"
@@ -1688,33 +1644,33 @@ msgstr "Kiribati"
 
 #: app/Services/FormBuilder/CountryNames.php:136
 msgid "Kosovo"
-msgstr "Kosovo"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:137
 msgid "Kuwait"
-msgstr "Koeweit"
+msgstr "Koweït"
 
 #: app/Services/FormBuilder/CountryNames.php:138
 msgid "Kyrgyzstan"
-msgstr "Kirgizië"
+msgstr "Kyrgyzstan"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1180
 msgid "Label"
-msgstr "Label"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1516
 #: app/Modules/Widgets/FluentFormWidget.php:1704
 msgid "Label Color"
-msgstr "Label kleur"
+msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:50
 msgid "Label Placement"
-msgstr "Labelplaatsing"
+msgstr "Placement du libellé"
 
 #: app/Modules/Widgets/FluentFormWidget.php:136
 #: app/Modules/Widgets/FluentFormWidget.php:524
 msgid "Labels"
-msgstr "Labels"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:139
 msgid "Laos"
@@ -1722,24 +1678,24 @@ msgstr "Laos"
 
 #: app/Services/FormBuilder/ElementCustomization.php:99
 msgid "Large"
-msgstr "Groot"
+msgstr "Grand"
 
 #: app/Services/FormBuilder/DefaultElements.php:100
 #: app/Services/FormBuilder/DefaultElements.php:106
 msgid "Last Name"
-msgstr "Achternaam"
+msgstr "Nom"
 
 #: app/Services/FormBuilder/CountryNames.php:140
 msgid "Latvia"
-msgstr "Letland"
+msgstr "Lettonie"
 
-#: app/Services/FormBuilder/ElementCustomization.php:576
+#: app/Services/FormBuilder/ElementCustomization.php:571
 msgid "Layout"
-msgstr "Layout"
+msgstr "Mise en page"
 
 #: app/Services/FormBuilder/CountryNames.php:141
 msgid "Lebanon"
-msgstr "Libanon"
+msgstr "Liban"
 
 #: app/Modules/Widgets/FluentFormWidget.php:202
 #: app/Modules/Widgets/FluentFormWidget.php:445
@@ -1748,9 +1704,9 @@ msgstr "Libanon"
 #: app/Modules/Widgets/FluentFormWidget.php:1293
 #: app/Modules/Widgets/FluentFormWidget.php:2063
 #: app/Services/FormBuilder/ElementCustomization.php:71
-#: app/Services/FormBuilder/ElementCustomization.php:215
+#: app/Services/FormBuilder/ElementCustomization.php:210
 msgid "Left"
-msgstr "Links"
+msgstr "Gauche"
 
 #: app/Services/FormBuilder/CountryNames.php:142
 msgid "Lesotho"
@@ -1760,8 +1716,6 @@ msgstr "Lesotho"
 #, php-format
 msgid "Let's see how your forms performed in the last %d days."
 msgstr ""
-"Laten we eens kijken hoe je formulieren de afgelopen %d dagen hebben "
-"gepresteerd."
 
 #: app/Services/FormBuilder/CountryNames.php:143
 msgid "Liberia"
@@ -1769,7 +1723,7 @@ msgstr "Liberia"
 
 #: app/Services/FormBuilder/CountryNames.php:144
 msgid "Libya"
-msgstr "Libië"
+msgstr "Libye"
 
 #: app/Services/FormBuilder/CountryNames.php:145
 msgid "Liechtenstein"
@@ -1777,11 +1731,11 @@ msgstr "Liechtenstein"
 
 #: app/Modules/Widgets/FluentFormWidget.php:402
 msgid "Link Color"
-msgstr "Link kleur"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:146
 msgid "Lithuania"
-msgstr "Litouwen"
+msgstr "Lituanie"
 
 #: app/Modules/Component/Component.php:530
 msgid "Loading..."
@@ -1789,15 +1743,15 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:147
 msgid "Luxembourg"
-msgstr "Luxemburg"
+msgstr "Luxembourg"
 
 #: app/Services/FormBuilder/CountryNames.php:148
 msgid "Macao S.A.R., China"
-msgstr "Macao S.A.R., China"
+msgstr "Macao S.A.R., Chine"
 
 #: app/Services/FormBuilder/CountryNames.php:149
 msgid "Macedonia"
-msgstr "Macedonië"
+msgstr "Macédoine"
 
 #: app/Services/FormBuilder/CountryNames.php:150
 msgid "Madagascar"
@@ -1805,17 +1759,19 @@ msgstr "Madagascar"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:51
 msgid "Mailchimp API Key"
-msgstr "Mailchimp API-sleutel"
+msgstr "Clé API de Mailchimp"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:127
+#, fuzzy
 msgid "Mailchimp Feed"
-msgstr "Mailchimp feed"
+msgstr "Alimentation Mailchimp"
 
 #: app/Modules/DocumentationModule.php:45
 msgid "MailChimp integration"
-msgstr "MailChimp-integratie"
+msgstr "Intégration MailChimp"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:43
+#, fuzzy
 msgid ""
 "Mailchimp is a marketing platform for small businesses. Send beautiful "
 "emails, connect your e-commerce store, advertise, and build your brand. Use "
@@ -1824,22 +1780,25 @@ msgid ""
 "href=\"http://www.mailchimp.com/\" target=\"_blank\">sign up for one here."
 "</a>"
 msgstr ""
-"Mailchimp is een marketingplatform voor kleine bedrijven. Verzend prachtige "
-"e-mails, verbind je e-commerce winkel, adverteer en bouw je merk op. Gebruik "
-"Fluent Form om klantgegevens te verzamelen en deze automatisch toe te voegen "
-"aan uw Mailchimp-campagnelijst. Als je geen Mailchimp-account hebt, kun je "
-"je hier <a href=\"https://www.mailchimp.com/\" target=\"_blank\">aanmelden."
-"</a>"
+"Mailchimp est une plate-forme de marketing pour les petites entreprises. "
+"Envoyez de beaux e-mails, connectez votre magasin de commerce électronique, "
+"annoncez et construisez votre marque. Utilisez fluent Form pour recueillir "
+"des informations sur les clients et les ajouter automatiquement à votre "
+"liste de campagne Mailchimp. Si vous n’avez pas de compte Mailchimp, vous "
+"pouvez vous <a href=\"http://www.mailchimp.com/\" target=\"_blank\">inscrire "
+"à un seul compte ici.</a>"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:132
+#, fuzzy
 msgid ""
 "Mailchimp is not configured yet! Please configure your mailchimp api first"
 msgstr ""
-"Mailchimp is nog niet geconfigureerd! Configureer eerst uw Mailchimp API"
+"Mailchimp n’est pas encore configuré! S’il vous plaît configurer votre api "
+"mailchimp d’abord"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:42
 msgid "Mailchimp Settings"
-msgstr "Mailchimp-instellingen"
+msgstr "Paramètres Mailchimp"
 
 #: app/Services/FormBuilder/CountryNames.php:151
 msgid "Malawi"
@@ -1847,11 +1806,11 @@ msgstr "Malawi"
 
 #: app/Services/FormBuilder/CountryNames.php:152
 msgid "Malaysia"
-msgstr "Maleisië"
+msgstr "Malaisie"
 
 #: app/Services/FormBuilder/CountryNames.php:153
 msgid "Maldives"
-msgstr "Maldiven"
+msgstr "Maldives"
 
 #: app/Services/FormBuilder/CountryNames.php:154
 msgid "Mali"
@@ -1859,11 +1818,11 @@ msgstr "Mali"
 
 #: app/Services/FormBuilder/CountryNames.php:155
 msgid "Malta"
-msgstr "Malta"
+msgstr "Malte"
 
 #: app/Modules/DocumentationModule.php:37
 msgid "Managing form submissions"
-msgstr "Formulierinzendingen beheren"
+msgstr "Gestion des soumissions de formulaires"
 
 #: app/Modules/Component/Component.php:897
 msgid "Mar"
@@ -1871,7 +1830,7 @@ msgstr "Mar"
 
 #: app/Modules/Component/Component.php:911
 msgid "March"
-msgstr "Maart"
+msgstr "Mars"
 
 #: app/Modules/Widgets/FluentFormWidget.php:267
 #: app/Modules/Widgets/FluentFormWidget.php:343
@@ -1880,88 +1839,96 @@ msgstr "Maart"
 #: app/Modules/Widgets/FluentFormWidget.php:1277
 #: app/Modules/Widgets/FluentFormWidget.php:2376
 msgid "Margin"
-msgstr "Marge"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:2189
 msgid "Margin Top"
-msgstr "Marge boven"
+msgstr ""
 
-#: app/Modules/Registerer/Menu.php:501
+#: app/Modules/Registerer/Menu.php:500
+#, fuzzy
 msgid "Marketing & CRM Integrations"
-msgstr "Marketing & CRM-integraties"
+msgstr "Marketing et Intégrations CRM"
 
 #: app/Services/FormBuilder/CountryNames.php:156
 msgid "Marshall Islands"
-msgstr "Marshall eilanden"
+msgstr "Îles Marshall"
 
 #: app/Services/FormBuilder/CountryNames.php:157
 msgid "Martinique"
 msgstr "Martinique"
 
-#: app/Services/FormBuilder/ElementCustomization.php:441
+#: app/Services/FormBuilder/ElementCustomization.php:436
 #: app/Services/FormBuilder/DefaultElements.php:217
 #: app/Services/FormBuilder/DefaultElements.php:235
 msgid "Mask Input"
-msgstr "Gemaskeerde invoer"
+msgstr "Entrée Masquée"
 
 #: app/Services/FormBuilder/CountryNames.php:158
 msgid "Mauritania"
-msgstr "Mauritanië"
+msgstr "Mauritanie"
 
 #: app/Services/FormBuilder/CountryNames.php:159
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr "Maurice"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:90
 msgid "Max File Size"
-msgstr "Max. bestandsgrootte"
+msgstr "Taille maximale du fichier"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:97
+#, fuzzy
 msgid "Max Files Count"
-msgstr "Max. aantal bestanden"
+msgstr "Nombre de fichiers Max"
 
-#: app/Services/FormBuilder/ElementCustomization.php:501
+#: app/Services/FormBuilder/ElementCustomization.php:496
+#, fuzzy
 msgid "Max Repeat inputs"
-msgstr "Max. herhaal invoeren"
+msgstr "Entrées Max Repeat"
 
-#: app/Services/FormBuilder/ElementCustomization.php:357
+#: app/Services/FormBuilder/ElementCustomization.php:352
 msgid "Max Selection"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:340
+#: app/Services/FormBuilder/ElementCustomization.php:335
+#, fuzzy
 msgid "Max text length"
-msgstr "Maximale tekstlengte"
+msgstr "Longueur de texte maximale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:520
+#: app/Services/FormBuilder/ElementCustomization.php:515
 #: app/Services/FormBuilder/ValidationRuleSettings.php:84
 msgid "Max Value"
-msgstr "Maximum waarde"
+msgstr "Valeur maximale"
 
 #: app/Modules/Widgets/FluentFormWidget.php:414
 msgid "Max Width"
-msgstr "Maximale wijdte"
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:826
 #: app/Services/FormBuilder/DefaultElements.php:870
+#, fuzzy
 msgid "Maximum file size limit is 1MB"
-msgstr "De maximale bestandsgrootte is 1 MB"
+msgstr "La limite maximale de taille du fichier est de 1 Mo"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:98
+#, fuzzy
 msgid "Maximum user file upload number."
-msgstr "Maximaal aantal bestandsuploads door gebruiker."
+msgstr "Numéro de téléchargement maximum de fichiers utilisateur."
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:85
+#, fuzzy
 msgid "Maximum value for the input field."
-msgstr "Maximale waarde voor het invoerveld."
+msgstr "Valeur maximale pour le champ d’entrée."
 
 #: app/Services/FormBuilder/DefaultElements.php:517
+#, fuzzy
 msgid "Maximum value is "
-msgstr "Maximale waarde is"
+msgstr "La valeur maximale est"
 
 #: app/Modules/Component/Component.php:899
 #: app/Modules/Component/Component.php:913
 msgid "May"
-msgstr "mei"
+msgstr "Mai"
 
 #: app/Services/FormBuilder/CountryNames.php:160
 msgid "Mayotte"
@@ -1969,41 +1936,43 @@ msgstr "Mayotte"
 
 #: app/Services/FormBuilder/ElementCustomization.php:95
 msgid "Medium"
-msgstr "Medium"
+msgstr "Moyen"
 
 #: app/Services/FormBuilder/CountryNames.php:161
 msgid "Mexico"
-msgstr "Mexico"
+msgstr "Mexique"
 
 #: app/Services/FormBuilder/CountryNames.php:162
 msgid "Micronesia"
-msgstr "Micronesië"
+msgstr "Micronésie"
 
 #: app/Services/FormBuilder/DefaultElements.php:70
 #: app/Services/FormBuilder/DefaultElements.php:76
 msgid "Middle Name"
-msgstr "Middel naam(en)"
+msgstr "Deuxième nom"
 
-#: app/Services/FormBuilder/ElementCustomization.php:515
+#: app/Services/FormBuilder/ElementCustomization.php:510
 #: app/Services/FormBuilder/ValidationRuleSettings.php:77
 msgid "Min Value"
-msgstr "Min waarde"
+msgstr "Valeur minimale"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:78
+#, fuzzy
 msgid "Minimum value for the input field."
-msgstr "Minimumwaarde voor het invoerveld."
+msgstr "Valeur minimale pour le champ d’entrée."
 
 #: app/Services/FormBuilder/DefaultElements.php:513
+#, fuzzy
 msgid "Minimum value is "
-msgstr "Minimumwaarde is"
+msgstr "La valeur minimale est"
 
 #: app/Services/FormBuilder/CountryNames.php:163
 msgid "Moldova"
-msgstr "Moldavië"
+msgstr "Moldavie"
 
 #: app/Modules/Component/Component.php:935
 msgid "Mon"
-msgstr "Ma"
+msgstr "Lun"
 
 #: app/Services/FormBuilder/CountryNames.php:164
 msgid "Monaco"
@@ -2011,15 +1980,15 @@ msgstr "Monaco"
 
 #: app/Modules/Component/Component.php:926
 msgid "Monday"
-msgstr "Maandag"
+msgstr "Lundi"
 
 #: app/Services/FormBuilder/CountryNames.php:165
 msgid "Mongolia"
-msgstr "Mongolië"
+msgstr "Mongolie"
 
 #: app/Services/FormBuilder/CountryNames.php:166
 msgid "Montenegro"
-msgstr "Montenegro"
+msgstr "Monténégro"
 
 #: app/Services/FormBuilder/CountryNames.php:167
 msgid "Montserrat"
@@ -2027,48 +1996,51 @@ msgstr "Montserrat"
 
 #: app/Services/FormBuilder/CountryNames.php:168
 msgid "Morocco"
-msgstr "Marokko"
+msgstr "Maroc"
 
 #: app/Services/FormBuilder/CountryNames.php:169
 msgid "Mozambique"
 msgstr "Mozambique"
 
-#: app/Services/FormBuilder/ElementCustomization.php:309
-msgid "Multi-step form's next button"
-msgstr "Meerdere stappen formulier Volgende knop "
-
 #: app/Services/FormBuilder/ElementCustomization.php:304
+#, fuzzy
+msgid "Multi-step form's next button"
+msgstr "Prochain bouton de la forme en plusieurs étapes"
+
+#: app/Services/FormBuilder/ElementCustomization.php:299
+#, fuzzy
 msgid "Multi-step form's previous button"
-msgstr "Meerdere stappen formulier Vorige knop "
+msgstr "Bouton précédent de la forme en plusieurs étapes"
 
 #: app/Services/FormBuilder/DefaultElements.php:726
 msgid "Multiple Choice"
-msgstr "Meerkeuze"
+msgstr "Choix multiples"
 
 #: app/Services/FormBuilder/DefaultElements.php:698
 msgid "Multiselect"
-msgstr "Multi-Select"
+msgstr "Sélection multiple"
 
 #: app/Services/FormBuilder/CountryNames.php:170
 msgid "Myanmar"
 msgstr "Myanmar"
 
 #: app/Services/FormBuilder/ElementCustomization.php:40
+#, fuzzy
 msgid "Name Attribute"
-msgstr "Naamkenmerk"
+msgstr "Attribut de nom"
 
 #: app/Modules/Form/Form.php:506
 #, php-format
 msgid "Name attribute %s has duplicate value."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:317
+#: app/Services/FormBuilder/ElementCustomization.php:312
 msgid "Name Fields"
-msgstr "Naamvelden"
+msgstr "Nom des Champs"
 
 #: app/Services/FormBuilder/CountryNames.php:171
 msgid "Namibia"
-msgstr "Namibië"
+msgstr "Namibie"
 
 #: app/Services/FormBuilder/CountryNames.php:172
 msgid "Nauru"
@@ -2076,35 +2048,36 @@ msgstr "Nauru"
 
 #: app/Services/FormBuilder/CountryNames.php:173
 msgid "Nepal"
-msgstr "Nepal"
+msgstr "Népal"
 
 #: app/Services/FormBuilder/CountryNames.php:174
 msgid "Netherlands"
-msgstr "Nederland"
+msgstr "Pays-Bas"
 
 #: app/Services/FormBuilder/CountryNames.php:175
 msgid "New Caledonia"
-msgstr "Nieuw-Caledonië"
+msgstr "Nouvelle-Calédonie"
 
-#: app/Modules/Registerer/Menu.php:316 app/Modules/Registerer/Menu.php:317
+#: app/Modules/Registerer/Menu.php:315 app/Modules/Registerer/Menu.php:316
 msgid "New Form"
-msgstr "Nieuw formulier"
+msgstr "Nouveau formulaire"
 
 #: app/Services/FormBuilder/CountryNames.php:176
 msgid "New Zealand"
-msgstr "Nieuw-Zeeland"
+msgstr "Nouvelle-Zélande"
 
 #: app/Services/FormBuilder/DefaultElements.php:1100
+#, fuzzy
 msgid "Next"
-msgstr "Volgende"
+msgstr "Suivant"
 
-#: app/Services/FormBuilder/ElementCustomization.php:308
+#: app/Services/FormBuilder/ElementCustomization.php:303
 msgid "Next Button"
-msgstr "Volgende knop"
+msgstr "Bouton Suivant"
 
 #: app/Modules/Component/Component.php:892
 msgid "Next Month"
-msgstr "Volgende maand"
+msgstr "Mois suivant"
 
 #: app/Services/FormBuilder/CountryNames.php:177
 msgid "Nicaragua"
@@ -2112,7 +2085,7 @@ msgstr "Nicaragua"
 
 #: app/Services/FormBuilder/DefaultElements.php:970
 msgid "Nice"
-msgstr "Leuk"
+msgstr "Nice"
 
 #: app/Services/FormBuilder/CountryNames.php:178
 msgid "Niger"
@@ -2128,11 +2101,11 @@ msgstr "Niue"
 
 #: app/Modules/Widgets/FluentFormWidget.php:103
 #: app/Modules/Widgets/FluentFormWidget.php:945
-#: app/Services/FormBuilder/ElementCustomization.php:243
-#: app/Services/FormBuilder/ElementCustomization.php:554
+#: app/Services/FormBuilder/ElementCustomization.php:238
+#: app/Services/FormBuilder/ElementCustomization.php:549
 #: app/Services/FormBuilder/ValidationRuleSettings.php:69
 msgid "No"
-msgstr "Nee"
+msgstr "Non"
 
 #: app/Modules/Component/Component.php:531
 msgid "No choices to choose from"
@@ -2144,16 +2117,16 @@ msgstr ""
 
 #: app/Modules/Form/FormHandler.php:382 app/Modules/Acl/Acl.php:133
 msgid "Nonce verification failed, please try again."
-msgstr "Verificatie mislukt. Probeer het opnieuw."
+msgstr "Vérification nonce a échoué. Merci d'essayer à nouveau."
 
-#: app/Services/FormBuilder/ElementCustomization.php:292
-#: app/Services/FormBuilder/ElementCustomization.php:446
+#: app/Services/FormBuilder/ElementCustomization.php:287
+#: app/Services/FormBuilder/ElementCustomization.php:441
 msgid "None"
-msgstr "Geen"
+msgstr "Aucun"
 
 #: app/Services/FormBuilder/CountryNames.php:181
 msgid "Norfolk Island"
-msgstr "Norfolkeiland"
+msgstr "Île Norfolk"
 
 #: app/Modules/Widgets/FluentFormWidget.php:593
 #: app/Modules/Widgets/FluentFormWidget.php:1008
@@ -2162,23 +2135,24 @@ msgstr "Norfolkeiland"
 #: app/Modules/Widgets/FluentFormWidget.php:1916
 #: app/Modules/Widgets/FluentFormWidget.php:2123
 msgid "Normal"
-msgstr "Normaal"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:183
 msgid "North Korea"
-msgstr "Noord Korea"
+msgstr "Corée du Nord"
 
 #: app/Services/FormBuilder/CountryNames.php:182
 msgid "Northern Mariana Islands"
-msgstr "Noordelijke Mariana eilanden"
+msgstr "Northern Mariana Islands"
 
 #: app/Services/FormBuilder/CountryNames.php:184
 msgid "Norway"
-msgstr "Noorwegen"
+msgstr "Norvège"
 
 #: app/Modules/Entries/Entries.php:478
+#, fuzzy
 msgid "Note has been successfully added"
-msgstr "Opmerking is met succes toegevoegd"
+msgstr "Note a été ajoutée avec succès"
 
 #: app/Modules/Component/Component.php:905
 msgid "Nov"
@@ -2186,28 +2160,28 @@ msgstr "Nov"
 
 #: app/Modules/Component/Component.php:919
 msgid "November"
-msgstr "November"
+msgstr "Novembre"
 
-#: app/Services/FormBuilder/ElementCustomization.php:560
+#: app/Services/FormBuilder/ElementCustomization.php:555
 msgid "Number Format"
 msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:494
 #: app/Services/FormBuilder/DefaultElements.php:527
 msgid "Numeric Field"
-msgstr "Numeriek veld"
+msgstr "Champ numérique"
 
 #: app/Modules/Component/Component.php:904
 msgid "Oct"
-msgstr "Okt"
+msgstr "Oct"
 
 #: app/Modules/Component/Component.php:918
 msgid "October"
-msgstr "oktober"
+msgstr "Octobre"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1442
 msgid "Odd Item Background Color"
-msgstr "Achtergrondkleur oneven item"
+msgstr ""
 
 #: app/Services/FormBuilder/ShortCodeParser.php:274
 msgid "Offline"
@@ -2218,27 +2192,24 @@ msgid "Oman"
 msgstr "Oman"
 
 #: app/Services/FormBuilder/DefaultElements.php:1233
+#, fuzzy
 msgid "One Column Container"
-msgstr "Een koloms container"
-
-#: app/Modules/Component/Component.php:533
-#, php-format
-msgid "Only %%maxItemCount%% values can be added"
-msgstr ""
+msgstr "Conteneur d’une colonne"
 
 #: app/Services/FormBuilder/ElementCustomization.php:130
 #: app/Services/FormBuilder/ElementCustomization.php:135
-#: app/Services/FormBuilder/ElementCustomization.php:382
+#: app/Services/FormBuilder/ElementCustomization.php:377
 msgid "Options"
-msgstr "Opties"
+msgstr "Options"
 
 #: app/Services/FormBuilder/EditorShortCode.php:96
 msgid "Order Items Table"
-msgstr "Tabel items volgorde"
+msgstr "Tableau des items de la commande"
 
-#: app/Modules/Registerer/Menu.php:495
+#: app/Modules/Registerer/Menu.php:494
+#, fuzzy
 msgid "Other Confirmations"
-msgstr "Andere bevestigingen"
+msgstr "Autres confirmations"
 
 #: app/Modules/Widgets/FluentFormWidget.php:289
 #: app/Modules/Widgets/FluentFormWidget.php:365
@@ -2253,15 +2224,16 @@ msgstr "Andere bevestigingen"
 #: app/Modules/Widgets/FluentFormWidget.php:2177
 #: app/Modules/Widgets/FluentFormWidget.php:2364
 msgid "Padding"
-msgstr "Padding"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1675
 msgid "Pagination"
-msgstr "Paginering"
+msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:78
+#, fuzzy
 msgid "Paid Total Amount"
-msgstr "Totaal betaald bedrag"
+msgstr "Montant total payé"
 
 #: app/Services/FormBuilder/CountryNames.php:186
 msgid "Pakistan"
@@ -2269,7 +2241,7 @@ msgstr "Pakistan"
 
 #: app/Services/FormBuilder/CountryNames.php:187
 msgid "Palestinian Territory"
-msgstr "Palestijns gebied"
+msgstr "Territoire Palestinien"
 
 #: app/Services/FormBuilder/CountryNames.php:188
 msgid "Panama"
@@ -2277,7 +2249,7 @@ msgstr "Panama"
 
 #: app/Services/FormBuilder/CountryNames.php:189
 msgid "Papua New Guinea"
-msgstr "Papoea-Nieuw-Guinea"
+msgstr "Papouasie-Nouvelle-Guinée"
 
 #: app/Services/FormBuilder/CountryNames.php:190
 msgid "Paraguay"
@@ -2285,19 +2257,20 @@ msgstr "Paraguay"
 
 #: app/Services/FormBuilder/DefaultElements.php:1067
 msgid "Password"
-msgstr "Wachtwoord"
+msgstr "Mot de passe"
 
 #: app/Services/FormBuilder/DefaultElements.php:1080
 msgid "Password Field"
-msgstr "Wachtwoordveld"
+msgstr "Champ mot de passe"
 
 #: app/Services/FormBuilder/EditorShortCode.php:79
 msgid "Payment Amount"
-msgstr "Te betalen bedrag"
+msgstr "Montant du paiement"
 
 #: app/Services/FormBuilder/DefaultElements.php:1420
+#, fuzzy
 msgid "Payment Field"
-msgstr "Betalingsveld"
+msgstr "Champ de paiement"
 
 #: app/Services/FormBuilder/ElementCustomization.php:145
 msgid "Payment Items"
@@ -2306,32 +2279,32 @@ msgstr ""
 #: app/Services/FormBuilder/EditorShortCode.php:76
 #: app/Services/FormBuilder/EditorShortCode.php:99
 msgid "Payment Method"
-msgstr "Betalingsmiddel"
+msgstr "Mode de paiement"
 
 #: app/Services/FormBuilder/EditorShortCode.php:94
 msgid "Payment Receipt"
-msgstr "Betalingsbewijs"
+msgstr "Facture"
 
 #: app/Services/FormBuilder/EditorShortCode.php:77
 #: app/Services/FormBuilder/EditorShortCode.php:97
 msgid "Payment Status"
-msgstr "Betalingsstatus"
+msgstr "Statut du paiement"
 
 #: app/Services/FormBuilder/EditorShortCode.php:95
 msgid "Payment Summary"
-msgstr "Betalingsoverzicht"
+msgstr "Résumé des paiements"
 
 #: app/Services/FormBuilder/EditorShortCode.php:98
 #: resources/views/email/report/body.php:173
 msgid "Payment Total"
-msgstr "Totaal betaling"
+msgstr "Total du paiement"
 
-#: app/Modules/Registerer/Menu.php:347 app/Modules/Registerer/Menu.php:348
+#: app/Modules/Registerer/Menu.php:346 app/Modules/Registerer/Menu.php:347
 #: resources/views/admin/global_menu.php:17
 #: resources/views/admin/global_menu.php:29
 #: resources/views/email/report/body.php:168
 msgid "Payments"
-msgstr "Betalingen"
+msgstr "Paiements"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:132
 msgid "PDF"
@@ -2343,11 +2316,11 @@ msgstr "PDF (pdf)"
 
 #: app/Services/FormBuilder/CountryNames.php:191
 msgid "Peru"
-msgstr "Peru"
+msgstr "Pérou"
 
 #: app/Services/FormBuilder/CountryNames.php:192
 msgid "Philippines"
-msgstr "Filippijnen"
+msgstr "Philippines"
 
 #: app/Services/FormBuilder/CountryNames.php:193
 msgid "Pitcairn"
@@ -2357,43 +2330,49 @@ msgstr "Pitcairn"
 #: app/Modules/Widgets/FluentFormWidget.php:904
 #: app/Services/FormBuilder/ElementCustomization.php:105
 msgid "Placeholder"
-msgstr "Tijdelijke aanduiding"
+msgstr "Etiquette"
 
 #: app/Services/Integrations/BaseIntegration.php:110
+#, fuzzy
 msgid "Please fix the errors"
-msgstr "Los de fouten op a.u.b."
+msgstr "S’il vous plaît corriger les erreurs"
 
-#: app/Services/FormBuilder/ElementCustomization.php:502
+#: app/Services/FormBuilder/ElementCustomization.php:497
+#, fuzzy
 msgid ""
 "Please provide max number of rows the user can fill up for this repeat field."
 " Keep blank/0 for unlimited numbers"
 msgstr ""
-"Geef het maximale aantal rijen op dat de gebruiker kan invullen voor dit "
-"herhaalveld. Houd blanco / 0 voor onbeperkte nummers"
-
-#: app/Services/FormBuilder/ElementCustomization.php:521
-msgid "Please provide Maximum value"
-msgstr "Geef maximale waarde op"
+"S’il vous plaît fournir le nombre maximum de lignes que l’utilisateur peut "
+"remplir pour ce champ de répétition. Restez vide/0 pour les numéros illimités"
 
 #: app/Services/FormBuilder/ElementCustomization.php:516
-msgid "Please provide minimum value"
-msgstr "Geef een minimumwaarde op"
+#, fuzzy
+msgid "Please provide Maximum value"
+msgstr "S’il vous plaît fournir une valeur maximale"
 
-#: app/Services/FormBuilder/ElementCustomization.php:526
+#: app/Services/FormBuilder/ElementCustomization.php:511
+#, fuzzy
+msgid "Please provide minimum value"
+msgstr "S’il vous plaît fournir une valeur minimale"
+
+#: app/Services/FormBuilder/ElementCustomization.php:521
+#, fuzzy
 msgid ""
 "Please provide step attribute for this field. Give value \"any\" for "
 "floating value"
 msgstr ""
-"Geef een stapkenmerk op voor dit veld. Geef waarde \"any\" voor zwevende "
-"waarde"
+"S’il vous plaît fournir l’attribut étape pour ce domaine. Donner de la "
+"valeur \"n’importe quel\" pour la valeur flottante"
 
 #: app/Modules/Entries/Entries.php:646
+#, fuzzy
 msgid "Please select entries first"
-msgstr "Selecteer eerst de inzendingen"
+msgstr "S’il vous plaît sélectionner les entrées d’abord"
 
 #: app/Modules/Settings/Settings.php:137
 msgid "Please validate your reCaptcha first and then hit save."
-msgstr "Bevestig eerst je reCaptcha en druk vervolgens op opslaan."
+msgstr "Merci de valider votre reCAPTCHA en premier, puis d'enregistrer."
 
 #: app/Modules/Component/Component.php:963
 msgid "PM"
@@ -2406,7 +2385,7 @@ msgstr "PNG"
 
 #: app/Services/FormBuilder/CountryNames.php:194
 msgid "Poland"
-msgstr "Polen"
+msgstr "Pologne"
 
 #: app/Services/FormBuilder/CountryNames.php:195
 msgid "Portugal"
@@ -2414,66 +2393,65 @@ msgstr "Portugal"
 
 #: app/Modules/DocumentationModule.php:61
 msgid "Predefined form fields"
-msgstr "Voorgedefinieerde formuliervelden"
+msgstr "Champs de forme prédéfinis"
 
-#: app/Services/FormBuilder/ElementCustomization.php:530
+#: app/Services/FormBuilder/ElementCustomization.php:525
+#, fuzzy
 msgid "Prefix Label"
-msgstr "Voorvoegsellabel"
+msgstr "Étiquette de préfixe"
 
 #: app/Modules/Component/Component.php:532
 msgid "Press to select"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:871
-msgid "Preview"
-msgstr ""
-
 #: resources/views/frameless/edit-entry.php:8
 #: resources/views/frameless/show_review.php:8
 msgid "Preview Form"
-msgstr "Bekijk formulier"
+msgstr "Aperçu du Formulaire"
 
 #: app/Services/FormBuilder/DefaultElements.php:1095
 msgid "Previous"
-msgstr "Vorige"
+msgstr "Précédent"
 
-#: app/Services/FormBuilder/ElementCustomization.php:303
+#: app/Services/FormBuilder/ElementCustomization.php:298
 msgid "Previous Button"
-msgstr "Vorige knop"
+msgstr "Bouton Précédent"
 
 #: app/Modules/Component/Component.php:891
 msgid "Previous Month"
-msgstr "Vorige maand"
-
-#: app/Services/FormBuilder/ElementCustomization.php:284
-msgid "Progress Bar"
-msgstr "Voortgangsbalk"
+msgstr "Mois précédent"
 
 #: app/Services/FormBuilder/ElementCustomization.php:279
+msgid "Progress Bar"
+msgstr "Barre de progression"
+
+#: app/Services/FormBuilder/ElementCustomization.php:274
 msgid "Progress Indicator"
-msgstr "Voortgangsindicator"
+msgstr "Indicateur de progrès"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1751
 msgid "Progressbar"
-msgstr "Voortgangsbalk"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1683
 msgid "Progressbar Label"
-msgstr "Label voortgangsbalk"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:531
+#: app/Services/FormBuilder/ElementCustomization.php:526
+#, fuzzy
 msgid ""
 "Provide Input Prefix Label. It will show in the input field as prefix label"
 msgstr ""
-"Geef het label voor voorvoegsel op. Het wordt in het invoerveld weergegeven "
-"als voorvoegsellabel"
+"Fournir l’étiquette Préfixe d’entrée. Il affichera dans le champ d’entrée "
+"comme étiquette de préfixe"
 
-#: app/Services/FormBuilder/ElementCustomization.php:536
+#: app/Services/FormBuilder/ElementCustomization.php:531
+#, fuzzy
 msgid ""
 "Provide Input Suffix Label. It will show in the input field as suffix label"
 msgstr ""
-"Geef het label voor het achtervoegsel op. Het wordt in het invoerveld "
-"weergegeven als achtervoegsellabel"
+"Fournir l’étiquette Suffix d’entrée. Il affichera dans le champ d’entrée "
+"comme étiquette de suffixe"
 
 #: app/Services/FormBuilder/CountryNames.php:196
 msgid "Puerto Rico"
@@ -2483,22 +2461,22 @@ msgstr "Puerto Rico"
 msgid "Qatar"
 msgstr "Qatar"
 
-#: app/Services/FormBuilder/ElementCustomization.php:495
+#: app/Services/FormBuilder/ElementCustomization.php:490
 msgid "Radio"
 msgstr "Radio"
 
 #: app/Modules/Widgets/FluentFormWidget.php:934
 msgid "Radio & Checkbox"
-msgstr "Radio & Selectievak"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1096
 msgid "Radio Buttons"
-msgstr "Radioknoppen"
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:591
 #: app/Services/FormBuilder/DefaultElements.php:623
 msgid "Radio Field"
-msgstr "Radio veld"
+msgstr "Bouton Radio"
 
 #: app/Services/FormBuilder/EditorShortCode.php:32
 msgid "Random String with Prefix"
@@ -2507,15 +2485,7 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:955
 #: app/Services/FormBuilder/DefaultElements.php:977
 msgid "Ratings"
-msgstr "Waarderingen"
-
-#: app/Modules/Registerer/Menu.php:892
-msgid "Read"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:888
-msgid "Read Only"
-msgstr ""
+msgstr "Evaluations"
 
 #: app/Services/FormBuilder/DefaultElements.php:1178
 msgid "reCaptcha"
@@ -2523,27 +2493,29 @@ msgstr "reCaptcha"
 
 #: app/Modules/Form/FormHandler.php:438
 msgid "reCaptcha verification failed, please try again."
-msgstr "reCaptcha-verificatie is mislukt. Probeer het opnieuw."
+msgstr "la vérification reCaptcha a échoué, s’il vous plaît essayer à nouveau."
 
-#: app/Services/FormBuilder/ElementCustomization.php:330
+#: app/Services/FormBuilder/ElementCustomization.php:325
+#, fuzzy
 msgid "Repeat Fields"
-msgstr "Herhaal velden"
+msgstr "Champs répétitifs"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:59
 msgid "Required"
-msgstr "Verplicht"
+msgstr "Requis"
 
-#: app/Services/FormBuilder/ElementCustomization.php:160
+#: app/Services/FormBuilder/ElementCustomization.php:155
+#, fuzzy
 msgid "Required Validation Message"
-msgstr "Meldingstekst bij verplichte velden"
+msgstr "Message de validation requis"
 
-#: app/Services/FormBuilder/ElementCustomization.php:269
+#: app/Services/FormBuilder/ElementCustomization.php:264
 msgid "Resume Step from last form session"
-msgstr "Hervat de stap van de laatste sessie"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:198
 msgid "Reunion"
-msgstr "Reunion"
+msgstr "La Réunion"
 
 #: app/Modules/Widgets/FluentFormWidget.php:210
 #: app/Modules/Widgets/FluentFormWidget.php:453
@@ -2552,21 +2524,21 @@ msgstr "Reunion"
 #: app/Modules/Widgets/FluentFormWidget.php:1301
 #: app/Modules/Widgets/FluentFormWidget.php:2071
 #: app/Services/FormBuilder/ElementCustomization.php:63
-#: app/Services/FormBuilder/ElementCustomization.php:223
+#: app/Services/FormBuilder/ElementCustomization.php:218
 msgid "Right"
-msgstr "Rechts"
+msgstr "Droite"
 
 #: app/Services/FormBuilder/CountryNames.php:199
 msgid "Romania"
-msgstr "Roemenië"
+msgstr "Roumanie"
 
 #: app/Services/FormBuilder/ElementCustomization.php:120
 msgid "Rows"
-msgstr "Rijen"
+msgstr "Lignes"
 
 #: app/Services/FormBuilder/CountryNames.php:200
 msgid "Russia"
-msgstr "Rusland"
+msgstr "Russie"
 
 #: app/Services/FormBuilder/CountryNames.php:201
 msgid "Rwanda"
@@ -2574,39 +2546,39 @@ msgstr "Rwanda"
 
 #: app/Services/FormBuilder/CountryNames.php:211
 msgid "S&atilde;o Tom&eacute; and Pr&iacute;ncipe"
-msgstr "São Tomé en Principe"
+msgstr "Sao Tomé-et-Principe"
 
 #: app/Services/FormBuilder/CountryNames.php:202
 msgid "Saint Barth&eacute;lemy"
-msgstr "Sint-Bartholomeus"
+msgstr "Saint Barthélemy"
 
 #: app/Services/FormBuilder/CountryNames.php:203
 msgid "Saint Helena"
-msgstr "Sint-Helena"
+msgstr "Sainte-Hélène"
 
 #: app/Services/FormBuilder/CountryNames.php:204
 msgid "Saint Kitts and Nevis"
-msgstr "Saint Kitts en Nevis"
+msgstr "Saint-Kitts-et-Nevis"
 
 #: app/Services/FormBuilder/CountryNames.php:205
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr "Sainte-Lucie"
 
 #: app/Services/FormBuilder/CountryNames.php:207
 msgid "Saint Martin (Dutch part)"
-msgstr "Sint Maarten (Nederlands deel)"
+msgstr "Saint-Martin (partie néerlandaise)"
 
 #: app/Services/FormBuilder/CountryNames.php:206
 msgid "Saint Martin (French part)"
-msgstr "Saint Martin (Frans deel)"
+msgstr "Saint-Martin (partie française)"
 
 #: app/Services/FormBuilder/CountryNames.php:208
 msgid "Saint Pierre and Miquelon"
-msgstr "Saint Pierre en Miquelon"
+msgstr "Saint Pierre et Miquelon"
 
 #: app/Services/FormBuilder/CountryNames.php:209
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent en de Grenadines"
+msgstr "Saint-Vincent-et-les-Grenadines"
 
 #: app/Services/FormBuilder/CountryNames.php:264
 msgid "Samoa"
@@ -2618,173 +2590,168 @@ msgstr "San Marino"
 
 #: app/Modules/Component/Component.php:940
 msgid "Sat"
-msgstr "Zat"
+msgstr "Sam"
 
 #: app/Modules/Component/Component.php:931
 msgid "Saturday"
-msgstr "Zaterdag"
+msgstr "Samedi"
 
 #: app/Services/FormBuilder/CountryNames.php:212
 msgid "Saudi Arabia"
-msgstr "Saoedi-Arabië"
+msgstr "Arabie Saoudite"
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:33
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:46
 msgid "Save Settings"
-msgstr "Instellingen opslaan"
+msgstr "Enregistrer les paramètres"
 
 #: app/Modules/Component/Component.php:959
+#, fuzzy
 msgid "Scroll to increment"
-msgstr "Scroll naar stapgrootte"
-
-#: app/Modules/Registerer/Menu.php:878
-msgid "Search"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:877
-msgid "Search Forms"
-msgstr ""
+msgstr "Faites défiler vers l’incrément"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1172
 #: app/Services/FormBuilder/DefaultElements.php:1043
 #: app/Services/FormBuilder/DefaultElements.php:1049
 msgid "Section Break"
-msgstr "Sectie verdeling"
+msgstr "Saut de Section"
 
 #: app/Services/FormBuilder/ElementCustomization.php:82
+#, fuzzy
 msgid "Select a button style from the dropdown"
-msgstr "Selecteer een knopstijl van de dropdown"
+msgstr "Sélectionnez un style bouton à partir de la baisse"
 
 #: app/Modules/Widgets/ElementorWidget.php:47
 msgid "Select a Fluent Form"
-msgstr "Selecteer een formulier"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:442
+#: app/Services/FormBuilder/ElementCustomization.php:437
+#, fuzzy
 msgid "Select a mask for the input field"
-msgstr "Selecteer een type masker voor het invoerveld"
+msgstr "Sélectionnez un masque pour le champ d’entrée"
 
 #: app/Services/FormBuilder/ElementCustomization.php:114
+#, fuzzy
 msgid ""
 "Select any date format from the dropdown. The user will be able to choose a "
 "date in this given format."
 msgstr ""
-"Selecteer een datumnotatie in de dropdown. De gebruiker kan een datum kiezen "
-"in dit gegeven formaat."
+"Sélectionnez n’importe quel format de date à partir du décrochage. "
+"L’utilisateur pourra choisir une date dans ce format donné."
 
-#: app/Services/FormBuilder/ElementCustomization.php:280
+#: app/Services/FormBuilder/ElementCustomization.php:275
+#, fuzzy
 msgid ""
 "Select any of them below, user will see progress of form steps according to "
 "your choice."
 msgstr ""
-"Selecteer één van de onderstaande opties, de gebruiker ziet de voortgang van "
-"de formulierstappen volgens jouw keuze."
+"Sélectionnez l’un d’eux ci-dessous, l’utilisateur verra l’avancement des "
+"étapes de forme selon votre choix."
 
 #: app/Services/FormBuilder/DefaultElements.php:439
 #: app/Services/FormBuilder/DefaultElements.php:897
 msgid "Select Country"
-msgstr "Selecteer land"
+msgstr "Sélectionnez un pays"
 
 #: app/Services/FormBuilder/ElementCustomization.php:113
 msgid "Select Date Format"
-msgstr "Selecteer Datumnotatie"
+msgstr "Sélectionnez un format de date"
 
-#: app/Services/FormBuilder/ElementCustomization.php:561
+#: app/Services/FormBuilder/ElementCustomization.php:556
 msgid ""
 "Select the format of numbers that are allowed in this field. You have the "
 "option to use a comma or a dot as the decimal separator."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:577
+#: app/Services/FormBuilder/ElementCustomization.php:572
+#, fuzzy
 msgid "Select the Layout for checkable items"
-msgstr "Selecteer de lay-out voor aanvinkbare items"
+msgstr "Sélectionnez la mise en page pour les articles vérifiables"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:60
+#, fuzzy
 msgid "Select whether this field is a required field for the form or not."
 msgstr ""
-"Selecteer of dit veld een verplicht veld is voor het formulier of niet."
+"Sélectionnez si ce champ est un champ requis pour le formulaire ou non."
 
 #: app/Modules/Entries/Entries.php:672
+#, fuzzy
 msgid "Selected entries successfully deleted"
-msgstr "Geselecteerde items zijn verwijderd"
+msgstr "Entrées sélectionnées supprimées avec succès"
 
 #: app/Modules/Entries/Entries.php:678
+#, fuzzy
 msgid "Selected entries successfully marked as Favorite"
-msgstr "Geselecteerde items zijn gemarkeerd als favoriet"
+msgstr "Entrées sélectionnées avec succès marquées comme favoris"
 
 #: app/Modules/Entries/Entries.php:683
+#, fuzzy
 msgid "Selected entries successfully remove from favorite"
-msgstr "Geselecteerde items zijn met succes verwijderd uit favorieten"
+msgstr "Les entrées sélectionnées sont supprimées avec succès des"
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:277
+#, fuzzy
 msgid "Selected integration feed successfully deleted"
-msgstr "Geselecteerde integratiefeed is verwijderd"
+msgstr "Flux d’intégration sélectionnés supprimés avec succès"
 
 #: app/Modules/Logger/DataLogger.php:242 app/Modules/Logger/DataLogger.php:263
+#, fuzzy
 msgid "Selected logs successfully deleted"
-msgstr "Geselecteerde logs zijn verwijderd"
+msgstr "Journaux sélectionnés supprimés avec succès"
 
 #: app/Services/FormBuilder/CountryNames.php:213
 msgid "Senegal"
-msgstr "Senegal"
+msgstr "Sénégal"
 
 #: app/Modules/Component/Component.php:903
 msgid "Sep"
-msgstr "Sept"
+msgstr "Sep"
 
 #: app/Modules/Component/Component.php:917
 msgid "September"
-msgstr "september"
+msgstr "Septembre"
 
 #: app/Services/FormBuilder/CountryNames.php:214
 msgid "Serbia"
-msgstr "Servië"
+msgstr "Serbie"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:133
+#, fuzzy
 msgid "Set Mailchimp API"
-msgstr "Mailchimp API instellen"
+msgstr "Définir Mailchimp API"
 
 #: app/Services/FormBuilder/ElementCustomization.php:146
+#, fuzzy
 msgid "Set your product type and corresponding prices"
-msgstr "Stel je producttype en bijbehorende prijzen in"
-
-#: app/Services/FormBuilder/ElementCustomization.php:151
-msgid "Set your subscription plans"
-msgstr ""
+msgstr "Définissez votre type de produit et les prix correspondants"
 
 #: app/Modules/DocumentationModule.php:41
 msgid "Setting up email notifications"
-msgstr "E-mailmeldingen instellen"
+msgstr "Mise en place de notifications par courriel"
 
 #: app/Modules/DocumentationModule.php:25
 msgid "Setting up form submission confirmation"
-msgstr "Bevestiging van formulierverzending instellen"
+msgstr "Mise en place de la confirmation de la soumission du formulaire"
 
-#: app/Modules/Registerer/Menu.php:868
-msgid "Settings"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:454
+#: app/Modules/Registerer/Menu.php:453
 msgid "Settings & Integrations"
-msgstr "Instellingen en integraties"
+msgstr "Réglages & intégrations"
 
 #: app/Modules/Form/Settings/FormSettings.php:123
 #: app/Modules/Form/Settings/FormSettings.php:172
+#, fuzzy
 msgid "Settings has been saved."
-msgstr "Instellingen zijn opgeslagen."
+msgstr "Les paramètres ont été enregistrés."
 
 #: app/Modules/DocumentationModule.php:57
 msgid "Setup conditional confirmation messages"
-msgstr "Stel voorwaardelijke bevestigingsberichten in"
+msgstr "Configuration des messages de confirmation conditionnelle"
 
 #: app/Services/FormBuilder/CountryNames.php:215
 msgid "Seychelles"
-msgstr "Seychellen"
+msgstr "Seychelles"
 
-#: app/Modules/Registerer/Menu.php:874
-msgid "Short Code"
-msgstr ""
-
-#: app/Services/FormBuilder/ElementCustomization.php:229
+#: app/Services/FormBuilder/ElementCustomization.php:224
 #: app/Services/FormBuilder/DefaultElements.php:1196
 msgid "Shortcode"
 msgstr "Shortcode"
@@ -2795,33 +2762,30 @@ msgstr "Shortcode"
 #: app/Modules/Widgets/FluentFormWidget.php:1693
 #: app/Modules/Widgets/FluentFormWidget.php:1761
 msgid "Show"
-msgstr "Laten zien"
-
-#: app/Modules/Registerer/Menu.php:885
-msgid "Show Chart"
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:180
+#: app/Services/FormBuilder/ElementCustomization.php:175
+#, fuzzy
 msgid "Show Checkbox"
-msgstr "Selectievakje weergeven"
+msgstr "Afficher la case à cocher"
 
 #: app/Modules/Widgets/FluentFormWidget.php:1691
 msgid "Show Label"
-msgstr "Label weergeven"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:1759
 msgid "Show Progressbar"
-msgstr "Toon voortgangsbalk"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:545
+#: app/Services/FormBuilder/ElementCustomization.php:540
 msgid "Show Text"
-msgstr "Tekst weergeven"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:546
+#: app/Services/FormBuilder/ElementCustomization.php:541
 msgid "Show Text value on selection"
-msgstr "Toon tekstwaarde bij selectie"
+msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:426
+#: app/Services/FormBuilder/ElementCustomization.php:421
 msgid "Shuffle the available options"
 msgstr ""
 
@@ -2831,75 +2795,78 @@ msgstr "Sierra Leone"
 
 #: app/Services/FormBuilder/DefaultElements.php:199
 msgid "Simple Text"
-msgstr "Eenvoudige tekst"
+msgstr "Texte simple"
 
 #: app/Services/FormBuilder/CountryNames.php:217
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "Singapour"
 
 #: app/Services/FormBuilder/EditorShortCode.php:16
 msgid "Site Title"
-msgstr "Site titel"
+msgstr "Titre du site"
 
 #: app/Services/FormBuilder/EditorShortCode.php:15
 msgid "Site URL"
-msgstr "Site URL"
+msgstr "URL du site"
 
 #: app/Services/FormBuilder/DefaultElements.php:1329
+#, fuzzy
 msgid "Six Column Container"
-msgstr "Zes koloms container"
+msgstr "Conteneur six colonnes"
 
 #: app/Modules/Widgets/FluentFormWidget.php:953
 msgid "Size"
-msgstr "Afmeting"
+msgstr ""
 
-#: app/Modules/Registerer/Menu.php:509
+#: app/Modules/Registerer/Menu.php:508
 msgid "Slack"
 msgstr "Slack"
 
 #: app/Modules/DocumentationModule.php:49
 msgid "Slack integration"
-msgstr "Slack integratie"
+msgstr "Intégration de mou"
 
 #: app/Services/FormBuilder/CountryNames.php:218
 msgid "Slovakia"
-msgstr "Slowakije"
+msgstr "Slovaquie"
 
 #: app/Services/FormBuilder/CountryNames.php:219
 msgid "Slovenia"
-msgstr "Slovenië"
+msgstr "Slovénie"
 
 #: app/Services/FormBuilder/ElementCustomization.php:91
 msgid "Small"
-msgstr "Klein"
+msgstr "Petit"
 
-#: app/Modules/Registerer/Menu.php:392 app/Modules/Registerer/Menu.php:393
+#: app/Modules/Registerer/Menu.php:391 app/Modules/Registerer/Menu.php:392
 msgid "SMTP"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:220
 msgid "Solomon Islands"
-msgstr "Solomon eilanden"
+msgstr "Îles Salomon"
 
 #: app/Services/FormBuilder/CountryNames.php:221
 msgid "Somalia"
-msgstr "Somalië"
+msgstr "Somalie"
 
 #: app/Services/FormBuilder/DefaultElements.php:1044
 msgid "Some description about this section"
-msgstr "Een beschrijving van deze sectie"
+msgstr "Une description de cette section"
 
 #: app/Modules/Entries/Entries.php:177
+#, fuzzy
 msgid ""
 "Sorry! No entries found. All your entries will be shown here once you start "
 "getting form submissions"
 msgstr ""
-"Sorry! Geen inzending gevonden. Al je inzendingen worden hier weergegeven "
-"zodra je begint met het ontvangen van formulierinzendingen"
+"Pardon! Aucune entrée trouvée. Toutes vos entrées seront affichées ici une "
+"fois que vous commencerez à obtenir des soumissions de formulaire"
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:28
+#, fuzzy
 msgid "Sorry! No integration failed found with: "
-msgstr "Sorry! Geen integratie mislukt gevonden met:"
+msgstr "Pardon! Aucune intégration n’a échoué avec :"
 
 #: app/Modules/Track/SetupModule.php:11
 msgid "Sorry! you do not have permission to install plugin"
@@ -2910,53 +2877,58 @@ msgid "Sorry, you can not give access to the Subscriber role."
 msgstr ""
 
 #: app/Modules/Acl/RoleManager.php:59
+#, fuzzy
 msgid ""
 "Sorry, You can not update permissions. Only administrators can update "
 "permissions"
 msgstr ""
-"Sorry, je kunt de rechten niet updaten. Alleen beheerders kunnen rechten "
-"bijwerken"
+"Désolé, vous ne pouvez pas mettre à jour les autorisations. Seuls les "
+"administrateurs peuvent mettre à jour les autorisations"
 
 #: app/Modules/Form/Form.php:196
+#, fuzzy
 msgid "Sorry, you cannot submit an empty form. Let's hear what you wanna say."
-msgstr "Sorry, je kan geen leeg formulier verzenden."
+msgstr ""
+"Désolé, vous ne pouvez pas soumettre un formulaire vide. Écoutons ce que "
+"vous voulez dire."
 
 #: app/Modules/Component/Component.php:279
+#, fuzzy
 msgid "Sorry, You do not have permission to view this form"
-msgstr "Sorry, je hebt geen toestemming om dit formulier te bekijken"
+msgstr "Désolé, vous n’avez pas la permission de voir ce formulaire"
 
 #: app/Modules/Settings/Settings.php:134
 msgid "Sorry, Your reCaptcha is not valid, Please try again"
-msgstr "Sorry, je reCaptcha invoer is niet geldig. Probeer het opnieuw"
+msgstr "Désolé, votre reCaptcha n’est pas valide. Merci de recommencer"
 
 #: app/Services/FormBuilder/EditorShortCode.php:63
 msgid "Source URL"
-msgstr "Bron-URL"
+msgstr "URL de la source"
 
 #: app/Services/FormBuilder/CountryNames.php:222
 msgid "South Africa"
-msgstr "Zuid-Afrika"
+msgstr "Afrique du Sud"
 
 #: app/Services/FormBuilder/CountryNames.php:223
 msgid "South Georgia/Sandwich Islands"
-msgstr "Zuid-Georgië / Sandwicheilanden"
+msgstr "Géorgie du Sud / îles Sandwich"
 
 #: app/Services/FormBuilder/CountryNames.php:224
 msgid "South Korea"
-msgstr "Zuid-Korea"
+msgstr "Corée du Sud"
 
 #: app/Services/FormBuilder/CountryNames.php:225
 msgid "South Sudan"
-msgstr "Zuid Soedan"
+msgstr "Soudan du Sud"
 
 #: app/Modules/Widgets/FluentFormWidget.php:761
 #: app/Modules/Widgets/FluentFormWidget.php:1735
 msgid "Spacing"
-msgstr "Spatiëring"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:226
 msgid "Spain"
-msgstr "Spanje"
+msgstr "Espagne"
 
 #: app/Services/FormBuilder/CountryNames.php:227
 msgid "Sri Lanka"
@@ -2965,113 +2937,114 @@ msgstr "Sri Lanka"
 #: app/Services/FormBuilder/DefaultElements.php:381
 #: app/Services/FormBuilder/DefaultElements.php:385
 msgid "State"
-msgstr "Provincie"
+msgstr "État"
 
-#: app/Modules/Registerer/Menu.php:891
-msgid "Status"
-msgstr ""
-
-#: app/Services/FormBuilder/ElementCustomization.php:525
+#: app/Services/FormBuilder/ElementCustomization.php:520
 msgid "Step"
-msgstr "Stap"
+msgstr "Étape"
 
 #: app/Modules/Component/Component.php:513
+#, fuzzy
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
-msgstr "Stap %activeStep% van %totalStep% - %stepTitle%"
+msgstr "Étape %activeStep% de %totalStep% - %stepTitle%"
 
-#: app/Services/FormBuilder/ElementCustomization.php:249
+#: app/Services/FormBuilder/ElementCustomization.php:244
 msgid "Step Title"
-msgstr "Stap titel"
+msgstr "Titre de l'étape"
 
-#: app/Services/FormBuilder/ElementCustomization.php:298
+#: app/Services/FormBuilder/ElementCustomization.php:293
+#, fuzzy
 msgid "Step Titles"
-msgstr "Stap titels"
+msgstr "Titres d’étape"
 
-#: app/Services/FormBuilder/ElementCustomization.php:288
+#: app/Services/FormBuilder/ElementCustomization.php:283
 msgid "Steps"
-msgstr "Stappen"
+msgstr "Étapes"
 
 #: app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php:36
 msgid "Sub Heading"
 msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:69
+#, fuzzy
 msgid "Submission Admin View URL"
-msgstr "Inzendingen overzicht Admin URL"
+msgstr "Soumission Admin Voir l’URL"
 
 #: app/Services/FormBuilder/EditorShortCode.php:68
+#, fuzzy
 msgid "Submission Create Date"
-msgstr "Inzending datum"
+msgstr "Soumission Créer la date"
 
-#: app/Modules/Registerer/Menu.php:889
 #: app/Services/FormBuilder/EditorShortCode.php:61
 msgid "Submission ID"
-msgstr "Inzending ID"
+msgstr "Identifiant de demande"
 
 #: app/Modules/Form/FormHandler.php:398
 msgid "Submission marked as spammed. Please try again"
-msgstr "Inzending gemarkeerd als spam. Probeer het opnieuw"
+msgstr "Soumission marquée comme spammée. S’il vous plaît essayer à nouveau"
 
 #: app/Services/FormBuilder/EditorShortCode.php:62
+#, fuzzy
 msgid "Submission Serial Number"
-msgstr "Inzending serienummer"
+msgstr "Numéro de série de soumission"
 
 #: app/Services/FormBuilder/EditorShortCode.php:67
 msgid "Submission Status"
-msgstr "Inzendingsstatus"
+msgstr "Statut de soumission"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2051
-#: app/Services/FormBuilder/ElementCustomization.php:205
+#: app/Services/FormBuilder/ElementCustomization.php:200
 msgid "Submit Button"
-msgstr "Verzendknop"
+msgstr "Bouton Envoyer"
 
 #: app/Services/FormBuilder/EditorShortCode.php:65
+#, fuzzy
 msgid "Submitter Browser"
-msgstr "Browser"
+msgstr "Navigateur de soumission"
 
 #: app/Services/FormBuilder/EditorShortCode.php:66
+#, fuzzy
 msgid "Submitter Device"
-msgstr "Apparaat"
-
-#: app/Services/FormBuilder/ElementCustomization.php:150
-msgid "Subscription Items"
-msgstr ""
+msgstr "Dispositif de soumission"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2281
 msgid "Success Message"
-msgstr "Succesbericht"
+msgstr ""
 
 #: app/Modules/Form/Form.php:155
 msgid "Successfully created a form."
-msgstr "Er is een formulier gemaakt."
+msgstr "Formulaire créé avec succès."
 
 #: app/Modules/Form/Form.php:386
+#, fuzzy
 msgid "Successfully deleted the form."
-msgstr "Het formulier is verwijderd."
+msgstr "Supprimé avec succès le formulaire."
 
 #: app/Modules/Acl/RoleManager.php:55
+#, fuzzy
 msgid "Successfully saved the role(s)."
-msgstr "De rol(len) opgeslagen."
+msgstr "A sauvé avec succès le rôle(s)."
 
 #: app/Services/FormBuilder/CountryNames.php:228
 msgid "Sudan"
-msgstr "Soedan"
+msgstr "Soudan"
 
-#: app/Services/FormBuilder/ElementCustomization.php:535
+#: app/Services/FormBuilder/ElementCustomization.php:530
+#, fuzzy
 msgid "Suffix Label"
-msgstr "Achtervoegsellabel"
+msgstr "Étiquette Suffix"
 
 #: app/Modules/Component/Component.php:934
 msgid "Sun"
-msgstr "Zo"
+msgstr "Dim"
 
 #: app/Modules/Component/Component.php:925
 msgid "Sunday"
-msgstr "Zondag"
+msgstr "Dimanche"
 
 #: resources/views/admin/global_menu.php:38
 msgid "Support"
-msgstr "Help"
+msgstr "Support"
 
 #: app/Services/FormBuilder/CountryNames.php:229
 msgid "Suriname"
@@ -3079,7 +3052,7 @@ msgstr "Suriname"
 
 #: app/Services/FormBuilder/CountryNames.php:230
 msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard en Jan Mayen"
+msgstr "Svalbard et Jan Mayen"
 
 #: app/Services/FormBuilder/CountryNames.php:231
 msgid "Swaziland"
@@ -3087,15 +3060,15 @@ msgstr "Swaziland"
 
 #: app/Services/FormBuilder/CountryNames.php:232
 msgid "Sweden"
-msgstr "Zweden"
+msgstr "Suède"
 
 #: app/Services/FormBuilder/CountryNames.php:233
 msgid "Switzerland"
-msgstr "Zwitserland"
+msgstr "Suisse"
 
 #: app/Services/FormBuilder/CountryNames.php:234
 msgid "Syria"
-msgstr "Syrië"
+msgstr "Syrie"
 
 #: app/Services/FormBuilder/CountryNames.php:235
 msgid "Taiwan"
@@ -3103,24 +3076,24 @@ msgstr "Taiwan"
 
 #: app/Services/FormBuilder/CountryNames.php:236
 msgid "Tajikistan"
-msgstr "Tadzjikistan"
+msgstr "Tadjikistan"
 
 #: app/Services/FormBuilder/CountryNames.php:237
 msgid "Tanzania"
-msgstr "Tanzania"
+msgstr "Tanzanie"
 
-#: app/Services/FormBuilder/ElementCustomization.php:165
+#: app/Services/FormBuilder/ElementCustomization.php:160
 #: app/Services/FormBuilder/DefaultElements.php:1133
 msgid "Terms & Conditions"
-msgstr "Algemene voorwaarden"
+msgstr "Termes & Conditions"
 
 #: app/Services/FormBuilder/DefaultElements.php:1122
 msgid "Terms and Conditions"
-msgstr "Algemene voorwaarden"
+msgstr "Termes et Conditions"
 
 #: app/Services/FormBuilder/DefaultElements.php:268
 msgid "Text Area"
-msgstr "Tekstgebied"
+msgstr "Zone de texte"
 
 #: app/Modules/Widgets/FluentFormWidget.php:532
 #: app/Modules/Widgets/FluentFormWidget.php:612
@@ -3131,49 +3104,52 @@ msgstr "Tekstgebied"
 #: app/Modules/Widgets/FluentFormWidget.php:2248
 #: app/Modules/Widgets/FluentFormWidget.php:2300
 msgid "Text Color"
-msgstr "Tekst kleur"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:648
 #: app/Modules/Widgets/FluentFormWidget.php:979
 msgid "Text Indent"
-msgstr "Tekst inspringing"
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:182
 msgid "Text Input"
-msgstr "Tekst invoer"
+msgstr "Saisie de texte"
 
 #: app/Services/FormBuilder/DefaultElements.php:255
 msgid "Textarea"
-msgstr "Tekstgebied"
+msgstr "Zone de texte"
 
 #: app/Modules/Widgets/FluentFormWidget.php:730
 msgid "Textarea Height"
-msgstr "Hoogte tekstgebied"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:711
 msgid "Textarea Width"
-msgstr "Breedte tekstgebied"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:238
 msgid "Thailand"
-msgstr "Thailand"
+msgstr "Thaïlande"
 
 #: app/Modules/Form/Form.php:170
 msgid "Thank you for your message. We will get in touch with you shortly"
 msgstr ""
-"Bedankt voor je bericht. We nemen zo spoedig mogelijk contact met je op."
+"Merci pour votre message. Nous vous contacterons dans les plus brefs délais"
 
-#: app/Services/FormBuilder/ElementCustomization.php:397
+#: app/Services/FormBuilder/ElementCustomization.php:392
+#, fuzzy
 msgid "The Background color of the element"
-msgstr "De achtergrondkleur van het element"
+msgstr "La couleur de fond de l’élément"
 
 #: app/Modules/Form/Settings/Validator/Confirmations.php:51
+#, fuzzy
 msgid "The Confirmation Type field is required."
-msgstr "Het veld Bevestigingstype is vereist."
+msgstr "Le champ de type confirmation est nécessaire."
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:91
+#, fuzzy
 msgid "The file size limit uploaded by the user."
-msgstr "De bestandsgroottelimiet die van de gebruikers upload."
+msgstr "La limite de taille de fichier téléchargée par l’utilisateur."
 
 #: app/Modules/Component/Component.php:449
 #, php-format
@@ -3181,25 +3157,29 @@ msgid "The form can be filled in the actual <a href=\"%s\">website url</a>."
 msgstr ""
 
 #: app/Modules/Form/Form.php:368
+#, fuzzy
 msgid "The form is successfully updated."
-msgstr "Het formulier is succesvol bijgewerkt."
+msgstr "Le formulaire est mis à jour avec succès."
 
-#: app/Services/FormBuilder/ElementCustomization.php:341
+#: app/Services/FormBuilder/ElementCustomization.php:336
+#, fuzzy
 msgid "The maximum number of characters the input should accept"
-msgstr "Het maximale aantal tekens dat ingevoerd mag worden"
+msgstr "Le nombre maximum de caractères que l’entrée doit accepter"
 
 #: app/Modules/Form/Settings/Validator/Confirmations.php:52
+#, fuzzy
 msgid "The Page field is required when Confirmation Type is Page."
-msgstr "Het Paginaveld is vereist wanneer bevestigingstype Pagina is."
+msgstr "Le champ de page est requis lorsque le type de confirmation est Page."
 
 #: app/Modules/Form/Settings/Validator/Confirmations.php:53
+#, fuzzy
 msgid "The Redirect URL field is required when Confirmation Type is Redirect."
-msgstr ""
-"Het veld Omleidings-URL is vereist wanneer bevestigingstype Omleiding is."
+msgstr "Le champ URL Redirect is required when Confirmation Type est Redirect."
 
 #: app/Modules/Form/Settings/Validator/Confirmations.php:54
+#, fuzzy
 msgid "The Redirect URL format is invalid."
-msgstr "Het formaat van de omleidings-URL is ongeldig."
+msgstr "Le format URL Redirect est invalide."
 
 #: resources/views/email/report/body.php:195
 #, php-format
@@ -3242,91 +3222,104 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:1127
 #: app/Services/FormBuilder/DefaultElements.php:1156
 msgid "This field is required"
-msgstr "Dit veld is verplicht!"
+msgstr "Ce champ est requis"
 
 #: app/Services/FormBuilder/DefaultElements.php:156
+#, fuzzy
 msgid "This field must contain a valid email"
-msgstr "Dit veld moet een geldig e-mailadres bevatten"
+msgstr "Ce champ doit contenir un e-mail valide"
 
 #: app/Services/FormBuilder/DefaultElements.php:755
+#, fuzzy
 msgid "This field must contain a valid url"
-msgstr "Dit veld moet een geldige url bevatten"
+msgstr "Ce champ doit contenir une URL valide"
 
 #: app/Services/FormBuilder/DefaultElements.php:509
+#, fuzzy
 msgid "This field must contain numeric value"
-msgstr "Dit veld moet een geldige numerieke waarde bevatten"
+msgstr "Ce champ doit contenir de la valeur numérique"
 
 #: app/Hooks/Backend.php:301
 msgid "This field value need to be unique."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:331
+#: app/Services/FormBuilder/ElementCustomization.php:326
+#, fuzzy
 msgid "This is a form field which a user will be able to repeat."
-msgstr "Dit is een formulierveld dat een gebruiker kan herhalen."
+msgstr ""
+"Il s’agit d’un champ de formulaire qu’un utilisateur sera en mesure de "
+"répéter."
 
-#: app/Services/FormBuilder/ElementCustomization.php:206
+#: app/Services/FormBuilder/ElementCustomization.php:201
+#, fuzzy
 msgid "This is form submission button."
-msgstr "Dit is de verzendknop."
+msgstr "Il s’agit d’un bouton de soumission de formulaire."
 
 #: app/Services/FormBuilder/ElementCustomization.php:41
+#, fuzzy
 msgid ""
 "This is the field name attributes which is used to submit form data, name "
 "attribute must be unique."
 msgstr ""
-"Dit zijn de kenmerken van de veldnaam die gebruikt worden om "
-"formuliergegevens in te dienen, het kenmerk moet uniek zijn."
+"Il s’agit des attributs nom de champ qui est utilisé pour soumettre des "
+"données de formulaire, attribut de nom doit être unique."
 
 #: app/Services/FormBuilder/ElementCustomization.php:106
+#, fuzzy
 msgid ""
 "This is the field placeholder, the user will see this if the input field is "
 "empty."
 msgstr ""
-"Dit is de tijdelijke aanduiding voor het veld, de gebruiker zal dit zien als "
-"het invoerveld leeg is."
+"C’est le placeholder de champ, l’utilisateur verra ceci si le champ d’entrée "
+"est vide."
 
 #: app/Services/FormBuilder/ElementCustomization.php:46
+#, fuzzy
 msgid "This is the field title the user will see when filling out the form."
 msgstr ""
-"Dit is de veldtitel die de gebruiker zal zien bij het invullen van het "
-"formulier."
+"C’est le titre de champ que l’utilisateur verra lors du remplissage du "
+"formulaire."
 
 #: app/Services/FormBuilder/DefaultElements.php:196
 msgid "This value need to be unique."
 msgstr ""
 
-#: app/Services/FormBuilder/ElementCustomization.php:201
+#: app/Services/FormBuilder/ElementCustomization.php:196
+#, fuzzy
 msgid "This will be visible as button text for upload file."
-msgstr "Dit zal zichtbaar zijn als knoptekst voor het uploadbestand."
+msgstr ""
+"Cela sera visible sous forme de texte bouton pour le fichier de "
+"téléchargement."
 
 #: app/Services/FormBuilder/DefaultElements.php:1269
+#, fuzzy
 msgid "Three Column Container"
-msgstr "Drie koloms container"
+msgstr "Conteneur de trois colonnes"
 
 #: app/Modules/Component/Component.php:938
 msgid "Thu"
-msgstr "Do"
+msgstr "Jeu"
 
 #: app/Modules/Component/Component.php:929
 msgid "Thursday"
-msgstr "Donderdag"
+msgstr "Jeudi"
 
 #: app/Services/FormBuilder/DefaultElements.php:795
 msgid "Time & Date"
-msgstr "Tijd & datum"
+msgstr "Heure Date"
 
 #: app/Services/FormBuilder/CountryNames.php:239
 msgid "Timor-Leste"
 msgstr "Timor-Leste"
 
-#: app/Modules/Registerer/Menu.php:866
 #: app/Modules/Widgets/FluentFormWidget.php:111
 #: app/Modules/Widgets/FluentFormWidget.php:228
 msgid "Title"
-msgstr "Titel"
+msgstr ""
 
 #: app/Modules/Widgets/FluentFormWidget.php:187
 msgid "Title & Description"
-msgstr "Titel & beschrijving"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:240
 msgid "Togo"
@@ -3340,14 +3333,14 @@ msgstr "Tokelau"
 msgid "Tonga"
 msgstr "Tonga"
 
-#: app/Modules/Registerer/Menu.php:382 app/Modules/Registerer/Menu.php:383
+#: app/Modules/Registerer/Menu.php:381 app/Modules/Registerer/Menu.php:382
 #: resources/views/admin/transfer/index.php:6
 msgid "Tools"
-msgstr "Hulpmiddelen"
+msgstr "Outils"
 
 #: app/Services/FormBuilder/ElementCustomization.php:59
 msgid "Top"
-msgstr "Boven"
+msgstr "Haut"
 
 #: app/Modules/Form/Settings/ExtraSettings.php:49
 msgid "Trello"
@@ -3355,39 +3348,40 @@ msgstr "Trello"
 
 #: app/Services/FormBuilder/CountryNames.php:243
 msgid "Trinidad and Tobago"
-msgstr "Trinidad en Tobago"
+msgstr "Trinité-et-Tobago"
 
 #: app/Modules/Component/Component.php:936
 msgid "Tue"
-msgstr "Di"
+msgstr "Mar"
 
 #: app/Modules/Component/Component.php:927
 msgid "Tuesday"
-msgstr "Dinsdag"
+msgstr "Mardi"
 
 #: app/Services/FormBuilder/CountryNames.php:244
 msgid "Tunisia"
-msgstr "Tunesië"
+msgstr "Tunisie"
 
 #: app/Services/FormBuilder/CountryNames.php:245
 msgid "Turkey"
-msgstr "Turkije"
+msgstr "Turquie"
 
 #: app/Services/FormBuilder/CountryNames.php:246
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "Turkménistan"
 
 #: app/Services/FormBuilder/CountryNames.php:247
 msgid "Turks and Caicos Islands"
-msgstr "Turks- en Caicoseilanden"
+msgstr "Îles Turques et Caïques"
 
 #: app/Services/FormBuilder/CountryNames.php:248
 msgid "Tuvalu"
 msgstr "Tuvalu"
 
 #: app/Services/FormBuilder/DefaultElements.php:1251
+#, fuzzy
 msgid "Two Column Container"
-msgstr "Twee koloms container"
+msgstr "Conteneur à colonnes de deux colonnes"
 
 #: app/Modules/Widgets/FluentFormWidget.php:256
 #: app/Modules/Widgets/FluentFormWidget.php:330
@@ -3406,51 +3400,43 @@ msgstr "Twee koloms container"
 #: app/Modules/Widgets/FluentFormWidget.php:2323
 #: app/Modules/Widgets/FluentFormWidget.php:2356
 msgid "Typography"
-msgstr "Typografie"
+msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:249
 msgid "Uganda"
-msgstr "Oeganda"
+msgstr "Ouganda"
 
 #: app/Services/FormBuilder/CountryNames.php:250
 msgid "Ukraine"
-msgstr "Oekraïne"
+msgstr "Ukraine"
 
 #: app/Services/FormBuilder/CountryNames.php:251
 msgid "United Arab Emirates"
-msgstr "Verenigde Arabische Emiraten"
+msgstr "Émirats Arabes Unis"
 
 #: app/Services/FormBuilder/CountryNames.php:252
 msgid "United Kingdom (UK)"
-msgstr "Verenigd Koninkrijk (VK)"
+msgstr "Royaume-Uni (UK)"
 
 #: app/Services/FormBuilder/CountryNames.php:253
 msgid "United States (US)"
-msgstr "Verenigde Staten (VS)"
+msgstr "Etats-Unis (USA)"
 
 #: app/Services/FormBuilder/CountryNames.php:254
 msgid "United States (US) Minor Outlying Islands"
-msgstr "Kleine afgelegen eilanden van de Verenigde Staten (VS)"
+msgstr "Îles Mineures éloignées des États-Unis"
 
 #: app/Services/FormBuilder/CountryNames.php:255
 msgid "United States (US) Virgin Islands"
-msgstr "Amerikaanse Maagdeneilanden"
-
-#: app/Modules/Registerer/Menu.php:893
-msgid "Unread"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:887
-msgid "Unread Only"
-msgstr ""
+msgstr "Îles Vierges américaines (US)"
 
 #: resources/views/admin/global_menu.php:44
 msgid "Upgrade to Pro"
-msgstr "Upgraden naar Pro"
+msgstr "Passer à la version Pro"
 
 #: app/Modules/Component/Component.php:527
 msgid "Uploading"
-msgstr "Uploaden..."
+msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:744
 msgid "URL"
@@ -3469,56 +3455,61 @@ msgid "US Style without Decimal (Ex: 123,456,789)"
 msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:30
+#, fuzzy
 msgid "User Browser Client"
-msgstr "Gebruikersbrowser-client"
+msgstr "Client navigateur utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:25
 msgid "User Display Name"
-msgstr "Weergavenaam gebruiker"
+msgstr "Nom d'affichage de l'utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:28
 msgid "User Email"
-msgstr "E-mailadres gebruiker"
+msgstr "Email de l'utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:26
 msgid "User First Name"
-msgstr "Voornaam gebruiker"
+msgstr "Prénom de l’utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:24
 msgid "User ID"
-msgstr "Gebruikers-ID"
+msgstr "ID de l’utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:64
 msgid "User Id"
-msgstr "Gebruikers-ID"
+msgstr "ID de l’utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:27
 msgid "User Last Name"
-msgstr "Achternaam gebruiker"
+msgstr "Nom de famille de l'utilisateur"
 
 #: app/Services/FormBuilder/EditorShortCode.php:31
+#, fuzzy
 msgid "User Operating System"
-msgstr "Besturingssysteem gebruiker"
+msgstr "Système d’exploitation des utilisateurs"
 
 #: app/Services/FormBuilder/EditorShortCode.php:29
+#, fuzzy
 msgid "User Username"
-msgstr "Gebruikersnaam"
+msgstr "Nom d’utilisateur d’utilisateur"
 
 #: app/Services/FormBuilder/CountryNames.php:257
 msgid "Uzbekistan"
-msgstr "Oezbekistan"
+msgstr "Ouzbékistan"
 
-#: app/Services/FormBuilder/ElementCustomization.php:540
+#: app/Services/FormBuilder/ElementCustomization.php:535
+#, fuzzy
 msgid "Validate as Unique"
-msgstr "Bevestig als uniek"
+msgstr "Valider comme unique"
 
-#: app/Services/FormBuilder/ElementCustomization.php:566
+#: app/Services/FormBuilder/ElementCustomization.php:561
+#, fuzzy
 msgid "Validation Message for Duplicate"
-msgstr "Validatiebericht voor duplicaat"
+msgstr "Message de validation pour le double"
 
-#: app/Services/FormBuilder/ElementCustomization.php:155
+#: app/Services/FormBuilder/ElementCustomization.php:150
 msgid "Validation Rules"
-msgstr "Validatieregels"
+msgstr "Règles de validation"
 
 #: app/Services/FormBuilder/CountryNames.php:258
 msgid "Vanuatu"
@@ -3526,7 +3517,7 @@ msgstr "Vanuatu"
 
 #: app/Services/FormBuilder/CountryNames.php:259
 msgid "Vatican"
-msgstr "Vaticaan"
+msgstr "Vatican"
 
 #: app/Services/FormBuilder/CountryNames.php:260
 msgid "Venezuela"
@@ -3534,47 +3525,45 @@ msgstr "Venezuela"
 
 #: app/Services/FormBuilder/DefaultElements.php:972
 msgid "Very Good"
-msgstr "Heel goed"
+msgstr "Très bon"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:115
 msgid "Video"
-msgstr "Video"
+msgstr "Vidéo"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:28
+#, fuzzy
 msgid "Video (avi, divx, flv, mov, ogv, mkv, mp4, m4v, divx, mpg, mpeg, mpe)"
-msgstr "Video (avi, divx, flv, mov, ogv, mkv, mp4, m4v, divx, mpg, mpeg, mpe)"
+msgstr "Vidéo (avi, divx, flv, mov, ogv, mkv, mp4, m4v, divx, mpg, mpeg, mpe)"
 
 #: app/Services/FormBuilder/CountryNames.php:261
 msgid "Vietnam"
 msgstr "Vietnam"
 
-#: app/Modules/Registerer/Menu.php:876
-msgid "Views"
-msgstr ""
-
 #: app/Services/FormBuilder/CountryNames.php:262
 msgid "Wallis and Futuna"
-msgstr "Wallis en Futuna"
+msgstr "Wallis et Futuna"
 
 #: app/Modules/Form/Settings/ExtraSettings.php:43
+#, fuzzy
 msgid "Web Hooks"
-msgstr "Web Hooks"
+msgstr "Crochets Web"
 
 #: app/Services/FormBuilder/DefaultElements.php:761
 msgid "Website URL"
-msgstr "Website URL"
+msgstr "URL du site"
 
 #: app/Modules/Component/Component.php:937
 msgid "Wed"
-msgstr "Wo"
+msgstr "Mer"
 
 #: app/Modules/Component/Component.php:928
 msgid "Wednesday"
-msgstr "Woensdag"
+msgstr "Mercredi"
 
 #: resources/views/email/report/body.php:123
 msgid "Weekly Email Summary of Your Forms"
-msgstr "Wekelijks e-mailoverzicht van uw formulieren"
+msgstr ""
 
 #: app/Services/FluentConversational/Classes/Elements/WelcomeScreen.php:35
 msgid "Welcome Heading"
@@ -3586,99 +3575,114 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:263
 msgid "Western Sahara"
-msgstr "Westelijke Sahara"
+msgstr "Sahara occidental"
 
 #: app/Modules/Widgets/FluentFormWidget.php:2086
 #: app/Modules/Widgets/FluentFormWidget.php:2100
 msgid "Width"
-msgstr "Breedte"
+msgstr ""
 
 #: app/Modules/Component/Component.php:958
 msgid "Wk"
-msgstr "Wk"
+msgstr "Weekend"
 
-#: app/Services/FormBuilder/ElementCustomization.php:173
+#: app/Services/FormBuilder/ElementCustomization.php:168
+#, fuzzy
 msgid "WordPress Hook name to hook something in this place."
-msgstr "WordPress Hook-naam om iets op deze plek te haken."
+msgstr "Nom WordPress Hook pour accrocher quelque chose dans cet endroit."
 
 #: app/Modules/Widgets/SidebarWidgets.php:11
+#, fuzzy
 msgid "WP Fluent Forms Widget"
-msgstr "WP Fluent Forms Widget"
+msgstr "WP Formes fluent Widget"
 
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:472
+#, fuzzy
 msgid "Write HTML content for GDPR agreement checkbox"
-msgstr "Schrijf HTML-inhoud voor GDPR-overeenkomst selectievakje"
+msgstr "Rédiger du contenu HTML pour la case de contrôle de l’accord GDPR"
 
-#: app/Services/FormBuilder/ElementCustomization.php:166
+#: app/Services/FormBuilder/ElementCustomization.php:161
+#, fuzzy
 msgid "Write HTML content for terms & condition checkbox"
-msgstr "Schrijf HTML-inhoud voor Algemene voorwaarden selectievakje"
+msgstr ""
+"Rédiger du contenu HTML pour les termes et la case à cocher de condition"
 
-#: app/Services/FormBuilder/ElementCustomization.php:407
+#: app/Services/FormBuilder/ElementCustomization.php:402
+#: app/Services/FormBuilder/ElementCustomization.php:472
 #: app/Services/FormBuilder/ElementCustomization.php:477
-#: app/Services/FormBuilder/ElementCustomization.php:482
+#, fuzzy
 msgid "Write your own mask for this input"
-msgstr "Maak je eigen maskering voor dit veld"
+msgstr "Écrivez votre propre masque pour cette entrée"
 
 #: app/Modules/Component/Component.php:965
 msgid "Year"
-msgstr "Jaar"
+msgstr "Année"
 
 #: app/Services/FormBuilder/CountryNames.php:265
 msgid "Yemen"
-msgstr "Jemen"
+msgstr "Yemen"
 
 #: app/Modules/Widgets/FluentFormWidget.php:102
 #: app/Modules/Widgets/FluentFormWidget.php:944
-#: app/Services/FormBuilder/ElementCustomization.php:239
-#: app/Services/FormBuilder/ElementCustomization.php:550
+#: app/Services/FormBuilder/ElementCustomization.php:234
+#: app/Services/FormBuilder/ElementCustomization.php:545
 #: app/Services/FormBuilder/ValidationRuleSettings.php:65
 msgid "Yes"
-msgstr "Ja"
+msgstr "Oui"
 
 #: app/Services/FormBuilder/DefaultElements.php:874
+#, fuzzy
 msgid "You can upload maximum 1 file"
-msgstr "Je kan maximaal 1 bestand uploaden"
+msgstr "Vous pouvez télécharger un fichier maximum 1"
 
 #: app/Services/FormBuilder/DefaultElements.php:830
+#, fuzzy
 msgid "You can upload maximum 1 image"
-msgstr "Je kan maximaal 1 afbeelding uploaden"
+msgstr "Vous pouvez télécharger une image maximale de 1"
 
 #: app/Services/FormBuilder/ElementCustomization.php:29
+#, fuzzy
 msgid ""
 "You can write your own date configuration as JS object. Please write valid "
 "configuration as per flatpickr config."
 msgstr ""
-"Je kan je eigen datum configuration als JS-object schrijven. Schrijf een "
-"geldige configuratie volgens de flatpickr-configuratie."
+"Vous pouvez écrire votre propre configuration date comme objet JS. S’il vous "
+"plaît écrire la configuration valide comme par config flatpickr."
 
 #: app/Modules/Form/Transfer.php:145
 msgid "You form has been successfully imported."
-msgstr "Uw formulier is succesvol geïmporteerd."
+msgstr "Votre formulaire a été importé avec succès."
 
 #: app/Modules/Form/Transfer.php:81 app/Modules/Form/Transfer.php:152
 msgid "You have a faulty JSON file, please export the Fluent Forms again."
-msgstr "Je hebt een defect JSON-bestand. Exporteer de Fluent Forms opnieuw."
+msgstr ""
+"Votre fichier JSON est défectueux,merci d'exporter votre formulaires une "
+"nouvelle fois."
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:41
+#, fuzzy
 msgid "Your API Key is not valid"
-msgstr "Je API-sleutel is niet geldig"
+msgstr "Votre clé API n’est pas valide"
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:37
+#, fuzzy
 msgid "Your API Key is valid"
-msgstr "Je API-sleutel is geldig"
+msgstr "Votre clé API est valide"
 
 #: app/Modules/Settings/Settings.php:213
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:119
 msgid "Your mailchimp api key has been verfied and successfully set"
-msgstr "De API-sleutel van Mailchimp is geverifieerd en met succes ingesteld"
+msgstr "Votre clé api de mailchimp a bien été vérifiée et paramétrée."
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:45
+#, fuzzy
 msgid "Your Mailchimp API Key is not valid"
-msgstr "Je Mailchimp API-sleutel is niet geldig"
+msgstr "Votre clé aPI Mailchimp n’est pas valide"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:44
+#, fuzzy
 msgid "Your Mailchimp API Key is valid"
-msgstr "Je Mailchimp API-sleutel is geldig"
+msgstr "Votre clé aPI Mailchimp est valide"
 
 #: app/Modules/Settings/Settings.php:98
 msgid ""
@@ -3689,36 +3693,40 @@ msgstr ""
 #: app/Modules/Settings/Settings.php:143
 msgid "Your reCaptcha details are already valid, So no need to save again."
 msgstr ""
-"Je reCaptcha-gegevens zijn al geldig, dus je hoeft niet opnieuw op te slaan."
+"Vos détails reCaptcha sont déjà valides. Il n'est donc pas nécessaire de les "
+"enregistrer à nouveau."
 
 #: app/Modules/Settings/Settings.php:130
 msgid "Your reCaptcha is valid and saved."
-msgstr "Je reCaptcha is geldig en opgeslagen."
+msgstr "Votre reCaptcha est valide et enregistré."
 
 #: app/Modules/Settings/Settings.php:78
 msgid "Your reCaptcha settings are deleted."
-msgstr "Je reCaptcha-instellingen worden verwijderd."
+msgstr "Vos paramètres reCaptcha sont supprimés."
 
 #: app/Modules/Settings/Settings.php:184
 msgid "Your settings has been updated"
-msgstr "Je instellingen zijn bijgewerkt"
+msgstr "Vos paramètres ont été mis à jour"
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:90
+#, fuzzy
 msgid "Your settings has been updated and disconnected"
-msgstr "Je instellingen zijn bijgewerkt en losgekoppeld"
+msgstr "Vos paramètres ont été mis à jour et déconnectés"
 
-#: app/Services/FormBuilder/ElementCustomization.php:230
+#: app/Services/FormBuilder/ElementCustomization.php:225
+#, fuzzy
 msgid "Your shortcode to render desired content in current place."
-msgstr "Je shortcode om de gewenste inhoud op de huidige plaats weer te geven."
+msgstr "Votre code court pour rendre le contenu désiré à l’endroit actuel."
 
-#: app/Services/FormBuilder/ElementCustomization.php:189
+#: app/Services/FormBuilder/ElementCustomization.php:184
+#, fuzzy
 msgid "Your valid HTML code will be shown to the user as normal content."
 msgstr ""
-"Je geldige HTML-code wordt aan de gebruiker getoond als normale inhoud."
+"Votre code HTML valide sera affiché à l’utilisateur comme contenu normal."
 
 #: app/Services/FormBuilder/CountryNames.php:266
 msgid "Zambia"
-msgstr "Zambia"
+msgstr "Zambie"
 
 #: app/Services/FormBuilder/CountryNames.php:267
 msgid "Zimbabwe"
@@ -3726,16 +3734,16 @@ msgstr "Zimbabwe"
 
 #: app/Services/FormBuilder/DefaultElements.php:410
 msgid "Zip"
-msgstr "Zip"
+msgstr "Code postal"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:158
 msgid "Zip Archives"
-msgstr "Zip archieven"
+msgstr "Archives Zip"
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:40
 msgid "Zip Archives (zip, gz, gzip, rar, 7z)"
-msgstr "Zip Archieven (zip, gz, gzip, rar, 7z)"
+msgstr "Archives zip (zip, gz, gzip, rar, 7z)"
 
 #: app/Services/FormBuilder/DefaultElements.php:415
 msgid "Zip Code"
-msgstr "Postcode"
+msgstr "Code postal"
