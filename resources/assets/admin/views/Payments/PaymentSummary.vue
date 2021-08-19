@@ -57,7 +57,7 @@
         />
 
         <div
-                v-if="parseFloat(submission.payment_total)"
+                v-if="parseFloat(submission.total_paid)"
                 class="entry_info_box entry_submission_order_data"
         >
             <div class="entry_info_header">
@@ -72,23 +72,28 @@
                     <div class="payment_head_top">
                         <div class="payment_header_left">
                             <div class="head_payment_amount">
-                                <span
-                                        class="pay_amount"
-                                        v-html="formatMoney(submission.payment_total)"
-                                />
+                                <template v-if="parseFloat(submission.payment_total)">
+                                    <span
+                                            class="pay_amount"
+                                            v-html="formatMoney(submission.payment_total)"
+                                    />
 
-                                <span class="payment_currency">
-                                    {{ submission.currency }}
-                                </span>
+                                    <span class="payment_currency">
+                                        {{ submission.currency }}
+                                    </span>
 
-                                <span :class="'ff_pay_status_badge ff_pay_status_' + submission.payment_status">
-                                    <i :class="getPaymentStatusIcon(submission.payment_status)"/>
-                                    {{submission.payment_status}}
-                                </span>
+                                    <span :class="'ff_pay_status_badge ff_pay_status_' + submission.payment_status">
+                                        <i :class="getPaymentStatusIcon(submission.payment_status)"/>
+                                        {{submission.payment_status}}
+                                    </span>
+                                </template>
 
                                 <template v-if="order_data.subscription_payment_total">
                                     <span>
-                                        &
+                                        <template v-if="parseFloat(submission.payment_total)">
+                                            &
+                                        </template>
+
                                         <span
                                                 class="pay_amount"
                                                 v-html="formatMoney(order_data.subscription_payment_total)"
