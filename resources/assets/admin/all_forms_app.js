@@ -66,6 +66,10 @@ import AllForms from './views/AllForms.vue';
 Vue.mixin({
     methods: {
         $t(str) {
+            let transString = window.fluent_forms_global_var.admin_i18n[str];
+            if(transString) {
+                return transString;
+            }
             return str;
         }
     },

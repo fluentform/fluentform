@@ -21,8 +21,8 @@
                     <!-- The split dropdown for creating predefined forms easily -->
                     <el-dropdown-menu slot="dropdown" style="top:25px !important;">
                         <el-dropdown-item
-                            :command="{ key: 'conversational', form: { title: 'Conversational Form', type: 'blank_conversational' }}">
-                            Create Conversational Form
+                            :command="{ key: 'conversational', form: { title:'Conversational Form', type: 'blank_conversational' }}">
+                            {{$t('Create Conversational Form')}}
                         </el-dropdown-item>
                         <el-dropdown-item
                             v-if="has_post_feature"
@@ -30,7 +30,7 @@
                             :command="{key, form}"
                             v-for="(form, key) in predefinedDropDownForms"
                         >
-                            Create {{ form.title }}
+                            {{$t('Create')}} {{ form.title }}
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -46,9 +46,9 @@
                                     @clear="refetchItems"
                                     size="small"
                                     v-model="searchFormsKeyWord"
-                                    placeholder="Search Forms..."
+                                    :placeholder="$t('Search Forms')"
                                 >
-                                    <el-button native-type="submit" slot="append">Search</el-button>
+                                    <el-button native-type="submit" slot="append">{{$t('Search')}}</el-button>
                                 </el-input>
                             </el-form>
                         </el-col>
@@ -184,13 +184,13 @@
                             round
                             type="primary"
                             @click="showAddFormModal = true"
-                        >Click Here to Create Your
-                            First Form
+                        >
+                          {{$t('Click Here to Create Your First Form')}}
                         </el-button>
                     </div>
                 </div>
                 <div class="fluent_form_intro_video">
-                    <h2>Check the video intro</h2>
+                    <h2>{{$t('Check the video intro')}}</h2>
                     <div class="videoWrapper">
                         <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE"
                                 frameborder="0"

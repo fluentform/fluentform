@@ -1,11 +1,11 @@
 <template>
     <div v-loading="loading" class="payments_wrapper">
         <div class="payment_header">
-            <div class="payment_title">All Form Entries</div>
+            <div class="payment_title">{{$t('All Form Entries')}}</div>
             <div class="payment_actions">
                 <el-button @click="toggleChart()" type="info" size="mini">
-                    <span v-if="chart_status == 'yes'">Hide Chart</span>
-                    <span v-else>Show Chart</span>
+                    <span v-if="chart_status == 'yes'">{{$t('Hide Chart')}}</span>
+                    <span v-else>{{$t('Show Chart')}}</span>
                 </el-button>
             </div>
         </div>
@@ -16,19 +16,19 @@
         <div class="payment_details">
             <div style="margin-bottom: 20px" class="payment_header">
                 <el-radio-group @change="fetchEntries('reset')" size="small" v-model="entry_status">
-                    <el-radio-button label="">All</el-radio-button>
-                    <el-radio-button label="unread">Unread Only</el-radio-button>
-                    <el-radio-button label="read">Read Only</el-radio-button>
+                    <el-radio-button label="">{{$t('All')}}</el-radio-button>
+                    <el-radio-button label="unread">{{$t('Unread Only')}}</el-radio-button>
+                    <el-radio-button label="read">{{$t('Read Only')}}</el-radio-button>
                 </el-radio-group>
                 <div class="payment_actions">
-                    <el-input @keyup.enter.native="fetchEntries()" size="small" placeholder="Search Entry" v-model="search">
+                    <el-input @keyup.enter.native="fetchEntries()" size="small" :placeholder="$t('Search')" v-model="search">
                         <el-button @click="fetchEntries()" slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </div>
             </div>
 
             <el-table v-loading="loading" stripe :data="entries">
-                <el-table-column width="220" label="Submission ID">
+                <el-table-column width="220" :label="$t('Submission ID')">
                     <template slot-scope="scope">
                         <a class="payment_sub_url" :href="scope.row.entry_url">
                             #{{scope.row.id}}
@@ -36,16 +36,18 @@
                         <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="Form" prop="title"></el-table-column>
-                <el-table-column width="160" label="Status">
+                <el-table-column :label="$t('Form')" prop="title"></el-table-column>
+                <el-table-column width="160" :label="$t('Status')">
                     <template slot-scope="scope">
-                        {{scope.row.status|ucFirst}}
+                      <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
+                      <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
+                      <span v-else>{{scope.row.status|ucFirst}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column width="160" label="Browser" prop="browser"></el-table-column>
-                <el-table-column width="260" label="Date">
+                <el-table-column width="160" :label="$t('Browser')" prop="browser"></el-table-column>
+                <el-table-column width="260" :label="$t('Date')">
                     <template slot-scope="scope">
-                        {{scope.row.human_date}} ago
+                        {{scope.row.human_date}} {{$t('ago')}}
                     </template>
                 </el-table-column>
             </el-table>

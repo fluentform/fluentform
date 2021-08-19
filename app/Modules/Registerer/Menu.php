@@ -195,7 +195,8 @@ class Menu
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
         	'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-	        'ajaxurl' => admin_url('admin-ajax.php')
+	        'ajaxurl' => admin_url('admin-ajax.php'),
+            'admin_i18n'=> $this->getAdminI18n()
         ]);
 
         $page = sanitize_text_field($_GET['page']);
@@ -852,5 +853,50 @@ class Menu
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url' => admin_url('options-general.php?page=fluent-mail#/connections')
         ]);
+    }
+
+    private function getAdminI18n()
+    {
+        $i18n = array(
+            'All Forms' => __('All Forms', 'fluentform'),
+            'Add a New Form' => __('Add a New Form', 'fluentform'),
+            'Conversational Form' => __('Conversational Form', 'fluentform'),
+            'Create Conversational Form' => __('Create Conversational Form', 'fluentform'),
+            'ID' => __('ID', 'fluentform'),
+            'Title' => __('Title', 'fluentform'),
+            'Edit' => __('Edit', 'fluentform'),
+            'Settings' => __('Settings', 'fluentform'),
+            'Entries' => __('Entries', 'fluentform'),
+            'Conversational Preview' => __('Conversational Preview', 'fluentform'),
+            'Preview' => __('Preview', 'fluentform'),
+            'Duplicate' => __('Duplicate', 'fluentform'),
+            'Delete' => __('Delete', 'fluentform'),
+            'Short Code' => __('Short Code', 'fluentform'),
+            'Conversion' => __('Conversion', 'fluentform'),
+            'Views' => __('Views', 'fluentform'),
+            'Search Forms' => __('Search Forms', 'fluentform'),
+            'Search' => __('Search', 'fluentform'),
+            'Click Here to Create Your First Form' => __('Click Here to Create Your First Form', 'fluentform'),
+            'Check the video intro' => __('Check the video intro', 'fluentform'),
+            'All Form Entries' => __('All Form Entries', 'fluentform'),
+            'Browser' => __('Browser', 'fluentform'),
+            'Date' => __('Date', 'fluentform'),
+            'Hide Chart' => __('Hide Chart', 'fluentform'),
+            'Show Chart' => __('Show Chart', 'fluentform'),
+            'All' => __('All', 'fluentform'),
+            'Unread Only' => __('Unread Only', 'fluentform'),
+            'Read Only' => __('Read Only', 'fluentform'),
+            'Submission ID' => __('Submission ID', 'fluentform'),
+            'Form' => __('Form', 'fluentform'),
+            'Status' => __('Status', 'fluentform'),
+            'Read' => __('Read', 'fluentform'),
+            'Unread' => __('Unread', 'fluentform'),
+            'ago' => __('ago', 'fluentform'),
+            'Design' => __('Design', 'fluentform'),
+            'Meta' => __('Meta', 'fluentform'),
+            'Share' => __('Share', 'fluentform'),
+            );
+
+        return apply_filters('fluentform/admin_i18n', $i18n);
     }
 }
