@@ -44,6 +44,11 @@ export default {
                     backgroundColor: '#409EFF',
                     color: '#ffffff'
                 },
+                no_style: {
+                    name: 'No Style',
+                    backgroundColor: '#409EFF',
+                    color: '#ffffff'
+                },
                 red: {
                     name: 'Red',
                     backgroundColor: '#F56C6C',

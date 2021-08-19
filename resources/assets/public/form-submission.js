@@ -217,17 +217,6 @@ jQuery(document).ready(function () {
                     }
                 };
 
-                var maybeHandleStripeInline = function ($theForm, formData) {
-                    const deferred = $.Deferred();
-
-                    $theForm.trigger('before_send', {
-                        deferred,
-                        formData
-                    });
-
-                    return deferred.promise();
-                }
-
                 var sendData = function ($theForm, formData) {
                     function addParameterToURL(param) {
                         let _url = fluentFormVars.ajaxUrl;
@@ -347,13 +336,9 @@ jQuery(document).ready(function () {
                             }
                         })
                         .always(function (res) {
+                            $theForm.parent().find('.ff_msg_temp').remove();
                             that.isSending = false;
-                            $theForm
-                                .find('.ff-btn-submit')
-                                .removeClass('disabled')
-                                .removeClass('ff-working')
-                                .attr('disabled', false);
-
+                            hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
                                 let reCaptchaId = getRecaptchaClientId(formData.form_id);
@@ -365,12 +350,22 @@ jQuery(document).ready(function () {
                 }
 
                 var showFormSubmissionProgress = function ($form) {
+                    $form.addClass('ff_submitting');
                     $form
                         .find('.ff-btn-submit')
                         .addClass('disabled')
                         .addClass('ff-working')
                         .prop('disabled', true);
                 };
+
+                var hideFormSubmissionProgress = function ($form) {
+                    $form.removeClass('ff_submitting');
+                    $form
+                        .find('.ff-btn-submit')
+                        .removeClass('disabled')
+                        .removeClass('ff-working')
+                        .attr('disabled', false);
+                }
 
                 var formResetHandler = function ($this) {
                     if ($('.ff-step-body', $theForm).length) {
@@ -752,7 +747,9 @@ jQuery(document).ready(function () {
                     formSelector: formSelector,
                     sendData,
                     addGlobalValidator,
-                    config: form
+                    config: form,
+                    showFormSubmissionProgress,
+                    hideFormSubmissionProgress
                 }
             })(validationFactory);
         };

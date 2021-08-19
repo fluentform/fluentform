@@ -6,13 +6,12 @@
     |----------------------------------------------------------------------------
     */
     // should be on top of all btn style
-    &-btn-submit {
-      border: 0;
-      padding: 0;
-      cursor: pointer;
+    &_submitting {
+      pointer-events: none;
     }
 
-    &-btn {
+    &_btn_style {
+      cursor: pointer;
       display: inline-block;
       font-weight: 400;
       text-align: center;
@@ -28,19 +27,18 @@
       transition: background-color 0.15s ease-in-out,
       border-color 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
-
       &:focus,
       &:hover {
         outline: 0;
         text-decoration: none;
         opacity: 0.8;
       }
+    }
 
-      &:disabled,
+    &-btn {
       &.disabled {
         opacity: .65;
       }
-
       // button types
       &-primary {
         color: #fff;
@@ -104,8 +102,8 @@
       }
 
       &.ff-working {
+        position: relative;
         transition: all 0.3s ease;
-
         &:before {
           content: '';
           position: absolute;

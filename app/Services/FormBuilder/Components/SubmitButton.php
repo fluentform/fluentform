@@ -24,19 +24,26 @@ class SubmitButton extends BaseComponent
 
         $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
+        $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
         $btnSize = 'ff-btn-';
-        $color = isset($data['settings']['color']) ? $data['settings']['color'] : '#ffffff';
         $btnSize .= isset($data['settings']['button_size']) ? $data['settings']['button_size'] : 'md';
-        $backgroundColor = isset($data['settings']['background_color']) ? $data['settings']['background_color'] : '#409EFF';
         $oldBtnType = isset($data['settings']['button_style']) ? '' : ' ff-btn-primary ';
 
-        $align = 'ff-el-group ff-text-' . @$data['settings']['align'];
-        $data['attributes']['class'] = trim(
-            'ff-btn ff-btn-submit ' . ' ' .
-            $oldBtnType . ' ' .
-            $btnSize . ' ' .
+        $btnClasses = [
+            'ff-btn ff-btn-submit',
+            $oldBtnType,
+            $btnSize,
             $data['attributes']['class']
-        );
+        ];
+
+        if($btnStyle == 'no_style') {
+            $btnClasses[] = 'ff_btn_no_style';
+        } else {
+            $btnClasses[] = 'ff_btn_style';
+        }
+
+        $align = 'ff-el-group ff-text-' . @$data['settings']['align'];
+        $data['attributes']['class'] = trim(implode(' ', array_filter($btnClasses)));
 
         if ($tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex()) {
             $data['attributes']['tabindex'] = $tabIndex;
@@ -75,13 +82,12 @@ class SubmitButton extends BaseComponent
             if ($hoverStates) {
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
-        } else {
+        } else if($btnStyle != 'no_style') {
             $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);
         $cls = trim($align . ' ' . $data['settings']['container_class']);
-
 
         $html = "<div class='{$cls} ff_submit_btn_wrapper'>";
 

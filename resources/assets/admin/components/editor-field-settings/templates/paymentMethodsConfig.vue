@@ -27,35 +27,36 @@
                 <div class="address-field-option__settings">
                     <el-form labelWidth="130px" labelPosition="left" class="el-form-nested">
                         <div v-for="(field, fieldKey) in paymentMethod.settings" :key="fieldKey">
-                            <inputText
+                            <template v-if="dependancyPass(field, paymentMethod.settings)">
+                                <inputText
                                     class="pad-b-20"
                                     v-if="field.template == 'inputText'"
                                     :listItem="field"
                                     v-model="field.value"
-                            />
+                                />
 
-                            <input-yes-no-check-box
+                                <input-yes-no-check-box
                                     class="pad-b-20"
                                     :listItem="field"
                                     v-else-if="field.template == 'inputYesNoCheckbox'"
                                     v-model="field.value"
-                            />
+                                />
 
-                            <input-radio
+                                <input-radio
                                     class="pad-b-20"
                                     :listItem="field"
                                     v-else-if="field.template == 'inputRadioOptions'"
                                     v-model="field.value"
-                            >
-                            </input-radio>
-
+                                >
+                                </input-radio>
+                            </template>
                         </div>
                     </el-form>
                 </div>
             </div>
         </div>
 
-        <p v-if="noSubscriptionSupportMessage">
+        <p style="color: red;" v-if="noSubscriptionSupportMessage">
             {{ noSubscriptionSupportMessage }}
         </p>
     </el-form-item>
@@ -115,6 +116,31 @@
                     $el.addClass('el-icon-caret-bottom');
                     $el.parent().find('.address-field-option__settings').removeClass('is-open');
                     $el.parent().find('.required-checkbox').removeClass('is-open');
+                }
+            },
+            dependancyPass(listItem, settings) {
+                if (listItem.dependency) {
+                    let optionPaths = listItem.dependency.depends_on.split('/');
+
+                    let dependencyVal = optionPaths.reduce((obj, prop) => {
+                        return obj[prop]
+                    }, settings);
+
+                    if ( this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal) ) {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
+            },
+            compare(operand1, operator, operand2) {
+                switch(operator) {
+                    case '==':
+                        return operand1 == operand2
+                        break;
+                    case '!=':
+                        return operand1 != operand2
+                        break;
                 }
             }
         }
