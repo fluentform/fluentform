@@ -83,7 +83,7 @@ add_action('admin_init', function () {
         'fluent_forms_all_entries',
         'msformentries'
     ];
-    
+
     if (isset($_GET['page']) && in_array($_GET['page'], $disablePages)) {
         remove_all_actions('admin_notices');
     }
@@ -110,12 +110,12 @@ add_action('enqueue_block_editor_assets', function () use ($app) {
         ->get();
 
     array_unshift($forms, (object)[
-        'id' => '',
+        'id'    => '',
         'title' => __('-- Select a form --', 'fluentform')
     ]);
 
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo' => $app->publicUrl('img/fluent_icon.png'),
+        'logo'  => $app->publicUrl('img/fluent_icon.png'),
         'forms' => $forms
     ]);
 
@@ -145,6 +145,11 @@ add_action('wp_print_scripts', function () {
 
             $pluginUrl = plugins_url();
             foreach ($wp_scripts->queue as $script) {
+
+                if (!isset($wp_scripts->registered[$script])) {
+                    continue;
+                }
+
                 $src = $wp_scripts->registered[$script]->src;
                 if (strpos($src, $pluginUrl) !== false && !strpos($src, 'fluentform') !== false) {
                     wp_dequeue_script($wp_scripts->registered[$script]->handle);
@@ -177,10 +182,10 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);
                 foreach ($oldOptions as $value => $label) {
                     $formattedOptions[] = [
-                        'label' => $label,
-                        'value' => $value,
+                        'label'      => $label,
+                        'value'      => $value,
                         'calc_value' => '',
-                        'image' => ''
+                        'image'      => ''
                     ];
                 }
                 $element['settings']['advanced_options'] = $formattedOptions;
@@ -206,11 +211,11 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['randomize_options'] = 'no';
             }
 
-            if($upgradeElement == 'select' && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple') && empty($element['settings']['max_selection'])) {
+            if ($upgradeElement == 'select' && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple') && empty($element['settings']['max_selection'])) {
                 $element['settings']['max_selection'] = '';
             }
 
-            if(($upgradeElement == 'select' || $upgradeElement = 'select_country') && !isset($element['settings']['enable_select_2'])) {
+            if (($upgradeElement == 'select' || $upgradeElement = 'select_country') && !isset($element['settings']['enable_select_2'])) {
                 $element['settings']['enable_select_2'] = 'no';
             }
 
@@ -286,7 +291,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
     });
 
     add_filter('fluentform_editor_init_element_input_text', function ($item) {
-        if(isset($item['attributes']['data-mask'])) {
+        if (isset($item['attributes']['data-mask'])) {
             if (!isset($item['settings']['data-mask-reverse'])) {
                 $item['settings']['data-mask-reverse'] = 'no';
             }
@@ -330,7 +335,7 @@ add_action('fluentform_addons_page_render_fluentform_pdf', function () {
     }
 
     echo \FluentForm\View::make('admin.addons.pdf_promo', [
-        'install_url' => $url,
+        'install_url'  => $url,
         'is_installed' => defined('FLUENTFORM_PDF_VERSION')
     ]);
 });
