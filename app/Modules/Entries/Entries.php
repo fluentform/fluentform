@@ -693,21 +693,27 @@ class Entries extends EntryQuery
         $formData = ArrayHelper::except($data, [
             '__fluent_form_embded_post_id',
             '_fluentform_' . $formId . '_fluentformnonce',
-            '_wp_http_referer'
+            '_wp_http_referer',
+            'g-recaptcha-response',
+            '__stripe_payment_method_id',
+            '__ff_all_applied_coupons'
         ]);
 
         $entryItems = [];
         foreach ($formData as $dataKey => $dataValue) {
-            if (!$dataValue) {
+            if (empty($dataValue)) {
                 continue;
             }
 
-            if (is_array($dataValue)) {
+            if (is_array($dataValue) || is_object($dataValue)) {
                 foreach ($dataValue as $subKey => $subValue) {
+                    if(empty($subValue)) {
+                        continue;
+                    }
                     $entryItems[] = [
                         'form_id'        => $formId,
                         'submission_id'  => $entryId,
-                        'field_name'     => $dataKey,
+                        'field_name'     => trim($dataKey),
                         'sub_field_name' => $subKey,
                         'field_value'    => maybe_serialize($subValue)
                     ];
@@ -716,7 +722,7 @@ class Entries extends EntryQuery
                 $entryItems[] = [
                     'form_id'        => $formId,
                     'submission_id'  => $entryId,
-                    'field_name'     => $dataKey,
+                    'field_name'     => trim($dataKey),
                     'sub_field_name' => '',
                     'field_value'    => $dataValue
                 ];

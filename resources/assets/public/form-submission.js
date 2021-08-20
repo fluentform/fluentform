@@ -107,7 +107,7 @@ jQuery(document).ready(function () {
                     });
                 };
 
-                var fireGlobalBeforeSendCallbacks = function ($theForm, formData, callback) {
+                var fireGlobalBeforeSendCallbacks = function ($theForm, formData) {
                     const processItemsDeferred = [];
                     const processFunctions = globalValidators;
 
@@ -336,7 +336,6 @@ jQuery(document).ready(function () {
                             }
                         })
                         .always(function (res) {
-                            $theForm.parent().find('.ff_msg_temp').remove();
                             that.isSending = false;
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
@@ -365,6 +364,7 @@ jQuery(document).ready(function () {
                         .removeClass('disabled')
                         .removeClass('ff-working')
                         .attr('disabled', false);
+                    $theForm.parent().find('.ff_msg_temp').remove();
                 }
 
                 var formResetHandler = function ($this) {

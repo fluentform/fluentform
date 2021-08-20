@@ -57,7 +57,7 @@
         />
 
         <div
-                v-if="parseFloat(submission.total_paid)"
+                v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
                 class="entry_info_box entry_submission_order_data"
         >
             <div class="entry_info_header">

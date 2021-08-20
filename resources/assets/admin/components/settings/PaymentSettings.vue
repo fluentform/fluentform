@@ -166,13 +166,13 @@
                                 <div slot="content">
                                     <h3>Statement Description</h3>
                                     <p>
-                                        Provide the statement description. If you keep it empty then your form name will be set
+                                        Provide the statement description. If you keep it empty then your form name will be set. (Contains between 5 and 22 characters)
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
-                        <el-input placeholder="Statement Description" type="text" size="small" v-model="settings.stripe_descriptor" />
+                        <el-input placeholder="Statement Description" type="text" size="small" maxlength="22" v-model="settings.stripe_descriptor" />
                     </el-form-item>
                 </div>
 
