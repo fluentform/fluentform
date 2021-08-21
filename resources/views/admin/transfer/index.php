@@ -29,7 +29,7 @@ use FluentForm\App\Helpers\Helper;
                     <a data-hash="activity-logs"
                        href="<?php echo Helper::makeMenuUrl('fluent_forms_transfer', ['hash' => 'activity-logs']); ?>"
                     >
-                        <?php echo __('Activity Logs', 'fluentform'); ?>
+                        <?php echo __('Activity/API Logs', 'fluentform'); ?>
                     </a>
                 </li>
             </ul>
