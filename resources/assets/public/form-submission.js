@@ -246,6 +246,10 @@ jQuery(document).ready(function () {
                                 return;
                             }
 
+                            if(res.data.append_data) {
+                                addHiddenData(res.data.append_data);
+                            }
+
                             if (res.data.nextAction) {
                                 $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
                                     form: $theForm,
@@ -315,6 +319,10 @@ jQuery(document).ready(function () {
                             if (!res || !res.responseJSON || !res.responseJSON || !res.responseJSON.errors) {
                                 showErrorMessages(res.responseText);
                                 return;
+                            }
+
+                            if(res.responseJSON.append_data) {
+                                addHiddenData(res.responseJSON.append_data);
                             }
 
                             showErrorMessages(res.responseJSON.errors);
@@ -734,6 +742,23 @@ jQuery(document).ready(function () {
                     globalValidators[key] = callback;
                 }
 
+                var addHiddenData = function (items) {
+                    jQuery.each(items, (itemName, itemValue) => {
+                        if(itemValue) {
+                            const $itemDom = $theForm.find('input[name='+itemName+']');
+                            if($itemDom.length) {
+                                $itemDom.attr('value', itemValue);
+                            } else {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: itemName,
+                                    value: itemValue
+                                }).appendTo($theForm);
+                            }
+                        }
+                    });
+                }
+                
                 return {
                     initFormHandlers,
                     registerFormSubmissionHandler,

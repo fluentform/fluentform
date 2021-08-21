@@ -696,7 +696,8 @@ class Entries extends EntryQuery
             '_wp_http_referer',
             'g-recaptcha-response',
             '__stripe_payment_method_id',
-            '__ff_all_applied_coupons'
+            '__ff_all_applied_coupons',
+            '__entry_intermediate_hash'
         ]);
 
         $entryItems = [];

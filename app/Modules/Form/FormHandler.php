@@ -156,7 +156,6 @@ class FormHandler
             }
         }
 
-
         do_action('fluentform_before_submission_confirmation', $insertId, $formData, $form);
 
         // that was a typo. We will remove that after september
