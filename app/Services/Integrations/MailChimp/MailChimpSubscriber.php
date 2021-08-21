@@ -113,8 +113,23 @@ trait MailChimpSubscriber
         $tags = array_map('trim', $tags);
         $tags = array_filter($tags);
 
+        //explode dynamic commas values to array
+
+        $tagsFormatted = [];
+        foreach ($tags as $tag) {
+            if (strpos($tag, ',') !== false) {
+                $innerTags = explode(',', $tag);
+                foreach ($innerTags as $t){
+                    $tagsFormatted[]  = $t;
+                }
+            }else{
+                $tagsFormatted[] = $tag;
+            }
+
+        }
+        $tagsFormatted;
         if ($tags) {
-            $arguments['tags'] = $tags;
+            $arguments['tags'] =  $tagsFormatted;
         }
 
         $note = '';
