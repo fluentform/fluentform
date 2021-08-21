@@ -98,31 +98,31 @@
             },
             removeLog(logId) {
                 let action = '';
-              if (this.log_type === 'logs') {
-                action = 'fluentform_delete_logs_by_ids';
-              } else if (this.log_type === 'api_calls') {
-                action = 'fluentform_delete_api_logs_by_ids';
-              } else {
-                return;
-              }
-                let data = {
-                  action: action,
-                  log_ids: [logId],
-                };
+                if (this.log_type === 'logs') {
+                  action = 'fluentform_delete_logs_by_ids';
+                } else if (this.log_type === 'api_calls') {
+                  action = 'fluentform_delete_api_logs_by_ids';
+                } else {
+                  return;
+                }
+                  let data = {
+                    action: action,
+                    log_ids: [logId],
+                  };
 
-                FluentFormsGlobal.$post(data)
-                    .then(response => {
-                      this.$notify({
-                        title: 'Success',
-                        message: response.data.message,
-                        type: 'success',
-                        offset: 30
+                  FluentFormsGlobal.$post(data)
+                      .then(response => {
+                        this.$notify({
+                          title: 'Success',
+                          message: response.data.message,
+                          type: 'success',
+                          offset: 30
+                        });
+                        this.fetchLogs();
+                      })
+                      .fail(error => {
+                        console.log(error);
                       });
-                      this.fetchLogs();
-                    })
-                    .fail(error => {
-                      console.log(error);
-                    });
             },
         },
         mounted() {
