@@ -19,6 +19,9 @@
                             <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> in <span
                                 class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> at
                             {{log.created_at}}
+                            <span class="pull-right">
+                              <remove class="pull-right" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
+                            </span>
                         </div>
                         <div class="entry_submission_log_des" v-html="log.description"></div>
                     </div>
@@ -29,6 +32,9 @@
                             <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> in <span
                                 class="entry_submission_log_component">{{getReadableName(log.action)}}</span> at
                             {{log.created_at}}
+                            <span class="pull-right">
+                              <remove class="pull-right" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
+                            </span>
                         </div>
                         <div class="entry_submission_log_des" v-html="log.note"></div>
                     </div>
@@ -41,10 +47,14 @@
     </div>
 </template>
 <script type="text/babel">
+  import remove from "../components/confirmRemove";
 
-    export default {
+  export default {
         name: 'submission_logs',
         props: ['entry_id'],
+        components:{
+          remove,
+        },
         data() {
             return {
                 logs: [],
@@ -85,7 +95,35 @@
                     .replace('_notification_feed', '')
                     .replace('_', ' ');
 
-            }
+            },
+            removeLog(logId) {
+                let action = '';
+                if (this.log_type === 'logs') {
+                  action = 'fluentform_delete_logs_by_ids';
+                } else if (this.log_type === 'api_calls') {
+                  action = 'fluentform_delete_api_logs_by_ids';
+                } else {
+                  return;
+                }
+                  let data = {
+                    action: action,
+                    log_ids: [logId],
+                  };
+
+                  FluentFormsGlobal.$post(data)
+                      .then(response => {
+                        this.$notify({
+                          title: 'Success',
+                          message: response.data.message,
+                          type: 'success',
+                          offset: 30
+                        });
+                        this.fetchLogs();
+                      })
+                      .fail(error => {
+                        console.log(error);
+                      });
+            },
         },
         mounted() {
             this.fetchLogs();

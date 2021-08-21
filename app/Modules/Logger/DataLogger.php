@@ -239,7 +239,7 @@ class DataLogger
            ->delete();
 
         wp_send_json_success([
-            'message' => __('Selected logs successfully deleted', 'fluentform')
+            'message' => __('Selected log(s) successfully deleted', 'fluentform')
         ], 200);
     }
 
@@ -260,7 +260,7 @@ class DataLogger
             ->delete();
 
         wp_send_json_success([
-            'message' => __('Selected logs successfully deleted', 'fluentform')
+            'message' => __('Selected log(s) successfully deleted', 'fluentform')
         ], 200);
     }
 
