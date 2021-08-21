@@ -20,7 +20,7 @@
                                 class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> at
                             {{log.created_at}}
                             <span class="pull-right">
-                              <remove class="pull-right" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
+                              <remove :plain="true" class="pull-right" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
                             </span>
                         </div>
                         <div class="entry_submission_log_des" v-html="log.description"></div>
