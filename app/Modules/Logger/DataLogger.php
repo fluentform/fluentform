@@ -37,14 +37,14 @@ class DataLogger
             $apiStatuses[] = $api->status;
         }
 
-        $components = wpFluent()->table('ff_scheduled_actions')
-            ->select('action')
-            ->groupBy('action')
+        $components = wpFluent()->table('fluentform_logs')
+            ->select('component')
+            ->groupBy('component')
             ->get();
 
         $formattedComponents = [];
         foreach ($components as $component) {
-            $formattedComponents[] = $component->action;
+            $formattedComponents[] = $component->component;
         }
 
         $forms = wpFluent()->table('fluentform_logs')
@@ -131,6 +131,8 @@ class DataLogger
                 'fluentform_logs.*'
             ])
             ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_forms.title as form_title' ))
+            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_logs.parent_source_id as form_id' ))
+            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_logs.source_id as entry_id' ))
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
             ->orderBy('fluentform_logs.id', 'DESC')
             ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
@@ -154,6 +156,9 @@ class DataLogger
             $logs = $logsQuery->offset($skip)
             ->limit($limit)
             ->get();
+        foreach ($logs as $log) {
+            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$log->form_id.'#/entries/'.$log->entry_id);
+        }
 
         $logs = apply_filters('fluentform_all_logs', $logs);
 
@@ -317,5 +322,50 @@ class DataLogger
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         return FormDataParser::parseFormEntry($submission, $form, $formInputs);
+    }
+
+    public function getApiLogFilters()
+    {
+        $apis = wpFluent()->table('ff_scheduled_actions')
+            ->select('status')
+            ->groupBy('status')
+            ->get();
+
+        $apiStatuses = [];
+        foreach ($apis as $api) {
+            $apiStatuses[] = $api->status;
+        }
+
+        $components = wpFluent()->table('ff_scheduled_actions')
+            ->select('action')
+            ->groupBy('action')
+            ->get();
+
+        $formattedComponents = [];
+        foreach ($components as $component) {
+            $formattedComponents[] = $component->action;
+        }
+
+        $forms = wpFluent()->table('ff_scheduled_actions')
+            ->select('ff_scheduled_actions.form_id', 'fluentform_forms.title')
+            ->groupBy('ff_scheduled_actions.form_id')
+            ->orderBy('ff_scheduled_actions.form_id', 'DESC')
+            ->join('fluentform_forms', 'fluentform_forms.id', '=', 'ff_scheduled_actions.form_id')
+            ->get();
+
+        $formattedForms = [];
+
+        foreach ($forms as $form) {
+            $formattedForms[] = [
+                'form_id' => $form->form_id,
+                'title' => $form->title
+            ];;
+        }
+
+        wp_send_json_success([
+            'available_components' => $formattedComponents,
+            'available_forms' => $formattedForms,
+            'api_statuses' => $apiStatuses
+        ]);
     }
 }

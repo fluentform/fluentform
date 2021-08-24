@@ -12,6 +12,7 @@ import {
     Table,
     TableColumn,
     Pagination,
+    Popover,
     Notification,
     Loading
 } from 'element-ui';
@@ -27,6 +28,8 @@ Vue.use(Col);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Pagination);
+Vue.use(Popover);
+
 
 Vue.prototype.$notify = Notification;
 Vue.use(Loading.directive);
@@ -40,13 +43,22 @@ locale.use(lang);
 import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
+import ApiLogs from './ApiLogs';
 
+Vue.mixin({
+    methods:{
+        $t(str){
+            return str;
+        }
+    }
+})
 new Vue({
     el: '#ff_transfer_app',
     components: {
         exportforms: ExportForms,
         importforms: ImportForms,
-        'activity-logs': ActivityLogs
+        activitylogs: ActivityLogs,
+        apilogs: ApiLogs,
     },
     data: {
         component: 'exportforms',
@@ -54,6 +66,7 @@ new Vue({
     },
     methods: {
         setRoute(component) {
+
             if (this.$options.components[component]) {
                 let $listItems = jQuery('.ff_admin_menu_list li').removeClass('active');
 
