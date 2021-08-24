@@ -820,7 +820,7 @@ jQuery(document).ready(function () {
                     if (parseInt(maxSelection)) {
                         args.maxItemCount = parseInt(maxSelection);
                         args.maxItemText = function (maxItemCount) {
-                            let message = window.fluentFormVars.choice_js_vars.maxItemTextLang;
+                            let message = window.fluentFormVars.choice_js_vars.maxItemText;
                             message = message.replace('%%maxItemCount%%', maxItemCount);
                             return message;
                         }
