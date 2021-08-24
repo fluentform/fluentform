@@ -18,9 +18,9 @@ class DataLogger
     public function getLogFilters()
     {
         $statuses = wpFluent()->table('fluentform_logs')
-                        ->select('status')
-                        ->groupBy('status')
-                        ->get();
+            ->select('status')
+            ->groupBy('status')
+            ->get();
         $formattedStatuses = [];
 
         foreach ($statuses as $status) {
@@ -59,15 +59,15 @@ class DataLogger
         foreach ($forms as $form) {
             $formattedForms[] = [
                 'form_id' => $form->parent_source_id,
-                'title' => $form->title
+                'title'   => $form->title
             ];;
         }
 
         wp_send_json_success([
-            'available_statuses' => $formattedStatuses,
+            'available_statuses'   => $formattedStatuses,
             'available_components' => $formattedComponents,
-            'available_forms' => $formattedForms,
-            'api_statuses' => $apiStatuses
+            'available_forms'      => $formattedForms,
+            'api_statuses'         => $apiStatuses
         ]);
     }
 
@@ -88,7 +88,7 @@ class DataLogger
 
     public function getLogsByEntry($entry_id, $log_type = 'logs', $sourceType = 'submission_item')
     {
-        if($log_type == 'logs') {
+        if ($log_type == 'logs') {
             $logs = wpFluent()->table('fluentform_logs')
                 ->where('source_id', $entry_id)
                 ->where('source_type', $sourceType)
@@ -130,34 +130,34 @@ class DataLogger
             ->select([
                 'fluentform_logs.*'
             ])
-            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_forms.title as form_title' ))
-            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_logs.parent_source_id as form_id' ))
-            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_logs.source_id as entry_id' ))
+            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
+            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'))
+            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id'))
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
             ->orderBy('fluentform_logs.id', 'DESC')
             ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
 
 
-        if($parentSourceId = ArrayHelper::get($_REQUEST, 'parent_source_id')) {
+        if ($parentSourceId = ArrayHelper::get($_REQUEST, 'parent_source_id')) {
             $logsQuery = $logsQuery->where('fluentform_logs.parent_source_id', intval($parentSourceId));
         }
 
-        if($status = ArrayHelper::get($_REQUEST, 'status')) {
+        if ($status = ArrayHelper::get($_REQUEST, 'status')) {
             $logsQuery = $logsQuery->where('fluentform_logs.status', $status);
         }
 
-        if($component = ArrayHelper::get($_REQUEST, 'component')) {
+        if ($component = ArrayHelper::get($_REQUEST, 'component')) {
             $logsQuery = $logsQuery->where('fluentform_logs.component', $component);
         }
 
-
         $logsQueryMain = $logsQuery;
 
-            $logs = $logsQuery->offset($skip)
+        $logs = $logsQuery->offset($skip)
             ->limit($limit)
             ->get();
+
         foreach ($logs as $log) {
-            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$log->form_id.'#/entries/'.$log->entry_id);
+            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->entry_id);
         }
 
         $logs = apply_filters('fluentform_all_logs', $logs);
@@ -189,20 +189,20 @@ class DataLogger
                 'ff_scheduled_actions.note',
                 'ff_scheduled_actions.created_at',
             ])
-            ->select(wpFluent()->raw( $wpdb->prefix.'fluentform_forms.title as form_title' ))
+            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'ff_scheduled_actions.form_id')
             ->orderBy('ff_scheduled_actions.id', 'DESC');
 
 
-        if($formId = ArrayHelper::get($_REQUEST, 'form_id')) {
+        if ($formId = ArrayHelper::get($_REQUEST, 'form_id')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.form_id', intval($formId));
         }
 
-        if($status = ArrayHelper::get($_REQUEST, 'status')) {
+        if ($status = ArrayHelper::get($_REQUEST, 'status')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.status', $status);
         }
 
-        if($component = ArrayHelper::get($_REQUEST, 'component')) {
+        if ($component = ArrayHelper::get($_REQUEST, 'component')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.action', $component);
         }
 
@@ -215,7 +215,7 @@ class DataLogger
         $logs = apply_filters('fluentform_api_all_logs', $logs);
 
         foreach ($logs as $log) {
-            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$log->form_id.'#/entries/'.$log->origin_id);
+            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->origin_id);
         }
 
         $total = $logsQueryMain->count();
@@ -229,19 +229,19 @@ class DataLogger
 
     public function deleteLogsByIds($ids = [])
     {
-        if(!$ids) {
+        if (!$ids) {
             $ids = wp_unslash($_REQUEST['log_ids']);
         }
 
-        if(!$ids) {
+        if (!$ids) {
             wp_send_json_error([
                 'message' => 'No selections found'
             ], 423);
         }
 
-       wpFluent()->table('fluentform_logs')
+        wpFluent()->table('fluentform_logs')
             ->whereIn('id', $ids)
-           ->delete();
+            ->delete();
 
         wp_send_json_success([
             'message' => __('Selected log(s) successfully deleted', 'fluentform')
@@ -250,11 +250,11 @@ class DataLogger
 
     public function deleteApiLogsByIds($ids = [])
     {
-        if(!$ids) {
+        if (!$ids) {
             $ids = wp_unslash($_REQUEST['log_ids']);
         }
 
-        if(!$ids) {
+        if (!$ids) {
             wp_send_json_error([
                 'message' => 'No selections found'
             ], 423);
@@ -275,13 +275,13 @@ class DataLogger
         $actionFeed = wpFluent()->table('ff_scheduled_actions')
             ->find($logId);
 
-        if(!$actionFeed) {
+        if (!$actionFeed) {
             wp_send_json_error([
                 'message' => 'API log does not exist'
             ], 423);
         }
 
-        if(!$actionFeed->status == 'success') {
+        if (!$actionFeed->status == 'success') {
             wp_send_json_error([
                 'message' => 'API log already in success mode'
             ], 423);
@@ -299,9 +299,9 @@ class DataLogger
         wpFluent()->table($this->table)
             ->where('id', $actionFeed->id)
             ->update([
-                'status' => 'manual_retry',
+                'status'      => 'manual_retry',
                 'retry_count' => $actionFeed->retry_count + 1,
-                'updated_at' => current_time('mysql')
+                'updated_at'  => current_time('mysql')
             ]);
 
         do_action($actionFeed->action, $feed, $formData, $entry, $form);
@@ -314,7 +314,7 @@ class DataLogger
 
         wp_send_json_success([
             'message' => 'Retry completed',
-            'feed' => $actionFeed
+            'feed'    => $actionFeed
         ], 200);
     }
 
@@ -358,14 +358,14 @@ class DataLogger
         foreach ($forms as $form) {
             $formattedForms[] = [
                 'form_id' => $form->form_id,
-                'title' => $form->title
+                'title'   => $form->title
             ];;
         }
 
         wp_send_json_success([
             'available_components' => $formattedComponents,
-            'available_forms' => $formattedForms,
-            'api_statuses' => $apiStatuses
+            'available_forms'      => $formattedForms,
+            'api_statuses'         => $apiStatuses
         ]);
     }
 }
