@@ -48,7 +48,7 @@ class FormBuilder
      * @param  \StdClass $form [Form entry from database]
      * @return mixed
      */
-    public function build($form, $extraCssClass = '', $instanceCssClass = '')
+    public function build($form, $extraCssClass = '', $instanceCssClass = '', $atts = [])
     {
         $this->form = $form;
         $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
@@ -90,8 +90,10 @@ class FormBuilder
         $formAtts = $this->buildAttributes($formAttributes);
 
         ob_start();
+
+        $wrapperClasses = trim('fluentform fluentform_wrapper_'.$form->id.' '.ArrayHelper::get($atts, 'css_classes'));
         
-        echo "<div class='fluentform fluentform_wrapper_".$form->id."'>";
+        echo "<div class='".$wrapperClasses."'>";
         
         do_action('fluentform_before_form_render', $form);
         
