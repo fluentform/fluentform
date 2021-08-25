@@ -172,24 +172,25 @@ class Converter
 	public static function fieldTypes()
 	{
 		$fieldTypes = [
-			'welcome_screen'        => 'FlowFormWelcomeScreenType',
+			'input_url'             => 'FlowFormUrlType',
 			'input_date'            => 'FlowFormDateType',
+			'input_text'            => 'FlowFormTextType',
+			'ratings'               => 'FlowFormRateType',
+			'input_email'           => 'FlowFormEmailType',
+			'input_hidden'          => 'FlowFormHiddenType',
+			'input_number'          => 'FlowFormNumberType',
 			'select'                => 'FlowFormDropdownType',
 			'select_country'        => 'FlowFormDropdownType',
-			'input_email'           => 'FlowFormEmailType',
 			'textarea'              => 'FlowFormLongTextType',
-			'input_checkbox'        => 'FlowFormMultipleChoiceType',
-			'terms_and_condition'   => 'FlowFormTermsAndConditionType',
-			'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
-			'input_radio'           => 'FlowFormMultipleChoiceType',
-			'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
-			'input_number'          => 'FlowFormNumberType',
 			'input_password'        => 'FlowFormPasswordType',
 			'custom_html'           => 'FlowFormSectionBreakType',
 			'section_break'         => 'FlowFormSectionBreakType',
-			'input_text'            => 'FlowFormTextType',
-			'input_url'             => 'FlowFormUrlType',
-			'ratings'               => 'FlowFormRateType'
+			'welcome_screen'        => 'FlowFormWelcomeScreenType',
+			'input_checkbox'        => 'FlowFormMultipleChoiceType',
+			'input_radio'           => 'FlowFormMultipleChoiceType',
+			'terms_and_condition'   => 'FlowFormTermsAndConditionType',
+			'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
+			'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
 		];
 
 		if (defined('FLUENTFORMPRO')) {

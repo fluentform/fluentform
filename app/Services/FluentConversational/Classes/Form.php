@@ -296,23 +296,24 @@ class Form
         $advancedFields = ArrayHelper::get($components, 'advanced', []);
 
         $acceptedFieldElements = [
-            'input_email',
-            'input_text',
-            'textarea',
-            'select_country',
-            'input_number',
-            'select',
-            'input_radio',
-            'input_checkbox',
-            'select',
-            'input_url',
-            'input_date',
-            'custom_html',
             'phone',
-            'section_break',
-            'terms_and_condition',
+            'select',
+            'select',
             'ratings',
-            'input_password'
+            'textarea',
+            'input_url',
+            'input_text',
+            'input_date',
+            'input_email',
+            'input_radio',
+            'custom_html',
+            'input_hidden',
+            'input_number',
+            'section_break',
+            'select_country',
+            'input_checkbox',
+            'input_password',
+            'terms_and_condition',
         ];
 
         $elements = [];
