@@ -9,7 +9,7 @@
             </el-col>
         </el-row>
 
-        <el-col class="ff_filter_wrapper text-center" :md="24">
+        <el-col class="ff_filter_wrapper" :md="24">
             <div class="ff_form_group ff_inline">
                 Form
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_form" placeholder="Select Form">
@@ -96,7 +96,7 @@
                     label="Date"
                     width="180">
                 </el-table-column>
-                <el-table-column width="140" label="Action">
+                <el-table-column width="70" label="Action">
                     <template slot-scope="props">
                         <remove :plain="true" size="mini" class="pull-right" icon="el-icon-delete" @on-confirm="deleteItems(props.row.id)"></remove>
                     </template>
