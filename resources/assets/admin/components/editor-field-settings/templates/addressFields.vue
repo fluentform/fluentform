@@ -31,6 +31,11 @@
                 <validationRules labelPosition="left" :editItem="field"></validationRules>
             </div>
         </div>
+        <el-form-item v-if="has_gmap_api" label="Autocomplete Feature">
+            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete">Enable
+                Autocomplete (Google Map)
+            </el-checkbox>
+        </el-form-item>
     </div>
 </template>
 
@@ -47,9 +52,14 @@ export default {
         fieldOptionSettings,
         validationRules
     },
+    data() {
+        return {
+            has_gmap_api: !!window.FluentFormApp.has_address_gmap_api
+        }
+    },
     methods: {
         toggleAddressFieldInputs(event) {
-            if (! jQuery(event.target).parent().find('.address-field-option__settings').hasClass('is-open')) {
+            if (!jQuery(event.target).parent().find('.address-field-option__settings').hasClass('is-open')) {
                 jQuery(event.target).removeClass('el-icon-caret-bottom');
                 jQuery(event.target).addClass('el-icon-caret-top');
                 jQuery(event.target).parent().find('.address-field-option__settings').addClass('is-open');

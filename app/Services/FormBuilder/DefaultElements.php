@@ -281,6 +281,7 @@ $defaultElements = array(
             ),
             'settings' => array(
                 'label' => __('Address', 'fluentform'),
+                'enable_g_autocomplete' => 'no',
                 'admin_field_label' => 'Address',
                 'conditional_logics' => array(),
             ),
@@ -457,7 +458,7 @@ $defaultElements = array(
                             'visible_list' => array(),
                             'hidden_list' => array(),
                         ),
-                        'conditional_logics' => array(),
+                        'conditional_logics' => array()
                     ),
                     'options' => array(
                         'US' => 'US of America',
