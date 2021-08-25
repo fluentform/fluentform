@@ -84,7 +84,8 @@ class FormBuilder
             'data-form_id' => $form->id,
             'id' => 'fluentform_'.$form->id,
             'class' => $formClass,
-            'data-form_instance' => $instanceCssClass
+            'data-form_instance' => $instanceCssClass,
+            'method' => 'POST'
         ], $form);
 
         $formAtts = $this->buildAttributes($formAttributes);

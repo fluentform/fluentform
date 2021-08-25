@@ -74,7 +74,7 @@ class Component
 
         // Date Pickckr Style
         //fix for essential addon event picker conflict
-        if (!wp_script_is( 'flatpickr', 'registered' )) {
+        if (!wp_script_is('flatpickr', 'registered')) {
             wp_register_style(
                 'flatpickr',
                 $app->publicUrl('libs/flatpickr/flatpickr.min.css')
@@ -140,7 +140,7 @@ class Component
         $formId = intval($_REQUEST['formId']);
         $components = $this->app->make('components');
 
-        $this->app->doAction( 'fluent_editor_init', $components );
+        $this->app->doAction('fluent_editor_init', $components);
 
         $editorComponents = $components->sort()->toArray();
         $editorComponents = apply_filters('fluent_editor_components', $editorComponents, $formId);
@@ -148,8 +148,8 @@ class Component
         $countries = $this->app->load($this->app->appPath('Services/FormBuilder/CountryNames.php'));
 
         wp_send_json_success(array(
-            'countries' => $countries,
-            'components' => $editorComponents,
+            'countries'           => $countries,
+            'components'          => $editorComponents,
             'disabled_components' => $this->getDisabledComponents()
         ));
     }
@@ -165,23 +165,23 @@ class Component
         $isReCaptchaDisabled = !get_option('_fluentform_reCaptcha_keys_status', false);
 
         $disabled = array(
-            'recaptcha' => array(
+            'recaptcha'   => array(
                 'contentComponent' => 'recaptcha',
-                'disabled' => $isReCaptchaDisabled
+                'disabled'         => $isReCaptchaDisabled
             ),
             'input_image' => array(
                 'disabled' => true
             ),
-            'input_file' => array(
+            'input_file'  => array(
                 'disabled' => true
             ),
-            'shortcode' => array(
+            'shortcode'   => array(
                 'disabled' => true
             ),
             'action_hook' => array(
                 'disabled' => true
             ),
-            'form_step' => array(
+            'form_step'   => array(
                 'disabled' => true
             )
         );
@@ -214,21 +214,21 @@ class Component
             );
 
             $disabled['multi_payment_component'] = array(
-                'disabled' => true,
+                'disabled'   => true,
                 'is_payment' => true
             );
             $disabled['custom_payment_component'] = array(
-                'disabled' => true,
+                'disabled'   => true,
                 'is_payment' => true
             );
 
             $disabled['item_quantity_component'] = array(
-                'disabled' => true,
+                'disabled'   => true,
                 'is_payment' => true
             );
 
             $disabled['payment_method'] = array(
-                'disabled' => true,
+                'disabled'   => true,
                 'is_payment' => true
             );
         }
@@ -267,16 +267,16 @@ class Component
      */
     public function addFluentFormShortCode()
     {
-        
+
         add_action('wp_enqueue_scripts', array($this, 'registerScripts'), 9);
 
         $this->app->addShortCode('fluentform', function ($atts, $content) {
             $shortcodeDefaults = apply_filters('fluentform_shortcode_defaults', array(
-                'id' => null,
-                'title' => null,
-                'css_classes' => '',
-                'permission' => '',
-                'type' => 'classic',
+                'id'                 => null,
+                'title'              => null,
+                'css_classes'        => '',
+                'permission'         => '',
+                'type'               => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ), $atts);
 
@@ -287,15 +287,15 @@ class Component
 
         $this->app->addShortCode('fluentform_info', function ($atts) {
             $shortcodeDefaults = apply_filters('fluentform_info_shortcode_defaults', array(
-                'id' => null, // This is the form id
-                'info' => 'submission_count', // submission_count | created_at | updated_at | payment_total
-                'status' => 'all', // get submission cound of a particular entry status favourites | unread | read
-                'with_trashed' => 'no', // yes | no
-                'substract_from' => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
-                'hide_on_zero' => 'no',
-                'payment_status' => 'paid', // it can be all / specific payment status
+                'id'                 => null, // This is the form id
+                'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
+                'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
+                'with_trashed'       => 'no', // yes | no
+                'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
+                'hide_on_zero'       => 'no',
+                'payment_status'     => 'paid', // it can be all / specific payment status
                 'currency_formatted' => 'yes',
-                'date_format' => ''
+                'date_format'        => ''
             ), $atts);
 
             $atts = shortcode_atts($shortcodeDefaults, $atts);
@@ -445,9 +445,9 @@ class Component
             }
         }
 
-        if(is_feed()) {
+        if (is_feed()) {
             global $post;
-            $feedText = sprintf( __( 'The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform' ), get_permalink($post));
+            $feedText = sprintf(__('The form can be filled in the actual <a href="%s">website url</a>.', 'fluentform'), get_permalink($post));
             $feedText = apply_filters('fluentform_shortcode_feed_text', $feedText, $form);
             return $feedText;
         }
@@ -472,7 +472,7 @@ class Component
         $form = $this->app->applyFilters('fluentform_rendering_form', $form);
 
         $isRenderable = array(
-            'status' => true,
+            'status'  => true,
             'message' => ''
         );
 
@@ -488,13 +488,13 @@ class Component
         $form->instance_index = Helper::$formInstance;
 
 
-        if($atts['type'] == 'conversational') {
+        if ($atts['type'] == 'conversational') {
             return (new \FluentForm\App\Services\FluentConversational\Classes\Form())->renderShortcode($form);
         }
 
         $formBuilder = $this->app->make('formBuilder');
 
-        $cssClasses = trim($instanceCssClass.' ff-form-loading');
+        $cssClasses = trim($instanceCssClass . ' ff-form-loading');
 
         $output = $formBuilder->build($form, $cssClasses, $instanceCssClass, $atts);
 
@@ -517,24 +517,24 @@ class Component
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
         $stepText = apply_filters('fluentform_step_string', $stepText);
         $vars = apply_filters('fluentform_global_form_vars', array(
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'forms' => array(),
-            'step_text' => $stepText,
-            'is_rtl' => is_rtl(),
-            'date_i18n' => $this->getDatei18n(),
-            'pro_version' => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
-            'fluentform_version' => FLUENTFORM_VERSION,
-            'force_init' => false,
+            'ajaxUrl'               => admin_url('admin-ajax.php'),
+            'forms'                 => array(),
+            'step_text'             => $stepText,
+            'is_rtl'                => is_rtl(),
+            'date_i18n'             => $this->getDatei18n(),
+            'pro_version'           => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
+            'fluentform_version'    => FLUENTFORM_VERSION,
+            'force_init'            => false,
             'stepAnimationDuration' => 350,
-            'upload_completed_txt' => __('100% Completed', 'fluentform'),
-            'upload_start_txt' => __('0% Completed', 'fluentform'),
-            'uploading_txt' => __('Uploading', 'fluentform'),
-            'choice_js_vars' => [
-                'noResultsText' => __('No results found', 'fluentform'),
-                'loadingText' => __('Loading...', 'fluentform'),
-                'noChoicesText' => __('No choices to choose from', 'fluentform'),
+            'upload_completed_txt'  => __('100% Completed', 'fluentform'),
+            'upload_start_txt'      => __('0% Completed', 'fluentform'),
+            'uploading_txt'         => __('Uploading', 'fluentform'),
+            'choice_js_vars'        => [
+                'noResultsText'  => __('No results found', 'fluentform'),
+                'loadingText'    => __('Loading...', 'fluentform'),
+                'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
-                'maxItemText' => __('Only %%maxItemCount%% values can be added', 'fluentform'),
+                'maxItemText'    => __('Only %%maxItemCount%% values can be added', 'fluentform'),
             ]
         ));
 
@@ -549,11 +549,11 @@ class Component
         ];
 
         $form_vars = array(
-            'id' => $form->id,
-            'settings' => $formSettings,
-            'form_instance' => $instanceCssClass,
+            'id'               => $form->id,
+            'settings'         => $formSettings,
+            'form_instance'    => $instanceCssClass,
             'form_id_selector' => 'fluentform_' . $form->id,
-            'rules' => $formBuilder->validationRules
+            'rules'            => $formBuilder->validationRules
         );
 
         if ($conditionals = $formBuilder->conditions) {
@@ -571,7 +571,7 @@ class Component
             window.fluent_form_<?php echo $instanceCssClass; ?> = <?php echo json_encode($form_vars);?>;
             <?php if(wp_doing_ajax()): ?>
             function initFFInstance_<?php echo $form_vars['id']; ?>() {
-                if(!window.fluentFormApp) {
+                if (!window.fluentFormApp) {
                     console.log('No fluentFormApp found');
                     return;
                 }
@@ -638,17 +638,17 @@ class Component
     public function addRendererActions()
     {
         $actionMappings = [
-            'Select@compile' => ['fluentform_render_item_select'],
-            'Rating@compile' => ['fluentform_render_item_ratings'],
-            'Address@compile' => ['fluentform_render_item_address'],
-            'Name@compile' => ['fluentform_render_item_input_name'],
-            'TextArea@compile' => ['fluentform_render_item_textarea'],
-            'DateTime@compile' => ['fluentform_render_item_input_date'],
-            'Recaptcha@compile' => ['fluentform_render_item_recaptcha'],
-            'Container@compile' => ['fluentform_render_item_container'],
-            'CustomHtml@compile' => ['fluentform_render_item_custom_html'],
-            'SectionBreak@compile' => ['fluentform_render_item_section_break'],
-            'SubmitButton@compile' => ['fluentform_render_item_submit_button'],
+            'Select@compile'        => ['fluentform_render_item_select'],
+            'Rating@compile'        => ['fluentform_render_item_ratings'],
+            'Address@compile'       => ['fluentform_render_item_address'],
+            'Name@compile'          => ['fluentform_render_item_input_name'],
+            'TextArea@compile'      => ['fluentform_render_item_textarea'],
+            'DateTime@compile'      => ['fluentform_render_item_input_date'],
+            'Recaptcha@compile'     => ['fluentform_render_item_recaptcha'],
+            'Container@compile'     => ['fluentform_render_item_container'],
+            'CustomHtml@compile'    => ['fluentform_render_item_custom_html'],
+            'SectionBreak@compile'  => ['fluentform_render_item_section_break'],
+            'SubmitButton@compile'  => ['fluentform_render_item_submit_button'],
             'SelectCountry@compile' => ['fluentform_render_item_select_country'],
 
             'TermsAndConditions@compile' => [
@@ -811,11 +811,11 @@ class Component
 
             return false;
         }
-    
-        $weekDayToday     =  date("l") ;   //day of the week
-        $selectedWeekDays = ArrayHelper::get ($restrictions,'selectedDays');
+
+        $weekDayToday = date("l");   //day of the week
+        $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
-        if( $selectedWeekDays && is_array($selectedWeekDays) && ! in_array ($weekDayToday,$selectedWeekDays)){
+        if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
             $isRenderable['message'] = $restrictions['expiredMsg'];
             return false;
         }
@@ -892,9 +892,9 @@ class Component
     private function getDatei18n()
     {
         $i18n = array(
-            'previousMonth' => __('Previous Month', 'fluentform'),
-            'nextMonth' => __('Next Month', 'fluentform'),
-            'months' => [
+            'previousMonth'    => __('Previous Month', 'fluentform'),
+            'nextMonth'        => __('Next Month', 'fluentform'),
+            'months'           => [
                 'shorthand' => [
                     __('Jan', 'fluentform'),
                     __('Feb', 'fluentform'),
@@ -909,7 +909,7 @@ class Component
                     __('Nov', 'fluentform'),
                     __('Dec', 'fluentform')
                 ],
-                'longhand' => [
+                'longhand'  => [
                     __('January', 'fluentform'),
                     __('February', 'fluentform'),
                     __('March', 'fluentform'),
@@ -924,8 +924,8 @@ class Component
                     __('December', 'fluentform')
                 ]
             ],
-            'weekdays' => [
-                'longhand' => array(
+            'weekdays'         => [
+                'longhand'  => array(
                     __('Sunday', 'fluentform'),
                     __('Monday', 'fluentform'),
                     __('Tuesday', 'fluentform'),
@@ -944,7 +944,7 @@ class Component
                     __('Sat', 'fluentform')
                 )
             ],
-            'daysInMonth' => [
+            'daysInMonth'      => [
                 31,
                 28,
                 31,
@@ -958,15 +958,15 @@ class Component
                 30,
                 31
             ],
-            'rangeSeparator' => __(' to ', 'fluentform'),
+            'rangeSeparator'   => __(' to ', 'fluentform'),
             'weekAbbreviation' => __('Wk', 'fluentform'),
-            'scrollTitle' => __('Scroll to increment', 'fluentform'),
-            'toggleTitle' => __('Click to toggle', 'fluentform'),
-            'amPM' => [
+            'scrollTitle'      => __('Scroll to increment', 'fluentform'),
+            'toggleTitle'      => __('Click to toggle', 'fluentform'),
+            'amPM'             => [
                 __('AM', 'fluentform'),
                 __('PM', 'fluentform')
             ],
-            'yearAriaLabel' => __('Year', 'fluentform')
+            'yearAriaLabel'    => __('Year', 'fluentform')
         );
 
         return apply_filters('fluentform/date_i18n', $i18n);
@@ -999,7 +999,7 @@ class Component
     public function getNumericInputValue($value, $field)
     {
         $formatter = ArrayHelper::get($field, 'raw.settings.numeric_formatter');
-        if(!$formatter) {
+        if (!$formatter) {
             return $value;
         }
         return Helper::getNumericValue($value, $formatter);

@@ -246,7 +246,7 @@ jQuery(document).ready(function () {
                                 return;
                             }
 
-                            if(res.data.append_data) {
+                            if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
 
@@ -321,7 +321,7 @@ jQuery(document).ready(function () {
                                 return;
                             }
 
-                            if(res.responseJSON.append_data) {
+                            if (res.responseJSON.append_data) {
                                 addHiddenData(res.responseJSON.append_data);
                             }
 
@@ -744,9 +744,9 @@ jQuery(document).ready(function () {
 
                 var addHiddenData = function (items) {
                     jQuery.each(items, (itemName, itemValue) => {
-                        if(itemValue) {
-                            const $itemDom = $theForm.find('input[name='+itemName+']');
-                            if($itemDom.length) {
+                        if (itemValue) {
+                            const $itemDom = $theForm.find('input[name=' + itemName + ']');
+                            if ($itemDom.length) {
                                 $itemDom.attr('value', itemValue);
                             } else {
                                 $('<input>').attr({
@@ -758,7 +758,7 @@ jQuery(document).ready(function () {
                         }
                     });
                 }
-                
+
                 return {
                     initFormHandlers,
                     registerFormSubmissionHandler,
@@ -1173,6 +1173,22 @@ jQuery(document).ready(function () {
             if (formInstance) {
                 formInstance.initFormHandlers();
                 formInstance.initTriggers();
+            } else {
+                // If form instance is not loaded yet. We are looping into it
+                var counter = 0;
+                var i = setInterval(function () {
+                    formInstance = fluentFormApp($theForm);
+                    if (formInstance) {
+                        clearInterval(i);
+                        formInstance.initFormHandlers();
+                        formInstance.initTriggers();
+                    }
+                    counter++;
+                    if (counter > 10) {
+                        clearInterval(i);
+                        console.log('Form could not be loaded');
+                    }
+                }, 1000);
             }
         }
 
@@ -1190,6 +1206,9 @@ jQuery(document).ready(function () {
             // in elementor is_initialized is called when the page is loaded so removed the condition to check fo it
 
             const formInstance = fluentFormApp($theForm);
+            if (!formInstance) {
+                return false;
+            }
             formInstance.reinitExtras();
             if (window.grecaptcha) {
                 grecaptcha.reset(); //two recapthca on same page creates conflicts
@@ -1201,4 +1220,14 @@ jQuery(document).ready(function () {
         fluentFormCommonActions.init();
 
     })(window.fluentFormVars, jQuery);
+
+    jQuery('.fluentform').on('submit', '.ff-form-loading', function (e) {
+        e.preventDefault();
+        jQuery(this).parent().find('.ff_msg_temp').remove();
+        jQuery('<div/>', {
+            'class': 'error text-danger ff_msg_temp'
+        })
+            .html('Javascript handler could not be loaded. Form submission has been failed. Reload the page and try again')
+            .insertAfter(jQuery(this));
+    });
 });
