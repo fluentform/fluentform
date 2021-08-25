@@ -18,8 +18,7 @@ jQuery(document).ready(function () {
      * Custom Error/Exception
      */
     window.ffValidationError = (function () {
-        var ffValidationError = function () {
-        };
+        var ffValidationError = function () {};
         ffValidationError.prototype = Object.create(Error.prototype);
         ffValidationError.prototype.constructor = ffValidationError;
         return ffValidationError;
