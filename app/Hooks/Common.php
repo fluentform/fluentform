@@ -51,23 +51,23 @@ add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
     if ((isset($_GET['fluent_forms_pages']) || isset($_GET['fluentform_pages']))) {
 
-        if(empty(isset($_GET['fluent_forms_pages'])) && empty($_GET['fluentform_pages'])) {
+        if (empty(isset($_GET['fluent_forms_pages'])) && empty($_GET['fluentform_pages'])) {
             return;
         }
 
         add_action('wp_enqueue_scripts', function () use ($app) {
             wp_enqueue_script('jquery');
-	        wp_enqueue_script(
-	        	'fluent_forms_global',
-		        $app->publicUrl('js/fluent_forms_global.js'),
-		        array('jquery'),
-		        FLUENTFORM_VERSION,
-		        true
-	        );
-	        wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
-		        'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-		        'ajaxurl' => admin_url('admin-ajax.php')
-	        ]);
+            wp_enqueue_script(
+                'fluent_forms_global',
+                $app->publicUrl('js/fluent_forms_global.js'),
+                array('jquery'),
+                FLUENTFORM_VERSION,
+                true
+            );
+            wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
+                'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
+                'ajaxurl'                  => admin_url('admin-ajax.php')
+            ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($_REQUEST['preview_id']));
             if (apply_filters('fluentform_load_default_public', true, $form)) {
@@ -111,13 +111,13 @@ foreach ($elements as $element) {
         }
 
         if (in_array($field['element'], array('gdpr_agreement', 'terms_and_condition'))) {
-            if(!empty($response)){
+            if (!empty($response)) {
                 $response = __('Accepted', 'fluentform');
             }
         }
 
         if ($response && $isLabel && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
-            if(!isset($field['options'])) {
+            if (!isset($field['options'])) {
                 $field['options'] = [];
                 foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
                     $field['options'][$option['value']] = $option['label'];
@@ -408,3 +408,34 @@ $app->addFilter('fluentform_response_render_input_number', function ($response, 
 
 
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
+
+register_block_type('fluentfom/guten-block', array(
+    'render_callback' => function ($atts) {
+
+        if(empty($atts['formId'])) {
+            return '';
+        }
+
+        $className = \FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'className');
+
+        if ($className) {
+            $classes = explode(' ', $className);
+            $className = '';
+            if (!empty($classes)) {
+                foreach ($classes as $class) {
+                    $className .= sanitize_html_class($class) . " ";
+                }
+            }
+        }
+
+        return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"]');
+    },
+    'attributes'      => array(
+        'formId'    => array(
+            'type' => 'string'
+        ),
+        'className' => array(
+            'type' => 'string'
+        )
+    )
+));

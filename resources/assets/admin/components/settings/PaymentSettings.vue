@@ -159,6 +159,12 @@
                         <p>You can find the API keys to <a target="_blank" rel="noopener" href="https://dashboard.stripe.com/apikeys">Stripe Dashboard</a></p>
                     </div>
 
+                    <el-form-item label="Stripe Payment Receipt">
+                        <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_stripe_payment_receipt">
+                            Disable Payment Receipt Email by Stripe (no recommended)
+                        </el-checkbox>
+                    </el-form-item>
+
                     <el-form-item>
                         <template slot="label">
                             Statement Description

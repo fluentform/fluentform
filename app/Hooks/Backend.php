@@ -101,7 +101,8 @@ add_action('enqueue_block_editor_assets', function () use ($app) {
     wp_enqueue_script(
         'fluentform-gutenberg-block',
         $app->publicUrl("js/fluent_gutenblock.js"),
-        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
+        array('wp-element', 'wp-polyfill'),
+        FLUENTFORM_VERSION
     );
 
     $forms = wpFluent()->table('fluentform_forms')

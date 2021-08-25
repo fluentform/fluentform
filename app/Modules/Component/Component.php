@@ -274,6 +274,7 @@ class Component
             $shortcodeDefaults = apply_filters('fluentform_shortcode_defaults', array(
                 'id' => null,
                 'title' => null,
+                'css_classes' => '',
                 'permission' => '',
                 'type' => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
@@ -492,7 +493,10 @@ class Component
         }
 
         $formBuilder = $this->app->make('formBuilder');
-        $output = $formBuilder->build($form, $instanceCssClass . ' ff-form-loading', $instanceCssClass);
+
+        $cssClasses = trim($instanceCssClass.' ff-form-loading');
+
+        $output = $formBuilder->build($form, $cssClasses, $instanceCssClass, $atts);
 
         $output = $this->replaceEditorSmartCodes($output, $form);
 
