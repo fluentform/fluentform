@@ -137,7 +137,14 @@ export default function ($, $theForm) {
                                         doCalculation();
                                     });
                                 }
-                                let parsedValue = parseFloat($tdInput.val());
+
+                                let parsedValue = 0;
+                                if($tdInput.attr('type') == 'select') {
+                                    parsedValue = parseFloat($tdInput.find('option:selected').attr('data-calc_value'));
+                                } else {
+                                     parsedValue = parseFloat($tdInput.val());
+                                }
+
                                 if(!isNaN(parsedValue)) {
                                     value += parsedValue;
                                 }

@@ -14,9 +14,8 @@
                     class="ff_full_width_child"
                     v-if="childFields.indexOf('advanced_options') != -1 ||field.settings.advanced_options  != undefined "
                     :editItem="field" :list-item="{ label: 'Options', help_text: 'Provide Field Options'}"
-                    :hasCalValue="false"
+                    :hasCalValue="true"
             ></advanced-options>
-
 
         </el-form>
 
