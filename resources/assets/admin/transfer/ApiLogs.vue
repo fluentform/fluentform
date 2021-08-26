@@ -82,7 +82,7 @@
                 <el-table-column
                     prop="status"
                     label="Status"
-                    width="100">
+                    width="140">
                     <template slot-scope="props">
                       <span style="font-size: 12px;" class="ff_tag" :class="'log_status_'+props.row.status">{{props.row.status}}</span>
                     </template>

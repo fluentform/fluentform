@@ -133,9 +133,9 @@ class DataLogger
             ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
             ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'))
             ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id'))
-            ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
-            ->orderBy('fluentform_logs.id', 'DESC')
-            ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
+            ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
+            ->orderBy('fluentform_logs.id', 'DESC');
+        // ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
 
 
         if ($parentSourceId = ArrayHelper::get($_REQUEST, 'parent_source_id')) {
@@ -143,11 +143,11 @@ class DataLogger
         }
 
         if ($status = ArrayHelper::get($_REQUEST, 'status')) {
-            $logsQuery = $logsQuery->where('fluentform_logs.status', $status);
+            $logsQuery = $logsQuery->where('fluentform_logs.status', sanitize_text_field($status));
         }
 
         if ($component = ArrayHelper::get($_REQUEST, 'component')) {
-            $logsQuery = $logsQuery->where('fluentform_logs.component', $component);
+            $logsQuery = $logsQuery->where('fluentform_logs.component', sanitize_text_field($component));
         }
 
         $logsQueryMain = $logsQuery;
@@ -157,7 +157,9 @@ class DataLogger
             ->get();
 
         foreach ($logs as $log) {
-            $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->entry_id);
+            if($log->source_type == 'submission_item' && $log->entry_id) {
+                $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->entry_id);
+            }
         }
 
         $logs = apply_filters('fluentform_all_logs', $logs);

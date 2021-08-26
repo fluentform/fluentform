@@ -4,7 +4,7 @@
             <el-col :md="24">
                 <h3>Activity Logs</h3>
                 <p>
-                    All the form submission internal logs and you can see and track if there has any issue with any of your Form. (Last 2 months data only)
+                    All the form submission & General internal logs. You can see and track if there has any issue with any of your Form.
                 </p>
             </el-col>
         </el-row>
@@ -68,14 +68,22 @@
                 </el-table-column>
                 <el-table-column
                         width="120px"
-                        label="Submission Id">
+                        label="Source ID">
                     <template slot-scope="props">
-                        <a :href="props.row.submission_url">#{{props.row.source_id}}</a>
+                        <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
+                        <span v-else>n/a</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="form_title"
-                    label="Form">
+                    label="Form/Source">
+                    <template slot-scope="props">
+                        <span v-if="props.row.form_title">{{props.row.form_title}}</span>
+                        <span v-else>General Log</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    prop="title"
+                    label="Title">
                 </el-table-column>
                 <el-table-column
                     prop="status"
@@ -86,6 +94,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
+                    width="120"
                     label="Component">
                     <template slot-scope="props">
                         <div style="text-transform: capitalize">{{ props.row.component }}</div>
