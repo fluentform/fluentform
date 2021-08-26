@@ -99,7 +99,7 @@
           display: none;
         }
 
-        span {
+        label > span {
           line-height: 1;
           font-weight: 500;
           white-space: nowrap;
@@ -142,25 +142,37 @@
           }
         }
 
-        &:first-child span {
+        &:first-child label > span {
           border-left: 1px solid #dcdfe6;
           border-radius: 4px 0 0 4px;
           box-shadow: none !important;
         }
 
-        &:last-child span {
+        &:last-child label > span {
           border-radius: 0 4px 4px 0;
         }
 
-        &.ff_item_selected span {
+        &.ff_item_selected label > span {
           color: #fff;
           background-color: #409eff;
           border-color: #409eff;
           box-shadow: -1px 0 0 0 #8cc5ff;
         }
 
-        &.ff_item_selected:first-child span {
+        &.ff_item_selected:first-child label > span {
           border-left-color: #409eff;
+        }
+
+        @media only screen and (max-width: 768px) {
+          width: 100%;
+          display: block;
+          label > span {
+            display: block;
+            width: 100%;
+            border: 1px solid !important;
+            border-radius: 4px !important;
+            box-shadow: none !important;
+          }
         }
       }
     }

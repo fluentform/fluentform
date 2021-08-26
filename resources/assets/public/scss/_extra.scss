@@ -104,7 +104,7 @@
       &.ff-working {
         position: relative;
         transition: all 0.3s ease;
-        &:before {
+        &:after {
           content: '';
           position: absolute;
           bottom: -0;
