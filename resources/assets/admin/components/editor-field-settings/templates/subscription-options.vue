@@ -246,7 +246,7 @@
                             :min="0"
                             size="mini"
                             v-model="item.bill_times"
-                            :placeholder="$t('Trial Days')"
+                            :placeholder="$t('times')"
                     />
 
                     <p>
