@@ -6,6 +6,7 @@ export default function ($, $theForm) {
     }
 
     let repeaterTriggerCache = {};
+    let repeaterInputsTriggerCache = {};
 
     mexp.addToken([
         {
@@ -64,6 +65,7 @@ export default function ($, $theForm) {
     }
 
     var doCalculation = function () {
+        console.log('calculating');
         jQuery.each(calculationFields, (index, field) => {
             var $field = jQuery(field);
             var formula = $field.data('calculation_formula');
@@ -98,8 +100,16 @@ export default function ($, $theForm) {
                         value = $el.attr('data-calc_value') || 0;
                     }
                     replaces[itemKey] = value;
-                } else if (itemKey.indexOf('{repeat.') != -1) { // Radio Fields
+                } else if (itemKey.indexOf('{repeat.') != -1) { // Repeater Fields
                     let tableName = itemKey.replace(/{repeat.|}/g, '');
+                    // We may have column index here
+                    const splits = tableName.split('.');
+                    let indexName = false;
+                    if(splits.length > 1) {
+                        tableName = splits[0];
+                        indexName = splits[1];
+                    }
+
                     let $targetTable = $theForm.find('table[data-root_name=' + tableName + ']');
                     if (!repeaterTriggerCache[tableName]) {
                         repeaterTriggerCache[tableName] = true;
@@ -108,11 +118,38 @@ export default function ($, $theForm) {
                         });
                     }
 
-                    let value = 0;
-                    if (isAccessible($targetTable)) {
-                        value = $targetTable.find('tbody tr').length
+                    if(!indexName) {
+                        let value = 0;
+                        if (isAccessible($targetTable)) {
+                            value = $targetTable.find('tbody tr').length
+                        }
+                        replaces[itemKey] = value;
+                    } else {
+                        let value = 0;
+                        if (isAccessible($targetTable)) {
+                            const tds = $targetTable.find('tbody tr td:nth-child('+indexName+')');
+                            $.each(tds, (tdIndex, td) => {
+                                const $tdInput = $(td).find(':input');
+                                const cacheName = tableName+'_'+indexName + '_' + $tdInput.attr('id');
+                                if (!repeaterInputsTriggerCache[cacheName]) {
+                                    repeaterInputsTriggerCache[cacheName] = true;
+                                    $tdInput.on('change', () => {
+                                        doCalculation();
+                                    });
+                                }
+                                let parsedValue = parseFloat($tdInput.val());
+                                if(!isNaN(parsedValue)) {
+                                    value += parsedValue;
+                                }
+                            });
+                            if(value) {
+                                value = value.toFixed(2);
+                            }
+                        }
+                        // We have to calculate the child values
+                        replaces[itemKey] = value;
                     }
-                    replaces[itemKey] = value;
+
                 } else if (itemKey.indexOf('{payment.') != -1) {
                     let inputName = itemKey.replace(/{payment.|}/g, '');
                     let $elem = $theForm.find(':input[data-name=' + inputName + ']');
