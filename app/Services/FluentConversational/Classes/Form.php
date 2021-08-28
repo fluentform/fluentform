@@ -479,20 +479,7 @@ class Form
         $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
 
-        wp_enqueue_style(
-            'fluent_forms_conversational_form',
-            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
-            array(),
-            FLUENTFORM_VERSION
-        );
-
-        wp_enqueue_script(
-            'fluent_forms_conversational_form',
-            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            array(),
-            FLUENTFORM_VERSION,
-            true
-        );
+        $this->enqueueScripts();
 
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
@@ -620,20 +607,7 @@ class Form
 
         $submitCss = $this->getSubmitBttnStyle($form);
 
-        wp_enqueue_style(
-            'fluent_forms_conversational_form',
-            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/conversationalForm.css',
-            array(),
-            FLUENTFORM_VERSION
-        );
-
-        wp_enqueue_script(
-            'fluent_forms_conversational_form',
-            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            array(),
-            FLUENTFORM_VERSION,
-            true
-        );
+        $this->enqueueScripts();
 
         $designSettings = $this->getDesignSettings($formId);
 
@@ -686,5 +660,33 @@ class Form
         ]);
 
         exit(200);
+    }
+
+
+    /**
+     * Enqueue proper stylesheet based on rtl & JS script.
+     */
+    private function enqueueScripts()
+    {
+        $cssFileName = 'conversationalForm';
+
+        if (is_rtl()) {
+            $cssFileName .= '-rtl';
+        }
+
+        wp_enqueue_style(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/' . $cssFileName . '.css',
+            array(),
+            FLUENTFORM_VERSION
+        );
+
+        wp_enqueue_script(
+            'fluent_forms_conversational_form',
+            FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
+            array(),
+            FLUENTFORM_VERSION,
+            true
+        );
     }
 }
