@@ -26,7 +26,7 @@ class Entry
             'per_page' => 10,
             'page' => 1,
             'search' => '',
-            'sort_by' => 'DESC',
+            'sort_type' => 'DESC',
             'entry_type' => 'all'
         ]);
 
@@ -34,7 +34,7 @@ class Entry
 
         $entryQuery = wpFluent()->table('fluentform_submissions')
                         ->where('form_id', $this->form->id)
-                        ->orderBy('id', $atts['sort_by'])
+                        ->orderBy('id', $atts['sort_type'])
                         ->limit($atts['per_page'])
                         ->offset($offset);
 

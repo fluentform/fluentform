@@ -91,11 +91,11 @@ class Entries extends EntryQuery
 
         $ranges = $this->request->get('date_range', []);
 
-        if(!empty($ranges[0])) {
+        if (!empty($ranges[0])) {
             $from = $ranges[0];
         }
 
-        if(!empty($ranges[1])) {
+        if (!empty($ranges[1])) {
             $time = strtotime($ranges[1]) + 24 * 60 * 60;
             $to = date('Y-m-d H:i:s', $time);
 
@@ -278,15 +278,15 @@ class Entries extends EntryQuery
                 'fluentform_all_entry_labels_with_payment', $entries['formLabels'], false, $form
             );
         }
-        $formId          = $this->request->get ( 'form_id' );
-        $visible_columns = Helper::getFormMeta ( $formId, '_visible_columns', NULL );
-        $columns_order   = Helper::getFormMeta ($formId,'_columns_order',NULL);
-        
+        $formId = $this->request->get('form_id');
+        $visible_columns = Helper::getFormMeta($formId, '_visible_columns', NULL);
+        $columns_order = Helper::getFormMeta($formId, '_columns_order', NULL);
+
         wp_send_json_success([
-            'submissions' => apply_filters('fluentform_all_entries', $entries['submissions']),
-            'labels'      => $labels,
-            'visible_columns' =>  $visible_columns,
-            'columns_order' => $columns_order
+            'submissions'     => apply_filters('fluentform_all_entries', $entries['submissions']),
+            'labels'          => $labels,
+            'visible_columns' => $visible_columns,
+            'columns_order'   => $columns_order
         ], 200);
     }
 
@@ -534,7 +534,6 @@ class Entries extends EntryQuery
             }
         }
 
-
         wpFluent()->table('fluentform_submissions')
             ->where('id', $entryId)
             ->delete();
@@ -560,6 +559,10 @@ class Entries extends EntryQuery
 
 
                 wpFluent()->table('fluentform_transactions')
+                    ->where('submission_id', $entryId)
+                    ->delete();
+
+                wpFluent()->table('fluentform_subscriptions')
                     ->where('submission_id', $entryId)
                     ->delete();
 
@@ -708,7 +711,7 @@ class Entries extends EntryQuery
 
             if (is_array($dataValue) || is_object($dataValue)) {
                 foreach ($dataValue as $subKey => $subValue) {
-                    if(empty($subValue)) {
+                    if (empty($subValue)) {
                         continue;
                     }
                     $entryItems[] = [
@@ -777,5 +780,96 @@ class Entries extends EntryQuery
         }
 
         return true;
+    }
+
+    public function getUsers()
+    {
+        if (!current_user_can('list_users')) {
+            wp_send_json_error([
+                'message' => __('Sorry, You do not have permission to list users', 'fluentform')
+            ]);
+        }
+
+        $search = sanitize_text_field($this->request->get('search'));
+
+        $users = get_users(array(
+            'search' => $search,
+            'number' => 50
+        ));
+
+        $formattedUsers = [];
+
+        foreach ($users as $user) {
+            $formattedUsers[] = [
+                'ID'    => $user->ID,
+                'label' => $user->display_name . ' - ' . $user->user_email
+            ];
+        }
+
+        wp_send_json_success([
+            'users' => $formattedUsers
+        ]);
+
+    }
+
+    public function changeEntryUser()
+    {
+        $userId = intval($this->request->get('user_id'));
+        $submissionId = intval($this->request->get('submission_id'));
+
+        if (!$userId || !$submissionId) {
+            wp_send_json_error([
+                'message' => __('Submission ID and User ID is required', 'fluentform')
+            ], 423);
+        }
+
+        $submission = fluentFormApi('submissions')->find($submissionId);
+
+        $user = get_user_by('ID', $userId);
+
+        if (!$submission || $submission->user_id == $userId || !$user) {
+            wp_send_json_error([
+                'message' => __('Invalid Request', 'fluentform')
+            ], 423);
+        }
+
+        wpFluent()->table('fluentform_submissions')
+            ->where('id', $submission->id)
+            ->update([
+                'user_id'    => $userId,
+                'updated_at' => current_time('mysql')
+            ]);
+
+        if (defined('FLUENTFORMPRO')) {
+            // let's update the corresponding user IDs for transactions and
+            wpFluent()->table('fluentform_transactions')
+                ->where('submission_id', $submission->id)
+                ->update([
+                    'user_id'    => $userId,
+                    'updated_at' => current_time('mysql')
+                ]);
+        }
+
+        do_action('ff_log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'General',
+            'status'           => 'info',
+            'title'            => 'Associate user has been changed from '.$submission->user_id .' to '.$userId
+        ]);
+
+        do_action('fluentform_submission_user_changed', $submission, $user);
+
+        wp_send_json_success([
+            'message' => __('Selected user has been successfully assigned to this submission', 'fuentform'),
+            'user'    => [
+                'name'      => $user->display_name,
+                'email'     => $user->user_email,
+                'ID'        => $user->ID,
+                'permalink' => get_edit_user_link($user->ID)
+            ],
+            'user_id' => $userId
+        ]);
     }
 }

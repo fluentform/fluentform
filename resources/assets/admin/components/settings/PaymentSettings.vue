@@ -38,29 +38,55 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item>
-                    <template slot="label">
-                        Customer Email
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>Customer Email</h3>
-                                <p>
-                                    Please select the customer email field from your form's email inputs. It's optional
-                                    field but recommended.
-                                </p>
-                            </div>
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-                    <el-select v-model="settings.receipt_email" clearable filterable placeholder="Select an email field">
-                        <el-option
-                                v-for="(item, index) in emailFields"
-                                :key="index"
-                                :label="item.admin_label"
-                                :value="item.attributes.name">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item>
+                            <template slot="label">
+                                Customer Email
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <h3>Customer Email</h3>
+                                        <p>
+                                            Please select the customer email field from your form's email inputs. It's optional
+                                            field but recommended.
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-select autoComplete="new_password" v-model="settings.receipt_email" clearable filterable placeholder="Select an email field">
+                                <el-option
+                                    v-for="(item, index) in emailFields"
+                                    :key="index"
+                                    :label="item.admin_label"
+                                    :value="item.attributes.name">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item>
+                            <template slot="label">
+                                Customer Name
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <p>
+                                            Please select the customer name field from your form's email inputs. It's optional
+                                            field but recommended. If user is logged in then this data will be picked from logged in user
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <input-popover
+                                v-model="settings.customer_name"
+                                placeholder="Customer Name"
+                                icon="el-icon-arrow-down"
+                                :data="editorShortcodes"
+                            />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
 
                 <div class="ff_card_block" v-if="payment_methods.stripe">
                     <h3>Stripe Settings</h3>
@@ -239,13 +265,15 @@
 <script type="text/babel">
     import DropdownLabelRepeater from './GeneralIntegration/_DropdownLabelRepeater';
     import FieldGeneral from './GeneralIntegration/_FieldGeneral';
+    import inputPopover from '../input-popover.vue';
 
     export default {
         name: 'payment-settings',
         props: ['form', 'editorShortcodes', 'inputs'],
         components: {
             DropdownLabelRepeater,
-            FieldGeneral
+            FieldGeneral,
+            inputPopover
         },
         data() {
             return {

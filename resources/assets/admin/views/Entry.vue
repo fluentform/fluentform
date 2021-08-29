@@ -109,11 +109,13 @@
                                 <p>Device : {{ entry.device }}</p>
                             </div>
                             <div class="wpf_each_entry">
-
-                                <p v-if="entry.user">User : <a target="_blank" rel="noopener"
-                                                               :href="entry.user.permalink">{{ entry.user.name }}</a>
+                                <p>
+                                    <span v-if="entry.user">
+                                        User : <a target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
+                                    </span>
+                                    <span v-else>User : Guest</span>
+                                    <user-change :submission="entry" />
                                 </p>
-                                <p v-else>User : Guest</p>
                             </div>
                             <div class="wpf_each_entry">
                                 <p>Status : {{ entry_statuses[entry.status] || entry.status }}</p>
@@ -145,7 +147,6 @@
                         <div v-html="widget.content"></div>
                     </div>
                 </div>
-
             </el-col>
         </el-row>
 
@@ -173,6 +174,7 @@
     import EmailResend from './Helpers/_ResentEmailNotification'
     import ManualEntryActions from './Helpers/_ManualEntryActions'
     import PaymentSummary from './Payments/PaymentSummary'
+    import UserChange from './_UserChange'
 
     export default {
         name: 'Entry',
@@ -186,7 +188,8 @@
             EntryImageList,
             EmailResend,
             PaymentSummary,
-            ManualEntryActions
+            ManualEntryActions,
+            UserChange
         },
         data() {
             return {
@@ -233,6 +236,7 @@
                     .then((res) => {
                         if (res.data.submission && res.data.submission.id) {
                             this.entry = res.data.submission;
+                            
                             this.original_data = JSON.parse(res.data.submission.response);
                             this.labels = res.data.labels;
                             this.formFields = res.data.fields;
@@ -322,7 +326,6 @@
 
                 if (entryId) {
                     this.entry_id = entryId;
-
                     this.getEntry();
                 }
             },

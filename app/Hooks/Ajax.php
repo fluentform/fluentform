@@ -164,6 +164,17 @@ $app->addAdminAjaxAction('fluentform-get-entry', function () use ($app) {
     (new \FluentForm\App\Modules\Entries\Entries())->getEntry();
 });
 
+$app->addAdminAjaxAction('fluentform-update-entry-user', function () use ($app) {
+    Acl::verify('fluentform_entries_viewer');
+    (new \FluentForm\App\Modules\Entries\Entries())->changeEntryUser();
+});
+
+$app->addAdminAjaxAction('fluentform-get-users', function () use ($app) {
+    Acl::verify('fluentform_entries_viewer');
+    (new \FluentForm\App\Modules\Entries\Entries())->getUsers();
+});
+
+
 $app->addAdminAjaxAction('fluentform-get-entry-notes', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getNotes();

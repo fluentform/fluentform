@@ -206,5 +206,9 @@ function fluentFormApi($module = 'forms')
 {
     if($module == 'forms') {
         return (new \FluentForm\App\Api\Form());
+    } else if($module == 'submissions') {
+        return (new \FluentForm\App\Api\Submission());
     }
+
+    throw new \Exception('No Module found with name '. $module);
 }

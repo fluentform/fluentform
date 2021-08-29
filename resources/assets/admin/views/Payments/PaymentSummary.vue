@@ -1,5 +1,5 @@
 <template>
-    <div class="ff-payment_details">
+    <div v-if="order_data" class="ff-payment_details">
         <div
                 v-if="order_data.order_items.length"
                 class="entry_info_box entry_submission_order_data"
@@ -51,6 +51,7 @@
 
         <subscriptions
                 :discounts="{}"
+                @reload_payments="emitReload()"
                 :subscriptions="order_data.subscriptions"
                 :payment_method="submission.payment_method"
                 v-if="order_data.subscriptions && order_data.subscriptions.length"
@@ -316,6 +317,9 @@
                 .always(() => {
                     this.editing = false;
                 });
+            },
+            emitReload() {
+                this.$emit('reload_payments');
             }
         }
     }
