@@ -25,17 +25,21 @@ class GlobalNotificationManager
         $feedKeys = apply_filters('fluentform_global_notification_active_types', [], $form->id);
 
         if (!$feedKeys) {
+            do_action('fluentform_global_notify_completed', $insertId, $form);
             return;
         }
 
         $feedMetaKeys = array_keys($feedKeys);
+
 
         $feeds = wpFluent()->table('fluentform_form_meta')
             ->where('form_id', $form->id)
             ->whereIn('meta_key', $feedMetaKeys)
             ->orderBy('id', 'ASC')
             ->get();
+
         if (!$feeds) {
+            do_action('fluentform_global_notify_completed', $insertId, $form);
             return;
         }
 
@@ -140,10 +144,12 @@ class GlobalNotificationManager
     {
         // Let's get the password fields
         $inputs = FormFieldsParser::getInputsByElementTypes($form, ['input_password']);
+
         if(!$inputs) {
             return;
         }
         $passwordKeys = array_keys($inputs);
+
         // Let's delete from entry details
         wpFluent()->table('fluentform_entry_details')
             ->where('form_id', $form->id)
@@ -155,6 +161,7 @@ class GlobalNotificationManager
         $submission = wpFluent()->table('fluentform_submissions')
                         ->where('id', $entryId)
                         ->first();
+
         if(!$submission) {
             return;
         }
