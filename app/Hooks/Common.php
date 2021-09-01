@@ -409,33 +409,36 @@ $app->addFilter('fluentform_response_render_input_number', function ($response, 
 
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
-register_block_type('fluentfom/guten-block', array(
-    'render_callback' => function ($atts) {
+if (function_exists('register_block_type')) {
+    register_block_type('fluentfom/guten-block', array(
+        'render_callback' => function ($atts) {
 
-        if(empty($atts['formId'])) {
-            return '';
-        }
+            if (empty($atts['formId'])) {
+                return '';
+            }
 
-        $className = \FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'className');
+            $className = \FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'className');
 
-        if ($className) {
-            $classes = explode(' ', $className);
-            $className = '';
-            if (!empty($classes)) {
-                foreach ($classes as $class) {
-                    $className .= sanitize_html_class($class) . " ";
+            if ($className) {
+                $classes = explode(' ', $className);
+                $className = '';
+                if (!empty($classes)) {
+                    foreach ($classes as $class) {
+                        $className .= sanitize_html_class($class) . " ";
+                    }
                 }
             }
-        }
 
-        return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"]');
-    },
-    'attributes'      => array(
-        'formId'    => array(
-            'type' => 'string'
-        ),
-        'className' => array(
-            'type' => 'string'
+            return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"]');
+        },
+        'attributes'      => array(
+            'formId'    => array(
+                'type' => 'string'
+            ),
+            'className' => array(
+                'type' => 'string'
+            )
         )
-    )
-));
+    ));
+}
+
