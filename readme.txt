@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.8.0
 Requires PHP: 5.6
-Stable tag: 4.1.51
+Stable tag: 4.2.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -172,7 +172,7 @@ Here are the few forms from those that we have packed for you:
 * **Request for Quote Form** - Get user request for quote using this simple form.
 * **Conference Proposal Form** - This sample form is to make a conference proposal efficient and effective.
 * **Report a bug Form** - You can get user feedback, bug reports, and the issue details from the user.
-* **Polling Form Form** - A sample polling form to get user opinion from your scheduled time.
+* **Polling Form** - A sample polling form to get user opinion from your scheduled time.
 * **Tell A Friend Form** - Get text from your site users.
 * **My Directory Information Form** - This form allows you to get the directory information.
 * **My Directory Information Form** - This form will enable you to get the directory information.
@@ -185,6 +185,7 @@ Here are the few forms from those that we have packed for you:
 * **User Registration Form (pro)** - Create user and make automatic login as part of the form submission process.
 * **Donation Form (pro)** - Let your users input the donation amount and donate via paypal, Stripe, RazorPay and Mollie as a form submission process.
 * **Payment Form (pro)** - You can easily process payments using Fluent Forms. PayPal, Stripe, RazorPay and Mollie available as payment methods.
+* **Subscription Payments (pro)** - Accept and Manage subscription payments easily with Fluent Forms Pro.
 
 ==Pro Integrations ==
 <ul>
@@ -216,6 +217,7 @@ Here are the few forms from those that we have packed for you:
 <li>Stripe - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 <li>Mollie - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 <li>RazorPay - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
+<li>Paystack - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 </ul>
 
 == PAYMENT FORM, DONATION FORM, ORDER FORM, AND MORE ==
@@ -338,6 +340,13 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.2.0 (Date: Sep 01, 2021) =
+- Improvements on Conversational Forms
+- RTL Improvements
+- UI Improvements
+- New developer APIs
+- Performance improvements for form submissions
 
 = 4.1.5 (Date: July 13, 2021) =
 - Improvements on Conversational Forms
