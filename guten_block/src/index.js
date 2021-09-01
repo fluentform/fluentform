@@ -56,6 +56,6 @@ registerBlockType('fluentfom/guten-block', {
         )
     },
     save({attributes}) {
-        return null;
+        return '[fluentform id="' + attributes.formId + '"]';
     },
 });
