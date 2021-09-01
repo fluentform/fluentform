@@ -312,14 +312,14 @@
                             label="Amount"
                             width="120px">
                         <template slot-scope="scope">
-                            <span v-html="formatMoney(scope.row.total_paid, scope.row.currency)"></span>
+                            <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                         </template>
                     </el-table-column>
                     <el-table-column
                             label="Payment Status"
                             width="120px">
                         <template slot-scope="scope">
-                            {{ scope.row.payment_status }}
+                            <span class="ff_pay_status_badge" :class="'ff_pay_status_'+scope.row.payment_status">{{ scope.row.payment_status }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column

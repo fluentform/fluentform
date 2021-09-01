@@ -62,13 +62,12 @@
                         </div>
 
                         <p style="margin-top: 0">
-                            <span>Total Payment Received: </span>
+                            <span>Total Bills: </span>
                             <span
                                 class="table_payment_amount"
-                                v-html="subscriptionTotal(subscription.related_payments)"
+                                v-html="subscription.bill_count"
                             />
                         </p>
-
                         <p style="margin-top: 0" v-html="subscriptionHumanText(subscription.original_plan)"></p>
                     </div>
                 </div>
