@@ -318,6 +318,11 @@ class Component
                     // ...
                 } else if ($atts['status'] == 'favourites') {
                     $countQuery = $countQuery->where('is_favourite', '=', 1);
+                }
+                if ($atts['payment_status'] == 'all') {
+                    // ...
+                } elseif ($atts['payment_status'] && defined('FLUENTFORMPRO')) {
+                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
                 } else {
                     $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
                 }
@@ -352,11 +357,14 @@ class Component
                 if (!defined('FLUENTFORMPRO')) {
                     return '';
                 }
-
+                $totalColumn = 'total_paid';
+                if ($atts['status'] != 'all' || $atts['status'] != 'paid') {
+                    $totalColumn = 'payment_total';
+                }
                 global $wpdb;
                 $countQuery = wpFluent()
                     ->table('fluentform_submissions')
-                    ->select(wpFluent()->raw('SUM(total_paid) as payment_total'))
+                    ->select(wpFluent()->raw(sprintf("SUM(%s) as payment_total", $totalColumn)))
                     ->where('form_id', $formId);
 
                 if ($atts['status'] != 'trashed' && $atts['with_trashed'] == 'no') {
