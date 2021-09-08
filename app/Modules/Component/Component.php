@@ -319,9 +319,7 @@ class Component
                 } else if ($atts['status'] == 'favourites') {
                     $countQuery = $countQuery->where('is_favourite', '=', 1);
                 }
-                if ($atts['payment_status'] == 'all') {
-                    // ...
-                } elseif ($atts['payment_status'] && defined('FLUENTFORMPRO')) {
+                if ($atts['payment_status'] && $atts['payment_status'] != 'all' && defined('FLUENTFORMPRO')) {
                     $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
                 } else {
                     $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
