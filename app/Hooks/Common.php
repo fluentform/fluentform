@@ -428,8 +428,8 @@ if (function_exists('register_block_type')) {
                     }
                 }
             }
-
-            return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"]');
+            $type= \FluentForm\App\Helpers\Helper::isConversionForm($atts['formId']) ? 'conversational' : '';
+            return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"  type="' .$type .'"]');
         },
         'attributes'      => array(
             'formId'    => array(
