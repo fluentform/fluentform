@@ -152,7 +152,7 @@ class Converter
 				wp_enqueue_script('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.js'), [], false, true);
 
 				$question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
-				$question['dateCustomConfig'] = json_decode($dateField->getCustomConfig($field['settings']));
+				$question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
 			}
 			if ($question['type']) {
 				$questions[] = $question;
