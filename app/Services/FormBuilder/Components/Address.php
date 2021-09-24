@@ -52,13 +52,28 @@ class Address extends BaseComponent
             return $field['settings']['visible'];
         }), 2);
 
-        foreach ($visibleFields as $chunked) {
+		$googleAutoComplete = ArrayHelper::get($data, 'settings.enable_g_autocomplete') === 'yes';
+		foreach ($visibleFields as $chunked) {
             echo "<div class='ff-t-container'>";
             foreach ($chunked as $item) {
                 if ($item['settings']['visible']) {
                     $itemName = $item['attributes']['name'];
                     $item['attributes']['data-key_name'] = $itemName;
                     $item['attributes']['name'] = $rootName . '[' . $itemName . ']';
+
+					if ($item['element'] === 'select_country' && $googleAutoComplete) {
+						$selectedCountries = (array) ArrayHelper::get($item, 'attributes.value', []);
+						if (ArrayHelper::get($item, 'settings.country_list.active_list') === 'visible_list') {
+							$selectedCountries = array_unique(
+								array_merge(
+									$selectedCountries,
+									ArrayHelper::get($item, 'settings.country_list.visible_list', [])
+								)
+							);
+						}
+						$item['attributes']['data-autocomplete_restrictions'] = json_encode(array_filter($selectedCountries));
+					}
+
                     $item = apply_filters('fluentform_before_render_item', $item, $form);
                     echo "<div class='ff-t-cell'>";
                     do_action('fluentform_render_item_' . $item['element'], $item, $form);
