@@ -460,7 +460,7 @@ class Form
 
         $newFormId = $this->model->insert($data);
 
-        // Ranme the form name  here
+        // Rename the form name  here
         wpFluent()->table('fluentform_forms')
             ->where('id', $newFormId)
             ->update(array(
@@ -472,7 +472,15 @@ class Form
             ->whereNot('meta_key', ['_total_views'])
             ->get();
 
+        // Required for duplicating PDF feeds
+        $extras = [];
+
         foreach ($formMetas as $meta) {
+
+            if ($meta->meta_key == 'notifications' || $meta->meta_key == '_pdf_feeds'){
+                $extras[$meta->meta_key][] = $meta;
+                continue;
+            }
             $metaData = [
                 'meta_key' => $meta->meta_key,
                 'value' => $meta->value,
@@ -480,6 +488,19 @@ class Form
             ];
 
             wpFluent()->table('fluentform_form_meta')->insert($metaData);
+        }
+
+        $pdfFeedMap = $this->getPdfFeedMap($extras, $newFormId);
+        if (array_key_exists('notifications', $extras)) {
+            $extras = $this->notificationWithPdfMap($extras, $pdfFeedMap);
+            foreach ($extras['notifications'] as $notify) {
+                $notifyData = [
+                    'meta_key' => $notify->meta_key,
+                    'value' => $notify->value,
+                    'form_id' => $newFormId
+                ];
+                wpFluent()->table('fluentform_form_meta')->insert($notifyData);
+            }
         }
 
         do_action('flentform_form_duplicated', $newFormId);
@@ -541,6 +562,53 @@ class Form
         }
 
         wp_send_json($forms, 200);
+    }
+
+    /**
+     * Map pdf feed ID to replace with duplicated PDF feed ID when duplicating form
+     * @param array $extras
+     * @param array $newFormId
+     * @return array
+     */
+    private function getPdfFeedMap($extras, $newFormId)
+    {
+        $pdfFeedMap = [];
+        if (array_key_exists('_pdf_feeds', $extras)) {
+            foreach ($extras['_pdf_feeds'] as $pdf_feed) {
+                $pdfData = [
+                    'meta_key' => $pdf_feed->meta_key,
+                    'value' => $pdf_feed->value,
+                    'form_id' => $newFormId
+                ];
+                $pdfFeedMap[$pdf_feed->id] = wpFluent()->table('fluentform_form_meta')->insert($pdfData);
+            }
+        }
+        return $pdfFeedMap;
+    }
+
+    /**
+     * Map notification data with PDF feed map
+     * @param array $extras
+     * @param array $pdfFeedMap
+     * @return array
+     */
+    private function notificationWithPdfMap($extras, $pdfFeedMap)
+    {
+        foreach ($extras['notifications'] as $key => $notification) {
+            $notificationValue = json_decode($notification->value);
+            $pdf_attachments = [];
+
+            if ($notificationValue->pdf_attachments && count($notificationValue->pdf_attachments)) {
+                foreach ($notificationValue->pdf_attachments as $attachment) {
+                    $pdf_attachments[] = json_encode($pdfFeedMap[$attachment]);
+                }
+            }
+            $notificationValue->pdf_attachments = $pdf_attachments;
+            $notification->value = json_encode($notificationValue);
+
+            $extras['notifications'][$key] = $notification;
+        }
+        return $extras;
     }
 
 }
