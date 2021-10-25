@@ -683,7 +683,7 @@ class Entries extends EntryQuery
             $bulkQuery->update([
                 'is_favourite' => 0
             ]);
-            $message = __('Selected entries successfully remove from favorite', 'fluentform');
+            $message = __('Selected entries successfully removed from favorites', 'fluentform');
         }
 
         wp_send_json_success([
