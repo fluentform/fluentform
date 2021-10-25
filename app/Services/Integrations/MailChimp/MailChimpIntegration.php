@@ -40,7 +40,7 @@ class MailChimpIntegration extends IntegrationManager
         return [
             'logo'             => $this->logo,
             'menu_title'       => __('Mailchimp Settings', 'fluentform'),
-            'menu_description' => __('Mailchimp is a marketing platform for small businesses. Send beautiful emails, connect your e-commerce store, advertise, and build your brand. Use Fluent Form to collect customer information and automatically add it to your Mailchimp campaign list. If you don\'t have a Mailchimp account, you can <a href="http://www.mailchimp.com/" target="_blank">sign up for one here.</a>', 'fluentform'),
+            'menu_description' => __('Mailchimp is a marketing platform for small businesses. Send beautiful emails, connect your e-commerce store, advertise, and build your brand. Use Fluent Form to collect customer information and automatically add it to your Mailchimp campaign list. If you don\'t have a Mailchimp account, you can <a href="https://mailchimp.com/" target="_blank">sign up for one here.</a>', 'fluentform'),
             'valid_message'    => __('Your Mailchimp API Key is valid', 'fluentform'),
             'invalid_message'  => __('Your Mailchimp API Key is not valid', 'fluentform'),
             'save_button_text' => __('Save Settings', 'fluentform'),
