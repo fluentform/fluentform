@@ -678,7 +678,7 @@ class Entries extends EntryQuery
             $bulkQuery->update([
                 'is_favourite' => 1
             ]);
-            $message = __('Selected entries successfully marked as Favorite', 'fluentform');
+            $message = __('Selected entries successfully marked as favorites', 'fluentform');
         } elseif ($actionType == 'other.unmark_favorite') {
             $bulkQuery->update([
                 'is_favourite' => 0
