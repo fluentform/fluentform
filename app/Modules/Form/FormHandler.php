@@ -289,6 +289,8 @@ class FormHandler
      */
     private function validate(&$fields)
     {
+		$this->preventMaliciousAttacks();
+
         $this->validateRestrictions($fields);
 
         $this->validateNonce();
@@ -610,4 +612,35 @@ class FormHandler
         return [$rules, $messages];
     }
 
+	/**
+	 * Prevents malicious attacks when the submission
+	 * count exceeds in an allowed interval.
+	 */
+	public function preventMaliciousAttacks()
+	{
+		$prevent = apply_filters('fluentform/prevent_malicious_attacks', true, $this->form->id);
+
+		if ($prevent) {
+			$maxSubmissionCount = apply_filters('fluentform/max_submission_count', 5, $this->form->id);
+			$minSubmissionInterval = apply_filters('fluentform/min_submission_interval', 30, $this->form->id);
+
+			$interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s')) - $minSubmissionInterval);
+
+			$submissionCount = wpFluent()->table('fluentform_submissions')
+				->where('status', '!=', 'trashed')
+				->where('ip', $this->app->request->getIp())
+				->where('created_at', '>=', $interval)
+				->count();
+
+			if ($submissionCount >= $maxSubmissionCount) {
+				wp_send_json([
+					'errors' => [
+						'restricted' => [
+							__(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id), 'fluentform')
+						]
+					]
+				], 429);
+			}
+		}
+	}
 }
