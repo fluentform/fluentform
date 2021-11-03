@@ -185,7 +185,8 @@ class Form
                 'single_select_hint'   => 'Choose one option',
                 'progress_text'        => '{percent}% completed',
                 'long_text_help'       => '<b>Shift ⇧</b> + <b>Enter ↵</b> to make a line break.',
-                'invalid_prompt'       => 'Please fill out the field correctly'
+                'invalid_prompt'       => 'Please fill out the field correctly',
+                'default_placeholder'  => 'Type Your answer here',
             ]
         ];
 

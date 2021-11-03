@@ -55,6 +55,9 @@
                   <el-form-item label="Invalid Prompt">
                     <el-input v-model="meta_settings.i18n.invalid_prompt" type="text" placeholder="EG: Please fill out the field correctly" />
                   </el-form-item>
+                  <el-form-item label="Default Placeholder">
+                    <el-input v-model="meta_settings.i18n.default_placeholder" type="text" placeholder="EG: Type your answer here" />
+                  </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
