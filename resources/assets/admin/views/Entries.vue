@@ -2,13 +2,13 @@
     <div>
         <div class="ff_nav_top">
             <div class="ff_nav_title">
-                <h3>Entries</h3>
+                <h3>{{$t('Entries')}}</h3>
                 <div class="ff_nav_sub_actions">
                     <el-select
                             clearable
                             size="mini"
                             v-model="entry_type"
-                            placeholder="All Types"
+                            :placeholder="$t('All Types')"
                             @change="filterEntryType()"
                     >
                         <el-option
@@ -178,7 +178,7 @@
                         <el-input
                                 v-on:keyup.enter.native="handleSearch"
                                 size="mini"
-                                placeholder="Search"
+                                :placeholder="$t('Search')"
                                 v-model="search_string"
                         >
                             <el-button
@@ -191,22 +191,22 @@
 
                     <el-dropdown @command="exportEntries">
                         <el-button type="info" size="mini">
-                            Export <i class="el-icon-arrow-down el-icon--right"></i>
+                            {{$t('Export')}} <i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="csv">Export as CSV</el-dropdown-item>
-                            <el-dropdown-item command="xlsx">Export as Excel (xlsv)</el-dropdown-item>
-                            <el-dropdown-item command="ods">Export as ODS</el-dropdown-item>
-                            <el-dropdown-item command="json">Export as JSON Data</el-dropdown-item>
+                            <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
+                            <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
+                            <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
+                            <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-button @click="advancedFilter = true" size="mini">Advanced Filter</el-button>
+                    <el-button @click="advancedFilter = true" size="mini">{{$t('Advanced Filter')}}</el-button>
                 </div>
             </div>
 
             <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
                 <div class="widget_title">
-                    Filter By Date Range
+                    {{$t('Filter By Date Range')}}
                     <el-date-picker
                             size="mini"
                             v-model="filter_date_range"
@@ -224,7 +224,7 @@
                 </div>
                 <div style="margin-top: 20px" class="widget-title">
                     <el-checkbox @change="getData()" true-label="yes" false-label="no" v-model="show_favorites">Show
-                        Favorites Entries only
+                        {{$t('Favorites Entries only')}}
                     </el-checkbox>
                 </div>
             </div>
@@ -309,21 +309,21 @@
 
                 <template v-if="has_payment">
                     <el-table-column
-                            label="Amount"
+                            :label="$t('Amount')"
                             width="120px">
                         <template slot-scope="scope">
                             <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                         </template>
                     </el-table-column>
                     <el-table-column
-                            label="Payment Status"
+                            :label="$t('Payment Status')"
                             width="120px">
                         <template slot-scope="scope">
                             <span class="ff_pay_status_badge" :class="'ff_pay_status_'+scope.row.payment_status">{{ scope.row.payment_status }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
-                            label="Payment Method"
+                            :label="$t('Payment Method')"
                             width="120px">
                         <template slot-scope="scope">
                             <span class="ff_card_badge" v-if="scope.row.payment_method">
@@ -334,7 +334,7 @@
                 </template>
 
                 <el-table-column
-                        label="Submitted at"
+                        :label="$t('Submitted at')"
                         width="120px">
                     <template slot-scope="scope">
                         {{ dateFormat(scope.row.created_at) }}
@@ -343,7 +343,7 @@
 
                 <el-table-column
                         fixed="right"
-                        label="Actions"
+                        :label="$t('Actions')"
                         :width="115">
                     <template slot-scope="scope">
                         <el-button-group>

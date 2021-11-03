@@ -2,17 +2,17 @@
     <div class="fluentform-wrapper">
         <div class="entry_header">
             <router-link class="pull-right" :to="{ name: 'form-entries' }">
-                <el-button icon="el-icon-back" size="small">Back to Entries</el-button>
+                <el-button icon="el-icon-back" size="small">{{$t('Back to Entries')}}</el-button>
             </router-link>
 
             <el-button class="pull-right" size="small" @click="changeEntry('+')" :disabled="!nextId">
-                Next <i class="el-icon-arrow-right"/>
+                {{$t('Next')}} <i class="el-icon-arrow-right"/>
             </el-button>
             <el-button class="pull-right" size="small" @click="changeEntry('-')" :disabled="!prevId">
-                <i class="el-icon-arrow-left"/> Previous
+                <i class="el-icon-arrow-left"/> {{$t('Previous')}}
             </el-button>
 
-            <h3>Entry Details #{{entry.serial_number}}</h3>
+            <h3>{{$t('Entry Details')}} #{{entry.serial_number}}</h3>
         </div>
 
         <el-row v-loading="loading" :gutter="20" style="min-height: 260px;">
@@ -22,17 +22,17 @@
                         <div class="info_box_header">
                             <span @click="view_as_json = !view_as_json"
                                   class="dashicons dashicons-editor-code json_action"></span>
-                            Form Entry Data
+                            {{$t('Form Entry Data')}}
                         </div>
                         <div class="info_box_header_actions">
                             <span @click="changeFavorite()"
-                                  title="Remove from Favorites" v-if="entry.is_favourite != '0' || entry.is_favourite == '1'"
+                                  :title="$t('Remove from Favorites')" v-if="entry.is_favourite != '0' || entry.is_favourite == '1'"
                                   class="el-icon-star-on star_big action_button"></span>
                             <span @click="changeFavorite()"
-                                  title="Mark as Favorite" v-else
+                                  :title="$t('Mark as Favorite')" v-else
                                   class="el-icon-star-off star_big action_button"></span>
 
-                            <el-checkbox true-label="yes" false-label="no" v-model="show_empty">Show empty fields</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="show_empty">{{$t('Show empty fields')}}</el-checkbox>
                         </div>
                     </div>
                     <div v-if="entry.serial_number" class="entry_info_body">
@@ -87,51 +87,51 @@
             <el-col :xs="24" :sm="6" :md="6" :lg="6">
                 <div class="entry_info_box postbox">
                     <div class="entry_info_header">
-                        <b>Submission Info</b>
+                        <b>{{$t('Submission Info')}}</b>
                     </div>
                     <div class="entry_info_body narrow_items">
                         <div class="wpf_entry_details">
                             <div class="wpf_each_entry">
-                                <p>Entity ID: #{{entry.id}}</p>
+                                <p>{{$t('Entity ID')}}: #{{entry.id}}</p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>User IP : <a target="_blank" rel="noopener" :href="'https://ipinfo.io/'+entry.ip">{{
+                                <p>{{$t('User IP')}} : <a target="_blank" rel="noopener" :href="'https://ipinfo.io/'+entry.ip">{{
                                     entry.ip }}</a></p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p style="word-break: break-all;">Source URL : <a target="_blank" :href="entry.source_url">{{ entry.source_url }}</a>
+                                <p style="word-break: break-all;">{{$t('Source URL')}} : <a target="_blank" :href="entry.source_url">{{ entry.source_url }}</a>
                                 </p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>Browser : {{ entry.browser }}</p>
+                                <p>{{$t('Browser')}} : {{ entry.browser }}</p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>Device : {{ entry.device }}</p>
+                                <p>{{$t('Device')}} : {{ entry.device }}</p>
                             </div>
                             <div class="wpf_each_entry">
                                 <p>
                                     <span v-if="entry.user">
-                                        User : <a target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
+                                        {{$t('User')}} : <a target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
                                     </span>
-                                    <span v-else>User : Guest</span>
+                                    <span v-else>{{$t('User')}} : {{$t('Guest')}}</span>
                                     <user-change :submission="entry" />
                                 </p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>Status : {{ entry_statuses[entry.status] || entry.status }}</p>
+                                <p>{{$t('Status')}} : {{ entry_statuses[entry.status] || entry.status }}</p>
                             </div>
                             <div class="wpf_each_entry">
-                                <p>Submitted On : {{ entry.created_at }}</p>
+                                <p>{{$t('Submitted On')}} : {{ entry.created_at }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="entry-footer">
-                        <el-button @click="editTable = true" size="mini" type="primary" icon="el-icon-edit"> Edit
+                        <el-button @click="editTable = true" size="mini" type="primary" icon="el-icon-edit"> {{$t('Edit')}}
                         </el-button>
 
                         <el-dropdown @command="handleStatusChange" type="info">
                             <el-button size="mini" type="info">
-                                Change status to <i class="el-icon-arrow-down el-icon--right"></i>
+                                {{$t('Change status to')}} <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item v-for="(statusName, statusKey) in entry_statuses" :command="statusKey" :key="statusKey">{{statusName}}</el-dropdown-item>
@@ -151,7 +151,7 @@
         </el-row>
 
         <el-dialog
-            title="Edit Entry Data"
+            :title="$t('Edit Entry Data')"
             top="42px"
             :append-to-body="true"
             :visible.sync="editTable"

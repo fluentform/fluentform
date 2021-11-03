@@ -2,12 +2,12 @@
     <div class="entry_info_box entry_submission_logs">
         <div class="entry_info_header">
             <div class="info_box_header">
-                Submission Logs
+                {{$t('Submission Logs')}}
             </div>
             <div class="info_box_header_actions">
                 <el-radio-group fill="#409EFF" v-model="log_type" size="mini">
-                    <el-radio-button label="logs">General</el-radio-button>
-                    <el-radio-button label="api_calls">API Calls</el-radio-button>
+                    <el-radio-button label="logs">{{$t('General')}}</el-radio-button>
+                    <el-radio-button label="api_calls">{{$t('API Calls')}}</el-radio-button>
                 </el-radio-group>
             </div>
         </div>
@@ -40,7 +40,7 @@
                     </div>
                 </template>
                 <template v-if="!logs || !logs.length">
-                    <h3>No Logs found</h3>
+                    <h3>{{$t('No Logs found')}}</h3>
                 </template>
             </div>
         </div>

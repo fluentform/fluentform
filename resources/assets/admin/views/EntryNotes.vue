@@ -3,10 +3,10 @@
     <div class="entry_info_box entry_submission_activity">
         <div class="entry_info_header">
             <div class="info_box_header">
-                Submission Notes
+                {{$t('Submission Notes')}}
             </div>
             <div class="info_box_header_actions">
-                <el-button @click="add_note_box = !add_note_box" size="mini" type="primary">Add Note</el-button>
+                <el-button @click="add_note_box = !add_note_box" size="mini" type="primary">{{ $t('Add Note') }}</el-button>
             </div>
         </div>
         <div v-loading="loading" class="entry_info_body">
@@ -15,7 +15,7 @@
                     <el-input
                         type="textarea"
                         :autosize="{ minRows: 3}"
-                        placeholder="Please Provide Note Content"
+                        :placeholder="$t('Please Provide Note Content')"
                         v-model="new_note.content">
                     </el-input>
                     <el-button :loading="isAddingNote" @click="addNewNote()" size="small" type="success">Submit Note</el-button>
@@ -33,7 +33,7 @@
 
                 </template>
                 <template v-else>
-                    <h3>No Notes found</h3>
+                    <h3> {{$t('No Notes found')}}</h3>
                 </template>
             </div>
         </div>
