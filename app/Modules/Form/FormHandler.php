@@ -624,7 +624,7 @@ class FormHandler
 			$maxSubmissionCount = apply_filters('fluentform/max_submission_count', 5, $this->form->id);
 			$minSubmissionInterval = apply_filters('fluentform/min_submission_interval', 30, $this->form->id);
 
-			$interval = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s')) - $minSubmissionInterval);
+			$interval = date('Y-m-d H:i:s', strtotime(current_time('mysql')) - $minSubmissionInterval);
 
 			$submissionCount = wpFluent()->table('fluentform_submissions')
 				->where('status', '!=', 'trashed')
