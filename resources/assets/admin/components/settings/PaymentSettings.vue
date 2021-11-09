@@ -19,7 +19,7 @@
             </el-col>
         </el-row>
         <div v-loading="loading" class="ff-payment-settings-wrapper">
-            <el-form v-if="settings" label-width="205px" label-position="left">
+            <el-form v-if="settings" label-width="180px" label-position="left">
                 <el-form-item label="Currency">
                     <el-select size="small" filterable v-model="settings.currency" placeholder="Select Currency">
                         <el-option
@@ -39,7 +39,7 @@
                 </el-form-item>
 
                 <el-row :gutter="20">
-                    <el-col :span="12">
+                    <el-col :span="8">
                         <el-form-item>
                             <template slot="label">
                                 Customer Email
@@ -64,15 +64,16 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="8">
                         <el-form-item>
                             <template slot="label">
                                 Customer Name
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
+                                        <h3>Customer Name</h3>
                                         <p>
-                                            Please select the customer name field from your form's email inputs. It's optional
-                                            field but recommended. If user is logged in then this data will be picked from logged in user
+                                            Please select the customer name field from your form inputs. It's optional
+                                            field but recommended. If user is logged in then this data will be picked from logged in user.
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
@@ -83,6 +84,29 @@
                                 placeholder="Customer Name"
                                 icon="el-icon-arrow-down"
                                 :data="editorShortcodes"
+                            />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item>
+                            <template slot="label">
+                                Customer Address
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <h3>Customer Address</h3>
+                                        <p>
+                                            Please select the customer address field from your form inputs. It's required
+                                            for payments in India.
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <input-popover
+                                    v-model="settings.customer_address"
+                                    placeholder="Customer Address"
+                                    icon="el-icon-arrow-down"
+                                    :data="editorShortcodes"
                             />
                         </el-form-item>
                     </el-col>
