@@ -385,4 +385,20 @@ class Form
         });
     }
 
+    /**
+     * Get Address Fields
+     *
+     * @return array
+     */
+    public function getAddressFields($with = ['admin_label', 'attributes'])
+    {
+        $fields = $this->getInputs($with);
+        $addressElements = [
+            'address'
+        ];
+
+        return array_filter($fields, function ($field) use ($addressElements) {
+            return in_array($field['element'], $addressElements);
+        });
+    }
 }

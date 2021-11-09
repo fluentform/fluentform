@@ -95,19 +95,21 @@
                                     <div slot="content">
                                         <h3>Customer Address</h3>
                                         <p>
-                                            Please select the customer address field from your form inputs. It's required
+                                            Please select the customer address field from your form's address inputs. It's required
                                             for payments in India.
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </template>
-                            <input-popover
-                                    v-model="settings.customer_address"
-                                    placeholder="Customer Address"
-                                    icon="el-icon-arrow-down"
-                                    :data="editorShortcodes"
-                            />
+                            <el-select v-model="settings.customer_address" clearable filterable placeholder="Select an address field">
+                                <el-option
+                                        v-for="(item, index) in addressFields"
+                                        :key="index"
+                                        :label="item.admin_label"
+                                        :value="item.attributes.name">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -315,7 +317,8 @@
                     giropay: 'Giropay',
                     p24: 'Przelewy24 (P24)',
                     eps: 'EPS'
-                }
+                },
+                addressFields: []
             }
         },
         computed: {
@@ -337,6 +340,7 @@
                         this.settings = response.data.settings;
                         this.currencies = response.data.currencies;
                         this.payment_methods = response.data.payment_methods;
+                        this.addressFields = response.data.addressFields;
                     })
                     .fail(error => {
 
