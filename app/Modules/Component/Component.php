@@ -377,9 +377,7 @@ class Component
                     $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
                 }
 
-                if ($atts['payment_status'] == 'all') {
-                    // ...
-                } else if ($atts['payment_status']) {
+                if ($atts['payment_status'] & $atts['payment_status'] != 'all') {
                     $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
                 }
 
