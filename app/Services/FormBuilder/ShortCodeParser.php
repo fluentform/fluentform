@@ -306,7 +306,7 @@ class ShortCodeParser
             $formFields = FormFieldsParser::getEntryInputs(static::getForm());
             $inputLabels = FormFieldsParser::getAdminLabels(static::getForm(), $formFields);
             $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
-
+            
             $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
             foreach ($inputLabels as $key => $label) {
                 if (array_key_exists($key, $response->user_inputs) && ArrayHelper::get($response->user_inputs, $key)) {
@@ -318,6 +318,7 @@ class ShortCodeParser
                 }
             }
             $html .= '</tbody></table>';
+            apply_filters('fluentform_all_data_shortcode_html', $html, $formFields, $inputLabels, $response);
             return $html;
         }
 
