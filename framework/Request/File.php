@@ -786,6 +786,9 @@ class File extends \SplFileInfo implements Contract
         'video/x-sgi-movie'                                                         => 'movie',
         'video/x-smv'                                                               => 'smv',
         'x-conference/x-cooltalk'                                                   => 'ice',
+        'application/x-paperport'                                                   => 'max',
+        'application/STEP'                                                          => 'step',
+        'application/octet-stream'                                                  => 'fbx'
     ];
 
     /**
