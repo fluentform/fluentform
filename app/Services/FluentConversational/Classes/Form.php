@@ -305,9 +305,11 @@ class Form
             'input_url',
             'input_text',
             'input_date',
+            'input_file',
             'input_email',
             'input_radio',
             'custom_html',
+            'input_image',
             'input_hidden',
             'input_number',
             'section_break',
@@ -500,7 +502,9 @@ class Form
             'form_id'                  => $form->id,
             'is_inline_form'           => true,
             'design'                   => $designSettings,
-            'extra_inputs'             => $this->getExtraHiddenInputs($formId)
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId),
+            'uploading_txt'            => __('Uploading', 'fluentform'),
+            'upload_completed_txt'     => __('100% Completed', 'fluentform'),
         ]);
 
         if (!apply_filters('fluentform-disabled_analytics', false)) {
@@ -625,7 +629,9 @@ class Form
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
             'design'                   => $designSettings,
-            'extra_inputs'             => $this->getExtraHiddenInputs($formId)
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId),
+            'uploading_txt'            => __('Uploading', 'fluentform'),
+            'upload_completed_txt'     => __('100% Completed', 'fluentform'),
         ]);
 
         $this->printLoadedScripts();

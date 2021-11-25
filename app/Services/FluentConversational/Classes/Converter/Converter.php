@@ -35,7 +35,6 @@ class Converter
 				'requiredMsg'        => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
 				'errorMessage'       => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
 				'validationRules'    => ArrayHelper::get($field, 'settings.validation_rules'),
-				'answer'             => self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form),
 				'tagline'            => ArrayHelper::get($field, 'settings.help_message'),
 				'style_pref'         => ArrayHelper::get($field, 'style_pref', [
 					'layout'           => 'default',
@@ -47,6 +46,10 @@ class Converter
 				]),
 				'conditional_logics' => self::parseConditionalLogic($field)
 			];
+
+            if ($answer = self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form)) {
+                $question['answer'] = $answer;
+            }
 
 			if (ArrayHelper::get($question, 'style_pref.layout') != 'default') {
 				$media = ArrayHelper::get($question, 'style_pref.media');
@@ -153,7 +156,31 @@ class Converter
 
 				$question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
 				$question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
-			}
+			} elseif (in_array($field['element'], ['input_image', 'input_file'])) {
+                $question['multiple'] = true;
+
+                $maxFileCount = ArrayHelper::get($field, 'settings.validation_rules.max_file_count');
+                $maxFileSize = ArrayHelper::get($field, 'settings.validation_rules.max_file_size');
+
+                if ($field['element'] === 'input_image') {
+                    $allowedFieldTypes = ArrayHelper::get($field, 'settings.validation_rules.allowed_image_types.value');
+                } else {
+                    $allowedFieldTypes = ArrayHelper::get($field, 'settings.validation_rules.allowed_file_types.value');
+                }
+
+                if ($maxFileCount) {
+                    $question['max'] = $maxFileCount['value'];
+                }
+
+                if ($maxFileSize) {
+                    $question['maxSize'] = $maxFileSize['value'];
+                }
+
+                if ($allowedFieldTypes) {
+                    $question['accept'] = implode('|', $allowedFieldTypes);
+                }
+            }
+
 			if ($question['type']) {
 				$questions[] = $question;
 			}
@@ -176,6 +203,8 @@ class Converter
 			'input_date'            => 'FlowFormDateType',
 			'input_text'            => 'FlowFormTextType',
 			'ratings'               => 'FlowFormRateType',
+			'input_image'           => 'FlowFormFileType',
+			'input_file'            => 'FlowFormFileType',
 			'input_email'           => 'FlowFormEmailType',
 			'input_hidden'          => 'FlowFormHiddenType',
 			'input_number'          => 'FlowFormNumberType',
@@ -189,8 +218,8 @@ class Converter
 			'input_checkbox'        => 'FlowFormMultipleChoiceType',
 			'input_radio'           => 'FlowFormMultipleChoiceType',
 			'terms_and_condition'   => 'FlowFormTermsAndConditionType',
-			'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
-			'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
+            'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
+            'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
 		];
 
 		if (defined('FLUENTFORMPRO')) {
