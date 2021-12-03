@@ -317,7 +317,7 @@
                         <p>
                             You can set rules to the user input and based on the rules you can prevent the form submission.
                             This is very useful feature for preventing spam/bot submissions. <a target="_blank"
-                                                                                                rel="noopener" href="#">Learn
+                                                                                                rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/">Learn
                             More here</a>
                         </p>
                     </el-col>
