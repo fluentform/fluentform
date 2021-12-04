@@ -31,6 +31,10 @@ class Address extends BaseComponent
 
         if(ArrayHelper::get($data, 'settings.enable_g_autocomplete') == 'yes') {
             $data['attributes']['class'] .= ' ff_map_autocomplete';
+            if(ArrayHelper::get($data, 'settings.enable_g_map') == 'yes'){
+                $data['attributes']['data-ff_with_g_map'] = '1';
+            }
+            $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate',false) ;
             do_action('fluentform_address_map_autocomplete', $data, $form);
         }
 
