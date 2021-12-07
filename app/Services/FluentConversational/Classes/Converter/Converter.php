@@ -179,6 +179,32 @@ class Converter
                 if ($allowedFieldTypes) {
                     $question['accept'] = implode('|', $allowedFieldTypes);
                 }
+            } elseif ($field['element'] === 'tabular_grid') {
+                $question['grid_columns'] = $field['settings']['grid_columns'];
+                $question['grid_rows'] = $field['settings']['grid_rows'];
+                $question['selected_grids'] = $field['settings']['selected_grids'];
+                $question['multiple'] = $field['settings']['tabular_field_type'] === 'checkbox';
+
+                if ($field['settings']['selected_grids']) {
+                    $rowValues = array_keys($question['grid_rows']);
+                    $colValues = array_keys($question['grid_columns']);
+
+                    foreach ($field['settings']['selected_grids'] as $selected) {
+                        if (in_array($selected, $rowValues)) {
+                            $question['answer'][$selected] = $colValues;
+                        } else {
+                            foreach ($rowValues as $rowValue) {
+                                if ($question['multiple']) {
+                                    $question['answer'][$rowValue][] = $selected;
+                                } else {
+                                    $question['answer'][$rowValue] = $selected;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $question['requiredPerRow'] = ArrayHelper::get($field, 'settings.validation_rules.required.per_row');
             }
 
 			if ($question['type']) {
@@ -208,6 +234,7 @@ class Converter
 			'input_email'           => 'FlowFormEmailType',
 			'input_hidden'          => 'FlowFormHiddenType',
 			'input_number'          => 'FlowFormNumberType',
+			'tabular_grid'          => 'FlowFormMatrixType',
 			'select'                => 'FlowFormDropdownType',
 			'select_country'        => 'FlowFormDropdownType',
 			'textarea'              => 'FlowFormLongTextType',

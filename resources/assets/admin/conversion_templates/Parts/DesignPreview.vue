@@ -116,6 +116,8 @@ export default {
                 css += `${prefix} .q-inner .o-btn-action span, ${prefix} .footer-inner-wrap .f-nav a { color: ${settings.button_text_color}; }`;
                 css += ` ${prefix} .f-enter .f-enter-desc { color: ${settings.button_color}; }`;
                 css += `${prefix} .footer-inner-wrap .f-nav a svg { fill: ${settings.button_text_color}; }`;
+                css += `${prefix} .q-inner .o-btn-action:hover { background-color: ${settings.button_color + 'D6'}; }`;
+                css += `${prefix} .q-inner .o-btn-action:focus::after { border-radius: 6px; inset: -3px; box-shadow: ${settings.button_color} 0px 0px 0px 2px; }`;
             }
 
             if (settings.background_image) {
