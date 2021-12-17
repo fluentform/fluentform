@@ -112,6 +112,7 @@ import targetProduct from './templates/targetProduct.vue';
 import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
+import targetField from "./templates/targetField";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -157,6 +158,7 @@ export default {
         ff_chainSelectDataSource: chainSelectDataSource,
         ff_paymentMethodsConfig: paymentMethodsConfig,
         ff_targetProduct: targetProduct,
+        ff_targetField: targetField,
         ff_inputYesNoCheckBox: inputYesNoCheckBox,
         ff_fieldsRepeatSettings: fieldsRepeatSettings,
         ConversionStylePref
