@@ -570,6 +570,7 @@ $defaultElements = array(
                 ),
                 'conditional_logics' => array(),
                 'randomize_options' => 'no',
+                'values_visilble' => false,
             ),
             'editor_options' => array(
                 'title' => __('Dropdown', 'fluentform'),
