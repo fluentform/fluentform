@@ -53,9 +53,10 @@ class EmailNotificationActions
             }
             $emailAttachments = $attachments;
         }
-        if(!empty($emailData['media_attachments']) && is_array($emailData['media_attachments'])) {
+        $mediaAttachments = ArrayHelper::get($emailData,'media_attachments') ;
+        if(!empty($mediaAttachments) && is_array($mediaAttachments)) {
             $attachments = [];
-            foreach ($emailData['media_attachments'] as $file) {
+            foreach ($mediaAttachments as $file) {
                 $fileUrl = ArrayHelper::get($file, 'url');
                 if($fileUrl) {
                     $filePath = str_replace(
