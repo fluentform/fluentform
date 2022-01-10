@@ -97,9 +97,8 @@ export default {
                 css += `${prefix} .f-label-wrap, ${prefix} .f-answer { color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-label-wrap .f-key { border-color: ${settings.answer_color} !important; }`;
                 css += `${prefix} .f-label-wrap .f-key-hint { border-color: ${settings.answer_color} !important; }`;
-                css += `${prefix} .f-answer .f-radios-wrap ul li { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')} !important; box-shadow: ${settings.answer_color} 0px 0px 0px 1px inset; }`;
-                css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected { box-shadow: ${settings.answer_color} 0px 0px 0px 2px inset; }`;
-                css += `${prefix} .f-answer .f-radios-wrap ul li:focus { box-shadow: ${settings.answer_color} 0px 0px 0px 2px inset; background-color: ${this.hexToRGBA(settings.answer_color, .3)} !important }`;
+                css += `${prefix} .f-answer .f-radios-wrap ul li { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')} !important; border: 1px solid ${settings.answer_color}; }`;
+                css += `${prefix} .f-answer .f-radios-wrap ul li:focus { background-color: ${this.hexToRGBA(settings.answer_color, .3)} !important }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li:hover { background-color: ${this.hexToRGBA(settings.answer_color, .3)} !important }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected .f-key { background-color: ${settings.answer_color} !important; color: white; }`;
                 css += `${prefix} .f-answer .f-radios-wrap ul li.f-selected .f-key-hint { background-color: ${settings.answer_color}; }`;
@@ -132,11 +131,20 @@ export default {
                 css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap .f-star-field .f-star-field-rating { color: ${settings.answer_color}; }`;
                 css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-hovered .symbolFill { fill: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
                 css += `${prefix} .f-answer .f-star-wrap .f-star-field-wrap.is-selected .symbolFill { fill: ${settings.answer_color}; }`;
+
+                css += `${prefix} .f-answer .f-payment-summary-wrap tbody td { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
+                css += `${prefix} .f-answer .f-payment-summary-wrap tfoot th { background-color: ${this.hexToRGBA(settings.answer_color, '0.1')}; }`;
+                
+                css += `${prefix} .f-answer .stripe-inline-holder { border-bottom: 1px solid ${settings.answer_color}; }`;
+                css += `${prefix} .f-answer .StripeElement--focus { border-bottom: 2.5px solid ${settings.answer_color}; }`;
+
+                css += `${prefix} .ff_conv_input .f-info { color: ${settings.answer_color}; }`;
             }
 
             if (settings.question_color) {
                 css += `${prefix} .fh2 .f-text { color: ${settings.question_color}; }`
                 css += `${prefix} .fh2 .f-tagline, ${prefix} .f-sub .f-help { color: ${this.hexToRGBA(settings.question_color, '0.70')}; }`
+                css += `${prefix} .fh2 .stripe-inline-header { color: ${settings.question_color}; }`
             }
 
             if (settings.button_color) {

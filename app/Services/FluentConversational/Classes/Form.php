@@ -295,6 +295,7 @@ class Form
 
         $generalFields = ArrayHelper::get($components, 'general', []);
         $advancedFields = ArrayHelper::get($components, 'advanced', []);
+        $paymentFields = ArrayHelper::get($components, 'payments', []);
 
         $acceptedFieldElements = [
             'phone',
@@ -318,11 +319,18 @@ class Form
             'input_checkbox',
             'input_password',
             'terms_and_condition',
+            'multi_payment_component',
+            'subscription_payment_component',
+            'custom_payment_component',
+            'item_quantity_component',
+            'payment_method',
+            'payment_summary_component',
+            'payment_coupon'
         ];
 
         $elements = [];
 
-        $allFields = array_merge($generalFields, $advancedFields);
+        $allFields = array_merge($generalFields, $advancedFields, $paymentFields);
 
         foreach ($allFields as $field) {
             $element = $field['element'];
@@ -506,6 +514,7 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'paymentConfig'            => $this->getPaymentConfig($form)
         ]);
 
         if (!apply_filters('fluentform-disabled_analytics', false)) {
@@ -624,7 +633,8 @@ class Form
                 'id'             => $form->id,
                 'questions'      => $form->questions,
                 'image_preloads' => $form->image_preloads,
-                'submit_button'  => $form->submit_button
+                'submit_button'  => $form->submit_button,
+                'hasPayment'     => !!$form->has_payment,
             ],
             'form_id'                  => $form->id,
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
@@ -633,6 +643,7 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'paymentConfig'            => $this->getPaymentConfig($form)
         ]);
 
         $this->printLoadedScripts();
@@ -696,5 +707,52 @@ class Form
             FLUENTFORM_VERSION,
             true
         );
+    }
+
+    /**
+     * Get the payment configuration of this form.
+     * 
+     * @param $form
+     */
+    private function getPaymentConfig($form)
+    {
+        $paymentConfig = null;
+
+        if ($form->has_payment && defined('FLUENTFORMPRO')) {
+            $publishableKey = apply_filters(
+                'fluentform-payment_stripe_publishable_key',
+                \FluentFormPro\Payments\PaymentMethods\Stripe\StripeSettings::getPublishableKey($form->id),
+                $form->id
+            );
+
+            $paymentConfig = [
+                'currency_settings' => \FluentFormPro\Payments\PaymentHelper::getCurrencyConfig($form->id),
+                'stripe'            => [
+                    'publishable_key' => $publishableKey,
+                    'inlineConfig'    => \FluentFormPro\Payments\PaymentHelper::getStripeInlineConfig($form->id)
+                ],
+                'stripe_app_info'   => array(
+                    'name'       => 'Fluent Forms',
+                    'version'    => FLUENTFORMPRO_VERSION,
+                    'url'        => site_url(),
+                    'partner_id' => 'pp_partner_FN62GfRLM2Kx5d'
+                ),
+                'i18n' => [
+                    'item'            => __('Item', 'fluentformpro'),
+                    'price'           => __('Price', 'fluentformpro'),
+                    'qty'             => __('Qty', 'fluentformpro'),
+                    'line_total'      => __('Line Total', 'fluentformpro'),
+                    'total'           => __('Total', 'fluentformpro'),
+                    'not_found'       => __('No payment item selected yet', 'fluentformpro'),
+                    'discount:'       => __('Discount:', 'fluentformpro'),
+                    'processing_text' => __('Processing payment. Please wait...', 'fluentformpro'),
+                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentformpro')
+                ]
+            ];
+
+            $paymentConfig['currency_settings']['currency_symbol'] = \html_entity_decode($paymentConfig['currency_settings']['currency_sign']);
+        }
+
+        return $paymentConfig;
     }
 }

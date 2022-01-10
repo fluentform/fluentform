@@ -205,7 +205,126 @@ class Converter
                 }
 
                 $question['requiredPerRow'] = ArrayHelper::get($field, 'settings.validation_rules.required.per_row');
-            }
+            } elseif ($field['element'] === 'multi_payment_component') {
+				$type = $field['attributes']['type'];
+
+				if ($type == 'single') {
+					$question['priceLabel'] = $field['settings']['price_label'];
+				} else {
+					$question['nextStepOnAnswer'] = true;
+
+					if ($type == 'radio' || $type == 'checkbox') {
+						$question['paymentType'] = 'MultipleChoiceType';
+						$question['type'] = 'FlowFormMultipleChoiceType';
+						$question = static::hasPictureMode($field, $question);
+
+						if ($type == 'checkbox') {
+							$question['multiple'] = true;
+						}
+					} else {
+						$question['paymentType'] = 'DropdownType';
+						$question['type'] = 'FlowFormDropdownType';
+					}
+
+					$question['options'] = $field['settings']['pricing_options'];
+				}
+
+				$question['is_payment_field'] = true;
+			} elseif ($field['element'] === 'subscription_payment_component') {
+				$question['is_payment_field'] = true;
+				$question['is_subscription_field'] = true;
+				$question['answer'] = null;
+				
+				$type = $field['attributes']['type'];
+				$question['subscriptionFieldType'] = $type;
+				$currency = \FluentFormPro\Payments\PaymentHelper::getFormCurrency($form->id);
+
+				foreach ($field['settings']['subscription_options'] as $index => &$option) {
+					$hasCustomPayment = false;
+
+					if (array_key_exists('user_input', $option) && $option['user_input'] == 'yes') {
+						$hasCustomPayment = true;
+						$option['subscription_amount'] = 0;
+
+						if (array_key_exists('user_input_default_value', $option)) {
+							$option['subscription_amount'] = $option['user_input_default_value'];
+						}
+					}
+					
+					$paymentSummaryText = \FluentFormPro\Payments\PaymentHelper::getPaymentSummaryText($option, $form->id, $currency, false);
+
+					$planValue = $type == 'single' ? $option['subscription_amount'] : $index;
+
+					$field['plans'][] = [
+						'label' => $option['name'],
+						'value' => $planValue,
+						'sub'   => strip_tags($paymentSummaryText),
+						'subscription_amount' => $planValue
+					];
+
+					$option['sub'] = strip_tags($paymentSummaryText);
+
+					if ($option['is_default'] == 'yes') {
+						$question['answer'] = $index;
+					}
+
+					if ($hasCustomPayment) {
+						$option['customInput'] = $question['name'] . '_custom_' . $index;
+						$question['customPayment'] = $option['subscription_amount'];
+					}
+				}
+
+				$question['plans'] = $field['settings']['subscription_options'];
+
+				if ($type != 'single') {
+					$question['options'] = $field['plans'];
+					$question['subscriptionFieldType'] = $field['settings']['selection_type'] == 'radio' ? 'FlowFormMultipleChoiceType' : 'FlowFormDropdownType';
+					$question['nextStepOnAnswer'] = true;
+				}
+			} elseif ($field['element'] === 'custom_payment_component') {
+				$question['type'] = 'FlowFormNumberType';
+				$question['min'] = ArrayHelper::get($field, 'settings.validation_rules.min.value');
+				$question['max'] = ArrayHelper::get($field, 'settings.validation_rules.max.value');
+				$question['min'] = is_numeric($question['min']) ? $question['min'] : null;
+				$question['max'] = is_numeric($question['max']) ? $question['max'] : null;
+
+				$question['is_payment_field'] = true;
+			} elseif ($field['element'] === 'item_quantity_component') {
+				$question['type'] = $allowedFields['input_number'];
+				$question['targetProduct'] = $field['settings']['target_product'];
+
+				$question['min'] = ArrayHelper::get($field, 'settings.validation_rules.min.value');
+				$question['max'] = ArrayHelper::get($field, 'settings.validation_rules.max.value');
+				$question['min'] = is_numeric($question['min']) ? $question['min'] : null;
+				$question['max'] = is_numeric($question['max']) ? $question['max'] : null;
+				$question['step'] = 1;
+				$question['stepErrorMsg'] = __('Please enter a valid value. The two nearest valid values are {lower_value} and {upper_value}', 'fluentform');
+			} elseif ($field['element'] === 'payment_method') {
+				$question['nextStepOnAnswer'] = true;
+				$question['options'] = [];
+				$question['paymentMethods'] = [];
+
+				foreach ($field['settings']['payment_methods'] as $methodName => $paymentMethod) {
+					if ($paymentMethod['enabled'] === 'yes') {
+						$question['options'][] = [
+							'label' => $paymentMethod['settings']['option_label']['value'],
+							'value' => $paymentMethod['method_value']
+						];
+
+						$question['paymentMethods'][$methodName] = $paymentMethod;
+
+						do_action(
+							'fluentform_rendering_payment_method_' . $methodName,
+							$paymentMethod,
+							$field,
+							$form
+						);
+					}
+				}
+			} elseif ($field['element'] === 'payment_summary_component') {
+				$question['title'] = 'Payment Summary';
+				$question['emptyText'] = $field['settings']['cart_empty_text'];
+			}
 
 			if ($question['type']) {
 				$questions[] = $question;
@@ -228,13 +347,9 @@ class Converter
 			'input_url'             => 'FlowFormUrlType',
 			'input_date'            => 'FlowFormDateType',
 			'input_text'            => 'FlowFormTextType',
-			'ratings'               => 'FlowFormRateType',
-			'input_image'           => 'FlowFormFileType',
-			'input_file'            => 'FlowFormFileType',
 			'input_email'           => 'FlowFormEmailType',
 			'input_hidden'          => 'FlowFormHiddenType',
 			'input_number'          => 'FlowFormNumberType',
-			'tabular_grid'          => 'FlowFormMatrixType',
 			'select'                => 'FlowFormDropdownType',
 			'select_country'        => 'FlowFormDropdownType',
 			'textarea'              => 'FlowFormLongTextType',
@@ -251,6 +366,15 @@ class Converter
 
 		if (defined('FLUENTFORMPRO')) {
 			$fieldTypes['phone'] = 'FlowFormPhoneType';
+			$fieldTypes['input_image'] = 'FlowFormFileType';
+			$fieldTypes['input_file'] = 'FlowFormFileType';
+			$fieldTypes['ratings'] = 'FlowFormRateType';
+			$fieldTypes['tabular_grid'] = 'FlowFormMatrixType';
+			$fieldTypes['payment_method'] = 'FlowFormPaymentMethodType';
+			$fieldTypes['multi_payment_component'] = 'FlowFormPaymentType';
+			$fieldTypes['custom_payment_component'] = 'FlowFormPaymentType';
+			$fieldTypes['payment_summary_component'] = 'FlowFormPaymentSummaryType';
+			$fieldTypes['subscription_payment_component'] = 'FlowFormSubscriptionType';
 		}
 
 		return $fieldTypes;
