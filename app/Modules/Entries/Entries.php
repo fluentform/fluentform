@@ -69,6 +69,8 @@ class Entries extends EntryQuery
 
         if ($search) {
             $query->where('fluentform_submissions.response', 'LIKE', '%' . $search . '%');
+            $query->orWhere('fluentform_forms.title', 'LIKE', '%' . $search . '%');
+            $query->orWhere('fluentform_submissions.id', 'LIKE', '%' . $search . '%');
         }
 
         $total = $query->count();
