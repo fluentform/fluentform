@@ -478,7 +478,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         function maybeAction($el) {
-            let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded)').length;
+            let count = $el.closest('.fluentform-step.active').find('.ff-el-group:not(.ff_excluded):not(.ff-custom_html)').length;
             if (count == 1) {
                 let condCounts = $el.closest('.fluentform-step.active').find('.ff_excluded').length;
                 if (condCounts) {
