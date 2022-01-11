@@ -86,8 +86,21 @@ class Converter
 					$question['max_selection'] = $question['max_selection'] ? intval($question['max_selection']) : 0;
 				}
 			} elseif ($field['element'] === 'select_country') {
-				$options = array();
-				$countries = getFluentFormCountryList();
+                $countryComponent =  new \FluentForm\App\Services\FormBuilder\Components\SelectCountry();
+                $field = $countryComponent->loadCountries($field);
+                $activeList = ArrayHelper::get($field, 'settings.country_list.active_list');
+                if ($activeList == 'priority_based') {
+                    $selectCountries = ArrayHelper::get($field, 'settings.country_list.priority_based', []);
+                    $priorityCountries = $countryComponent->getSelectedCountries($selectCountries);
+                    // @todo : add opt group in conversation js
+                    $question['has_opt_grp'] = true;
+                    $primaryListLabel = ArrayHelper::get($field, 'settings.primary_label');
+                    $otherListLabel = ArrayHelper::get($field, 'settings.other_label');
+                    $field['options'] = array_merge($priorityCountries, $field['options']);
+                }
+
+                $options = array();
+				$countries = $field['options'];
 				foreach ($countries as $key => $value) {
 					$options[] = [
 						'label' => $value,

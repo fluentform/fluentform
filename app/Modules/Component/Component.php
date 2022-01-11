@@ -321,7 +321,10 @@ class Component
                 } else {
                     $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
                 }
-
+                if ($atts['payment_status'] && defined('FLUENTFORMPRO') && $atts['payment_status'] != 'all') {
+                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
+                }
+                
                 $total = $countQuery->count();
 
                 if ($atts['substract_from']) {
