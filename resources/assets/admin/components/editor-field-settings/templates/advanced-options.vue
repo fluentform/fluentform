@@ -142,7 +142,6 @@
         },
         data() {
             return {
-                valuesVisible: false,
                 optionsToRender: [],
                 bulkEditVisible: false,
                 value_key_pair_text: '',
@@ -170,7 +169,15 @@
             },
             hasImageSupport() {
                 return this.editItem.element != 'select';
-            }
+            },
+            valuesVisible:{
+              get() {
+                return this.editItem.settings.values_visilble||false;
+              },
+              set(val) {
+                this.$set(this.editItem.settings, 'values_visilble', val);
+              }
+            },
         },
         methods: {
             handleDrop(data) {
