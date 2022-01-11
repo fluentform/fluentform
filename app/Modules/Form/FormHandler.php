@@ -7,6 +7,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\Entries\Entries;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
+use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
@@ -296,6 +297,8 @@ class FormHandler
         $this->validateNonce();
 
         $this->validateReCaptcha();
+        $this->validateHCaptcha();
+//        dd('ok');
 
         foreach ($fields as $fieldName => $field) {
             if(isset($this->formData[$fieldName])) {
@@ -437,6 +440,29 @@ class FormHandler
                     'errors' => [
                         'g-recaptcha-response' => [
                             __('reCaptcha verification failed, please try again.', 'fluentform')
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+    }
+
+    /**
+     * Validate hCaptcha.
+     */
+    private function validateHCaptcha()
+    {
+        FormFieldsParser::resetData();
+        if (FormFieldsParser::hasElement($this->form, 'hcaptcha')) {
+            $keys = get_option('_fluentform_hCaptcha_details');
+            $token = Arr::get($this->formData, 'h-captcha-response');
+            $isValid = HCaptcha::validate($token, $keys['secretKey']);
+
+            if (!$isValid) {
+                wp_send_json([
+                    'errors' => [
+                        'h-captcha-response' => [
+                            __('hCaptcha verification failed, please try again.', 'fluentform')
                         ]
                     ]
                 ], 422);

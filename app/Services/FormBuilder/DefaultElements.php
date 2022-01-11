@@ -570,7 +570,6 @@ $defaultElements = array(
                 ),
                 'conditional_logics' => array(),
                 'randomize_options' => 'no',
-                'values_visilble' => false,
             ),
             'editor_options' => array(
                 'title' => __('Dropdown', 'fluentform'),
@@ -1181,6 +1180,22 @@ $defaultElements = array(
                 'icon_class' => 'ff-edit-recaptha',
                 'why_disabled_modal' => 'recaptcha',
                 'template' => 'recaptcha',
+            ),
+        ),
+        'hcaptcha' => array(
+            'index' => 2,
+            'element' => 'hcaptcha',
+            'attributes' => array('name' => 'hcaptcha'),
+            'settings' => array(
+                'label' => '',
+                'label_placement' => '',
+                'validation_rules' => array(),
+            ),
+            'editor_options' => array(
+                'title' => __('hCaptcha', 'fluentform'),
+                'icon_class' => 'ff-edit-recaptha',
+                'why_disabled_modal' => 'hcaptcha',
+                'template' => 'hcaptcha',
             ),
         ),
         'shortcode' => array(
