@@ -1,6 +1,6 @@
 <template>
     <el-form-item :label="item.settings.label">
-        <img style="max-width: 60px;" :src="plugin_url+'img/recaptcha-placeholder.png'" alt="recaptcha-placeholder">
+        <img style="max-width: 60px;" :src="plugin_url+'img/hcaptcha-placeholder.png'" alt="hcaptcha-placeholder">
     </el-form-item>
 </template>
 
