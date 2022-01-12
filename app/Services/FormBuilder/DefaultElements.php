@@ -561,6 +561,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'enable_select_2' => 'no',
                 'validation_rules' => array(
                     'required' => array(
@@ -611,6 +612,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,
@@ -665,6 +667,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'randomize_options' => 'no',
                 'validation_rules' => array(
                     'required' => array(

@@ -172,10 +172,10 @@
             },
             valuesVisible:{
               get() {
-                return this.editItem.settings.values_visilble||false;
+                return this.editItem.settings.values_visible||false;
               },
               set(val) {
-                this.$set(this.editItem.settings, 'values_visilble', val);
+                this.$set(this.editItem.settings, 'values_visible', val);
               }
             },
         },

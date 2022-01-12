@@ -220,6 +220,10 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['enable_select_2'] = 'no';
             }
 
+            if ($upgradeElement != 'select_country' && !isset($element['settings']['values_visible'])) {
+                $element['settings']['values_visible'] = false;
+            }
+
             return $element;
         });
     }
