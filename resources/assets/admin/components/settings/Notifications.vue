@@ -501,7 +501,8 @@ export default {
                     },
                     enabled: true,
                     pdf_attachments: [],
-                    attachments: []
+                    attachments: [],
+                    media_attachments: [],
                 }
             },
             errors: new Errors,
