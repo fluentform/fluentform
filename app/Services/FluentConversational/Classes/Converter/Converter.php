@@ -22,6 +22,7 @@ class Converter
 		$imagePreloads = [];
 
 		$allowedFields = static::fieldTypes();
+		// dd($fields);
 		foreach ($fields as $field) {
 			$question = [
 				'id'                 => $field['uniqElKey'],
@@ -388,6 +389,7 @@ class Converter
 			$fieldTypes['custom_payment_component'] = 'FlowFormPaymentType';
 			$fieldTypes['payment_summary_component'] = 'FlowFormPaymentSummaryType';
 			$fieldTypes['subscription_payment_component'] = 'FlowFormSubscriptionType';
+			$fieldTypes['payment_coupon'] = 'FlowFormCouponType';
 		}
 
 		return $fieldTypes;
