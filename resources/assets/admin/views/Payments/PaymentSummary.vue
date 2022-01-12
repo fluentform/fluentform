@@ -161,7 +161,7 @@
                             <div class="ff_list_header">{{$t('Payment Total')}}</div>
                             <div class="ff_list_value" v-html="formatMoney(transaction.payment_total, transaction.currency)"></div>
                         </li>
-                        <li>
+                        <li v-show="transaction.status">
                             <div class="ff_list_header">{{$t('Payment Status')}}</div>
                             <div class="ff_list_value">
                                 <span class="ff_card_badge" :class="'ff_badge_status_'+transaction.status">{{ transaction.status }}</span>
