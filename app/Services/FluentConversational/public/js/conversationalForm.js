@@ -21957,21 +21957,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _QuestionTypes_EmailType__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./QuestionTypes/EmailType */ "./src/form/components/QuestionTypes/EmailType.vue");
 /* harmony import */ var _QuestionTypes_PhoneType__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./QuestionTypes/PhoneType */ "./src/form/components/QuestionTypes/PhoneType.vue");
 /* harmony import */ var _QuestionTypes_NumberType__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./QuestionTypes/NumberType */ "./src/form/components/QuestionTypes/NumberType.vue");
-/* harmony import */ var _QuestionTypes_MatrixType__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./QuestionTypes/MatrixType */ "./src/form/components/QuestionTypes/MatrixType.vue");
-/* harmony import */ var _QuestionTypes_PaymentType__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./QuestionTypes/PaymentType */ "./src/form/components/QuestionTypes/PaymentType.vue");
-/* harmony import */ var _QuestionTypes_DropdownType__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./QuestionTypes/DropdownType */ "./src/form/components/QuestionTypes/DropdownType.vue");
-/* harmony import */ var _QuestionTypes_LongTextType__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./QuestionTypes/LongTextType */ "./src/form/components/QuestionTypes/LongTextType.vue");
-/* harmony import */ var _QuestionTypes_PasswordType__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./QuestionTypes/PasswordType */ "./src/form/components/QuestionTypes/PasswordType.vue");
-/* harmony import */ var _QuestionTypes_SubscriptionType__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./QuestionTypes/SubscriptionType */ "./src/form/components/QuestionTypes/SubscriptionType.vue");
-/* harmony import */ var _QuestionTypes_SectionBreakType__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./QuestionTypes/SectionBreakType */ "./src/form/components/QuestionTypes/SectionBreakType.vue");
-/* harmony import */ var _QuestionTypes_PaymentMethodType__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./QuestionTypes/PaymentMethodType */ "./src/form/components/QuestionTypes/PaymentMethodType.vue");
-/* harmony import */ var _QuestionTypes_WelcomeScreenType__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./QuestionTypes/WelcomeScreenType */ "./src/form/components/QuestionTypes/WelcomeScreenType.vue");
-/* harmony import */ var _QuestionTypes_PaymentSummaryType__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./QuestionTypes/PaymentSummaryType */ "./src/form/components/QuestionTypes/PaymentSummaryType.vue");
-/* harmony import */ var _QuestionTypes_MultipleChoiceType__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./QuestionTypes/MultipleChoiceType */ "./src/form/components/QuestionTypes/MultipleChoiceType.vue");
-/* harmony import */ var _models_QuestionModel__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../models/QuestionModel */ "./src/form/models/QuestionModel.js");
-/* harmony import */ var _QuestionTypes_TermsAndConditionType__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./QuestionTypes/TermsAndConditionType */ "./src/form/components/QuestionTypes/TermsAndConditionType.vue");
-/* harmony import */ var _conversational_src_components_FlowFormQuestion__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../conversational/src/components/FlowFormQuestion */ "./src/conversational/src/components/FlowFormQuestion.vue");
-/* harmony import */ var _QuestionTypes_MultiplePictureChoiceType__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./QuestionTypes/MultiplePictureChoiceType */ "./src/form/components/QuestionTypes/MultiplePictureChoiceType.vue");
+/* harmony import */ var _QuestionTypes_CouponType__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./QuestionTypes/CouponType */ "./src/form/components/QuestionTypes/CouponType.vue");
+/* harmony import */ var _QuestionTypes_MatrixType__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./QuestionTypes/MatrixType */ "./src/form/components/QuestionTypes/MatrixType.vue");
+/* harmony import */ var _QuestionTypes_PaymentType__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./QuestionTypes/PaymentType */ "./src/form/components/QuestionTypes/PaymentType.vue");
+/* harmony import */ var _QuestionTypes_DropdownType__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./QuestionTypes/DropdownType */ "./src/form/components/QuestionTypes/DropdownType.vue");
+/* harmony import */ var _QuestionTypes_LongTextType__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./QuestionTypes/LongTextType */ "./src/form/components/QuestionTypes/LongTextType.vue");
+/* harmony import */ var _QuestionTypes_PasswordType__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./QuestionTypes/PasswordType */ "./src/form/components/QuestionTypes/PasswordType.vue");
+/* harmony import */ var _QuestionTypes_SubscriptionType__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./QuestionTypes/SubscriptionType */ "./src/form/components/QuestionTypes/SubscriptionType.vue");
+/* harmony import */ var _QuestionTypes_SectionBreakType__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./QuestionTypes/SectionBreakType */ "./src/form/components/QuestionTypes/SectionBreakType.vue");
+/* harmony import */ var _QuestionTypes_PaymentMethodType__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./QuestionTypes/PaymentMethodType */ "./src/form/components/QuestionTypes/PaymentMethodType.vue");
+/* harmony import */ var _QuestionTypes_WelcomeScreenType__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./QuestionTypes/WelcomeScreenType */ "./src/form/components/QuestionTypes/WelcomeScreenType.vue");
+/* harmony import */ var _QuestionTypes_PaymentSummaryType__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./QuestionTypes/PaymentSummaryType */ "./src/form/components/QuestionTypes/PaymentSummaryType.vue");
+/* harmony import */ var _QuestionTypes_MultipleChoiceType__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./QuestionTypes/MultipleChoiceType */ "./src/form/components/QuestionTypes/MultipleChoiceType.vue");
+/* harmony import */ var _models_QuestionModel__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../models/QuestionModel */ "./src/form/models/QuestionModel.js");
+/* harmony import */ var _QuestionTypes_TermsAndConditionType__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./QuestionTypes/TermsAndConditionType */ "./src/form/components/QuestionTypes/TermsAndConditionType.vue");
+/* harmony import */ var _conversational_src_components_FlowFormQuestion__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../conversational/src/components/FlowFormQuestion */ "./src/conversational/src/components/FlowFormQuestion.vue");
+/* harmony import */ var _QuestionTypes_MultiplePictureChoiceType__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./QuestionTypes/MultiplePictureChoiceType */ "./src/form/components/QuestionTypes/MultiplePictureChoiceType.vue");
+
 
 
 
@@ -22000,7 +22002,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'FormQuestion',
-  "extends": _conversational_src_components_FlowFormQuestion__WEBPACK_IMPORTED_MODULE_24__.default,
+  "extends": _conversational_src_components_FlowFormQuestion__WEBPACK_IMPORTED_MODULE_25__.default,
   components: {
     Counter: _Counter__WEBPACK_IMPORTED_MODULE_0__.default,
     SubmitButton: _SubmitButton__WEBPACK_IMPORTED_MODULE_1__.default,
@@ -22013,19 +22015,20 @@ __webpack_require__.r(__webpack_exports__);
     FlowFormPhoneType: _QuestionTypes_PhoneType__WEBPACK_IMPORTED_MODULE_9__.default,
     FlowFormNumberType: _QuestionTypes_NumberType__WEBPACK_IMPORTED_MODULE_10__.default,
     FlowFormHiddenType: _QuestionTypes_Hidden__WEBPACK_IMPORTED_MODULE_7__.default,
-    FlowFormMatrixType: _QuestionTypes_MatrixType__WEBPACK_IMPORTED_MODULE_11__.default,
-    FlowFormPaymentType: _QuestionTypes_PaymentType__WEBPACK_IMPORTED_MODULE_12__.default,
-    FlowFormLongTextType: _QuestionTypes_LongTextType__WEBPACK_IMPORTED_MODULE_14__.default,
-    FlowFormDropdownType: _QuestionTypes_DropdownType__WEBPACK_IMPORTED_MODULE_13__.default,
-    FlowFormPasswordType: _QuestionTypes_PasswordType__WEBPACK_IMPORTED_MODULE_15__.default,
-    FlowFormSubscriptionType: _QuestionTypes_SubscriptionType__WEBPACK_IMPORTED_MODULE_16__.default,
-    FlowFormSectionBreakType: _QuestionTypes_SectionBreakType__WEBPACK_IMPORTED_MODULE_17__.default,
-    FlowFormPaymentMethodType: _QuestionTypes_PaymentMethodType__WEBPACK_IMPORTED_MODULE_18__.default,
-    FlowFormWelcomeScreenType: _QuestionTypes_WelcomeScreenType__WEBPACK_IMPORTED_MODULE_19__.default,
-    FlowFormPaymentSummaryType: _QuestionTypes_PaymentSummaryType__WEBPACK_IMPORTED_MODULE_20__.default,
-    FlowFormMultipleChoiceType: _QuestionTypes_MultipleChoiceType__WEBPACK_IMPORTED_MODULE_21__.default,
-    FlowFormTermsAndConditionType: _QuestionTypes_TermsAndConditionType__WEBPACK_IMPORTED_MODULE_23__.default,
-    FlowFormMultiplePictureChoiceType: _QuestionTypes_MultiplePictureChoiceType__WEBPACK_IMPORTED_MODULE_25__.default
+    FlowFormCouponType: _QuestionTypes_CouponType__WEBPACK_IMPORTED_MODULE_11__.default,
+    FlowFormMatrixType: _QuestionTypes_MatrixType__WEBPACK_IMPORTED_MODULE_12__.default,
+    FlowFormPaymentType: _QuestionTypes_PaymentType__WEBPACK_IMPORTED_MODULE_13__.default,
+    FlowFormLongTextType: _QuestionTypes_LongTextType__WEBPACK_IMPORTED_MODULE_15__.default,
+    FlowFormDropdownType: _QuestionTypes_DropdownType__WEBPACK_IMPORTED_MODULE_14__.default,
+    FlowFormPasswordType: _QuestionTypes_PasswordType__WEBPACK_IMPORTED_MODULE_16__.default,
+    FlowFormSubscriptionType: _QuestionTypes_SubscriptionType__WEBPACK_IMPORTED_MODULE_17__.default,
+    FlowFormSectionBreakType: _QuestionTypes_SectionBreakType__WEBPACK_IMPORTED_MODULE_18__.default,
+    FlowFormPaymentMethodType: _QuestionTypes_PaymentMethodType__WEBPACK_IMPORTED_MODULE_19__.default,
+    FlowFormWelcomeScreenType: _QuestionTypes_WelcomeScreenType__WEBPACK_IMPORTED_MODULE_20__.default,
+    FlowFormPaymentSummaryType: _QuestionTypes_PaymentSummaryType__WEBPACK_IMPORTED_MODULE_21__.default,
+    FlowFormMultipleChoiceType: _QuestionTypes_MultipleChoiceType__WEBPACK_IMPORTED_MODULE_22__.default,
+    FlowFormTermsAndConditionType: _QuestionTypes_TermsAndConditionType__WEBPACK_IMPORTED_MODULE_24__.default,
+    FlowFormMultiplePictureChoiceType: _QuestionTypes_MultiplePictureChoiceType__WEBPACK_IMPORTED_MODULE_26__.default
   },
   props: {
     isActiveForm: {
@@ -22049,7 +22052,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      QuestionType: _models_QuestionModel__WEBPACK_IMPORTED_MODULE_22__.QuestionType,
+      QuestionType: _models_QuestionModel__WEBPACK_IMPORTED_MODULE_23__.QuestionType,
       btnFocusIn: false
     };
   },
@@ -22110,11 +22113,11 @@ __webpack_require__.r(__webpack_exports__);
     showOkButton: function showOkButton() {
       var q = this.$refs.questionComponent;
 
-      if (this.question.type === _models_QuestionModel__WEBPACK_IMPORTED_MODULE_22__.QuestionType.WelcomeScreen) {
+      if (this.question.type === _models_QuestionModel__WEBPACK_IMPORTED_MODULE_23__.QuestionType.WelcomeScreen || this.question.type === 'FlowFormCouponType') {
         return false;
       }
 
-      if (this.question.type === _models_QuestionModel__WEBPACK_IMPORTED_MODULE_22__.QuestionType.SectionBreak) {
+      if (this.question.type === _models_QuestionModel__WEBPACK_IMPORTED_MODULE_23__.QuestionType.SectionBreak) {
         return this.active;
       }
 
@@ -22254,6 +22257,122 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     shouldPrev: function shouldPrev() {
       return true;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js ***!
+  \**************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _BaseType_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseType.vue */ "./src/form/components/QuestionTypes/BaseType.vue");
+/* harmony import */ var formatPrice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! formatPrice */ "../fluentformpro/src/assets/public/formatPrice.js");
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  "extends": _BaseType_vue__WEBPACK_IMPORTED_MODULE_0__.default,
+  name: "CouponType",
+  data: function data() {
+    return {
+      appliedCoupons: {},
+      canReceiveFocus: true
+    };
+  },
+  watch: {
+    dataValue: function dataValue(val) {
+      this.question.error = "";
+    }
+  },
+  computed: {
+    couponMode: function couponMode() {
+      return !!this.dataValue;
+    },
+    btnText: function btnText() {
+      var text = "SKIP";
+
+      if (this.couponMode) {
+        text = "APPLY COUPON";
+      } else {
+        text = Object.keys(this.appliedCoupons).length ? "OK" : text;
+      }
+
+      return text;
+    },
+    paymentConfig: function paymentConfig() {
+      return this.globalVars.paymentConfig;
+    }
+  },
+  methods: {
+    handleEnter: function handleEnter() {
+      var _this = this;
+
+      this.$emit("update:modelValue", "");
+      this.question.error = "";
+      var xhr = new XMLHttpRequest();
+      var url = this.globalVars.ajaxurl + "?action=fluentform_apply_coupon";
+      var data = new FormData();
+      data.append("form_id", this.globalVars.form_id);
+      data.append("coupon", this.dataValue);
+      data.append("other_coupons", JSON.stringify(Object.keys(this.appliedCoupons)));
+      xhr.open("POST", url);
+      xhr.responseType = "json";
+
+      xhr.onload = function () {
+        if (xhr.status !== 200) {
+          _this.question.error = xhr.response.message;
+        } else {
+          var coupon = xhr.response.coupon;
+          var couponAmount = coupon.amount + "%";
+
+          if (coupon.coupon_type == "fixed") {
+            couponAmount = _this.formatMoney(coupon.amount);
+          }
+
+          coupon.message = "".concat(coupon.code, " - ").concat(couponAmount);
+          _this.appliedCoupons[coupon.code] = coupon;
+          _this.globalVars.appliedCoupons = _this.appliedCoupons;
+          _this.dataValue = "";
+        }
+      };
+
+      xhr.send(data);
+    },
+    handleKeyDown: function handleKeyDown($event) {
+      if (this.couponMode && $event.key === "Enter") {
+        $event.preventDefault();
+        $event.stopPropagation();
+      }
+    },
+    discard: function discard(coupon) {
+      delete this.appliedCoupons[coupon.code];
+    },
+    formatMoney: function formatMoney(amount) {
+      return (0,formatPrice__WEBPACK_IMPORTED_MODULE_1__.default)(parseFloat(amount * 100).toFixed(2), this.paymentConfig.currency_settings);
+    },
+    handleBtnClick: function handleBtnClick() {
+      if (this.couponMode) {
+        this.handleEnter();
+      } else {
+        this.$emit("next");
+      }
+    },
+    onBtnFocus: function onBtnFocus() {
+      this.$parent.btnFocusIn = !this.$parent.btnFocusIn;
+    },
+    onFocus: function onFocus(index) {
+      this.focusIndex = index;
+    },
+    shouldPrev: function shouldPrev() {
+      return this.focusIndex === 0;
     }
   }
 });
@@ -23206,8 +23325,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     focus: function focus() {
-      console.log("focus", this.isStripeEmbedded, this.btnFocusIn);
-
       if (this.isStripeEmbedded) {
         if (this.btnFocusIn) {
           this.stripeCard.focus();
@@ -23220,8 +23337,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return this.$refs.questionComponent.shouldPrev();
     },
     onNext: function onNext() {
-      console.log("next", this.question.answer);
-
       if (this.dataValue === 'stripe') {
         this.initStripeInline();
       } else {
@@ -23356,7 +23471,8 @@ __webpack_require__.r(__webpack_exports__);
   name: "PaymentSummaryType",
   data: function data() {
     return {
-      canReceiveFocus: true
+      canReceiveFocus: true,
+      appliedCoupons: null
     };
   },
   computed: {
@@ -23448,18 +23564,45 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return this.$parent.btnFocusIn;
+    },
+    subTotal: function subTotal() {
+      var total = 0;
+      this.paymentItems.forEach(function (item) {
+        return total += item.lineTotal;
+      });
+      return total;
+    },
+    totalAmount: function totalAmount() {
+      var total = this.subTotal;
+
+      if (this.appliedCoupons) {
+        for (var code in this.appliedCoupons) {
+          var discount = this.appliedCoupons[code];
+          var discountAmount = discount.amount;
+
+          if (discount.coupon_type === "percent") {
+            discountAmount = discount.amount / 100 * this.subTotal;
+          }
+
+          total -= discountAmount;
+        }
+      }
+
+      return total;
     }
   },
   methods: {
     formatMoney: function formatMoney(amount) {
       return (0,formatPrice__WEBPACK_IMPORTED_MODULE_1__.default)(parseFloat(amount * 100).toFixed(2), this.paymentConfig.currency_settings);
     },
-    totalAmount: function totalAmount() {
-      var total = 0;
-      this.paymentItems.forEach(function (item) {
-        return total += item.lineTotal;
-      });
-      return this.formatMoney(total);
+    formatDiscountAmount: function formatDiscountAmount(coupon) {
+      var discountAmount = coupon.amount;
+
+      if (coupon.coupon_type === "percent") {
+        discountAmount = coupon.amount / 100 * this.subTotal;
+      }
+
+      return "-" + this.formatMoney(discountAmount);
     },
     $t: function $t(stringKey) {
       return this.paymentConfig.i18n[stringKey] || stringKey;
@@ -23494,8 +23637,11 @@ __webpack_require__.r(__webpack_exports__);
     active: function active(newVal) {
       if (newVal) {
         this.focus();
+        this.appliedCoupons = this.globalVars.appliedCoupons;
+        this.canReceiveFocus = false;
       } else {
         this.canReceiveFocus = true;
+        this.appliedCoupons = null;
       }
     }
   }
@@ -24443,7 +24589,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     submit: function submit() {
-      console.log('submitbtn');
       this.$emit('submit');
     },
     toggleHover: function toggleHover(state) {
@@ -26079,6 +26224,116 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903 ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+var _hoisted_1 = {
+  "class": "f-coupon-field-wrap"
+};
+var _hoisted_2 = {
+  "class": "f-coupon-field"
+};
+var _hoisted_3 = {
+  key: 0,
+  "class": "f-coupon-applied-list f-radios-wrap"
+};
+var _hoisted_4 = {
+  "class": "f-radios",
+  role: "listbox"
+};
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
+  "class": "error-clear"
+}, "×", -1
+/* HOISTED */
+);
+
+var _hoisted_6 = {
+  "class": "f-coupon-field-btn-wrap f-enter"
+};
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+    ref: "input",
+    type: "text",
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return _ctx.dataValue = $event;
+    }),
+    onKeydown: _cache[2] || (_cache[2] = function () {
+      return $options.handleKeyDown && $options.handleKeyDown.apply($options, arguments);
+    }),
+    onKeyup: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)((0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+      return $options.handleEnter && $options.handleEnter.apply($options, arguments);
+    }, ["prevent"]), ["enter"]))
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.dataValue]])]), $data.appliedCoupons ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.appliedCoupons, function (coupon) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", {
+      "class": "f-coupon-applied-item",
+      role: "option",
+      tabindex: "0",
+      key: coupon.code,
+      onClick: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+        return $options.discard(coupon);
+      }, ["prevent"]),
+      onKeyup: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function ($event) {
+        return $options.discard(coupon);
+      }, ["space"]),
+      onFocusin: _cache[4] || (_cache[4] = function ($event) {
+        return $options.onFocus(_ctx.index);
+      })
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
+      "class": "f-label",
+      innerHTML: coupon.message
+    }, null, 8
+    /* PROPS */
+    , ["innerHTML"]), _hoisted_5], 40
+    /* PROPS, HYDRATE_EVENTS */
+    , ["onClick", "onKeyup"]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+    "class": "o-btn-action f-coupon-field-btn",
+    type: "button",
+    href: "#",
+    "aria-label": "Press to continue",
+    onClick: _cache[5] || (_cache[5] = function () {
+      return $options.handleBtnClick && $options.handleBtnClick.apply($options, arguments);
+    }),
+    onFocusin: _cache[6] || (_cache[6] = function () {
+      return $options.onBtnFocus && $options.onBtnFocus.apply($options, arguments);
+    }),
+    onFocusout: _cache[7] || (_cache[7] = function () {
+      return $options.onBtnFocus && $options.onBtnFocus.apply($options, arguments);
+    })
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.btnText), 1
+  /* TEXT */
+  )], 32
+  /* HYDRATE_EVENTS */
+  ), !_ctx.isMobile ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("a", {
+    key: 0,
+    "class": "f-enter-desc",
+    href: "#",
+    innerHTML: _ctx.language.formatString(_ctx.language.pressEnter),
+    onClick: _cache[8] || (_cache[8] = function () {
+      return $options.handleBtnClick && $options.handleBtnClick.apply($options, arguments);
+    })
+  }, null, 8
+  /* PROPS */
+  , ["innerHTML"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
+}
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/DateType.vue?vue&type=template&id=17c5c74b":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/DateType.vue?vue&type=template&id=17c5c74b ***!
@@ -26789,6 +27044,14 @@ var _hoisted_10 = {
   colspan: "3",
   "class": "f-table-cell right"
 };
+var _hoisted_11 = {
+  colspan: "3",
+  "class": "f-table-cell right"
+};
+var _hoisted_12 = {
+  colspan: "3",
+  "class": "f-table-cell right"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [_ctx.active && $options.paymentItems.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("table", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.$t("item")), 1
   /* TEXT */
@@ -26826,11 +27089,35 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["innerHTML"])]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tfoot", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.$t("total")), 1
+  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tfoot", null, [$data.appliedCoupons ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    key: 0
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.$t("line_total")), 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
     "class": "f-table-cell",
-    innerHTML: $options.totalAmount()
+    innerHTML: $options.formatMoney($options.subTotal)
+  }, null, 8
+  /* PROPS */
+  , ["innerHTML"])]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.appliedCoupons, function (coupon) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("tr", {
+      key: coupon.code
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", _hoisted_11, " Discount: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(coupon.title), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
+      "class": "f-table-cell",
+      innerHTML: $options.formatDiscountAmount(coupon)
+    }, null, 8
+    /* PROPS */
+    , ["innerHTML"])]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))], 64
+  /* STABLE_FRAGMENT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.$t("total")), 1
+  /* TEXT */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
+    "class": "f-table-cell",
+    innerHTML: $options.formatMoney($options.totalAmount)
   }, null, 8
   /* PROPS */
   , ["innerHTML"])])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
@@ -40130,6 +40417,32 @@ _BaseType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default.__fil
 
 /***/ }),
 
+/***/ "./src/form/components/QuestionTypes/CouponType.vue":
+/*!**********************************************************!*\
+  !*** ./src/form/components/QuestionTypes/CouponType.vue ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _CouponType_vue_vue_type_template_id_6dfd3903__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CouponType.vue?vue&type=template&id=6dfd3903 */ "./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903");
+/* harmony import */ var _CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CouponType.vue?vue&type=script&lang=js */ "./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js");
+
+
+
+_CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _CouponType_vue_vue_type_template_id_6dfd3903__WEBPACK_IMPORTED_MODULE_0__.render
+/* hot reload */
+if (false) {}
+
+_CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file = "src/form/components/QuestionTypes/CouponType.vue"
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default);
+
+/***/ }),
+
 /***/ "./src/form/components/QuestionTypes/DateType.vue":
 /*!********************************************************!*\
   !*** ./src/form/components/QuestionTypes/DateType.vue ***!
@@ -41056,6 +41369,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js":
+/*!**********************************************************************************!*\
+  !*** ./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_CouponType_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./CouponType.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
 /***/ "./src/form/components/QuestionTypes/DateType.vue?vue&type=script&lang=js":
 /*!********************************************************************************!*\
   !*** ./src/form/components/QuestionTypes/DateType.vue?vue&type=script&lang=js ***!
@@ -41628,6 +41957,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_FormQuestion_vue_vue_type_template_id_baac255e__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_FormQuestion_vue_vue_type_template_id_baac255e__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./FormQuestion.vue?vue&type=template&id=baac255e */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/FormQuestion.vue?vue&type=template&id=baac255e");
+
+
+/***/ }),
+
+/***/ "./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903":
+/*!****************************************************************************************!*\
+  !*** ./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903 ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_CouponType_vue_vue_type_template_id_6dfd3903__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_CouponType_vue_vue_type_template_id_6dfd3903__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./CouponType.vue?vue&type=template&id=6dfd3903 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/form/components/QuestionTypes/CouponType.vue?vue&type=template&id=6dfd3903");
 
 
 /***/ }),

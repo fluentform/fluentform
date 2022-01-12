@@ -2568,6 +2568,20 @@ header.vff-header {
   margin-bottom: 15px;
 }
 
+.f-coupon-field-wrap .f-coupon-field {
+  max-width: 590px;
+}
+.f-coupon-field-wrap .f-coupon-applied-list .f-coupon-applied-item {
+  display: flex;
+  align-items: center;
+}
+.f-coupon-field-wrap .f-coupon-applied-list .error-clear {
+  color: #ff5050;
+}
+.f-coupon-field-wrap .f-coupon-field-btn {
+  margin-top: 20px;
+}
+
 
 
 /*# sourceMappingURL=conversationalForm.css.map*/
