@@ -1393,18 +1393,6 @@ if (!defined('FLUENTFORMPRO')) {
         )
     ];
 
-    $defaultElements['advanced']['custom_submit_button'] = [
-        'index' => 15,
-        'element' => 'custom_submit_button',
-        'attributes' => [],
-        'settings' => [],
-        'editor_options' => [
-            'title' => 'Custom Submit Button',
-            'icon_class' => 'dashicons dashicons-arrow-right-alt',
-            'template' => 'customButton'
-        ],
-    ];
-
     $defaultElements['advanced']['rangeslider'] = [
         'index' => 15,
         'element' => 'rangeslider',
