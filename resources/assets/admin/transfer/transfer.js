@@ -14,6 +14,8 @@ import {
     Pagination,
     Popover,
     Notification,
+    Tabs,
+    TabPane,
     Loading
 } from 'element-ui';
 
@@ -29,6 +31,8 @@ Vue.use(Select);
 Vue.use(Option);
 Vue.use(Pagination);
 Vue.use(Popover);
+Vue.use(Tabs);
+Vue.use(TabPane);
 
 
 Vue.prototype.$notify = Notification;
@@ -44,6 +48,7 @@ import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
 import ApiLogs from './ApiLogs';
+import Migrator from './Migrator';
 
 Vue.mixin({
     methods:{
@@ -59,6 +64,7 @@ new Vue({
         importforms: ImportForms,
         activitylogs: ActivityLogs,
         apilogs: ApiLogs,
+        migrator: Migrator
     },
     data: {
         component: 'exportforms',
