@@ -73,7 +73,10 @@ class CalderaMigrator extends BaseMigrator
             if ($value = $this->getFluentClassicField($type, $args)) {
                 $fluentFields[$field['ID']] = $value;
             } else {
-                $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                //submit button is imported separately
+                if (ArrayHelper::get($field, 'type') != 'button') {
+                    $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                }
             }
         }
 
@@ -131,7 +134,7 @@ class CalderaMigrator extends BaseMigrator
             case 'input_checkbox':
             case 'dropdown':
                 if ($args['placeholder'] == '') {
-                    $args['placeholder'] = __('-Select-', 'ff-importer-addon');
+                    $args['placeholder'] = __('-Select-', 'fluentform');
                 }
                 $args['options'] = $this->getOptions(ArrayHelper::get($field, 'config.option', []));
                 $args['calc_value_status'] = (bool)ArrayHelper::get($field, 'config.show_values');

@@ -18,7 +18,7 @@ abstract class BaseMigrator
     {
         if (!$this->exist()) {
             wp_send_json_error([
-                'message' => sprintf(__('%s is not installed.', 'fluentforms'), $this->title),
+                'message' => sprintf(__('%s is not installed.', 'fluentform'), $this->title),
             ]);
         }
 
@@ -29,7 +29,7 @@ abstract class BaseMigrator
 
         if (!$forms) {
             wp_send_json_error([
-                'message' => __('No forms found!', 'fluentforms'),
+                'message' => __('No forms found!', 'fluentform'),
             ]);
         }
         $insertedForms = [];
@@ -811,11 +811,11 @@ abstract class BaseMigrator
                     'validation_rules'    => [
                         'required'           => [
                             'value'   => $args['required'],
-                            'message' => __('This field is required', 'fluentformpro'),
+                            'message' => __('This field is required', 'fluentform'),
                         ],
                         'valid_phone_number' => [
                             'value'   => false,
-                            'message' => __('Phone number is not valid', 'fluentformpro')
+                            'message' => __('Phone number is not valid', 'fluentform')
                         ]
                     ],
                     'conditional_logics'  => []
@@ -1577,7 +1577,7 @@ abstract class BaseMigrator
 
         }
         wp_send_json([
-            'message'          => __("Entries Imported Successfully", ''),
+            'message'          => __("Entries Imported Successfully", 'fluentform'),
             'entries_page_url' => admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $fluentFormId),
             'status'           => true
         ], 200);
