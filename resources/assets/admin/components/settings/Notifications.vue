@@ -245,11 +245,13 @@
                     </el-tooltip>
                 </template>
                 <el-button type="primary"
+                           :disabled="!has_pro"
                            plain
                            icon="el-icon-upload"
                            size="small"
                            @click="mediaAttachments()"
-                > Upload
+                >
+                    {{$t('Upload')}} <span v-if="!has_pro">(Require Pro Version)</span>
                 </el-button>
 
                 <li v-if="selected.value.media_attachments.length" v-for="(attachment,index) in selected.value.media_attachments" :key="index">
