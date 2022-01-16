@@ -34,7 +34,6 @@ class Form
 
         // elements
         new WelcomeScreen();
-
     }
 
     public function pushDesignTab($menuItems, $formId)
@@ -219,8 +218,8 @@ class Form
         }
 
         if ((isset($_GET[$paramKey])) && !wp_doing_ajax()) {
-            $formId = intval(ArrayHelper::get($_REQUEST, $paramKey));
-            $shareKey = ArrayHelper::get($_REQUEST, 'form');
+            $formId = intval(ArrayHelper::get($_GET, $paramKey));
+            $shareKey = ArrayHelper::get($_GET, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
     }
@@ -711,7 +710,7 @@ class Form
 
     /**
      * Get the payment configuration of this form.
-     * 
+     *
      * @param $form
      */
     private function getPaymentConfig($form)
@@ -737,7 +736,7 @@ class Form
                     'url'        => site_url(),
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d'
                 ),
-                'i18n' => [
+                'i18n'              => [
                     'item'            => __('Item', 'fluentformpro'),
                     'price'           => __('Price', 'fluentformpro'),
                     'qty'             => __('Qty', 'fluentformpro'),
