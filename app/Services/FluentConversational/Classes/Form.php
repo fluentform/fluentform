@@ -330,35 +330,39 @@ class Form
 
         $elements = [];
 
-        $allFields = array_merge($generalFields, $advancedFields, $paymentFields);
+        $allFields = [
+            'general' => $generalFields,
+            'advanced' => $advancedFields,
+            'payments' => $paymentFields
+        ];
 
-        foreach ($allFields as $field) {
-            $element = $field['element'];
-            if (in_array($element, $acceptedFieldElements)) {
-                $field['style_pref'] = [
-                    'layout'           => 'default',
-                    'media'            => $this->getRandomPhoto(),
-                    'brightness'       => 0,
-                    'alt_text'         => '',
-                    'media_x_position' => 50,
-                    'media_y_position' => 50
-                ];
-
-                if ($element == 'terms_and_condition') {
-                    $existingSettings = $field['settings'];
-                    $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
-                    $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
-                    $field['settings'] = $existingSettings;
+        foreach ($allFields as $groupType => $group) {
+            foreach ($group as $field) {
+                $element = $field['element'];
+                if (in_array($element, $acceptedFieldElements)) {
+                    $field['style_pref'] = [
+                        'layout'           => 'default',
+                        'media'            => $this->getRandomPhoto(),
+                        'brightness'       => 0,
+                        'alt_text'         => '',
+                        'media_x_position' => 50,
+                        'media_y_position' => 50
+                    ];
+    
+                    if ($element == 'terms_and_condition') {
+                        $existingSettings = $field['settings'];
+                        $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
+                        $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                        $field['settings'] = $existingSettings;
+                    }
+    
+                    $elements[$groupType][] = $field;
                 }
-
-                $elements[] = $field;
             }
         }
         $elements = apply_filters('fluent_conversational_editor_elements', $elements, $formId);
 
-        return [
-            'general' => $elements
-        ];
+        return $elements;
     }
 
     public function printLoadedScripts()

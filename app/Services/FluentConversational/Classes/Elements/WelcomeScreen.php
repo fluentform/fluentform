@@ -27,7 +27,7 @@ class WelcomeScreen extends BaseFieldManager
 
     public function pushConversationalComponent($components)
     {
-        $components[] = [
+        $components['advanced'][] = [
             'index' => 50,
             'element' => 'welcome_screen',
             'attributes' => array(),

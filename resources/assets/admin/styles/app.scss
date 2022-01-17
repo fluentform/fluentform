@@ -125,13 +125,10 @@ footer {
     background: #f3f4f5;
   }
 
-  &:first-child {
-    .option-fields-section--title {
-      border-top: 1px solid #e3e5e8 !important;
-      background: white;
-      &.active {
-        border-top: 0;
-      }
+  .option-fields-section--title {
+    background: white;
+    &.active {
+      border-top: 0;
     }
   }
 
