@@ -341,6 +341,25 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
+= 4.3.0 (Date: Jan 17, 2022) =
+
+- Adds other form plugins' migrator
+- Adds hCaptcha field
+- Adds malicious attack prevention mechanism
+- Adds support for advanced date configuration in Conversational Forms
+- Adds placeholder settings input for Conversational Forms
+- Adds advanced configuration of country field for Conversational forms
+- Adds validation rule message settings for Email and URL fields
+- Fixes PDF Feed issue on form duplication
+- Fixes url validation regex
+- Fixes Gutenberg block css class issue
+- Fixes Gutenberg block shortcode issue for Conversational Forms
+- Fixes PHP 8 warning issue
+- Improves backend translations
+- Removes file & images link from parser when auto delete enabled
+- Improves Helper Shortcode for submission count of payments
+- Improves Step forms for Autoslider with HTML input
+
 = 4.2.0 (Date: Sep 01, 2021) =
 - Improvements on Conversational Forms
 - RTL Improvements
