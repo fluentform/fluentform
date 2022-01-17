@@ -46,7 +46,8 @@
         <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete =='yes'">
             <div slot="label">
                 Auto locate
-                <el-tooltip  effect="dark" content="Select auto user loacte & address fill up type , one page load or on address button click" placement="top">
+                <el-tooltip  effect="dark" content="When map is enabled Please enable
+Geocoding API if you want to populate address after map marker drag end" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>
