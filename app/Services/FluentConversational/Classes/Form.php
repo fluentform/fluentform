@@ -219,8 +219,8 @@ class Form
         }
 
         if ((isset($_GET[$paramKey])) && !wp_doing_ajax()) {
-            $formId = intval(ArrayHelper::get($_REQUEST, $paramKey));
-            $shareKey = ArrayHelper::get($_REQUEST, 'form');
+            $formId = intval(ArrayHelper::get($_GET, $paramKey));
+            $shareKey = ArrayHelper::get($_GET, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
     }

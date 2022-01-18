@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 5.8.0
+Tested up to: 5.8.3
 Requires PHP: 5.6
-Stable tag: 4.2.20
+Stable tag: 4.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,7 @@ Fluent Forms v4.0 is live, and it's more powerful than ever! With the most await
 
 With Conversational Form Style you can easily build awesome high converting type styled forms easily. It's completely free.
 [View Conversational Form Demo](https://fluentforms.com/?fluent-form=138)
+Starting from v4.3.0, Conversational Forms got even more powerful. Now you have full-on keyboard access. With Fluent Forms Pro, you can enjoy more advanced functionalities, such as payment, coupon, file upload, and checkable grid.
 
 == Built-in Data Analysis Tool ==
 In version 3.0.0, we have added the most exciting features that no other form plugins provide, and that is built-in data visualization tool. Using the data visualization module, you can analyze your data from your web and contact forms, analyze the data using a pie-chart, bar chart, tabular view. Using Ninja Tables plugin you can even show the submitted data in the frontend.
@@ -77,6 +78,10 @@ WP Fluent Forms can be used for your regular contact forms, event forms, online 
 
 == DRAG & DROP CONTACT FORM BUILDER ==
 Our powerful drag & drop contact form builder allows you to easily create WordPress contact forms and other online forms in just a few minutes without writing any code. Building forms is now easier for you than writing and drawing it on a piece of paper!
+
+== ONE-CLICK MIGRATOR ==
+Already using a form plugin? If you are looking forward to switching to Fluent Forms, but already using Caldera Forms, Ninja Forms or Gravity Forms; we will make the switch easy for you. Now Fluent Forms comes packed with a one-click migrator. With this migrator, you can import all of your forms made with Caldera along with the customizations, configuration, and form entries! For Ninja Forms, and Gravity Forms the migrator will only import your forms and form settings, but not the form entries. 
+
 
 == MULTI-COLUMN FORM LAYOUT ==
 We have all faced the hassle of long forms, filling out which seems like meeting a Dementor from the Harry Potter series that might suck the soul out of you and leave you dead. These “long” forms are often nothing more than just mismanagement of space. Say, you are showing your potential lead a form that has ten input fields in it. Now stacking these 10 fields one after one makes it a long, tedious, and scary form. But if you cleverly stack them 2 or 3 columns, the whole thing looks compact, smart, and not that much scary at all!
@@ -109,11 +114,11 @@ You are not installing a form builder plugin to lure in 5-10 subscribers, right?
 With WP Fluent Forms, you can organize your submitted entries according to their value and export the whole list with just a click, or you can integrate with **slack**, **MailChimp**, and 16 more.
 
 == Form Fields available in WP Fluent Forms ==
+- Name Fields
 - Email Address
-- Name Field
 - Simple Text
 - Mask Input
-- Text Area / Multiline texts
+- Text Area / Multiline Texts
 - Address Fields
 - Country List
 - Numeric Field
@@ -126,26 +131,34 @@ With WP Fluent Forms, you can organize your submitted entries according to their
 - Custom HTML
 - Hidden Field
 - Section Break
-- Google reCaptcha
+- Google reCAPTCHA
+- hCaptcha
 - Terms and Conditions
 - GDPR Agreement Field
 - Password Field
+- Custom Submit Button
 - Two Column Container
 - Three Column Container
 
 **More Advanced Fields in Pro**
-- File Upload
 - Image Upload
-- Net Promoter Score
-- Checkable Grid
-- Ratings Form Field
-- Post/CPT selection field
-- Form Step to build multi-step form
-- Action Hook Field
+- Phone Field
+- File Upload
 - Shortcode Field
-- Telephone Field
+- Action Hook Field
+- Form Step to build multi-step form
+- Ratings Form Field
+- Checkable Grid
+- Range Slider
+- Color Picker
+- Net Promoter Score
+- Repeat Field
+- Post/CPT selection field
 - Chained Select
 - Post Creation Fields
+- Payment Field
+- Custom Payment
+- Item Quantity
 - PayPal Payments
 - Credit Card Payments Via Stripe
 - Accept Payments Via RazorPay
@@ -159,7 +172,7 @@ We also added four pre-defined styles template that you can just select and pre-
 Now, You can generate PDF from your templates and download or attach the PDF via email. This feature is completely free.
 
 
-== 66+ Pre-Build Forms ==
+== 66+ Pre-Built Forms ==
 We have added 66+ pre-build forms for you so you can easily select the right form and start using it.
 Here are the few forms from those that we have packed for you:
 
@@ -209,7 +222,6 @@ Here are the few forms from those that we have packed for you:
 <li>Drip - WP Fluent Forms Drip Module allows you to create Drip subscribers from WordPress, so you can grow your email list.</li>
 <li>iContact - Connect iContact with WP Fluent Forms and subscribe a contact when a form is submitted.</li>
 <li>SendinBlue - Connect Your Contact Forms with SendinBlue CRM</li>
-<li>SendinBlue - Connect Your Contact Forms with SendinBlue CRM</li>
 <li>Automizy - Connect Your Contact Forms with Automizy Marketing Solution</li>
 <li>User Registration - Create WordPress users from fluent form submissions</li>
 <li>Post/CPT integration - Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>
@@ -218,6 +230,8 @@ Here are the few forms from those that we have packed for you:
 <li>Mollie - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 <li>RazorPay - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 <li>Paystack - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
+<li>Discord - Get automated form notifications on your Discord server</li>
+<li>Salesflare - Connection with the Salesflare CRM got more 'Fluent' with this integration</li>
 </ul>
 
 == PAYMENT FORM, DONATION FORM, ORDER FORM, AND MORE ==
@@ -341,8 +355,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 4.3.0 (Date: Jan 17, 2022) =
-
+= 4.3.0 (Date: Jan 18, 2022) =
 - Adds other form plugins' migrator
 - Adds hCaptcha field
 - Adds malicious attack prevention mechanism
@@ -360,7 +373,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Improves Helper Shortcode for submission count of payments
 - Improves Step forms for Autoslider with HTML input
 
-= 4.2.0 (Date: Sep 01, 2021) =
+= 4.2.1 (Date: Sep 01, 2021) =
 - Improvements on Conversational Forms
 - RTL Improvements
 - UI Improvements
