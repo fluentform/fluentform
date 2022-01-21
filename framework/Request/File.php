@@ -896,7 +896,8 @@ class File extends \SplFileInfo implements Contract
     public function guessExtension()
     {
         $type = $this->getMimeType();
-        return isset($this->defaultExtensions[$type]) ? $this->defaultExtensions[$type] : null;
+        $extensions = apply_filters('ff_default_file_extensions',$this->defaultExtensions);
+        return isset($extensions[$type]) ? $extensions[$type] : null;
     }
 
     /**

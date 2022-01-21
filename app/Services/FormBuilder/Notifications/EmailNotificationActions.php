@@ -33,7 +33,6 @@ class EmailNotificationActions
         );
 
         $emailData = $feed['processedValues'];
-
         $emailAttachments = [];
         if(!empty($emailData['attachments']) && is_array($emailData['attachments'])) {
             $attachments = [];
@@ -54,6 +53,25 @@ class EmailNotificationActions
             }
             $emailAttachments = $attachments;
         }
+        $mediaAttachments = ArrayHelper::get($emailData,'media_attachments') ;
+        if(!empty($mediaAttachments) && is_array($mediaAttachments)) {
+            $attachments = [];
+            foreach ($mediaAttachments as $file) {
+                $fileUrl = ArrayHelper::get($file, 'url');
+                if($fileUrl) {
+                    $filePath = str_replace(
+                        site_url(''),
+                        wp_normalize_path( untrailingslashit( ABSPATH ) ),
+                        $fileUrl
+                    );
+                    if(file_exists($filePath)) {
+                        $attachments[] = $filePath;
+                    }
+                }
+            }
+            $emailAttachments = array_merge($emailAttachments,$attachments);
+        }
+
 
         // let others to apply attachments
         $emailAttachments = apply_filters('fluentform_email_attachments', $emailAttachments, $emailData, $formData, $entry, $form);

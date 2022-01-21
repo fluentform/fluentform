@@ -147,9 +147,11 @@ class Request
            $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
        }
 
-       $ip = @$_SERVER['HTTP_CLIENT_IP'];
-       if (filter_var($ip, FILTER_VALIDATE_IP)) {
-           return $ip;
+       if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+           $ip = @$_SERVER['HTTP_CLIENT_IP'];
+           if (filter_var($ip, FILTER_VALIDATE_IP)) {
+               return $ip;
+           }
        }
 
        // Sometimes the `HTTP_X_FORWARDED_FOR` can contain more than IPs

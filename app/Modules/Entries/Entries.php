@@ -69,6 +69,8 @@ class Entries extends EntryQuery
 
         if ($search) {
             $query->where('fluentform_submissions.response', 'LIKE', '%' . $search . '%');
+            $query->orWhere('fluentform_forms.title', 'LIKE', '%' . $search . '%');
+            $query->orWhere('fluentform_submissions.id', 'LIKE', '%' . $search . '%');
         }
 
         $total = $query->count();
@@ -698,6 +700,7 @@ class Entries extends EntryQuery
             '_fluentform_' . $formId . '_fluentformnonce',
             '_wp_http_referer',
             'g-recaptcha-response',
+            'h-captcha-response',
             '__stripe_payment_method_id',
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash'

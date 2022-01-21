@@ -18,7 +18,7 @@ class CustomHtml extends BaseComponent
         $data = apply_filters('fluentform_rendering_field_data_'.$elementName, $data, $form);
 
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
-		$cls = trim($this->getDefaultContainerClass() .' '.$hasConditions);
+		$cls = trim($this->getDefaultContainerClass() .' ff-'.$elementName.' '.$hasConditions);
 		if($containerClass = ArrayHelper::get($data, 'settings.container_class')) {
             $cls .= ' '.$containerClass;
         }

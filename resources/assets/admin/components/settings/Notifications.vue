@@ -192,6 +192,7 @@
                     Send Email as RAW HTML Format
                 </el-checkbox>
             </el-form-item>
+
             <!-- FilterFields -->
             <el-form-item>
                 <template slot="label">
@@ -211,7 +212,6 @@
                 <FilterFields :fields="inputs" :conditionals="selected.value.conditionals"
                               :disabled="!has_pro"></FilterFields>
             </el-form-item>
-
             <el-form-item v-if="attachmentFields.length && selected.value.attachments">
                 <template slot="label">
                     Email Attachments
@@ -232,10 +232,41 @@
                         {{attachmentField.admin_label}}
                     </el-checkbox>
                 </el-checkbox-group>
+            </el-form-item>
+            <!-- Media Attachments -->
+            <el-form-item>
+                <template slot="label">
+                    Media File Attachments
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            Add Additional Media File Attachments for the email
+                        </div>
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                </template>
+                <el-button type="primary"
+                           :disabled="!has_pro"
+                           plain
+                           icon="el-icon-upload"
+                           size="small"
+                           @click="mediaAttachments()"
+                >
+                    {{$t('Upload')}} <span v-if="!has_pro">(Require Pro Version)</span>
+                </el-button>
 
-                <p v-if="selected.value.attachments && selected.value.attachments.length">
-                    You should use SMTP so send attachment via email otherwise, It may go to spam
-                </p>
+                <li v-if="selected.value.media_attachments.length" v-for="(attachment,index) in selected.value.media_attachments" :key="index">
+                    {{attachment.name}}
+                    <span>
+                         <el-button type="danger"
+                                    plain
+                                    icon="el-icon-delete"
+                                    size="mini"
+                                    @click="removeMediaAttachments(index)"
+                         ></el-button>
+
+                    </span>
+                </li>
+
             </el-form-item>
 
             <el-form-item v-if="pdf_feeds.length">
@@ -257,9 +288,9 @@
                     </el-checkbox>
                 </el-checkbox-group>
 
-                <p v-if="selected.value.pdf_attachments && selected.value.pdf_attachments.length">You should use SMTP so
-                    send attachment via email otherwise, It may go to spam</p>
             </el-form-item>
+            <p v-show="hasAttachment">You should use SMTP so
+                send attachment via email otherwise, It may go to spam</p>
 
             <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
@@ -436,6 +467,7 @@ export default {
             selectedIndex: null,
             notifications: [],
             pdf_feeds: [],
+            extra_attachment:[],
             mock: {
                 value: {
                     name: 'New Notification',
@@ -471,7 +503,8 @@ export default {
                     },
                     enabled: true,
                     pdf_attachments: [],
-                    attachments: []
+                    attachments: [],
+                    media_attachments: [],
                 }
             },
             errors: new Errors,
@@ -525,9 +558,32 @@ export default {
                 '{all_data}': 'All Data',
             };
             return freshCopy;
+        },
+        hasAttachment(){
+            let pdfAttachment = this.selected.value.pdf_attachments && this.selected.value.pdf_attachments.length
+            let inputAttachment = this.selected.value.attachments && this.selected.value.attachments.length;
+            let fileAttachment = this.selected.value.media_attachments && this.selected.value.media_attachments.length;
+            return !!inputAttachment || !!  fileAttachment || !!pdfAttachment;
         }
     },
     methods: {
+        removeMediaAttachments(index){
+            this.selected.value.media_attachments.splice(index, 1);
+        },
+        mediaAttachments(){
+            if ( typeof wp !== 'undefined' && wp.media && wp.media.editor) {
+                wp.media.editor.send.attachment  = (props, attachment) =>   {
+                    if(attachment.url){
+                        this.selected.value.media_attachments.push({
+                            name: attachment.filename,
+                            url:attachment.url
+                        })
+                    }
+                };
+                wp.media.editor.open();
+                return false;
+            }
+        },
         add() {
             this.selectedIndex = this.notifications.length;
             this.selected = _ff.cloneDeep(this.mock);
@@ -552,6 +608,9 @@ export default {
             if (!freshCopy.value.attachments) {
                 freshCopy.value.attachments = [];
             }
+            if (!freshCopy.value.media_attachments) {
+                freshCopy.value.media_attachments = [];
+            }
 
             this.selected = freshCopy;
             this.selectedIndex = index + 1;
@@ -568,6 +627,9 @@ export default {
 
             if (!this.selected.value.attachments) {
                 this.$set(this.selected.value, 'attachments', []);
+            }
+            if (!this.selected.value.media_attachments) {
+                this.$set(this.selected.value, 'media_attachments', []);
             }
 
             if (!this.selected.value.pdf_attachments) {

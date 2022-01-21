@@ -198,6 +198,16 @@ jQuery(document).ready(function () {
                             }
                         }
 
+                        // Init hCaptcha if available.
+                        if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
+                            let hcaptchaId = getHcaptchaClientId(formData.form_id);
+                            if (hcaptchaId) {
+                                formData['data'] += '&' + $.param({
+                                    'h-captcha-response': hcaptcha.getResponse(hcaptchaId)
+                                });
+                            }
+                        }
+
                         $(formSelector + '_success').remove();
                         $(formSelector + '_errors').html('');
                         $theForm.find('.error').html('');
@@ -352,6 +362,9 @@ jQuery(document).ready(function () {
                                     grecaptcha.reset(reCaptchaId);
                                 }
                             }
+                            if (window.hcaptcha) {
+                                hcaptcha.reset(); //two recapthca on same page creates conflicts
+                            }
                         });
                 }
 
@@ -440,6 +453,22 @@ jQuery(document).ready(function () {
                 var getRecaptchaClientId = function (formId) {
                     var formIndex;
                     $('form').has('.g-recaptcha').each(function (index, form) {
+                        if ($(this).attr('data-form_id') == formId) {
+                            formIndex = index;
+                        }
+                    });
+
+                    return formIndex;
+                };
+
+                /**
+                 * Retrieve the Hcaptcha client id for current form
+                 * @param {int} formId
+                 * @return {int}
+                 */
+                 var getHcaptchaClientId = function (formId) {
+                    var formIndex;
+                    $('form').has('.h-captcha').each(function (index, form) {
                         if ($(this).attr('data-form_id') == formId) {
                             formIndex = index;
                         }
@@ -1209,6 +1238,9 @@ jQuery(document).ready(function () {
             formInstance.reinitExtras();
             if (window.grecaptcha) {
                 grecaptcha.reset(); //two recapthca on same page creates conflicts
+            }
+            if (window.hcaptcha) {
+                hcaptcha.reset(); //two recapthca on same page creates conflicts
             }
             initSingleForm($theForm);
             fluentFormCommonActions.init();

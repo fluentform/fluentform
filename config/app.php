@@ -22,7 +22,8 @@ return array(
 			'backend' => array(
 				'FluentForm\App\Providers\BackendProvider',
                 'FluentForm\App\Providers\MenuProvider',
-				'FluentForm\App\Providers\AdminNoticeProvider'
+				'FluentForm\App\Providers\AdminNoticeProvider',
+                'FluentForm\App\Providers\MigratorProvider',
 			),
 
 			'frontend' => array(

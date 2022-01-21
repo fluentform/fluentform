@@ -561,6 +561,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'enable_select_2' => 'no',
                 'validation_rules' => array(
                     'required' => array(
@@ -611,6 +612,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'validation_rules' => array(
                     'required' => array(
                         'value' => false,
@@ -665,6 +667,7 @@ $defaultElements = array(
                 ),
                 'calc_value_status' => false,
                 'enable_image_input' => false,
+                'values_visible' => false,
                 'randomize_options' => 'no',
                 'validation_rules' => array(
                     'required' => array(
@@ -1182,6 +1185,22 @@ $defaultElements = array(
                 'template' => 'recaptcha',
             ),
         ),
+        'hcaptcha' => array(
+            'index' => 2,
+            'element' => 'hcaptcha',
+            'attributes' => array('name' => 'hcaptcha'),
+            'settings' => array(
+                'label' => '',
+                'label_placement' => '',
+                'validation_rules' => array(),
+            ),
+            'editor_options' => array(
+                'title' => __('hCaptcha', 'fluentform'),
+                'icon_class' => 'ff-edit-recaptha',
+                'why_disabled_modal' => 'hcaptcha',
+                'template' => 'hcaptcha',
+            ),
+        ),
         'shortcode' => array(
             'index' => 4,
             'element' => 'shortcode',
@@ -1372,18 +1391,6 @@ if (!defined('FLUENTFORMPRO')) {
             'icon_class' => 'ff-edit-repeat',
             'template' => 'fieldsRepeatSettings'
         )
-    ];
-
-    $defaultElements['advanced']['custom_submit_button'] = [
-        'index' => 15,
-        'element' => 'custom_submit_button',
-        'attributes' => [],
-        'settings' => [],
-        'editor_options' => [
-            'title' => 'Custom Submit Button',
-            'icon_class' => 'dashicons dashicons-arrow-right-alt',
-            'template' => 'customButton'
-        ],
     ];
 
     $defaultElements['advanced']['rangeslider'] = [

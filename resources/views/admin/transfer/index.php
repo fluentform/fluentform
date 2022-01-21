@@ -25,6 +25,16 @@ use FluentForm\App\Helpers\Helper;
                         <?php echo __('Import Forms', 'fluentform'); ?>
                     </a>
                 </li>
+                <?php if ( ( new FluentForm\App\Services\Migrator\Bootstrap())->hasOtherForms()): ?>
+                <li>
+                    <a data-hash="migrator"
+                       href="<?php echo Helper::makeMenuUrl('fluent_forms_transfer', ['hash' => 'migrator']); ?>"
+                    >
+                        <?php echo __('Migrator', 'fluentform'); ?>
+                    </a>
+                </li>
+                <?php endif; ?>
+
                 <li>
                     <a data-hash="activitylogs"
                        href="<?php echo Helper::makeMenuUrl('fluent_forms_transfer', ['hash' => 'activitylogs']); ?>"
