@@ -67,6 +67,8 @@ if (!function_exists('fluentFormSanitizer')) {
                 return wp_kses_post($input);
             } else if (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
                 $input = sanitize_textarea_field($input);
+            } else if (ArrayHelper::get($fields, $attribute . '.element') === 'input_email') {
+                $input = strtolower(sanitize_text_field($input));
             } else {
                 $input = sanitize_text_field($input);
             }
