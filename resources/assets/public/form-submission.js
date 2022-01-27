@@ -49,6 +49,8 @@ jQuery(document).ready(function () {
 
         fluentFormVars.stepAnimationDuration = parseInt(fluentFormVars.stepAnimationDuration);
 
+        var fluentFormAppStore = {};
+
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
             var form = window['fluent_form_' + formInstanceSelector];
@@ -56,6 +58,10 @@ jQuery(document).ready(function () {
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
+            }
+
+            if (fluentFormAppStore[formInstanceSelector]) {
+                return fluentFormAppStore[formInstanceSelector];
             }
 
             var formId = form.form_id_selector;
@@ -787,7 +793,7 @@ jQuery(document).ready(function () {
                     });
                 }
 
-                return {
+                var appInstance = {
                     initFormHandlers,
                     registerFormSubmissionHandler,
                     maybeInlineForm,
@@ -804,6 +810,10 @@ jQuery(document).ready(function () {
                     showFormSubmissionProgress,
                     hideFormSubmissionProgress
                 }
+
+                fluentFormAppStore[formInstanceSelector] = appInstance;
+
+                return appInstance;
             })(validationFactory);
         };
 
