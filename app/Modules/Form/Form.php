@@ -537,6 +537,15 @@ class Form
         }
     }
 
+    public function convertToconversational()
+    {
+        $formId = $this->request->get('form_id');
+        $this->updateMeta($formId, 'is_conversion_form', 'yes');
+        wp_send_json_success([
+            'message' => __('Form has been successfully converted to conversational form.', 'fluentform'),
+        ], 200);
+    }
+
     private function getAdminPermalink($route, $form)
     {
         $baseUrl = admin_url('admin.php?page=fluent_forms');

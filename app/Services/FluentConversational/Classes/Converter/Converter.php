@@ -347,13 +347,45 @@ class Converter
 				$form->submit_button = $field;
 			}
 		}
-
+        
 		$form->questions = $questions;
 
 		$form->image_preloads = $imagePreloads;
 
 		return $form;
 	}
+
+    public static function convertExistingForm($form)
+    {
+        $formFields = json_decode($form->form_fields, true);
+        $fields = $formFields['fields'];
+        $formattedFields = [];
+
+        $allowedFields = static::fieldTypes();
+        if(is_array($fields) && !empty($fields)){
+
+            foreach ($fields as $field) {
+                if (ArrayHelper::get($allowedFields, $field['element'])) {
+
+                    if (!ArrayHelper::exists($field, 'style_pref')) {
+                        $field['style_pref'] = [
+                            'layout'           => 'default',
+                            'media'            => '',
+                            'brightness'       => 0,
+                            'alt_text'         => '',
+                            'media_x_position' => 50,
+                            'media_y_position' => 50
+                        ];
+                    }
+                    $formattedFields[] = $field;
+                }
+            }
+        }
+
+        $formFields['fields'] = $formattedFields;
+        $form->form_fields = json_encode($formFields);
+        return $form;
+    }
 
 	public static function fieldTypes()
 	{

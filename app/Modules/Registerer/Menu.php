@@ -622,6 +622,9 @@ class Menu
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
 
+        if(Helper::isConversionForm($formId)){
+            $form = \FluentForm\App\Services\FluentConversational\Classes\Converter\Converter::convertExistingForm($form);
+        }
         do_action('fluentform_loading_editor_assets', $form);
 
         wp_enqueue_style('fluentform_editor_sass');

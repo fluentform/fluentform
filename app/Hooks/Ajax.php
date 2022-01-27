@@ -58,6 +58,11 @@ $app->addAdminAjaxAction('fluentform-form-duplicate', function () use ($app) {
     (new \FluentForm\App\Modules\Form\Form($app))->duplicate();
 });
 
+$app->addAdminAjaxAction('fluentform-convert-to-conversational', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Form($app))->convertToconversational();
+});
+
 $app->addAdminAjaxAction('fluentform_get_all_entries', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getAllFormEntries();
