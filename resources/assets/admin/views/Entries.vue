@@ -319,7 +319,12 @@
                             :label="$t('Payment Status')"
                             width="120px">
                         <template slot-scope="scope">
-                            <span class="ff_pay_status_badge" :class="'ff_pay_status_'+scope.row.payment_status">{{ scope.row.payment_status }}</span>
+                            <span class="ff_pay_status_badge" 
+                                  :class="'ff_pay_status_'+scope.row.payment_status"
+                                  v-if="scope.row.payment_status"
+                            >
+                                {{ scope.row.payment_status }}
+                            </span>
                         </template>
                     </el-table-column>
                     <el-table-column
