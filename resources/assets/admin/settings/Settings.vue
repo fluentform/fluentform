@@ -145,7 +145,6 @@
         },
         mounted() {
             this.fetch();
-            jQuery('head title').text('Global Layout Settings - Fluent Forms');
         }
     };
 </script>

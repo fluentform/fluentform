@@ -175,7 +175,15 @@
                             <div v-html="transaction.additional_note" class="ff_list_value"></div>
                         </li>
                     </ul>
-                    <el-button @click="initTransactionEditor(transaction)" size="small" type="primary">{{$t('Edit Transaction')}}</el-button>
+                    
+                    <el-button
+                        v-if="hasPermission('fluentform_manage_entries')"
+                        @click="initTransactionEditor(transaction)"
+                        size="small" 
+                        type="primary"
+                    >
+                        {{$t('Edit Transaction')}}
+                    </el-button>
                 </div>
             </div>
         </div>

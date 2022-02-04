@@ -228,7 +228,6 @@
             } else {
                 this.loading = false;
             }
-            jQuery('.ff_menu_item_double_optin').addClass('active');
         }
     }
 </script>

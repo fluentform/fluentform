@@ -748,3 +748,51 @@ ul.fcc_inline_social {
         cursor: pointer;
     }
 }
+
+.ff_managers_settings {
+    h2 {
+        margin: 10px 0;
+    }
+
+    .ff_manager_settings_header {
+        display: flex;
+        align-items: center;
+    }
+
+    .ff_manager_settings_nav {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+    
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border-bottom: 1px solid #e4e7ec;
+    
+            li {
+                display: inline-block;
+                padding: 0 20px 15px;
+                cursor: pointer;
+                margin: 0;
+                border-bottom: 3px solid transparent;
+    
+                &.ff_active {
+                    border-bottom-color: #409eff;
+                    color: #409eff;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .el-tag {
+        margin-right: 10px;
+    }
+}
+
+.ff_managers_form {
+    p {
+        margin-top: 5px;
+    }
+}

@@ -76,6 +76,8 @@ import locale from 'element-ui/lib/locale';
 // configure language
 locale.use(lang);
 
+import Acl from '@/common/Acl';
+
 import Entries from './views/Entries.vue';
 import Entry from './views/Entry.vue';
 import VisualReports from './views/Reports/VisualReports.vue';
@@ -205,6 +207,10 @@ Vue.mixin({
 
             return '';
         },
+
+        hasPermission(permission) {
+            return (new Acl).verify(permission);
+        }
     },
     filters: {
         ucFirst(string) {

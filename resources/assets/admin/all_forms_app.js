@@ -61,6 +61,8 @@ import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 
+import Acl from '@/common/Acl';
+
 import AllForms from './views/AllForms.vue';
 
 Vue.mixin({
@@ -71,6 +73,10 @@ Vue.mixin({
                 return transString;
             }
             return str;
+        },
+
+        hasPermission(permission) {
+            return (new Acl).verify(permission);
         }
     },
     filters: {

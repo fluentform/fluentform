@@ -349,7 +349,9 @@
                 <el-table-column
                         fixed="right"
                         :label="$t('Actions')"
-                        :width="115">
+                        :width="115"
+                        align="center"
+                >
                     <template slot-scope="scope">
                         <el-button-group>
                             <router-link :to="{
@@ -367,7 +369,12 @@
                                 }">
                                 <el-button type="primary" icon="el-icon-view" size="mini"></el-button>
                             </router-link>
-                            <remove icon="el-icon-delete" @on-confirm="removeEntry(scope.row.id)"></remove>
+                            
+                            <remove 
+                                v-if="hasPermission('fluentform_manage_entries')"
+                                icon="el-icon-delete" 
+                                @on-confirm="removeEntry(scope.row.id)"
+                            />
                         </el-button-group>
                     </template>
                 </el-table-column>
@@ -504,13 +511,18 @@
                         {
                             label: 'Remove from Favorite',
                             action: 'other.unmark_favorite'
-                        },
+                        }
+                    ]
+                };
+
+                if (this.hasPermission('fluentform_manage_entries')) {
+                    bulk_actions['other'].push(
                         {
                             label: 'Delete Permanently',
                             action: 'other.delete_permanently'
                         }
-                    ]
-                };
+                    );
+                }
 
                 each(this.entry_statuses, (status_name, status_key) => {
                     if (this.entry_type != status_key) {

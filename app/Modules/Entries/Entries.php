@@ -787,11 +787,11 @@ class Entries extends EntryQuery
 
     public function getUsers()
     {
-        if (!current_user_can('list_users')) {
-            wp_send_json_error([
-                'message' => __('Sorry, You do not have permission to list users', 'fluentform')
-            ]);
-        }
+        // if (!current_user_can('list_users')) {
+        //     wp_send_json_error([
+        //         'message' => __('Sorry, You do not have permission to list users', 'fluentform')
+        //     ]);
+        // }
 
         $search = sanitize_text_field($this->request->get('search'));
 

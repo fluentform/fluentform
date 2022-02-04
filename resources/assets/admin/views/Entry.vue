@@ -74,15 +74,22 @@
                     </div>
                 </div>
 
-                <payment-summary @reload_payments="getEntry()" v-if="order_data" :submission="entry" :order_data="order_data"></payment-summary>
+                <payment-summary 
+                    @reload_payments="getEntry()" 
+                    v-if="order_data" 
+                    :submission="entry" 
+                    :order_data="order_data"
+                />
 
-                <entry_notes :entry_id="entry_id" :form_id="form_id"/>
+                <template v-if="hasPermission('fluentform_manage_entries')">
+                    <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 
-                <submission_logs  :entry_id="entry_id" />
+                    <submission_logs  :entry_id="entry_id" />
 
-                <email-resend :form_id="form_id" :entry_id="entry_id" />
-                <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
+                    <email-resend :form_id="form_id" :entry_id="entry_id" />
 
+                    <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
+                </template>
             </el-col>
             <el-col :xs="24" :sm="6" :md="6" :lg="6">
                 <div class="entry_info_box postbox">
@@ -114,7 +121,11 @@
                                         {{$t('User')}} : <a target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
                                     </span>
                                     <span v-else>{{$t('User')}} : {{$t('Guest')}}</span>
-                                    <user-change :submission="entry" />
+
+                                    <user-change 
+                                        v-if="hasPermission('fluentform_manage_entries')" 
+                                        :submission="entry" 
+                                    />
                                 </p>
                             </div>
                             <div class="wpf_each_entry">
@@ -125,7 +136,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="entry-footer">
+
+                    <div 
+                        class="entry-footer" 
+                        v-if="hasPermission('fluentform_manage_entries')"
+                    >
                         <el-button @click="editTable = true" size="mini" type="primary" icon="el-icon-edit"> {{$t('Edit')}}
                         </el-button>
 

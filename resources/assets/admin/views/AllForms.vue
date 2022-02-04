@@ -8,6 +8,7 @@
                 </div>
 
                 <el-dropdown
+                    v-if="hasPermission('fluentform_forms_manager')"
                     split-button
                     size="small"
                     type="primary"
@@ -78,13 +79,15 @@
                                     <strong>{{ scope.row.title }}</strong>
                                     <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
                                     <div class="row-actions">
-                                        <span class="ff_edit">
-                                            <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a> |
-                                        </span>
-                                        <span class="ff_edit">
-                                            <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a> |
-                                        </span>
-                                        <span class="ff_entries">
+                                        <template v-if="hasPermission('fluentform_forms_manager')">
+                                            <span class="ff_edit">
+                                                <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a> |
+                                            </span>
+                                            <span class="ff_edit">
+                                                <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a> |
+                                            </span>
+                                        </template>
+                                        <span v-if="hasPermission('fluentform_entries_viewer')" class="ff_entries">
                                              <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a> |
                                         </span>
                                         <span v-if="scope.row.conversion_preview" class="ff_entries">
@@ -94,16 +97,18 @@
                                              <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
                                         </span>
 
-                                        <span class="ff_duplicate">
-                                             <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
-                                                     $t('Duplicate')
-                                                 }}</a> |
-                                        </span>
-                                        <span class="trash">
-                                            <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                                <a slot="icon">{{ $t('Delete') }}</a>
-                                            </remove>
-                                        </span>
+                                        <template v-if="hasPermission('fluentform_forms_manager')">
+                                            <span class="ff_duplicate">
+                                                <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
+                                                        $t('Duplicate')
+                                                    }}</a> |
+                                            </span>
+                                            <span class="trash">
+                                                <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
+                                                    <a slot="icon">{{ $t('Delete') }}</a>
+                                                </remove>
+                                            </span>
+                                        </template>
                                     </div>
                                 </template>
                             </el-table-column>
@@ -202,6 +207,7 @@
         </div>
 
         <predefinedFormsModal
+            v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
             v-show="showAddFormModal"
             :categories="categories"
@@ -210,6 +216,7 @@
         />
 
         <PostTypeSelectionModal
+            v-if="hasPermission('fluentform_forms_manager')"
             @on-post-type-selction-end="onPostTypeSelctionEnd"
             :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
         />
