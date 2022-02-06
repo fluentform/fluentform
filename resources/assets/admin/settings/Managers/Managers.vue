@@ -208,6 +208,7 @@ export default {
         edit(manager) {
             this.modal = true;
             this.manager = Object.assign({}, manager);
+            this.errors.clear();
         },
 
         remove(manager) {

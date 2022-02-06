@@ -63,7 +63,7 @@ class Managers
 
         Acl::attachPermissions($user, $permissions);
 
-        update_user_meta($user->id, '_fluent_forms_has_role', 1);
+        update_user_meta($user->ID, '_fluent_forms_has_role', 1);
 
         wp_send_json([
             'message' => __('Manager has been saved.', 'fluentform')
@@ -82,7 +82,7 @@ class Managers
 
         Acl::attachPermissions($user, []);
 
-        delete_user_meta($user->id, '_fluent_forms_has_role');
+        delete_user_meta($user->ID, '_fluent_forms_has_role');
 
         wp_send_json([
             'message' => __('Manager has been removed.', 'fluentform')
