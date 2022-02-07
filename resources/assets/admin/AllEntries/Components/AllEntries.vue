@@ -7,24 +7,70 @@
                     <span v-if="chart_status == 'yes'">{{$t('Hide Chart')}}</span>
                     <span v-else>{{$t('Show Chart')}}</span>
                 </el-button>
+    
+                <el-button @click="advancedFilter = !advancedFilter" size="mini">{{$t('Advanced Filter')}}</el-button>
+
             </div>
         </div>
         <div v-if="chart_status == 'yes'" class="entry_chart">
             <entry-chart></entry-chart>
         </div>
-
+        
         <div class="payment_details">
             <div style="margin-bottom: 20px" class="payment_header">
-                <el-radio-group @change="fetchEntries('reset')" size="small" v-model="entry_status">
-                    <el-radio-button label="">{{$t('All')}}</el-radio-button>
-                    <el-radio-button label="unread">{{$t('Unread Only')}}</el-radio-button>
-                    <el-radio-button label="read">{{$t('Read Only')}}</el-radio-button>
-                </el-radio-group>
-                <div class="payment_actions">
-                    <el-input @keyup.enter.native="fetchEntries()" size="small" :placeholder="$t('Search')" v-model="search">
-                        <el-button @click="fetchEntries()" slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
+    
+                <div class="ff_filter_wrapper">
+    
+                    <div class="ff_form_group ff_inline">
+                        {{$t('Form')}}
+                        <el-select @change="fetchEntries()"  style="max-height:10px;" size="mini" clearable filterable v-model="selectedFormId"
+                                   :placeholder="$t('Select Form')">
+                            <el-option
+                                v-for="item in available_forms"
+                                :key="item.id"
+                                :label="item.title"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+    
+                    <div class="ff_form_group ff_inline">
+                        <el-radio-group @change="fetchEntries('reset')" size="small" v-model="entry_status">
+                            <el-radio-button label="">{{ $t('All') }}</el-radio-button>
+                            <el-radio-button label="unread">{{ $t('Unread Only') }}</el-radio-button>
+                            <el-radio-button label="read">{{ $t('Read Only') }}</el-radio-button>
+                        </el-radio-group>
+                    </div>
+    
+                    <div class="payment_actions">
+                        <el-input @keyup.enter.native="fetchEntries()" size="small" :placeholder="$t('Search')" v-model="search">
+                            <el-button @click="fetchEntries()" slot="append" icon="el-icon-search"></el-button>
+                        </el-input>
+
+                    </div>
+                    
                 </div>
+                <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
+                    <div class="widget_title">
+                        {{$t('Filter By Date Range')}}
+                        <el-date-picker
+                            size="mini"
+                            v-model="filter_date_range"
+                            type="daterange"
+                            @change="fetchEntries()"
+                            :picker-options="pickerOptions"
+                            format="dd MMM, yyyy"
+                            value-format="yyyy-MM-dd"
+                            range-separator="-"
+                            start-placeholder="Start date"
+                            end-placeholder="End date">
+                        </el-date-picker>
+                        <el-button @click="fetchEntries" size="mini" type="success">Search</el-button>
+                        <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
+                    </div>
+                </div>
+
+
             </div>
 
             <el-table v-loading="loading" stripe :data="entries">
@@ -71,7 +117,7 @@
 <script type="text/babel">
     import EntryChart from './chartView';
     export default {
-        name: 'payments',
+        name: 'AllEntries',
         components: {
             EntryChart
         },
@@ -80,6 +126,48 @@
                 entries: [],
                 loading: false,
                 selectedFormId: '',
+                available_forms: [],
+                advancedFilter : false,
+                pickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() >= Date.now();
+                    },
+                    shortcuts: [
+                        {
+                            text: 'Today',
+                            onClick(picker) {
+                                const start = new Date();
+                                picker.$emit('pick', [start, start]);
+                            }
+                        },
+                        {
+                            text: 'Yesterday',
+                            onClick(picker) {
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                                picker.$emit('pick', [start, start]);
+                            }
+                        },
+                        {
+                            text: 'Last week',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }, {
+                            text: 'Last month',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }
+                    ]
+                },
+                filter_date_range: ['', ''],
                 selectedPaymentMethods: [],
                 selectedPaymentStatuses: [],
                 paginate: {
@@ -95,22 +183,28 @@
         },
         methods: {
             fetchEntries(type) {
+                
                 if(type == 'reset') {
                     this.paginate.current_page = 1;
                 }
                 this.loading = true;
-                FluentFormsGlobal.$get({
+                let data = {
                     action: 'fluentform_get_all_entries',
                     form_id: this.selectedFormId,
                     page: this.paginate.current_page,
                     per_page: this.paginate.per_page,
                     search: this.search,
                     entry_status: this.entry_status
-                })
+                }
+                if (this.advancedFilter) {
+                    data.date_range = this.filter_date_range;
+                }
+                FluentFormsGlobal.$get(data)
                     .then(response => {
                         this.entries = response.data.entries;
                         this.paginate.total = response.data.total;
                         this.paginate.last_page = response.data.last_page;
+                        this.available_forms = response.data.available_forms
                     })
                     .fail(error => {
                         console.log(error);

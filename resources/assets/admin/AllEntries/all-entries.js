@@ -18,7 +18,8 @@ import {
     Pagination,
     Loading,
     Message,
-    Notification
+    Notification,
+    DatePicker,
 } from 'element-ui';
 
 Vue.use(Loading.directive);
@@ -40,6 +41,7 @@ Vue.use(RadioButton);
 Vue.use(Radio);
 Vue.use(Table);
 Vue.use(TableColumn);
+Vue.use(DatePicker);
 
 import App from './App.vue';
 locale.use(lang);
