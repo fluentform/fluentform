@@ -57,6 +57,22 @@
                             <error-view :field="field.key" :errors="errors"></error-view>
                         </template>
 
+                        <template v-else-if="field.component == 'refresh'">
+                            <el-select
+                                v-loading="loading_list"
+                                @change="refresh()"
+                                v-model="settings.list_id"
+                                :placeholder="field.placeholder">
+                                <el-option
+                                    v-for="(list_name, list_key) in field.options"
+                                    :key="list_key"
+                                    :value="list_key"
+                                    :label="list_name"
+                                ></el-option>
+                            </el-select>
+                            <error-view :field="field.key" :errors="errors"></error-view>
+                        </template>
+
                         <template v-else-if="field.component == 'select'">
                             <el-select
                                     filterable
@@ -211,6 +227,18 @@
                                 :editorShortcodes="editorShortcodes"
                                 :settings="settings" />
                         </template>
+                        
+                        <template v-else-if="field.component == 'datetime'">
+                            <el-date-picker
+                                v-model="settings[field.key]"
+                                type="datetime"
+                                format="yyyy/MM/dd HH:mm:ss"
+                                :placeholder="field.placeholder"
+                                v-on:change="handleChange($event, field.key)"
+                            >
+                            </el-date-picker>
+                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
+                        </template>
 
                         <template v-else>
                             <p>No Template found. Please make sure you are using latest version of Fluent Forms</p>
@@ -290,7 +318,8 @@
                 merge_fields: false,
                 settings: {},
                 settings_fields: {},
-                attachedForms: []
+                attachedForms: [],
+                refreshQuery: null
             }
         },
         computed: {
@@ -311,12 +340,18 @@
         methods: {
             loadIntegrationSettings() {
                 this.loading_app = true;
-                FluentFormsGlobal.$get({
+                let data = {
                     action: 'fluentform_get_form_integration_settings',
                     integration_id: this.integration_id,
                     integration_name: this.integration_name,
                     form_id: this.form_id
-                })
+                };
+
+                if (this.refreshQuery) {
+                    data = {...data, ...this.refreshQuery}
+                }
+
+                FluentFormsGlobal.$get(data)
                     .then(response => {
                         this.settings_fields = response.data.settings_fields;
                         this.settings = response.data.settings;
@@ -336,6 +371,13 @@
                     .always(() => {
                         this.loading_app = false;
                     });
+            },
+            refresh() {
+                this.refreshQuery = {
+                    serviceName: this.settings['name'],
+                    serviceId: this.settings['list_id']
+                };
+                this.loadIntegrationSettings();
             },
             loadMergeFields() {
                 this.loading_list = true;
