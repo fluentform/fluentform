@@ -5,8 +5,6 @@ namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
-use FluentForm\App\Services\FluentConversational\Classes\Form;
-
 class Converter
 {
 	public static function convert($form)
@@ -372,7 +370,7 @@ class Converter
                     if (!ArrayHelper::exists($field, 'style_pref')) {
                         $field['style_pref'] = [
                             'layout'           => 'default',
-                            'media'            => (new Form())->getRandomPhoto(),
+                            'media'            => fluentFormGetRandomPhoto(),
                             'brightness'       => 0,
                             'alt_text'         => '',
                             'media_x_position' => 50,

@@ -214,3 +214,20 @@ function fluentFormApi($module = 'forms')
 
     throw new \Exception('No Module found with name '. $module);
 }
+
+function fluentFormGetRandomPhoto()
+{
+    $photos = [
+        'demo_1.jpg',
+        'demo_2.jpg',
+        'demo_3.jpg',
+        'demo_4.jpg',
+        'demo_5.jpg'
+    ];
+
+    $selected = array_rand($photos, 1);
+
+    $photoName = $photos[$selected];
+
+    return fluentformMix('img/conversational/' . $photoName);
+}

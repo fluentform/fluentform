@@ -577,20 +577,7 @@ class Form
 
     public function getRandomPhoto()
     {
-        $photos = [
-            'demo_1.jpg',
-            'demo_2.jpg',
-            'demo_3.jpg',
-            'demo_4.jpg',
-            'demo_5.jpg'
-        ];
-
-        $selected = array_rand($photos, 1);
-
-        $photoName = $photos[$selected];
-
-        return fluentformMix('img/conversational/' . $photoName);
-
+        return fluentFormGetRandomPhoto();
     }
 
     private function renderFormHtml($formId, $providedKey = '')
