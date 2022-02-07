@@ -575,7 +575,7 @@ class Form
         ];
     }
 
-    private function getRandomPhoto()
+    public function getRandomPhoto()
     {
         $photos = [
             'demo_1.jpg',
