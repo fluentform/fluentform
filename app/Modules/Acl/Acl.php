@@ -40,9 +40,11 @@ class Acl
         // to attach the permission set.
         $role = get_role('administrator');
 
-        // Looping through permission set to add to the role.
-        foreach ($permissions as $permission) {
-            $role->add_cap($permission);
+        if ($role) {
+            // Looping through permission set to add to the role.
+            foreach ($permissions as $permission) {
+                $role->add_cap($permission);
+            }
         }
 
         // Fire an event letting others know that fluentform is
