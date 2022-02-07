@@ -197,7 +197,7 @@ class GlobalIntegrationManager
             $settings['enabled'] = false;
         }
 
-        $settingsFields = apply_filters('fluentform_get_integration_settings_fields_' . $integrationName, [], $formId, $settings);
+        $settingsFields = apply_filters('fluentform_get_integration_settings_fields_' . $integrationName, $settings, $formId, $settings);
 
 
         wp_send_json_success([
