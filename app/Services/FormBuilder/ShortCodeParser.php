@@ -309,7 +309,7 @@ class ShortCodeParser
 
             $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
             foreach ($inputLabels as $key => $label) {
-                if (array_key_exists($key, $response->user_inputs) && ArrayHelper::get($response->user_inputs, $key)) {
+                if (array_key_exists($key, $response->user_inputs)) {
                     $data = ArrayHelper::get($response->user_inputs, $key);
                     if (is_array($data) || is_object($data)) {
                         continue;
