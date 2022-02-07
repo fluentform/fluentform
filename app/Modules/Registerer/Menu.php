@@ -8,6 +8,7 @@ use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\View;
 
 class Menu
@@ -417,7 +418,11 @@ class Menu
                 'entries'  => 'fluentform_entries_viewer',
             ]);
 
-            $toVerifyPermission = $formRoutePermissionSet[$route];
+            $toVerifyPermission = ArrayHelper::get(
+                $formRoutePermissionSet,
+                $route,
+                'fluentform_forms_manager'
+            );
 
             $hasPermission = apply_filters(
                 'fluentform_inner_route_has_permission',
