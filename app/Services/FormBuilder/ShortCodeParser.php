@@ -304,6 +304,12 @@ class ShortCodeParser
             return static::getUserAgent()->getBrowser();
         } elseif ($key == 'all_data') {
             $formFields = FormFieldsParser::getEntryInputs(static::getForm());
+            if (apply_filters('fluentform_all_data_skip_password_field', __return_true())) {
+                $passwords = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_password']);
+                if (is_array($passwords) && !empty($passwords)) {
+                    ArrayHelper::forget($formFields, array_keys($passwords));
+                }
+            }
             $inputLabels = FormFieldsParser::getAdminLabels(static::getForm(), $formFields);
             $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
 
