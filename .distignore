@@ -1,4 +1,5 @@
 .distignore
+.gitignore
 .git
 .idea
 node_modules
@@ -9,6 +10,5 @@ package-lock.json
 resources/assets
 resources/img
 webpack.mix.js
-*LICENSE.txt
 *.map
 mix-manifest.json

@@ -434,6 +434,45 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="ff_settings_block" v-if="this.affiliate_wp">
+                <el-row class="setting_header">
+                    <el-col :md="24">
+                        <h2>
+                            Affiliate
+                        </h2>
+                    </el-col>
+                </el-row>
+
+                <div class="ff_settings_section">
+                    <div class="ff_settings_body">
+                        <div class="el-form-item">
+                            <label class="el-form-item__label" style="width: 205px; text-align: left;">
+                                {{$t('Allow referrals')}}
+                            </label>
+                            <el-checkbox true-label="yes" false-label="no" v-model="affiliate_wp.status">
+                                {{$t('Enable')}}
+                            </el-checkbox>
+                        </div>
+                        <div class="el-form-item">
+                            <label class="el-form-item__label" style="width: 205px; text-align: left;">
+                                {{$t('Allow referrals')}}
+                            </label>
+                            <el-select v-model="affiliate_wp.selected_type" placeholder="Select type">
+                                <el-option
+                                    v-for="(item, value) in affiliate_wp.types"
+                                    :key="value"
+                                    :value="value"
+                                    :label="item.label"
+                                    >
+                                </el-option>
+                            </el-select>
+                        </div>
+                        
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                    </div>
+                </div>
+            </div>
 
             <el-row style="margin-top: 50px">
                 <el-button
@@ -529,7 +568,8 @@
                 delete_entry_on_submission: 'no',
                 hasPro: !!window.FluentFormApp.hasPro,
                 hasFluentCRM: !!window.FluentFormApp.hasFluentCRM,
-                double_optin: false
+                double_optin: false,
+                affiliate_wp: false
             }
         },
         computed: {
@@ -621,6 +661,7 @@
                         this.advancedValidationSettings = response.data.advancedValidationSettings;
 
                         this.double_optin = response.data.double_optin;
+                        this.affiliate_wp = response.data.affiliate_wp;
 
                     })
                     .fail(e => {
@@ -648,6 +689,7 @@
                     formSettings: JSON.stringify(this.formSettings),
                     advancedValidationSettings: JSON.stringify(this.advancedValidationSettings),
                     double_optin: JSON.stringify(this.double_optin),
+                    affiliate_wp: JSON.stringify(this.affiliate_wp),
                     action: 'fluentform-save-settings-general-formSettings'
                 };
 
