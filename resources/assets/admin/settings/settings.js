@@ -6,8 +6,12 @@ import Settings from './Settings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import pdf_settings from './Pdf.vue';
-import GeneralIntegrationSettings from './GeneralIntegrationSettings';
-import DoubleOptinSettings from './DoubleOptinSettings';
+import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
+import DoubleOptinSettings from './DoubleOptinSettings.vue';
+import ManagersSettings from './ManagersSettings.vue';
+
+import Errors from '@/common/Errors';
+global.Errors = Errors;
 
 import {
     Button,
@@ -29,7 +33,11 @@ import {
     Checkbox,
     CheckboxGroup,
     ColorPicker,
-    InputNumber
+    InputNumber,
+    Table,
+    TableColumn,
+    Tag,
+    Popover,
 } from 'element-ui';
 
 locale.use(lang);
@@ -52,6 +60,10 @@ Vue.use(ColorPicker);
 Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Dialog);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Tag);
+Vue.use(Popover);
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 
@@ -63,7 +75,8 @@ new Vue({
         h_captcha: hCaptcha,
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
-        'double_optin_settings': DoubleOptinSettings
+        'double_optin_settings': DoubleOptinSettings,
+        managers: ManagersSettings
     },
     data: {
         component: 'settings',
@@ -77,9 +90,8 @@ new Vue({
             let component = hash;
             if ($el.data('component')) {
                 component = $el.data('component');
-            } else {
-                $el = jQuery('.ff_settings_list li').find('a[data-component=' + hash + ']');
             }
+            
             if (this.$options.components[component]) {
                 jQuery('.ff_settings_list li').removeClass('active');
                 $el.parent().addClass('active');
@@ -89,10 +101,9 @@ new Vue({
         }
     },
     created() {
-        let hash = location.hash.substr(1);
-        if (hash) {
-            this.setRoute(hash);
-        }
+        let hash = location.hash.substr(1) || 'settings';
+        this.setRoute(hash);
+
         const that = this;
         jQuery('.ff_settings_list li a').on('click', function () {
             let hash = jQuery(this).attr('data-hash');

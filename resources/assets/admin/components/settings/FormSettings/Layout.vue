@@ -380,17 +380,12 @@
 
             </el-col>
         </el-row>
-
-        <permission-settings></permission-settings>
     </el-form>
 </template>
 
 <script type="text/babel">
-    import PermissionSettings from './_Privacy'
-
     export default {
         name: 'FormLayout',
-        components: {PermissionSettings},
         props: {
             data: {
                 required: true
