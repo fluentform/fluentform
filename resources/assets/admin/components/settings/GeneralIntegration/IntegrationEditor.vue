@@ -54,7 +54,6 @@
                                     :label="list_name"
                                 ></el-option>
                             </el-select>
-                            <error-view :field="field.key" :errors="errors"></error-view>
                         </template>
 
                         <template v-else-if="field.component == 'refresh'">
@@ -70,7 +69,6 @@
                                     :label="list_name"
                                 ></el-option>
                             </el-select>
-                            <error-view :field="field.key" :errors="errors"></error-view>
                         </template>
 
                         <template v-else-if="field.component == 'select'">
@@ -87,7 +85,6 @@
                                         :label="list_name"
                                 ></el-option>
                             </el-select>
-                            <error-view :field="field.key" :errors="errors"></error-view>
                         </template>
 
                         <template v-else-if="field.component == 'map_fields'">
@@ -105,7 +102,6 @@
                             <el-checkbox v-model="settings[field.key]">
                                 {{field.checkbox_label}}
                             </el-checkbox>
-                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
                         </template>
 
                         <template v-else-if="field.component == 'checkbox-multiple'">
@@ -140,7 +136,6 @@
                                 :editorShortcodes="editorShortcodes"
                                 v-model="settings[field.key]"
                             />
-                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
                         </template>
 
                         <template v-else-if="field.component == 'value_textarea'">
@@ -149,7 +144,6 @@
                                 :editorShortcodes="editorShortcodes"
                                 v-model="settings[field.key]"
                             />
-                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
                         </template>
 
                         <template v-else-if="field.component == 'list_select_filter'">
@@ -237,7 +231,6 @@
                                 v-on:change="handleChange($event, field.key)"
                             >
                             </el-date-picker>
-                            <p v-if="field.inline_tip" v-html="field.inline_tip"></p>
                         </template>
 
                         <template v-else>
@@ -399,6 +392,8 @@
                     });
             },
             saveNotification() {
+                this.errors.clear();
+
                 this.saving = true;
                 let data = {
                     form_id: this.form_id,
@@ -415,7 +410,6 @@
                                 name: 'allIntegrations'
                             });
                         }
-
                         this.$notify.success({
                             offset: 30,
                             title: 'Success!',
