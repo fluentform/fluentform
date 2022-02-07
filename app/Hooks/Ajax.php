@@ -60,7 +60,7 @@ $app->addAdminAjaxAction('fluentform-form-duplicate', function () use ($app) {
 
 $app->addAdminAjaxAction('fluentform-convert-to-conversational', function () use ($app) {
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Form($app))->convertToconversational();
+    (new \FluentForm\App\Modules\Form\Form($app))->convertToConversational();
 });
 
 $app->addAdminAjaxAction('fluentform_get_all_entries', function () use ($app) {

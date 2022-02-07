@@ -9,7 +9,7 @@
                     </el-col>
                     <el-col :md="12">
                         <div class="pull-right">
-                            <el-button v-if="!is_conversion_form"  v-loading="loadingConversion"  type="primary" size="small" @click="convertToConversational"> {{$t('Convert to Conversational')}} </el-button>
+                            <el-button v-if="!is_conversion_form" :disabled="loadingConversion"  v-loading="loadingConversion"  type="primary" size="small" @click="convertToConversational"> {{$t('Convert to Conversational')}} </el-button>
     
                             <el-button
                                 :loading="loading"

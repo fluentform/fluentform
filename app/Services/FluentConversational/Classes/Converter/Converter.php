@@ -22,7 +22,7 @@ class Converter
 		$imagePreloads = [];
 
 		$allowedFields = static::fieldTypes();
-		// dd($fields);
+
 		foreach ($fields as $field) {
 			$question = [
 				'id'                 => $field['uniqElKey'],
@@ -357,7 +357,9 @@ class Converter
 
     public static function convertExistingForm($form)
     {
-        $formFields = json_decode($form->form_fields, true);
+        $form = (array)$form;
+
+        $formFields = json_decode($form['form_fields'], true);
         $fields = $formFields['fields'];
         $formattedFields = [];
 
@@ -370,7 +372,7 @@ class Converter
                     if (!ArrayHelper::exists($field, 'style_pref')) {
                         $field['style_pref'] = [
                             'layout'           => 'default',
-                            'media'            => '',
+                            'media'            => (new Form())->getRandomPhoto(),
                             'brightness'       => 0,
                             'alt_text'         => '',
                             'media_x_position' => 50,
@@ -383,8 +385,7 @@ class Converter
         }
 
         $formFields['fields'] = $formattedFields;
-        $form->form_fields = json_encode($formFields);
-        return $form;
+        return json_encode($formFields);
     }
 
 	public static function fieldTypes()
