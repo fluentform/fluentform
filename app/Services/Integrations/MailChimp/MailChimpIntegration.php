@@ -341,19 +341,9 @@ class MailChimpIntegration extends IntegrationManager
         if (!$this->isConfigured()) {
             return false;
         }
-        $settings = get_option('_fluentform_mailchimp_details');
 
-        try {
-            $MailChimp = new MailChimp($settings['apiKey']);
-            $list = $MailChimp->get('lists/' . $listId . '/merge-fields', array('count' => 9999));
-            if (!$MailChimp->success()) {
-                return false;
-            }
-        } catch (\Exception $exception) {
-            return false;
-        }
+        $mergedFields = $this->findMergeFields($listId);
 
-        $mergedFields = $list['merge_fields'];
         $fields = array();
 
         foreach ($mergedFields as $merged_field) {
@@ -361,6 +351,25 @@ class MailChimpIntegration extends IntegrationManager
         }
 
         return $fields;
+    }
+
+    public function findMergeFields($listId)
+    {
+        $settings = get_option('_fluentform_mailchimp_details');
+
+        try {
+            $MailChimp = new MailChimp($settings['apiKey']);
+
+            $list = $MailChimp->get('lists/' . $listId . '/merge-fields', array('count' => 9999));
+
+            if (!$MailChimp->success()) {
+                return false;
+            }
+        } catch (\Exception $exception) {
+            return false;
+        }
+
+        return $list['merge_fields'];
     }
 
     public function fetchInterestGroups()
