@@ -456,7 +456,12 @@ class Converter
 	public static function getPhoneFieldSettings($data, $form)
 	{
 		$geoLocate = ArrayHelper::get($data, 'settings.auto_select_country') == 'yes';
-		$enabled = ArrayHelper::get($data, 'settings.int_tel_number') == 'with_extended_validation';
+		
+		// todo:: remove the 'with_extended_validation' check in future.
+		$enabled = ArrayHelper::get($data, 'settings.validation_rules.valid_phone_number.value');
+		if (!$enabled) {
+			$enabled = ArrayHelper::get($data, 'settings.int_tel_number') == 'with_extended_validation';
+		}
 
 		$itlOptions = [
 			'separateDialCode' => false,
