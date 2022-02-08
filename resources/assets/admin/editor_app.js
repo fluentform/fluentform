@@ -44,6 +44,7 @@ import mixins from './editor_mixins';
 // Global error handling...
 import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
+import MoreMenu from './views/MoreMenu.vue';
 import {mapActions} from 'vuex';
 
 Vue.use(Vddl);
@@ -308,3 +309,11 @@ new Vue({
         this.$emit("change-title", "Editor");
     }
 });
+
+// More menus app
+new Vue({
+    el: '#more-menu',
+    components: {
+        MoreMenu
+    }
+})

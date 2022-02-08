@@ -9,8 +9,6 @@
                     </el-col>
                     <el-col :md="12">
                         <div class="pull-right">
-                            <el-button v-if="!is_conversion_form" :disabled="loadingConversion"  v-loading="loadingConversion"  type="primary" size="small" @click="convertToConversational"> {{$t('Convert to Conversational')}} </el-button>
-    
                             <el-button
                                 :loading="loading"
                                 size="small"
@@ -575,8 +573,6 @@
                 hasFluentCRM: !!window.FluentFormApp.hasFluentCRM,
                 double_optin: false,
                 affiliate_wp: false,
-                is_conversion_form: !!window.FluentFormApp.is_conversion_form,
-                loadingConversion: false,
             }
         },
         computed: {
@@ -715,40 +711,6 @@
                         this.loading = false;
                     });
             },
-            convertToConversational() {
-                this.loadingConversion = true;
-    
-                let data = {
-                    form_id: this.form_id,
-                    action: 'fluentform-convert-to-conversational'
-                };
-                FluentFormsGlobal.$post(data)
-                    .then(response => {
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.data.message,
-                            offset: 30
-                        });
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    })
-                    .fail(error => {
-                        if(error.responseJSON.data.message) {
-                            this.$notify.error({
-                                title: 'Error',
-                                message: error.responseJSON.data.message,
-                                offset: 30
-                            });
-                        }
-                        this.errors.record(error.responseJSON.data.errors);
-                        
-                    })
-                    .always(() => {
-                        this.loadingConversion = false;
-                    });
-                
-            }
         },
         mounted() {
             this.fetchSettings();
