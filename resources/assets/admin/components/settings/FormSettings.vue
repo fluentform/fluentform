@@ -438,7 +438,7 @@
                 </div>
             </div>
             
-            <div class="ff_settings_block" v-if="this.affiliate_wp">
+            <div class="ff_settings_block" v-if="affiliate_wp">
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
