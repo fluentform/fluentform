@@ -280,6 +280,70 @@ class AddOnModule
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm'
             ),
+            'discord'        => array(
+                'title'        => 'Discord',
+                'description'  => 'Send notification with form data to your Discord channel when a form is submitted',
+                'logo'         => App::publicUrl('img/integrations/discord.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'telegram'        => array(
+                'title'        => 'Telegram',
+                'description'  => 'Send notification to Telegram channel or group when a form is submitted',
+                'logo'         => App::publicUrl('img/integrations/telegram.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'affiliateWp'      => array(
+                'title'        => 'AffiliateWP',
+                'description'  => 'Generate AffiliateWP referrals automatically when a customer is referred to your site via an affiliate link',
+                'logo'         => App::publicUrl('img/integrations/affiliatewp.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'clicksend_sms_notification'        => array(
+                'title'        => 'ClickSend SMS Notification',
+                'description'  => 'Send SMS in real time when a form is submitted with Clicksend',
+                'logo'         => App::publicUrl('img/integrations/clicksend.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'zohocrm'          => array(
+                'title'        => 'Zoho CRM',
+                'description'  => 'Zoho CRM is an online Sales CRM software that manages your sales, marketing and support in one CRM platform.',
+                'logo'         => App::publicUrl('img/integrations/zohocrm.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'cleverreach'      => array(
+                'title'        => 'CleverReach',
+                'description'  => 'CleverReach is web-based email marketing software for managing email campaigns and contacts. Use Fluent Form to grow your CleverReach subscriber list',
+                'logo'         => App::publicUrl('img/integrations/clever_reach.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'salesflare'      => array(
+                'title'        => 'Salesflare',
+                'description'  => 'Create Salesflare contact from WordPress, so you can grow your contact list',
+                'logo'         => App::publicUrl('img/integrations/salesflare.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
+            'automizy'         => array(
+                'title'        => 'Automizy',
+                'description'  => 'Connect Automizy with WP Fluent Forms and subscribe a contact when a form is submitted.',
+                'logo'         => App::publicUrl('img/integrations/automizy.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
         );
     }
 }
