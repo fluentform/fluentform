@@ -48,7 +48,7 @@ $component->addIsRenderableFilter();
 $component->registerInputSanitizers();
 
 // Handles built-in login form
-(new \FluentForm\App\Modules\Form\LoginHandler)->init();
+// (new \FluentForm\App\Modules\Form\LoginHandler)->init();
 
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
