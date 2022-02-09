@@ -88,3 +88,4 @@ mix.then(() => {
 
 mix.copyDirectory('resources/assets/libs', 'public/libs');
 mix.copyDirectory('resources/img', 'public/img');
+mix.copyDirectory('guten_block/public', 'public/js');
