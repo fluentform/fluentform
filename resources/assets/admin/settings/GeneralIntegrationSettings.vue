@@ -54,7 +54,7 @@
                                 :value="optionValue"></el-option>
                         </el-select>
                     </template>
-                    <template v-if="field.type == 'link'">
+                    <template v-else-if="field.type == 'link'">
                         <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
                         <p>{{ field.tips }}</p>
                     </template>
@@ -120,6 +120,7 @@ export default {
             })
                 .then(response => {
                     this.$notify.success({
+                        title: 'Great!',
                         message: response.data.message,
                         offset: 30
                     });
@@ -129,6 +130,10 @@ export default {
                     }
 
                     this.integration.status = response.data.status;
+
+                    if (this.settings.reload_on_save) {
+                        this.getIntegrationSettings();
+                    }
                 })
                 .fail(error => {
                     this.integration.status = false;
