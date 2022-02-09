@@ -62,6 +62,15 @@
             <el-form-item label="Disable Branding">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_branding"></el-switch>
             </el-form-item>
+
+            <el-form-item label="Key Hint">
+                <el-switch 
+                    active-value="yes" 
+                    inactive-value="no" 
+                    v-model="design_settings.key_hint" 
+                />
+            </el-form-item>
+
             <div v-if="!has_pro" class="fcc_pro_message">
                 Design customization available on pro only. This is just a preview version. To use this feature please upgrade to Pro.
                 <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>

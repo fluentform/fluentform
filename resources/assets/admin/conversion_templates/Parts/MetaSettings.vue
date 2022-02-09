@@ -40,6 +40,14 @@
                     <el-form-item label="Hint for multiple selection">
                         <el-input v-model="meta_settings.i18n.multi_select_hint" type="text" placeholder="EG: Choose as many as you like" />
                     </el-form-item>
+
+                    <el-form-item label="Key Hint Text">
+                        <el-input 
+                            v-model="meta_settings.i18n.key_hint_text" 
+                            type="text" 
+                            placeholder="Enter key hint text shown to options"
+                        />
+                    </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="Confirm Button Text">
@@ -52,12 +60,20 @@
                         <el-input v-model="meta_settings.i18n.progress_text" type="text" placeholder="EG: {percent}% completed" />
                         <p class="ffc_help">Available Variables: {percent}, {step}, {total}</p>
                     </el-form-item>
-                  <el-form-item label="Invalid Prompt">
-                    <el-input v-model="meta_settings.i18n.invalid_prompt" type="text" placeholder="EG: Please fill out the field correctly" />
-                  </el-form-item>
-                  <el-form-item label="Default Placeholder">
-                    <el-input v-model="meta_settings.i18n.default_placeholder" type="text" placeholder="EG: Type your answer here" />
-                  </el-form-item>
+                    <el-form-item label="Invalid Prompt">
+                        <el-input v-model="meta_settings.i18n.invalid_prompt" type="text" placeholder="EG: Please fill out the field correctly" />
+                    </el-form-item>
+                    <el-form-item label="Default Placeholder">
+                        <el-input v-model="meta_settings.i18n.default_placeholder" type="text" placeholder="EG: Type your answer here" />
+                    </el-form-item>
+
+                    <el-form-item label="Key Hint Tooltip">
+                        <el-input 
+                            v-model="meta_settings.i18n.key_hint_tooltip" 
+                            type="text" 
+                            placeholder="Enter Key hint tooltip" 
+                        />
+                    </el-form-item>
                 </el-col>
             </el-row>
         </el-form>

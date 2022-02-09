@@ -159,7 +159,8 @@ class Form
             'background_image'      => '',
             'background_brightness' => 0,
             'disable_branding'      => 'no',
-            'hide_media_on_mobile'  => 'no'
+            'hide_media_on_mobile'  => 'no',
+            'key_hint'              => 'yes'
         ];
 
         return wp_parse_args($settings, $defaults);
@@ -186,8 +187,15 @@ class Form
                 'long_text_help'       => '<b>Shift ⇧</b> + <b>Enter ↵</b> to make a line break.',
                 'invalid_prompt'       => 'Please fill out the field correctly',
                 'default_placeholder'  => 'Type Your answer here',
+                'key_hint_text'        => 'Key',
+                'key_hint_tooltip'     => 'Press the key to select',
             ]
         ];
+
+        if ($settings && !isset($settings['i18n']['key_hint_text'])) {
+            $settings['i18n']['key_hint_text'] = $defaults['i18n']['key_hint_text'];
+            $settings['i18n']['key_hint_tooltip'] = $defaults['i18n']['key_hint_tooltip'];
+        }
 
         if (!$settings || empty($settings['title'])) {
             $form = wpFluent()->table('fluentform_forms')->find($formId);
