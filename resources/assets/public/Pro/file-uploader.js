@@ -192,7 +192,6 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                 .text(fluentFormVars.upload_completed_txt);
 
                             rules['max_file_count']['remaining'] -= 1;
-                            data.context.css('border', '1px solid #6f757d');
                             data.context.attr('data-src', data.result.data.files[0].url);
                             data.context.find('.ff-upload-remove').attr(
                                 'data-href', data.result.data.files[0].file

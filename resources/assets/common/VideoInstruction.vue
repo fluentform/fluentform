@@ -76,7 +76,7 @@ export default {
                 },
                 mailchimp: {
                     video_id: 'v33r-MzQgaQ',
-                    title: 'How to connect MailChimp',
+                    title: 'How to connect Mailchimp',
                     read_more: 'https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/mailchimp-integration/'
                 },
                 activecampaign: {

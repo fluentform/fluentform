@@ -346,7 +346,7 @@
                     <div class="ff_settings_body">
                         <survey-result :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
 
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
                     </div>
                 </div>
             </div>
@@ -378,7 +378,7 @@
                             submission
                         </el-checkbox>
 
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
 
                         <template v-if="formSettings.delete_entry_on_submission == 'yes'">
                             <p><br/>
@@ -433,7 +433,7 @@
                                     v-model="formSettings.form_extra_css_class"/>
                             </div>
                         </div>
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
                     </div>
                 </div>
             </div>
@@ -472,7 +472,7 @@
                             </el-select>
                         </div>
                         
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of WP Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
                     </div>
                 </div>
             </div>

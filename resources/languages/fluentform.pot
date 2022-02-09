@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 04:30+0000\n"
+"POT-Creation-Date: 2022-02-09 03:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -117,7 +117,7 @@ msgid "Add Note"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/SidebarWidgets.php:12
-msgid "Add your form by WP Fluent Forms"
+msgid "Add your form by Fluent Forms"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/DocumentationModule.php:21
@@ -224,8 +224,8 @@ msgstr ""
 msgid "All Types"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:137
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:138
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:154
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:155
 msgid "Allowed Files"
 msgstr ""
 
@@ -233,8 +233,8 @@ msgstr ""
 msgid "Allowed image types does not match"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:210
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:211
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:227
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:228
 msgid "Allowed Images"
 msgstr ""
 
@@ -310,7 +310,7 @@ msgstr ""
 msgid "Aruba"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:145
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:162
 msgid "Audio"
 msgstr ""
 
@@ -770,7 +770,7 @@ msgstr ""
 msgid "Croatia"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:201
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:218
 msgid "CSV"
 msgstr ""
 
@@ -920,7 +920,7 @@ msgstr ""
 msgid "Djibouti"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:170
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:187
 msgid "Docs"
 msgstr ""
 
@@ -1031,7 +1031,7 @@ msgstr ""
 #: ../../../../Plugins/fluentform/app/Services/Integrations/MailChimp/MailChimpIntegration.php:50
 msgid ""
 "Enter your Mailchimp API Key, if you do not have <br>Please login to your "
-"MailChimp account and go to<br>Profile -> Extras -> Api Keys"
+"Mailchimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/Registerer/Menu.php:927
@@ -1097,7 +1097,7 @@ msgstr ""
 msgid "Every 5 minutes (FluentForm)"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:196
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:213
 msgid "Executable Files"
 msgstr ""
 
@@ -1182,14 +1182,11 @@ msgstr ""
 msgid "Five Column Container"
 msgstr ""
 
+#. Name of the plugin
+#: ../../../../Plugins/fluentform/app/Modules/Registerer/Menu.php:279
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:22
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:81
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:89
-msgid "Fluent Form"
-msgstr ""
-
-#. Name of the plugin
-#: ../../../../Plugins/fluentform/app/Modules/Registerer/Menu.php:279
 #: ../../../../Plugins/fluentform/resources/views/admin/global_menu.php:9
 msgid "Fluent Forms"
 msgstr ""
@@ -1212,6 +1209,10 @@ msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/Registerer/Menu.php:277
 msgid "Fluent Forms Pro"
+msgstr ""
+
+#: ../../../../Plugins/fluentform/app/Modules/Widgets/SidebarWidgets.php:11
+msgid "Fluent Forms Widget"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:801
@@ -1362,8 +1363,8 @@ msgstr ""
 msgid "Gibraltar"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:223
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:237
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:240
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:254
 msgid "GIF"
 msgstr ""
 
@@ -1632,7 +1633,7 @@ msgstr ""
 msgid "Image Upload"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:141
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:158
 msgid "Images"
 msgstr ""
 
@@ -1762,8 +1763,8 @@ msgstr ""
 msgid "Jordan"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:215
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:229
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:232
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:246
 msgid "JPG"
 msgstr ""
 
@@ -1921,16 +1922,17 @@ msgid "Mailchimp Feed"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/DocumentationModule.php:45
-msgid "MailChimp integration"
+msgid "Mailchimp integration"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Services/Integrations/MailChimp/MailChimpIntegration.php:43
 msgid ""
 "Mailchimp is a marketing platform for small businesses. Send beautiful "
 "emails, connect your e-commerce store, advertise, and build your brand. Use "
-"Fluent Form to collect customer information and automatically add it to your "
-"Mailchimp campaign list. If you don't have a Mailchimp account, you can <a "
-"href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one here.</a>"
+"Fluent Forms to collect customer information and automatically add it to "
+"your Mailchimp campaign list. If you don't have a Mailchimp account, you can "
+"<a href=\"https://mailchimp.com/\" target=\"_blank\">sign up for one here."
+"</a>"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Services/Integrations/MailChimp/MailChimpIntegration.php:132
@@ -2042,11 +2044,11 @@ msgstr ""
 msgid "Mauritius"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:124
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:141
 msgid "Max File Size"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:131
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:148
 msgid "Max Files Count"
 msgstr ""
 
@@ -2063,7 +2065,7 @@ msgid "Max text length"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ElementCustomization.php:520
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:118
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:135
 msgid "Max Value"
 msgstr ""
 
@@ -2084,11 +2086,11 @@ msgstr ""
 msgid "Maximum upload limit reached"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:132
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:149
 msgid "Maximum user file upload number."
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:119
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:136
 msgid "Maximum value for the input field."
 msgstr ""
 
@@ -2128,11 +2130,11 @@ msgid "Migrator"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ElementCustomization.php:515
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:111
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:128
 msgid "Min Value"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:112
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:129
 msgid "Minimum value for the input field."
 msgstr ""
 
@@ -2277,6 +2279,7 @@ msgstr ""
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:69
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:86
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:103
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:120
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:103
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:945
 msgid "No"
@@ -2498,7 +2501,7 @@ msgstr ""
 msgid "Payments"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:166
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:183
 msgid "PDF"
 msgstr ""
 
@@ -2578,8 +2581,8 @@ msgstr ""
 msgid "PM"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:219
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:233
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:236
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:250
 msgid "PNG"
 msgstr ""
 
@@ -2840,7 +2843,7 @@ msgid "Select a button style from the dropdown"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/ElementorWidget.php:47
-msgid "Select a Fluent Form"
+msgid "Select a Fluent Forms"
 msgstr ""
 
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ElementCustomization.php:442
@@ -2879,15 +2882,19 @@ msgstr ""
 msgid "Select the Layout for checkable items"
 msgstr ""
 
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:77
+msgid "Select whether the phone number should be validated or not."
+msgstr ""
+
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:60
 msgid "Select whether this field is a required field for the form or not."
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:77
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:94
 msgid "Select whether to validate this field as email or not"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:94
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:111
 msgid "Select whether to validate this field as URL or not"
 msgstr ""
 
@@ -3396,7 +3403,7 @@ msgstr ""
 msgid "The Confirmation Type field is required."
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:125
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:142
 msgid "The file size limit uploaded by the user."
 msgstr ""
 
@@ -3765,11 +3772,15 @@ msgstr ""
 msgid "Validate as Unique"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:76
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:93
 msgid "Validate Email"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:93
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:76
+msgid "Validate Phone Number"
+msgstr ""
+
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:110
 msgid "Validate URL"
 msgstr ""
 
@@ -3797,7 +3808,7 @@ msgstr ""
 msgid "Very Good"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:149
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:166
 msgid "Video"
 msgstr ""
 
@@ -3879,10 +3890,6 @@ msgstr ""
 msgid "WordPress Hook name to hook something in this place."
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Modules/Widgets/SidebarWidgets.php:11
-msgid "WP Fluent Forms Widget"
-msgstr ""
-
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ElementSettingsPlacement.php:480
 msgid "Write HTML content for GDPR agreement checkbox"
 msgstr ""
@@ -3910,6 +3917,7 @@ msgstr ""
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:65
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:82
 #: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:99
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:116
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:102
 #: ../../../../Plugins/fluentform/app/Modules/Widgets/FluentFormWidget.php:944
 msgid "Yes"
@@ -4018,7 +4026,7 @@ msgstr ""
 msgid "Zip"
 msgstr ""
 
-#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:192
+#: ../../../../Plugins/fluentform/app/Services/FormBuilder/ValidationRuleSettings.php:209
 msgid "Zip Archives"
 msgstr ""
 

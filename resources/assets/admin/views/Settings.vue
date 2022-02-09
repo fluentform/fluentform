@@ -26,7 +26,7 @@
                     <el-menu-item
                         index="mailchimp"
                         :route="{ name: 'mailchimp' }"
-                    >MailChimp</el-menu-item>
+                    >Mailchimp</el-menu-item>
 
                     <el-menu-item
                         index="google-api-settings"
