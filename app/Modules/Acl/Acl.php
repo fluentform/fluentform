@@ -218,7 +218,8 @@ class Acl
             'fluentform_view_payments' => [
                 'title' => __('View Payments', 'fluentform'),
                 'depends' => [
-                    'fluentform_dashboard_access'
+                    'fluentform_dashboard_access',
+                    'fluentform_entries_viewer'
                 ]
             ],
             'fluentform_manage_payments' => [

@@ -42,13 +42,17 @@ class Form
             return $menuItems;
         }
 
-        $newItems = array_slice($menuItems, 0, 1, true) + [
-                'conversational_design' => array(
+        $newItems = $menuItems;
+
+        if (Acl::hasPermission('fluentform_forms_manager')) {
+            $newItems = array_slice($menuItems, 0, 1, true) + [
+                'conversational_design' => [
                     'slug'  => 'conversational_design',
                     'title' => __('Design', 'fluentform'),
                     'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=conversational_design')
-                )
+                ]
             ] + array_slice($menuItems, 1, count($menuItems) - 1, true);
+        }
 
         return $newItems;
     }

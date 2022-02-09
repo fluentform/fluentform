@@ -147,7 +147,7 @@ class Managers
         foreach ($permissions as $permission) {
             $depends = ArrayHelper::get($allPermissions, $permission . '.depends', []);
 
-            if ($depends && $more = array_diff($depends, $permissions)) {
+            if ($depends && $more = array_values(array_diff($depends, $permissions))) {
                 $message = $allPermissions[$permission]['title'] . ' requires permission: ';
 
                 foreach ($more as $i => $p) {

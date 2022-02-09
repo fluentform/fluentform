@@ -205,24 +205,26 @@ class Menu
         $page = sanitize_text_field($_GET['page']);
 
         if ($page == 'fluent_forms' && isset($_GET['route']) && isset($_GET['form_id'])) {
-            if (Acl::hasPermission('fluentform_forms_manager')) {
+            if (true) {
                 wp_enqueue_style('fluentform_settings_global');
                 wp_enqueue_script('clipboard');
                 wp_enqueue_script('copier');
 
-                if ($_GET['route'] == 'settings') {
-                    if (function_exists('wp_enqueue_editor')) {
-                        add_filter('user_can_richedit', function ($status) {
-                            return true;
-                        });
-
-                        wp_enqueue_editor();
-                        wp_enqueue_media();
+                if (Acl::hasPermission('fluentform_forms_manager')) {
+                    if ($_GET['route'] == 'settings') {
+                        if (function_exists('wp_enqueue_editor')) {
+                            add_filter('user_can_richedit', function ($status) {
+                                return true;
+                            });
+    
+                            wp_enqueue_editor();
+                            wp_enqueue_media();
+                        }
+    
+                        wp_enqueue_script('fluentform_form_settings');
+                    } elseif ($_GET['route'] == 'editor') {
+                        $this->enqueueEditorAssets();
                     }
-
-                    wp_enqueue_script('fluentform_form_settings');
-                } elseif ($_GET['route'] == 'editor') {
-                    $this->enqueueEditorAssets();
                 }
             }
         } else if ($page == 'fluent_forms') {
@@ -457,20 +459,24 @@ class Menu
             return;
         }
 
-        $formAdminMenus = array(
-            'editor' => array(
-                'slug' => 'editor',
-                'title' => __('Editor', 'fluentform'),
-                'url' => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=editor')
-            ),
-            'settings' => array(
-                'slug' => 'settings',
-                'hash' => 'basic_settings',
-                'title' => __('Settings & Integrations', 'fluentform'),
-                'sub_route' => 'form_settings',
-                'url' => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=settings&sub_route=form_settings')
-            )
-        );
+        $formAdminMenus = [];
+
+        if (Acl::hasPermission('fluentform_forms_manager')) {
+            $formAdminMenus = [
+                'editor' => array(
+                    'slug' => 'editor',
+                    'title' => __('Editor', 'fluentform'),
+                    'url' => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=editor')
+                ),
+                'settings' => array(
+                    'slug' => 'settings',
+                    'hash' => 'basic_settings',
+                    'title' => __('Settings & Integrations', 'fluentform'),
+                    'sub_route' => 'form_settings',
+                    'url' => admin_url('admin.php?page=fluent_forms&form_id=' . $form_id . '&route=settings&sub_route=form_settings')
+                )
+            ];
+        }
 
         if (Acl::hasPermission('fluentform_entries_viewer')) {
             $formAdminMenus['entries'] = [
@@ -773,7 +779,7 @@ class Menu
 
         $components['hCAPTCHA'] = [
             'hash' => 'h_captcha',
-            'title' => 'hCAPTCHA',
+            'title' => 'hCaptcha',
         ];
 
         View::render('admin.settings.index', [
