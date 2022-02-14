@@ -6,7 +6,7 @@
 
         <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="conversational">
-                Convert to Conversational Form
+                {{ $t('Convert to Conversational Forms') }}
             </el-dropdown-item>
         </el-dropdown-menu>
     </el-dropdown>
