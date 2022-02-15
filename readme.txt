@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 5.8.3
+Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 4.3.0
+Stable tag: 4.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,10 @@ Here are the few forms from those that we have packed for you:
 <li>Paystack - Easily collect credit card payments, donations, and online orders with Fluent Forms Pro. No Extra addon requires</li>
 <li>Discord - Get automated form notifications on your Discord server</li>
 <li>Salesflare - Connection with the Salesflare CRM got more 'Fluent' with this integration</li>
+<li>AffiliateWP – Generate referrals when users complete a payment with your forms</li>
+<li>Zoho CRM – A business tool to manage online sales, marketing, and customer support</li>
+<li>ClickSend – Send SMS notification instantly when a form is submitted</li>
+<li>CleverReach – Fluent Forms and CleverReach combo is a great way to grow your subscribers and manage email campaigns</li>
 </ul>
 
 == PAYMENT FORM, DONATION FORM, ORDER FORM, AND MORE ==
@@ -354,6 +358,18 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.1 (Date: Feb 14, 2022) =
+- Adds advanced permission management system
+- Adds existing form to Conversational Forms converter
+- Adds Conversational Forms Key Hint configuration
+- Adds frontend PDF download shortcode after form submission for logged-in users
+- Adds line break support in PDF
+- Fixes multi-site permission issue
+- Fixes Conversational Forms Date Field bug
+- Fixes Numeric Field zero value issue
+- Fixes Mailchimp Address Field issue
+- Improves All Entries filters
 
 = 4.3.0 (Date: Jan 18, 2022) =
 - Adds other form plugins' migrator
