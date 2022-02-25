@@ -310,7 +310,8 @@ $element_customization_settings = array(
     ),
     'address_fields' => array(
         'template' => 'addressFields',
-        'label' => __('Address Fields', 'fluentform'),
+        'label'    => __('Address Fields', 'fluentform'),
+        'key'      => 'country_list',
     ),
     'name_fields' => array(
         'template' => 'nameFields',

@@ -219,9 +219,14 @@ export default function ($, $theForm) {
 
                 const formattedValue = window.ff_helper.formatCurrency($fieldDom, calculatedValue);
 
-                if (prevValue != formattedValue) {
-                    $fieldDom.val(formattedValue)
+                $fieldDom.val(formattedValue)
                         .prop('defaultValue', formattedValue);
+
+                if (prevValue == '') {
+                    return;
+                }
+
+                if (+ prevValue !== + formattedValue) {
                     $fieldDom.trigger('change');
                 }
             } else {

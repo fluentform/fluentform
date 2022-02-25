@@ -729,7 +729,7 @@ mark {
 }
 .el-form-item .select {
   width: 100%;
-  height: 35px !important;
+  min-height: 35px !important;
   min-width: 100%;
 }
 .address-field-wrapper {
@@ -980,5 +980,14 @@ ul.ff_bulk_option_groups {
   .el-icon-s-operation {
     font-size: 25px;
     color: gray;
+  }
+}
+
+.dragable-address-fields{
+  div.vddl-nodrag{
+    align-items: flex-start;
+  }
+  .handle{
+    height: 24px;
   }
 }

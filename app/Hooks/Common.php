@@ -47,9 +47,6 @@ $component->addFluentformSubmissionInsertedFilter();
 $component->addIsRenderableFilter();
 $component->registerInputSanitizers();
 
-// Handles built-in login form
-// (new \FluentForm\App\Modules\Form\LoginHandler)->init();
-
 add_action('wp', function () use ($app) {
     // @todo: We will remove the fluentform_pages check from April 2021
     if ((isset($_GET['fluent_forms_pages']) || isset($_GET['fluentform_pages']))) {
@@ -140,6 +137,8 @@ foreach ($elements as $element) {
 }
 
 $app->addFilter('fluentform_response_render_textarea', function ($value, $field, $formId, $isHtml) {
+    $value = $value ? nl2br($value) : $value;
+
     if (!$isHtml || !$value) {
         return $value;
     }

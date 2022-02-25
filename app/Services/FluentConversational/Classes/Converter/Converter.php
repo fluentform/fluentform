@@ -15,6 +15,8 @@ class Converter
 
 		$form->submit_button = $form->fields['submitButton'];
 
+		$form->reCaptcha = false;
+
 		$questions = [];
 
 		$imagePreloads = [];
@@ -336,6 +338,40 @@ class Converter
 			} elseif ($field['element'] === 'payment_summary_component') {
 				$question['title'] = 'Payment Summary';
 				$question['emptyText'] = $field['settings']['cart_empty_text'];
+			} elseif ($field['element'] === 'recaptcha') {
+				$reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
+				$siteKey = ArrayHelper::get($reCaptchaConfig, 'siteKey');
+
+                if (!$siteKey) {
+                    continue;
+                }
+
+				$question['siteKey'] = $siteKey;
+
+				$apiVersion = ArrayHelper::get($reCaptchaConfig, 'api_version', 'v2_visible');
+				$apiVersion = $apiVersion == 'v3_invisible' ? 3 : 2;
+				$api = 'https://www.google.com/recaptcha/api.js';
+
+				$form->reCaptcha = [
+					'version' => $apiVersion,
+					'siteKey' => $siteKey
+				];
+				
+                if ($apiVersion === 3) {
+					$api .= '?render=' . $siteKey;
+                }
+
+				wp_enqueue_script(
+					'google-recaptcha',
+					$api,
+					[],
+					FLUENTFORM_VERSION,
+					true
+				);
+
+				if ($apiVersion === 3) {
+					continue;
+				}
 			}
 
 			if ($question['type']) {
@@ -407,6 +443,7 @@ class Converter
 			'terms_and_condition'   => 'FlowFormTermsAndConditionType',
             'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
             'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
+            'recaptcha' 			=> 'FlowFormReCaptchaType',
 		];
 
 		if (defined('FLUENTFORMPRO')) {

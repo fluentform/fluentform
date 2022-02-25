@@ -416,8 +416,10 @@
 .address-field-option {
   margin-bottom: 10px;
   padding-bottom: 10px;
-  margin-left: -10px;
+  margin-left: 10px;
   padding-left: 10px;
+  width: 100%;
+
   > .el-icon-caret-bottom, .el-icon-caret-top {
     font-size: 18px;
   }

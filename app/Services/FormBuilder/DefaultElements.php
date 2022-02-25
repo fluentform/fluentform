@@ -283,6 +283,14 @@ $defaultElements = array(
                 'label' => __('Address', 'fluentform'),
                 'enable_g_autocomplete' => 'no',
                 'admin_field_label' => 'Address',
+                'field_order' => array(
+                    array('id' => 1, 'value' => 'address_line_1'),
+                    array('id' => 2, 'value' => 'address_line_2'),
+                    array('id' => 3, 'value' => 'city'),
+                    array('id' => 4, 'value' => 'state'),
+                    array('id' => 5, 'value' => 'zip'),
+                    array('id' => 6, 'value' => 'country'),
+                ),
                 'conditional_logics' => array(),
             ),
             'fields' => array(

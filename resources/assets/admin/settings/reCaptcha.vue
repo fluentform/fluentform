@@ -12,7 +12,7 @@
                         Read more about reCAPTCHA.
                     </a>
                 </p>
-                <p><b>Please generate API key and API secret using reCaptcha</b></p>
+                <p><b>Please generate API key and API secret using reCAPTCHA</b></p>
             </el-col>
         </el-row>
 
@@ -36,8 +36,8 @@
                     </template>
 
                     <el-radio-group @change="load" v-model="reCaptcha.api_version">
-                        <el-radio label="v2_visible">Version 2 (Visible reCaptcha)</el-radio>
-                        <el-radio label="v3_invisible">Version 3 (V3 invisible reCaptcha)</el-radio>
+                        <el-radio label="v2_visible">Version 2 (Visible reCAPTCHA)</el-radio>
+                        <el-radio label="v3_invisible">Version 3 (Invisible reCAPTCHA)</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -85,12 +85,16 @@
                 </el-form-item>
 
                 <!--Validate Keys-->
-                <el-form-item label="Validate Keys" v-if="siteKeyChanged">
-                    <div class="g-recaptcha" id="reCaptcha" :data-sitekey="reCaptcha.siteKey"></div>
-                </el-form-item>
+                <el-form-item :class="hidden">
+                    <template slot="label" v-if="v2">
+                        Validate Keys
+                    </template>
 
-                <el-form-item label="Validate Keys" v-if="siteKeyChanged">
-                    <div class="g-recaptcha" id="reCaptcha2" :data-sitekey="reCaptcha.siteKey"></div>
+                    <div
+                        id="reCaptcha" 
+                        :data-sitekey="reCaptcha.siteKey"
+                        :data-size="size"
+                    />
                 </el-form-item>
 
                 <el-form-item>
@@ -115,7 +119,7 @@
                 </el-form-item>
             </el-form>
 
-            <div v-if="reCaptcha_status">
+            <div v-if="reCaptcha_status && !disabled">
                 <p>Your reCAPTCHA is valid</p>
             </div>
         </div>
@@ -139,6 +143,21 @@ export default {
             clearing: false
         }
     },
+
+    computed: {
+        v2() {
+            return this.reCaptcha.api_version === 'v2_visible';
+        },
+
+        size() {
+            return this.v2 ? 'normal' : 'invisible';
+        },
+
+        hidden() {
+            return this.v2 ? '' : 'mb0';
+        }
+    },
+
     methods: {
         load() {
             if (!this.validate()) {
@@ -148,6 +167,7 @@ export default {
             } else {
                 this.disabled = true;
                 this.siteKeyChanged = true;
+                this.reCaptcha_status = false;
             }
 
             this.$nextTick(() => {
@@ -155,17 +175,23 @@ export default {
                 let siteKey = this.reCaptcha.siteKey;
                 let $reCaptcha = jQuery('#' + id);
                 $reCaptcha.html('');
-                if (this.reCaptcha.api_version == 'v2_visible') {
-                    window.___grecaptcha_cfg.clients = {};
-                    grecaptcha.render(id, {
+
+                window.___grecaptcha_cfg.clients = {};
+
+                let widgetID = grecaptcha.render(id, {
                         'sitekey': siteKey,
                         'callback': (token) => {
                             this.reCaptcha.token = token;
                             this.disabled = false;
                         }
                     });
-                } else {
-                    this.disabled = false;
+
+                if (this.reCaptcha.api_version != 'v2_visible') {
+                    grecaptcha.execute(widgetID, {action: 'submit'})
+                        .then((token) => {
+                            this.reCaptcha.token = token;
+                            this.disabled = false;
+                        });
                 }
             })
         },

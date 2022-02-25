@@ -77,30 +77,9 @@ class Settings
             update_option('_fluentform_reCaptcha_keys_status', false, 'no');
 
             wp_send_json_success([
-                'message' => __('Your reCaptcha settings are deleted.', 'fluentform'),
+                'message' => __('Your reCAPTCHA settings are deleted.', 'fluentform'),
                 'status'  => false
             ], 200);
-        }
-
-        $version = ArrayHelper::get($data, 'api_version');
-        if($version == 'v3_invisible') {
-            $captchaData = [
-                'siteKey'   => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
-                'secretKey' => sanitize_text_field(ArrayHelper::get($data, 'secretKey')),
-                'api_version' => $version
-            ];
-
-            // Update the reCaptcha details with siteKey & secretKey.
-            update_option('_fluentform_reCaptcha_details', $captchaData, 'no');
-
-            // Update the reCaptcha validation status.
-            update_option('_fluentform_reCaptcha_keys_status', true, 'no');
-
-            wp_send_json_success([
-                'message' => __('Your reCaptcha credential has been saved. Please test a real form with recaptcha enabled', 'fluentform'),
-                'status'  => true
-            ], 200);
-
         }
 
         $token = ArrayHelper::get($data, 'token');
@@ -109,7 +88,9 @@ class Settings
         // If token is not empty meaning user verified their captcha.
         if ($token) {
             // Validate the reCaptcha response.
-            $status = ReCaptcha::validate($token, $secretKey);
+            $version = ArrayHelper::get($data, 'api_version', 'v2_visible');
+
+            $status = ReCaptcha::validate($token, $secretKey, $version);
 
             // reCaptcha is valid. So proceed to store.
             if ($status) {
@@ -129,20 +110,20 @@ class Settings
                 // Send success response letting the user know that
                 // that the reCaptcha is valid and saved properly.
                 wp_send_json_success([
-                    'message' => __('Your reCaptcha is valid and saved.', 'fluentform'),
+                    'message' => __('Your reCAPTCHA is valid and saved.', 'fluentform'),
                     'status'  => $status
                 ], 200);
             } else { // reCaptcha is not valid.
-                $message = __('Sorry, Your reCaptcha is not valid, Please try again', 'fluentform');
+                $message = __('Sorry, Your reCAPTCHA is not valid. Please try again', 'fluentform');
             }
         } else { // The token is empty, so the user didn't verify their captcha.
-            $message = __('Please validate your reCaptcha first and then hit save.', 'fluentform');
+            $message = __('Please validate your reCAPTCHA first and then hit save.', 'fluentform');
 
             // Get the already stored reCaptcha status.
             $status = get_option('_fluentform_reCaptcha_keys_status');
 
             if ($status) {
-                $message = __('Your reCaptcha details are already valid, So no need to save again.', 'fluentform');
+                $message = __('Your reCAPTCHA details are already valid. So no need to save again.', 'fluentform');
             }
         }
 

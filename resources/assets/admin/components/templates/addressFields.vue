@@ -3,8 +3,8 @@
     <label v-if="item.settings.label" class="label-block" :class="item.settings.required ? 'is-required' : ''" v-html="item.settings.label"></label>
 
     <el-row :gutter="20">
-        <el-col v-for="field, i in item.fields" :key="i" :md="12" v-if="field.settings.visible" class="address-field-wrapper">
-            <component :is="guessElTemplate(field)" :item="field"></component>
+        <el-col v-for="field, i in getOrerderFields" :key="i" :md="12" v-if="getField(field).settings.visible"  class="address-field-wrapper">
+            <component :is="guessElTemplate(getField(field))" :item="getField(field)"></component>
         </el-col>
     </el-row>
 </div>
@@ -22,6 +22,20 @@ export default {
         'ff_inputText': inputText,
         'ff_select': select,
         'ff_selectCountry': selectCountry,
+    },
+    methods:{
+        getField(field){
+            if(this.item.settings.field_order){
+                return this.item.fields[field.value];
+            }
+            return  field;
+        }
+       
+    },
+    computed: {
+        getOrerderFields(){
+            return this.item.settings.field_order ? this.item.settings.field_order : this.item.fields;
+        }
     }
 }
 </script>

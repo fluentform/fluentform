@@ -72,12 +72,17 @@ class Recaptcha extends BaseComponent
 		if (!empty($data['settings']['label'])) {
 			$label = "<div class='ff-el-input--label'><label>{$data['settings']['label']}</label></div>";
 		}
+		
+		$containerClass = '';
+		if (!empty($data['settings']['label_placement'])) {
+			$containerClass = 'ff-el-form-' . $data['settings']['label_placement'];
+		}
 
 		$el = "<div class='ff-el-input--content'><div data-fluent_id='".$form->id."' name='g-recaptcha-response'>{$recaptchaBlock}</div></div>";
 		$atts = $this->buildAttributes(
 			\FluentForm\Framework\Helpers\ArrayHelper::except($data['attributes'], 'name')
 		);
-		$html = "<div class='ff-el-group' {$atts}>{$label}{$el}</div>";
+		$html = "<div class='ff-el-group {$containerClass}' {$atts}>{$label}{$el}</div>";
         echo apply_filters('fluentform_rendering_field_html_'.$elementName, $html, $data, $form);
     }
 }

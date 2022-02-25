@@ -414,6 +414,15 @@ jQuery(document).ready(function () {
                         .find('.ff-el-progress-bar')
                         .css('width', '0%');
 
+                    let rangeSliders = $this.find('input[type="range"]');
+                    if (rangeSliders.length) {
+                        rangeSliders.each((index, rangeSlider) => {
+                            rangeSlider = $(rangeSlider);
+
+                            rangeSlider.val(rangeSlider.data('calc_value')).change();
+                        })
+                    }
+
                     $.each(form.conditionals, function (fieldName, field) {
                         $.each(field.conditions, function (index, condition) {
                             reset(getElement(condition.field));

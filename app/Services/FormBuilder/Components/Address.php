@@ -42,6 +42,12 @@ class Address extends BaseComponent
             \FluentForm\Framework\Helpers\ArrayHelper::except($data['attributes'], 'name')
         );
 
+        //re order fields from version 4.3.2
+        if ($order = ArrayHelper::get($data, 'settings.field_order')) {
+            $order = array_values(array_column($order, 'value'));
+            $fields = ArrayHelper::get($data, 'fields');
+            $data['fields'] = array_merge(array_flip($order), $fields);
+        }
         ob_start();
         echo "<div {$atts}>";
         do_action('fluentform_rendering_address_field', $data, $form);
@@ -55,6 +61,7 @@ class Address extends BaseComponent
         $visibleFields = array_chunk(array_filter($data['fields'], function ($field) {
             return $field['settings']['visible'];
         }), 2);
+
 
 		$googleAutoComplete = ArrayHelper::get($data, 'settings.enable_g_autocomplete') === 'yes';
 		foreach ($visibleFields as $chunked) {

@@ -1,36 +1,92 @@
 <template>
     <div class="el-form--label-top">
         <p><strong>{{ listItem.label }}</strong></p>
+    
 
-        <div class="address-field-option" v-for="field, i in editItem.fields">
-            <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
-
-            <el-checkbox v-model="field.settings.visible">{{ field.settings.label }}</el-checkbox>
-
-            <template v-if="!field.settings.hasOwnProperty('country_list')">
-                <fieldOptionSettings class="address-field-option__settings" :field="field"></fieldOptionSettings>
-            </template>
-
-            <div v-if="field.settings.hasOwnProperty('country_list')" class="address-field-option__settings">
-                <div class="form-group">
-                    <div class="el-form-item">
-                        <label class="el-form-item__label" for="">Label</label>
-                        <el-input v-model="field.settings.label" size="small"></el-input>
+        <vddl-list
+            v-if="editItem.settings.field_order"
+            :drop="handleDrop"
+            class="vddl-list__handle ff_advnced_options_wrap"
+            :list="editItem.settings.field_order"
+            :horizontal="false"
+        >
+            <vddl-draggable
+                v-for="(field, index) in editItem.settings.field_order"
+                :moved="handleMoved"
+                class="dragable-address-fields"
+                :key="field.id"
+                :draggable="field"
+                :index="index"
+                :wrapper="editItem.settings.field_order"
+                effect-allowed="move"
+            >
+                <vddl-nodrag class="nodrag-address-fields">
+                    <vddl-handle
+                        :handle-left="20"
+                        :handle-top="20"
+                        class="handle">
+                    </vddl-handle>
+                    
+                    <div class="address-field-option">
+                        <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
+    
+                        <el-checkbox v-model="editItem.fields[field.value].settings.visible">
+                            {{ editItem.fields[field.value].settings.label }}
+                        </el-checkbox>
+    
+                        <template
+                            v-if="!editItem.fields[field.value].settings.hasOwnProperty('country_list')"
+                        >
+                            <fieldOptionSettings
+                                class="address-field-option__settings"
+                                :field="editItem.fields[field.value]"
+                            />
+                        </template>
+    
+                        <div
+                            v-if="editItem.fields[field.value].settings.hasOwnProperty('country_list')"
+                            class="address-field-option__settings"
+                        >
+                            <div class="form-group">
+                                <div class="el-form-item">
+                                    <label class="el-form-item__label" for="">Label</label>
+                                    
+                                    <el-input
+                                        v-model="editItem.fields[field.value].settings.label"
+                                        size="small"
+                                    />
+                                </div>
+                            </div>
+        
+                            <div class="form-group">
+                                <div class="el-form-item">
+                                    <label class="el-form-item__label" for="">Placeholder</label>
+                                    
+                                    <el-input
+                                        v-model="editItem.fields[field.value].attributes.placeholder"
+                                        size="small"
+                                    />
+                                </div>
+                            </div>
+        
+                            <wpuf_customCountryList
+                                :listItem="listItem"
+                                :editItem="editItem.fields[field.value]"
+                            />
+        
+                            <validationRules
+                                labelPosition="left"
+                                :editItem="editItem.fields[field.value]"
+                            />
+                        </div>
                     </div>
-                </div>
+                </vddl-nodrag>
+            </vddl-draggable>
+            
 
-                <div class="form-group">
-                    <div class="el-form-item">
-                        <label class="el-form-item__label" for="">Placeholder</label>
-                        <el-input v-model="field.attributes.placeholder" size="small"></el-input>
-                    </div>
-                </div>
+        </vddl-list>
+       
 
-                <wpuf_customCountryList :listItem="listItem" :editItem="field"></wpuf_customCountryList>
-
-                <validationRules labelPosition="left" :editItem="field"></validationRules>
-            </div>
-        </div>
         <el-form-item v-if="has_gmap_api" label="Autocomplete Feature">
             <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete">Enable
                 Autocomplete (Google Map)
@@ -104,6 +160,34 @@ export default {
                 jQuery(event.target).parent().find('.required-checkbox').removeClass('is-open');
             }
         },
+        handleMoved(item) {
+            const { index, list } = item;
+            list.splice(index, 1);
+        },
+        handleDrop(data) {
+            const { index, list, item } = data;
+            item.id = new Date().getTime();
+            list.splice(index, 0, item);
+        },
+        createDragableList() {
+            if (!this.editItem.settings.field_order) {
+                this.$set(this.editItem.settings, 'field_order', []);
+                let i = 0;
+                let optionToRender = [];
+    
+                for (let key in this.editItem.fields) {
+                    optionToRender.push({
+                        id: i++,
+                        value: key,
+                    });
+                }
+                this.editItem.settings.field_order = optionToRender;
+            }
+            
+        }
+    },
+    mounted() {
+        this.createDragableList()
     }
 }
 </script>
