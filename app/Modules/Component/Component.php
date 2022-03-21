@@ -441,11 +441,14 @@ class Component
     public function renderForm($atts)
     {
         $form_id = $atts['id'];
-
+        $query = wpFluent()->table('fluentform_forms');
+        if (!isset($_GET['preview_id'])) {
+            $query->where('status', 'published');
+        }
         if ($form_id) {
-            $form = wpFluent()->table('fluentform_forms')->find($form_id);
-        } else if ($formTitle = $atts['title']) {
-            $form = wpFluent()->table('fluentform_forms')->where('title', $formTitle)->first();
+            $form = $query->find($form_id);
+        } elseif ($formTitle = $atts['title']) {
+            $form = $query->where('title', $formTitle)->first();
         } else {
             return '';
         }
@@ -531,7 +534,7 @@ class Component
 
         $stepText = __('Step %activeStep% of %totalStep% - %stepTitle%', 'fluentform');
         $stepText = apply_filters('fluentform_step_string', $stepText);
-        $vars = apply_filters('fluentform_global_form_vars', array(
+            $vars = apply_filters('fluentform_global_form_vars', array(
             'ajaxUrl'               => admin_url('admin-ajax.php'),
             'forms'                 => array(),
             'step_text'             => $stepText,
@@ -549,7 +552,10 @@ class Component
                 'loadingText'    => __('Loading...', 'fluentform'),
                 'noChoicesText'  => __('No choices to choose from', 'fluentform'),
                 'itemSelectText' => __('Press to select', 'fluentform'),
-                'maxItemText'    => __('Only %%maxItemCount%% values can be added', 'fluentform'),
+                'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
+            ],
+            'jquery_mask_vars' => [
+	            'clearIfNotMatch' => false,
             ]
         ));
 
@@ -574,6 +580,8 @@ class Component
         if ($conditionals = $formBuilder->conditions) {
             $form_vars['conditionals'] = $conditionals;
         }
+
+        $form_vars = apply_filters('fluentform/form_vars_for_JS', $form_vars, $form);
 
         if ($form->has_payment) {
             do_action('fluentform_rendering_payment_form', $form);
@@ -897,6 +905,20 @@ class Component
                 <?php if(defined('ELEMENTOR_PRO_VERSION')): ?>
                 jQuery(document).on('elementor/popup/show', function (event, id, instance) {
                     var ffForms = jQuery('#elementor-popup-modal-' + id).find('form.frm-fluent-form');
+
+                    /**
+                     * Support conversation form in elementor popup
+                     * No regular form found, check for conversational form
+                     */
+                    if (!ffForms.length) {
+                        const elements = document.getElementsByClassName('ffc_conv_form');
+                        if (elements.length) {
+                            let jsEvent = new CustomEvent('ff-elm-conv-form-event', {
+                                detail: elements[0]
+                            });
+                            document.dispatchEvent(jsEvent);
+                        }
+                    }
                     if (ffForms.length) {
                         jQuery.each(ffForms, function (index, ffForm) {
                             jQuery(ffForm).trigger('reInitExtras');
@@ -911,7 +933,7 @@ class Component
         return '';
     }
 
-    private function getDatei18n()
+    public static function getDatei18n()
     {
         $i18n = array(
             'previousMonth'    => __('Previous Month', 'fluentform'),

@@ -26,7 +26,8 @@ import {
     Pagination,
     Dropdown,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    Switch
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -50,6 +51,7 @@ Vue.use(FormItem);
 Vue.use(Dialog);
 Vue.use(Input);
 Vue.use(Button);
+Vue.use(Switch);
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service

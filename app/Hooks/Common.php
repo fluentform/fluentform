@@ -128,7 +128,7 @@ foreach ($elements as $element) {
             }
         }
 
-        if ($element == 'input_checkbox') {
+        if (in_array($element, ['select', 'input_checkbox']) && is_array($response)) {
             return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
         }
 

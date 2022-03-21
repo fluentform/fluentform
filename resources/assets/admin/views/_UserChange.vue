@@ -40,7 +40,6 @@ export default {
     props: ['submission'],
     data() {
         return {
-            search_string: '',
             saving: false,
             users: [],
             searching: false,
@@ -50,22 +49,26 @@ export default {
     },
     methods: {
         fetchUsers(query) {
-            let data = {
-                action: 'fluentform-get-users',
-                search: this.search_string
-            };
+            if (!query) {
+                return;
+            }
+
             this.searching = true;
+            const data = {
+                action: 'fluentform-get-users',
+                search: query
+            };
             FluentFormsGlobal.$get(data)
                 .then(response => {
                     this.users = response.data.users;
                 })
                 .catch((errors) => {
-                    this.$notify.error(errors.data.message);
-                })
+                    this.$notify.error(errors.responseJSON.data.message);
+                 })
                 .always(() => {
                     this.searching = false;
                 });
-        },
+          },
         showModal() {
             this.showing_modal = true;
         },

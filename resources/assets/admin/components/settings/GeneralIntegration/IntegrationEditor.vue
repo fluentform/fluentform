@@ -359,7 +359,7 @@
 
                     })
                     .fail(error => {
-                        console.log(error);
+                        this.$notify.error(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.loading_app = false;

@@ -13,10 +13,11 @@ export default function ($, $theForm) {
             type: 8,
             token: 'round',
             show: 'round',
-            value: function (value, decimals) {
+            value: function (value, decimals = 0) {
                 if (!decimals && decimals !== 0) {
                     decimals = 2;
                 }
+
                 value = parseFloat(value).toFixed(decimals);
                 return parseFloat(value);
             }
@@ -65,7 +66,6 @@ export default function ($, $theForm) {
     }
 
     var doCalculation = function () {
-        console.log('calculating');
         jQuery.each(calculationFields, (index, field) => {
             var $field = jQuery(field);
             var formula = $field.data('calculation_formula');
@@ -203,12 +203,6 @@ export default function ($, $theForm) {
                 if (isNaN(calculatedValue)) {
                     calculatedValue = '';
                 }
-                if (typeof formula == 'string' && formula.indexOf('round') === 0) {
-                    let decimal = parseInt(formula.substr(-2, 1));
-                    if (decimal && Number.isInteger(decimal)) {
-                        calculatedValue = parseFloat(calculatedValue).toFixed(2);
-                    }
-                }
             } catch (error) {
                 console.log(error, field);
             }
@@ -226,7 +220,7 @@ export default function ($, $theForm) {
                     return;
                 }
 
-                if (+ prevValue !== + formattedValue) {
+                if (prevValue != formattedValue) {
                     $fieldDom.trigger('change');
                 }
             } else {

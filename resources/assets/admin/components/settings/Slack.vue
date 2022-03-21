@@ -39,6 +39,28 @@
                 <el-input placeholder="https://hooks.slack.com/services/..." v-model="slack.webhook"></el-input>
             </el-form-item>
         </transition>
+        <transition name="slide-down">
+            <el-form-item v-if="formattedFields && slack.enabled"  class="conditional-items" >
+                <div slot="label">
+                    {{$t('Select Fields')}}
+                </div>
+                <el-checkbox  :disabled="!hasPro"  :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">Check all</el-checkbox>
+                <br>
+                <el-checkbox-group v-model="slack.fields">
+                    <el-checkbox
+                        v-for="(key, val) in formattedFields"
+                        :label="key"
+                        :key="key"
+                        @change="handleCheckedChange"
+                        :disabled="!hasPro"
+                    ></el-checkbox>
+                </el-checkbox-group>
+                <div v-show="!hasPro">
+                    Field Selection is a pro feature.
+                </div>
+            </el-form-item>
+            
+        </transition>
 
         <el-form-item>
             <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving">
@@ -51,7 +73,7 @@
 <script>
     export default {
         name: "Slack",
-        props: ['form_id'],
+        props: ['form_id','inputs'],
         data() {
             return {
                 loading: false,
@@ -59,15 +81,29 @@
                 slack: {
                     enabled: false,
                     webhook: null,
-                    textTitle:''
+                    textTitle:'',
+                    fields:[],
+                    checkAll:'',
                 },
+                formattedFields:[],
+                hasPro : window.FluentFormApp.hasPro,
+                isIndeterminate: false,
                 errors: new Errors
             }
         },
         methods: {
+            handleCheckAllChange(val) {
+                this.slack.fields = val ? this.formattedFields : [];
+                this.isIndeterminate = false;
+            },
+            handleCheckedChange(value) {
+                let checkedCount = this.slack.fields.length;
+                this.slack.checkAll = checkedCount === this.formattedFields.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.formattedFields.length;
+            },
             fetch() {
                 this.loading = true;
-
+              
                 let data = {
                     form_id: this.form_id,
                     meta_key: 'slack',
@@ -79,7 +115,15 @@
                         if (response.data.result[0]) {
                             this.slack = response.data.result[0].value;
                             this.slack.id = response.data.result[0].id;
+                            if(!this.slack.fields){
+                                this.$set(this.slack , 'fields', []);
+                            }
+                            if(!this.slack.checkAll){
+                                this.$set(this.slack , 'checkAll', '');
+                            }
                         }
+                        this.formattedFields = response.data.result.formattedFields ? response.data.result.formattedFields : [];
+    
                     })
                     .fail(e => {
                     })

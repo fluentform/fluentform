@@ -69,7 +69,7 @@
                     <p>Want to use this form in another domain or another site or even outside WordPress? Use the
                         following code</p>
                     <textarea style="width: 100%" type="textarea" :rows="5" :readonly="true">
-<iframe id="fluentform" width="100%" height="500px" style="min-height: 500px;with: 100%" frameborder="0" src="{{share_url}}&embedded=1"></iframe></textarea>
+<iframe id="fluentform" width="100%" height="500px" style="min-height: 500px;width: 100%" frameborder="0" src="{{share_url}}&embedded=1"></iframe></textarea>
 
                     <p style="font-style: italic;">- You can customize the height property.</p>
                     <p style="font-style: italic;">- Please check if your wp hosting server supports iframe.</p>

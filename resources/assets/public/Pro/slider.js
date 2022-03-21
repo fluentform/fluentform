@@ -86,7 +86,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     };
                     jQuery.getJSON(fluentFormVars.ajaxUrl, data).then(response => {
                         jQuery.each(response, (key, options) => {
-                            let $select = $el.find(`select[data-key=${key}]`);
+                            let $select = $el.find(`select[data-key='${key}']`);
 
                             if ($select.attr('data-index') != 0) {
                                 jQuery.each(options, (k, val) => {
@@ -113,7 +113,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 if ($el.attr('type') == 'file') {
                     addFilesToElement($el, value);
                 } else if ($el.prop('multiple')) {
-                    $el.val(value).change();
+                    if ($.isFunction(window.Choices)) {
+                        let choiceJs  = $el.data('choicesjs');
+                        choiceJs.setValue(value).change();
+                    }else{
+                        $el.val(value).change();
+                    }
                 } else if ($el.attr('data-type') === 'repeater_field') {
                     // Repeater Field
                     let $tbody = $el.find('tbody');

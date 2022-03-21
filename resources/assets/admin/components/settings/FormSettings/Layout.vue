@@ -142,10 +142,31 @@
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </template>
-                            <el-select placeholder="Select Day" size="small" v-model="email_report.sending_day">
+                            <el-select placeholder="Select Day" v-model="email_report.sending_day">
                                 <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey"
                                            :label="sendDay"></el-option>
                             </el-select>
+                        </el-form-item>
+
+                        <el-form-item>
+                            <template slot="label">
+                                Email Subject
+
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <p>
+                                            Enter the subject of the email summary
+                                        </p>
+                                    </div>
+
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+
+                            <el-input
+                                placeholder="Email Subject"
+                                v-model="email_report.subject"
+                            />
                         </el-form-item>
                     </template>
                 </el-col>
@@ -368,7 +389,7 @@
                         <el-select size="small" v-model="misc.geo_provider">
                             <el-option
                                 v-for="(provider, providerUrl) in geo_providers"
-                                :key="provider" :value="providerUrl"
+                                :key="providerUrl" :value="providerUrl"
                                 :label="provider.label"></el-option>
                         </el-select>
                         <template v-if="misc.geo_provider && geo_providers[misc.geo_provider].has_token">

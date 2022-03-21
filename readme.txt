@@ -4,7 +4,6 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 4.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -358,6 +357,23 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.4 (Date: Mar 18, 2022) =
+- Adds configuragion option for email summary subject
+- Adds RTL support for backend
+- Adds Datepicker field language support
+- Adds integration search option on form settings
+- Adds elementor popup support for Conversation Forms
+- Adds quick form deactivation toggle option
+- Adds Timezone preset for Dropdown field
+- Improves calculation module
+- Improves chained select CSV upload
+- Improves conditional rendering module
+- Improves Select field data rendering
+- Improves entry user update module
+- Fixes US style numerical value calculation
+- Fixes shareable link bug
+- Fixes mask field bug
 
 = 4.3.3 (Date: Feb 25, 2022) =
 - Fixes multiple calculated custom payment issue

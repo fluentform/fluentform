@@ -532,7 +532,8 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
-            'paymentConfig'            => $this->getPaymentConfig($form)
+            'paymentConfig'            => $this->getPaymentConfig($form),
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
 
         if (!apply_filters('fluentform-disabled_analytics', false)) {
@@ -649,7 +650,8 @@ class Form
             'extra_inputs'             => $this->getExtraHiddenInputs($formId),
             'uploading_txt'            => __('Uploading', 'fluentform'),
             'upload_completed_txt'     => __('100% Completed', 'fluentform'),
-            'paymentConfig'            => $this->getPaymentConfig($form)
+            'paymentConfig'            => $this->getPaymentConfig($form),
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
 
         $this->printLoadedScripts();

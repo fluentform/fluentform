@@ -25,6 +25,14 @@ class SlackNotificationActions
             return $types;
         });
         add_action('fluentform_integration_notify_slack', array($this, 'notify'), 20, 4);
+        add_filter('fluentform_get_meta_key_settings_response', function ($response, $formId, $key) {
+            if ($key == 'slack') {
+                $formApi = fluentFormApi()->form($formId);
+                $response['formattedFields'] = array_values($formApi->labels());
+            }
+
+            return $response;
+        }, 10, 3);
     }
 
     public function notify($feed, $formData, $entry, $form)

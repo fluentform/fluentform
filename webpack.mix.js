@@ -83,6 +83,55 @@ mix.then(() => {
             return;
         }
     });
+
+    exec('rtlcss ./public/css/settings_global.css ./public/css/settings_global_rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+
+    exec('rtlcss ./public/css/element-ui-css.css ./public/css/element-ui-css-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+    
+    exec('rtlcss ./public/css/fluent-all-forms.css ./public/css/fluent-all-forms-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+    
+    exec('rtlcss ./public/css/fluent-forms-admin-sass.css ./public/css/fluent-forms-admin-sass-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+    
+    exec('rtlcss ./public/css/fluent-forms-admin.css ./public/css/fluent-forms-admin-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+
+    exec('rtlcss public/css/add-ons.css ./public/css/add-ons-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+
+    exec('rtlcss public/css/admin_docs.css ./public/css/admin_docs_rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
 });
 
 

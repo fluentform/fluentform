@@ -344,6 +344,14 @@ class AddOnModule
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm'
             ),
+            'salesforce'      => array(
+                'title'        => 'Salesforce',
+                'description'  => 'Salesforce is the world’s #1 customer relationship management (CRM) platform. It helps your marketing, sales, commerce, service and IT teams work as one from anywhere — so you can keep your customers happy everywhere.',
+                'logo'         => App::publicUrl('img/integrations/salesforce.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm'
+            ),
         );
     }
 }

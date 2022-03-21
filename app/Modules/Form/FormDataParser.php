@@ -289,15 +289,15 @@ class FormDataParser
 
     public static function formatCheckBoxValues($values, $field, $isHtml = false)
     {
-        if(!$isHtml) {
+        if (!$isHtml) {
             return self::formatValue($values);
         }
 
-        if(!is_array($values) || empty($values)) {
+        if (!is_array($values) || empty($values)) {
             return $values;
         }
 
-        if(!isset($field['options'])) {
+        if (!isset($field['options'])) {
             $field['options'] = [];
             foreach (ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
                 $field['options'][$option['value']] = $option['label'];
@@ -307,7 +307,7 @@ class FormDataParser
         $html = '<ul style="white-space: normal;">';
         foreach ($values as $value) {
             $item = $value;
-            if($itemLabel = ArrayHelper::get($field, 'options.'.$item)) {
+            if ($itemLabel = ArrayHelper::get($field, 'options.'.$item)) {
                 $item = $itemLabel;
             }
             $html .= '<li>'.$item.'</li>';

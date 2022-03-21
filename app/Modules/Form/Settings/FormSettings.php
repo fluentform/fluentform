@@ -71,7 +71,7 @@ class FormSettings
                 $item->value['layout']['asteriskPlacement'] = 'asterisk-right';
             }
         }
-
+        $result = apply_filters('fluentform_get_meta_key_settings_response', $result, $this->formId, $metaKey);
         wp_send_json_success(['result' => $result], 200);
     }
 

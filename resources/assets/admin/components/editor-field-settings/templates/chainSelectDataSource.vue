@@ -7,6 +7,10 @@
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>
+            <el-radio-group v-model="dataSourceType">
+              <el-radio label="file">File Upload</el-radio>
+              <el-radio label="url">Remote URL</el-radio>
+            </el-radio-group>
 
             <div style="margin-bottom: 10px;" class="uploader" v-if="dataSourceType === 'file'">
                 <el-upload
@@ -103,9 +107,13 @@
 
                 this.removing = true;
 
-                this.dataSourceInfo.action = 'fluentform_chained_select_remove_ds';
+                const data = Object.assign(
+                    {}, 
+                    this.dataSourceInfo, 
+                    {action: 'fluentform_chained_select_remove_ds'}
+                )
 
-                FluentFormsGlobal.$post(this.dataSourceInfo).then(response => {
+                FluentFormsGlobal.$post(data).then(response => {
                     this.editItem.settings.data_source.url = '';
                     this.editItem.settings.data_source.name = '';
                     this.editItem.settings.data_source.meta_key = null;

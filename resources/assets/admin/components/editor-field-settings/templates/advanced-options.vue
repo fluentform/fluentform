@@ -85,7 +85,7 @@
             size="mini"
             @click="initBulkEdit()"
             v-if="!editItem.settings.calc_value_status && !editItem.settings.enable_image_input"
-        >Bulk Edit</el-button>
+        >Bulk Edit / Predefined Data Sets </el-button>
 
         <el-dialog
             :append-to-body="true"

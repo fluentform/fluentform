@@ -803,10 +803,10 @@ class Entries extends EntryQuery
 
         $search = sanitize_text_field($this->request->get('search'));
 
-        $users = get_users(array(
-            'search' => $search,
+        $users = get_users([
+            'search' => "*{$search}*",
             'number' => 50
-        ));
+        ]);
 
         $formattedUsers = [];
 
@@ -820,7 +820,6 @@ class Entries extends EntryQuery
         wp_send_json_success([
             'users' => $formattedUsers
         ]);
-
     }
 
     public function changeEntryUser()

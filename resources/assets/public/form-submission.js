@@ -395,7 +395,7 @@ jQuery(document).ready(function () {
 
                 var formResetHandler = function ($this) {
                     if ($('.ff-step-body', $theForm).length) {
-                        fireUpdateSlider(0, fluentFormVars.stepAnimationDuration);
+                        fireUpdateSlider(0, fluentFormVars.stepAnimationDuration, false);
                     }
                     $this.find('.ff-el-repeat .ff-t-cell').each(function () {
                         $(this).find('input').not(':first').remove();
@@ -906,7 +906,7 @@ jQuery(document).ready(function () {
                 }
 
                 const globalOptions = {
-                    clearIfNotMatch: false,
+                    clearIfNotMatch: window.fluentFormVars.jquery_mask_vars.clearIfNotMatch,
                     translation: {
                         '*': {pattern: /[0-9a-zA-Z]/},
                         '0': {pattern: /\d/},
@@ -914,7 +914,7 @@ jQuery(document).ready(function () {
                         '#': {pattern: /\d/, recursive: true},
                         'A': {pattern: /[a-zA-Z0-9]/},
                         'S': {pattern: /[a-zA-Z]/}
-                    }
+                    },
                 };
 
                 $('input[data-mask]').each(function (key, el) {

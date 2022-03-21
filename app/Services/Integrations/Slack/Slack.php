@@ -25,7 +25,7 @@ class Slack
      * @param $formData
      * @param $form
      */
-    public function handle($feed, $formData, $form, $entry)
+    public static function handle($feed, $formData, $form, $entry)
     {
         $settings = $feed['processedValues'];
 
@@ -33,8 +33,10 @@ class Slack
 
         $labels = FormFieldsParser::getAdminLabels($form, $inputs);
 
+        $labels = apply_filters('fluentform_slack_field_label_selection', $labels ,$settings, $form);
+
         $formData = FormDataParser::parseData((object)$formData, $inputs, $form->id);
-        
+
         $slackTitle = ArrayHelper::get($settings, 'textTitle');
       
         if($slackTitle === '') {
@@ -46,10 +48,13 @@ class Slack
         $fields = [];
 
         foreach ($formData as $attribute => $value) {
+
             $value = str_replace('&', '&amp;', $value);
             $value = str_replace('<', '&lt;', $value);
             $value = str_replace('>', "&gt;", $value);
-
+            if ( ! isset($labels[$attribute]) || empty($value)) {
+                continue;
+            }
             $fields[] = [
                 'title' => $labels[$attribute],
                 'value' => $value,

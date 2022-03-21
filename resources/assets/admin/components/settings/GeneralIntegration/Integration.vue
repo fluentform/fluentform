@@ -4,12 +4,15 @@
             <el-col :md="12"><h2>All Form Integrations</h2></el-col>
             <!--Add Feed-->
             <el-col v-if="!isEmpty(available_integrations)" :md="12" class="action-buttons mb15 clearfix">
-                <el-dropdown type="primary" class="pull-right" @command="add">
+                <el-dropdown type="primary" class="pull-right" @command="add" :hide-on-click="false" >
                     <el-button size="small" type="primary">
                         Add New Integration<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(integration,integration_name) in available_integrations" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
+                    <el-dropdown-menu slot="dropdown" style="max-height: 400px;overflow: auto">
+                        <el-dropdown-item>
+                            <el-input @click.prevent autofocus v-model="search" :placeholder="$t('Search Integration')"></el-input>
+                        </el-dropdown-item>
+                        <el-dropdown-item v-for="(integration,integration_name) in filteredList" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -81,6 +84,7 @@
         },
         data() {
             return {
+                search: '',
                 loading: true,
                 integrations: [],
                 errors: new Errors,
@@ -193,6 +197,15 @@
             isEmpty
         },
         computed: {
+            filteredList() {
+                let filteredList = {};
+                Object.keys(this.available_integrations).map(key => {
+                    if (key.toLowerCase().includes(this.search.toLowerCase())) {
+                        filteredList[key] = this.available_integrations[key];
+                    }
+                });
+                return filteredList;
+            }
 
         },
         beforeMount() {

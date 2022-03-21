@@ -150,6 +150,10 @@ class DataLogger
             $logsQuery = $logsQuery->where('fluentform_logs.component', sanitize_text_field($component));
         }
 
+        if ($formId = ArrayHelper::get($_REQUEST, 'form_id')) {
+            $logsQuery = $logsQuery->where('fluentform_forms.id', intval($formId));
+        }
+
         $logsQueryMain = $logsQuery;
 
         $logs = $logsQuery->offset($skip)

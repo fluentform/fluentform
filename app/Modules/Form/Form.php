@@ -324,7 +324,7 @@ class Form
     public function update()
     {
         $formId = $this->request->get('formId');
-        $title = $this->request->get('title');
+        $title = sanitize_text_field($this->request->get('title'));
         $status = $this->request->get('status', 'published');
 
         $this->validate();
@@ -529,8 +529,7 @@ class Form
             }
         }
 
-
-        if (!$this->request->get('title')) {
+        if (!sanitize_text_field($this->request->get('title'))) {
             wp_send_json([
                 'title' => 'The title field is required.'
             ], 422);

@@ -69,6 +69,18 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <br/>
+    
+            <el-pagination
+                @current-change="goToPage"
+                background
+                :hide-on-single-page="true"
+                small
+                :page-size="pagination.per_page"
+                :current-page.sync="pagination.page_number"
+                layout="prev, pager, next"
+                :total="pagination.total">
+            </el-pagination>
         </div>
 
         <el-dialog
@@ -237,6 +249,11 @@ export default {
                 .always(() => {
                     this.loading = false;
                 });
+        },
+    
+        goToPage(value) {
+            this.pagination.current_page = value;
+            this.fetch();
         }
     },
 

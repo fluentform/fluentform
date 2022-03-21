@@ -286,3 +286,15 @@
 .compact td>.cell {
     white-space: nowrap;
 }
+
+.el-tooltip {
+    &__popper {
+        p {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.el-dropdown-menu {
+    left: unset;
+}

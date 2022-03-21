@@ -118,6 +118,7 @@
                         if (response) {
                             this.loading = false;
                             this.$notify.success({
+                                title: 'Great',
                                 message: response.data.message,
                                 offset: 30
                             });

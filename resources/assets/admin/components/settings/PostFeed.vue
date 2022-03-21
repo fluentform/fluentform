@@ -44,6 +44,22 @@
                             v-model="post_settings.post_info.value.post_type"
                     />
                 </el-form-item>
+                <el-form-item label="Submissoin Type">
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Create or Update Post</h3>
+                            <p>
+                                For post update only one feed is avaiable, if you have more then one the first one will work.
+                            </p>
+                        </div>
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                    <el-radio-group v-model="feed.value.post_form_type">
+                        <el-radio label="new">New Post</el-radio>
+                        <el-radio label="update">Update Post</el-radio>
+                        
+                    </el-radio-group>
+                </el-form-item>
 
                 <el-form-item label="Post Status">
                     <el-select v-model="feed.value.post_status" style="width:100%;">

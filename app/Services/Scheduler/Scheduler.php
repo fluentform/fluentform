@@ -138,7 +138,11 @@ class Scheduler
             'Content-Type: text/html; charset=utf-8'
         ];
 
-        $emailSubject = sprintf( esc_html__( 'Email Summary of Your Forms (Last %d Days)', 'my-text-domain' ), $days );
+        $emailSubject = sprintf(esc_html__('Email Summary of Your Forms (Last %d Days)', 'fluentform'), $days);
+
+        if (isset($settings['subject']) && $settings['subject']) {
+            $emailSubject = $settings['subject'];
+        }
 
         $emailSubject = apply_filters('fluentform_email_summary_subject', $emailSubject);
 

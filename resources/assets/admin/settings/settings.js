@@ -38,6 +38,7 @@ import {
     TableColumn,
     Tag,
     Popover,
+    Pagination
 } from 'element-ui';
 
 locale.use(lang);
@@ -64,6 +65,7 @@ Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(Tag);
 Vue.use(Popover);
+Vue.use(Pagination);
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 

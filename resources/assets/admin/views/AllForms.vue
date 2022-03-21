@@ -76,7 +76,9 @@
 
                             <el-table-column sortable :label="$t('Title')" prop="title" min-width="230">
                                 <template slot-scope="scope">
-                                    <strong>{{ scope.row.title }}</strong>
+                                    <strong>
+                                        {{ scope.row.title }}
+                                    </strong>
                                     <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
                                     <div class="row-actions">
                                         <template v-if="hasPermission('fluentform_forms_manager')">
@@ -108,6 +110,16 @@
                                                     <a slot="icon">{{ $t('Delete') }}</a>
                                                 </remove>
                                             </span>
+                                            <el-switch 
+                                                active-color="#13ce66" 
+                                                :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
+                                                @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
+                                                size="mini" 
+                                                active-value="published" 
+                                                inactive-value="unpublished" 
+                                                v-model="scope.row.status" 
+                                            />
+
                                         </template>
                                     </div>
                                 </template>
@@ -267,6 +279,31 @@ export default {
         }
     },
     methods: {
+        toggleStatus(id,title,status){
+            this.loading = true;
+    
+            let data = {
+                action: 'fluentform-form-update',
+                title: title,
+                formId: id,
+                status: status,
+            };
+    
+            FluentFormsGlobal.$post(data)
+                .then((response) => {
+                    this.$notify.success({
+                        title: 'Success!',
+                        message: response.message,
+                        offset: 30
+                    });
+                })
+                .fail(error => {
+                    this.$message.error('Something went wrong, please try again.');
+                })
+                .always(() => {
+                    this.loading = false;
+                });
+        },
         goToPage(val) {
             jQuery('html, body').animate({scrollTop: 0}, 300).promise().then(elements => {
                 this.fetchItems(
