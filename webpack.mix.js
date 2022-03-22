@@ -1,5 +1,6 @@
 let mix = require('laravel-mix');
 const exec = require('child_process').exec;
+const path = require('path');
 
 mix.setPublicPath('public');
 mix.setResourceRoot('../');
@@ -23,10 +24,6 @@ mix.webpackConfig({
     }
 });
 
-mix.options({
-    extractVueStyles: 'public/css/elements.css'
-});
-
 // mix.js('resources/assets/admin/editor_app.js', `public/js/fluent-forms-editor.js`);
 // return;
 
@@ -47,6 +44,10 @@ mix
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `public/js/conversational_design.js`)
+    .vue({ 
+        version: 2, 
+        extractStyles: true 
+    })
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)
