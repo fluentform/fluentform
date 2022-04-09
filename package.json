@@ -15,7 +15,7 @@
         "element-ui": "^2.15.6",
         "jquery-datetimepicker": "^2.5.21",
         "lodash": "^4.17.21",
-        "moment": "^2.29.1",
+        "moment": "^2.29.2",
         "normalize.css": "^8.0.1",
         "primer-tooltips": "^2.0.0",
         "vddl": "^0.7.1",
