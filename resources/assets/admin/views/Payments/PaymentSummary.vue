@@ -85,7 +85,7 @@
 
                                     <span :class="'ff_pay_status_badge ff_pay_status_' + submission.payment_status">
                                         <i :class="getPaymentStatusIcon(submission.payment_status)"/>
-                                        {{submission.payment_status}}
+                                      {{ payment_statuses[submission.payment_status] || submission.payment_status }}
                                     </span>
                                 </template>
 
@@ -164,7 +164,7 @@
                         <li v-show="transaction.status">
                             <div class="ff_list_header">{{$t('Payment Status')}}</div>
                             <div class="ff_list_value">
-                                <span class="ff_card_badge" :class="'ff_badge_status_'+transaction.status">{{ transaction.status }}</span>
+                                <span class="ff_card_badge" :class="'ff_badge_status_'+transaction.status">{{ payment_statuses[transaction.status] || transaction.status }}</span>
                             </div>
                         </li>
                         <li>

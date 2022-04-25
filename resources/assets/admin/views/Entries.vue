@@ -310,14 +310,14 @@
                 <template v-if="has_payment">
                     <el-table-column
                             :label="$t('Amount')"
-                            width="120px">
+                            min-width="120px">
                         <template slot-scope="scope">
                             <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                         </template>
                     </el-table-column>
                     <el-table-column
                             :label="$t('Payment Status')"
-                            width="120px">
+                            min-width="120px">
                         <template slot-scope="scope">
                             <span class="ff_pay_status_badge" 
                                   :class="'ff_pay_status_'+scope.row.payment_status"
@@ -329,7 +329,7 @@
                     </el-table-column>
                     <el-table-column
                             :label="$t('Payment Method')"
-                            width="120px">
+                            min-width="120px">
                         <template slot-scope="scope">
                             <span class="ff_card_badge" v-if="scope.row.payment_method">
                                 {{ getPaymentMethodName(scope.row.payment_method) }}

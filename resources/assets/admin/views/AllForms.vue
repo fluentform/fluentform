@@ -70,7 +70,8 @@
                             :data="items"
                             :stripe="true"
                             @sort-change="handleTableSort"
-                            @selection-change="handleSelectionChange">
+                            @selection-change="handleSelectionChange"
+                            :row-class-name="tableRowClass">
 
                             <el-table-column sortable :label="$t('ID')" prop="id" width="60"></el-table-column>
 
@@ -109,7 +110,7 @@
                                                 <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
                                                     <a slot="icon">{{ $t('Delete') }}</a>
                                                 </remove>
-                                            </span>
+                                            </span> |
                                             <el-switch 
                                                 active-color="#13ce66" 
                                                 :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
@@ -443,6 +444,9 @@ export default {
                     action: 'fluentform-predefined-create'
                 });
             }
+        },
+        tableRowClass({row}) {
+            return row.status == 'unpublished' ? 'inactive_form' : '';
         }
     },
     mounted() {

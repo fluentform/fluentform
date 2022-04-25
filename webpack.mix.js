@@ -46,7 +46,7 @@ mix
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `public/js/conversational_design.js`)
     .vue({ 
         version: 2, 
-        extractStyles: true 
+        extractStyles: false
     })
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)

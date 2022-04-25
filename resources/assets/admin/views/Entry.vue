@@ -73,7 +73,17 @@
                         </div>
                     </div>
                 </div>
-
+    
+                <div v-for="(card, cardKey) in extraCards" class="entry_info_box">
+                    <div class="entry_info_header">
+                        <b>{{card.title}}</b>
+                    </div>
+                    <div class="entry_info_body narrow_items">
+                        <div v-html="card.content"></div>
+                    </div>
+                </div>
+    
+    
                 <payment-summary 
                     @reload_payments="getEntry()" 
                     v-if="order_data" 
@@ -232,7 +242,8 @@
                 original_data: {},
                 show_empty: 'no',
                 widgets: {},
-                labels: {}
+                labels: {},
+                extraCards :{}
             }
         },
         methods: {
@@ -259,6 +270,7 @@
                             this.entry_id = this.entry.id;
                             this.order_data = res.data.order_data;
                             this.widgets = res.data.widgets;
+                            this.extraCards = res.data.extraCards;
 
                             this.nextId = res.data.next && res.data.next.id;
                             this.prevId = res.data.prev && res.data.prev.id;

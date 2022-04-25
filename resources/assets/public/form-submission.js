@@ -761,17 +761,11 @@ jQuery(document).ready(function () {
                         $popContent.css('max-width', formWidth);
 
                         const iconLeft = $(this).offset().left;
-                        const formLeft = $theForm.offset().left;
                         const contentWidth = $popContent.outerWidth();
                         const contentHeight = $popContent.outerHeight();
 
                         let tipPosition = iconLeft - (contentWidth / 2) + 10;
 
-                        if ((tipPosition + contentWidth) > formWidth) {
-                            tipPosition = (formLeft + formWidth) / 2;
-                        } else if (tipPosition < formLeft) {
-                            tipPosition = formLeft;
-                        }
 
                         $popContent.css('top', $(this).offset().top - contentHeight - 5);
                         $popContent.css('left', tipPosition);
@@ -1012,7 +1006,7 @@ jQuery(document).ready(function () {
                                         self.errors[elName][ruleName] = rule.message;
                                     }
                                 } else {
-                                    throw new Error('Method [' + ruleName + '] doesn\'t exist in Validator.');
+                                    // throw new Error('Method [' + ruleName + '] doesn\'t exist in Validator.');
                                 }
                             });
                         }
@@ -1146,6 +1140,22 @@ jQuery(document).ready(function () {
                     }
                 };
 
+                /**
+                 * Validates if number of digits matches
+                 * @param  jQuery Elelemnt el
+                 * @return bool
+                 */
+                 this.digits = function (el, rule) {
+                    var val = window.ff_helper.numericVal(el);
+                    val = val.toString();
+
+                    if (!rule.value || !val.length) {
+                        return true;
+                    }
+
+                    return this.numeric(el, rule) && val.length == rule.value;
+                };
+
                 this.max_file_size = function () {
                     return true;
                 };
@@ -1255,9 +1265,7 @@ jQuery(document).ready(function () {
                 return false;
             }
             formInstance.reinitExtras();
-            if (window.grecaptcha) {
-                grecaptcha.reset(); //two recapthca on same page creates conflicts
-            }
+           
             if (window.hcaptcha) {
                 hcaptcha.reset(); //two recapthca on same page creates conflicts
             }

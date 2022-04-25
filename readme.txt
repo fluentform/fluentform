@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 5.9.2
+Tested up to: 5.9.3
 Requires PHP: 5.6
-Stable tag: 4.3.4
+Stable tag: 4.3.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -363,6 +363,22 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.5 (Date: Apr 22, 2022) =
+- Adds CLI support
+- Adds Oxygen builder native widget support
+- Adds support for programmatically form rendering
+- Adds digits validation for numeric field
+- Adds mechanism for adding custom validation rules
+- Adds {all_data_without_hidden_fields} shortcode
+- Improves payment status translations
+- Improves deactivated form styles
+- Fixes help message tooltip position issue
+- Fixes tooltip behavior in Elementor Popup
+- Fixes reCAPTCHA v3 issue in Elementor Popup
+- Fixes entries table style
+- Fixes dropdown open style issue
+- Fixes Elementor widget issue
 
 = 4.3.4 (Date: Mar 18, 2022) =
 - Adds configuragion option for email summary subject

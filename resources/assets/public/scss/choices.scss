@@ -270,7 +270,8 @@ $inner-border-color: #ced4da;
     visibility: hidden;
     z-index: $choices-z-index;
     position: absolute;
-    width: 100%;
+    min-width: 100%;
+    width: max-content;
     background-color: $choices-bg-color-dropdown;
     border: 1px solid $focus-border-color;
     top: 100%;
@@ -388,7 +389,6 @@ $inner-border-color: #ced4da;
     display: block !important;
   }
   &.choices__list--dropdown {
-    position: relative !important;
     display: none;
   }
 }

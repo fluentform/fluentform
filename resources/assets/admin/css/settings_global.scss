@@ -800,3 +800,29 @@ ul.fcc_inline_social {
         margin-top: 5px;
     }
 }
+.ff-quiz-settings-wrapper {
+    .quiz-field {
+        display: flex;
+        margin-bottom: 15px;
+        align-items: center;
+    }
+    .quiz-field-setting {
+        padding-right: 10px;
+        display: flex; flex-direction: column;
+    }
+    .quiz-questions > div {
+        .quiz-field-container {
+            border: 1px solid #efefef;
+            border-bottom: none;
+            padding: 10px;
+        }
+        > div {
+            &:last-child {
+                .quiz-field-container {
+                    border-bottom: 1px solid #efefef;
+                }
+            }
+        }
+
+    }
+}

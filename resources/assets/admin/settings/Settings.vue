@@ -25,7 +25,7 @@
         <!--Different form settings section-->
         <el-row style="margin-bottom: 50px;">
             <el-col v-if="app_ready" :md="24">
-                <layout :email_report="email_report" :data="formSettings"></layout>
+                <layout :email_report="email_report" :integration_failure_notification="integration_failure_notification" :data="formSettings"></layout>
             </el-col>
         </el-row>
 
@@ -62,7 +62,8 @@
                         isIpLogingDisabled: false,
                     },
                 },
-                email_report: {}
+                email_report: {},
+                integration_failure_notification: {},
             }
         },
         methods: {
@@ -72,7 +73,8 @@
                     action: 'fluentform-global-settings',
                     key: [
                         '_fluentform_global_form_settings',
-                        '_fluentform_email_report_summary'
+                        '_fluentform_email_report_summary',
+                        '_fluentform_failed_integration_notification'
                     ]
                 })
                     .then(response => {
@@ -96,6 +98,16 @@
                             };
                         }
                         this.email_report = emailReport;
+                        let failedNotification = response.data._fluentform_failed_integration_notification;
+                        if (!failedNotification) {
+                            failedNotification = {
+                                status: 'no',
+                                send_to_type: 'admin_email',
+                                custom_recipients: '',
+                            };
+                        }
+                        this.integration_failure_notification = failedNotification;
+    
                     })
                     .fail(e => {
                         this.loading = false;
@@ -131,6 +143,7 @@
                     });
 
                 this.saveEmailSummarySettings();
+                this.saveFailedIntegrationNotification();
             },
             saveEmailSummarySettings() {
                 let data = {
@@ -141,6 +154,18 @@
                 FluentFormsGlobal.$post(data)
                     .done(response => {
 
+                    });
+            },
+            saveFailedIntegrationNotification() {
+                let data = {
+                    value: JSON.stringify(this.integration_failure_notification),
+                    action: 'fluentform-global-settings-store',
+                    key: 'failedIntegrationNotification',
+    
+                };
+                FluentFormsGlobal.$post(data)
+                    .done(response => {
+                
                     });
             }
         },

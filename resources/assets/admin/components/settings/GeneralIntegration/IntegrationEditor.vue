@@ -385,7 +385,7 @@
                         this.merge_fields = response.data.merge_fields;
                     })
                     .fail(error => {
-                        console.log(error);
+                      this.$notify.error(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.loading_list = false;

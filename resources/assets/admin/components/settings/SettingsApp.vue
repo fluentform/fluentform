@@ -55,6 +55,7 @@
                         let allShortCodes = response;
                         if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {
                             delete allShortCodes[0]['shortcodes']['{all_data}'];
+                            delete allShortCodes[0]['shortcodes']['{all_data_without_hidden_fields}'];
                         }
 
                         this.editorShortcodes = allShortCodes;

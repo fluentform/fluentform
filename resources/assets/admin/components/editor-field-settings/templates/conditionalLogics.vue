@@ -138,7 +138,8 @@
                     'custom_payment_component',
                     'multi_payment_component',
                     'item_quantity_component',
-                    'cpt_selection'
+                    'cpt_selection',
+                    'subscription_payment_component'
                 ],
                 showPreventMessage: false,
                 emptyRules: { field: '', value: '', operator: '' }

@@ -122,6 +122,8 @@ import GeneralIntegration from './components/settings/GeneralIntegration/Integra
 import EditGeneralIntegration from './components/settings/GeneralIntegration/IntegrationEditor.vue';
 import PdfFeeds from './components/settings/PdfFeeds.vue';
 import PaymentSettings from './components/settings/PaymentSettings';
+import QuizSettings from './components/settings/QuizSettings';
+
 const routes = [
     {
         path: '*',
@@ -187,6 +189,11 @@ const routes = [
         path: '/landing_pages',
         name: 'landing_pages',
         component: LandingPages
+    },
+    {
+        path: '/quiz_settings',
+        name: 'quiz_settings',
+        component: QuizSettings
     }
 ];
 

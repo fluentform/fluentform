@@ -172,6 +172,63 @@
                 </el-col>
             </el-row>
         </div>
+        
+        <!-- Integration Failure Notification-->
+        <div class="ff_email_notification_settings">
+            <el-row class="setting_header">
+                <el-col :md="24">
+                    <h2>Integration Failure Email Notification</h2>
+                    <p>Receive an instant email notification when any of your integraion is not running.
+                        Enable Integration Failure Notification option and you will get an email when any of your
+                        integration fails to run</p>
+                </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 50px;">
+                <el-col :md="24">
+                    <el-form-item>
+                        <template slot="label">
+                            Status
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <p>
+                                        Enable Integration Failure Notification if you want recieve a email notification each time any of your integration fails to run.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no" v-model="integration_failure_notification.status"> Enable Integration Failure Notification
+                        </el-checkbox>
+                        <p v-if="!hasPro"><b>This is a Pro Feature</b></p>
+                    </el-form-item>
+                    <template v-if="integration_failure_notification.status == 'yes' && hasPro" >
+                        <el-form-item>
+                            <template slot="label">
+                                Send To
+                                <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div slot="content">
+                                        <p>
+                                            Please specify who will get the email notification
+                                        </p>
+                                    </div>
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-radio-group v-model="integration_failure_notification.send_to_type">
+                                <el-radio label="admin_email">Site Admin</el-radio>
+                                <el-radio label="custom_email">Custom Email</el-radio>
+                            </el-radio-group>
+                            <div v-if="integration_failure_notification.send_to_type == 'custom_email'">
+                                <label>Please recipient email address</label>
+                                <el-input placeholder="Recipient Email Address"
+                                          v-model="integration_failure_notification.custom_recipients"></el-input>
+                                <p>For Multiple please use comma separated values</p>
+                            </div>
+                        </el-form-item>
+                    </template>
+                </el-col>
+            </el-row>
+        </div>
 
         <el-row class="setting_header">
             <el-col :md="18">
@@ -412,6 +469,9 @@
                 required: true
             },
             email_report: {
+                required: true
+            },
+            integration_failure_notification: {
                 required: true
             }
         },
