@@ -824,7 +824,9 @@ jQuery(document).ready(function () {
         const fluentFormCommonActions = {
 
             init: function () {
-                this.initMultiSelect();
+                setTimeout(() => {
+                    this.initMultiSelect();
+                }, 100);
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
