@@ -25,6 +25,6 @@
     }
     window.FluentFormsGlobal = new FluentFormsGlobal();
 
-    jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').remove();
+    jQuery('.update-nag, .notice:not(.ff_form_wrap .notice), #wpbody-content > .updated, #wpbody-content > .error:not(.error_notice_ff_fluentform_pro_license)').remove();
 
 })(jQuery)
