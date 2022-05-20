@@ -235,8 +235,12 @@ add_action('fluentform_loading_editor_assets', function ($form) {
     ];
     foreach ($upgradableFileInputs as $upgradeElement) {
         add_filter('fluentform_editor_init_element_' . $upgradeElement, function ($element) {
-            $element['settings']['upload_file_location'] = 'default';
-            $element['settings']['file_location_type'] = 'follow_global_settings';
+            if (!isset($element['settings']['upload_file_location'])) {
+                $element['settings']['upload_file_location'] = 'default';
+            };
+            if (!isset($element['settings']['file_location_type'])) {
+                $element['settings']['file_location_type'] = 'follow_global_settings';
+            };
             return $element;
         });
     }
