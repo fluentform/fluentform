@@ -21,6 +21,7 @@
                         size="small"
                         :placeholder="field.placeholder"
                         v-model="model"
+                        :readonly="field.readonly"
                 ></el-input>
             </template>
 

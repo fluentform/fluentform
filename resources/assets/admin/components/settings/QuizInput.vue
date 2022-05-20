@@ -4,14 +4,20 @@
             <div class="quiz-field-setting">
                 <el-switch v-model="input.enabled"/>
             </div>
-            <div>{{ original_input.label }}</div>
+            <div class="quiz-field-setting">
+                {{ original_input.label }}
+            </div>
+            <div class="quiz-field-setting"  v-if="input.enabled == true && hasOptions(input)" >
+                <el-checkbox true-label="yes" false-label="no" v-model="input.has_advance_scoring">
+                    {{ $t('Advance Scoring') }}
+                </el-checkbox>
+            </div>
         </div>
         <transition name="slide-down">
-            <div v-if="input.enabled == true" class="quiz-field">
-                <div class="quiz-field-setting" >
+            <div v-if="input.enabled == true && input.has_advance_scoring == 'no'" class="quiz-field">
+                <div class="quiz-field-setting">
                     {{ $t('Score') }}
                     <el-input-number   size="small" v-model="input.points" controls-position="right" :min="1" :max="100"></el-input-number>
-                  
                 </div>
                 <div class="quiz-field-setting" v-if="ifNeedsCondition(input.element)">
                     {{ $t('Condition') }}
@@ -64,6 +70,21 @@
                 </div>
             </div>
         </transition>
+        <transition v-if="input.has_advance_scoring == 'yes'">
+            <div>
+                <span v-for="(item, key) in original_input.options" class="quiz-field">
+                    <div  class="quiz-field-setting">
+                       <el-input-number size="small" v-model="input.advance_points[key]"
+                                        controls-position="right"
+                                        :min="0" :max="100">
+                       </el-input-number>
+                    </div>
+                    <div class="quiz-field-setting" >
+                        {{ item }}
+                    </div>
+                </span>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -98,15 +119,28 @@ export default {
             return textInput.includes(key) ? true : false;
         },
         resetValue(input) {
-    
             this.$refs.resetInput.selectedLabel = '';
             input.correct_answer = null;
-            
         },
         isMultiple(item) {
             return item.condition == 'equal' ? false : true;
+        },
+        setDefaultPoints(){
+            let isEmpty = Object.keys(this.input.advance_points).length === 0;
+            if (isEmpty){
+                this.input.advance_points = this.original_input.advance_points
+            }
+        },
+        hasOptions(item){
+           return Object.keys(this.input.advance_points).length !== 0;
         }
+
     },
-    
+    mounted() {
+        if (!this.input.has_advance_scoring){
+            this.$set(this.input, 'has_advance_scoring', 'no');
+        }
+        this.setDefaultPoints();
+    }
 }
 </script>

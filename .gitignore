@@ -14,3 +14,4 @@ svn.php
 !/public/js/fluent_gutenblock.js
 package-lock.json
 public_build
+.distignore

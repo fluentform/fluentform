@@ -615,7 +615,7 @@
 .fluentform-step {
   float: left;
   height: 1px;
-  overflow: hidden;
+  overflow-x: hidden;
   padding: 3px;
   &.active {
     height: auto;

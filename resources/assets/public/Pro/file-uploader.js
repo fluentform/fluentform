@@ -145,6 +145,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
                     var removeBtn = $('<span/>', {
                         'data-href': '#',
+                        'data-attachment-id':'',
                         'html': '&times;',
                         'class': 'ff-upload-remove'
                     });
@@ -193,9 +194,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
                             rules['max_file_count']['remaining'] -= 1;
                             data.context.attr('data-src', data.result.data.files[0].url);
-                            data.context.find('.ff-upload-remove').attr(
-                                'data-href', data.result.data.files[0].file
-                            );
+                            data.context.find('.ff-upload-remove').attr({
+                                'data-href': data.result.data.files[0].file,
+                                'data-attachment-id': data.result.data.files[0].attachment_id
+                            });
 
                             $form.find('input[name=' + $el.data('name') + ']').trigger('change');
                         }
@@ -296,7 +298,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 $this = $(this),
                 parent = $this.closest('.ff-uploaded-list'),
                 $el = parent.closest('.ff-el-input--content').find('input[type=file]'),
-                filePath = $this.attr('data-href');
+                filePath = $this.attr('data-href'),
+                attachmentId = $this.attr('data-attachment-id');
             if (filePath == '#') {
                 $this.closest('.ff-upload-preview').remove();
                 if (!parent.find('.ff-upload-preview').length) {
@@ -306,6 +309,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             } else {
                 $.post(fluentFormVars.ajaxUrl, {
                     path: filePath,
+                    attachment_id : attachmentId,
                     action: 'fluentform_delete_uploaded_file'
                 })
                     .then(function (response) {
@@ -361,4 +365,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
     initUploader();
     registerFileRemove();
+
+    $(document.body).on('fluentform_reset', function () {
+        initUploader();
+    });
 };

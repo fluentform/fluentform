@@ -278,9 +278,12 @@ $inner-border-color: #ced4da;
     margin-top: -1px;
     border-bottom-left-radius: $choices-border-radius;
     border-bottom-right-radius: $choices-border-radius;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     word-break: break-all;
     will-change: visibility;
+    height: auto;
+    max-height: 180px;
     &.is-active {
       visibility: visible;
     }

@@ -455,6 +455,36 @@
                         </template>
                     </div>
                 </el-form-item>
+                <!-- File Upload Location -->
+                <el-form-item >
+                    <template slot="label">
+                        {{$t('File Upload Location')}}
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>{{$t('File Upload Location')}}</h3>
+                                <p>
+                                    {{$t('Select where to store uploaded files.')}}
+                                </p>
+                            </div>
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+
+                    </template>
+                    <div class="ff_items_inline">
+                        <el-select size="small":disabled="!hasPro"  v-model="misc.file_upload_locations">
+                            <el-option
+                                    v-for="location in file_upload_optoins"
+                                    :key="location.value" :value="location.value"
+                                    :label="location.label">
+
+                            </el-option>
+                        </el-select>
+                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+
+
+                    </div>
+                </el-form-item>
+
 
             </el-col>
         </el-row>
@@ -472,6 +502,9 @@
                 required: true
             },
             integration_failure_notification: {
+                required: true
+            },
+            file_upload_optoins: {
                 required: true
             }
         },
@@ -521,6 +554,9 @@
 
             if(!this.data.misc.geo_provider) {
                 this.$set(this.data.misc, 'geo_provider', 'ipinfo.io');
+            }
+            if(!this.data.misc.file_upload_locations) {
+                this.$set(this.data.misc, 'file_upload_locations', 'default');
             }
 
             this.misc = this.data.misc;

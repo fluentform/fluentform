@@ -116,3 +116,13 @@ new Vue({
         });
     }
 });
+Vue.mixin(
+    {
+        methods: {
+            $t(str){
+                return str;
+            }
+        }
+    }
+)
+

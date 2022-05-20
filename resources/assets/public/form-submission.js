@@ -312,6 +312,7 @@ jQuery(document).ready(function () {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
                                 } else {
+                                    jQuery(document.body).trigger('fluentform_reset', [$theForm, form]);
                                     $theForm[0].reset();
                                 }
 

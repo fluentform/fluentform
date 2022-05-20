@@ -49,7 +49,7 @@
                         <div slot="content">
                             <h3>Create or Update Post</h3>
                             <p>
-                                For post update only one feed is avaiable, if you have more then one the first one will work.
+                                For post update only one feed is avaiable, if you have more than one feed the first one will work.
                             </p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>

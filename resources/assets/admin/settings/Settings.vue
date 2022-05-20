@@ -25,7 +25,12 @@
         <!--Different form settings section-->
         <el-row style="margin-bottom: 50px;">
             <el-col v-if="app_ready" :md="24">
-                <layout :email_report="email_report" :integration_failure_notification="integration_failure_notification" :data="formSettings"></layout>
+                <layout 
+                    :email_report="email_report" 
+                    :integration_failure_notification="integration_failure_notification" 
+                    :data="formSettings" 
+                    :file_upload_optoins="file_upload_optoins"
+                />
             </el-col>
         </el-row>
 
@@ -60,10 +65,12 @@
                     },
                     misc: {
                         isIpLogingDisabled: false,
+                        file_upload_locations: '',
                     },
                 },
                 email_report: {},
                 integration_failure_notification: {},
+                file_upload_optoins: [],
             }
         },
         methods: {
@@ -107,7 +114,7 @@
                             };
                         }
                         this.integration_failure_notification = failedNotification;
-    
+                        this.file_upload_optoins = response.data.file_upload_optoins;
                     })
                     .fail(e => {
                         this.loading = false;
