@@ -484,6 +484,32 @@
 
                     </div>
                 </el-form-item>
+                <!-- Enable captcha in All form -->
+                <el-form-item>
+                    <template slot="label">
+                        Autoload Captcha
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>Captcha Autoload</h3>
+                                <p>
+                                    If you enable this then Fluent Forms will insert captcha in all your forms. Please
+                                    enable the captcha first.
+                                </p>
+                            </div>
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+                    <el-switch :disabled="!hasCaptcha" active-color="#13ce66"
+                               v-model="misc.autoload_captcha"></el-switch>
+                   <div>
+                       <el-radio-group v-model="misc.captcha_type"  v-if="misc.autoload_captcha">
+                           <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">Google ReCaptcha</el-radio>
+                           <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">hCaptcha</el-radio>
+                       </el-radio-group>
+                   </div>
+                </el-form-item>
+
+
 
 
             </el-col>
@@ -505,6 +531,9 @@
                 required: true
             },
             file_upload_optoins: {
+                required: true
+            },
+            captcha_status: {
                 required: true
             }
         },
@@ -543,6 +572,11 @@
                     }
                 },
                 hasPro: !!window.FluentFormApp.has_pro
+            }
+        },
+        computed:{
+            hasCaptcha(){
+                return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha;
             }
         },
         mounted() {

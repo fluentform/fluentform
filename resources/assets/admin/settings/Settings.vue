@@ -30,6 +30,7 @@
                     :integration_failure_notification="integration_failure_notification" 
                     :data="formSettings" 
                     :file_upload_optoins="file_upload_optoins"
+                    :captcha_status="captcha_status"
                 />
             </el-col>
         </el-row>
@@ -71,6 +72,10 @@
                 email_report: {},
                 integration_failure_notification: {},
                 file_upload_optoins: [],
+                captcha_status: {
+                    'hcaptcha': false,
+                    'recaptcha': false,
+                },
             }
         },
         methods: {
@@ -81,7 +86,9 @@
                     key: [
                         '_fluentform_global_form_settings',
                         '_fluentform_email_report_summary',
-                        '_fluentform_failed_integration_notification'
+                        '_fluentform_failed_integration_notification',
+                        '_fluentform_reCaptcha_keys_status',
+                        '_fluentform_hCaptcha_keys_status',
                     ]
                 })
                     .then(response => {
@@ -115,6 +122,10 @@
                         }
                         this.integration_failure_notification = failedNotification;
                         this.file_upload_optoins = response.data.file_upload_optoins;
+                        this.captcha_status = {
+                            hcaptcha: response.data._fluentform_hCaptcha_keys_status,
+                            recaptcha: response.data._fluentform_reCaptcha_keys_status
+                        }
                     })
                     .fail(e => {
                         this.loading = false;

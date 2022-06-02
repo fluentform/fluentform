@@ -145,7 +145,6 @@ export default {
         hcaptcha
           .execute(widgetId, { async: true })
           .then(function ({ response, key }) {
-            console.log(response);
             self.hCaptcha.token = response;
             self.disabled = false;
           })
