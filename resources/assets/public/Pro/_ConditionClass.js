@@ -101,9 +101,7 @@ class ConditionApp {
             return val !== null && val.indexOf(item.value) == -1;
         } else if(item.operator == 'test_regex') {
             const globalRegex = this.stringToRegex(item.value);
-
-            // for regex pattern whice match empty value
-            if (!val && globalRegex.test('')) return true;
+            val = val || '';
             return  globalRegex.test(val);
         }
         return false;
