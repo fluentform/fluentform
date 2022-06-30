@@ -73,6 +73,11 @@ class ConditionApp {
         }
 
         if (item.operator == '=') {
+
+            //when condition value is empty
+            if (item.value === '') {
+                return val === null;
+            }
             // this value can be array or string
             if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) != -1;
