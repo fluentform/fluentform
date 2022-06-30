@@ -638,6 +638,7 @@
   position: relative;
   border: solid #ced4da 1px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  overflow-wrap: break-word;
 }
 
 #{$prefix}-errors-in-stack {
