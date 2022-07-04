@@ -145,7 +145,7 @@
 
       #{$prefix}-t-cell {
         padding: 0 5px;
-        display: table-cell;
+        width: 100%;
 
         &:first-child {
           padding-left: 0;
@@ -157,10 +157,8 @@
       }
 
       #{$prefix}-t-container {
-        float: left;
-        width: 90%;
-        display: table;
-        table-layout: fixed;
+        display: flex;
+        flex-wrap: wrap;
       }
     }
 

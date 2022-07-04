@@ -35,6 +35,7 @@ import product from './templates/product.vue'
 import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
+import VueResizable from 'vue-resizable';
 
 export default {
     name: 'list',
@@ -85,7 +86,8 @@ export default {
         ff_customButton: customButton,
         ff_inputMultiPayment: inputMultiPayment,
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
-        ff_fieldsRepeatSettings: repeatFields
+        ff_fieldsRepeatSettings: repeatFields,
+        VueResizable
     },
     data() {
         return {
@@ -188,6 +190,28 @@ export default {
             if (jQuery(event.target).closest('.item-container').length) {
                 FluentFormEditorEvents.$emit('editor-inserter-in-container');
             }
-        }
-    }
+        },
+
+
+        resizeMove(event, index) {
+            let widthSum = 0;
+
+            this.$refs.container.childNodes.forEach( tab => {
+                widthSum += tab.clientWidth + 1;
+
+                if (this.$refs.container.clientWidth < widthSum) {
+                    this.maxW = event.width;
+                }
+                else {
+                    this.maxW = this.$refs.container.clientWidth;
+                }
+            });
+        },
+
+        resizeEnd(event, index) {
+            this.$refs.container.childNodes.forEach( (tab, idx) => {
+                this.item.columns[idx].width = parseInt((tab.clientWidth / this.$refs.container.clientWidth) * 100);
+            });
+        },
+    },
 };

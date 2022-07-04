@@ -102,7 +102,7 @@
 
 .vddl-list {
   padding-left: 0px;
-  min-height: $item-height;
+  min-height: 110px;
 }
 
 .vddl-placeholder {
@@ -204,21 +204,17 @@
 .item-container {
   border: 1px dashed #ffb900;
   display: flex;
-
-  .col {
-    box-sizing: border-box;
-    flex-grow: 1; /* default 0 */
-    border-right: 1px dashed #ffb900;
-    flex-basis: 0;
-    background: rgba(255, 185, 0, 0.08);
-    .panel__body {
-      background: transparent;
-    }
-
-    &:last-of-type {
-      border-right: 0;
-    }
-  }
+    .resizable {
+      width: 100%;
+      border-right: 1px dashed #ffb900;
+      background: rgba(255, 185, 0, 0.08);
+        .panel__body {
+          background: rgba(180, 180, 0, 0.09);
+        }
+        &:last-of-type {
+           border-right: 0;
+         }
+      }
 }
 
 .ff-el-form {
@@ -440,4 +436,8 @@
   background: white;
   padding: 5px 10px;
   margin-top: 5px;
+}
+
+.resizable-component>.resizable-r {
+  cursor: ew-resize !important;
 }

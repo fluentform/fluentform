@@ -22,6 +22,7 @@
         "vue": "^2.6.14",
         "vue-chartjs": "^3.5.1",
         "vue-html-to-paper": "^1.4.4",
+        "vue-resizable": "^2.1.3",
         "vue-router": "^3.5.3",
         "vuex": "^3.6.2"
     },
