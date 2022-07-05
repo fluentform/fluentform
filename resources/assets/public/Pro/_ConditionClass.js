@@ -73,6 +73,11 @@ class ConditionApp {
         }
 
         if (item.operator == '=') {
+
+            //when condition value is empty
+            if (item.value === '') {
+                return val === null;
+            }
             // this value can be array or string
             if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) != -1;
@@ -100,10 +105,25 @@ class ConditionApp {
         } else if (item.operator == 'doNotContains') {
             return val !== null && val.indexOf(item.value) == -1;
         } else if(item.operator == 'test_regex') {
-            const globalRegex = new RegExp(item.value, 'g');
+            const globalRegex = this.stringToRegex(item.value);
+            val = val || '';
             return  globalRegex.test(val);
         }
         return false;
+    }
+
+    stringToRegex(regex) {
+        let {
+            body,
+            flags,
+        } = String(regex)
+            .match(/^\/(?<body>.*)\/(?<flags>[gimsuy]*)$/)
+            ?.groups || {};
+        if (body) {
+            flags = flags ? flags : 'g';
+            return RegExp(body, flags);
+        }
+        return new RegExp(regex, 'g');
     }
 }
 

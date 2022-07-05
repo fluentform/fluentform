@@ -765,11 +765,15 @@ jQuery(document).ready(function () {
                         const contentWidth = $popContent.outerWidth();
                         const contentHeight = $popContent.outerHeight();
 
-                        let tipPosition = iconLeft - (contentWidth / 2) + 10;
+                        let tipLeftPosition = iconLeft - (contentWidth / 2) + 10;
 
+
+                        if (tipLeftPosition < 15) {
+                            tipLeftPosition = 15;
+                        }
 
                         $popContent.css('top', $(this).offset().top - contentHeight - 5);
-                        $popContent.css('left', tipPosition);
+                        $popContent.css('left', tipLeftPosition);
                     });
                     $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();

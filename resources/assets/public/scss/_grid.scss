@@ -1,17 +1,14 @@
 @media (min-width: 768px) {
     .frm-fluent-form {
         .ff-t-container {
-            display: table;
+            display: flex;
             width: 100%;
-            table-layout: fixed;
-            vertical-align: top;
             &.ff_cond_v {
-                display: table !important;
+                display: flex !important;
             }
         }
 
         .ff-t-cell {
-            display: table-cell;
             padding: 0 15px;
             vertical-align: inherit;
             width: 100%;
