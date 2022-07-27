@@ -115,10 +115,21 @@ class EditorShortcodeParser
 
                 return '<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>';
             } else {
-                // This can be the css
-                $handlerValue = apply_filters('fluentform_editor_shortcode_callback_' . $handler, '{' . $handler . '}', $form);
-                // In not found then return the original please
-                $filteredValue = $handlerValue;
+
+                // if it's multi line then just return
+                if(strpos($handler, PHP_EOL) !== false) { // most probably it's a css
+                    return '{'.$handler.'}';
+                }
+
+                $handlerArray = explode('.', $handler);
+
+                if(count($handlerArray) > 1) {
+                    // it's a grouped handler
+                    $group = array_shift($handlerArray);
+                    return apply_filters('fluentform_editor_shortcode_callback_group_' . $group, '{' . $handler . '}', $form, $handlerArray);
+                }
+                
+                return apply_filters('fluentform_editor_shortcode_callback_' . $handler, '{' . $handler . '}', $form);
             }
         }
 
