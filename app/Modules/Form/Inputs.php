@@ -5,7 +5,7 @@ namespace FluentForm\App\Modules\Form;
 use FluentForm\App;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\App\Services\FormBuilder\EditorShortcode;
+use FluentForm\App\Services\FormBuilder\EditorShortCode;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Inputs
