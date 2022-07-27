@@ -134,6 +134,10 @@ if (!function_exists('fluentImplodeRecursive')) {
 
 function fluentform_get_active_theme_slug()
 {
+    if($ins = get_option('_ff_ins_by')) {
+        return sanitize_text_field($ins);
+    }
+
     if(defined('TEMPLATELY_FILE')) {
         return 'templately';
     }
@@ -202,7 +206,7 @@ function fluentFormHandleScheduledEmailReport()
 
 function fluentform_upgrade_url()
 {
-    return 'https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=' . fluentform_get_active_theme_slug();
+    return 'https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=' . fluentform_get_active_theme_slug();
 }
 
 function fluentFormApi($module = 'forms')

@@ -370,6 +370,12 @@ add_filter('fluentform_get_global_settings_values', function ($values, $key) {
     return $values;
 }, 10, 2);
 
+add_action('ff_installed_by', function ($by) {
+    if(is_string($by) && !get_option('_ff_ins_by')) {
+        update_option('_ff_ins_by', sanitize_text_field($by), 'no');
+    }
+});
+
 //Enables recaptcha validation when autoload recaptcha enabled for all forms
 $autoIncludeRecaptcha = [
     [
