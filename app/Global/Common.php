@@ -261,3 +261,80 @@ function fluentFormPrintUnescapedInternalString($string)
 {
     echo $string; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
+
+
+function fluentform_options_sanitize($options)
+{
+    $maps = [
+        'label' => 'wp_kses_post',
+        'value' => 'sanitize_text_field',
+        'image' => 'sanitize_url',
+        'calc_value' => 'sanitize_text_field'
+    ];
+
+    $mapKeys = array_keys($maps);
+
+    foreach ($options as $optionIndex => $option) {
+        $attributes  = array_filter(\FluentForm\Framework\Helpers\ArrayHelper::only($option, $mapKeys));
+        foreach ($attributes as $key => $value) {
+            $options[$optionIndex][$key] = call_user_func($maps[$key], $value);
+        }
+    }
+
+    return $options;
+}
+
+function fluentform_sanitize_html($html)
+{
+    if(!$html) {
+        return $html;
+    }
+
+    $tags = wp_kses_allowed_html('post');
+    $tags['style'] = [
+        'types' => [],
+    ];
+    // iframe
+    $tags['iframe'] = [
+        'width'           => [],
+        'height'          => [],
+        'src'             => [],
+        'srcdoc'          => [],
+        'title'           => [],
+        'frameborder'     => [],
+        'allow'           => [],
+        'class'           => [],
+        'id'              => [],
+        'allowfullscreen' => [],
+        'style'           => [],
+    ];
+    //button
+    $tags['button']['onclick'] = [];
+
+    //svg
+    if (empty($tags['svg'])) {
+        $svg_args = array(
+            'svg'   => array(
+                'class'           => true,
+                'aria-hidden'     => true,
+                'aria-labelledby' => true,
+                'role'            => true,
+                'xmlns'           => true,
+                'width'           => true,
+                'height'          => true,
+                'viewbox'         => true, // <= Must be lower case!
+            ),
+            'g'     => array('fill' => true),
+            'title' => array('title' => true),
+            'path'  => array(
+                'd'    => true,
+                'fill' => true,
+            )
+        );
+        $tags = array_merge($tags, $svg_args);
+    }
+
+    $tags = apply_filters('fluentform_allowed_html_tags', $tags);
+
+    return wp_kses($html, $tags);
+}
