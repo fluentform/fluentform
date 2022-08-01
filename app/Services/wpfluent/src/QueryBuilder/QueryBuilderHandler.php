@@ -548,7 +548,7 @@ class QueryBuilderHandler
             }
 
             if (!$field instanceof Raw) {
-                $field = $this->addTablePrefix($field);
+                $field = $this->addTablePrefix(sanitize_sql_orderby($field));
             }
 
             $this->statements['orderBys'][] = compact('field', 'type');
