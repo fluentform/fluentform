@@ -292,6 +292,28 @@
             <p v-show="hasAttachment">You should use SMTP so
                 send attachment via email otherwise, It may go to spam</p>
 
+            <el-form-item v-if="hasPaymentField">
+                <template slot="label">
+                    Send Email
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Send Email</h3>
+                            <p>
+                                Please Select when the email will be sent for Payment Forms
+                            </p>
+                        </div>
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                </template>
+
+                    <el-radio-group v-model="selected.value.feed_trigger_event">
+                        <el-radio label="payment_success">After Payment Success</el-radio>
+                        <el-radio label="payment_form_submit">After Form Submit</el-radio>
+                    </el-radio-group>
+
+                <p>Please Note, for offline payment this settings will not work. Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments. </p>
+
+            </el-form-item>
             <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
                 <el-collapse-item title="Advanced" name="advanced">
@@ -434,7 +456,6 @@
                     {{ loading ? 'Saving' : 'Save' }} Notification
                 </el-button>
             </div>
-
         </el-form>
     </div>
 </template>
@@ -505,6 +526,8 @@ export default {
                     pdf_attachments: [],
                     attachments: [],
                     media_attachments: [],
+                    feed_trigger_event : 'payment_success'
+
                 }
             },
             errors: new Errors,
@@ -565,7 +588,13 @@ export default {
             let inputAttachment = this.selected.value.attachments && this.selected.value.attachments.length;
             let fileAttachment = this.selected.value.media_attachments && this.selected.value.media_attachments.length;
             return !!inputAttachment || !!  fileAttachment || !!pdfAttachment;
-        }
+        },
+        hasPaymentField() {
+            let inputs = _ff.filter(this.inputs, (input) => {
+                return input.element === 'payment_method';
+            });
+            return !!inputs.length;
+        },
     },
     methods: {
         removeMediaAttachments(index){
@@ -612,6 +641,9 @@ export default {
             if (!freshCopy.value.media_attachments) {
                 freshCopy.value.media_attachments = [];
             }
+            if (!freshCopy.value.feed_trigger_event) {
+                freshCopy.value.feed_trigger_event = 'payment_success';
+            }
 
             this.selected = freshCopy;
             this.selectedIndex = index + 1;
@@ -632,9 +664,11 @@ export default {
             if (!this.selected.value.media_attachments) {
                 this.$set(this.selected.value, 'media_attachments', []);
             }
-
             if (!this.selected.value.pdf_attachments) {
                 this.$set(this.selected.value, 'pdf_attachments', []);
+            }
+            if (!this.selected.value.feed_trigger_event) {
+                this.$set(this.selected.value, 'feed_trigger_event', 'payment_success');
             }
 
             this.selectedIndex = index;
