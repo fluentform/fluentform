@@ -63,7 +63,7 @@ if (!function_exists('fluentFormSanitizer')) {
     function fluentFormSanitizer($input, $attribute = null, $fields = [])
     {
         if (is_string($input)) {
-            if (ArrayHelper::get($fields, $attribute . '.element') === 'post_content') {
+            if (ArrayHelper::get($fields, $attribute . '.element') === 'post_content'  || ArrayHelper::get($fields, $attribute . '.element') === 'rich_text_input' ) {
                 return wp_kses_post($input);
             } elseif (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
                 $input = sanitize_textarea_field($input);
