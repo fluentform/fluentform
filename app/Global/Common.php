@@ -338,3 +338,29 @@ function fluentform_sanitize_html($html)
 
     return wp_kses($html, $tags);
 }
+
+if (!function_exists('fluentform_backend_sanitizer')) {
+    /**
+     * Sanitize inputs recursively.
+     *
+     * @param array $input
+     * @param array $sanitizeMap
+     * @return array $input
+     */
+    function fluentform_backend_sanitizer($array, $sanitizeMap=[])
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $value = fluentform_backend_sanitizer($value, $sanitizeMap);
+            } else {
+                $method = ArrayHelper::get($sanitizeMap, $key);
+    
+                if (is_callable($method)) {
+                    $value = call_user_func($method, $value);
+                }
+            }
+        }
+    
+        return apply_filters('fluent_backend_sanitized_values', $array);
+    }
+}
