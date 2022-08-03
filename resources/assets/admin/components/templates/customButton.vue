@@ -17,11 +17,6 @@
     export default {
         name: 'customButton',
         props: ['item'],
-        data() {
-          return {
-              extraHtml: '<style>.ff_default_submit_button_wrapper {display: none !important;}</style>'
-          }
-        },
         computed: {
             btnStyles() {
                 if(this.item.settings.button_style != '') {
@@ -66,6 +61,11 @@
                 let styles = {};
                 styles.textAlign = this.item.settings.align;
                 return styles;
+            },
+            extraHtml(){
+                if (this.item.element === 'custom_submit_button'){
+                    return  '<style>.ff_default_submit_button_wrapper {display: none !important;}</style>'
+                }
             }
         }
     }

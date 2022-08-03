@@ -907,7 +907,7 @@ jQuery(document).ready(function () {
                 }
 
                 const globalOptions = {
-                    clearIfNotMatch: window.fluentFormVars.jquery_mask_vars.clearIfNotMatch,
+                    clearIfNotMatch: window.fluentFormVars.input_mask_vars.clearIfNotMatch,
                     translation: {
                         '*': {pattern: /[0-9a-zA-Z]/},
                         '0': {pattern: /\d/},

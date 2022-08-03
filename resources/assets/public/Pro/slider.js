@@ -177,6 +177,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         });
 
         isPopulatingStepData = true;
+        // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
+        // if (stepResume || saveProgressForm) {
         if (stepResume) {
             updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
         }
@@ -621,6 +623,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
     return {
         init,
-        updateSlider
+        updateSlider,
+        populateFormDataAndSetActiveStep
+
     };
 }
