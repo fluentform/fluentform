@@ -4,8 +4,26 @@
             <el-col :sm="12">
                 <div style="display: inline-block; margin-right: 20px; font-size: 23px;"
                      class="wp-heading-inline">
-                    {{ $t('All Forms') }}
+                    {{ $t('Forms') }}
                 </div>
+                <div style="display: inline-block;  padding-right: 20px;" class="ff_nav_sub_actions">
+                <el-select
+                    clearable
+                    size="mini"
+                    v-model="filter_by"
+                    :placeholder="$t('All Types')"
+                    @change="filterFormType()"
+                >
+                  <el-option
+                      v-for="(status, status_key) in form_statuses"
+                      :key="status_key"
+                      :value="status_key"
+                      :label="status"
+                  >
+                    {{status}}
+                  </el-option>
+                </el-select>
+              </div>
 
                 <el-dropdown
                     v-if="hasPermission('fluentform_forms_manager')"
@@ -13,7 +31,7 @@
                     size="small"
                     type="primary"
                     trigger="click"
-                    style="display:inline-block;"
+                    style="display:inline-block; margin: 12px 0;"
                     @click="showAddFormModal = true"
                     @command="createForm"
                 >
@@ -41,7 +59,7 @@
                 <div class="text-right">
                     <el-row>
                         <el-col :sm="{ span: 14, offset: 10 }">
-                            <el-form @submit.native.prevent="searchForms">
+                            <el-form @submit.native.prevent="searchForms" style="margin-bottom: 12px; ">
                                 <el-input
                                     clearable
                                     @clear="refetchItems"
@@ -52,6 +70,9 @@
                                     <el-button native-type="submit" slot="append">{{$t('Search')}}</el-button>
                                 </el-input>
                             </el-form>
+                        </el-col>
+                        <el-col :sm="{span:12, offset:12}">
+                          <el-button @click="advancedFilter = true"  size="mini">{{$t('Advanced Filter')}}</el-button>
                         </el-col>
                     </el-row>
                 </div>
@@ -66,16 +87,36 @@
                 <div
                     class="entries_table">
                     <div class="tablenav top">
-                        <el-table
+                      <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
+                        <div class="widget_title">
+                          {{$t('Filter By Date Range')}}
+                          <el-date-picker
+                              size="mini"
+                              v-model="filter_date_range"
+                              type="daterange"
+                              @change="fetchItems()"
+                              :picker-options="pickerOptions"
+                              format="dd MMM, yyyy"
+                              value-format="yyyy-MM-dd"
+                              range-separator="-"
+                              start-placeholder="Start date"
+                              end-placeholder="End date">
+                          </el-date-picker>
+                          <el-button @click="fetchItems()" size="mini" type="success">Search</el-button>
+                          <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
+                        </div>
+                      </div>
+
+                      <el-table
                             :data="items"
                             :stripe="true"
                             @sort-change="handleTableSort"
                             @selection-change="handleSelectionChange"
                             :row-class-name="tableRowClass">
 
-                            <el-table-column sortable :label="$t('ID')" prop="id" width="60"></el-table-column>
+                            <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="60"></el-table-column>
 
-                            <el-table-column sortable :label="$t('Title')" prop="title" min-width="230">
+                            <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="230">
                                 <template slot-scope="scope">
                                     <strong>
                                         {{ scope.row.title }}
@@ -242,6 +283,7 @@ import remove from '../components/confirmRemove'
 import AddFormModal from '../components/modals/AddFormModal';
 import predefinedFormsModal from '../components/modals/predefinedFormsModal';
 import PostTypeSelectionModal from '../components/modals/PostTypeSelectionModal';
+import moment from "moment";
 
 export default {
     name: 'AllForms',
@@ -271,6 +313,49 @@ export default {
             showAddFormModal: false,
             checkedItems: [],
             showSelectFormModal: false,
+            advancedFilter: false,
+            filter_date_range: ['', ''],
+            pickerOptions: {
+              disabledDate(time) {
+                return time.getTime() >= Date.now();
+              },
+              shortcuts: [
+                {
+                  text: 'Today',
+                  onClick(picker) {
+                    const start = new Date();
+                    picker.$emit('pick', [start, start]);
+                  }
+                },
+                {
+                  text: 'Yesterday',
+                  onClick(picker) {
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                    picker.$emit('pick', [start, start]);
+                  }
+                },
+                {
+                  text: 'Last week',
+                  onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                    picker.$emit('pick', [start, end]);
+                  }
+                }, {
+                  text: 'Last month',
+                  onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                    picker.$emit('pick', [start, end]);
+                  }
+                }
+              ]
+            },
+            filter_by:'all',
+            form_statuses: {all:"All", published : 'Active', unpublished:'In Active', is_payment:"Payment Form", post:'Post Form', conv_form:'Conversitional Form'},
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
@@ -322,12 +407,15 @@ export default {
             let data = {
                 search: this.searchFormsKeyWord,
                 action: 'fluentform-forms',
+                filter_by: this.filter_by,
                 per_page: this.paginate.per_page,
                 page: this.paginate.current_page,
                 sort_column: this.sort_column,
                 sort_by: this.sort_by
             };
-
+            if (this.advancedFilter) {
+              data.date_range = this.filter_date_range;
+            }
             FluentFormsGlobal.$get(data)
                 .done((response) => {
                     this.items = response.data;
@@ -445,6 +533,23 @@ export default {
                 });
             }
         },
+        resetAdvancedFilter() {
+          this.advancedFilter = false;
+          this.fetchItems();
+        },
+        filterFormType() {
+          this.search_string = '';
+          this.setDefaultPaginate();
+          this.fetchItems();
+        },
+        setDefaultPaginate() {
+          this.paginate = {
+            total: 0,
+            current_page: 1,
+            last_page: 1,
+            per_page: localStorage.getItem('formItemsPerPage') || 10
+          }
+        },
         tableRowClass({row}) {
             return row.status == 'unpublished' ? 'inactive_form' : '';
         }
@@ -452,6 +557,7 @@ export default {
     mounted() {
         this.fetchItems();
         this.getPredefinedForms();
+        this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
 
         (new Clipboard('.copy')).on('success', event => {
             this.$message({
@@ -491,4 +597,9 @@ export default {
     }
 };
 </script>
+<style scoped>
+.el-dropdown-menu{
+  z-index: 9999 !important;
+}
+</style>
 

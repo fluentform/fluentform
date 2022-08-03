@@ -64,8 +64,10 @@ class Form
     public function index()
     {
         $forms = fluentFormApi('forms')->forms([
-            'search'      => $this->request->get('search'),
-            'status'      => $this->request->get('status'),
+            'search' => $this->request->get('search'),
+            'status' => $this->request->get('status'),
+            'filter_by' => $this->request->get('filter_by', 'all'),
+            'date_range' => $this->request->get('date_range', []),
             'sort_column' => $this->request->get('sort_column', 'id'),
             'sort_by'     => $this->request->get('sort_by', 'DESC'),
             'per_page'    => $this->request->get('per_page', 10),
