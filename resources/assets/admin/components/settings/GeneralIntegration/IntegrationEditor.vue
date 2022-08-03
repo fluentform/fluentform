@@ -197,6 +197,23 @@
                             </p>
                         </template>
 
+                        <template v-else-if="field.component == 'chained-ajax-fields'">
+                            <template v-for="(optionValue, optionKey) in field.options_labels">
+                                <el-select
+                                    v-loading="loading_list"
+                                    @change="chainedAjax(optionKey)"
+                                    v-model="settings.chained_config[optionKey]"
+                                    :placeholder="optionValue.placeholder">
+                                    <el-option
+                                        v-for="(list_name, list_key) in optionValue.options"
+                                        :key="list_key"
+                                        :value="list_key"
+                                        :label="list_name"
+                                    ></el-option>
+                                </el-select>
+                            </template>
+                        </template>
+
                         <template v-else-if="field.component == 'chained_select'">
                             <chained-selects
                                 v-if="has_pro"
@@ -371,6 +388,46 @@
                     serviceId: this.settings['list_id']
                 };
                 this.loadIntegrationSettings();
+            },
+            chainedAjax(key) {
+                for(const key in this.settings.chained_config) {
+                    if(this.settings.chained_config[key] == '') {
+                        return;
+                    }
+                }
+
+                this.loading_app = true;
+                let data = {
+                    action: 'fluentform_get_form_integration_settings',
+                    integration_id: this.integration_id,
+                    integration_name: this.integration_name,
+                    configs: this.settings.chained_config,
+                    form_id: this.form_id
+                };
+
+                FluentFormsGlobal.$get(data)
+                    .then(response => {
+                        this.settings_fields = response.data.settings_fields;
+                        this.settings = response.data.settings;
+
+                        if(!this.settings.name) {
+                            this.settings.name = response.data.settings_fields.integration_title + ' Integration Feed' || '';
+                        }
+
+                        this.merge_fields = response.data.merge_fields;
+
+                        jQuery('head title').text(this.title+' - Fluent Forms');
+
+                    })
+                    .fail(error => {
+                      if (error.responseJSON.data.settings_fields) {
+                        this.settings_fields = error.responseJSON.data.settings_fields;
+                      }
+                        this.$notify.error(error.responseJSON.data.message);
+                    })
+                    .always(() => {
+                        this.loading_app = false;
+                    });
             },
             loadMergeFields() {
                 this.loading_list = true;
