@@ -24,44 +24,49 @@
 
             <div ref="container" v-if="item.element == 'container'" class="item-container">
                 <template v-for="(containerRow, index) in item.columns">
-                    <vue-resizable
-                        class="resizable"
-                        :key="index"
-                        :class="`col-${index+1}`"
-                        :active="handlers"
-                        :fit-parent="fit"
-                        :width="width[index]"
-                        :height="'auto'"
-                        :minHeight="109"
-                        :index="index"
-                        :min-width="minW | checkEmpty"
-                        :max-width="maxW | checkEmpty"
-                        @resize:end="resizeEnd($event, `${index}`)"
-                        @resize:move="resizeMove($event, `${index}`)"
-                    >
+                    <el-tooltip class="item" effect="dark" :content="`width: ${containerRow.width ? containerRow.width : 100 / 2}%, left: ${containerRow.left ? containerRow.left : 0}px`" placement="right">
+                        <vue-resizable
+                            :style="`margin-left: ${containerRow.left}px; left: 0px;`"
+                            class="resizable"
+                            :key="index"
+                            :class="`col-${index+1}`"
+                            :active="handlers"
+                            :fit-parent="fit"
+                            :width="width[index]"
+                            :height="'auto'"
+                            :left="left[index]"
+                            :minHeight="109"
+                            :index="index"
+                            :min-width="minW | checkEmpty"
+                            :max-width="maxW | checkEmpty"
+                            @resize:end="resizeEnd($event, `${index}`)"
+                            @resize:move="resizeMove($event, `${index}`)"
+                            @mount="resizeMount($event, `${index}`)"
+                        >
+                            <vddl-list class="panel__body"
+                                       :list="containerRow.fields"
+                                       :drop="handleDrop"
+                                       :horizontal="false">
 
-                        <vddl-list class="panel__body"
-                                   :list="containerRow.fields"
-                                   :drop="handleDrop"
-                                   :horizontal="false">
+                                <div v-show="!containerRow.fields.length"
+                                     style="padding-top: 13px; transform: translateY(50%)"
+                                     class="empty-dropzone-placeholder">
+                                    <i @click.stop="editorInserterPopup(0, containerRow.fields)"
+                                       class="popup-search-element">+</i>
+                                </div>
 
-                            <div v-show="!containerRow.fields.length" style="padding-top: 13px; transform: translateY(50%)"
-                                 class="empty-dropzone-placeholder">
-                                <i @click.stop="editorInserterPopup(0, containerRow.fields)"
-                                   class="popup-search-element">+</i>
-                            </div>
-
-                            <list v-for="(field, list_index) in containerRow.fields"
-                                  :key="field.uniqElKey"
-                                  :item="field"
-                                  :index="list_index"
-                                  :handleEdit="handleEdit"
-                                  :allElements="allElements"
-                                  :editItem="editItem"
-                                  :wrapper="containerRow.fields">
-                            </list>
-                        </vddl-list>
-                    </vue-resizable>
+                                <list v-for="(field, list_index) in containerRow.fields"
+                                      :key="field.uniqElKey"
+                                      :item="field"
+                                      :index="list_index"
+                                      :handleEdit="handleEdit"
+                                      :allElements="allElements"
+                                      :editItem="editItem"
+                                      :wrapper="containerRow.fields">
+                                </list>
+                            </vddl-list>
+                        </vue-resizable>
+                    </el-tooltip>
                 </template>
             </div>
 
@@ -90,11 +95,12 @@ export default {
         return {
             showRemoveElConfirm: false,
             removeElIndex: null,
-            handlers: ["r"],
+            handlers: ["l", "r"],
             fit: true,
             minW: 50,
             maxW: "",
-            width: []
+            width: [],
+            left: [],
         }
     },
     methods: NestedHandler.methods,
@@ -103,19 +109,6 @@ export default {
         checkEmpty(value) {
             return typeof value !== "number" ? 0 : value;
         }
-    },
-
-    mounted() {
-        let width = 0;
-
-        this.$refs.container && this.$refs.container.childNodes.forEach((tab, idx) => {
-            if (this.item.columns[idx].width == '') {
-                width = this.$refs.container && this.$refs.container.clientWidth / this.$refs.container.childNodes.length;
-            } else {
-                width = this.$refs.container && parseInt(this.$refs.container.clientWidth * this.item.columns[idx].width / 100);
-            }
-            this.width.push(width);
-        });
     }
 };
 </script>

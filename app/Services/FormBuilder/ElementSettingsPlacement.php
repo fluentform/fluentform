@@ -491,7 +491,8 @@ return array(
         'general' => array(
             'container_class',
             'conditional_logics',
-            'width'
+            'width',
+            'left'
         ),
         'advanced' => []
     )

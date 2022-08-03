@@ -1,5 +1,6 @@
 .list-group {
   margin: 0;
+
   > li.title {
     background: #ddd;
     padding: 5px 10px;
@@ -174,10 +175,12 @@
 
 .item-actions {
   background-color: #000;
+
   .icon {
     color: #fff;
     cursor: pointer;
     padding: 7px 10px;
+
     &:hover {
       background-color: #409EFF;
     }
@@ -202,19 +205,19 @@
 
 /* CONTAINER DND ELEMENT */
 .item-container {
+  width: 100%;
   border: 1px dashed #ffb900;
   display: flex;
-    .resizable {
-      width: 100%;
-      border-right: 1px dashed #ffb900;
-      background: rgba(255, 185, 0, 0.08);
-        .panel__body {
-          background: rgba(180, 180, 0, 0.09);
-        }
-        &:last-of-type {
-           border-right: 0;
-         }
-      }
+
+  .resizable {
+    border-left: 1px dashed #ffb900;
+    border-right: 1px dashed #ffb900;
+    background: rgba(255, 185, 0, 0.08);
+    margin: 0 4px;
+    .panel__body {
+      background: rgba(180, 180, 0, 0.09);
+    }
+  }
 }
 
 .ff-el-form {
@@ -232,16 +235,19 @@
       margin-left: 120px;
     }
   }
+
   &-left {
     .el-form-item__label {
       text-align: left;
     }
   }
+
   &-right {
     .el-form-item__label {
       text-align: right;
     }
   }
+
   &-top {
     .el-form-item__label {
       text-align: left;
@@ -364,6 +370,7 @@
       &.dashicons {
         font-family: dashicons;
       }
+
       font-size: 18px;
     }
 
@@ -387,6 +394,7 @@
   &__tabs {
     li {
       width: 25%;
+
       a {
         padding: 10px 6px;
       }
@@ -419,10 +427,12 @@
   > .el-icon-caret-bottom, .el-icon-caret-top {
     font-size: 18px;
   }
+
   .address-field-option__settings.is-open {
     padding: 10px 15px 0px;
     background: white;
   }
+
   &:hover {
     box-shadow: -5px 0px 0px 0px #409eff;
   }
@@ -436,8 +446,4 @@
   background: white;
   padding: 5px 10px;
   margin-top: 5px;
-}
-
-.resizable-component>.resizable-r {
-  cursor: ew-resize !important;
 }

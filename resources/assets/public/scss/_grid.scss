@@ -2,6 +2,7 @@
     .frm-fluent-form {
         .ff-t-container {
             display: flex;
+            flex-wrap: wrap;
             width: 100%;
             &.ff_cond_v {
                 display: flex !important;
@@ -9,7 +10,7 @@
         }
 
         .ff-t-cell {
-            padding: 0 15px;
+            padding: 0 10px;
             vertical-align: inherit;
             width: 100%;
             &:first-of-type {
