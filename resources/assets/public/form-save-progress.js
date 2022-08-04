@@ -5,7 +5,7 @@ import formSlider from "./Pro/slider";
 
         const formSelector = '.' + form.form_instance;
         let hash = -1;
-        let activeStep = false;
+        let activeStep = 'no';
         let hasSaveProgress = $(formSelector).hasClass('ff-form-has-save-progress');
         if (!hasSaveProgress) {
             return;
@@ -99,6 +99,8 @@ import formSlider from "./Pro/slider";
         if (!hashKey) {
             return;
         }
+        $theForm.append(`<input type="hidden" value="${hashKey}" class="__fluent_state_hash" name="__fluent_state_hash"/>`)
+
         jQuery.getJSON(fluentFormVars.ajaxUrl, {
             form_id: $theForm.data('form_id'),
             action: 'fluentform_get_form_state',
@@ -107,7 +109,6 @@ import formSlider from "./Pro/slider";
             if (data) {
                 const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
                 sliderInstance.populateFormDataAndSetActiveStep(data);
-
             }
         });
     })
