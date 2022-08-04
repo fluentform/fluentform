@@ -57,7 +57,7 @@ class Container extends BaseComponent
         }
 		foreach ($data['columns'] as $columnIndex => $column) {
             if(isset($column["width"]) && isset($column["left"])){
-                $width = $column["width"] ?: 100 / count($column);
+                $width = $column["width"] ?: 100 / count($data['columns']);
                 $left = $column["left"] ?: 0;
                 $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex);
                 echo "<div class='{$newColumnClass}' style='flex-basis: $width" .'%'. "; margin-left: $left" .'px'. ";'>";
