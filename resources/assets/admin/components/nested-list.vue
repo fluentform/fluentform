@@ -24,7 +24,7 @@
 
             <div ref="container" v-if="item.element == 'container'" class="item-container">
                 <template v-for="(containerRow, index) in item.columns">
-                    <el-tooltip class="item" effect="dark" :content="`width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px`" placement="right">
+                    <el-tooltip class="item" effect="dark" :content="`width: ${containerRow.width ? containerRow.width : (100 / item.columns.length).toFixed(2)}%, left: ${containerRow.left ? containerRow.left : 0}px`" placement="right">
                         <vue-resizable
                             :style="`margin-left: ${containerRow.left}px; left: 0px;`"
                             class="resizable"
