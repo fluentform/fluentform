@@ -44,7 +44,7 @@
                             v-model="post_settings.post_info.value.post_type"
                     />
                 </el-form-item>
-                <el-form-item label="Submissoin Type">
+                <el-form-item label="Submission Type">
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <h3>Create or Update Post</h3>
