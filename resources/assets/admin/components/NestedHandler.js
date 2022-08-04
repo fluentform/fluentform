@@ -198,9 +198,9 @@ export default {
 
             this.$refs.container && this.$refs.container.childNodes.forEach((tab, idx) => {
                 if (this.item.columns[idx].width == '') {
-                    width = this.$refs.container && parseInt(this.$refs.container.clientWidth / this.$refs.container.childNodes.length) + 1;
+                    width = this.$refs.container && ((this.$refs.container.clientWidth + 7) / this.$refs.container.childNodes.length).toFixed(2);
                 } else {
-                    width = this.$refs.container && parseInt(this.$refs.container.clientWidth * this.item.columns[idx].width / 100) + 1;
+                    width = this.$refs.container && ((this.$refs.container.clientWidth + 7) * this.item.columns[idx].width / 100).toFixed(2);
                 }
 
                 left = this.item.columns[idx].left ? this.item.columns[idx].left : 0;
@@ -211,14 +211,15 @@ export default {
         },
 
         resizeMove(event, index) {
-            this.item.columns[index].width = parseInt((event.width / this.$refs.container.clientWidth) * 100) + 1;
-            ;
+            this.$refs.container.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = (((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100).toFixed(2);
+            });
             this.item.columns[index].left = parseInt(event.left);
         },
 
         resizeEnd(event, index) {
             this.$refs.container.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = parseInt((tab.clientWidth / this.$refs.container.clientWidth) * 100) + 1;
+                this.item.columns[idx].width = (((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100).toFixed(2);
             });
 
             this.item.columns[index].left = parseInt(event.left);
