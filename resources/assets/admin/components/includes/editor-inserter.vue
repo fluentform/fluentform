@@ -113,7 +113,8 @@ export default {
         return {
             editorInserterStyle: {
                 width: "350px",
-                height: "311px"
+                height: "311px",
+                'z-index': 9999
             },
             inserterPos: 'is-bottom',
             topOffset: 0,

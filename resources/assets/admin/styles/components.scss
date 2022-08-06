@@ -208,12 +208,12 @@
   width: 100%;
   border: 1px dashed #ffb900;
   display: flex;
+  gap: 10px;
 
   .resizable {
     border-left: 1px dashed #ffb900;
     border-right: 1px dashed #ffb900;
     background: rgba(255, 185, 0, 0.08);
-    margin: 0 4px;
     .panel__body {
       background: rgba(180, 180, 0, 0.09);
     }
