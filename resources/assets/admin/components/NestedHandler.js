@@ -195,12 +195,13 @@ export default {
         resizeMount(event, index) {
             let width = 0;
             let left = 0;
+            let isContainer  = this.$refs.container;
 
-            this.$refs.container && this.$refs.container.childNodes.forEach((tab, idx) => {
-                if (this.item.columns[idx].width == '') {
-                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 2) / this.$refs.container.childNodes.length);
+            isContainer && isContainer.childNodes.forEach((tab, idx) => {
+                if (!this.item.columns[idx].width) {
+                    width = isContainer && Math.ceil((isContainer.clientWidth + 2) / isContainer.childNodes.length);
                 } else {
-                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 2) * this.item.columns[idx].width / 100);
+                    width = isContainer && Math.ceil((isContainer.clientWidth + 2) * this.item.columns[idx].width / 100);
                 }
 
                 left = this.item.columns[idx].left ? this.item.columns[idx].left : 0;
@@ -211,16 +212,20 @@ export default {
         },
 
         resizeMove(event, index) {
-            this.$refs.container.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / this.$refs.container.clientWidth) * 100);
+            let isContainer  = this.$refs.container;
+
+            isContainer.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / isContainer.clientWidth) * 100);
             });
 
             this.item.columns[index].left = parseInt(event.left);
         },
 
         resizeEnd(event, index) {
-            this.$refs.container.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / this.$refs.container.clientWidth) * 100);
+            let isContainer  = this.$refs.container;
+
+            isContainer.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / isContainer.clientWidth) * 100);
             });
 
             this.item.columns[index].left = parseInt(event.left);

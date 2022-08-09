@@ -56,16 +56,17 @@ class Container extends BaseComponent
             echo "<strong>{$data['settings']['label']}</strong>";
         }
 		foreach ($data['columns'] as $columnIndex => $column) {
-            if (isset($column["width"]) && isset($column["left"])) {
-                $width = $column["width"] ?: ceil(100 / count($data['columns']));
-                $left = $column["left"] ?: 0;
-                $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex);
-                echo "<div class='{$newColumnClass}' style='flex-basis: $width" .'%'. "; margin-left: $left" .'px'. ";'>";
+            if (!isset($column["width"])) {
+                $column['width'] = ceil(100 / count($data['columns']));
             }
-            else {
-                $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex + 1);
-                echo "<div class='{$newColumnClass}'>";
+
+            if (!isset($column["left"])) {
+                $column['left'] = 0;
             }
+
+            $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex + 1);
+            echo "<div class='{$newColumnClass}' style='flex-basis: " . $column['width'] ."%; margin-left: " .$column['left'] . "px;'>";
+
 			foreach ($column['fields'] as $item) {
 				$item = apply_filters('fluentform_before_render_item', $item, $form);
 				do_action('fluentform_render_item_'.$item['element'], $item, $form);
