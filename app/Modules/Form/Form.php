@@ -64,8 +64,10 @@ class Form
     public function index()
     {
         $forms = fluentFormApi('forms')->forms([
-            'search'      => $this->request->get('search'),
-            'status'      => $this->request->get('status'),
+            'search' => $this->request->get('search'),
+            'status' => $this->request->get('status'),
+            'filter_by' => $this->request->get('filter_by', 'all'),
+            'date_range' => $this->request->get('date_range', []),
             'sort_column' => $this->request->get('sort_column', 'id'),
             'sort_by'     => $this->request->get('sort_by', 'DESC'),
             'per_page'    => $this->request->get('per_page', 10),
@@ -350,7 +352,7 @@ class Form
             $this->model->where('id', $formId)->update([
                 'has_payment' => 1
             ]);
-        } else if ($form->has_payment) {
+        } elseif ($form->has_payment) {
             $this->model->where('id', $formId)->update([
                 'has_payment' => 0
             ]);
@@ -374,14 +376,14 @@ class Form
     private function sanitizeFields($formFields)
     {
         if (current_user_can('unfiltered_html') || apply_filters('fluent_form_disable_fields_sanitize', false)) {
-             return $formFields;
+            return $formFields;
         }
 
         $fieldsArray = json_decode($formFields, true);
 
-        if(isset($fieldsArray['submitButton'])) {
+        if (isset($fieldsArray['submitButton'])) {
             $fieldsArray['submitButton']['settings']['button_ui']['text'] = fluentform_sanitize_html($fieldsArray['submitButton']['settings']['button_ui']['text']);
-            if(!empty($fieldsArray['submitButton']['settings']['button_ui']['img_url'])) {
+            if (!empty($fieldsArray['submitButton']['settings']['button_ui']['img_url'])) {
                 $fieldsArray['submitButton']['settings']['button_ui']['img_url'] = sanitize_url($fieldsArray['submitButton']['settings']['button_ui']['img_url']);
             }
         }
@@ -389,12 +391,11 @@ class Form
         $fieldsArray['fields'] = $this->sanitizeFieldMaps($fieldsArray['fields']);
 
         return json_encode($fieldsArray);
-
     }
 
     private function sanitizeFieldMaps($fields)
     {
-        if(!is_array($fields)) {
+        if (!is_array($fields)) {
             return $fields;
         }
         
@@ -530,7 +531,6 @@ class Form
                     ->where('form_id', $formId)
                     ->delete();
             } catch (\Exception $exception) {
-
             }
         }
         $errors = ob_get_clean();
@@ -578,7 +578,6 @@ class Form
         $extras = [];
 
         foreach ($formMetas as $meta) {
-
             if ($meta->meta_key == 'notifications' || $meta->meta_key == '_pdf_feeds') {
                 $extras[$meta->meta_key][] = $meta;
                 continue;
@@ -720,7 +719,6 @@ class Form
         foreach ($extras['notifications'] as $key => $notification) {
             $notificationValue = json_decode($notification->value);
             $pdf_attachments = [];
-
             if (isset($notificationValue->pdf_attachments) && count($notificationValue->pdf_attachments)) {
                 foreach ($notificationValue->pdf_attachments as $attachment) {
                     $pdf_attachments[] = json_encode($pdfFeedMap[$attachment]);
@@ -733,5 +731,4 @@ class Form
         }
         return $extras;
     }
-
 }

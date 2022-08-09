@@ -58,7 +58,7 @@
                     >
                     <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
                             v-model="condition.value" placeholder="Select" class="condition-value">
-                        <option value="" selected disabled>- Select -</option>
+                        <option value="" selected >- Select -</option>
                         <option v-for="label, key, i in dependencies[condition.field].options"
                                 :key="key"
                                 :value="key">{{ label }}

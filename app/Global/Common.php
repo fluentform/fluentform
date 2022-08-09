@@ -63,11 +63,11 @@ if (!function_exists('fluentFormSanitizer')) {
     function fluentFormSanitizer($input, $attribute = null, $fields = [])
     {
         if (is_string($input)) {
-            if (ArrayHelper::get($fields, $attribute . '.element') === 'post_content') {
+            if (ArrayHelper::get($fields, $attribute . '.element') === 'post_content'  || ArrayHelper::get($fields, $attribute . '.element') === 'rich_text_input' ) {
                 return wp_kses_post($input);
-            } else if (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
+            } elseif (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
                 $input = sanitize_textarea_field($input);
-            } else if (ArrayHelper::get($fields, $attribute . '.element') === 'input_email') {
+            } elseif (ArrayHelper::get($fields, $attribute . '.element') === 'input_email') {
                 $input = strtolower(sanitize_text_field($input));
             } else {
                 $input = sanitize_text_field($input);
@@ -134,11 +134,11 @@ if (!function_exists('fluentImplodeRecursive')) {
 
 function fluentform_get_active_theme_slug()
 {
-    if($ins = get_option('_ff_ins_by')) {
+    if ($ins = get_option('_ff_ins_by')) {
         return sanitize_text_field($ins);
     }
 
-    if(defined('TEMPLATELY_FILE')) {
+    if (defined('TEMPLATELY_FILE')) {
         return 'templately';
     }
     return get_option('template');
@@ -193,8 +193,8 @@ function fluentFormHandleScheduledTasks()
     $handler = new \FluentForm\App\Services\WPAsync\FluentFormAsyncRequest(wpFluentForm());
     $handler->processActions();
 
-    $rand = mt_rand(1,10);
-    if($rand >= 7) {
+    $rand = mt_rand(1, 10);
+    if ($rand >= 7) {
         do_action('fluentform_maybe_scheduled_jobs');
     }
 }
@@ -211,9 +211,9 @@ function fluentform_upgrade_url()
 
 function fluentFormApi($module = 'forms')
 {
-    if($module == 'forms') {
+    if ($module == 'forms') {
         return (new \FluentForm\App\Api\Form());
-    } else if($module == 'submissions') {
+    } elseif ($module == 'submissions') {
         return (new \FluentForm\App\Api\Submission());
     }
 
@@ -286,7 +286,7 @@ function fluentform_options_sanitize($options)
 
 function fluentform_sanitize_html($html)
 {
-    if(!$html) {
+    if (!$html) {
         return $html;
     }
 
@@ -337,4 +337,30 @@ function fluentform_sanitize_html($html)
     $tags = apply_filters('fluentform_allowed_html_tags', $tags);
 
     return wp_kses($html, $tags);
+}
+
+if (!function_exists('fluentform_backend_sanitizer')) {
+    /**
+     * Sanitize inputs recursively.
+     *
+     * @param array $input
+     * @param array $sanitizeMap
+     * @return array $input
+     */
+    function fluentform_backend_sanitizer($array, $sanitizeMap=[])
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $value = fluentform_backend_sanitizer($value, $sanitizeMap);
+            } else {
+                $method = ArrayHelper::get($sanitizeMap, $key);
+    
+                if (is_callable($method)) {
+                    $value = call_user_func($method, $value);
+                }
+            }
+        }
+    
+        return apply_filters('fluent_backend_sanitized_values', $array);
+    }
 }

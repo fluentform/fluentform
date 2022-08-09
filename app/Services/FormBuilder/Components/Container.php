@@ -56,9 +56,11 @@ class Container extends BaseComponent
             echo "<strong>{$data['settings']['label']}</strong>";
         }
 		foreach ($data['columns'] as $columnIndex => $column) {
-            if(isset($column["width"])){
+            if(isset($column["width"]) && isset($column["left"])){
+                $width = $column["width"] ?: ceil(100 / count($data['columns']), 2);
+                $left = $column["left"] ?: 0;
                 $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex);
-                echo "<div class='{$newColumnClass}' style='flex-basis: {$column["width"]}" .'%'. ";'>";
+                echo "<div class='{$newColumnClass}' style='flex-basis: $width" .'%'. "; margin-left: $left" .'px'. ";'>";
             }
             else {
                 $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex + 1);

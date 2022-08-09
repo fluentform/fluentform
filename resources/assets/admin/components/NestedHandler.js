@@ -102,7 +102,7 @@ export default {
          * To check if element template is registered.
          */
         hasRegistered(item) {
-            if(!item || !item.editor_options) {
+            if (!item || !item.editor_options) {
                 return false;
             }
             const dynamicComponent = 'ff_' + item.editor_options.template;
@@ -113,7 +113,7 @@ export default {
 
         maybeConditionIcon(settings) {
             let status = settings && settings.conditional_logics && settings.conditional_logics.status;
-            if(status) {
+            if (status) {
                 return '<i class="el-icon el-icon-guide"></i>';
             }
             return '';
@@ -192,26 +192,37 @@ export default {
             }
         },
 
+        resizeMount(event, index) {
+            let width = 0;
+            let left = 0;
 
-        resizeMove(event, index) {
-            let widthSum = 0;
-
-            this.$refs.container.childNodes.forEach( tab => {
-                widthSum += tab.clientWidth + 1;
-
-                if (this.$refs.container.clientWidth < widthSum) {
-                    this.maxW = event.width;
+            this.$refs.container && this.$refs.container.childNodes.forEach((tab, idx) => {
+                if (this.item.columns[idx].width == '') {
+                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 7) / this.$refs.container.childNodes.length);
+                } else {
+                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 7) * this.item.columns[idx].width / 100);
                 }
-                else {
-                    this.maxW = this.$refs.container.clientWidth;
-                }
+
+                left = this.item.columns[idx].left ? this.item.columns[idx].left : 0;
+
+                this.left.push(left);
+                this.width.push(width);
             });
         },
 
-        resizeEnd(event, index) {
-            this.$refs.container.childNodes.forEach( (tab, idx) => {
-                this.item.columns[idx].width = parseInt((tab.clientWidth / this.$refs.container.clientWidth) * 100);
+        resizeMove(event, index) {
+            this.$refs.container.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100);
             });
+            this.item.columns[index].left = parseInt(event.left);
+        },
+
+        resizeEnd(event, index) {
+            this.$refs.container.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100);
+            });
+
+            this.item.columns[index].left = parseInt(event.left);
         },
     },
 };

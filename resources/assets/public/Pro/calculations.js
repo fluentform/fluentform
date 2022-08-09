@@ -39,6 +39,14 @@ export default function ($, $theForm) {
             }
         },
         {
+            type: 0,
+            token: 'abs',
+            show: 'abs',
+            value: function (a) {
+                return Math.abs(a);
+            }
+        },
+        {
             type: 8,
             token: 'max',
             show: 'max',

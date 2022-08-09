@@ -38,9 +38,11 @@ class EditorShortCode
     {
         $form = static::getForm($form);
         $formFields = FormFieldsParser::getShortCodeInputs(
-            $form, [
-            'admin_label', 'attributes', 'options'
-        ]);
+            $form,
+            [
+                'admin_label', 'attributes', 'options'
+            ]
+        );
 
         $formShortCodes = [
             'shortcodes' => [],

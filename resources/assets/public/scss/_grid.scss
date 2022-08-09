@@ -9,7 +9,7 @@
         }
 
         .ff-t-cell {
-            padding: 0 15px;
+            padding: 0 10px;
             vertical-align: inherit;
             width: 100%;
             &:first-of-type {
@@ -20,5 +20,11 @@
                 padding-right: 0;
             }
         }
+    }
+}
+
+@media (max-width: 768px) {
+    .ff-t-cell {
+        margin-left: 0 !important;
     }
 }

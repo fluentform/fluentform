@@ -256,7 +256,11 @@ p {
   }
 
 }
-
+.ff_nav_top.ff_advanced_search {
+  padding: 10px 20px;
+  background: white;
+  border-radius: 5px;
+}
 .el-table__header-wrapper table.el-table__header tr th {
   background-color: #f5f9f9 !important;
   color: rgba(0,0,0,.60) !important;

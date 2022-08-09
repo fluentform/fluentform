@@ -69,8 +69,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     // Tabular Grid
                     jQuery.each(value, (row, columns) => {
                         let $checkboxes = jQuery(`[name="${key}[${row}]\\[\\]"]`);
+                        if (!$checkboxes.length) {
+                            $checkboxes = jQuery(`[name="${key}[${row}]"]`);
+                        }
                         jQuery.each($checkboxes, (i, cbox) => {
-                            if (jQuery.inArray($(cbox).val(), columns) != -1) {
+                            let $val = $(cbox).val();
+                            if (jQuery.inArray($val, columns) !== -1 || $val === columns) {
                                 $(cbox).prop('checked', true).change();
                             }
                         });
@@ -157,12 +161,24 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                 } else {
+                    let $canvas = $el.closest('.ff-el-group').find('.fluentform-signature-pad');
+                    if ($canvas.length) {
+                        let canvas = $canvas[0];
+                        let ctx = canvas.getContext('2d');
+                        let img = new Image();
+                        img.src = value;
+                        img.onload = function () {
+                            ctx.drawImage(img, 0, 0);
+                        }
+                    }
                     $el.val(value).change();
                 }
             }
         });
 
         isPopulatingStepData = true;
+        // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
+        // if (stepResume || saveProgressForm) {
         if (stepResume) {
             updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
         }
@@ -607,6 +623,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
     return {
         init,
-        updateSlider
+        updateSlider,
+        populateFormDataAndSetActiveStep
+
     };
 }

@@ -132,30 +132,7 @@
                         />
                     </div>
 
-                    <el-form-item label="">
-                        <template slot="label">
-                            Accepted Methods
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
-                                <div slot="content">
-                                    <p>
-                                        You can select which payment methods will be available in stripe checkout page. Please make sure you have those methods enabled and match with your selected currency.
-                                    </p>
-                                </div>
-                                <i class="el-icon-info el-text-info"></i>
-                            </el-tooltip>
-                        </template>
 
-                        <el-checkbox-group v-model="settings.stripe_checkout_methods">
-                            <el-checkbox
-                                    v-for="(methodName,methodKey) in stripeCheckoutMethods"
-                                    :key="methodKey"
-                                    :label="methodKey"
-                            >{{methodName}}</el-checkbox>
-                        </el-checkbox-group>
-
-                        <p v-show="settings.stripe_checkout_methods.length > 1">Please make sure the selected methods are enabled in your stripe settings and match the selected currency</p>
-
-                    </el-form-item>
 
                     <el-form-item label="">
                         <template slot="label">
@@ -308,16 +285,6 @@
                 loading: false,
                 currencies: [],
                 payment_methods: [],
-                stripeCheckoutMethods: {
-                    card: 'Debit/Credit Card',
-                    ideal: 'iDeal',
-                    fpx: 'FPX',
-                    bacs_debit: 'BACS Direct Debit (UK)',
-                    bancontact: 'Bancontact',
-                    giropay: 'Giropay',
-                    p24: 'Przelewy24 (P24)',
-                    eps: 'EPS'
-                },
                 addressFields: []
             }
         },
