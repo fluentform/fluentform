@@ -1,4 +1,4 @@
-import {mapMutations} from 'vuex';
+import { mapMutations } from 'vuex';
 
 import select from './templates/select.vue'
 import taxonomy from './templates/taxonomy.vue'
@@ -130,7 +130,7 @@ export default {
          * Remove the moved item from it's old place
          * @param {Object} vddl options
          */
-        handleMoved({index, list}) {
+        handleMoved({ index, list }) {
             list.splice(index, 1);
         },
 
@@ -195,40 +195,63 @@ export default {
         resizeMount(event, index) {
             let width = 0;
             let left = 0;
-            let isContainer  = this.$refs.container;
+            let containers = this.$refs.container;
 
-            isContainer && isContainer.childNodes.forEach((tab, idx) => {
-                if (!this.item.columns[idx].width) {
-                    width = isContainer && Math.ceil((isContainer.clientWidth + 2) / isContainer.childNodes.length);
-                } else {
-                    width = isContainer && Math.ceil((isContainer.clientWidth + 2) * this.item.columns[idx].width / 100);
+            for (let i = 0; i < containers.childNodes.length; i++) {
+                if (i != index) {
+                    continue;
                 }
 
-                left = this.item.columns[idx].left ? this.item.columns[idx].left : 0;
+                if (!this.item.columns[i].width) {
+                    width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
+                    this.$set(this.item.columns[i], 'width', Math.ceil(100 / containers.childNodes.length));
+                } else {
+                    width = containers && Math.ceil(containers.clientWidth * this.item.columns[i].width / 100);
+                }
+
+                if (!this.item.columns[i].left) {
+                    this.$set(this.item.columns[i], 'left', 0);
+                } else {
+                    left = this.item.columns[i].left
+                }
 
                 this.left.push(left);
                 this.width.push(width);
-            });
+            }
         },
 
         resizeMove(event, index) {
-            let isContainer  = this.$refs.container;
+            let containers = this.$refs.container;
 
-            isContainer.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / isContainer.clientWidth) * 100);
+            containers.childNodes.forEach((tab, idx) => {
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
             });
 
             this.item.columns[index].left = parseInt(event.left);
         },
 
         resizeEnd(event, index) {
-            let isContainer  = this.$refs.container;
+            let containers = this.$refs.container;
 
-            isContainer.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / isContainer.clientWidth) * 100);
+            containers.childNodes.forEach((tab, idx) => {
+                let width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = width;
+                this.width[idx] = Math.ceil((containers.clientWidth * width) / 100);
             });
 
             this.item.columns[index].left = parseInt(event.left);
         },
+
+        resetContainer(index) {
+            let containers = this.$refs.container;
+
+            containers.childNodes.forEach((tab, idx) => {
+                let width = containers && Math.ceil((containers.clientWidth + 2) / containers.childNodes.length);
+                this.item.columns[idx].width = Math.ceil(100 / containers.childNodes.length);
+                this.item.columns[idx].left = 0;
+                this.width[idx] = width;
+                this.left[idx] = 0;
+            });
+        }
     },
 };

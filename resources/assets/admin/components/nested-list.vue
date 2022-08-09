@@ -17,14 +17,14 @@
                     <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
                     <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
                     <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
+                    <i v-show="item.element == 'container'" @click="resetContainer(index)" class="icon icon-chevron-left"></i>
                 </div>
             </div>
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
-            <div ref="container" v-if="item.element == 'container'" class="item-container">
+            <div ref="container" v-if="item.element == 'container'" class="item-container" @mousedown="containerHover = true" @mouseup="containerHover = false">
                 <template v-for="(containerRow, index) in item.columns">
-                    <el-tooltip class="item" effect="dark" :content="`width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px`" placement="right">
                         <vue-resizable
                             :style="`margin-left: ${containerRow.left}px; left: 0px;`"
                             class="resizable"
@@ -43,6 +43,8 @@
                             @resize:move="resizeMove($event, `${index}`)"
                             @mount="resizeMount($event, `${index}`)"
                         >
+                            <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px` }}</div>
+
                             <vddl-list class="panel__body"
                                        :list="containerRow.fields"
                                        :drop="handleDrop"
@@ -66,7 +68,6 @@
                                 </list>
                             </vddl-list>
                         </vue-resizable>
-                    </el-tooltip>
                 </template>
             </div>
 
@@ -101,6 +102,7 @@ export default {
             maxW: "",
             width: [],
             left: [],
+            containerHover: false
         }
     },
     methods: NestedHandler.methods,

@@ -215,8 +215,11 @@
     border-right: 1px dashed #ffb900;
     background: rgba(255, 185, 0, 0.08);
     transition: all 0.4s ease;
-    &:hover {
+    &:active {
       background: rgba(255, 200, 150, 1);
+    }
+    .container-hover {
+      text-align: center;
     }
     .panel__body {
       background: rgba(180, 180, 0, 0.09);
