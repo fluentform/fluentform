@@ -203,10 +203,10 @@ export default {
                 }
 
                 if (!this.item.columns[i].width) {
-                    width = containers && Math.ceil(containers.clientWidth + 2 / containers.childNodes.length);
+                    width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
                     this.$set(this.item.columns[i], 'width', Math.ceil(100 / containers.childNodes.length));
                 } else {
-                    width = containers && Math.ceil(containers.clientWidth + 2 * this.item.columns[i].width / 100);
+                    width = containers && Math.ceil(containers.clientWidth * this.item.columns[i].width / 100);
                 }
 
                 if (!this.item.columns[i].left) {
