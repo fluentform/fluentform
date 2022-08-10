@@ -43,7 +43,7 @@
                             @resize:move="resizeMove($event, `${index}`)"
                             @mount="resizeMount($event, `${index}`)"
                         >
-                            <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px` }}</div>
+                            <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.round(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px` }}</div>
 
                             <vddl-list class="panel__body"
                                        :list="containerRow.fields"
