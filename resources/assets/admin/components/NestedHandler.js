@@ -223,8 +223,9 @@ export default {
         resizeMove(event, index) {
             let containers = this.$refs.container;
 
+            //add 4px due to 1px border right + 1px border left + 2px margin-right
             containers.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 4) / containers.clientWidth) * 100);
             });
 
             this.item.columns[index].left = parseInt(event.left);
@@ -234,7 +235,7 @@ export default {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
+                let width = Math.ceil(((tab.clientWidth + 4) / containers.clientWidth) * 100);
                 this.item.columns[idx].width = width;
                 this.width[idx] = Math.ceil((containers.clientWidth * width) / 100);
             });
@@ -246,7 +247,7 @@ export default {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = containers && Math.ceil((containers.clientWidth + 2) / containers.childNodes.length);
+                let width = containers && Math.ceil((containers.clientWidth + 4) / containers.childNodes.length);
                 this.item.columns[idx].width = Math.ceil(100 / containers.childNodes.length);
                 this.item.columns[idx].left = 0;
                 this.width[idx] = width;
