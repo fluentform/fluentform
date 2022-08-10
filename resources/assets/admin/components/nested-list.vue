@@ -23,7 +23,7 @@
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
-            <div ref="container" v-if="item.element == 'container'" class="item-container" @mouseover="containerHover = true" @mouseleave="containerHover = false">
+            <div ref="container" v-if="item.element == 'container'" class="item-container" @mousedown="containerHover = true" @mouseup="containerHover = false">
                 <template v-for="(containerRow, index) in item.columns">
                         <vue-resizable
                             :style="`margin-left: ${containerRow.left}px; left: 0px;`"
