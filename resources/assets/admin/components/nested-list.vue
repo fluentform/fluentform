@@ -23,10 +23,10 @@
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
-            <div ref="container" v-if="item.element == 'container'" class="item-container" @mousedown="containerHover = true" @mouseup="containerHover = false">
+            <div ref="container" v-if="item.element == 'container'" class="item-container"  @mouseover="containerHover = true" @mouseleave="containerHover = false">
                 <template v-for="(containerRow, index) in item.columns">
-                        <vue-resizable
-                            :style="`margin-left: ${containerRow.left}px; left: 0px;`"
+                    <vue-resizable
+                            :style="`margin-left: ${containerRow.left}%; left: 0px;`"
                             class="resizable"
                             :key="index"
                             :class="`col-${index+1}`"
@@ -43,7 +43,8 @@
                             @resize:move="resizeMove($event, `${index}`)"
                             @mount="resizeMount($event, `${index}`)"
                         >
-                            <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.round(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}px` }}</div>
+
+                        <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.round(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}%` }}</div>
 
                             <vddl-list class="panel__body"
                                        :list="containerRow.fields"

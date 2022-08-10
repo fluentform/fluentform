@@ -212,7 +212,7 @@ export default {
                 if (!this.item.columns[i].left) {
                     this.$set(this.item.columns[i], 'left', 0);
                 } else {
-                    left = this.item.columns[i].left;
+                    left = Number((this.item.columns[i].left * containers.clientWidth / 100).toFixed(2));
                 }
 
                 this.left.push(left);
@@ -222,32 +222,31 @@ export default {
 
         resizeMove(event, index) {
             let containers = this.$refs.container;
+            this.left[index] = event.left;
 
             //add 4px due to 1px border right + 1px border left + 2px margin-right
             containers.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 4) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
             });
 
-            this.item.columns[index].left = parseInt(event.left);
+            this.item.columns[index].left = Number(((event.left / containers.clientWidth) * 100).toFixed(2));
         },
 
         resizeEnd(event, index) {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = Math.ceil(((tab.clientWidth + 4) / containers.clientWidth) * 100);
-                this.item.columns[idx].width = width;
-                this.width[idx] = Math.ceil((containers.clientWidth * width) / 100);
+                let width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
+                this.width[idx] = Number((containers.clientWidth * width) / 100).toFixed(2);
             });
-
-            this.item.columns[index].left = parseInt(event.left);
         },
 
         resetContainer(index) {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = containers && Math.ceil((containers.clientWidth + 4) / containers.childNodes.length);
+                let width = containers && Math.ceil((containers.clientWidth + 6) / containers.childNodes.length);
                 this.item.columns[idx].width = Math.ceil(100 / containers.childNodes.length);
                 this.item.columns[idx].left = 0;
                 this.width[idx] = width;

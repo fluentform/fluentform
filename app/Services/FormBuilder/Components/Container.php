@@ -65,7 +65,7 @@ class Container extends BaseComponent
             }
 
             $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex + 1);
-            echo "<div class='{$newColumnClass}' style='flex-basis: " . $column['width'] ."%; margin-left: " .$column['left'] . "px;'>";
+            echo "<div class='{$newColumnClass}' style='flex-basis: " . $column['width'] ."%; margin-left: " .$column['left'] . "%;'>";
 
 			foreach ($column['fields'] as $item) {
 				$item = apply_filters('fluentform_before_render_item', $item, $form);
