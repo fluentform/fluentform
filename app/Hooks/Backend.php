@@ -99,9 +99,6 @@ add_filter('fluentform_editor_init_element_container', function ($item) {
         if (!isset($column['width'])) {
             $column['width'] = ceil(100 / count($item['columns']));
         }
-        if (!isset($column['left'])) {
-            $column['left'] = 0;
-        }
         $item['columns'][$index] = $column;
     }
 

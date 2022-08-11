@@ -208,10 +208,9 @@
   width: 100%;
   border: 1px dashed #ffb900;
   display: flex;
-  gap: 12px;
+  gap: 10px;
 
   .resizable {
-    margin-right: 4px;
     border-left: 1px dashed #ffb900;
     border-right: 1px dashed #ffb900;
     background: rgba(255, 185, 0, 0.08);

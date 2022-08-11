@@ -60,12 +60,8 @@ class Container extends BaseComponent
                 $column['width'] = ceil(100 / count($data['columns']));
             }
 
-            if (!isset($column["left"])) {
-                $column['left'] = 0;
-            }
-
             $newColumnClass = $columnClass.' ff-t-column-'.($columnIndex + 1);
-            echo "<div class='{$newColumnClass}' style='flex-basis: " . $column['width'] ."%; margin-left: " .$column['left'] . "%;'>";
+            echo "<div class='{$newColumnClass}' style='flex-basis: " . $column['width'] ."%;'>";
 
 			foreach ($column['fields'] as $item) {
 				$item = apply_filters('fluentform_before_render_item', $item, $form);

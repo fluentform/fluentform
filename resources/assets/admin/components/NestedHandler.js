@@ -194,7 +194,6 @@ export default {
 
         resizeMount(event, index) {
             let width = 0;
-            let left = 0;
             let containers = this.$refs.container;
 
             for (let i = 0; i < containers.childNodes.length; i++) {
@@ -206,39 +205,28 @@ export default {
                     width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
                     this.$set(this.item.columns[i], 'width', Math.ceil(100 / containers.childNodes.length));
                 } else {
-                    width = containers && Math.ceil(containers.clientWidth * this.item.columns[i].width / 100);
+                    width = containers && Math.ceil((containers.clientWidth * this.item.columns[i].width) / 100);
                 }
 
-                if (!this.item.columns[i].left) {
-                    this.$set(this.item.columns[i], 'left', 0);
-                } else {
-                    left = Number((this.item.columns[i].left * containers.clientWidth / 100).toFixed(2));
-                }
-
-                this.left.push(left);
                 this.width.push(width);
             }
         },
 
         resizeMove(event, index) {
             let containers = this.$refs.container;
-            this.left[index] = event.left;
 
-            //add 4px due to 1px border right + 1px border left + 2px margin-right
             containers.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
             });
 
-            this.item.columns[index].left = Number(((event.left / containers.clientWidth) * 100).toFixed(2));
         },
 
         resizeEnd(event, index) {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 6) / containers.clientWidth) * 100);
-                this.width[idx] = Number((containers.clientWidth * width) / 100).toFixed(2);
+                let width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
+                this.item.columns[idx].width = width;
             });
         },
 
@@ -246,11 +234,9 @@ export default {
             let containers = this.$refs.container;
 
             containers.childNodes.forEach((tab, idx) => {
-                let width = containers && Math.ceil((containers.clientWidth + 6) / containers.childNodes.length);
+                let width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
                 this.item.columns[idx].width = Math.ceil(100 / containers.childNodes.length);
-                this.item.columns[idx].left = 0;
-                this.width[idx] = width;
-                this.left[idx] = 0;
+                this.width[idx] = width == this.width[idx] ? width + 1 : width;
             });
         }
     },

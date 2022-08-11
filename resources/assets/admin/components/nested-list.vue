@@ -26,7 +26,6 @@
             <div ref="container" v-if="item.element == 'container'" class="item-container"  @mouseover="containerHover = true" @mouseleave="containerHover = false">
                 <template v-for="(containerRow, index) in item.columns">
                     <vue-resizable
-                            :style="`margin-left: ${containerRow.left}%; left: 0px;`"
                             class="resizable"
                             :key="index"
                             :class="`col-${index+1}`"
@@ -44,7 +43,7 @@
                             @mount="resizeMount($event, `${index}`)"
                         >
 
-                        <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.round(100 / item.columns.length)}%, left: ${containerRow.left ? containerRow.left : 0}%` }}</div>
+                        <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%`}}</div>
 
                             <vddl-list class="panel__body"
                                        :list="containerRow.fields"
@@ -97,7 +96,7 @@ export default {
         return {
             showRemoveElConfirm: false,
             removeElIndex: null,
-            handlers: ["l", "r"],
+            handlers: ["r"],
             fit: true,
             minW: 50,
             maxW: "",
