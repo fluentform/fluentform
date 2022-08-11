@@ -17,7 +17,7 @@
                     <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
                     <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
                     <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
-                    <i v-show="item.element == 'container'" @click="resetContainer(index)" class="icon icon-chevron-left"></i>
+                    <i v-show="item.element == 'container'" @click="resetContainer(index)" class="icon ff-edit-repeat"></i>
                 </div>
             </div>
 
@@ -38,8 +38,8 @@
                             :index="index"
                             :min-width="minW | checkEmpty"
                             :max-width="maxW | checkEmpty"
-                            @resize:end="resizeEnd($event, `${index}`)"
-                            @resize:move="resizeMove($event, `${index}`)"
+                            @resize:end="resizeMoveOrEnd($event, `${index}`)"
+                            @resize:move="resizeMoveOrEnd($event, `${index}`)"
                             @mount="resizeMount($event, `${index}`)"
                         >
 

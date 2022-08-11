@@ -191,7 +191,9 @@ export default {
                 FluentFormEditorEvents.$emit('editor-inserter-in-container');
             }
         },
-
+        /**
+         * Calculate container column resize width on mount
+         */
         resizeMount(event, index) {
             let width = 0;
             let containers = this.$refs.container;
@@ -202,42 +204,46 @@ export default {
                 }
 
                 if (!this.item.columns[i].width) {
-                    width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
-                    this.$set(this.item.columns[i], 'width', Math.ceil(100 / containers.childNodes.length));
+                    //set default column width
+                    width = this.getDefaultPixelWidth(containers);
+                    this.$set(this.item.columns[i], 'width', this.getDefaultWidthPercentage(containers));
                 } else {
+                    //transform percentage to pixel
                     width = containers && Math.ceil((containers.clientWidth * this.item.columns[i].width) / 100);
                 }
-
+                //set columns width in pixel for calculation
                 this.width.push(width);
             }
         },
-
-        resizeMove(event, index) {
+        /**
+         * Calculate container columns resize width on resize & resize and
+         */
+        resizeMoveOrEnd(event, index) {
             let containers = this.$refs.container;
-
-            containers.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
+            //transform pixel to percentage
+            containers.childNodes.forEach((column, columnIndex) => {
+                this.item.columns[columnIndex].width = Math.ceil(((column.clientWidth + 2) / containers.clientWidth) * 100);
             });
 
         },
-
-        resizeEnd(event, index) {
-            let containers = this.$refs.container;
-
-            containers.childNodes.forEach((tab, idx) => {
-                let width = Math.ceil(((tab.clientWidth + 2) / containers.clientWidth) * 100);
-                this.item.columns[idx].width = width;
-            });
-        },
-
+        /**
+         * Reset Container Columns width to default
+         */
         resetContainer(index) {
             let containers = this.$refs.container;
 
-            containers.childNodes.forEach((tab, idx) => {
-                let width = containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
-                this.item.columns[idx].width = Math.ceil(100 / containers.childNodes.length);
-                this.width[idx] = width == this.width[idx] ? width + 1 : width;
+            containers.childNodes.forEach((tab, columnIndex) => {
+                let width = this.getDefaultPixelWidth(containers);
+                this.item.columns[columnIndex].width = this.getDefaultWidthPercentage(containers);
+                this.width[columnIndex] = width == this.width[columnIndex] ? width + 1 : width;
             });
+        },
+        getDefaultPixelWidth(containers) {
+            return containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
+        },
+        getDefaultWidthPercentage(containers) {
+            return Math.ceil(100 / containers.childNodes.length);
         }
+
     },
 };
