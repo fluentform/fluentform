@@ -10,6 +10,7 @@
                         :dragend="handleDragend"
                         :moved="handleMoved"
                         :wrapper="wrapper">
+
             <div @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
                 <div class="item-actions">
@@ -17,58 +18,50 @@
                     <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
                     <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
                     <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
-                    <i v-show="item.element == 'container'" @click="resetContainer(index)" class="icon ff-edit-repeat"></i>
+                    <i
+                        v-show="item.element == 'container'"
+                        @click="resetContainer()"
+                        class="icon ff-edit-repeat"
+                    />
                 </div>
             </div>
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
-            <div ref="container" v-if="item.element == 'container'" class="item-container"  @mouseover="containerHover = true" @mouseleave="containerHover = false">
-                <template v-for="(containerRow, index) in item.columns">
-                    <vue-resizable
-                            class="resizable"
-                            :key="index"
-                            :class="`col-${index+1}`"
-                            :active="handlers"
-                            :fit-parent="fit"
-                            :width="width[index]"
-                            :height="'auto'"
-                            :left="left[index]"
-                            :minHeight="110"
-                            :index="index"
-                            :min-width="minW | checkEmpty"
-                            :max-width="maxW | checkEmpty"
-                            @resize:end="resizeMoveOrEnd($event, `${index}`)"
-                            @resize:move="resizeMoveOrEnd($event, `${index}`)"
-                            @mount="resizeMount($event, `${index}`)"
-                        >
+            <div v-if="item.element == 'container'" class="item-container">
+                <splitpanes
+                        class="default-theme"
+                        @resized="resize($event)"
+                >
+                    <pane
+                        v-for="(containerRow, i) in item.columns"
+                        :key="i"
+                        :size="item.columns[i].width <= 10 ? 10 : item.columns[i].width"
+                        min-size="10"
+                    >
+                        <vddl-list class="panel__body"
+                                   :list="containerRow.fields"
+                                   :drop="handleDrop"
+                                   :horizontal="false">
 
-                        <div v-show="containerHover" class="container-hover">{{ `width: ${containerRow.width ? containerRow.width : Math.ceil(100 / item.columns.length)}%`}}</div>
+                            <div v-show="!containerRow.fields.length" style="padding-top: 13px;"
+                                 class="empty-dropzone-placeholder">
+                                <i @click.stop="editorInserterPopup(0, containerRow.fields)"
+                                   class="popup-search-element">+</i>
+                            </div>
+                            <list v-for="(field, list_index) in containerRow.fields"
+                                  :key="field.uniqElKey"
+                                  :item="field"
+                                  :index="list_index"
+                                  :handleEdit="handleEdit"
+                                  :allElements="allElements"
+                                  :editItem="editItem"
+                                  :wrapper="containerRow.fields">
+                            </list>
+                        </vddl-list>
+                    </pane>
+                </splitpanes>
 
-                            <vddl-list class="panel__body"
-                                       :list="containerRow.fields"
-                                       :drop="handleDrop"
-                                       :horizontal="false">
-
-                                <div v-show="!containerRow.fields.length"
-                                     style="padding-top: 13px; transform: translateY(50%)"
-                                     class="empty-dropzone-placeholder">
-                                    <i @click.stop="editorInserterPopup(0, containerRow.fields)"
-                                       class="popup-search-element">+</i>
-                                </div>
-
-                                <list v-for="(field, list_index) in containerRow.fields"
-                                      :key="field.uniqElKey"
-                                      :item="field"
-                                      :index="list_index"
-                                      :handleEdit="handleEdit"
-                                      :allElements="allElements"
-                                      :editItem="editItem"
-                                      :wrapper="containerRow.fields">
-                                </list>
-                            </vddl-list>
-                        </vue-resizable>
-                </template>
             </div>
 
             <template v-if="item.element != 'container' && hasRegistered(item)">
@@ -80,37 +73,23 @@
         </vddl-draggable>
 
         <ff_removeElConfirm
-            :visibility.sync="showRemoveElConfirm"
-            @on-confirm="onRemoveElConfirm"/>
+                :visibility.sync="showRemoveElConfirm"
+                @on-confirm="onRemoveElConfirm"/>
     </div>
 </template>
 
 <script type="text/babel">
-import NestedHandler from "./NestedHandler.js";
-
-export default {
-    name: 'list',
-    props: NestedHandler.props,
-    components: NestedHandler.components,
-    data() {
-        return {
-            showRemoveElConfirm: false,
-            removeElIndex: null,
-            handlers: ["r"],
-            fit: true,
-            minW: 50,
-            maxW: "",
-            width: [],
-            left: [],
-            containerHover: false
-        }
-    },
-    methods: NestedHandler.methods,
-
-    filters: {
-        checkEmpty(value) {
-            return typeof value !== "number" ? 0 : value;
-        }
-    }
-};
+    import NestedHandler from "./NestedHandler.js";
+    export default {
+        name: 'list',
+        props: NestedHandler.props,
+        components: NestedHandler.components,
+        data() {
+            return {
+                showRemoveElConfirm: false,
+                removeElIndex: null,
+            }
+        },
+        methods: NestedHandler.methods
+    };
 </script>

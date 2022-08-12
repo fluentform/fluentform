@@ -89,22 +89,6 @@ add_action('admin_init', function () {
     }
 });
 
-
-add_filter('fluentform_editor_init_element_container', function ($item) {
-    if (!isset($item['settings']['container_class'])) {
-        $item['settings']['container_class'] = '';
-    }
-
-    foreach ($item['columns'] as $index => $column) {
-        if (!isset($column['width'])) {
-            $column['width'] = ceil(100 / count($item['columns']));
-        }
-        $item['columns'][$index] = $column;
-    }
-
-    return $item;
-});
-
 add_action('enqueue_block_editor_assets', function () use ($app) {
     wp_enqueue_script(
         'fluentform-gutenberg-block',
@@ -281,6 +265,19 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         if (!isset($item['settings']['conditional_logics'])) {
             $item['settings']['conditional_logics'] = [];
         }
+        
+        if (!isset($item['settings']['container_width'])) {
+            $item['settings']['container_width'] = '';
+        }
+        
+        if (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']) {
+            $perColumn = round(100 / count($item['columns']), 2);
+
+            foreach ($item['columns'] as &$column) {
+                $column['width'] = $perColumn;
+            }
+        }
+        
         return $item;
     });
 

@@ -1,6 +1,5 @@
 .list-group {
   margin: 0;
-
   > li.title {
     background: #ddd;
     padding: 5px 10px;
@@ -103,7 +102,7 @@
 
 .vddl-list {
   padding-left: 0px;
-  min-height: 110px;
+  min-height: $item-height;
 }
 
 .vddl-placeholder {
@@ -175,12 +174,10 @@
 
 .item-actions {
   background-color: #000;
-
   .icon {
     color: #fff;
     cursor: pointer;
     padding: 7px 10px;
-
     &:hover {
       background-color: #409EFF;
     }
@@ -188,7 +185,7 @@
 }
 
 .hover-action-top-right {
-  top: -20px;
+  top: -12px;
   right: 15px;
 }
 
@@ -205,24 +202,21 @@
 
 /* CONTAINER DND ELEMENT */
 .item-container {
-  width: 100%;
   border: 1px dashed #ffb900;
   display: flex;
-  gap: 10px;
 
-  .resizable {
-    border-left: 1px dashed #ffb900;
+  .col {
+    box-sizing: border-box;
+    flex-grow: 1; /* default 0 */
     border-right: 1px dashed #ffb900;
+    flex-basis: 0;
     background: rgba(255, 185, 0, 0.08);
-    transition: all 0.4s ease;
-    &:active {
-      background: rgba(255, 200, 150, 1);
-    }
-    .container-hover {
-      text-align: center;
-    }
     .panel__body {
-      background: rgba(180, 180, 0, 0.09);
+      background: transparent;
+    }
+
+    &:last-of-type {
+      border-right: 0;
     }
   }
 }
@@ -242,19 +236,16 @@
       margin-left: 120px;
     }
   }
-
   &-left {
     .el-form-item__label {
       text-align: left;
     }
   }
-
   &-right {
     .el-form-item__label {
       text-align: right;
     }
   }
-
   &-top {
     .el-form-item__label {
       text-align: left;
@@ -377,7 +368,6 @@
       &.dashicons {
         font-family: dashicons;
       }
-
       font-size: 18px;
     }
 
@@ -401,7 +391,6 @@
   &__tabs {
     li {
       width: 25%;
-
       a {
         padding: 10px 6px;
       }
@@ -434,12 +423,10 @@
   > .el-icon-caret-bottom, .el-icon-caret-top {
     font-size: 18px;
   }
-
   .address-field-option__settings.is-open {
     padding: 10px 15px 0px;
     background: white;
   }
-
   &:hover {
     box-shadow: -5px 0px 0px 0px #409eff;
   }

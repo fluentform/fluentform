@@ -1,4 +1,4 @@
-import { mapMutations } from 'vuex';
+import {mapMutations} from 'vuex';
 
 import select from './templates/select.vue'
 import taxonomy from './templates/taxonomy.vue'
@@ -35,7 +35,8 @@ import product from './templates/product.vue'
 import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
-import VueResizable from 'vue-resizable';
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
 
 export default {
     name: 'list',
@@ -87,7 +88,7 @@ export default {
         ff_inputMultiPayment: inputMultiPayment,
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields,
-        VueResizable
+        Splitpanes, Pane
     },
     data() {
         return {
@@ -102,7 +103,7 @@ export default {
          * To check if element template is registered.
          */
         hasRegistered(item) {
-            if (!item || !item.editor_options) {
+            if(!item || !item.editor_options) {
                 return false;
             }
             const dynamicComponent = 'ff_' + item.editor_options.template;
@@ -113,7 +114,7 @@ export default {
 
         maybeConditionIcon(settings) {
             let status = settings && settings.conditional_logics && settings.conditional_logics.status;
-            if (status) {
+            if(status) {
                 return '<i class="el-icon el-icon-guide"></i>';
             }
             return '';
@@ -130,7 +131,7 @@ export default {
          * Remove the moved item from it's old place
          * @param {Object} vddl options
          */
-        handleMoved({ index, list }) {
+        handleMoved({index, list}) {
             list.splice(index, 1);
         },
 
@@ -191,59 +192,25 @@ export default {
                 FluentFormEditorEvents.$emit('editor-inserter-in-container');
             }
         },
-        /**
-         * Calculate container column resize width on mount
-         */
-        resizeMount(event, index) {
-            let width = 0;
-            let containers = this.$refs.container;
 
-            for (let i = 0; i < containers.childNodes.length; i++) {
-                if (i != index) {
-                    continue;
-                }
+        resize(event) {
+            this.item.columns.forEach((item, i) => {
+                item.width = this.getNumber(event[i].size);
+            })
+        },
 
-                if (!this.item.columns[i].width) {
-                    //set default column width
-                    width = this.getDefaultPixelWidth(containers);
-                    this.$set(this.item.columns[i], 'width', this.getDefaultWidthPercentage(containers));
-                } else {
-                    //transform percentage to pixel
-                    width = containers && Math.ceil((containers.clientWidth * this.item.columns[i].width) / 100);
-                }
-                //set columns width in pixel for calculation
-                this.width.push(width);
-            }
-        },
-        /**
-         * Calculate container columns resize width on resize & resize and
-         */
-        resizeMoveOrEnd(event, index) {
-            let containers = this.$refs.container;
-            //transform pixel to percentage
-            containers.childNodes.forEach((column, columnIndex) => {
-                this.item.columns[columnIndex].width = Math.ceil(((column.clientWidth + 2) / containers.clientWidth) * 100);
-            });
+        resetContainer() {
+            const perColumnWidth = this.getNumber(100 / this.item.columns.length);
 
+            this.item.columns.forEach(column => {
+                column.width = perColumnWidth;
+            })
         },
-        /**
-         * Reset Container Columns width to default
-         */
-        resetContainer(index) {
-            let containers = this.$refs.container;
 
-            containers.childNodes.forEach((tab, columnIndex) => {
-                let width = this.getDefaultPixelWidth(containers);
-                this.item.columns[columnIndex].width = this.getDefaultWidthPercentage(containers);
-                this.width[columnIndex] = width == this.width[columnIndex] ? width + 1 : width;
-            });
-        },
-        getDefaultPixelWidth(containers) {
-            return containers && Math.ceil(containers.clientWidth / containers.childNodes.length);
-        },
-        getDefaultWidthPercentage(containers) {
-            return Math.ceil(100 / containers.childNodes.length);
+        getNumber(value) {
+            value = value || 0;
+
+            return parseFloat(parseFloat(value).toFixed(2));
         }
-
-    },
+    }
 };

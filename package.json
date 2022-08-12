@@ -18,11 +18,11 @@
         "moment": "^2.29.2",
         "normalize.css": "^8.0.1",
         "primer-tooltips": "^2.0.0",
+        "splitpanes": "^2.4.1",
         "vddl": "^0.7.1",
         "vue": "^2.6.14",
         "vue-chartjs": "^3.5.1",
         "vue-html-to-paper": "^1.4.4",
-        "vue-resizable": "^2.1.3",
         "vue-router": "^3.5.3",
         "vuex": "^3.6.2"
     },
