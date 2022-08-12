@@ -27,7 +27,7 @@ class Form
         $status = ArrayHelper::get($atts, 'status', 'all');
         $filter_by = ArrayHelper::get($atts, 'filter_by', 'all');
 	    $dateRange = ArrayHelper::get($atts, 'date_range', []);
-		$is_filter_by_conv_form = $filter_by && $filter_by == 'conv_form';
+		$is_filter_by_conv_or_step_form = $filter_by && ($filter_by == 'conv_form' || $filter_by == 'step_form');
 
         $shortColumn = ArrayHelper::get($atts, 'sort_column', 'id');
         $sortBy = ArrayHelper::get($atts, 'sort_by', 'DESC');
@@ -39,7 +39,7 @@ class Form
             $query->where('status', $status);
         }
 
-		if ($filter_by && !$is_filter_by_conv_form) {
+		if ($filter_by && !$is_filter_by_conv_or_step_form) {
 			switch ($filter_by) {
 				case 'published':
 					$query->where('status', 'published');
@@ -74,16 +74,22 @@ class Form
         $total = $query->count();
         $skip = $perPage * ($currentPage - 1);
 
-		if ($is_filter_by_conv_form) {
+		if ($is_filter_by_conv_or_step_form) {
 			$data = (array) $query->select('*')->get();
 		} else {
 			$data = (array) $query->select('*')->limit($perPage)->offset($skip)->get();
 		}
 
-	    $conversionForms = [];
+	    $conversationOrStepForms = [];
         foreach ($data as $form) {
 			$is_conv_form = Helper::isConversionForm($form->id);
-			if ($is_filter_by_conv_form && !$is_conv_form) {
+
+            //  skip form if filter by conversation form but form is not conversational form
+            if ($filter_by == 'conv_form' && !$is_conv_form) {
+				continue;
+			}
+            //  skip form if filter by step form but form is not step form
+            if ($filter_by == 'step_form' && !Helper::isMultiStepForm($form->id)) {
 				continue;
 			}
             $formInstance = $this->form($form);
@@ -98,17 +104,19 @@ class Form
             $form->conversion = $formInstance->conversionRate();
             if ($is_conv_form) {
                 $form->conversion_preview = Helper::getPreviewUrl($form->id, 'conversational');
-	            $conversionForms[] = $form;
             }
 
             if(!$withFields) {
                 unset($form->form_fields);
             }
+            if ($is_filter_by_conv_or_step_form) {
+                $conversationOrStepForms[] = $form;
+            }
         }
-	    if ($is_filter_by_conv_form) {
-		    $total = count($conversionForms);
-		    $conversionForms = array_slice($conversionForms, $skip, $perPage);
-		    $dataCount = count($conversionForms);
+	    if ($is_filter_by_conv_or_step_form) {
+		    $total = count($conversationOrStepForms);
+		    $conversationOrStepForms = array_slice($conversationOrStepForms, $skip, $perPage);
+		    $dataCount = count($conversationOrStepForms);
 	    } else {
 		    $dataCount = count($data);
 	    }
@@ -124,7 +132,7 @@ class Form
 		    'to'            => $to,
 		    'last_page'     => $lastPage,
 		    'total'         => $total,
-		    'data'          => $is_filter_by_conv_form ? $conversionForms : $data,
+		    'data'          => $is_filter_by_conv_or_step_form ? $conversationOrStepForms : $data,
 	    );
     }
 

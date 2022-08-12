@@ -355,7 +355,7 @@ export default {
               ]
             },
             filter_by:'all',
-            form_statuses: {all:"All", published : 'Active', unpublished:'In Active', is_payment:"Payment Form", post:'Post Form', conv_form:'Conversitional Form'},
+            form_statuses: {all:"All", published : 'Active', unpublished:'In Active', is_payment:"Payment Form", post:'Post Form', conv_form:'Conversational Form', step_form: "Step Form"},
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
