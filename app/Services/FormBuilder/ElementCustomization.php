@@ -344,7 +344,7 @@ $element_customization_settings = array(
     'value' => array(
         'template' => 'inputValue',
         'label' => __('Default Value', 'fluentform'),
-        'help_text' => __('If you would like to pre-populate the value of a field, enter it here.', 'fluentform'),
+        'help_text' => __('If you would like to pre-populate the value of a field, enter it here.', 'fluentform'). ' <a target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/miscellaneous/form-editor-smart-codes/">View All the smartcodes here</a>',
     ),
     'dynamic_default_value' => array(
         'template' => 'inputValue',
