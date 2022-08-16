@@ -1,6 +1,8 @@
 <template>
     <el-form-item :label="item.settings.label" :class="{['ff-el-form-'+item.settings.label_placement]: item.settings.label_placement }">
-        <img style="max-width: 60px;" :src="plugin_url+'img/hcaptcha-placeholder.png'" alt="hcaptcha-placeholder">
+      <div class="ff-el-form-img-wrapper">
+        <img :src="plugin_url+'img/hcaptcha-placeholder.png'" alt="hcaptcha-placeholder">
+      </div>
     </el-form-item>
 </template>
 
