@@ -329,6 +329,7 @@
                 settings: {},
                 settings_fields: {},
                 attachedForms: [],
+                fromChainedAjax: false,
                 refreshQuery: null
             }
         },
@@ -357,6 +358,11 @@
                     form_id: this.form_id
                 };
 
+                // add chained ajax configs query
+                if (this.fromChainedAjax) {
+                    data = {...data, configs: this.settings.chained_config}
+                }
+
                 if (this.refreshQuery) {
                     data = {...data, ...this.refreshQuery}
                 }
@@ -376,6 +382,10 @@
 
                     })
                     .fail(error => {
+                        // when failed show default field if available
+                        if (this.fromChainedAjax && error.responseJSON.data.settings_fields) {
+                            this.settings_fields = error.responseJSON.data.settings_fields;
+                        }
                         this.$notify.error(error.responseJSON.data.message);
                     })
                     .always(() => {
@@ -395,39 +405,8 @@
                         return;
                     }
                 }
-
-                this.loading_app = true;
-                let data = {
-                    action: 'fluentform_get_form_integration_settings',
-                    integration_id: this.integration_id,
-                    integration_name: this.integration_name,
-                    configs: this.settings.chained_config,
-                    form_id: this.form_id
-                };
-
-                FluentFormsGlobal.$get(data)
-                    .then(response => {
-                        this.settings_fields = response.data.settings_fields;
-                        this.settings = response.data.settings;
-
-                        if(!this.settings.name) {
-                            this.settings.name = response.data.settings_fields.integration_title + ' Integration Feed' || '';
-                        }
-
-                        this.merge_fields = response.data.merge_fields;
-
-                        jQuery('head title').text(this.title+' - Fluent Forms');
-
-                    })
-                    .fail(error => {
-                      if (error.responseJSON.data.settings_fields) {
-                        this.settings_fields = error.responseJSON.data.settings_fields;
-                      }
-                        this.$notify.error(error.responseJSON.data.message);
-                    })
-                    .always(() => {
-                        this.loading_app = false;
-                    });
+                this.fromChainedAjax = true;
+                this.loadIntegrationSettings();
             },
             loadMergeFields() {
                 this.loading_list = true;
