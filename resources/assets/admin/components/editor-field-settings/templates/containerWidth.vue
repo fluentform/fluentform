@@ -1,23 +1,24 @@
 <template>
     <div>
-        <el-form-item>
-            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        </el-form-item>
-
-        <template v-for="(column, i) in columns">
-            <el-form-item :label="'Column ' + (i + 1)">
-                <el-input
-                    type="number"
-                    :min="5"
-                    :max="100"
-                    v-model.number="column.width"
-                    disabled
-                    readonly
-                />
+        <template v-if="editItem.columns.length > 1">
+            <el-form-item>
+                <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
             </el-form-item>
-        </template>
 
-<!--        <p>{{ listItem.width_limitation_msg }}</p>-->
+            <template v-for="(column, i) in columns">
+                <el-form-item :label="'Column ' + (i + 1)" :key="i">
+                    <el-input
+                        type="number"
+                        :min="minWidth"
+                        :max="100"
+                        v-model.number="column.width"
+                        @change="(value) => set(value, i)"
+                    />
+                </el-form-item>
+            </template>
+
+           <p>{{ listItem.width_limitation_msg }}</p>
+        </template>
     </div>
 </template>
 
@@ -33,7 +34,8 @@
 
         data() {
             return {
-                columns: JSON.parse(JSON.stringify(this.editItem.columns))
+                columns: JSON.parse(JSON.stringify(this.editItem.columns)),
+                minWidth: 10
             }
         },
 
@@ -49,64 +51,27 @@
         methods: {
             set(value, index) {
                 value = this.getNumber(value);
-                if (value < 5) {
+                
+                if (value < 10) {
                     return;
                 }
 
-                let total = value;
+                const editingColumn = this.editItem.columns[index];
+                const targetColumn = index ? this.editItem.columns[index - 1] : this.editItem.columns[1];
+                const availableWdith = targetColumn.width + editingColumn.width;
+                const breakingPoint = this.getNumber(availableWdith - this.minWidth);
+                
+                value = value >= breakingPoint ? breakingPoint : value;
 
-                this.editItem.columns.forEach((column, i) => {
-                    if (i !== index) {
-                        total += this.getNumber(column.width);
-                    }
-                })
-
-                //ne
-                let targetColumn = index ? this.editItem.columns[index - 1] : this.editItem.columns[1];
-
-                if (total > 100) {
-                    const difference = total - 100;
-
-                    console.log('diff', difference, (targetColumn.width - difference));
-
-                    if ((targetColumn.width - difference) < 5) {
-                        // targetColumn.width = 5;
-                        return;
-                    }
-
-                    targetColumn.width = this.getNumber(targetColumn.width - difference);
-                } else {
-                    const difference = 100 - total;
-
-                    targetColumn.width = this.getNumber(targetColumn.width + difference);
-                }
-
-                this.editItem.columns[index].width = value;
+                editingColumn.width = value;
+                targetColumn.width = this.getNumber(availableWdith - value);
                 this.columns[index].width = value;
-                //ne
-
-                // let lastColumn = this.editItem.columns[this.editItem.columns.length - 1];
-                //
-                // if (total > 100) {
-                //     const difference = total - 100;
-                //
-                //     if ((lastColumn.width - difference) <= 5) {
-                //         return;
-                //     }
-                //
-                //     lastColumn.width = this.getNumber(lastColumn.width - difference);
-                // } else {
-                //     const difference = 100 - total;
-                //     lastColumn.width = this.getNumber(lastColumn.width + difference);
-                // }
-                //
-                // this.editItem.columns[index].width = value;
             },
 
             getNumber(value) {
                 value = value || 0;
 
-                return parseFloat(parseFloat(value).toFixed(2));
+                return +(Math.round(value + "e+2")  + "e-2");
             }
         }
     }

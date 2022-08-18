@@ -1,0 +1,9 @@
+@import "~splitpanes/dist/splitpanes.css";
+
+.default-theme {
+    &.splitpanes {
+        .splitpanes__splitter {
+            border-left: none;
+        }
+    }
+}

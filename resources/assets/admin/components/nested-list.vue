@@ -19,7 +19,7 @@
                     <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
                     <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
                     <i
-                        v-show="item.element == 'container'"
+                        v-show="item.element == 'container' && item.columns.length > 1"
                         @click="resetContainer()"
                         class="icon ff-edit-repeat"
                     />
@@ -29,38 +29,40 @@
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
             <div v-if="item.element == 'container'" class="item-container">
-                <splitpanes
-                        class="default-theme"
-                        @resized="resize($event)"
-                >
-                    <pane
-                        v-for="(containerRow, i) in item.columns"
-                        :key="i"
-                        :size="item.columns[i].width <= 10 ? 10 : item.columns[i].width"
-                        min-size="10"
-                    >
-                        <vddl-list class="panel__body"
-                                   :list="containerRow.fields"
-                                   :drop="handleDrop"
-                                   :horizontal="false">
+                <vddl-nodrag style="width: 100%">
+                    <splitpanes
+                                class="default-theme"
+                                @resized="resize($event)"
+                        >
+                            <pane
+                                v-for="(containerRow, i) in item.columns"
+                                :key="i"
+                                :size="item.columns[i].width <= 10 ? 10 : item.columns[i].width"
+                                min-size="10"
+                            >
+                                <vddl-list class="panel__body"
+                                        :list="containerRow.fields"
+                                        :drop="handleDrop"
+                                        :horizontal="false">
 
-                            <div v-show="!containerRow.fields.length" style="padding-top: 13px;"
-                                 class="empty-dropzone-placeholder">
-                                <i @click.stop="editorInserterPopup(0, containerRow.fields)"
-                                   class="popup-search-element">+</i>
-                            </div>
-                            <list v-for="(field, list_index) in containerRow.fields"
-                                  :key="field.uniqElKey"
-                                  :item="field"
-                                  :index="list_index"
-                                  :handleEdit="handleEdit"
-                                  :allElements="allElements"
-                                  :editItem="editItem"
-                                  :wrapper="containerRow.fields">
-                            </list>
-                        </vddl-list>
-                    </pane>
-                </splitpanes>
+                                    <div v-show="!containerRow.fields.length" style="padding-top: 13px;"
+                                        class="empty-dropzone-placeholder">
+                                        <i @click.stop="editorInserterPopup(0, containerRow.fields)"
+                                        class="popup-search-element">+</i>
+                                    </div>
+                                    <list v-for="(field, list_index) in containerRow.fields"
+                                        :key="field.uniqElKey"
+                                        :item="field"
+                                        :index="list_index"
+                                        :handleEdit="handleEdit"
+                                        :allElements="allElements"
+                                        :editItem="editItem"
+                                        :wrapper="containerRow.fields">
+                                    </list>
+                                </vddl-list>
+                            </pane>
+                        </splitpanes>  
+                </vddl-nodrag>
 
             </div>
 
