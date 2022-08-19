@@ -269,10 +269,13 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         if (!isset($item['settings']['container_width'])) {
             $item['settings']['container_width'] = '';
         }
-        
-        if (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']) {
+    
+        $shouldSetWidth = !empty($item['columns']) &&
+            (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
+    
+        if ($shouldSetWidth) {
             $perColumn = round(100 / count($item['columns']), 2);
-
+        
             foreach ($item['columns'] as &$column) {
                 $column['width'] = $perColumn;
             }
