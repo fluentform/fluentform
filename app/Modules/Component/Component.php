@@ -313,7 +313,7 @@ class Component
                 'with_trashed'       => 'no', // yes | no
                 'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
                 'hide_on_zero'       => 'no',
-                'payment_status'     => 'paid', // it can be all / specific payment status
+                'payment_status'     => 'all', // it can be all / specific payment status
                 'currency_formatted' => 'yes',
                 'date_format'        => ''
             ), $atts);
