@@ -6,7 +6,7 @@
         :before-close="close"
         class="text-center"
         width="30%">
-        <span><strong>Are you sure you want to delete this field?</strong></span>
+        <span><strong>Are you sure you want to delete this field? {{ hasEntryMessage() }}</strong></span>
 
         <div slot="footer" class="text-center dialog-footer">
             <el-button @click="close">Cancel</el-button>
@@ -20,7 +20,8 @@
 export default {
     name: 'deleteFormElConfirm',
     props: {
-        visibility: Boolean
+        visibility: Boolean,
+        editItem: Object
     },
     watch: {
         visibility() {
@@ -35,6 +36,15 @@ export default {
     methods: {
         close() {
             this.$emit('update:visibility', false);
+        },
+        hasEntryMessage() {
+            const usedName = window.FluentFormApp.used_name_attributes;
+            const editItemName = this.editItem?.attributes?.name;
+            for (name in usedName) {
+                if (usedName[name].field_name == editItemName) {
+                    return ' This Field has Entry. Removing this field will remove the entry under this field.';
+                }
+            }
         }
     }
 }
