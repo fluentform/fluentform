@@ -284,8 +284,6 @@ export default {
                 unsupportedSettings.push('conditional_logics');
             }
 
-            console.log(key);
-
             return unsupportedSettings.indexOf(key) === -1;
         }
     },

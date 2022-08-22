@@ -121,7 +121,9 @@
         },
         methods: {
             updateValue(currentOption) {
-                currentOption.value = event.target.value;
+                if (!this.is_conversion_form) {
+                    currentOption.value = event.target.value;
+                }
             },
 
             initBulkEdit() {
@@ -175,6 +177,10 @@
                 let key = Math.max(...keys.filter(i => i != 'undefined')) + 1;
                 let optionStr = `Item ${key}`;
                 let optionKey = optionStr.toLowerCase().replace(/\s/g, '_');
+
+                if (this.is_conversion_form) {
+                    optionKey = options.length + 1;
+                }
 
                 let newOpt = {
                     label: optionStr,
