@@ -6,7 +6,9 @@
         :before-close="close"
         class="text-center"
         width="30%">
-        <span><strong>Are you sure you want to delete this field? {{ hasEntryMessage() }}</strong></span>
+        <span><strong>Are you sure you want to delete this field?</strong></span>
+
+        <p class="data-lost-msg">{{ dataLostMsg }}</p>
 
         <div slot="footer" class="text-center dialog-footer">
             <el-button @click="close">Cancel</el-button>
@@ -33,18 +35,24 @@ export default {
             }
         }
     },
+
+    computed: {
+        dataLostMsg() {
+            let matched = [];
+            
+            if (this.editItem.attributes && window.FluentFormApp.used_name_attributes) {
+                matched = window.FluentFormApp.used_name_attributes.filter(
+                    name => name.field_name === this.editItem.attributes.name
+                )
+            }
+
+            return matched.length ? 'All data involving this field will be lost!' : ''
+        }
+    },
+
     methods: {
         close() {
             this.$emit('update:visibility', false);
-        },
-        hasEntryMessage() {
-            const usedName = window.FluentFormApp.used_name_attributes;
-            const editItemName = this.editItem?.attributes?.name;
-            for (name in usedName) {
-                if (usedName[name].field_name == editItemName) {
-                    return ' This Field has Entry. Removing this field will remove the entry under this field.';
-                }
-            }
         }
     }
 }
