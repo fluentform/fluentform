@@ -105,6 +105,10 @@
                     default:
                         return 'radio'
                 }
+            },
+
+            is_rating_field() {
+                return this.editItem.element == 'ratings';
             }
         },
         watch: {
@@ -121,7 +125,7 @@
         },
         methods: {
             updateValue(currentOption) {
-                if (!this.is_conversion_form) {
+                if (!this.is_rating_field) {
                     currentOption.value = event.target.value;
                 }
             },
@@ -178,7 +182,7 @@
                 let optionStr = `Item ${key}`;
                 let optionKey = optionStr.toLowerCase().replace(/\s/g, '_');
 
-                if (this.is_conversion_form) {
+                if (this.is_rating_field) {
                     optionKey = options.length + 1;
                 }
 
