@@ -26,7 +26,7 @@
 
     export default {
         name: 'fieldSettingsViewer',
-        props: ['form_items', 'editItem'],
+        props: ['form_items', 'editItem','haveFormSteps'],
         components: {
             FieldOptionSettings
         },
@@ -40,7 +40,11 @@
                 const attachExtras = composeFieldOptions(
                     this.editItemElement[this.editItem.element].general
                 );
-                return attachExtras(this.editItemElement[this.editItem.element].generalExtras);
+                let result = attachExtras(this.editItemElement[this.editItem.element].generalExtras);
+                if (this.haveFormSteps && ['custom_submit_button','button'].includes(this.editItem.element)) {
+                  delete result['align'];
+                }
+                return result;
             },
             advancedEditOptions() {
                 const attachExtras = composeFieldOptions(
