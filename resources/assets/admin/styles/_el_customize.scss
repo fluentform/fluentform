@@ -196,6 +196,10 @@
 
 .el-dialog__wrapper {
     left: 160px;
+
+    .data-lost-msg {
+        margin-top: 10px;
+    }
 }
 .ff-el-banner {
     &-group {

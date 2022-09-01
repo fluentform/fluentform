@@ -393,9 +393,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             stepsWrapper.css({width: wrapperWidth});
         });
 
+        //skip saving the last step
+        let isLastStep = activeStep === 0;
 
         // Fire ajax request to persist the step state/data
-        if (stepPersistency && !isPopulatingStepData) {
+        if (stepPersistency && !isPopulatingStepData & !isLastStep) {
             saveStepData($theForm, activeStep).then(response => {
                 console.log(response);
             });

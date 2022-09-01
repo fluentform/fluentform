@@ -10,11 +10,11 @@
                 @input="modify"
                 @blur="onBlur"
         >
-            <el-button  v-if="isDisabled === true || this.isNameIsOnUse()"  slot="append" type="warning" icon="el-icon-edit" @click=" isDisabled = !isDisabled"></el-button>
+            <el-button  v-if="(isDisabled === true || this.maybeDisableEdit()) && !this.isCaptcha() "  slot="append" type="warning" icon="el-icon-edit" @click=" isDisabled = !isDisabled"></el-button>
         </el-input>
     </el-form-item>
     <el-form-item>
-        <div v-if="isDisabled === false && this.isNameIsOnUse()" role="alert"
+        <div v-if="isDisabled === false && this.maybeDisableEdit()" role="alert"
              class="el-alert el-alert--warning is-light">
             <i class="el-alert__icon el-icon-warning"></i>
             <div class="el-alert__content">
@@ -30,7 +30,7 @@ import elLabel from '../../includes/el-label.vue'
 
 export default {
     name: 'nameAttribute',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'value','editItem'],
     data(){
         return {
             isDisabled : false,
@@ -58,16 +58,24 @@ export default {
             
             return name.replace(/[^a-zA-Z0-9_]/g, '_');
         },
-        isNameIsOnUse() {
+        maybeDisableEdit() {
+            if (this.isCaptcha()){
+                return  true;
+            }
             let matched = [];
             if (this.usedNames) {
                 matched = this.usedNames.filter(name => name.field_name === this.value)
             }
             return !!matched.length;
+        },
+        isCaptcha(){
+            let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response';
+            return isCaptcha;
         }
+
     },
     mounted() {
-        if(this.isNameIsOnUse()){
+        if(this.maybeDisableEdit()){
             this.isDisabled = true;
         }
     }
