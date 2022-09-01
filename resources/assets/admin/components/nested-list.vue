@@ -75,6 +75,7 @@
         </vddl-draggable>
 
         <ff_removeElConfirm
+                :editItem="editItem"
                 :visibility.sync="showRemoveElConfirm"
                 @on-confirm="onRemoveElConfirm"/>
     </div>

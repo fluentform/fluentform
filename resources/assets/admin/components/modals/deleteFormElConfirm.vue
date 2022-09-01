@@ -8,6 +8,8 @@
         width="30%">
         <span><strong>Are you sure you want to delete this field?</strong></span>
 
+        <p class="data-lost-msg">{{ dataLostMsg }}</p>
+
         <div slot="footer" class="text-center dialog-footer">
             <el-button @click="close">Cancel</el-button>
             <el-button type="primary" @click="$emit('on-confirm')">Confirm</el-button>
@@ -20,7 +22,8 @@
 export default {
     name: 'deleteFormElConfirm',
     props: {
-        visibility: Boolean
+        visibility: Boolean,
+        editItem: Object
     },
     watch: {
         visibility() {
@@ -32,6 +35,21 @@ export default {
             }
         }
     },
+
+    computed: {
+        dataLostMsg() {
+            let matched = [];
+            
+            if (this.editItem.attributes && window.FluentFormApp.used_name_attributes) {
+                matched = window.FluentFormApp.used_name_attributes.filter(
+                    name => name.field_name === this.editItem.attributes.name
+                )
+            }
+
+            return matched.length ? 'All data involving this field will be lost!' : ''
+        }
+    },
+
     methods: {
         close() {
             this.$emit('update:visibility', false);
