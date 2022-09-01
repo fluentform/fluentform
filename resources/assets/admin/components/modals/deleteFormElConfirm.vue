@@ -40,9 +40,9 @@ export default {
         dataLostMsg() {
             let matched = [];
             
-            if (this.editItem.attributes && window.FluentFormApp.used_name_attributes) {
+            if (this.editItem?.attributes && window.FluentFormApp.used_name_attributes) {
                 matched = window.FluentFormApp.used_name_attributes.filter(
-                    name => name.field_name === this.editItem.attributes.name
+                    name => name.field_name === this.editItem?.attributes.name
                 )
             }
 
