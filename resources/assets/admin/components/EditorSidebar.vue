@@ -13,7 +13,7 @@ import fieldSettingsViewer from './editor-field-settings/fieldSettingsViewer';
 
 export default {
     name: 'EditorSidebar',
-    props: ['form_items', 'editItem','haveFormSteps'],
+    props: ['form_items', 'editItem', 'haveFormSteps'],
     components: {
         fieldSettingsViewer
     }

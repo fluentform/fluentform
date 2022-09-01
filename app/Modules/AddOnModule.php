@@ -371,7 +371,7 @@ class AddOnModule
             'quiz_addon'      => array(
                 'title'        => 'Quiz Module',
                 'description'  => 'With this module, you can create quizzes and show scores with grades, points, fractions, or percentages',
-                'logo'         => APP::publicUrl('img/integrations/quiz-icon.svg'),
+                'logo'         => App::publicUrl('img/integrations/quiz-icon.svg'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core'

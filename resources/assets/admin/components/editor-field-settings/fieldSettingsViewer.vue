@@ -26,7 +26,7 @@
 
     export default {
         name: 'fieldSettingsViewer',
-        props: ['form_items', 'editItem','haveFormSteps'],
+        props: ['form_items', 'editItem', 'haveFormSteps'],
         components: {
             FieldOptionSettings
         },

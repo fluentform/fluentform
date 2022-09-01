@@ -107,7 +107,7 @@ class CustomSubmitButton extends BaseFieldManager
 
 	    $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
 
-		if($hasStepWrapper) {
+		if ($hasStepWrapper) {
 			return '';
 		}
 
