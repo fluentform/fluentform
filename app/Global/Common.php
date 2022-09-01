@@ -347,7 +347,7 @@ if (!function_exists('fluentform_backend_sanitizer')) {
      * @param array $sanitizeMap
      * @return array $input
      */
-    function fluentform_backend_sanitizer($array, $sanitizeMap=[])
+    function fluentform_backend_sanitizer($array, $sanitizeMap = [])
     {
         foreach ($array as $key => &$value) {
             if (is_array($value)) {

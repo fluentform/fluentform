@@ -161,7 +161,7 @@ class EditorShortcodeParser
             return preg_split(
                 '/{(.*?)}/',
                 $value,
-                null,
+                -1,
                 PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
             );
         }
