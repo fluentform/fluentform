@@ -126,14 +126,17 @@ class Converter
 				$question['contentAlign'] = ArrayHelper::get($field, 'settings.align', '');
 			} elseif ($field['element'] === 'phone') {
 				if (defined('FLUENTFORMPRO')) {
-					$cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput.min.css';
-					if (is_rtl()) {
-						$cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
-					}
-					wp_enqueue_style('intlTelInput', $cssSource, [], '16.0.0');
-					wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '16.0.0', true);
-					wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '16.0.0', true);
 					$question['phone_settings'] = self::getPhoneFieldSettings($field, $form);
+
+					if ($question['phone_settings']['enabled']) {
+						$cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput.min.css';
+						if (is_rtl()) {
+							$cssSource = FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/css/intlTelInput-rtl.min.css';
+						}
+						wp_enqueue_style('intlTelInput', $cssSource, [], '16.0.0');
+						wp_enqueue_script('intlTelInputUtils', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/utils.js', [], '16.0.0', true);
+						wp_enqueue_script('intlTelInput', FLUENTFORMPRO_DIR_URL . 'public/libs/intl-tel-input/js/intlTelInput.min.js', [], '16.0.0', true);
+					}
 				}
 			} elseif ($field['element'] === 'input_number') {
 				$question['min'] = ArrayHelper::get($field, 'settings.validation_rules.min.value');
