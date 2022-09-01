@@ -105,12 +105,6 @@ class CustomSubmitButton extends BaseFieldManager
             return '';
         }
 
-	    $hasStepWrapper = isset($form->fields['stepsWrapper']) && $form->fields['stepsWrapper'];
-
-		if ($hasStepWrapper) {
-			return '';
-		}
-
         add_filter('fluentform_is_hide_submit_btn_' . $form->id, '__return_true');
 
         $elementName = $data['element'];
