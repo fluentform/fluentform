@@ -379,7 +379,7 @@ class Component
                 global $wpdb;
                 $countQuery = wpFluent()
                     ->table('fluentform_submissions')
-                    ->select(wpFluent()->raw('SUM(total_paid) as payment_total'))
+                    ->select(wpFluent()->raw('SUM(payment_total) as payment_total'))
                     ->where('form_id', $formId);
 
                 if ($atts['status'] != 'trashed' && $atts['with_trashed'] == 'no') {
