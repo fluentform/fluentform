@@ -51,10 +51,8 @@ class Hcaptcha extends BaseComponent
         }
 
 		$el = "<div class='ff-el-input--content'><div data-fluent_id='".$form->id."' name='h-captcha-response'>{$hcaptchaBlock}</div></div>";
-		$atts = $this->buildAttributes(
-			\FluentForm\Framework\Helpers\ArrayHelper::except($data['attributes'], 'name')
-		);
-		$html = "<div class='ff-el-group {$containerClass}' {$atts}>{$label}{$el}</div>";
+
+		$html = "<div class='ff-el-group {$containerClass}' >{$label}{$el}</div>";
         fluentFormPrintUnescapedInternalString(apply_filters('fluentform_rendering_field_html_'.$elementName, $html, $data, $form));
     }
 }

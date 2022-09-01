@@ -339,7 +339,19 @@ add_action('fluentform_loading_editor_assets', function ($form) {
 
         return $item;
     });
+    
+    add_filter('fluentform_editor_init_element_recaptcha', function ($item, $form) {
+        $item['attributes']['name'] = 'g-recaptcha-response';
+        return $item;
+    }, 10, 2);
+    
+    add_filter('fluentform_editor_init_element_hcaptcha', function ($item, $form) {
+        $item['attributes']['name'] = 'h-captcha-response';
+        return $item;
+    }, 10, 2);
+    
 }, 10);
+
 
 
 add_filter('fluentform_addons_extra_menu', function ($menus) {
