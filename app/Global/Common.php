@@ -69,6 +69,8 @@ if (!function_exists('fluentFormSanitizer')) {
                 $input = sanitize_textarea_field($input);
             } elseif (ArrayHelper::get($fields, $attribute . '.element') === 'input_email') {
                 $input = strtolower(sanitize_text_field($input));
+            } elseif (ArrayHelper::get($fields, $attribute . '.element') === 'input_url') {
+                $input = sanitize_url($input);
             } else {
                 $input = sanitize_text_field($input);
             }
