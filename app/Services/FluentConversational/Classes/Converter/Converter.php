@@ -351,6 +351,7 @@ class Converter
                 }
 
 				$question['siteKey'] = $siteKey;
+				$question['answer'] = '';
 
 				$apiVersion = ArrayHelper::get($reCaptchaConfig, 'api_version', 'v2_visible');
 				$apiVersion = $apiVersion == 'v3_invisible' ? 3 : 2;
