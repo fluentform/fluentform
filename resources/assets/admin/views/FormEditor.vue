@@ -412,6 +412,7 @@
                                     v-if="!sidebarLoading"
                                     :editItem="editItem"
                                     :form_items="form.dropzone"
+                                    :haveFormSteps="haveFormSteps"
                                 />
                             </div>
                         </template>

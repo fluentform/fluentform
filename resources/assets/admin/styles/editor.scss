@@ -409,6 +409,14 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
       }
     }
   }
+
+  .el-form-item__content .ff-el-form-captcha-img-wrapper{
+     max-width: 222px;
+     max-height: 60px;
+     img{
+       max-width: 100%;
+     }
+  }
 }
 
 #wpwrap {

@@ -1264,8 +1264,6 @@ jQuery(document).ready(function () {
 
         $(document).on('ff_reinit', function (e, formItem) {
             var $theForm = $(formItem);
-            $theForm.attr('data-ff_reinit', 'yes');
-            // in elementor is_initialized is called when the page is loaded so removed the condition to check fo it
 
             const formInstance = fluentFormApp($theForm);
             if (!formInstance) {
@@ -1278,6 +1276,8 @@ jQuery(document).ready(function () {
             }
             initSingleForm($theForm);
             fluentFormCommonActions.init();
+            $theForm.attr('data-ff_reinit', 'yes');
+
         });
 
         fluentFormCommonActions.init();

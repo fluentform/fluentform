@@ -35,7 +35,7 @@ import product from './templates/product.vue'
 import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
-import VueResizable from 'vue-resizable';
+import { Splitpanes, Pane } from 'splitpanes'
 
 export default {
     name: 'list',
@@ -87,7 +87,7 @@ export default {
         ff_inputMultiPayment: inputMultiPayment,
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields,
-        VueResizable
+        Splitpanes, Pane
     },
     data() {
         return {
@@ -192,37 +192,24 @@ export default {
             }
         },
 
-        resizeMount(event, index) {
-            let width = 0;
-            let left = 0;
-
-            this.$refs.container && this.$refs.container.childNodes.forEach((tab, idx) => {
-                if (this.item.columns[idx].width == '') {
-                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 7) / this.$refs.container.childNodes.length);
-                } else {
-                    width = this.$refs.container && Math.ceil((this.$refs.container.clientWidth + 7) * this.item.columns[idx].width / 100);
-                }
-
-                left = this.item.columns[idx].left ? this.item.columns[idx].left : 0;
-
-                this.left.push(left);
-                this.width.push(width);
-            });
+        resize(event) {
+            this.item.columns.forEach((item, i) => {
+                item.width = this.getNumber(event[i].size);
+            })
         },
 
-        resizeMove(event, index) {
-            this.$refs.container.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100);
-            });
-            this.item.columns[index].left = parseInt(event.left);
+        resetContainer() {
+            const perColumnWidth = this.getNumber(100 / this.item.columns.length);
+
+            this.item.columns.forEach(column => {
+                column.width = perColumnWidth;
+            })
         },
 
-        resizeEnd(event, index) {
-            this.$refs.container.childNodes.forEach((tab, idx) => {
-                this.item.columns[idx].width = Math.ceil(((tab.clientWidth + 7) / this.$refs.container.clientWidth) * 100);
-            });
+        getNumber(value) {
+            value = value || 0;
 
-            this.item.columns[index].left = parseInt(event.left);
-        },
-    },
+            return parseFloat(parseFloat(value).toFixed(2));
+        }
+    }
 };

@@ -112,6 +112,7 @@ import targetProduct from './templates/targetProduct.vue';
 import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
+import ContainerWidth from "./templates/containerWidth";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -159,7 +160,8 @@ export default {
         ff_targetProduct: targetProduct,
         ff_inputYesNoCheckBox: inputYesNoCheckBox,
         ff_fieldsRepeatSettings: fieldsRepeatSettings,
-        ConversionStylePref
+        ConversionStylePref,
+        ff_containerWidth: ContainerWidth,
     },
     data() {
         return {
@@ -281,8 +283,6 @@ export default {
             if(!this.hasPro) {
                 unsupportedSettings.push('conditional_logics');
             }
-
-            console.log(key);
 
             return unsupportedSettings.indexOf(key) === -1;
         }

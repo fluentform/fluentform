@@ -179,6 +179,10 @@ export default {
                 css += `${prefix} .footer-inner-wrap .f-nav a.ffc_power { display: none !important; }`;
             }
 
+            if (settings.key_hint == 'yes') {
+                css += `${prefix} .f-radios .f-key { display: flex !important; }`;
+            }
+
             this.generateFont(settings.font_family);
 
             this.$emit('css_generated', css);

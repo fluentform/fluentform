@@ -317,6 +317,12 @@
 
     // Step navigation
     &-step {
+      &-t-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px
+      }
+
       &-container {
         overflow: hidden;
       }
@@ -564,10 +570,11 @@
     }
 
     &_upload_btn.ff-btn {
+      display: inline-block;
       background: rgb(111, 117, 126);
       color: white;
       cursor: pointer;
-      padding: 6px 20px;
+      padding: 10px 20px;
     }
   }
 

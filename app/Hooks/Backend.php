@@ -89,14 +89,6 @@ add_action('admin_init', function () {
     }
 });
 
-
-add_filter('fluentform_editor_init_element_container', function ($item) {
-    if (!isset($item['settings']['container_class'])) {
-        $item['settings']['container_class'] = '';
-    }
-    return $item;
-});
-
 add_action('enqueue_block_editor_assets', function () use ($app) {
     wp_enqueue_script(
         'fluentform-gutenberg-block',
@@ -273,6 +265,21 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         if (!isset($item['settings']['conditional_logics'])) {
             $item['settings']['conditional_logics'] = [];
         }
+        
+        if (!isset($item['settings']['container_width'])) {
+            $item['settings']['container_width'] = '';
+        }
+    
+        $shouldSetWidth = !empty($item['columns']) && (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
+    
+        if ($shouldSetWidth) {
+            $perColumn = round(100 / count($item['columns']), 2);
+        
+            foreach ($item['columns'] as &$column) {
+                $column['width'] = $perColumn;
+            }
+        }
+        
         return $item;
     });
 
@@ -334,7 +341,19 @@ add_action('fluentform_loading_editor_assets', function ($form) {
 
         return $item;
     });
+    
+    add_filter('fluentform_editor_init_element_recaptcha', function ($item, $form) {
+        $item['attributes']['name'] = 'g-recaptcha-response';
+        return $item;
+    }, 10, 2);
+    
+    add_filter('fluentform_editor_init_element_hcaptcha', function ($item, $form) {
+        $item['attributes']['name'] = 'h-captcha-response';
+        return $item;
+    }, 10, 2);
+    
 }, 10);
+
 
 
 add_filter('fluentform_addons_extra_menu', function ($menus) {

@@ -694,7 +694,7 @@ class Menu
                 $formFields = json_decode($formFields, true);
 
                 foreach ($formFields['fields'] as $index => $formField) {
-                    $formFields['fields'][$index] = apply_filters(
+                    $formField = $formFields['fields'][$index] = apply_filters(
                         'fluentform_editor_init_element_' . $formField['element'], $formField, $form
                     );
 
@@ -988,13 +988,13 @@ class Menu
         return apply_filters('fluentform/admin_i18n', $i18n);
     }
     
-    private function usedNameAttributes(int $formId)
+    private function usedNameAttributes($formId)
     {
         return wpFluent()->table('fluentform_entry_details')
             ->select(['field_name'])
             ->where('form_id', $formId)
             ->orderBy('submission_id', 'desc')
-            ->groupBy( 'field_name')
+            ->groupBy('field_name')
             ->get();
     }
 }
