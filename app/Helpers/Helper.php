@@ -3,6 +3,7 @@
 namespace FluentForm\App\Helpers;
 
 use FluentForm\Framework\Helpers\ArrayHelper;
+use static;
 
 class Helper
 {
@@ -599,5 +600,23 @@ class Helper
         }
 
         return $forms;
+    }
+    
+    public static function replaceBrTag($content, $with = '')
+	{
+		if (is_array($content)) {
+			foreach ($content as $key => $value) {
+				$content[$key] = static::replaceBrTag($value, $with);
+			}
+		} else if (static::hasBrTag($content)) {
+			$content = str_replace('<br />', $with, $content);
+		}
+
+		return $content;
+	}
+
+    public static function hasBrTag($content)
+    {
+        return is_string($content) && strpos($content, '<br />') !== false;
     }
 }
