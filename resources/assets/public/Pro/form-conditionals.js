@@ -61,10 +61,10 @@ const formConditional = function ($, $theForm, form) {
                     setTimeout(function () {
                         $parent.addClass('ff_cond_v');
                     }, 100);
-
-                    $parent.removeClass('ff_excluded')
-                        .slideDown(200);
-
+                    setTimeout(function () {
+                        $parent.removeClass('ff_excluded')
+                            .slideDown(200);
+                    }, 5);
                 } else {
                     setTimeout(function () {
                         $parent.removeClass('ff_cond_v');
