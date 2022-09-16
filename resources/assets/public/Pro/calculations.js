@@ -55,6 +55,16 @@ export default function ($, $theForm) {
                     return a;
                 return b;
             }
+        },
+        {
+            type: 8,
+            token: 'min',
+            show: 'min',
+            value: function (a, b) {
+                if (a < b)
+                    return a;
+                return b;
+            }
         }
     ]);
 
@@ -208,6 +218,7 @@ export default function ($, $theForm) {
             try {
                 formula = formula.replace(/\n/g, "");
                 calculatedValue = mexp.eval(formula);
+                console.log(calculatedValue);
                 if (isNaN(calculatedValue)) {
                     calculatedValue = '';
                 }
