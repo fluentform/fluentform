@@ -58,6 +58,11 @@
                         <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
                         <p>{{ field.tips }}</p>
                     </template>
+                    <template v-else-if="field.type == 'checkbox-single'">
+                        <el-checkbox v-model="integration[fieldKey]">
+                            {{field.checkbox_label}}
+                        </el-checkbox>
+                    </template>
                     <template v-else>
                         <el-input :placeholder="field.placeholder" :type="field.type"
                                   v-model="integration[fieldKey]"></el-input>
