@@ -3,7 +3,6 @@
 namespace FluentForm\App\Helpers;
 
 use FluentForm\Framework\Helpers\ArrayHelper;
-use static;
 
 class Helper
 {
