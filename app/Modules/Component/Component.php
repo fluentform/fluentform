@@ -515,9 +515,7 @@ class Component
 
 
         if ($atts['type'] == 'conversational') {
-            ob_start();
-                $this->addInlineVars();
-            ob_clean();
+            $this->addInlineVars();
             return (new \FluentForm\App\Services\FluentConversational\Classes\Form())->renderShortcode($form);
         }
 
