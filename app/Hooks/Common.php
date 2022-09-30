@@ -13,7 +13,7 @@ use FluentForm\App\Modules\Component\Component;
 
 add_action('save_post', function ($post_id) {
     if (isset($_POST['post_content'])) {
-        $post_content = $_POST['post_content'];
+        $post_content = wp_kses_post(wp_unslash($_POST['post_content']));
     } else {
         $post = get_post($post_id);
         $post_content = $post->post_content;
