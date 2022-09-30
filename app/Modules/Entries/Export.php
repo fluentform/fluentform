@@ -6,6 +6,7 @@ use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\App\Helpers\Helper;
 
 class Export
 {
@@ -77,13 +78,15 @@ class Export
             $submission->response = json_decode($submission->response, true);
             $temp = [];
             foreach ($inputLabels as $field => $label) {
-                $temp[] = trim(
+                $content = trim(
                     wp_strip_all_tags(
                         FormDataParser::formatValue(
                             Arr::get($submission->user_inputs, $field)
                         )
                     )
                 );
+
+                $temp[] = Helper::sanitizeForCSV($content);
             }
 
             if ($form->has_payment && $this->tableName == 'fluentform_submissions') {
