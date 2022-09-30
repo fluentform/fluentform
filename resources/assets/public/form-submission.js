@@ -299,8 +299,13 @@ jQuery(document).ready(function () {
                                 location.href = res.data.result.redirectUrl;
                                 return;
                             } else {
+                                const successMsgId = formId + '_success';
+                                const successMsgSelector = '#' + successMsgId;
+                                if ($(successMsgSelector).length) {
+                                    $(successMsgSelector).slideUp('fast');
+                                }
                                 $('<div/>', {
-                                    'id': formId + '_success',
+                                    'id': successMsgId,
                                     'class': 'ff-message-success'
                                 })
                                     .html(res.data.result.message)
@@ -317,7 +322,7 @@ jQuery(document).ready(function () {
                                 }
 
                                 // Scroll to success msg if not in viewport
-                                var successMsg = $('#' + formId + '_success');
+                                const successMsg = $(successMsgSelector);
                                 if (successMsg.length && !isElementInViewport(successMsg[0])) {
                                     $('html, body').animate({
                                         scrollTop: successMsg.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20
