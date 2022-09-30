@@ -29,7 +29,7 @@
             <h5 @click="toggleFieldsSection('advancedEditOptions')"
                 :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
                 class="option-fields-section--title">
-                Advanced Options
+                {{ $t('Advanced Options') }}
             </h5>
 
             <transition name="slide-fade">
@@ -45,8 +45,12 @@
                         </component>
                     </template>
                     <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
-                        Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro
-                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>
+                        {{
+                            $t('Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro')
+                        }}
+                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
+                                $t('Get Fluent Forms Pro')
+                            }}</a>
                     </div>
                 </div>
             </transition>
@@ -58,7 +62,7 @@
             <h5 @click="toggleFieldsSection('layoutOptions')"
                 :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
                 class="option-fields-section--title">
-                Layout Settings
+                {{ $t('Layout Settings') }}
             </h5>
 
             <transition name="slide-fade">

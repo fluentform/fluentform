@@ -2,26 +2,26 @@
     <div>
         <el-row class="setting_header">
             <el-col :md="12">
-                <h2>Zapier Integration</h2>
+                <h2>{{ $t('Zapier Integration') }}</h2>
             </el-col>
 
             <!--Save settings-->
             <el-col :md="12" class="action-buttons clearfix mb15 text-right">
                 <el-button v-if="selected" @click="discard"
                            class="pull-right" icon="el-icon-arrow-left" size="small"
-                >Back
+                >{{ $t('Back') }}
                 </el-button>
 
                 <el-button v-else @click="add" type="primary"
                            size="small" icon="el-icon-plus"
-                >Add Webhook
+                >{{ $t('Add Webhook') }}
                 </el-button>
             </el-col>
         </el-row>
 
         <!-- Notification Table: 1 -->
         <el-table v-loading="loading"
-                  element-loading-text="Fetching Settings..."
+                  :element-loading-text="$t('Fetching Settings...')"
                   v-if="!selected"
                   :data="notifications"
                   stripe
@@ -37,9 +37,9 @@
                 </template>
             </el-table-column>
 
-            <el-table-column width="300" prop="value.name" label="Name"></el-table-column>
+            <el-table-column width="300" prop="value.name" :label="$t('Name')"></el-table-column>
 
-            <el-table-column prop="value.url" label="Webhook Url"></el-table-column>
+            <el-table-column prop="value.url" :label="$t('Webhook Url')"></el-table-column>
 
             <el-table-column width="160" label="Actions" class-name="action-buttons">
                 <template slot-scope="scope">
@@ -56,14 +56,14 @@
         <el-form v-else label-width="205px" label-position="left">
 
             <!--Notification name-->
-            <el-form-item label="Name">
+            <el-form-item :label="$t('Name')">
                 <el-input v-model="selected.value.name"></el-input>
                 <ErrorView field="name" :errors="errors"/>
 
             </el-form-item>
 
             <!--Notification Url-->
-            <el-form-item label="Webhook Url">
+            <el-form-item :label="('Webhook Url')">
                 <el-input v-model="selected.value.url"></el-input>
                 <ErrorView field="url" :errors="errors"/>
             </el-form-item>
@@ -71,12 +71,12 @@
             <!-- FilterFields -->
             <el-form-item>
                 <template slot="label">
-                    Conditional Logics
+                    {{ $t('Conditional Logics') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Conditional Logics</h3>
-                            <p>Allow zapier webhook conditionally</p>
+                            <h3>{{ $t('Conditional Logics') }}</h3>
+                            <p>{{ $t('Allow zapier webhook conditionally') }}</p>
                         </div>
 
                         <i class="el-icon-info el-text-info"></i>
@@ -99,7 +99,7 @@
                     size="medium" 
                     type="default"
                 >
-                    Send Data Sample
+                    {{ ('Send Data Sample') }}
                 </el-button>
 
                 <el-button 
@@ -108,7 +108,7 @@
                     size="medium" 
                     type="primary"
                 >
-                    {{loading ? 'Saving' : 'Save' }} Notification
+                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
                 </el-button>
             </div>
         </el-form>
@@ -193,7 +193,7 @@
                         this.$notify.success({
                             offset: 30,
                             title: 'Success',
-                            message: `Notification ${enabled} successfully !`
+                            message: 'Notification ' + enabled + ' successfully!'
                         });
                     })
                     .fail(e => console.log(e));

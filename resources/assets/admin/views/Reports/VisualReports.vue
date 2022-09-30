@@ -2,25 +2,25 @@
     <div id="print_view" class="ff_report_viewer">
         <div class="ff_nav_top">
             <div class="ff_nav_title">
-                <h3>Visual Data Reporting</h3>
+                <h3>{{ $t('Visual Data Reporting') }}</h3>
                 <div class="ff_nav_sub_actions">
                 </div>
             </div>
             <div class="ff_nav_action">
-                <el-button @click="gotoRegularEntries()" type="primary" size="mini">View Regular Entries</el-button>
+                <el-button @click="gotoRegularEntries()" type="primary" size="mini">{{ $t('View Regular Entries') }}</el-button>
             </div>
         </div>
         <hr>
         <el-row v-loading="loading" :gutter="20" style="min-height: 260px;">
             <el-col class="all_report_items" :xs="24" :sm="18" :md="18" :lg="18">
                 <div v-if="loading">
-                    <h3>Fetching Data.. Please wait</h3>
+                    <h3>{{ $t('Fetching Data..Please wait') }}</h3>
                 </div>
                 <div v-if="!loading" class="ff_report_body">
 
                     <div class="ff_report_card">
                         <div class="report_header">
-                            Submission Stats
+                            {{ $t('Submission Stats') }}
                             <el-date-picker
                                 v-model="date_range"
                                 size="mini"
@@ -28,8 +28,8 @@
                                 type="daterange"
                                 :picker-options="pickerOptions"
                                 range-separator="To"
-                                start-placeholder="Start date"
-                                end-placeholder="End date">
+                                :start-placeholder="$t('Start date')"
+                                :end-placeholder="$t('End date')">
                             </el-date-picker>
                         </div>
                         <div class="report_body">
@@ -47,14 +47,15 @@
                 </div>
                 <div v-if="(!total_entries && !loading) || (!reportIndexes.length && !loading)"
                      class="no_entries_found">
-                    <p>Sorry! No reports found based on your filter, available form submissions and input
-                        types</p>
+                    <p>{{
+                            $t('Sorry!No reports found based on your filter, available form submissions and input types')
+                        }}</p>
                 </div>
             </el-col>
             <el-col class="ff_print_hide" :xs="24" :sm="6" :md="6" :lg="6">
                 <div class="entry_info_box postbox">
                     <div class="entry_info_header">
-                        <b>Filter Data by Status</b>
+                        <b>{{ $t('Filter Data by Status') }}</b>
                     </div>
                     <div class="entry_info_body report_status_filter">
                         <el-checkbox-group @change="fetchReport()" v-model="filter_statuses">
@@ -62,17 +63,17 @@
                                          :label="status_key">{{ status }}
                             </el-checkbox>
                         </el-checkbox-group>
-                        <p style="margin-top: 10px" v-show="!filter_statuses.length">Show from all except trashed</p>
+                        <p style="margin-top: 10px" v-show="!filter_statuses.length">{{ $t('Show from all except trashed') }}</p>
                     </div>
                 </div>
                 <div class="entry_info_box postbox">
                     <div class="entry_info_header">
-                        <b>Other Info</b>
+                        <b>{{ $t('Other Info') }}</b>
                     </div>
                     <div class="entry_info_body">
-                        <p>Total Entries: {{ total_entries }}</p>
+                        <p>{{ $t('Total Entries:') }} {{ total_entries }}</p>
                         <hr/>
-                        <p><b>Entries By Browser</b></p>
+                        <p><b>{{ $t('Entries By Browser') }}</b></p>
                         <ul>
                             <li v-for="(browserCount,browsername) in browsers">{{ browsername }}: {{ browserCount }}
                             </li>
@@ -84,8 +85,8 @@
                         </ul>
                     </div>
                 </div>
-                <el-button @click="printReport()" size="mini" type="info">Print this report</el-button>
-                <el-button @click="resetAnalytics()" size="mini" type="info">Reset Form Analytics</el-button>
+                <el-button @click="printReport()" size="mini" type="info">{{ $t('Print this report') }}</el-button>
+                <el-button @click="resetAnalytics()" size="mini" type="info">{{ $t('Reset Form Analytics') }}</el-button>
             </el-col>
         </el-row>
     </div>

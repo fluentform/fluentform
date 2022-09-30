@@ -3,45 +3,45 @@
         <!--Name-->
         <el-form-item required>
             <template slot="label">
-                Name
+                {{ $t('Name') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Name</h3>
-                        <p>Enter a feed name to uniquely identify this setup.</p>
+                        <h3>{{ $t('Name') }}</h3>
+                        <p>{{ $t('Enter a feed name to uniquely identify this setup.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
 
-            <el-input v-model="editing_item.name" placeholder="WebHook Feed Name"></el-input>
+            <el-input v-model="editing_item.name" :placeholder="$t('WebHook Feed Name')"></el-input>
             <error-view field="name" :errors="errors"></error-view>
         </el-form-item>
 
         <!--Request URL-->
         <el-form-item required>
             <template slot="label">
-                Request URL
+                {{ $t('Request URL') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request URL</h3>
-                        <p>Enter the URL to be used in the webhook request.</p>
+                        <h3>{{ $t('Request URL') }}</h3>
+                        <p>{{ $t('Enter the URL to be used in the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
 
-            <el-input v-model="editing_item.request_url" placeholder="WebHook URL"></el-input>
+            <el-input v-model="editing_item.request_url" :placeholder="$t('WebHook URL')"></el-input>
             <error-view field="request_url" :errors="errors"></error-view>
         </el-form-item>
 
         <!--Request Method-->
         <el-form-item>
             <template slot="label">
-                Request Method
+                {{ $t('Request Method') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Method</h3>
-                        <p>Select the HTTP method used for the webhook request.</p>
+                        <h3>{{ $t('Request Method') }}</h3>
+                        <p>{{ $t('Select the HTTP method used for the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
@@ -60,11 +60,11 @@
         <!--Request Format-->
         <el-form-item>
             <template slot="label">
-                Request Format
+                {{ $t('Request Format') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Format</h3>
-                        <p>Select the format for the webhook request.</p>
+                        <h3>{{ $t('Request Format') }}</h3>
+                        <p>{{ $t('Select the format for the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
@@ -83,19 +83,19 @@
         <!--Request Header-->
         <el-form-item>
             <template slot="label">
-                Request Header
+                {{ $t('Request Header') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Header</h3>
-                        <p>Select with headers if any headers should be sent with the webhook request.</p>
+                        <h3>{{ $t('Request Header') }}</h3>
+                        <p>{{ $t('Select with headers if any headers should be sent with the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
 
             <template>
-                <el-radio v-model="editing_item.with_header" label="nop">No Headers</el-radio>
-                <el-radio v-model="editing_item.with_header" label="yup">With Headers</el-radio>
+                <el-radio v-model="editing_item.with_header" :label="$t('nop')">{{ $t('No Headers') }}</el-radio>
+                <el-radio v-model="editing_item.with_header" :label="$t('yup')">{{ $t('With Headers') }}</el-radio>
             </template>
             <error-view field="with_header" :errors="errors"></error-view>
         </el-form-item>
@@ -103,11 +103,11 @@
         <!--Request Headers-->
         <el-form-item required v-if="editing_item.with_header=='yup'">
             <template slot="label">
-                Request Headers
+                {{ $t('Request Headers') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Headers</h3>
-                        <p>Setup the HTTP headers to be sent with the webhook request.</p>
+                        <h3>{{ $t('Request Headers') }}</h3>
+                        <p>{{ $t('Setup the HTTP headers to be sent with the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
@@ -116,8 +116,8 @@
             <table width="100%">
                 <thead>
                     <tr>
-                        <th class="text-left" width="50%">Header Name</th>
-                        <th class="text-left">Header Value</th>
+                        <th class="text-left" width="50%">{{ $t('Header Name') }}</th>
+                        <th class="text-left">{{ $t('Header Value') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,7 +126,7 @@
                             <el-select
                             clearable
                             style="width:80%"
-                            placeholder="Select Header"
+                            :placeholder="$t('Select Header')"
                             v-model="editing_item.request_headers[headerKey].key"
                             v-if="!editing_item.custom_header_keys[headerKey]"
                             @change="addCustomHeaderKeyInput(headerKey, $event)">
@@ -140,7 +140,7 @@
 
                             <el-input
                             style="width:81%"
-                            placeholder="Enter Custom Header"
+                            :placeholder="$t('Enter Custom Header')"
                             v-if="editing_item.custom_header_keys[headerKey]"
                             v-model="editing_item.request_headers[headerKey].key">
                                 <el-button
@@ -153,7 +153,7 @@
                             <el-select
                             clearable
                             style="width:80%"
-                            placeholder="Select Value"
+                            :placeholder="$t('Select Value')"
                             class="action-add-field-select"
                             v-if="!editing_item.custom_header_values[headerKey]"
                             v-model="editing_item.request_headers[headerKey].value"
@@ -174,7 +174,7 @@
 
                             <el-input
                             style="width:81%"
-                            placeholder="Enter Value"
+                            :placeholder="$t('Enter Value')"
                             v-if="editing_item.custom_header_values[headerKey]"
                             v-model="editing_item.request_headers[headerKey].value">
                                 <el-button
@@ -205,19 +205,19 @@
         <!--Request Body-->
         <el-form-item required>
             <template slot="label">
-                Request Body
+                {{ $t('Request Body') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Body</h3>
-                        <p>Select if all fields or select fields should be sent with the webhook request.</p>
+                        <h3>{{ $t('Request Body') }}</h3>
+                        <p>{{ $t('Select if all fields or select fields should be sent with the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
 
             <template>
-                <el-radio v-model="editing_item.request_body" label="all_fields">All Fields</el-radio>
-                <el-radio v-model="editing_item.request_body" label="selected_fields">Selected Fields</el-radio>
+                <el-radio v-model="editing_item.request_body" label="all_fields">{{ $t('All Fields') }}</el-radio>
+                <el-radio v-model="editing_item.request_body" label="selected_fields">{{ $t('Selected Fields') }}</el-radio>
             </template>
             <error-view field="request_body" :errors="errors"></error-view>
         </el-form-item>
@@ -225,11 +225,11 @@
         <!--Request Fields-->
         <el-form-item required v-if="editing_item.request_body=='selected_fields'">
             <template slot="label">
-                Request Fields
+                {{ $t('Request Fields') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Request Fields</h3>
-                        <p>Setup the fields to be sent in the webhook request.</p>
+                        <h3>{{ $t('Request Fields') }}</h3>
+                        <p>{{ $t('Setup the fields to be sent in the webhook request.') }}</p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
@@ -238,8 +238,8 @@
             <table width="100%">
                     <thead>
                         <tr>
-                            <th class="text-left" width="50%">Field Name</th>
-                            <th class="text-left">Field Value</th>
+                            <th class="text-left" width="50%">{{ $t('Field Name') }}</th>
+                            <th class="text-left">{{ $t('Field Value') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -249,7 +249,7 @@
                                 clearable
                                 style="width:80%"
                                 v-model="editing_item.fields[mappedKey].key"
-                                placeholder="Enter Name"></el-input>
+                                :placeholder="$t('Enter Name')"></el-input>
                             </td>
                             <td>
                                 <div>
@@ -259,7 +259,7 @@
                                     class="action-add-field-select"
                                     style="width:80%"
                                     v-model="editing_item.fields[mappedKey].value"
-                                    placeholder="Select Value">
+                                    :placeholder="$t('Select Value')">
                                         <el-option-group
                                         v-for="group in editor_Shortcodes"
                                         :key="group.title"
@@ -298,13 +298,13 @@
         <!-- Conditional Logics -->
             <el-form-item>
                 <template slot="label">
-                    Conditional Logics
+                    {{ $t('Conditional Logics') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Conditional Logics</h3>
+                            <h3>{{ $t('Conditional Logics') }}</h3>
 
-                            <p>Allow WebHook to take action conditionally</p>
+                            <p>{{ $t('Allow WebHook to take action conditionally') }}</p>
                         </div>
 
                         <i class="el-icon-info el-text-info" />
@@ -319,8 +319,8 @@
             </el-form-item>
             
             <el-button :loading="saving" @click="saveWebHook" type="primary">
-                <span v-if="selected_id">Update WebHook Feed</span>
-                <span v-else>Create WebHook Feed</span>
+                <span v-if="selected_id">{{ $t('Update WebHook Feed') }}</span>
+                <span v-else>{{ $t('Create WebHook Feed') }}</span>
             </el-button>
 
     </el-form>

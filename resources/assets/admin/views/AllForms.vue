@@ -355,7 +355,7 @@ export default {
               ]
             },
             filter_by:'all',
-            form_statuses: {all:"All", published : 'Active', unpublished:'In Active', is_payment:"Payment Form", post:'Post Form', conv_form:'Conversational Form', step_form: "Step Form"},
+            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Step Form')},
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
@@ -384,7 +384,7 @@ export default {
                     });
                 })
                 .fail(error => {
-                    this.$message.error('Something went wrong, please try again.');
+                    this.$message.error(this.$t('Something went wrong, please try again.'));
                 })
                 .always(() => {
                     this.loading = false;
@@ -424,7 +424,7 @@ export default {
                     this.paginate.last_page = response.last_page;
                 })
                 .fail(error => {
-                    this.$message.error('Something went wrong, please try again.');
+                    this.$message.error(this.$t('Something went wrong, please try again.'));
                 })
                 .always(() => {
                     this.loading = false;
@@ -448,7 +448,7 @@ export default {
                 this.categories = res.categories;
                 this.predefinedDropDownForms = res.predefined_dropDown_forms;
             }).fail(error => {
-                this.$message.error('Something went wrong, please try again.');
+                this.$message.error(this.$t('Something went wrong, please try again.'));
             })
                 .always(() => {
                     this.loading = false;
@@ -486,11 +486,11 @@ export default {
                     if (res.redirect) {
                         window.location.href = res.redirect;
                     } else {
-                        alert('Something is wrong! Please try again');
+                        alert(this.$t('Something is wrong! Please try again'));
                     }
                 })
                 .fail(error => {
-                    alert('Something is wrong! Please try again');
+                    alert(this.$t('Something is wrong! Please try again'));
                 });
         },
         handleTableSort(column) {
@@ -561,7 +561,7 @@ export default {
 
         (new Clipboard('.copy')).on('success', event => {
             this.$message({
-                message: 'Copied to Clipboard!',
+                message: this.$t('Copied to Clipboard!'),
                 type: 'success'
             });
         });

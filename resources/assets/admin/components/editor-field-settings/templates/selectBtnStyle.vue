@@ -2,7 +2,7 @@
     <div class="button_styler">
         <el-form-item>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-            <el-select class="el-fluid" v-model="model" placeholder="Select Date Format">
+            <el-select class="el-fluid" v-model="model" :placeholder="$t('Select Date Format')">
                 <el-option
                     v-for="(item, key) in btnStyles"
                     :key="key"
@@ -13,10 +13,10 @@
         </el-form-item>
         <div v-if="model == '' && editItem.settings.normal_styles" style="margin-bottom: 20px" class="button_styler_customizer">
             <el-tabs  @tab-click="handleClick" type="border-card" v-model="activeName">
-                <el-tab-pane label="Normal State" name="normal_styles">
+                <el-tab-pane :label="$t('Normal State')" name="normal_styles">
                     <button-styler v-model="editItem.settings.normal_styles"></button-styler>
                 </el-tab-pane>
-                <el-tab-pane label="Hover State" name="hover_styles">
+                <el-tab-pane :label="$t('Hover State')" name="hover_styles">
                     <button-styler v-model="editItem.settings.hover_styles"></button-styler>
                 </el-tab-pane>
             </el-tabs>

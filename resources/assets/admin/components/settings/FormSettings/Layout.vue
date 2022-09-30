@@ -3,16 +3,16 @@
         <!--Label Placement-->
         <el-form-item>
             <template slot="label">
-                Label placement
+                {{ $t('Label placement') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Form Label Placement</h3>
+                        <h3>{{ $t('Form Label Placement') }}</h3>
                         <p>
-                            Select the default label placement. Labels can <br>
-                            be top aligned above a field, left aligned to the <br>
-                            left of a field, or right aligned to the right of a <br>
-                            field. This is a global label placement setting.
+                            {{ $t('Select the default label placement.Labels can ') }} <br>
+                            {{ $t('be top aligned above a field, left aligned to the ') }} <br>
+                            {{ $t('left of a field, or right aligned to the right of a ') }} <br>
+                            {{ $t('field.This is a global label placement setting.') }}
                         </p>
                     </div>
 
@@ -30,13 +30,13 @@
         <!-- Help message placement -->
         <el-form-item>
             <template slot="label">
-                Help Message Placement
+                {{ $t('Help Message Placement') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Help Message Placement</h3>
+                        <h3>{{ $t('Help Message Placement') }}</h3>
 
                         <p>
-                            Where help message will be shown
+                            {{ $t('Where help message will be shown') }}
                         </p>
                     </div>
 
@@ -56,13 +56,13 @@
         <!-- Error message placement -->
         <el-form-item>
             <template slot="label">
-                Error Message Placement
+                {{ $t('Error Message Placement') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Error Message Placement</h3>
+                        <h3>{{ $t('Error Message Placement') }}</h3>
                         <p>
-                            Where form validation error messages will be shown
+                            {{ $t('Where form validation error messages will be shown') }}
                         </p>
                     </div>
                     <i class="el-icon-info el-text-info"></i>
@@ -82,67 +82,70 @@
         <div class="ff_email_notification_settings">
             <el-row class="setting_header">
                 <el-col :md="24">
-                    <h2>Email Summaries</h2>
-                    <p>Would you like to receive a weekly report showing how your forms are performing? Enable Email
-                        Summaries option and you will get a report every week to the provided email address</p>
+                    <h2>{{ $t('Email Summaries') }}</h2>
+                    <p>{{
+                            $t('Would you like to receive a weekly report showing how your forms are performing ? Enable Email Summaries option and you will get a report every week to the provided email address')
+                        }}</p>
                 </el-col>
             </el-row>
             <el-row style="margin-bottom: 50px;">
                 <el-col :md="24">
                     <el-form-item>
                         <template slot="label">
-                            Status
+                            {{ $t('Status') }}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <p>
-                                        Determine, If you want to enable/disable email reporting. If enabled, you will
-                                        get email summaries
+                                        {{
+                                            $t('Determine, If you want to enable / disable email reporting.If enabled, you will email summaries')
+                                        }}
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
-                        <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> Enable Email
-                            Summaries Weekly Delivery
+                        <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> {{
+                                $t('Enable Email Summaries Weekly Delivery')
+                            }}
                         </el-checkbox>
                     </el-form-item>
                     <template v-if="email_report.status == 'yes'">
                         <el-form-item>
                             <template slot="label">
-                                Send To
+                                {{ $t('Send To') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
                                         <p>
-                                            Please specify who will get the email summary report
+                                            {{ $t('Please specify who will get the email summary report') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </template>
                             <el-radio-group v-model="email_report.send_to_type">
-                                <el-radio label="admin_email">Site Admin</el-radio>
-                                <el-radio label="custom_email">Custom Email</el-radio>
+                                <el-radio label="admin_email">{{ $t('Site Admin') }}</el-radio>
+                                <el-radio label="custom_email">{{ $t('Custom Email') }}</el-radio>
                             </el-radio-group>
                             <div v-if="email_report.send_to_type == 'custom_email'">
-                                <label>Please recipient email address</label>
-                                <el-input placeholder="Recipient Email Address"
+                                <label>{{ $t('Please recipient email address') }}</label>
+                                <el-input :placeholder="$t('Recipient Email Address')"
                                           v-model="email_report.custom_recipients"></el-input>
-                                <p>For Multiple please use comma separated values</p>
+                                <p>{{ $t('For Multiple please use comma separated values') }}</p>
                             </div>
                         </el-form-item>
                         <el-form-item>
                             <template slot="label">
-                                Sending Day
+                                {{ $t('Sending Day') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
                                         <p>
-                                            Select which day the email report will be sent
+                                            {{ $t('Select which day the email report will be sent') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </template>
-                            <el-select placeholder="Select Day" v-model="email_report.sending_day">
+                            <el-select :placeholder="$t('Select Day')" v-model="email_report.sending_day">
                                 <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey"
                                            :label="sendDay"></el-option>
                             </el-select>
@@ -150,12 +153,12 @@
 
                         <el-form-item>
                             <template slot="label">
-                                Email Subject
+                                {{ $t('Email Subject') }}
 
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
                                         <p>
-                                            Enter the subject of the email summary
+                                            {{ $t('Enter the subject of the email summary') }}
                                         </p>
                                     </div>
 
@@ -164,7 +167,7 @@
                             </template>
 
                             <el-input
-                                placeholder="Email Subject"
+                                :placeholder="$t('Email Subject')"
                                 v-model="email_report.subject"
                             />
                         </el-form-item>
@@ -177,52 +180,55 @@
         <div class="ff_email_notification_settings">
             <el-row class="setting_header">
                 <el-col :md="24">
-                    <h2>Integration Failure Email Notification</h2>
-                    <p>Receive an instant email notification when any of your integraion is not running.
-                        Enable Integration Failure Notification option and you will get an email when any of your
-                        integration fails to run</p>
+                    <h2>{{ $t('Integration Failure Email Notification') }}</h2>
+                    <p>{{
+                            $t('Receive an instant email notification when any of your integraion is not running.Enable Integration Failure Notification option and you will get an email when any of your integration fails to run')
+                        }}</p>
                 </el-col>
             </el-row>
             <el-row style="margin-bottom: 50px;">
                 <el-col :md="24">
                     <el-form-item>
                         <template slot="label">
-                            Status
+                            {{$t('Status')}}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <p>
-                                        Enable Integration Failure Notification if you want recieve a email notification each time any of your integration fails to run.
+                                        {{
+                                            $t('Enable Integration Failure Notification if you want recieve a email notification each time any of your integration fails to run.')
+                                        }}
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
-                        <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no" v-model="integration_failure_notification.status"> Enable Integration Failure Notification
+                        <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no" v-model="integration_failure_notification.status">
+                            {{ $t('Enable Integration Failure Notification') }}
                         </el-checkbox>
-                        <p v-if="!hasPro"><b>This is a Pro Feature</b></p>
+                        <p v-if="!hasPro"><b>{{ $t('This is a Pro Feature') }}</b></p>
                     </el-form-item>
                     <template v-if="integration_failure_notification.status == 'yes' && hasPro" >
                         <el-form-item>
                             <template slot="label">
-                                Send To
+                                {{ $t('Send To') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
                                         <p>
-                                            Please specify who will get the email notification
+                                            {{ $t('Please specify who will get the email notification') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </template>
                             <el-radio-group v-model="integration_failure_notification.send_to_type">
-                                <el-radio label="admin_email">Site Admin</el-radio>
-                                <el-radio label="custom_email">Custom Email</el-radio>
+                                <el-radio label="admin_email">{{ $t('Site Admin') }}</el-radio>
+                                <el-radio label="custom_email">{{ $t('Custom Email') }}</el-radio>
                             </el-radio-group>
                             <div v-if="integration_failure_notification.send_to_type == 'custom_email'">
-                                <label>Please recipient email address</label>
-                                <el-input placeholder="Recipient Email Address"
+                                <label>{{ $t('Please recipient email address') }}</label>
+                                <el-input :placeholder="$t('Recipient Email Address')"
                                           v-model="integration_failure_notification.custom_recipients"></el-input>
-                                <p>For Multiple please use comma separated values</p>
+                                <p>{{ $t('For Multiple please use comma separated values') }}</p>
                             </div>
                         </el-form-item>
                     </template>
@@ -233,12 +239,12 @@
         <el-row class="setting_header">
             <el-col :md="18">
                 <h2>
-                    Miscellaneous
+                    {{ $t('Miscellaneous') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Customize Form Settings</h3>
-                            <p>These Settings will be used as default settings of a new form where<br/>You can customize
-                                many options globally, which will effect all forms.</p>
+                            <h3>{{ $t('Customize Form Settings') }}</h3>
+                            <p>{{ $t('These Settings will be used as default settings of a new form where') }}
+                                <br/> {{ $t('You can customize many options globally, which will effect all forms.') }}</p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
@@ -251,14 +257,14 @@
             <el-col :md="24">
                 <el-form-item>
                     <template slot="label">
-                        Disable IP Logging
+                        {{ $t('Disable IP Logging') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Disable IP Logging</h3>
+                                <h3>{{ $t('Disable IP Logging') }}</h3>
                                 <p>
-                                    If this option is turned off then the IP address of the<br>
-                                    user will be saved in the database with form data.
+                                    {{ $t('If this option is turned off then the IP address of the') }}<br>
+                                    {{ $t('user will be saved in the database with form data.') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -271,14 +277,14 @@
 
                 <el-form-item>
                     <template slot="label">
-                        Disable Form Analytics
+                        {{ $t('Disable Form Analytics') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Disable Form Analytics</h3>
+                                <h3>{{ $t('Disable Form Analytics') }}</h3>
                                 <p>
-                                    By Default, Fluent Forms track unique views and submissions to show form<br>
-                                    metrics. You can disable it here.
+                                    {{ $t('By Default, Fluent Forms track unique views and submissions to show form metrices.') }}<br>
+                                    {{ $t('You can disable it here.') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -291,13 +297,14 @@
 
                 <el-form-item>
                     <template slot="label">
-                        Email Footer Text
+                        {{ $t('Email Footer Text') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Email Footer Text</h3>
+                                <h3>{{ $t('Email Footer Text') }}</h3>
                                 <p>
-                                    By Default, Fluent Forms add your site title as email footer. You can add email
-                                    footer text here. (HTML supported)
+                                    {{
+                                        $t('By Default, Fluent Forms add your site title as email footer.You can add email footer text here.(HTML supported)')
+                                    }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -307,21 +314,22 @@
                     <el-input
                         type="textarea"
                         :rows="3"
-                        placeholder="Email Footer Text"
+                        :placeholder="$t('Email Footer Text')"
                         v-model="misc.email_footer_text">
                     </el-input>
                 </el-form-item>
 
                 <el-form-item>
                     <template slot="label">
-                        Enable Honeypot Security
+                        {{ $t('Enable Honeypot Security') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Honeypot Security</h3>
+                                <h3>{{ $t('Honeypot Security') }}</h3>
                                 <p>
-                                    If you enable this then Fluent Forms will verify honeypot security. Most of the
-                                    time, bots will fail this test.
+                                    {{
+                                        $t('If you enable this then Fluent Forms will verify honeypot security.Most of the time, bots will fail this test.')
+                                    }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -330,19 +338,20 @@
 
                     <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
                                v-model="misc.honeypotStatus"></el-switch>
-                    <p>Recommended settings: Enabled</p>
+                    <p>{{ $t('Recommended settings: Enabled') }}</p>
                 </el-form-item>
 
                 <template v-if="akismet_available">
                     <el-form-item>
                         <template slot="label">
-                            Enable Akismet Integration
+                            {{ $t('Enable Akismet Integration') }}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Akismet Integration</h3>
+                                    <h3>{{ $t('Akismet Integration') }}</h3>
                                     <p>
-                                        If you enable this then Fluent Forms will verify the form submission with
-                                        Akismet. It will save you from spam form submission.
+                                        {{
+                                            $t('If you enable this then Fluent Forms will verify the form submission with Akismet.It will save you from spam form submission.')
+                                        }}
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
@@ -350,25 +359,25 @@
                         </template>
                         <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
                                    v-model="misc.akismet_status"></el-switch>
-                        <p>Recommended settings: Enabled</p>
+                        <p>{{ $t('Recommended settings: Enabled') }}</p>
                     </el-form-item>
 
                     <el-form-item v-if="misc.akismet_status == 'yes'">
                         <template slot="label">
-                            Spam Validation
+                            {{ $t('Spam Validation') }}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Spam Validation</h3>
+                                    <h3>{{ $t('Spam Validation') }}</h3>
                                     <p>
-                                        Please select what will be happened once a submission marked as spam
+                                        {{ $t('Please select what will be happened once a submission marked as spam') }}
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
                         </template>
                         <el-radio-group v-model="misc.akismet_validation">
-                            <el-radio label="mark_as_spam">Mark as Spam</el-radio>
-                            <el-radio label="validation_failed">Make the form submission as failed</el-radio>
+                            <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the form submission as failed') }}</el-radio>
                         </el-radio-group>
 
                     </el-form-item>
@@ -377,12 +386,12 @@
 
                 <el-form-item>
                     <template slot="label">
-                        Classic Editor Button
+                        {{ $t('Classic Editor Button') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Insert Button on Classic Editor</h3>
+                                <h3>{{ $t('Insert Button on Classic Editor') }}</h3>
                                 <p>
-                                    If you enable this then Classic editor will have form inserter button
+                                    {{ $t('If you enable this then Classic editor will have form inserter button') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -395,13 +404,14 @@
 
                 <el-form-item>
                     <template slot="label">
-                        Enable No-Conflict Mode
+                        {{ $t('Enable No - Conflict Mode') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>No-Conflict Mode</h3>
+                                <h3>{{ $t('No - Conflict Mode') }}</h3>
                                 <p>
-                                    If you enable this, then fluent forms will try to prevent other plugin scripts from
-                                    loading and remove the conflicts.
+                                    {{
+                                        $t('If you enable this, then fluent forms will try to prevent other plugin scripts from loading and remove the conflicts.')
+                                    }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -409,17 +419,17 @@
                     </template>
                     <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
                                v-model="misc.noConflictStatus"></el-switch>
-                    <p>Recommended settings: Enabled</p>
+                    <p>{{ $t('Recommended settings: Enabled') }}</p>
                 </el-form-item>
 
                 <el-form-item>
                     <template slot="label">
-                        Enable Auto Tab-Index
+                        {{ $t('Enable Auto Tab - Index') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Auto Tab-Index</h3>
+                                <h3>{{ $t('Auto Tab - Index') }}</h3>
                                 <p>
-                                    If you enable this, then fluent forms will tabindex to form fields automatically.
+                                    {{ $t('If you enable this, then fluent forms will tabindex to form fields automatically.') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -431,12 +441,14 @@
 
                 <el-form-item v-if="hasPro">
                     <template slot="label">
-                        Geo-Location provider
+                        {{ $t('Geo-Location provider') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Geo-Location provider</h3>
+                                <h3>{{ $t('Geo-Location provider') }}</h3>
                                 <p>
-                                    If you use advanced phone field and enable auto country ditect then may configure this.
+                                    {{
+                                        $t('If you use advanced phone field and enable auto country ditect then may configure this.')
+                                    }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -450,7 +462,7 @@
                                 :label="provider.label"></el-option>
                         </el-select>
                         <template v-if="misc.geo_provider && geo_providers[misc.geo_provider].has_token">
-                            <el-input type="password" size="small" placeholder="GEO API Token" v-model="misc.geo_provider_token"></el-input>
+                            <el-input type="password" size="small" :placeholder="$t('GEO API Token')" v-model="misc.geo_provider_token"></el-input>
                             <p>{{geo_providers[misc.geo_provider].token_instruction}}</p>
                         </template>
                     </div>
@@ -479,7 +491,7 @@
 
                             </el-option>
                         </el-select>
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>{{ $t('This feature is only available in pro version of Fluent Forms') }}</p>
 
 
                     </div>
@@ -487,13 +499,14 @@
                 <!-- Enable captcha in All form -->
                 <el-form-item>
                     <template slot="label">
-                        Autoload Captcha
+                        {{ $t('Autoload Captcha') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Captcha Autoload</h3>
+                                <h3>{{ $t('Captcha Autoload') }}</h3>
                                 <p>
-                                    If you enable this then Fluent Forms will insert captcha in all your forms. Please
-                                    enable the captcha first.
+                                    {{
+                                        $t('If you enable this then Fluent Forms will insert captcha in all your forms.Please enable the captcha first.')
+                                    }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info"></i>
@@ -503,8 +516,8 @@
                                v-model="misc.autoload_captcha"></el-switch>
                    <div>
                        <el-radio-group v-model="misc.captcha_type"  v-if="misc.autoload_captcha">
-                           <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">Google ReCaptcha</el-radio>
-                           <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">hCaptcha</el-radio>
+                           <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">{{ $t('Google ReCaptcha') }}</el-radio>
+                           <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">{{ $t('hCaptcha') }}</el-radio>
                        </el-radio-group>
                    </div>
                 </el-form-item>

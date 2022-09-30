@@ -4,12 +4,11 @@
         <el-row class="setting_header">
             <el-col :md="18">
                 <h2>
-                    Global Layout Settings
+                    {{ $t('Global Layout Settings') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Error Message Placement</h3>
-                            <p>These Settings will be used as default settings of a new form.<br/>You can customize
-                                layout settings for each page from form's settings page</p>
+                            <h3>{{ $t('Error Message Placement') }}</h3>
+                            <p>{{ $t('These Settings will be used as default settings of a new form.') }}<br/>{{  ('You can customize layout settings for each page from form\'s settings page') }}</p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
@@ -17,7 +16,7 @@
             </el-col>
             <el-col :md="6" class="action-buttons clearfix mb15">
                 <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="save"
-                >Save Settings
+                >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
         </el-row>
@@ -39,7 +38,7 @@
         <el-row>
             <el-col class="action-buttons clearfix mb15">
                 <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="save"
-                >Save Settings
+                >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
         </el-row>

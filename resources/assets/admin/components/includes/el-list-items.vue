@@ -1,6 +1,6 @@
 <template>
     <div class="editor-inserter__content-items">
-        <div v-for="item, i in list"
+        <div v-for="(item, i) in list"
             @click="insertItemOnClick(item)"
             :key="i"
             class="editor-inserter__content-item"

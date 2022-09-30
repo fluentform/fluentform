@@ -2,7 +2,7 @@
     <div class="post_feed">
         <div class="setting_header el-row">
             <div class="el-col el-col-24 el-col-md-12">
-                <h2 v-if="!feed.id">Create New Feed</h2>
+                <h2 v-if="!feed.id">{{ $t('Create New Feed') }}</h2>
                 <h2
                         v-else
                         v-html="feedTitleForEdit"
@@ -16,7 +16,7 @@
                         @click="saveFeed"
                         icon="el-icon-success"
                         style="margin-right:10px;"
-                >Save Feed
+                >{{ $t('Save Feed') }}
                 </el-button>
 
                 <el-button
@@ -25,7 +25,7 @@
                         type="primary"
                         icon="el-icon-arrow-left"
                         @click="$emit('show-post-feeds')"
-                >Back
+                >{{ $t('Back') }}
                 </el-button>
             </div>
         </div>
@@ -33,35 +33,34 @@
         <div class="post_feed">
             <el-form label-width="160px" label-position="right">
 
-                <el-form-item label="Feed Name">
+                <el-form-item :label="$t('Feed Name')">
                     <el-input size="small" v-model="feed.value.feed_name"/>
                 </el-form-item>
 
-                <el-form-item label="Post Type">
+                <el-form-item :label="$t('Post Type')">
                     <el-input
                             disabled
                             size="small"
                             v-model="post_settings.post_info.value.post_type"
                     />
                 </el-form-item>
-                <el-form-item label="Submission Type">
+                <el-form-item :label="$t('Submission Type')">
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Create or Update Post</h3>
-                            <p>
-                                For post update only one feed is avaiable, if you have more than one feed the first one will work.
+                            <h3>{{ $t('Create or Update Post') }}</h3>
+                            <p>{{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
                             </p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
                     <el-radio-group v-model="feed.value.post_form_type">
-                        <el-radio label="new">New Post</el-radio>
-                        <el-radio label="update">Update Post</el-radio>
+                        <el-radio label="new">{{ $t('New Post') }}</el-radio>
+                        <el-radio label="update">{{ $t('Update Post') }}</el-radio>
                         
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="Post Status">
+                <el-form-item :label="$t('Post Status')">
                     <el-select v-model="feed.value.post_status" style="width:100%;">
                         <el-option
                                 v-for="status in postStatuses"
@@ -72,7 +71,7 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="Comment Status">
+                <el-form-item :label="$t('Comment Status')">
                     <el-select v-model="feed.value.comment_status" style="width:100%;">
                         <el-option
                                 v-for="status in commentStatuses"
@@ -83,7 +82,7 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item v-if="postFormats.length" label="Post Format">
+                <el-form-item v-if="postFormats.length" :label="$t('Post Format')">
                     <el-select v-model="feed.value.post_format" style="width:100%;">
                         <el-option
                                 v-for="format in postFormats"
@@ -94,7 +93,7 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item v-if="post_settings.post_info.value.post_type == 'post'" label="Default Category">
+                <el-form-item v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
                     <el-select clearable v-model="feed.value.default_category" style="width:100%;">
                         <el-option
                                 v-for="item in categories"
@@ -107,20 +106,20 @@
 
                 <!-- Post Fields Mapping -->
                 <div class="post_fields_mapping">
-                    <strong style="font-size: 18px;">Post Fields Mapping</strong>
+                    <strong style="font-size: 18px;">{{ $t('Post Fields Mapping') }}</strong>
 
                     <hr style="clear:both;margin:20px 0;">
 
                     <el-table :data="feed.value.post_fields_mapping" size="medium" style="width: 100%">
                         <el-table-column label="#" type="index"/>
 
-                        <el-table-column label="Post Fields">
+                        <el-table-column :label="$t('Post Fields')">
                             <template slot-scope="scope">
                                 {{ scope.row.post_field.replace(/_/, ' ').ucWords() }}
                             </template>
                         </el-table-column>
 
-                        <el-table-column label="Form Fields">
+                        <el-table-column :label="$t('Form Fields')">
                             <template slot-scope="scope">
                                 <inputPopover
                                         fieldType="text"
@@ -133,13 +132,13 @@
 
                     <br />
                     <div class="ff_card_block">
-                        <p>Note: All your taxonomies and featured image will be mapped automatically from your form fields</p>
+                        <p>{{ ('Note: All your taxonomies and featured image will be mapped automatically from your form fields') }}</p>
                     </div>
                 </div>
 
                 <!-- Meta Fields Mapping -->
                 <div class="meta_fields_mapping">
-                    <strong style="font-size: 18px;">Meta Fields Mapping</strong>
+                    <strong style="font-size: 18px;">{{ $t('Meta Fields Mapping') }}</strong>
 
                     <el-button
                             type="primary"
@@ -147,13 +146,13 @@
                             icon="el-icon-plus"
                             class="pull-right"
                             @click="addMetaFieldMapping"
-                    >Add Meta Field
+                    >{{ $t('Add Meta Field') }}
                     </el-button>
 
                     <hr style="clear:both;margin:20px 0;">
 
                     <div v-if="!feed.value.meta_fields_mapping.length" class="no-mapping-alert">
-                        There is no mapping of meta fields.
+                        {{ $t('There is no mapping of meta fields.') }}
                     </div>
 
                     <el-row
@@ -164,11 +163,11 @@
                     >
                         <!-- Meta Key -->
                         <el-col :span="11">
-                            <el-form-item label="Meta Key">
+                            <el-form-item :label="$t('Meta Key')">
                                 <el-input
                                         size="small"
                                         v-model="mapping.meta_key"
-                                        placeholder="Enter Meta Key..."
+                                        :placeholder="$t('Enter Meta Key...')"
                                         @input="validateMetaKey(mapping)"
                                 />
                             </el-form-item>
@@ -176,7 +175,7 @@
 
                         <!-- Meta Value -->
                         <el-col :span="11">
-                            <el-form-item label="Meta Value">
+                            <el-form-item :label="$t('Meta Value')">
                                 <inputPopover
                                         fieldType="text"
                                         :data="editorShortcodes"
@@ -243,7 +242,7 @@
                             type="success"
                             @click="saveFeed"
                             icon="el-icon-success"
-                    >Save Feed
+                    >{{ $t('Save Feed') }}
                     </el-button>
 
                     <el-button
@@ -252,7 +251,7 @@
                             type="primary"
                             icon="el-icon-arrow-left"
                             @click="$emit('show-post-feeds')"
-                    >Back
+                    >{{ $t('Back') }}
                     </el-button>
                 </el-form-item>
             </el-form>

@@ -2,19 +2,19 @@
     <div :class="{'ff_backdrop': visibility}">
         <el-dialog :visible="visibility" :before-close="close">
             <span slot="title" class="el-dialog__title">
-                Add a New Form
+                {{ $t('Add a New Form') }}
             </span>
             <el-form :model="{}" label-position="top" @submit.native.prevent="add">
-                <el-form-item label="Your Form Name">
-                <el-input class="addNewForm" v-model="form_title" type="text" placeholder="Awesome Form"></el-input>
+                <el-form-item :label="$t('Your Form Name')">
+                <el-input class="addNewForm" v-model="form_title" type="text" :placeholder="$t('Awesome Form')"></el-input>
                 </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="close">Cancel</el-button>
+                <el-button @click="close">{{ $t('Cancel') }}</el-button>
                 <el-button :loading="loading" type="primary" @click="add">
-                    <span v-if="loading">Creating Form...</span>
-                    <span v-else>Add Form</span>
+                    <span v-if="loading">{{ $t('Creating Form...') }}</span>
+                    <span v-else>{{ $t('Add Form') }}</span>
                 </el-button>
             </span>
         </el-dialog>

@@ -1,11 +1,11 @@
 <template>
-    <div class="ff_settings_off" v-loading="!formSettings" element-loading-text="Loading Settings..."
+    <div class="ff_settings_off" v-loading="!formSettings" :element-loading-text="$t('Loading Settings...')"
          style="min-height: 100px;">
         <template v-if="formSettings">
             <div class="ff_settings_header">
                 <el-row>
                     <el-col :md="12">
-                        <h2>Form Settings</h2>
+                        <h2>{{ $t('Form Settings') }}</h2>
                     </el-col>
                     <el-col :md="12">
                         <div class="pull-right">
@@ -15,7 +15,7 @@
                                 type="success"
                                 icon="el-icon-success"
                                 @click="saveSettings">
-                                {{loading ? 'Saving' : 'Save'}} Settings
+                                {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                             </el-button>
 
                         </div>
@@ -29,7 +29,7 @@
             <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="12">
-                        <h2>Confirmation Settings</h2>
+                        <h2>{{ $t('Confirmation Settings') }}</h2>
                     </el-col>
 
                     <!--Save settings-->
@@ -51,7 +51,7 @@
             <!--Double Opt-in settings-->
             <div v-if="double_optin" class="ff_settings_block">
                 <el-checkbox true-label="yes" false-label="no" v-model="double_optin.status">
-                    Enable <b>Double Optin</b> Confirmation before Form Data Processing
+                    {{ $t('Enable ')}}<b>{{ $t('Double Optin ') }}</b> {{ $t('Confirmation before Form Data Processing') }}
                 </el-checkbox>
 
                 <el-form class="ff_top_50" v-if="double_optin.status == 'yes'" :data="double_optin" label-width="205px"
@@ -59,13 +59,12 @@
 
                     <el-form-item>
                         <template slot="label">
-                            Primary Email Field
+                            {{ $t('Primary Email Field') }}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <p>
-                                        Select the primary email field from the form fields.<br/>
-                                        In the selected email field, the double optin email will be sent for
-                                        verification.
+                                        {{ $t('\Select the primary email field from the form fields.')}} <br/>
+                                        {{  $t('In the selected email field, the double optin email will be sent for verification.')}}
                                     </p>
                                 </div>
 
@@ -73,7 +72,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-select v-model="double_optin.email_field" placeholder="Select an email field">
+                        <el-select v-model="double_optin.email_field" :placeholder="$t('Select an email field')">
                             <el-option
                                 v-for="(item, index) in emailFields"
                                 :key="index"
@@ -87,13 +86,13 @@
                     <template v-if="double_optin.email_field">
                         <el-form-item>
                             <template slot="label">
-                                Initial Success Message
+                                {{ $t('Initial Success Message') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
-                                        <h3>Initial Success Message</h3>
+                                        <h3>{{ $t('Initial Success Message') }}</h3>
                                         <p>
-                                            Enter the text you would like the user to <br>
-                                            see just after initial form submission.
+                                            {{ $t('Enter the text you would like the user to ')}}<br>
+                                            {{ $t('see just after initial form submission.') }}
                                         </p>
                                     </div>
 
@@ -102,42 +101,42 @@
                             </template>
                             <wp-editor :height="75" :editor-shortcodes="editorShortcodes"
                                        v-model="double_optin.confirmation_message"/>
-                            <p>This message will be shown after the intial form submission</p>
+                            <p>{{ $t('This message will be shown after the intial form submission') }}</p>
                         </el-form-item>
 
-                        <el-form-item label="Email Type">
+                        <el-form-item :label="$t('Email Type')">
                             <el-radio-group v-model="double_optin.email_body_type">
-                                <el-radio label="global">As Per Global Settings</el-radio>
-                                <el-radio label="custom">Customized Double Optin Email</el-radio>
+                                <el-radio label="global">{{ $t('As Per Global Settings') }}</el-radio>
+                                <el-radio label="custom">{{ $t('Customized Double Optin Email') }}</el-radio>
                             </el-radio-group>
                         </el-form-item>
 
                         <template v-if="double_optin.email_body_type == 'custom'">
                             <el-form-item>
                                 <template slot="label">
-                                    Optin Email Subject
+                                    {{ $t('Optin Email Subject') }}
                                     <el-tooltip class="item" placement="bottom-start" effect="light">
                                         <div slot="content">
                                             <p>
-                                                Email Subject for double optin email.<br />You can use any smart code in the email subject
+                                                {{ $t('Email Subject for double optin email. ') }}<br/>{{ $t('You can use any smart code in the email subject') }}
                                             </p>
                                         </div>
 
                                         <i class="el-icon-info el-text-info"/>
                                     </el-tooltip>
                                 </template>
-                                <el-input size="small" placeholder="Email Subject"
+                                <el-input size="small" :placeholder="$t('Email Subject')"
                                           v-model="double_optin.email_subject"/>
                             </el-form-item>
                             <el-form-item>
                                 <template slot="label">
-                                    Optin Email Body
+                                    {{ $t('Optin Email Body') }}
                                     <el-tooltip class="item" placement="bottom-start" effect="light">
                                         <div slot="content">
-                                            <h3>Optin Email Body</h3>
+                                            <h3>{{ $t('Optin Email Body') }}</h3>
                                             <p>
-                                                Enter the content you would like the user to <br>
-                                                send via email for confirmation.
+                                                {{ $t('Enter the content you would like the user to ')}}<br>
+                                                {{ $t('send via email for confirmation.') }}
                                             </p>
                                         </div>
 
@@ -146,28 +145,28 @@
                                 </template>
                                 <input-popover :rows="10" v-if="double_optin.asPlainText == 'yes'" fieldType="textarea"
                                                v-model="double_optin.email_body"
-                                               placeholder="Double Opt-in Email Body HTML"
+                                               :placeholder="$t('Double Opt-in Email Body HTML')"
                                                :data="editorShortcodes"
                                 ></input-popover>
                                 <wp-editor v-else :height="150" :editor-shortcodes="editorShortcodes"
                                            v-model="double_optin.email_body"/>
                                 <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="double_optin.asPlainText">
-                                    Send Email as RAW HTML Format
+                                    {{ $t('Send Email as RAW HTML Format') }}
                                 </el-checkbox>
 
-                                <p>Use #confirmation_url# smartcode for double optin confirmation URL</p>
+                                <p>{{ $t('Use #confirmation_url# smartcode for double optin confirmation URL') }}</p>
                             </el-form-item>
                         </template>
 
                         <div class="form_item">
                             <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_logged_in">
-                                Disable Double Optin for Logged in users
+                                {{ $t('Disable Double Optin for Logged in users') }}
                             </el-checkbox>
                         </div>
 
                         <div v-if="hasFluentCRM" class="form_item">
                             <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
-                                Disable Double Optin if contact email is subscribed in <b>FluentCRM</b>
+                                {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
                             </el-checkbox>
                         </div>
                     </template>
@@ -179,10 +178,10 @@
             <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="12">
-                        <h2>Form Layout</h2>
+                        <h2>{{ $t('Form Layout') }}</h2>
                     </el-col>
                     <el-col :md="12">
-                        <video-doc btn_text="Learn More" class="pull-right ff-left-spaced" route_id="formErrorMessage"/>
+                        <video-doc :btn_text="$t('Learn More')" class="pull-right ff-left-spaced" route_id="formErrorMessage"/>
                     </el-col>
                 </el-row>
                 <!--Appearance settings form-->
@@ -190,16 +189,16 @@
                     <!--Label placement-->
                     <el-form-item>
                         <template slot="label">
-                            Label Alignment
+                            {{ $t('Label Alignment') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Form Label Placement</h3>
+                                    <h3>{{ $t('Form Label Placement') }}</h3>
 
                                     <p>
-                                        Select the default label placement. Labels can be <br>
-                                        top aligned above a field, left aligned to the <br>
-                                        left of a field, or right aligned to the right of a field.
+                                        {{ $t('Select the default label placement.Labels can be') }} <br>
+                                        {{ $t('top aligned above a field, left aligned to the') }} <br>
+                                        {{ $t('left of a field, or right aligned to the right of a field.') }}
                                     </p>
                                 </div>
 
@@ -217,16 +216,16 @@
                     <!--Help Message placement-->
                     <el-form-item>
                         <template slot="label">
-                            Help Message Position
+                            {{ $t('Help Message Position') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Help Message Placement</h3>
+                                    <h3>{{ $t('Help Message Placement') }}</h3>
 
                                     <p>
-                                        Select the default help message placement. <br>
-                                        Help messages can be placed beside <br>
-                                        label as a tooltip, or below each input.
+                                        {{ $t('Select the default help message placement.') }} <br>
+                                        {{ $t('Help messages can be placed beside') }} <br>
+                                        {{ $t('label as a tooltip, or below each input.') }}
                                     </p>
                                 </div>
 
@@ -243,16 +242,16 @@
                     <!--Error Message placement-->
                     <el-form-item>
                         <template slot="label">
-                            Error Message Position
+                            {{ $t('Error Message Position') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Error Message placement</h3>
+                                    <h3>{{ $t('Error Message placement') }}</h3>
 
                                     <p>
-                                        Select the default error message placement. <br>
-                                        Error messages can be placed below each input, <br>
-                                        or stacked after the form submit button.
+                                        {{ $t('Select the default error message placement.')}}<br>
+                                        {{ $t('Error messages can be placed below each input, ')}}<br>
+                                        {{ $t('or stacked after the form submit button.') }}
                                     </p>
                                 </div>
 
@@ -269,14 +268,14 @@
                     <!--Required asterisk mark position -->
                     <el-form-item>
                         <template slot="label">
-                            Asterisk Position
+                            {{ $t('Asterisk Position') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Required Asterisk Position</h3>
+                                    <h3>{{ $t('Required Asterisk Position') }}</h3>
 
                                     <p>
-                                        The asterisk marker position for the required elements.
+                                        {{ $t('The asterisk marker position for the required elements.') }}
                                     </p>
                                 </div>
 
@@ -297,11 +296,11 @@
                 <el-row class="setting_header">
                     <el-col :md="12">
                         <h2>
-                            Scheduling & Restrictions
+                            {{ $t('Scheduling & Restrictions') }}
                         </h2>
                     </el-col>
                     <el-col :md="12">
-                        <video-doc class="pull-right" btn_text="Learn More" route_id="formScheduling"></video-doc>
+                        <video-doc class="pull-right" :btn_text="$t('Learn More')" route_id="formScheduling"></video-doc>
                     </el-col>
                 </el-row>
                 <!--Restriction settings form-->
@@ -316,12 +315,13 @@
                 <!-- Header -->
                 <el-row class="setting_header">
                     <el-col :md="24">
-                        <h2>Advanced Form Validation</h2>
+                        <h2>{{ $t('Advanced Form Validation') }}</h2>
                         <p>
-                            You can set rules to the user input and based on the rules you can prevent the form submission.
-                            This is very useful feature for preventing spam/bot submissions. <a target="_blank"
-                                                                                                rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/">Learn
-                            More here</a>
+                            {{
+                                $t('You can set rules to the user input and based on the rules you can prevent the form submission.')
+                            }}
+                            {{ $t('This is very useful feature for preventing spam / bot submissions.') }} <a target="_blank"
+                                                                                                rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/">{{ $t('Learn More here')}}</a>
                         </p>
                     </el-col>
                 </el-row>
@@ -338,7 +338,7 @@
             <div class="ff_settings_block">
                 <el-row class="setting_header">
                     <el-col :md="24">
-                        <h2>Survey Result</h2>
+                        <h2>{{ $t('Survey Result') }}</h2>
                     </el-col>
                 </el-row>
 
@@ -346,7 +346,7 @@
                     <div class="ff_settings_body">
                         <survey-result :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
 
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>{{ $t('This feature is only available in pro version of Fluent Forms') }}</p>
                     </div>
                 </div>
             </div>
@@ -355,14 +355,14 @@
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
-                            Compliance Settings
+                            {{ $t('Compliance Settings') }}
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Delete entry on form submission</h3>
+                                    <h3>{{ $t('Delete entry on form submission') }}</h3>
 
                                     <p>
-                                        If you enable this settings then your entry data will be deleted from database.<br>
-                                        It's useful for HIPPA/GDPR Compliance for some forms.
+                                        {{ $t('If you enable this settings then your entry data will be deleted from database.') }}<br>
+                                        {{ $t('It\'s useful for HIPPA/GDPR Compliance for some forms.') }}
                                     </p>
                                 </div>
 
@@ -374,25 +374,28 @@
                 <div class="ff_settings_section">
                     <div class="ff_settings_body">
                         <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no"
-                                     v-model="formSettings.delete_entry_on_submission">Delete entry data after form
-                            submission
+                                     v-model="formSettings.delete_entry_on_submission">{{
+                                $t('Delete entry data after form submission')
+                            }}
                         </el-checkbox>
 
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>{{ $t('This feature is only available in pro version of Fluent Forms') }}</p>
 
                         <template v-if="formSettings.delete_entry_on_submission == 'yes'">
                             <p><br/>
-                                Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form
+                                {{
+                                    $t('Your data will be deleted on form submission so no entry data, analytics and visual reporting will be available for this form')
+                                }}
                             </p>
                         </template>
                         <div v-if="formSettings.delete_entry_on_submission != 'yes'" style="margin-top: 20px;" class="ff_auto_delete_section">
                             <el-checkbox :disabled="!hasPro" true-label="yes" false-label="no"
                                          v-model="formSettings.delete_after_x_days">
-                                Enable auto delete old entries
+                                {{ $t('Enable auto delete old entries') }}
                             </el-checkbox>
                             <div v-if="formSettings.delete_after_x_days == 'yes'" class="el-form-item">
                                 <label class="el-form-item__label">
-                                    Specify how many days old entries will be deleted for this form
+                                    {{ $t('Specify how many days old entries will be deleted for this form') }}
                                 </label>
                                 <div class="el-form-item__content">
                                     <el-input-number
@@ -402,7 +405,7 @@
                                         v-model="formSettings.auto_delete_days"/>
                                 </div>
                                 <p style="color: red; padding-top: 20px;" v-if="formSettings.auto_delete_days">
-                                    Entries older than <b>{{formSettings.auto_delete_days}} days</b> will be deleted automatically
+                                    {{ $t('Entries older than ') }} <b>{{formSettings.auto_delete_days}} {{ $t(' days ') }}</b> {{ $t('will be deleted automatically') }}
                                 </p>
                             </div>
                         </div>
@@ -414,7 +417,7 @@
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
-                            Other
+                            {{ $t('Other') }}
                         </h2>
                     </el-col>
                 </el-row>
@@ -423,17 +426,17 @@
                     <div class="ff_settings_body">
                         <div class="el-form-item">
                             <label class="el-form-item__label" style="width: 205px; text-align: left;">
-                                Extra CSS Form Class
+                                {{ $t('Extra CSS Form Class') }}
                             </label>
                             <div class="el-form-item__content" style="margin-left: 205px;">
                                 <el-input
                                     :disabled="!hasPro"
-                                    placeholder="extra css class"
+                                    :placeholder="$t('extra css class')"
                                     size="small"
                                     v-model="formSettings.form_extra_css_class"/>
                             </div>
                         </div>
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>{{ $t('This feature is only available in pro version of Fluent Forms') }}</p>
                     </div>
                 </div>
             </div>
@@ -442,7 +445,7 @@
                 <el-row class="setting_header">
                     <el-col :md="24">
                         <h2>
-                            Affiliate
+                            {{ $t('Affiliate') }}
                         </h2>
                     </el-col>
                 </el-row>
@@ -461,7 +464,7 @@
                             <label class="el-form-item__label" style="width: 205px; text-align: left;">
                                 {{$t('Allow referrals')}}
                             </label>
-                            <el-select v-model="affiliate_wp.selected_type" placeholder="Select type">
+                            <el-select v-model="affiliate_wp.selected_type" :placeholder="$t('Select type')">
                                 <el-option
                                     v-for="(item, value) in affiliate_wp.types"
                                     :key="value"
@@ -472,7 +475,7 @@
                             </el-select>
                         </div>
                         
-                        <p v-if="!hasPro"><br/>This feature is only available in pro version of Fluent Forms</p>
+                        <p v-if="!hasPro"><br/>{{ $t('This feature is only available in pro version of Fluent Forms') }}</p>
                     </div>
                 </div>
             </div>
@@ -485,7 +488,7 @@
                     type="success"
                     icon="el-icon-success"
                     @click="saveSettings">
-                    {{loading ? 'Saving' : 'Save'}} Settings
+                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                 </el-button>
             </el-row>
         </template>
@@ -603,8 +606,8 @@
                             enabled: false,
                             start: null,
                             end: null,
-                            pendingMsg: "Form submission is not started yet.",
-                            expiredMsg: "Form submission is now closed.",
+                            pendingMsg: 'Form submission is not started yet.',
+                            expiredMsg: 'Form submission is now closed.',
                         },
                         requireLogin: {
                             enabled: false,

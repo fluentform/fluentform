@@ -1,7 +1,7 @@
 <template>
     <div class="wpf_entry_value">
         <el-row
-            v-for="row, index in getChunk(dataItems[itemKey])"
+            v-for="(row, index) in getChunk(dataItems[itemKey])"
             :gutter="10"
             :key="index"
             style="margin-bottom: 10px;"

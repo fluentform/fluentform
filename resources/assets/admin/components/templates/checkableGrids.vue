@@ -4,15 +4,15 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th v-for="tableHeader, i in tableHeaders" :key="i">
+                    <th v-for="(tableHeader, i) in tableHeaders" :key="i">
                         {{ tableHeader }}
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="row, i in tabluarData" :key="i">
+                <tr v-for="(row, i) in tabluarData" :key="i">
                     <td>{{ row.label }}</td>
-                    <td v-for="col, i in row.columns" :key="i">
+                    <td v-for="(col, i) in row.columns" :key="i">
                         <input :type="fieldType" :checked="isChecked(col, row)">
                     </td>
                 </tr>

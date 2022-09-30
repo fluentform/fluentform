@@ -6,6 +6,10 @@ export default {
          * @return {String}
          */
         $t(str) {
+            let transString = window.FluentFormApp.form_editor_str[str];
+            if(transString) {
+                return transString;
+            }
             return str;
         },
 

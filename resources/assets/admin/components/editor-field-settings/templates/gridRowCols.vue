@@ -2,7 +2,7 @@
     <el-form-item class="js-el-form-item">
         <div class="clearfix">
             <div class="pull-right">
-                <el-checkbox v-model="valuesVisible">Show Values</el-checkbox>
+                <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
             </div>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         </div>
@@ -45,7 +45,7 @@
             </vddl-draggable>
         </vddl-list>
 
-        <el-button type="warning" size="mini" :disabled="isClearBtnDisabled" @click.prevent="clear">Clear Selection</el-button>
+        <el-button type="warning" size="mini" :disabled="isClearBtnDisabled" @click.prevent="clear">{{ $t('Clear Selection') }}</el-button>
 
     </el-form-item>
 </template>

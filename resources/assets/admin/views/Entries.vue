@@ -27,7 +27,7 @@
                             size="mini"
                             multiple
                             v-model="selectedPaymentStatuses"
-                            placeholder="All Payments"
+                            :placeholder="$t('All Payments')"
                             @change="filterPaymentStatuses()"
                     >
                         <el-option
@@ -47,7 +47,7 @@
                     <span
                             style="line-height: 10px;width: auto;height: auto;font-size: 14px;"
                             class="dashicons dashicons-chart-pie"
-                    ></span> View Visual Report
+                    ></span> {{ $t('View Visual Report') }}
                 </el-button>
 
                 <el-dropdown
@@ -123,14 +123,14 @@
 
         <el-alert
                 v-if="autoDeleteStatus"
-                title="Auto delete entry on form submission is enabled! No new entry data will be saved for this form."
-                description="You can disable the auto delete option from Settings & Integrations Tab"
+                :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
+                :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
                 type="error">
         </el-alert>
 
         <hr>
         <div v-loading="loading"
-             element-loading-text="Loading Entries..."
+             :element-loading-text="$t('Loading Entries...')"
              style="min-height: 60px;"
              class="entries_table">
 
@@ -216,15 +216,15 @@
                             format="dd MMM, yyyy"
                             value-format="yyyy-MM-dd"
                             range-separator="-"
-                            start-placeholder="Start date"
-                            end-placeholder="End date">
+                            :start-placeholder="$t('Start date')"
+                            :end-placeholder="$t('End date')">
                     </el-date-picker>
-                    <el-button @click="getData" size="mini" type="success">Search</el-button>
-                    <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
+                    <el-button @click="getData" size="mini" type="success">{{ $t('Search') }}</el-button>
+                    <el-button @click="resetAdvancedFilter()" size="mini">{{ $t('Hide') }}</el-button>
                 </div>
                 <div style="margin-top: 20px" class="widget-title">
-                    <el-checkbox @change="getData()" true-label="yes" false-label="no" v-model="show_favorites">Show
-                        {{$t('Favorites Entries only')}}
+                    <el-checkbox @change="getData()" true-label="yes" false-label="no" v-model="show_favorites">
+                        {{$t('Show Favorites Entries only')}}
                     </el-checkbox>
                 </div>
             </div>
@@ -267,21 +267,21 @@
                             </router-link>
                             <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
                                     <span @click="changeFavorite(scope.row.id, scope.$index, 0)"
-                                          title="Remove from Favorites" v-if="scope.row.is_favourite != '0'"
+                                          :title="$t('Remove from Favorites')" v-if="scope.row.is_favourite != '0'"
                                           class="el-icon-star-on action_button"></span>
                                 <span @click="changeFavorite(scope.row.id, scope.$index, 1)"
-                                      title="Mark as Favorite" v-else=""
+                                      :title="$t('Mark as Favorite')" v-else=""
                                       class="el-icon-star-off action_button"></span>
                                 <span @click="changeStatus(scope.row.id, scope.$index, 'unread')"
-                                      title="Mark as unread" v-if="scope.row.status == 'read'"
+                                      :title="$t('Mark as Unread')" v-if="scope.row.status == 'read'"
                                       class="el-icon-circle-check action_button"></span>
-                                <span @click="changeStatus(scope.row.id, scope.$index, 'read')" title="Mark as read"
+                                <span @click="changeStatus(scope.row.id, scope.$index, 'read')" :title="$t('Mark as Read')"
                                       v-else="" class="el-icon-circle-check-outline action_button"></span>
                             </div>
 
                             <div class="inline_actions inline_item" v-else>
                                     <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                          class="el-icon-circle-check-outline action_button">Restore</span>
+                                          class="el-icon-circle-check-outline action_button">{{ $t('Restore') }}</span>
                             </div>
                         </div>
                     </template>
@@ -382,8 +382,8 @@
 
             <div class="tablenav bottom">
                 <div class="alignleft actions bulkactions">
-                    <email-resend v-if="entrySelections.length" btn_text="Bulk Resend Notifications" :entry_ids="selection_ids" :form_id="form_id"></email-resend>
-                    <el-checkbox class="compact_input" v-model="isCompact">Compact View</el-checkbox>
+                    <email-resend v-if="entrySelections.length" :btn_text="$t('Bulk Resend Notifications')" :entry_ids="selection_ids" :form_id="form_id"></email-resend>
+                    <el-checkbox class="compact_input" v-model="isCompact">{{ $t('Compact View') }}</el-checkbox>
                 </div>
                 <div class="pull-right">
                     <el-pagination
@@ -505,11 +505,11 @@
                     'statuses': [],
                     'other': [
                         {
-                            label: 'Mark as Favorite',
+                            label: this.$t('Mark as Favorite'),
                             action: 'other.make_favorite'
                         },
                         {
-                            label: 'Remove from Favorite',
+                            label: this.$t('Remove from Favorite'),
                             action: 'other.unmark_favorite'
                         }
                     ]
@@ -518,7 +518,7 @@
                 if (this.hasPermission('fluentform_manage_entries')) {
                     bulk_actions['other'].push(
                         {
-                            label: 'Delete Permanently',
+                            label: this.$t('Delete Permanently'),
                             action: 'other.delete_permanently'
                         }
                     );
@@ -790,7 +790,7 @@
                         this.$notify({
                             type: 'success',
                             title: 'Success',
-                            message: 'Entry has been restored',
+                            message: this.$t('Entry has been restored'),
                             offset: 30
                         });
                     })
@@ -876,7 +876,7 @@
             this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
             (new Clipboard('.copy')).on('success', (e) => {
                 this.$message({
-                                  message: 'Copied to Clipboard!',
+                                  message: this.$t('Copied to Clipboard!'),
                                   type: 'success',
                                   offset: 40
                               });

@@ -16,8 +16,8 @@
                 <template v-if="logs && logs.length && log_type == 'logs'">
                     <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
                         <div class="wpf_entry_label">
-                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> in <span
-                                class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> at
+                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
+                                class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> {{ $t('at') }}
                             {{log.created_at}}
                             <span class="pull-right">
                               <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
@@ -29,8 +29,8 @@
                 <template v-if="logs && logs.length && log_type == 'api_calls'">
                     <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
                         <div class="wpf_entry_label">
-                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> in <span
-                                class="entry_submission_log_component">{{getReadableName(log.action)}}</span> at
+                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
+                                class="entry_submission_log_component">{{getReadableName(log.action)}}</span> {{ $t('at') }}
                             {{log.created_at}}
                             <span class="pull-right">
                               <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>

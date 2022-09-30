@@ -4,7 +4,7 @@
             <thead>
             <tr>
                 <th v-for="fieldItem in field.raw.fields">{{fieldItem.settings.label}}</th>
-                <th>Action</th>
+                <th>{{ $t('Action') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -19,9 +19,9 @@
             </tr>
             </tbody>
         </table>
-        <el-button @click="initNewRow()" type="success" size="mini" icon="el-icon-plus" v-if="!rowLength">Add Item
+        <el-button @click="initNewRow()" type="success" size="mini" icon="el-icon-plus" v-if="!rowLength">{{ $t('Add Item') }}
         </el-button>
-        <el-button v-else @click="addRow()" size="mini" type="success" icon="el-icon-plus">Add Row</el-button>
+        <el-button v-else @click="addRow()" size="mini" type="success" icon="el-icon-plus">{{ $t('Add Row') }}</el-button>
     </div>
 </template>
 

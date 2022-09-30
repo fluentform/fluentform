@@ -126,7 +126,7 @@ function formatMoneyFunc(n, decimals, decimal_sep, thousands_sep)
 Vue.mixin({
     methods: {
         $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
+            let transString = window.fluent_form_entries_vars.form_entries_str[str];
             if(transString) {
                 return transString;
             }

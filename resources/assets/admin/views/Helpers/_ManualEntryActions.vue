@@ -1,17 +1,18 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="small">{{btn_text}}
+        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="small">{{ $t(btn_text) }}
         </el-button>
         <el-dialog
-            title="Choose an Action/Integration Feed and Replay"
+            :title="$t('Choose an Action/Integration Feed and Replay')"
             top="42px"
             @before-close="resetData()"
             :append-to-body="true"
             :visible.sync="dialogVisible"
             width="60%">
             <template v-if="has_pro">
-                <div v-loading="loading" element-loading-text="Loading Feeds..." class="ff_notification_feeds">
-                    <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="verify_condition">Check Conditional Logic when replaying a feed action</el-checkbox>
+                <div v-loading="loading" :element-loading-text="$t('Loading Feeds...')" class="ff_notification_feeds">
+                    <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="verify_condition">
+                        {{ $t('Check Conditional Logic when replaying a feed action') }}</el-checkbox>
 
                     <el-table border stripe :data="feeds">
                         <el-table-column
@@ -27,20 +28,21 @@
                             label="Title">
                             <template slot-scope="scope">
                                 {{scope.row.name}}
-                                <span v-if="scope.row.has_condition"> (Conditional)</span>
+                                <span v-if="scope.row.has_condition"> {{ $t('(Conditional)') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
                             label="Status">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.enabled">Active</span>
-                                <span v-else>Draft</span>
+                                <span v-if="scope.row.enabled">{{ $t('Active') }}</span>
+                                <span v-else>{{ $t('Draft') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
                             label="Actions">
                             <template slot-scope="scope">
-                                <el-button v-loading="sending" @click="replayFeed(scope.row.id)" type="info" size="mini">Replay</el-button>
+                                <el-button v-loading="sending" @click="replayFeed(scope.row.id)" type="info" size="mini">
+                                    {{ $t('Replay') }}</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -49,12 +51,12 @@
                 <div v-if="success_message" v-html="success_message" class="ff-success"></div>
             </template>
             <div style="text-align: center" v-else>
-                <h3>This feature is available on pro version of Fluent Forms.</h3>
+                <h3>{{ $t('This feature is available on pro version of Fluent Forms.') }}</h3>
                 <a target="_blank"
                    :href="upgrade_url"
                    rel="nofollow"
                    class="el-button el-button--danger">
-                    Buy Pro Now
+                    {{ $t('Buy Pro Now') }}
                 </a>
             </div>
         </el-dialog>
@@ -122,7 +124,7 @@
                     })
                     .fail(error => {
                         if (!error.responseJSON && !error.responseText || error.responseText == '0') {
-                            alert('Looks like you are using older version of fluent forms pro. Please update to latest version');
+                            alert(this.$t('Looks like you are using older version of fluent forms pro. Please update to latest version'));
                             return;
                         }
                         this.error_message = error.responseJSON.data.message;
@@ -157,7 +159,7 @@
                     })
                     .fail((errors) => {
                         if (!error.responseJSON && !error.responseText || error.responseText == '0') {
-                            alert('Looks like you are using older version of fluent forms pro. Please update to latest version');
+                            alert(this.$t('Looks like you are using older version of fluent forms pro. Please update to latest version'));
                             return;
                         }
                     })

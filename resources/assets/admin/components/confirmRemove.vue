@@ -6,15 +6,15 @@
             width="160"
             v-model="visible"
     >
-		<p>Are you sure to delete this?</p>
+		<p>{{ $t('Are you sure to delete this?') }}</p>
 		<div style="text-align: right; margin: 0">
 			<el-button size="mini" type="text"
                        @click="visible = false"
-            >cancel</el-button>
+            >{{ $t('cancel') }}</el-button>
 
 			<el-button type="primary" size="mini"
                        @click="confirmAction"
-            >confirm</el-button>
+            >{{ $t('confirm') }}</el-button>
 		</div>
 	</el-popover>
 

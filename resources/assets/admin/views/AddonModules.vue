@@ -2,23 +2,21 @@
     <div class="add_on_modules">
         <div class="modules_header">
             <div class="module_title">
-                Fluent Forms Modules
+                {{ $t('Fluent Forms Modules') }}
             </div>
-            <p>
-                Here is the list of all Fluent Forms modules. You can enable or disable the modules based on your need.
-            </p>
+            <p>{{ $t('Here is the list of all Fluent Forms modules.You can enable or disable the modules based on your need.') }}</p>
         </div>
         <div class="modules_body">
             <div class="ff_module_navs">
                 <div class="ff_module_selectors">
                     <el-radio-group size="small" v-model="module_type">
-                        <el-radio-button label="all">All</el-radio-button>
-                        <el-radio-button label="crm">CRM & SASS Integrations</el-radio-button>
-                        <el-radio-button label="wp_core">WP Core Modules</el-radio-button>
+                        <el-radio-button label="all">{{ $t('All') }}</el-radio-button>
+                        <el-radio-button label="crm">{{ $t('CRM & SASS Integrations') }}</el-radio-button>
+                        <el-radio-button label="wp_core">{{ $t('WP Core Modules') }}</el-radio-button>
                     </el-radio-group>
                 </div>
                 <div class="ff_mdoules_search">
-                    <el-input size="small" placeholder="Search Modules" v-model="search" class="input-with-select">
+                    <el-input size="small" :placeholder="$t('Search Modules')" v-model="search" class="input-with-select">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </div>
@@ -32,17 +30,17 @@
                 </div>
                 <div class="addon_footer">
                     <template v-if="addon.purchase_url">
-                        <a class="pro_update_btn" rel="noopener" :href="addon.purchase_url">Upgrade To Pro</a>
+                        <a class="pro_update_btn" rel="noopener" :href="addon.purchase_url">{{ $t('Upgrade To Pro') }}</a>
                     </template>
                     <template v-else>
                         <el-switch active-color="#13ce66" @change="saveStatus(addonKey)" active-value="yes" inactive-value="no" v-model="addon.enabled" />
-                        <span>Currently</span> <span v-if="addon.enabled == 'yes'">Enabled</span><span v-else>Disabled</span>
+                        <span>{{ $t('Currently') }}</span> <span v-if="addon.enabled == 'yes'">{{ $t('Enabled') }}</span><span v-else>{{ $t('Disabled') }}</span>
                     </template>
                     <a style="float: right;text-decoration: none;" v-if="addon.config_url && addon.enabled == 'yes'" :href="addon.config_url"><span class="dashicons dashicons-admin-generic"></span></a>
                 </div>
             </div>
             <div style="text-align: center" v-if="is_no_modules">
-                <h3>Sorry! No modules found based on your filter</h3>
+                <h3>{{ $t('Sorry!No modules found based on your filter') }}</h3>
             </div>
         </div>
     </div>
@@ -114,7 +112,14 @@
                     .always(() => {
 
                     });
-            }
+            },
+            $t(str) {
+                let transString = window.fluent_addon_modules.addOnModule_str[str];
+                if(transString) {
+                    return transString;
+                }
+                return str;
+            },
         }
     }
 </script>

@@ -3,7 +3,7 @@
         <div v-if="show_feeds">
             <div class="setting_header el-row">
                 <div class="el-col el-col-24 el-col-md-12">
-                    <h2>Post Feeds</h2>
+                    <h2>{{ $t('Post Feeds') }}</h2>
                 </div>
 
                 <div class="action-buttons clearfix mb15 text-right el-col el-col-24 el-col-md-12">
@@ -12,7 +12,7 @@
                         type="primary"
                         icon="el-icon-plus"
                         @click="addPostFeed"
-                    >Add Post Feed</el-button>
+                    >{{ $t('Add Post Feed') }}</el-button>
                 </div>
             </div>
 
@@ -28,22 +28,22 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Status">
+                <el-table-column :label="$t('Status')">
                     <template slot-scope="scope">
                         <span :class="{
                             green: scope.row.value.feed_status,
                             red: !scope.row.value.feed_status
                         }">
-                            {{ scope.row.value.feed_status ? 'Enabled' : 'Disabled' }}
+                            {{ scope.row.value.feed_status ? $t('Enabled') : $t('Disabled') }}
                         </span>
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Name">
+                <el-table-column :label="$t('Name')">
                     <template slot-scope="scope">{{ scope.row.value.feed_name }}</template>
                 </el-table-column>
 
-                <el-table-column label="Actions" align="right">
+                <el-table-column :label="$t('Actions')" align="right">
                     <template slot-scope="scope">
                         <el-button
                             size="mini"

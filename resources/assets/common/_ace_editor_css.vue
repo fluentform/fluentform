@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" element-loading-text="Loading Editor...">
+    <div v-loading="loading" :element-loading-text="$t('Loading Editor...')">
         <div class="ace_container">
             <div class="ninja_custom_css_editor" id="ninja_custom_css">{{ value }}</div>
         </div>

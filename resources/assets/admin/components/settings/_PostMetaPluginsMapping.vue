@@ -5,14 +5,14 @@
     </div>
     <hr style="clear:both;margin:20px 0;">
     <div>
-        <strong style="font-size: 14px;">General Fields</strong>
+        <strong style="font-size: 14px;">{{ $t('General Fields') }}</strong>
         <el-button
             type="primary"
             size="mini"
             icon="el-icon-plus"
             class="pull-right"
             @click="addMapping('general_settings')"
-        >Add Another General Field
+        >{{ $t('Add Another General Field') }}
         </el-button>
     </div>
     <br />
@@ -27,7 +27,7 @@
         <tbody>
         <tr v-for="(mapField,index) in general_settings" :key="index">
             <td>
-                <el-select v-model="mapField.field_key" size="mini" placeholder="Select Field">
+                <el-select v-model="mapField.field_key" size="mini" :placeholder="$t('Select Field')">
                     <el-option v-for="(field, fieldKey) in general_fields" :key="fieldKey"
                                :label="field.label" :value="fieldKey"></el-option>
                 </el-select>
@@ -52,20 +52,20 @@
         </tbody>
     </table>
     <div v-else class="no-mapping-alert">
-        There is no mapping found for General Meta fields.
+        {{ $t('There is no mapping found for General Meta fields.') }}
     </div>
 
     <template>
         <hr style="clear:both;margin:30px 0;">
         <div>
-            <strong style="font-size: 14px;">Advanced Fields</strong>
+            <strong style="font-size: 14px;">{{ $t('Advanced Fields') }}</strong>
             <el-button
                 type="primary"
                 size="mini"
                 icon="el-icon-plus"
                 class="pull-right"
                 @click="addAdvancedMetaFieldMapping()"
-            >Add Another Advanced Field
+            >{{ $t('Add Another Advanced Field') }}
             </el-button>
         </div>
         <br />
@@ -81,15 +81,15 @@
             <tr v-for="(mapField,index) in advanced_settings" :key="index">
                 <td>
                     <el-select @change="mapField.field_value = ''" v-model="mapField.field_key"
-                               size="mini" placeholder="Select Field">
+                               size="mini" :placeholder="$t('Select Field')">
                         <el-option v-for="(field, fieldKey) in advanced_fields"
                                    :key="fieldKey" :label="field.label" :value="fieldKey"></el-option>
                     </el-select>
                 </td>
                 <td>
-                    <p v-if="!mapField.field_key">Select {{ labels.remote_label }} First</p>
+                    <p v-if="!mapField.field_key">{{ $t('Select') }} {{ labels.remote_label }} First</p>
                     <template v-else>
-                        <el-select v-model="mapField.field_value" placeholder="Select Form Field"
+                        <el-select v-model="mapField.field_value" :placeholder="$t('Select Form Field')"
                                    clearable>
                             <el-option
                                 v-for="(formField,fieldName) in getFilteredFields(mapField.field_key)"
@@ -113,7 +113,7 @@
             </tbody>
         </table>
         <div v-else class="no-mapping-alert">
-            There is no advanced field mapping for this section.
+            {{ $t('There is no advanced field mapping for this section.') }}
         </div>
     </template>
 

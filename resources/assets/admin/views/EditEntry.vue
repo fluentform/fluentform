@@ -11,7 +11,7 @@
                         v-bind:is="field.component">
                     </component>
                     <div v-else>
-                        <p>{{field.field.admin_label}} is not Not Editable</p>
+                        <p>{{field.field.admin_label}} {{ $t('is Not Editable') }}</p>
                     </div>
                 </el-form-item>
             </template>
@@ -19,20 +19,20 @@
             <div class="el-dialog__footer">
                 <span class="dialog-footer">
                     <el-button @click="closeModel()" size="small" type="info">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </el-button>
                     <el-button v-loading="saving" @click="updateEntry()" size="small" type="success">
-                        Update Entry
+                        {{ $t('Update Entry') }}
                     </el-button>
                 </span>
             </div>
         </el-form>
         <div style="text-align:center" v-else>
-            <h3>Entry editor is available on pro version. Please upgrade to pro</h3>
+            <h3>{{ $t('Entry editor is available on pro version.Please upgrade to pro') }}</h3>
             <a rel="nofollow" target="_blank"
                :href="upgrade_url"
                class="el-button el-button--danger">
-                Buy Pro Now
+                {{ $t('Buy Pro Now') }}
             </a>
         </div>
     </div>

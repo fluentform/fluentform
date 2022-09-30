@@ -1,7 +1,7 @@
 <template>
     <div class="entry-multi-files">
         <div v-for="(valueItem, valueKey) in file_lines" :key="valueKey" class="mult-file-each">
-            <el-input placeholder="Provide File URL" size="mini" v-model="value[valueKey]"></el-input>
+            <el-input :placeholder="$t('Provide File URL')" size="mini" v-model="value[valueKey]"></el-input>
         </div>
     </div>
 </template>

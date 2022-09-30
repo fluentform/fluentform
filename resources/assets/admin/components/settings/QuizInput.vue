@@ -22,7 +22,7 @@
                 <div class="quiz-field-setting" v-if="ifNeedsCondition(input.element)">
                     {{ $t('Condition') }}
                     <el-select @change="resetValue(input)"  size="small" style="width: 100%" v-model="input.condition"
-                               placeholder="Select Condition">
+                               :placeholder="$t('Select Condition')">
                         <el-option
                             v-for="(label, key) in macthingCondition"
                             :key="key"
@@ -44,7 +44,7 @@
                         allow-create
                         default-first-option
                         :automatic-dropdown=false
-                        placeholder="Type your Answers">
+                        :placeholder="$t('Type your Answers')">
                         
                         <el-option
                             v-for="(item, key) in original_input.options"
@@ -59,7 +59,7 @@
                     {{ $t('Correct Answer') }}
                     <el-select
                         multiple
-                        size="small" style="width: 100%" v-model="input.correct_answer" placeholder="Correct Answer">
+                        size="small" style="width: 100%" v-model="input.correct_answer" :placeholder="$t('Correct Answer')">
                         <el-option
                             v-for="(item, key) in input.options"
                             :key="key"

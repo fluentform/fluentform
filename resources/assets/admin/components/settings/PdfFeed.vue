@@ -1,7 +1,7 @@
 <template>
     <div v-loading="loading" class="ff_feed_editor">
         <el-tabs  type="border-card">
-            <el-tab-pane label="PDF Contents">
+            <el-tab-pane :label="$t('PDF Contents')">
                 <el-form v-if="feed.settings" label-position="left" label-width="205px">
                     <field-mapper
                             :field="{ component: 'value_text', label: 'Feed Title', placeholder: 'Feed Title' }"
@@ -21,9 +21,9 @@
                             v-model="feed.settings[field.key]"
                      />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">Save Feed Settings</el-button>
+                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
             </el-tab-pane>
-            <el-tab-pane label="Appearance">
+            <el-tab-pane :label="$t('Appearance')">
                 <el-form v-if="feed.appearance" label-position="left" label-width="205px">
                     <field-mapper
                             v-for="field in appearance_fields"
@@ -34,7 +34,7 @@
                             v-model="feed.appearance[field.key]"
                     />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">Save Feed Settings</el-button>
+                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
             </el-tab-pane>
         </el-tabs>
     </div>

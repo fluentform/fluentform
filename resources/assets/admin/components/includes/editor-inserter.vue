@@ -7,7 +7,7 @@
         id="js-editor-inserter--popup">
 
         <div style="margin: -1px;">
-            <label for="editor-inserter__search" class="sr-only">{{ $t("Search for a block") }}</label>
+            <label for="editor-inserter__search" class="sr-only">{{ $t('Search for a block') }}</label>
             <input
                 autocomplete="off"
                 type="text"

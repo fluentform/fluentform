@@ -7,7 +7,7 @@
         </el-tooltip>
         </div>
         <el-radio-group v-model="model">
-            <el-radio v-for="opt, i in listItem.options" :label="opt.value" :key="i">{{ opt.label }}</el-radio>
+            <el-radio v-for="(opt, i) in listItem.options" :label="opt.value" :key="i">{{ opt.label }}</el-radio>
         </el-radio-group>
     </el-form-item>
 </template>

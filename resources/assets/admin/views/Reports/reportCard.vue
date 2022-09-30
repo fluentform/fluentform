@@ -20,8 +20,8 @@
                 <table class="ff-table">
                     <thead>
                     <tr>
-                        <th>Label</th>
-                        <th>Total</th>
+                        <th>{{ $t('Label') }}</th>
+                        <th>{{ $t('Total') }}</th>
                         <th>%</th>
                     </tr>
                     </thead>

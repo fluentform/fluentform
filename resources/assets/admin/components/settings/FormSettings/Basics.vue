@@ -1,16 +1,16 @@
 <template>
     <el-form ref="form-button" label-width="205px" label-position="left">
         <!--Redirect to-->
-        <el-form-item label="Redirect To">
+        <el-form-item :label="$t('Redirect To')">
             <template slot="label">
-                Redirect To
+                {{ $t('Redirect To') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Confirmation Type</h3>
+                        <h3>{{ $t('Confirmation Type') }}</h3>
 
                         <p>
-                            After successful submit, where the page will redirect to.
+                            {{ $t('After successful submit, where the page will redirect to.') }}
                         </p>
                     </div>
 
@@ -29,17 +29,17 @@
         <!--Additional fields based on the redirect to selection-->
         <transition name="fade">
             <!--Message to show-->
-            <el-form-item label="Message to show" v-if="form.redirectTo == 'samePage'">
+            <el-form-item :label="$t('Message to show')" v-if="form.redirectTo == 'samePage'">
                 <el-input type="textarea" v-model="form.messageToShow"></el-input>
             </el-form-item>
 
             <!--Custom page-->
-            <el-form-item label="Page" v-else-if="form.redirectTo == 'customPage'">
+            <el-form-item :label="$t('Page')" v-else-if="form.redirectTo == 'customPage'">
                 <el-input v-model="form.customPage"></el-input>
             </el-form-item>
 
             <!--Custom URL-->
-            <el-form-item label="Custom URL" v-else>
+            <el-form-item :label="$t('Custom URL')" v-else>
                 <el-input v-model="form.customUrl"></el-input>
             </el-form-item>
         </transition>

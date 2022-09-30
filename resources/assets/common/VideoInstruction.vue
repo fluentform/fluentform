@@ -1,7 +1,7 @@
 <template>
     <span class="fluent_form_doc_video" v-if="current_doc">
-        <el-button v-if="btn_text" title="Show Video" @click="introVisible=true" :size="btn_size" icon="el-icon-help">{{btn_text}}</el-button>
-        <el-button v-else title="Show Video" @click="introVisible=true" :size="btn_size" icon="el-icon-help"></el-button>
+        <el-button v-if="btn_text" :title="$t('Show Video')" @click="introVisible=true" :size="btn_size" icon="el-icon-help">{{btn_text}}</el-button>
+        <el-button v-else :title="$t('Show Video')" @click="introVisible=true" :size="btn_size" icon="el-icon-help"></el-button>
         <el-dialog
             :title="current_doc.title"
             :visible.sync="introVisible"
@@ -14,8 +14,8 @@
                     allowfullscreen></iframe>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="introVisible = false">Close</el-button>
-            <a v-if="current_doc.read_more" class="el-button el-button--primary" target="_blank" rel="noopener" :href="current_doc.read_more">Read More</a>
+            <el-button @click="introVisible = false">{{ $t('Close') }}</el-button>
+            <a v-if="current_doc.read_more" class="el-button el-button--primary" target="_blank" rel="noopener" :href="current_doc.read_more">{{ $t('Read More') }}</a>
         </span>
     </el-dialog>
     </span>

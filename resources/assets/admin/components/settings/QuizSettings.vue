@@ -45,7 +45,7 @@
                                 placement="bottom-start"
                             >
                                 <div slot="content">
-                                    <p>Result will be showed in grade when the score type is set as grade in the score input field</p>
+                                    <p>{{ $t('Result will be showed in grade when the score type is set as grade in the score input field') }}</p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
                             </el-tooltip>
@@ -92,7 +92,7 @@
                         type="success"
                         icon="el-icon-success"
                         @click="saveSettings">
-                        {{ saving ? $t('Saving') : $t('Save') }} {{ $t('Settings') }}
+                        {{Saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                     </el-button>
                 </div>
             </el-form>

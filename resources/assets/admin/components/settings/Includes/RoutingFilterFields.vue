@@ -30,18 +30,18 @@
                         </td>
                         <td>
                             <el-select size="small" v-model="routing.operator">
-                                <el-option value="=" label="equal"></el-option>
-                                <el-option value="!=" label="not equal"></el-option>
+                                <el-option value="=" :label="$t('equal')"></el-option>
+                                <el-option value="!=" :label="$t('not equal')"></el-option>
                                 <template v-if="fields[routing.field] && !Object.keys(fields[routing.field].options).length">
-                                    <el-option value=">" label="greater than"></el-option>
-                                    <el-option value="<" label="less than"></el-option>
-                                    <el-option value=">=" label="greater than or equal"></el-option>
-                                    <el-option value="<=" label="less than or equal"></el-option>
-                                    <el-option value="contains" label="contains"></el-option>
-                                    <el-option value="doNotContains" label="do not contains"></el-option>
-                                    <el-option value="startsWith" label="starts with"></el-option>
-                                    <el-option value="endsWith" label="ends with"></el-option>
-                                    <el-option value="test_regex" label="Regex Match"></el-option>
+                                    <el-option value=">" :label="$t('greater than')"></el-option>
+                                    <el-option value="<" :label="$t('less than')"></el-option>
+                                    <el-option value=">=" :label="$t('greater than or equal')"></el-option>
+                                    <el-option value="<=" :label="$t('less than or equal')"></el-option>
+                                    <el-option value="contains" :label="$t('contains')"></el-option>
+                                    <el-option value="doNotContains" :label="$t('do not contains')"></el-option>
+                                    <el-option value="startsWith" :label="$t('starts with')"></el-option>
+                                    <el-option value="endsWith" :label="$t('ends with')"></el-option>
+                                    <el-option value="test_regex" :label="$t('Regex Match')"></el-option>
                                 </template>
                             </el-select>
                         </td>

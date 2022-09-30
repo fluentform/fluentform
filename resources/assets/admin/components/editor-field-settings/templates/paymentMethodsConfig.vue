@@ -6,7 +6,7 @@
                 :helpText="listItem.help_text"
         />
         <div v-if="isEmpty(value)">
-            No Active Payment Method Found. Please configure from Fluent Forms Settings
+            {{ $t('No Active Payment Method Found.Please configure from Fluent Forms Settings') }}
         </div>
 
         <div class="ff_payment_settings_wrapper">

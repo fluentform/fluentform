@@ -4,7 +4,7 @@
             <el-col :md="24">
                 <h3>{{$t('Api Logs')}}</h3>
                 <p>
-                    All the external CRM/API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)
+                    {{ $t('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration.(Last 2 months data only)') }}
                 </p>
             </el-col>
         </el-row>
@@ -12,7 +12,7 @@
         <el-col class="ff_filter_wrapper" :md="24">
             <div class="ff_form_group ff_inline">
                 Form
-                <el-select @change="getLogs()" size="mini" clearable v-model="selected_form" placeholder="Select Form">
+                <el-select @change="getLogs()" size="mini" clearable v-model="selected_form" :placeholder="$t('Select Form')">
                     <el-option
                         v-for="item in available_forms"
                         :key="item.form_id"
@@ -23,7 +23,7 @@
             </div>
             <div class="ff_form_group ff_inline">
                 Source
-                <el-select  @change="getLogs()" size="mini" clearable v-model="selected_component" placeholder="Select Component">
+                <el-select  @change="getLogs()" size="mini" clearable v-model="selected_component" :placeholder="$t('Select Component')">
                     <el-option
                         v-for="item in available_components"
                         :key="item"
@@ -36,7 +36,7 @@
             </div>
             <div class="ff_form_group ff_inline">
                 Status
-                <el-select @change="getLogs()" size="mini" clearable v-model="selected_status" placeholder="Select Status">
+                <el-select @change="getLogs()" size="mini" clearable v-model="selected_status" :placeholder="$t('Select Status')">
                     <el-option
                         v-for="item in available_statuses"
                         :key="item"
@@ -49,7 +49,7 @@
 
         <div v-loading="loading" class="ff_activity_logs_body">
             <div v-if="multipleSelection.length" class="logs_actions">
-              <remove size="mini" icon="el-icon-delete" @on-confirm="deleteItems()">Delete Selected Logs</remove>
+              <remove size="mini" icon="el-icon-delete" @on-confirm="deleteItems()">{{ $t('Delete Selected Logs') }}</remove>
               <p></p>
             </div>
 
@@ -70,35 +70,35 @@
                 </el-table-column>
                 <el-table-column
                         width="120px"
-                        label="Submission Id">
+                        :label="$t('Submission Id')">
                     <template slot-scope="props">
                         <a :href="props.row.submission_url">#{{props.row.origin_id}}</a>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop="form_title"
-                    label="Form">
+                    :label="$t('Form')">
                 </el-table-column>
                 <el-table-column
                     prop="status"
-                    label="Status"
+                    :label="$t('Status')"
                     width="140">
                     <template slot-scope="props">
                       <span style="font-size: 12px;" class="ff_tag" :class="'log_status_'+props.row.status">{{props.row.status}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    label="Component">
+                    :label="$t('Component')">
                     <template slot-scope="props">
                         <div style="text-transform: capitalize">{{getReadableName(props.row.action)}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop="created_at"
-                    label="Date"
+                    :label="$t('Date')"
                     width="180">
                 </el-table-column>
-                <el-table-column width="70" label="Action">
+                <el-table-column width="70" :label="$t('Action')">
                     <template slot-scope="props">
                         <remove :plain="true"  size="mini" class="pull-right" icon="el-icon-delete" @on-confirm="deleteItems(props.row.id)"></remove>
                     </template>
@@ -119,7 +119,7 @@
 
             <div v-if="multipleSelection.length" class="logs_actions">
                 <p></p>
-                <remove size="mini" icon="el-icon-delete" @on-confirm="deleteItems()">Delete Selected Logs</remove>
+                <remove size="mini" icon="el-icon-delete" @on-confirm="deleteItems()">{{ $t('Delete Selected Logs') }}</remove>
             </div>
         </div>
     </div>

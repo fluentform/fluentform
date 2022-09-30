@@ -3,7 +3,7 @@
         <b>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         </b>
-        <div style="margin-top:10px;" class="address-field-option" v-for="field, i in editItem.fields">
+        <div style="margin-top:10px;" class="address-field-option" v-for="(field, i) in editItem.fields">
             <div class="field-options-settings">
                 <div class="action-btn pull-right">
                     <i @click="toggleAddressFieldInputs" class="icon el-icon-caret-bottom"></i>
@@ -16,7 +16,7 @@
                 <div class="el-form--label-left">
                     <div class="el-form-item">
                         <label class="el-form-item__label" style="width: 130px; float: left;">
-                            <span>Field Type</span>
+                            <span>{{ $t('Field Type') }}</span>
                         </label>
                         <div class="el-form-item__content" style="margin-left: 130px;">
                             <el-select @change="changeFieldType(field, i)" v-model="field.element">

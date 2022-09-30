@@ -4,8 +4,8 @@
         <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
 
         <el-radio-group v-model="editItem.settings[prop].type">
-            <el-radio label="default">Default</el-radio>
-            <el-radio label="img">Image</el-radio>
+            <el-radio label="default">{{ $t('Default') }}</el-radio>
+            <el-radio label="img">{{ $t('Image') }}</el-radio>
         </el-radio-group>
     </el-form-item>
 

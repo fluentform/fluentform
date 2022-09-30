@@ -138,11 +138,11 @@
 
                 if (plan) {
                     const cases = {
-                        has_signup_fee: this.$t('{first_interval_total} for the first {billing_interval} then {subscription_amount}/{billing_interval}'),
-                        has_trial: this.$t('{trial_days} days free then {subscription_amount}/{billing_interval}'),
-                        onetime_only: this.$t('One time payment of {first_interval_total}'),
-                        normal: this.$t('{subscription_amount} for each {billing_interval}'),
-                        bill_times: this.$t(', for {bill_times} installments')
+                        has_signup_fee: '{first_interval_total} for the first {billing_interval} then {subscription_amount}/{billing_interval}',
+                        has_trial: '{trial_days} days free then {subscription_amount}/{billing_interval}',
+                        onetime_only: 'One time payment of {first_interval_total}',
+                        normal: '{subscription_amount} for each {billing_interval}',
+                        bill_times: ', for {bill_times} installments'
                     };
 
                     let hasTrial = false;

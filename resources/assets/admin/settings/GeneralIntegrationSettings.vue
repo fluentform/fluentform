@@ -21,7 +21,7 @@
                 {{ settings.discard_settings.button_text }}
             </el-button>
             <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="success"
-                       size="small">Verify Connection Again
+                       size="small">{{ $t('Verify Connection Again') }}
             </el-button>
 
 

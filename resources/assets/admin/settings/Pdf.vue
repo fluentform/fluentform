@@ -2,8 +2,10 @@
     <div>
         <el-row class="setting_header">
             <el-col :md="18">
-                <h2>Global PDF Settings</h2>
-                <p>This global settings will be set as default for your new PDF feed for any form. Then you can customize for a specific PDF generator feed</p>
+                <h2>{{ $t('Global PDF Settings') }}</h2>
+                <p>{{
+                        $t('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed')
+                    }}</p>
             </el-col>
             <el-col class="action-buttons clearfix mb15 text-right" :md="6">
                 <el-button
@@ -12,7 +14,7 @@
                         type="success"
                         icon="el-icon-success"
                         @click="save"
-                >save settings
+                >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
         </el-row>
@@ -35,7 +37,7 @@
                             type="success"
                             icon="el-icon-success"
                             @click="save"
-                    >Save Settings
+                    >{{ $t('Save Settings') }}
                     </el-button>
                 </el-col>
             </el-row>
@@ -77,7 +79,7 @@
                     .fail(e => {
                         this.$notify.error({
                             title: 'Error',
-                            message: "Global settings save error, please reload.",
+                            message: 'Global settings save error, please reload.',
                             offset: 30
                         });
                     })
@@ -98,7 +100,7 @@
                     .fail(e => {
                         this.$notify.error({
                             title: 'Error',
-                            message: "Global settings fetch error, please reload.",
+                            message: $t('Global settings fetch error, please reload.'),
                             offset: 30
                         });
                     })

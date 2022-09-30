@@ -1,14 +1,12 @@
 <template>
     <el-row v-if="roles.length">
         <div class="ninja_header">
-            <h2>Managers</h2>
+            <h2>{{ $t('Managers') }}</h2>
         </div>
         <div v-loading="loading" class="ninja_content">
             <div class="ninja_block">
                 <p>
-                    Administrators have full access to Fluent Forms. By
-                    selecting additional roles bellow, you can give access to
-                    other user roles.
+                    {{ $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.') }}
                 </p>
             </div>
             <hr />
@@ -19,7 +17,7 @@
                     v-model="checkAll"
                     @change="handleCheckAllChange"
                 >
-                    Check all
+                    {{ $t('Check all') }}
                 </el-checkbox>
             </div>
 

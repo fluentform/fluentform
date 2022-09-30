@@ -26,11 +26,11 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button size="mini"  @click="resetColumnOrder">
-                    {{ $t("Reset") }}
+                    {{ $t('Reset') }}
                 </el-button>
 
                 <el-button size="mini" type="primary" @click="saveColumnOrder">
-                     {{ $t("Save") }}
+                     {{ $t('Save') }}
                 </el-button>
             </span>
 

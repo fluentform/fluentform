@@ -4,14 +4,14 @@
         <!--Confirmation Type-->
         <el-form-item>
             <template slot="label">
-                Confirmation Type
+                {{ $t('Confirmation Type') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Confirmation Type</h3>
+                        <h3>{{ $t('Confirmation Type') }}</h3>
 
                         <p>
-                            After submit, where the page will redirect to.
+                            {{ $t('After submit, where the page will redirect to.') }}
                         </p>
                     </div>
 
@@ -34,15 +34,15 @@
             <!--Message to show-->
             <el-form-item>
                 <template slot="label">
-                    Message to show
+                    {{ $t('Message to show') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Confirmation Message Text</h3>
+                            <h3>{{ $t('Confirmation Message Text') }}</h3>
 
                             <p>
-                                Enter the text you would like the user to <br>
-                                see on the confirmation page of this form.
+                                {{ $t('Enter the text you would like the user to ') }}<br>
+                                {{ $t('see on the confirmation page of this form.') }}
                             </p>
                         </div>
 
@@ -56,15 +56,15 @@
             <!--After form submisssion behavior-->
             <el-form-item>
                 <template slot="label">
-                    After Form Submission
+                    {{ $t('After Form Submission') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>After Form Submission Behavior</h3>
+                            <h3>{{ $t('After Form Submission Behavior') }}</h3>
 
                             <p>
-                                Select the behavior after form submission, <br>
-                                whether you want to hide or reset the form.
+                                S{{ $t('Select the behavior after form submission, ')}}<br>
+                                {{ $t('whether you want to hide or reset the form.') }}
                             </p>
                         </div>
 
@@ -73,11 +73,11 @@
                 </template>
 
                 <el-radio v-model="confirmation.samePageFormBehavior"
-                            label="hide_form" border>Hide Form
+                            label="hide_form" border>{{ $t('Hide Form') }}
                 </el-radio>
 
                 <el-radio v-model="confirmation.samePageFormBehavior"
-                            label="reset_form" border>Reset Form
+                            label="reset_form" border>{{ $t('Reset Form') }}
                 </el-radio>
             </el-form-item>
         </div>
@@ -87,15 +87,15 @@
                       class="conditional-items" :class="errors.has('customPage') ? 'is-error' : ''"
         >
             <template slot="label">
-                Select Page
+                {{ $t('Select Page') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Redirect Form to Page</h3>
+                        <h3>{{ ('Redirect Form to Page') }}</h3>
 
                         <p>
-                            Select the page you would like the user to be <br>
-                            redirected to after they have submitted the form.
+                            {{ $t('Select the page you would like the user to be ') }}<br>
+                            {{ $t('redirected to after they have submitted the form.') }}
                         </p>
                     </div>
 
@@ -118,16 +118,16 @@
         <!--Custom URL-->
         <el-form-item class="conditional-items" :class="errors.has('customUrl') ? 'is-error' : ''" v-else-if="confirmation.redirectTo === 'customUrl'">
             <template slot="label">
-                Custom URL
+                {{ $t('Custom URL') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Redirect Form to URL</h3>
+                        <h3>{{ $t('Redirect Form to URL') }}</h3>
 
                         <p>
-                            Enter the URL of the webpage you would <br>
-                            like the user to be redirected to after <br>
-                            they have submitted the form.
+                            {{ $t('Enter the URL of the webpage you would ')}}<br>
+                            {{ $t('like the user to be redirected to after ')}}<br>
+                            {{ $t('they have submitted the form.') }}
                         </p>
                     </div>
 
@@ -136,7 +136,7 @@
             </template>
 
             <input-popover fieldType="text"
-                            placeholder="Redirect URL"
+                            :placeholder="$t('Redirect URL')"
                             v-model="confirmation.customUrl"
                             :data="inputsFirstShortcodes"
             ></input-popover>
@@ -148,12 +148,14 @@
         <!-- Redirection Message to show-->
 
         <template v-if="confirmation.redirectTo === 'customPage' || confirmation.redirectTo === 'customUrl'">
-            <el-form-item label="Redirect Query String" class="conditional-items">
-                <el-checkbox v-model="confirmation.enable_query_string" true-label="yes" false-label="no">Pass Field Data Via Query String</el-checkbox>
+            <el-form-item :label="$t('Redirect Query String')" class="conditional-items">
+                <el-checkbox v-model="confirmation.enable_query_string" true-label="yes" false-label="no">
+                    {{ $t('Pass Field Data Via Query String') }}
+                </el-checkbox>
                 <template v-if="confirmation.enable_query_string == 'yes'">
                     <input-popover
                         fieldType="text"
-                        placeholder="Redirect Query String"
+                        :placeholder="$t('Redirect Query String')"
                         v-model="confirmation.query_strings"
                         :data="inputsFirstShortcodes"
                     ></input-popover>
@@ -163,13 +165,13 @@
 
             <el-form-item>
                 <template slot="label">
-                    Redirection Message
+                    {{ $t('Redirection Message') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Redirection Confirmation Message Text</h3>
+                            <h3>{{ $t('Redirection Confirmation Message Text') }}</h3>
                             <p>
-                                Enter the text you would like the user to <br>
-                                see on the confirmation page when redirecting.
+                                {{ $t('Enter the text you would like the user to ')}}<br>
+                                {{ $t('see on the confirmation page when redirecting.') }}
                             </p>
                         </div>
 
@@ -207,7 +209,7 @@
                 if (freshCopy && freshCopy.length) {
                     freshCopy[0].shortcodes = {
                         ...freshCopy[0].shortcodes,
-                        '{all_data}': 'All Data',
+                        '{all_data}':'All Data',
                         '{all_data_without_hidden_fields}' : 'All Data Without Hidden Fields'
                     };
                 }

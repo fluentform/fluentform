@@ -3,15 +3,15 @@
         <el-row class="setting_header">
             <el-col :md="12"><h2>{{title}}</h2></el-col>
             <el-col :md="12" class="action-buttons mb15 clearfix">
-                <video-doc class="pull-right ff-left-spaced" :route_id="integration_name" btn_text="View Video Instruction" />
+                <video-doc class="pull-right ff-left-spaced" :route_id="integration_name" :btn_text="$t('View Video Instruction')" />
                 <router-link
                     class="pull-right el-button el-button--default el-button--small"
                     :to="{name: 'allIntegrations'}"
-                >View All</router-link>
+                >{{ $t('View All') }}</router-link>
             </el-col>
         </el-row>
 
-        <div v-loading="loading_app" element-loading-text="Loading Settings..." class="integration_edit">
+        <div v-loading="loading_app" :element-loading-text="$t('Loading Settings...')" class="integration_edit">
             <el-form v-if="!loading_app"  label-position="left" label-width="205px">
                 <template v-for="field in settings_fields.fields">
                     <el-form-item
@@ -222,8 +222,7 @@
                                 :field="field"
                             ></chained-selects>
                             <p style="color: red;" v-else>
-                                This field only available on pro version.
-                                Please install Fluent Forms Pro.
+                                {{ $t('This field only available on pro version.Please install Fluent Forms Pro.') }}
                             </p>
                         </template>
 
@@ -251,7 +250,7 @@
                         </template>
 
                         <template v-else>
-                            <p>No Template found. Please make sure you are using latest version of Fluent Forms</p>
+                            <p>{{ $t('No Template found. Please make sure you are using latest version of Fluent Forms') }}</p>
                             <pre>{{field.component}}</pre>
                             <pre>{{field}}</pre>
                         </template>
@@ -271,9 +270,9 @@
                         @click="saveNotification"
                     >
                         <span v-if="integration_id">
-                            Update {{settings_fields.integration_title}} Feed
+                            {{ $t('Update ') }} {{settings_fields.integration_title}} {{ $t('Feed') }}
                         </span>
-                        <span v-else>Create {{settings_fields.integration_title}} Feed</span>
+                        <span v-else>{{ $t('Create ') }} {{settings_fields.integration_title}} {{ $t('Feed') }}</span>
                     </el-button>
                 </template>
             </el-form>

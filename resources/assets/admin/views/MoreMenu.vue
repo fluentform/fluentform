@@ -16,18 +16,19 @@
         </el-dropdown>
 
         <el-dialog
-            title="Are you sure?"
+            :title="$t('Are you sure?')"
             :visible.sync="visible"
             :append-to-body="true"
             width="40%"
         >
             <p>
-                <b>This process is irreversible.</b>
+                <b>{{ $t('This process is irreversible.') }}</b>
             </p>
 
             <p>
-                Conversational Forms currently doesn't support the following
-                fields:
+                {{
+                    $t('Conversational Forms currently doesn\'t support the following fields:')
+                }}
             </p>
 
             <el-row :gutter="20">
@@ -37,16 +38,16 @@
             </el-row>
 
             <p>
-                You may also lose data of these fields.
+                {{ $t('You may also lose data of these fields.') }}
             </p>
 
             <span slot="footer" class="text-center dialog-footer">
                 <el-button @click="visible = false">
-                    Cancel
+                    {{ $t('Cancel') }}
                 </el-button>
 
                 <el-button type="primary" size="small" @click="confirm">
-                    Convert
+                    {{ $t('Convert') }}
                 </el-button>
             </span>
         </el-dialog>

@@ -69,6 +69,18 @@ Vue.use(Pagination);
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 
+Vue.mixin({
+    methods: {
+        $t(str) {
+            let transString = window.FluentFormApp.form_settings_str[str];
+            if(transString) {
+                return transString;
+            }
+            return str;
+        },
+    }
+})
+
 new Vue({
     el: '#ff_global_settings_option_app',
     components: {
@@ -116,13 +128,4 @@ new Vue({
         });
     }
 });
-Vue.mixin(
-    {
-        methods: {
-            $t(str){
-                return str;
-            }
-        }
-    }
-)
 

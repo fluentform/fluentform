@@ -7,7 +7,7 @@
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <p>
-                                Enable/Disable Advanced Form Validation Rules.
+                                {{ $t('Enable / Disable Advanced Form Validation Rules.') }}
                             </p>
                         </div>
                         <i class="el-icon-info el-text-info" />
@@ -18,11 +18,11 @@
             <template v-if="settings.status">
                 <el-form-item>
                     <template slot="label">
-                        Validation Type
+                        {{ $t('Validation Type') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
                                 <p>
-                                    Please select how the validation will apply.
+                                    {{ $t('Please select how the validation will apply.') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info" />
@@ -32,22 +32,23 @@
                         <el-radio v-for="(result_type, typeName) in result_types" :key="typeName" :label="typeName">{{result_type}}</el-radio>
                     </el-radio-group>
                     <br />
-                    <p v-if="settings.validation_type == 'fail_on_condition_met'">Based on your selection, Submission <b>will be rejected</b> if {{settings.type}} conditions are met</p>
-                    <p v-else>Based on your selection, Submission <b>will be valid</b> if {{settings.type}} conditions are met</p>
+                    <p v-if="settings.validation_type == 'fail_on_condition_met'">{{
+                            $t('Based on your selection, Submission ')<b>{{ $t('will be rejected ') }}</b> {{ $t('if ') }} {{ settings.type }} {{ $t('conditions are met') }})</p>
+                    <p v-else>{{ $t('Based on your selection, Submission ') }}<b>{{ $t('will be valid ') }}</b> {{ $t('if ') }} {{settings.type}} {{ $t('conditions are met') }}</p>
                 </el-form-item>
                 <el-form-item>
                     <template slot="label">
-                        Error Message
+                        {{ $t('Error Message') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
                                 <p>
-                                    Please write the error message if the form submission get invalid.
+                                    {{ $t('Please write the error message if the form submission get invalid.') }}
                                 </p>
                             </div>
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <el-input placeholder="Error Message on Failed submission" type="textarea" v-model="settings.error_message"/>
+                    <el-input :placeholder="$t('Error Message on Failed submission')" type="textarea" v-model="settings.error_message"/>
                 </el-form-item>
             </template>
         </el-form>

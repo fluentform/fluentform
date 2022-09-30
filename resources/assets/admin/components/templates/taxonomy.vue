@@ -9,9 +9,9 @@
                         </select>
 
                         <div v-else>
-                            <el-checkbox label="item_1">Item 1</el-checkbox>
-                            <el-checkbox label="item_2">Item 2</el-checkbox>
-                            <el-checkbox label="item_3">Item 3</el-checkbox>
+                            <el-checkbox label="item_1">{{ $t('Item 1') }}</el-checkbox>
+                            <el-checkbox label="item_2">{{ $t('Item 2') }}</el-checkbox>
+                            <el-checkbox label="item_3">{{ $t('Item 3') }}</el-checkbox>
                         </div>
                     </template>
 
