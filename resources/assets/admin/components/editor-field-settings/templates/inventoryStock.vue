@@ -47,22 +47,6 @@
 
         },
         computed: {
-            optionsType() {
-                let determiner = this.editItem.attributes.type || (this.editItem.attributes.multiple && 'multiselect') || this.editItem.element;
-
-                switch (determiner) {
-                    case 'multiselect':
-                    case 'checkbox':
-                        return 'checkbox'
-                        break;
-                    case 'select':
-                    case 'radio':
-                        return 'radio'
-                        break;
-                    default:
-                        return 'radio'
-                }
-            },
             getOptionsKey () {
                 if (this.editItem.element == 'multi_payment_component') {
                     return 'pricing_options';
@@ -84,7 +68,6 @@
             }
         },
         mounted() {
-            let key = '';
             let items = this.editItem.settings[this.getOptionsKey];
             items.forEach((item, i) => {
                 if (item.quantity === undefined) {
