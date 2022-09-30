@@ -117,6 +117,7 @@ import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
 import ContainerWidth from "./templates/containerWidth";
+import inventoryStock from "./templates/inventoryStock";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -166,6 +167,7 @@ export default {
         ff_fieldsRepeatSettings: fieldsRepeatSettings,
         ConversionStylePref,
         ff_containerWidth: ContainerWidth,
+        ff_inventoryStock: inventoryStock,
     },
     data() {
         return {
