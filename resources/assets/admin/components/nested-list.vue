@@ -29,6 +29,7 @@
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
             <div v-if="item.element == 'container'" class="item-container">
+                <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
                 <vddl-nodrag style="width: 100%">
                     <splitpanes
                                 class="default-theme"
