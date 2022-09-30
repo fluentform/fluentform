@@ -625,4 +625,12 @@ class Helper
 
         return $content;
     }
+    public static function getForm($id)
+    {
+        $form = wpFluent()->table('fluentform_forms')->where('id', $id)->first();
+        if($form) {
+            return $form;
+        }
+        return  null;
+    }
 }

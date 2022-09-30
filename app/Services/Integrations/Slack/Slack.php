@@ -122,6 +122,7 @@ class Slack
             'message' => $message
         );
     }
+    // @todo make helper function for formatting in MarkDown Format
 	// make tabular-grid value markdown format
 	protected static function getTabularGridMarkdownValue($girdData, $field = [], $rowJoiner = '<br />', $colJoiner = ', ') {
 		$girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
