@@ -12,11 +12,14 @@
             <exclude name="PEAR.Functions.FunctionCallSignature"/>
 
             <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing"/>
+            <exclude name="Squiz.Commenting"/>
             
             <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
             <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
             <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
             <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing"/>
+            <exclude name="Generic.Classes.OpeningBraceSameLine"/>
+            <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
         </rule>
         <rule ref="Generic.WhiteSpace.ScopeIndent">
             <properties>
