@@ -625,12 +625,19 @@ class Helper
 
         return $content;
     }
+
     public static function getForm($id)
     {
-        $form = wpFluent()->table('fluentform_forms')->where('id', $id)->first();
-        if($form) {
-            return $form;
-        }
-        return  null;
+        return wpFluent()->table('fluentform_forms')->where('id', $id)->first();
+    }
+
+    public static function shouldHidePassword($formId)
+    {
+        return apply_filters('fluentform_truncate_password_values', true, $formId) && 
+        (
+            (defined('FLUENTFORM_RENDERING_ENTRIES') && FLUENTFORM_RENDERING_ENTRIES) || 
+            (defined('FLUENTFORM_RENDERING_ENTRY') && FLUENTFORM_RENDERING_ENTRY) ||
+            (defined('FLUENTFORM_EXPORTING_ENTRIES') && FLUENTFORM_EXPORTING_ENTRIES)
+        );
     }
 }

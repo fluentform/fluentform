@@ -393,6 +393,10 @@ class Entries extends EntryQuery
 
     public function getEntry()
     {
+        if (!defined('FLUENTFORM_RENDERING_ENTRY')) {
+            define('FLUENTFORM_RENDERING_ENTRY', true);
+        }
+        
         $entryData = $this->_getEntry();
 
         $entryData['widgets'] = apply_filters('fluentform_single_entry_widgets', [], $entryData);

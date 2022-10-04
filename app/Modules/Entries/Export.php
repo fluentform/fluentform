@@ -44,6 +44,10 @@ class Export
      */
     public function index()
     {
+        if (!defined('FLUENTFORM_EXPORTING_ENTRIES')) {
+            define('FLUENTFORM_EXPORTING_ENTRIES', true);
+        }
+
         $formId = intval($this->request->get('form_id'));
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
