@@ -4,7 +4,7 @@
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.status_tips"></elLabel>
             <el-checkbox v-model="value.status">{{listItem.status_label}}</el-checkbox>
         </el-form-item>
-        <el-form-item style="padding-bottom: 190px" v-if="value.status">
+        <el-form-item v-if="value.status">
             <elLabel slot="label" :label="listItem.formula_label" :helpText="listItem.formula_tips"></elLabel>
             <inputPopover
                 class="calc_pop_over"
