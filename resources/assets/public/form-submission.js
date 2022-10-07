@@ -214,6 +214,16 @@ jQuery(document).ready(function () {
                             }
                         }
 
+                        // Init turnstile if available.
+                        if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
+                            let turnstileId = getTurnstileClientId(formData.form_id);
+                            if (turnstileId) {
+                                formData['data'] += '&' + $.param({
+                                    'cf-turnstile-response': turnstileId.getResponse(turnstileId)
+                                });
+                            }
+                        }
+
                         $(formSelector + '_success').remove();
                         $(formSelector + '_errors').html('');
                         $theForm.find('.error').html('');
@@ -377,6 +387,12 @@ jQuery(document).ready(function () {
                             if (window.hcaptcha) {
                                 hcaptcha.reset(); //two recapthca on same page creates conflicts
                             }
+                            if (window.turnstile) {
+                                let turnstileId = getTurnstileClientId(formData.form_id);
+                                if (turnstileId) {
+                                    turnstileId.reset(turnstileId);
+                                }
+                            }
                         });
                 }
 
@@ -490,6 +506,22 @@ jQuery(document).ready(function () {
                  var getHcaptchaClientId = function (formId) {
                     var formIndex;
                     $('form').has('.h-captcha').each(function (index, form) {
+                        if ($(this).attr('data-form_id') == formId) {
+                            formIndex = index;
+                        }
+                    });
+
+                    return formIndex;
+                };
+
+                /**
+                 * Retrieve the Turnstile client id for current form
+                 * @param {int} formId
+                 * @return {int}
+                 */
+                var getTurnstileClientId = function (formId) {
+                    var formIndex;
+                    $('form').has('.cf-turnstile').each(function (index, form) {
                         if ($(this).attr('data-form_id') == formId) {
                             formIndex = index;
                         }
@@ -738,6 +770,16 @@ jQuery(document).ready(function () {
                         var siteKey = $el.data('sitekey');
                         var id = $el.attr('id');
                         grecaptcha.render(document.getElementById(id), {
+                            'sitekey': siteKey
+                        });
+                    }
+
+                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
+                        var $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                        var siteKey = $el.data('sitekey');
+                        var id = $el.attr('id');
+                        console.log(id);
+                        turnstile.render(document.getElementById(id), {
                             'sitekey': siteKey
                         });
                     }

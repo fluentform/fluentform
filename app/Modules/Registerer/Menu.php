@@ -815,6 +815,11 @@ class Menu
             'title' => 'hCaptcha',
         ];
 
+        $components['Turnstile'] = [
+            'hash' => 'turnstile',
+            'title' => 'Turnstile (Beta)',
+        ];
+
         View::render('admin.settings.index', [
             'components' => $components,
             'currentComponent' => $currentComponent

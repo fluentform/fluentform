@@ -94,11 +94,12 @@
 <script>
     import recaptcha from './Recaptcha.vue';
     import hcaptcha from './Hcaptcha.vue';
+    import turnstile from './Turnstile.vue';
 
     export default {
         name: 'ItemDisabled',
         props: ['visibility', 'modal', 'value'],
-        components: { hcaptcha, recaptcha },
+        components: { hcaptcha, recaptcha, turnstile },
         data() {
             return {
                 contentComponent: '',

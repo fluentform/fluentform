@@ -74,6 +74,7 @@
                 captcha_status: {
                     'hcaptcha': false,
                     'recaptcha': false,
+                    'turnstile': false
                 },
             }
         },
@@ -88,6 +89,7 @@
                         '_fluentform_failed_integration_notification',
                         '_fluentform_reCaptcha_keys_status',
                         '_fluentform_hCaptcha_keys_status',
+                        '_fluentform_turnstile_keys_status'
                     ]
                 })
                     .then(response => {
@@ -123,7 +125,8 @@
                         this.file_upload_optoins = response.data.file_upload_optoins;
                         this.captcha_status = {
                             hcaptcha: response.data._fluentform_hCaptcha_keys_status,
-                            recaptcha: response.data._fluentform_reCaptcha_keys_status
+                            recaptcha: response.data._fluentform_reCaptcha_keys_status,
+                            turnstile: response.data._fluentform_turnstile_keys_status
                         }
                     })
                     .fail(e => {

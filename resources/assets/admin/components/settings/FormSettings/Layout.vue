@@ -518,6 +518,7 @@
                        <el-radio-group v-model="misc.captcha_type"  v-if="misc.autoload_captcha">
                            <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">{{ $t('Google ReCaptcha') }}</el-radio>
                            <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">{{ $t('hCaptcha') }}</el-radio>
+                           <el-radio :disabled="!captcha_status.turnstile"  label="turnstile">{{ $t('Turnstile') }}</el-radio>
                        </el-radio-group>
                    </div>
                 </el-form-item>
@@ -589,7 +590,7 @@
         },
         computed:{
             hasCaptcha(){
-                return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha;
+                return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha || !!this.captcha_status.turnstile;
             }
         },
         mounted() {

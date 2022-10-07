@@ -5,6 +5,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 import Settings from './Settings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
+import turnstile from './turnstile.vue';
 import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
@@ -87,6 +88,7 @@ new Vue({
         settings: Settings,
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,
+        turnstile: turnstile,
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
         'double_optin_settings': DoubleOptinSettings,

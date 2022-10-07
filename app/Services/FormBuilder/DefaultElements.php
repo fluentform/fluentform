@@ -1217,6 +1217,22 @@ $defaultElements = array(
                 'template' => 'hcaptcha',
             ),
         ),
+        'turnstile' => array(
+            'index' => 2,
+            'element' => 'turnstile',
+            'attributes' => array('name' => 'cf-turnstile-response'),
+            'settings' => array(
+                'label' => '',
+                'label_placement' => '',
+                'validation_rules' => array(),
+            ),
+            'editor_options' => array(
+                'title' => __('turnstile', 'fluentform'),
+                'icon_class' => 'ff-edit-recaptha',
+                'why_disabled_modal' => 'turnstile',
+                'template' => 'turnstile',
+            ),
+        ),
         'shortcode' => array(
             'index' => 4,
             'element' => 'shortcode',
