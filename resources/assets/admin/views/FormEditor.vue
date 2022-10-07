@@ -426,7 +426,7 @@
         <!-- OTHER MODAL/POPUP COMPONENTS -->
         <ItemDisabled
             :visibility.sync="whyDisabledModal"
-            :modal="itemDisableConditions[whyDisabledModal]">
+            :modal="itemDisableConditions[whyDisabledModal] || {}">
         </ItemDisabled>
 
         <editorInserter
