@@ -278,7 +278,7 @@ export default {
             let unsupportedSettings = [
                 // 'conditional_logics',
                 'label_placement',
-                'calculation_settings',
+                // 'calculation_settings',
                 'prefix_label',
                 'suffix_label',
                 'numeric_formatter',
