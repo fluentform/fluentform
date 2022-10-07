@@ -195,8 +195,10 @@ class Component
                 'hidePro'          => true
             ),
             'turnstile'   => array(
-                'contentComponent' => 'turnstile',
-                'disabled'         => $isTurnstileDisabled
+                'disabled'         => $isTurnstileDisabled,
+                'title'            => __('Turnstile', 'fluentform'),
+                'description'      => __('Please enter a valid API key on FluentForms->Settings->Turnstile', 'fluentform'),
+                'hidePro'          => true
             ),
             'input_image' => array(
                 'disabled' => true,

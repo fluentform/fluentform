@@ -1218,7 +1218,7 @@ $defaultElements = array(
             ),
         ),
         'turnstile' => array(
-            'index' => 2,
+            'index' => 3,
             'element' => 'turnstile',
             'attributes' => array('name' => 'cf-turnstile-response'),
             'settings' => array(
@@ -1227,7 +1227,7 @@ $defaultElements = array(
                 'validation_rules' => array(),
             ),
             'editor_options' => array(
-                'title' => __('turnstile', 'fluentform'),
+                'title' => __('Turnstile', 'fluentform'),
                 'icon_class' => 'ff-edit-recaptha',
                 'why_disabled_modal' => 'turnstile',
                 'template' => 'turnstile',
