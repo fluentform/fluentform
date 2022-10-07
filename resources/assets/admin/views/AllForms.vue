@@ -270,7 +270,7 @@
         />
 
         <PostTypeSelectionModal
-            v-if="hasPermission('fluentform_forms_manager')"
+            v-if="has_post_feature && hasPermission('fluentform_forms_manager')"
             @on-post-type-selction-end="onPostTypeSelctionEnd"
             :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
         />
