@@ -621,6 +621,11 @@ class Menu
             'has_fluent_smtp' => defined('FLUENTMAIL'),
             'fluent_smtp_url' => admin_url('admin.php?page=fluent_forms_smtp'),
             'form_settings_str' => TranslationString::getSettingsI18n(),
+            'integrationsResource' => [
+                'asset_url'   => $this->app->publicUrl('img/integrations.png'),
+                'list_url'    => fluentform_integrations_url(),
+                'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform')
+            ]
         ));
 
         View::render('admin.form.settings', array(

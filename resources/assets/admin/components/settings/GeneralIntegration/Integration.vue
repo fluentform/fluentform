@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="ff_form_integrations">
         <el-row class="setting_header">
             <el-col :md="12"><h2>{{ $t('All Form Integrations') }}</h2></el-col>
             <!--Add Feed-->
@@ -18,13 +18,22 @@
             </el-col>
         </el-row>
 
-        <div v-if="isEmpty(available_integrations) && !loading">
-            <p style="font-size: 18px; text-align: center;">{{ $t('You don\'t have any integration module enabled. Please go to                        integration modules and enable and configured from 30 + available modules') }}</p>
-            <p style="text-align: center;"><a class="el-button el-button--primary el-button--small el-dropdown-selfdefine" :href="all_module_config_url">{{ $t('Configure Modules') }}</a></p>
+        <div v-if="has_pro && isEmpty(available_integrations) && !loading">
+            <p style="font-size: 18px; text-align: center;">
+                {{ $t(this.integrationsResource.instruction) }}
+            </p>
+            <p style="text-align: center;">
+                <a 
+                    class="el-button el-button--primary el-button--small el-dropdown-selfdefine" 
+                    :href="all_module_config_url"
+                >
+                    {{ $t('Configure Modules') }}
+                </a>
+            </p>
         </div>
 
         <!-- GetResponse Feeds Table: 1 -->
-        <el-table v-else stripe v-loading="loading" :data="integrations" class="el-fluid">
+        <el-table v-if="!isEmpty(available_integrations)" stripe v-loading="loading" :data="integrations" class="el-fluid">
             <template slot="empty">
                 <div class="getting_started_message">
                     <p>{{ $t('You don\'t have any form feed integration yet. Create new feed and connect your data to your favorite CRM / Marketing tool') }}</p>
@@ -65,11 +74,34 @@
         </el-table>
 
         <br />
-        <p v-show="!integrations.length" style="text-align: right;">
+        <p v-show="has_pro && !integrations.length" style="text-align: right;">
             <a :href="all_module_config_url">Check Global Integration Settings</a>
             <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">{{ $t('View Documentations') }}</a>
         </p>
 
+        <div v-if="!has_pro" class="upgrade_to_pro">
+            <p>
+                {{ $t(this.integrationsResource.instruction) }}
+            </p>
+
+            <div class="action-btns">
+                <a 
+                    class="el-button el-button--primary el-button--small el-dropdown-selfdefine" 
+                    :href="upgrade_url"
+                >
+                    {{ $t('Upgrade to Pro') }}
+                </a>
+
+                <a 
+                    class="" 
+                    :href="integrationsResource.list_url"
+                >
+                    {{ $t('See All Integrations') }}
+                </a>
+            </div>
+            
+            <img :src="integrationsResource.asset_url" alt="integrations asset" />
+        </div>
     </div>
 </template>
 
@@ -89,7 +121,12 @@
                 integrations: [],
                 errors: new Errors,
                 available_integrations: {},
-                all_module_config_url: ''
+                all_module_config_url: '',
+                instruction: "Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.",
+                integrationsAsset: window.FluentFormApp.integrations_asset_url,
+                upgrade_url: window.FluentFormApp.upgrade_url,
+                integrations_url: window.FluentFormApp.integrations_url,
+                integrationsResource: window.FluentFormApp.integrationsResource,
             }
         },
         methods: {
