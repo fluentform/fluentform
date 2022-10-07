@@ -89,7 +89,7 @@
                     class="el-button el-button--primary el-button--small el-dropdown-selfdefine" 
                     :href="upgrade_url"
                 >
-                    {{ $t('Upgrade to Pro') }}
+                    {{ $t('Upgrade to PRO') }}
                 </a>
 
                 <a 
