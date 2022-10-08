@@ -116,7 +116,7 @@ export default function ($, $theForm) {
                             value = getRadioFieldValue(name);
                         } else if (prefix === '{repeat.') {
                             value = getRepeatFieldValue(name);
-                        } else if ('{payment.'){
+                        } else if (prefix === '{payment.') {
                             value = getPaymentFieldValue(name);
                         } else {
                             let $el = $theForm.find('input[name=' + name + ']');
@@ -125,6 +125,7 @@ export default function ($, $theForm) {
                             }
                         }
                         replaces[itemKey] = value;
+                        return false; // to break out of this loop
                     }
                 })
             });
