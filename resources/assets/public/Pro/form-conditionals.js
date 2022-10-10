@@ -69,9 +69,11 @@ const formConditional = function ($, $theForm, form) {
                     setTimeout(function () {
                         $parent.removeClass('ff_cond_v');
                     }, 100);
-                    $parent
-                        .addClass('ff_excluded')
-                        .slideUp(200);
+                    setTimeout(() => {
+                        $parent
+                            .addClass('ff_excluded')
+                            .slideUp(200);    
+                    }, 5);
                 }
             });
             $theForm.trigger('do_calculation');
