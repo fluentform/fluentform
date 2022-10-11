@@ -2,10 +2,11 @@
     <div>
         <el-row class="admin_menu_header">
             <el-col :md="24">
-                <h3>Import Forms</h3>
+                <h3>{{ $t('Import Forms') }}</h3>
                 <p>
-                    Select the Fluent Forms export file (.json) you would like to import. When you click the import button below,
-                    Fluent Forms will import the forms.
+                    {{
+                        $t('Select the Fluent Forms export file(.json) you would like to import. When you click the import button below, Fluent Forms will import the forms.')
+                    }}
                 </p>
             </el-col>
         </el-row>
@@ -14,13 +15,13 @@
             <!--Select File-->
             <el-form-item>
                 <template slot="label">
-                    Select File
+                    {{ $t('Select File') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Select File</h3>
+                            <h3>{{ $t('Select File') }}</h3>
                             <p>
-                                Click the Choose File button to upload a <br>
-                                Fluent Forms export file from your computer.
+                                {{ $t('Click the Choose File button to upload a') }}<br>
+                                {{ $t('Fluent Forms export file from your computer.') }}
                             </p>
                         </div>
 
@@ -34,7 +35,7 @@
                 <el-button size="medium" class="pull-right" type="success" icon="el-icon-success"
                            @click="importForms" :loading="importing"
                 >
-                    Import
+                    {{ $t('Import') }}
                 </el-button>
             </el-form-item>
         </el-form>
@@ -43,16 +44,16 @@
             <table class="wp-list-table widefat fixed striped pages">
                 <thead>
                     <tr>
-                        <td>ID</td>
-                        <td>Title</td>
-                        <td>Action</td>
+                        <td>{{ $t('ID') }}</td>
+                        <td>{{ $t('Title') }}</td>
+                        <td>{{ $t('Action') }}</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(form, formId) in importedForms">
                         <td>{{formId}}</td>
                         <td>{{form.title}}</td>
-                        <td><a class="el-button el-button--success el-button--mini" :href="form.edit_url">Edit Form</a></td>
+                        <td><a class="el-button el-button--success el-button--mini" :href="form.edit_url">{{ $t('Edit Form') }}</a></td>
                     </tr>
                 </tbody>
             </table>

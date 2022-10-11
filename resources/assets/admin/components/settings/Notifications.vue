@@ -2,7 +2,7 @@
     <div>
         <el-row class="setting_header">
             <el-col :md="12">
-                <h2>Email Notifications</h2>
+                <h2>{{ $t('Email Notifications') }}</h2>
             </el-col>
 
             <!--Save settings-->
@@ -12,14 +12,14 @@
                                icon="el-icon-arrow-left"
                                size="small"
                     >
-                        Back
+                        {{ $t('Back') }}
                     </el-button>
                     <video-doc route_id="conditionalEmailSettings"></video-doc>
                 </template>
                 <template v-else>
                     <el-button @click="add" type="primary"
                                size="small" icon="el-icon-plus"
-                    >Add Notification
+                    >{{ $t('Add Notification') }}
                     </el-button>
                     <video-doc route_id="formEmailSettings"></video-doc>
                 </template>
@@ -29,7 +29,7 @@
         <template v-if="!selected">
             <!-- Notification Table: 1 -->
             <el-table v-loading="loading"
-                      element-loading-text="Fetching Notifications..."
+                      :element-loading-text="$t('Fetching Notifications...')"
                       :data="notifications"
                       stripe
                       class="el-fluid">
@@ -42,20 +42,20 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column width="100" label="Status">
+                <el-table-column width="100" :label="$t('Status')">
                     <template slot-scope="scope">
                         <span v-if="scope.row.value.enabled">Enabled</span>
-                        <span v-else style="color:#fa3b3c;">Disabled</span>
+                        <span v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="value.name" label="Name"></el-table-column>
+                <el-table-column prop="value.name" :label="$t('Name')"></el-table-column>
 
-                <el-table-column prop="value.subject" label="Subject"></el-table-column>
+                <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
 
-                <el-table-column width="160" label="Actions" class-name="action-buttons">
+                <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
                     <template slot-scope="scope">
-                        <el-tooltip class="item" effect="light" content="Duplicate notification settings" placement="top">
+                        <el-tooltip class="item" effect="light" :content="$t('Duplicate notification settings')" placement="top">
                             <el-button @click="clone(scope.$index)" type="success"
                                        icon="el-icon-plus" size="mini"
                             ></el-button>
@@ -72,8 +72,8 @@
 
             <div style="margin-top: 50px;" v-if="!has_fluentsmtp && !smtp_closed" class="ff_smtp_suggest">
                 <span @click="closeSmtp()" class="ff_smtp_close">x</span>
-                <p>For better email deliverability, we recommend to use FluentSMTP Plugin (completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered 💯. Built by Fluent Forms devs for you.</p>
-                <a class="el-button el-button--info el-button--small" :href="smtp_page_url">Setup SMTP</a>
+                <p>{{ $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ') }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
+                <a class="el-button el-button--info el-button--small" :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>
             </div>
 
         </template>
@@ -83,22 +83,22 @@
         <el-form v-else-if="selected" label-width="205px" label-position="left">
 
             <!--Notification name-->
-            <el-form-item label="Name">
+            <el-form-item :label="$t('Name')">
                 <el-input v-model="selected.value.name"></el-input>
             </el-form-item>
 
             <!--send to-->
             <el-form-item class="is-required" :class="errors.has('sendTo.type') ? 'is-error' : ''">
                 <template slot="label">
-                    Send To
+                    {{ $t('Send To') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Send To Email Address</h3>
+                            <h3>{{ $t('Send To Email Address') }}</h3>
 
                             <p>
-                                Enter the email address you would like <br>
-                                the notification email sent to.
+                                {{ $t('Enter the email address you would like') }} <br>
+                                {{ $t('the notification email sent to.') }}
                             </p>
                         </div>
 
@@ -107,17 +107,17 @@
                 </template>
 
                 <el-radio-group v-model="selected.value.sendTo.type">
-                    <el-radio label="email">Enter Email</el-radio>
-                    <el-radio label="field">Select a Field</el-radio>
+                    <el-radio label="email">{{ $t('Enter Email') }}</el-radio>
+                    <el-radio label="field">{{ $t('Select a Field') }}</el-radio>
                     <el-radio v-if="!!has_pro" label="routing">
-                        Configure Routing
+                        {{ $t('Configure Routing') }}
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Routing</h3>
+                                <h3>{{ $t('Routing') }}</h3>
 
                                 <p>
-                                    Allows notification to be sent to different email <br>
-                                    addresses depending on values selected in the form.
+                                    {{ $t('Allows notification to be sent to different email ') }}<br>
+                                    {{ $t('addresses depending on values selected in the form.') }}
                                 </p>
                             </div>
 
@@ -131,7 +131,7 @@
 
             <!--additional field based on the send to selection-->
             <template v-if="selected.value.sendTo.type === 'email'">
-                <el-form-item label="Send to Email" class="conditional-items"
+                <el-form-item :label="$t('Send to Email')" class="conditional-items"
                               :class="errors.has('sendTo.email') ? 'is-error' : ''"
                 >
                     <el-input v-model="selected.value.sendTo.email"></el-input>
@@ -141,10 +141,10 @@
             </template>
 
             <template v-else-if="selected.value.sendTo.type ==='field'">
-                <el-form-item label="Send to Field" class="conditional-items"
+                <el-form-item :label="('Send to Field')" class="conditional-items"
                               :class="errors.has('sendTo.field') ? 'is-error' : ''"
                 >
-                    <el-select v-model="selected.value.sendTo.field" placeholder="Select an email field">
+                    <el-select v-model="selected.value.sendTo.field" :placeholder="$t('Select an email field')">
                         <el-option
                             v-for="(item, index) in emailFields"
                             :key="index"
@@ -164,7 +164,7 @@
             </div>
 
             <!--Subject-->
-            <el-form-item label="Subject" class="is-required" :class="errors.has('subject') ? 'is-error' : ''">
+            <el-form-item :label="$t('Subject')" class="is-required" :class="errors.has('subject') ? 'is-error' : ''">
 
                 <input-popover fieldType="text"
                                v-model="selected.value.subject"
@@ -175,10 +175,10 @@
             </el-form-item>
 
             <!--message-->
-            <el-form-item label="Email Body" class="is-required" :class="errors.has('message') ? 'is-error' : ''">
+            <el-form-item :label="$t('Email Body')" class="is-required" :class="errors.has('message') ? 'is-error' : ''">
                 <input-popover :rows="10" v-if="selected.value.asPlainText == 'yes'" fieldType="textarea"
                                v-model="selected.value.message"
-                               placeholder="Email Body HTML"
+                               :placeholder="$t('Email Body HTML')"
                                :data="editorShortcodes"
                 ></input-popover>
                 <wp_editor
@@ -189,20 +189,20 @@
                 </wp_editor>
                 <error-view field="message" :errors="errors"></error-view>
                 <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="selected.value.asPlainText">
-                    Send Email as RAW HTML Format
+                    {{ $t('Send Email as RAW HTML Format') }}
                 </el-checkbox>
             </el-form-item>
 
             <!-- FilterFields -->
             <el-form-item>
                 <template slot="label">
-                    Conditional Logics
+                    {{ $t('Conditional Logics') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Conditional Logic</h3>
+                            <h3>{{ $t('Conditional Logics') }}</h3>
                             <p>
-                                Allow this feed conditionally
+                                {{ $t('Allow this feed conditionally') }}
                             </p>
                         </div>
 
@@ -214,12 +214,12 @@
             </el-form-item>
             <el-form-item v-if="attachmentFields.length && selected.value.attachments">
                 <template slot="label">
-                    Email Attachments
+                    {{ $t('Email Attachments') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Email Attachments</h3>
+                            <h3>{{ $t('Email Attachments') }}</h3>
                             <p>
-                                Select the field that you want to attach in the email
+                                {{ $t('Select the field that you want to attach in the email') }}
                             </p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
@@ -236,10 +236,10 @@
             <!-- Media Attachments -->
             <el-form-item>
                 <template slot="label">
-                    Media File Attachments
+                    {{ $t('Media File Attachments') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            Add Additional Media File Attachments for the email
+                            {{ $t('Add Additional Media File Attachments for the email') }}
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
@@ -251,7 +251,7 @@
                            size="small"
                            @click="mediaAttachments()"
                 >
-                    {{$t('Upload')}} <span v-if="!has_pro">(Require Pro Version)</span>
+                    {{$t('Upload')}} <span v-if="!has_pro">{{ $t('(Require Pro Version)') }}</span>
                 </el-button>
 
                 <li v-if="selected.value.media_attachments.length" v-for="(attachment,index) in selected.value.media_attachments" :key="index">
@@ -271,12 +271,12 @@
 
             <el-form-item v-if="pdf_feeds.length">
                 <template slot="label">
-                    PDF Attachments
+                    {{ $t('PDF Attachments') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>PDF Attachments</h3>
+                            <h3>{{ $t('PDF Attachments') }}</h3>
                             <p>
-                                You can select PDF attachments from your created PDF templates
+                                {{ $t('You can select PDF attachments from your created PDF templates') }}
                             </p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
@@ -289,46 +289,43 @@
                 </el-checkbox-group>
 
             </el-form-item>
-            <p v-show="hasAttachment">You should use SMTP so
-                send attachment via email otherwise, It may go to spam</p>
+            <p v-show="hasAttachment">{{ $t('You should use SMTP so send attachment via email otherwise, It may go to spam') }}</p>
 
             <el-form-item v-if="hasPaymentField">
                 <template slot="label">
-                    Send Email
+                    {{ $t('Send Email') }}
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Send Email</h3>
-                            <p>
-                                Please Select when the email will be sent for Payment Forms
-                            </p>
+                            <h3>{{ $t('Send Email') }}</h3>
+                            <p>{{ $t('Please Select when the email will be sent for Payment Forms') }}</p>
                         </div>
                         <i class="el-icon-info el-text-info"></i>
                     </el-tooltip>
                 </template>
 
                     <el-radio-group v-model="selected.value.feed_trigger_event">
-                        <el-radio label="payment_success">After Payment Success</el-radio>
-                        <el-radio label="payment_form_submit">After Form Submit</el-radio>
+                        <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
+                        <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
                     </el-radio-group>
 
-                <p>Please Note, for offline payment this settings will not work. Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments. </p>
+                <p>{{ $t('Please Note, for offline payment this settings will not work.Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.') }}</p>
 
             </el-form-item>
             <p><br/></p>
             <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
-                <el-collapse-item title="Advanced" name="advanced">
+                <el-collapse-item :title="$t('Advanced')" name="advanced">
                     <!--from name-->
                     <el-form-item>
                         <template slot="label">
-                            From Name
+                            {{ $t('From Name') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>From Name</h3>
+                                    <h3>{{ $t('From Name') }}</h3>
 
                                     <p>
-                                        Enter the name you would like the notification email <br>
-                                        sent from, or select the name from available name fields.
+                                        {{ $t('Enter the name you would like the notification email ') }}<br>
+                                        {{ $t('sent from, or select the name from available name fields.') }}
                                     </p>
                                 </div>
 
@@ -340,22 +337,23 @@
                                        v-model="selected.value.fromName"
                                        :data="editorShortcodes"
                         ></input-popover>
-                        <p v-if="selected.value.fromName">It will only be visible in the email if "From Email" value is
-                            available </p>
+                        <p v-if="selected.value.fromName"> {{
+                                $t('It will only be visible in the email if \"From Email\" value is available')
+                            }}</p>
                     </el-form-item>
 
                     <!--from email-->
                     <el-form-item>
                         <template slot="label">
-                            From Email
+                            {{ $t('From Email') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>From Email Address</h3>
+                                    <h3>{{ $t('From Email Address') }}</h3>
                                     <p>
-                                        Enter the email address you would like the <br>
-                                        notification email sent from, or select the <br>
-                                        email from available email form fields.
+                                        {{ $t('Enter the email address you would like the ')}}<br>
+                                        {{ $t('notification email sent from, or select the ') }}<br>
+                                        {{ $t('email from available email form fields.') }}
                                     </p>
                                 </div>
                                 <i class="el-icon-info el-text-info"></i>
@@ -366,22 +364,23 @@
                                        v-model="selected.value.fromEmail"
                                        :data="fromEmailShortcodes"
                         ></input-popover>
-                        <p v-if="selected.value.fromEmail">It's not recommended to change from email. Please use your
-                            domain's email / SMTP main email. Otherwise email may failed to send.</p>
+                        <p v-if="selected.value.fromEmail">{{
+                                ('It\'s not recommended to change from email. Please use your domain\'s email / SMTP main email. Otherwise email may failed to send.')
+                            }}</p>
                     </el-form-item>
 
                     <!--reply to-->
                     <el-form-item>
                         <template slot="label">
-                            Reply To
+                            {{ $t('Reply To') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Reply To</h3>
+                                    <h3>{{ $t('Reply To') }}</h3>
 
                                     <p>
-                                        Enter the email address you would like to be <br>
-                                        used as the reply to address for the notification email.
+                                        {{ $t('Enter the email address you would like to be ')}}<br>
+                                        {{ $t('used as the reply to address for the notification email.') }}
                                     </p>
                                 </div>
 
@@ -402,11 +401,11 @@
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Blind Carbon Copy Addresses</h3>
+                                    <h3>{{ $t('Blind Carbon Copy Addresses') }}</h3>
 
                                     <p>
-                                        Enter a comma separated list of email addresses <br>
-                                        you would like to receive a BCC of the notification email.
+                                        {{ $t('Enter a comma separated list of email addresses ') }}<br>
+                                        {{ $t('you would like to receive a BCC of the notification email.') }}
                                     </p>
                                 </div>
 
@@ -421,15 +420,15 @@
                     <!--CC-->
                     <el-form-item>
                         <template slot="label">
-                            CC
+                            {{ $t('CC') }}
 
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
-                                    <h3>Carbon Copy Addresses</h3>
+                                    <h3>{{ $t('Carbon Copy Addresses') }}</h3>
 
                                     <p>
-                                        Enter a comma separated list of email addresses <br>
-                                        you would like to receive a CC of the notification email.
+                                        {{ $t('Enter a comma separated list of email addresses ')}}<br>
+                                        {{ $t('you would like to receive a CC of the notification email.') }}
                                     </p>
                                 </div>
 
@@ -453,7 +452,7 @@
                     size="medium"
                     type="success"
                     icon="el-icon-success">
-                    {{ loading ? 'Saving' : 'Save' }} Notification
+                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
                 </el-button>
             </div>
         </el-form>

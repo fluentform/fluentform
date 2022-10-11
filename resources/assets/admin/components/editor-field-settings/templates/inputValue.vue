@@ -44,11 +44,11 @@ export default {
     },
     mounted() {
         let shortcodes = Object.assign(
-            { "{get.param_name}": this.$t("Populate by GET Param") }, 
+            { "{get.param_name}": "Populate by GET Param" },
             this.editorShortcodes[0].shortcodes
         );
 
-        shortcodes['{cookie.cookie_name}'] = this.$t("Cookie Value");
+        shortcodes['{cookie.cookie_name}'] = "Cookie Value";
         
         this.editorShortcodes[0].shortcodes = shortcodes;
     }

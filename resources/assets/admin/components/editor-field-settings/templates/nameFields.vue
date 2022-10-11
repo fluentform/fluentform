@@ -2,7 +2,7 @@
     <div class="el-form--label-top">
         <p><strong>{{ listItem.label }}</strong></p>
 
-        <div class="address-field-option" v-for="field, i in editItem.fields">
+        <div class="address-field-option" v-for="(field, i) in editItem.fields">
             <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
 
             <el-checkbox v-model="field.settings.visible"  :disabled="field.settings.disabled === true" >{{ field.settings.label }}</el-checkbox>

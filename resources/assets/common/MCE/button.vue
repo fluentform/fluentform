@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="Design Your Button"
+        :title="$t('Design Your Button')"
         :visible.sync="visibility"
         :show-close="false"
         width="60%">
@@ -42,7 +42,7 @@
                 <el-col :span="10">
                     <div class="wpns_button_preview">
                         <div class="preview_header">
-                            Button Preview:
+                            {{ $t('Button Preview:') }}
                         </div>
                         <div class="preview_body">
                             <a @click="insert()" :style="style" href="#">{{controls.button_text.value}}</a>
@@ -52,8 +52,8 @@
             </el-row>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="close()">Cancel</el-button>
-            <el-button type="primary" @click="insert()">Insert</el-button>
+            <el-button @click="close()">{{ $t('Cancel') }}</el-button>
+            <el-button type="primary" @click="insert()">{{ $t('Insert') }}</el-button>
         </span>
     </el-dialog>
 </template>

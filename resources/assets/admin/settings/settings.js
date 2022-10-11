@@ -5,6 +5,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 import Settings from './Settings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
+import turnstile from './turnstile.vue';
 import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
@@ -69,12 +70,25 @@ Vue.use(Pagination);
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 
+Vue.mixin({
+    methods: {
+        $t(str) {
+            let transString = window.FluentFormApp.form_settings_str[str];
+            if(transString) {
+                return transString;
+            }
+            return str;
+        },
+    }
+})
+
 new Vue({
     el: '#ff_global_settings_option_app',
     components: {
         settings: Settings,
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,
+        turnstile: turnstile,
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
         'double_optin_settings': DoubleOptinSettings,
@@ -116,13 +130,4 @@ new Vue({
         });
     }
 });
-Vue.mixin(
-    {
-        methods: {
-            $t(str){
-                return str;
-            }
-        }
-    }
-)
 

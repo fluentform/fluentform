@@ -3,7 +3,7 @@
         <el-dialog
             width="500px"
             v-loading="loading"
-            title="Select Post Type"
+            :title="$t('Select Post Type')"
             @close="cancelSelection"
             :visible="visibility"
             :close-on-click-modal="false"
@@ -15,7 +15,7 @@
                     :key="i"
                     :value="type"
                     :label="type"
-                    v-for="type, i in post_types"
+                    v-for="(type, i) in post_types"
                 />
             </el-select>
 
@@ -23,7 +23,7 @@
                 type="primary"
                 @click="visibility=false"
                 style="margin-top:10px; float:right;"
-            >Continue
+            >{{ $t('Continue') }}
             </el-button>
         </el-dialog>
     </div>

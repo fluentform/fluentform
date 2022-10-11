@@ -4,7 +4,7 @@
         <div v-html="item.settings.description"></div>
         <div class="ffc_btn_wrapper">
             <custom-button :item="item" />
-            <div class="fcc_btn_help">press <strong>Enter ↵</strong></div>
+            <div class="fcc_btn_help">{{ $t('press ')}}<strong>{{ $t('Enter ↵') }}</strong></div>
         </div>
     </div>
 </template>

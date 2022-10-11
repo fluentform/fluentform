@@ -18,37 +18,34 @@
                 <div class="payform_section_body">
                     <div class="wpf_settings_section">
                         <div class="sub_section_header">
-                            <h3>Custom CSS</h3>
-                            <p>You can write your custom CSS here for this form. This css will be applied in this
-                                current form only.</p>
+                            <h3>{{ $t('Custom CSS') }}</h3>
+                            <p>{{ $t('You can write your custom CSS here for this form.This css will be applied in this current form only.') }}</p>
                         </div>
                         <hr/>
                         <div v-if="!fetching" class="sub_section_body">
-                            <p>You may add <code>.fluent_form_{{form_id}} </code> as your css selector prefix to
-                                target this specific form. Alternatively, you can use <code>.fluent_form_FF_ID</code> where <b>FF_ID</b> will be replaced with your form id dynamically</p>
+                            <p>{{ $t('You may add ') }} <code>.fluent_form_{{form_id}} </code> {{ $t('as your css selector prefix to target this specific form.Alternatively, you can use ') }}<code>.fluent_form_FF_ID</code> {{ $t('where ') }} <b>FF_ID</b> {{ $t('will be replaced with your form id dynamically') }}</p>
                             <ace-editor-css editor_id="wpf_custom_css" mode="css" v-model="custom_css"/>
                             <br/>
-                            <span>Please don't include <code>&lt;style&gt;&lt;/style&gt;</code> tag</span>
+                            <span>{{ $t('Please don\'t include ') }}<code>&lt;style&gt;&lt;/style&gt;</code> tag</span>
                         </div>
                     </div>
 
                     <div class="wpf_settings_section">
                         <div class="sub_section_header">
-                            <h3>Custom Javascript</h3>
-                            <p>Your additional JS code will run after this form initialized. Please provide valid
-                                javascript code. Invalid JS code may break the Form.</p>
-                            <p v-if="is_conversion_form" style="color: red">Please note that, In Conversational Form Style, Custom Javascript will not work</p>
+                            <h3>{{ $t('Custom Javascript') }}</h3>
+                            <p>{{ $t('Your additional JS code will run after this form initialized.Please provide valid javascript code.Invalid JS code may break the Form.') }}</p>
+                            <p v-if="is_conversion_form" style="color: red">{{ $t('Please note that, In Conversational Form Style, Custom Javascript will not work') }}</p>
                         </div>
                         <hr/>
                         <div v-if="!fetching" class="sub_section_body">
                             <div class="js_instruction">
-                                The Following Javascript variables are available that you can use:<br />
-                                <b>$form</b>: The Javascript (jQuery) DOM object of the Form
+                                {{ $t('The Following Javascript variables are available that you can use') }}:<br />
+                                <b>$form</b>: {{ $t('The Javascript(jQuery) DOM object of the Form') }}
                             </div>
                             <br/>
                             <ace-editor-js editor_id="wpf_custom_js" mode="javascript" v-model="custom_js"/>
                             <br/>
-                            <span>Please don't include <code>&lt;script>&lt;/script&gt;</code> tag</span>
+                            <span>{{ $t('Please don\'t include ') }} <code>&lt;script>&lt;/script&gt;</code> tag</span>
                         </div>
                     </div>
                 </div>

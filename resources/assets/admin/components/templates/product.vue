@@ -8,7 +8,7 @@
 
 		<template v-if="fieldType == 'single'">
 			<p>
-				<el-label :label="'Price: $' + item.settings.product_price"></el-label>
+				<el-label :label="$t('Price: $') + item.settings.product_price"></el-label>
 				<el-input type="text" value="" v-if="!isQuantityDisabled"></el-input>
 			</p>
 		</template>

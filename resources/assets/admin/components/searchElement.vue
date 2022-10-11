@@ -3,8 +3,8 @@
         <el-input v-model="searchElementStr" type="text" size="small" :placeholder="placeholder" />
 
         <div class="search-element-result" v-show="searchResult.length" style="margin-top: 10px;">
-            <div v-for="itemMockList, i in searchResult" :key="i" class="v-row mb15">
-                <div class="v-col--33" v-for="itemMock, i in itemMockList" :key="i">
+            <div v-for="(itemMockList, i) in searchResult" :key="i" class="v-row mb15">
+                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
                     <vddl-draggable
                         class="btn-element"
                         :draggable="itemMock"

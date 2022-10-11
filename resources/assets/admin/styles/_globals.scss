@@ -223,6 +223,45 @@ p {
   }
 }
 
+.form-editor {
+    .disabled-info .el-dialog__wrapper {
+        .el-dialog__header {
+            border: 0 ;
+            box-shadow: none;
+            background: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .el-dialog__body {
+            padding: 0 20px 20px 20px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            margin-top: -1px;
+            word-break: keep-all;
+
+            .el-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                align-content: center;
+            }
+        }
+        .el-dialog__headerbtn {
+            top: 6px;
+            right: 5px;
+        }
+        h3 {
+            font-size: 1.5em;
+        }
+        p {
+            font-size: 16px;
+        }
+        img {
+            width: 100%;
+        }
+    }
+}
+
 .ff_nav_top {
   overflow: hidden;
   display: block;

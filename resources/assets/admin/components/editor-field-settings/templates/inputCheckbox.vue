@@ -9,7 +9,7 @@
 
         <el-checkbox-group class="el-fluid el-checkbox-horizontal" v-model="model">
             <el-checkbox
-                v-for="opt, i in listItem.options"
+                v-for="(opt, i) in listItem.options"
                 :label="opt.value"
                 :key="i"
             >{{ opt.label }}</el-checkbox>

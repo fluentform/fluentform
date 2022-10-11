@@ -3,7 +3,7 @@
         <select v-model="item.attributes.value"
                 class="select el-input__inner">
             <option value="">{{ item.attributes.placeholder }}</option>
-            <option v-for="label, value, i in countries" :value="value">{{ label }}</option>
+            <option v-for="(label, value, i) in countries" :value="value">{{ label }}</option>
         </select>
     </withLabel>
 </template>

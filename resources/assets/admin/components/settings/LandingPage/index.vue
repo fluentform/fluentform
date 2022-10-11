@@ -1,12 +1,12 @@
 <template>
-    <div v-loading="loading" element-loading-text="Loading Settings..." style="min-height: 100px;">
+    <div v-loading="loading" :element-loading-text="$t('Loading Settings...')" style="min-height: 100px;">
 
         <el-row class="setting_header">
             <el-col :md="16">
-                <h2>Landing Page</h2>
-                <p v-if="settings.status != 'yes'">Create completely custom "distraction-free" form landing pages to boost conversions</p>
+                <h2>{{ $t('Landing Page') }}</h2>
+                <p v-if="settings.status != 'yes'">{{ ('Create completely custom "distraction-free" form landing pages to boost conversions') }}</p>
                 <el-checkbox style="margin-bottom: 15px;" v-model="settings.status" true-label="yes" false-label="no">
-                    Enable Form Landing Page Mode
+                    {{ $t('Enable Form Landing Page Mode') }}
                 </el-checkbox>
             </el-col>
             <!--Save settings-->
@@ -18,7 +18,7 @@
                         type="success"
                         icon="el-icon-success"
                         @click="saveSettings">
-                    {{saving ? 'Saving' : 'Save'}} Settings
+                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                 </el-button>
                 <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="final_share_url" class="el-button pull-right el-button--danger el-button--mini">
                     <span class="dashicons dashicons-share"></span>
@@ -33,15 +33,15 @@
             <div class="ff_landing_sidebar">
                 <div class="ffc_sidebar_header">
                     <ul>
-                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">Design</li>
-                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">Share</li>
+                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">{{ $t('Design') }}</li>
+                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">{{ $t('Share') }}</li>
                     </ul>
                 </div>
                 <div v-if="settings && active_tab == 'design'" class="ff_landing_settings_wrapper ffc_sidebar_body">
                     <el-form ref="form" :model="settings" label-position="left" label-width="140px">
                         <el-form-item>
                             <template slot="label">
-                                Page Design Style
+                                {{ $t('Page Design Style') }}
                             </template>
                             <el-radio-group v-model="settings.design_style">
                                 <el-radio v-for="(layoutName, layoutCode) in layouts" :key="layoutCode" :label="layoutCode">{{layoutName}}</el-radio>
@@ -50,12 +50,12 @@
 
                         <el-form-item>
                             <template slot="label">
-                                BG Color
+                                {{ $t('BG Color') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
-                                        <h3>Background Color</h3>
+                                        <h3>{{ $t('Background Color') }}</h3>
                                         <p>
-                                            Choose Custom Color for your form page
+                                            {{ $t('Choose Custom Color for your form page') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
@@ -66,12 +66,12 @@
 
                         <el-form-item>
                             <template slot="label">
-                                BG Image
+                                {{ $t('BG Image') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
-                                        <h3>Background Image</h3>
+                                        <h3>{{ $t('Background Image') }}</h3>
                                         <p>
-                                            Page Background Image
+                                            {{ $t('Page Background Image') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
@@ -82,12 +82,12 @@
 
                         <el-form-item>
                             <template slot="label">
-                                Form Logo
+                                {{ $t('Form Logo') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
-                                        <h3>Logo</h3>
+                                        <h3>{{ $t('Logo') }}</h3>
                                         <p>
-                                            You may upload your logo and it will show on the top of the page
+                                            {{ $t('You may upload your logo and it will show on the top of the page') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
@@ -98,12 +98,12 @@
 
                         <el-form-item>
                             <template slot="label">
-                                Featured Image
+                                {{ $t('Featured Image') }}
                                 <el-tooltip class="item" placement="bottom-start" effect="light">
                                     <div slot="content">
-                                        <h3>Featured Image</h3>
+                                        <h3>{{ $t('Featured Image') }}</h3>
                                         <p>
-                                            Featured Image will be shown in social media share preview
+                                            {{ $t('Featured Image will be shown in social media share preview') }}
                                         </p>
                                     </div>
                                     <i class="el-icon-info el-text-info"></i>
@@ -118,28 +118,28 @@
 
                             <el-form-item>
                                 <template slot="label">
-                                    Page Heading
+                                    {{ $t('Page Heading') }}
                                     <el-tooltip class="item" placement="bottom-start" effect="light">
                                         <div slot="content">
-                                            <h3>Form Title</h3>
+                                            <h3>{{ $t('Form Title') }}</h3>
                                             <p>
-                                                This will show at the top of your page
+                                                {{ $t('This will show at the top of your page') }}
                                             </p>
                                         </div>
                                         <i class="el-icon-info el-text-info"></i>
                                     </el-tooltip>
                                 </template>
-                                <el-input placeholder="eg: My Awesome Form" v-model="settings.title"/>
+                                <el-input :placeholder="$t('eg: My Awesome Form')" v-model="settings.title"/>
                             </el-form-item>
 
                             <el-form-item>
                                 <template slot="label">
-                                    Description
+                                    {{ $t('Description') }}
                                     <el-tooltip class="item" placement="bottom-start" effect="light">
                                         <div slot="content">
-                                            <h3>Description</h3>
+                                            <h3>{{ $t('Description') }}</h3>
                                             <p>
-                                                This will show at the top of your page after form title
+                                                {{ $t('This will show at the top of your page after form title') }}
                                             </p>
                                         </div>
                                         <i class="el-icon-info el-text-info"></i>
@@ -150,11 +150,11 @@
 
                             <el-form-item v-if="share_url">
                                 <template slot="label">
-                                    Security Code
+                                    {{ $t('Security Code') }}
                                     <el-tooltip class="item" placement="bottom-start" effect="light">
                                         <div slot="content">
                                             <p>
-                                                A Salt to secure your share url so nobody can guess by form ID.
+                                                {{ $t('A Salt to secure your share url so nobody can guess by form ID.') }}
                                             </p>
                                         </div>
                                         <i class="el-icon-info el-text-info"></i>
@@ -171,14 +171,14 @@
                                     type="success"
                                     icon="el-icon-success"
                                     @click="saveSettings">
-                                    {{saving ? 'Saving' : 'Save'}} Settings
+                                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                                 </el-button>
                             </el-form-item>
                         </div>
                     </el-form>
                 </div>
                 <div style="padding-top: 20px;" class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'share'">
-                    <p>Share your form by unique URL or copy and paste the shortcode to embed in your page and post</p>
+                    <p>{{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}</p>
                 </div>
             </div>
             <div class="ff_landing_preview ffc_design_container">

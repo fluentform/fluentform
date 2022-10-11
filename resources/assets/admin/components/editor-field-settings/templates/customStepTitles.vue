@@ -3,8 +3,8 @@
         <b><elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel></b>
         <hr />
 
-        <div v-for="number, index in formStepsCount" class="el-form-item">
-            <label class="el-form-item__label">Step {{ number }}</label>
+        <div v-for="(number, index) in formStepsCount" class="el-form-item">
+            <label class="el-form-item__label">{{ $t('Step') }} {{ number }}</label>
             <div class="el-form-item__content">
                 <el-input size="small" v-model="editItem.settings.step_titles[index]"></el-input>
             </div>

@@ -1,7 +1,7 @@
 <template>
 <el-form :labelPosition="labelPosition" labelWidth="130px" class="el-form-nested">
 
-    <template v-for="repoItem, key in editorRepo"
+    <template v-for="(repoItem, key) in editorRepo"
               v-if="key in validation_rules">
 
         <component :is="guessElTemplate(repoItem)"
@@ -18,8 +18,8 @@
         <transition name="slide-fade">
             <div v-if="validation_rules[key].value" style="max-height: 60px">
             <el-form-item>
-                <elLabel slot="label" label="Error Message"
-                         :helpText="`This message will be shown if validation fails for ${repoItem.label}`">
+                <elLabel slot="label" :label="$t('Error Message')"
+                         :helpText="`${$t('This message will be shown if validation fails for')} ${repoItem.label}`">
                 </elLabel>
                 <el-input v-model="validation_rules[key].message" type="text"></el-input>
             </el-form-item>

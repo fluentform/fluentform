@@ -2,7 +2,7 @@
     <div class="post-settings">
         <div class="setting_header el-row">
             <div class="el-col el-col-24 el-col-md-12">
-                <h2>Post Settings</h2>
+                <h2>{{ $t('Post Settings') }}</h2>
             </div>
             <div class="action-buttons clearfix mb15 el-col el-col-24 el-col-md-12">
                 <el-button
@@ -11,16 +11,16 @@
                     class="pull-right"
                     :loading="saving"
                     @click="saveSettings"
-                >Save Settings</el-button>
+                >{{ $t('Save Settings') }}</el-button>
             </div>
         </div>
 
         <el-form  label-width="120px" label-position="left">
-            <el-form-item label="Post Type">
+            <el-form-item :label="$t('Post Type')">
                 <el-input disabled :value="formSettings.post_settings.post_type" />
             </el-form-item>
 
-            <el-form-item label="Post Status">
+            <el-form-item :label="$t('Post Status')">
                 <el-select v-model="formSettings.post_settings.post_status" style="width:100%;">
                     <el-option
                         v-for="status in postStatuses"
@@ -31,14 +31,14 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="Comment Status">
+            <el-form-item :label="$t('Comment Status')">
                 <el-select v-model="formSettings.post_settings.comment_status" style="width:100%;">
-                    <el-option value="open" label="Open" />
-                    <el-option value="closed" label="Closed" />
+                    <el-option value="open" :label="$t('Open')" />
+                    <el-option value="closed" :label="$t('Closed')" />
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="Default Category" v-if="formSettings.post_settings.default_category">
+            <el-form-item :label="$t('Default Category')" v-if="formSettings.post_settings.default_category">
                 <el-select
                     v-model="formSettings.post_settings.default_selected_category"
                     style="width:100%;"
@@ -51,7 +51,7 @@
                 </el-select>
             </el-form-item>
             
-            <h2>Post Fields Mapping</h2>
+            <h2>{{ $t('Post Fields Mapping') }}</h2>
             <hr style="border:0;border-bottom:1px solid #EBEEF5;margin-bottom:20px;">
             <template v-for="item in formSettings.post_settings.field_mappings">
                 <el-form-item :label="item.admin_label">
@@ -75,7 +75,7 @@
                 class="pull-right"
                 :loading="saving"
                 @click="saveSettings"
-            >Save Settings</el-button>
+            >{{ $t('Save Settings') }}</el-button>
         </div>
     </div>
 </template>
@@ -104,7 +104,7 @@
         methods: {
             fetchSettings() {
                 FluentFormsGlobal.$get({
-                    action: 'fluentform-settings-formSettings'
+                    action: 'fluentform-settings-formSettings',
                     meta_key: 'formSettings',
                     form_id: window.FluentFormApp.form_id
                 })

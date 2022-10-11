@@ -826,3 +826,26 @@ ul.fcc_inline_social {
 
     }
 }
+
+.ff_form_integrations {
+    .upgrade_to_pro {
+        text-align: center;
+
+        p {
+            font-size: 18px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 18px;            
+        }
+
+        .action-btns {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0 40px 0;
+        }
+    }
+}

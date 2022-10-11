@@ -4,7 +4,7 @@
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.status_tips"></elLabel>
             <el-checkbox v-model="value.status">{{listItem.status_label}}</el-checkbox>
         </el-form-item>
-        <el-form-item style="padding-bottom: 190px" v-if="value.status">
+        <el-form-item v-if="value.status">
             <elLabel slot="label" :label="listItem.formula_label" :helpText="listItem.formula_tips"></elLabel>
             <inputPopover
                 class="calc_pop_over"
@@ -14,7 +14,9 @@
                 placement="bottom"
                 :attr-name="editItem.attributes.name">
             </inputPopover>
-            <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/calculate-numeric-entities-in-wp-fluent-forms/" rel="nofollow">View Calculation Documentation</a></p>
+            <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/calculate-numeric-entities-in-wp-fluent-forms/" rel="nofollow">{{
+                    $t('View Calculation Documentation')
+                }}</a></p>
         </el-form-item>
     </div>
 </template>

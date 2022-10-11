@@ -17,7 +17,7 @@
                         <el-select
                             v-if="primary_field.input_options == 'emails'"
                             v-model="settings[primary_field.key]"
-                            placeholder="Select a Field"
+                            :placeholder="$t('Select a Field')"
                             style="width:100%"
                             clearable
                         >
@@ -32,7 +32,7 @@
                         <el-select
                             v-else-if="primary_field.input_options == 'all'"
                             v-model="settings[primary_field.key]"
-                            placeholder="Select a Field"
+                            :placeholder="$t('Select a Field')"
                             style="width:100%"
                             clearable
                         >

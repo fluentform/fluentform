@@ -1,23 +1,23 @@
 <template>
     <div  v-loading="loading">
         <el-row class="setting_header">
-            <el-col :md="12"><h2>WebHooks Integration</h2></el-col>
+            <el-col :md="12"><h2>{{ $t('WebHooks Integration') }}</h2></el-col>
 
             <!--Add Feed-->
             <el-col :md="12" class="action-buttons mb15 clearfix">
                 <el-button v-if="!show_edit" @click="add" type="primary" class="pull-right"
-                           size="small" icon="el-icon-plus">Add New</el-button>
+                           size="small" icon="el-icon-plus">{{ $t('Add New') }}</el-button>
 
                 <el-button v-if="show_edit" @click="backToHome()" type="primary" class="pull-right"
-                           size="small" icon="el-icon-arrow-left">Back</el-button>
+                           size="small" icon="el-icon-arrow-left">{{ $t('Back') }}</el-button>
             </el-col>
         </el-row>
 
         <!-- WebHook Feeds Table: 1 -->
         <el-table v-if="!show_edit" :data="tableData" stripe class="el-fluid">
             <template slot="empty">
-                You don't have any feeds configured. Let's go
-                <a href="#" @click.prevent="add">create one!</a>
+                {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
+                <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
             </template>
 
             <el-table-column width="100">
@@ -28,12 +28,12 @@
 
             <el-table-column
                 prop="formattedValue.name"
-                label="Name">
+                :label="$t('Name')">
             </el-table-column>
 
             <el-table-column
                 prop="formattedValue.request_url"
-                label="WebHook URL">
+                :label="('WebHook URL')">
             </el-table-column>
 
             <el-table-column width="160" label="Actions" class-name="action-buttons">

@@ -1,5 +1,5 @@
 <template>
-    <div>Please enter a valid API key on FluentForms->Settings->hCaptcha</div>
+    <div>{{ $t('Please enter a valid API key on FluentForms->Settings->hCaptcha') }}</div>
 </template>
 
 <script>

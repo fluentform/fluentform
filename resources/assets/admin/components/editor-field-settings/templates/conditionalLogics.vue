@@ -3,24 +3,24 @@
         <!-- ADDITIONAL OPTIONS : CONDITIONAL LOGIC -->
         <el-form-item>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-            <el-radio v-model="conditional_logics.status" :label="true">Yes</el-radio>
-            <el-radio v-model="conditional_logics.status" :label="false">No</el-radio>
+            <el-radio v-model="conditional_logics.status" :label="true">{{ $t('Yes') }}</el-radio>
+            <el-radio v-model="conditional_logics.status" :label="false">{{ $t('No') }}</el-radio>
         </el-form-item>
 
         <template v-if="conditional_logics.status">
             <el-form-item>
-                <elLabel slot="label" label="Condition Match"
-                         helpText="Select to match whether all rules are required or any. if the match success then the field will be shown"></elLabel>
+                <elLabel slot="label" :label="$t('Condition Match')"
+                         :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')"></elLabel>
 
-                <el-radio v-model="conditional_logics.type" label="any">Any</el-radio>
-                <el-radio v-model="conditional_logics.type" label="all">All</el-radio>
+                <el-radio v-model="conditional_logics.type" :label="$t('any')">{{ $t('Any') }}</el-radio>
+                <el-radio v-model="conditional_logics.type" :label="$t('all')">{{ $t('All') }}</el-radio>
             </el-form-item>
 
             <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
                 <select
                         v-model="condition.field"
                         @change="condition.value = ''"
-                        placeholder="Select"
+                        :placeholder="$t('Select')"
                         class="condition-field"
                 >
                     <option value="" disabled>- Select -</option>
@@ -30,22 +30,22 @@
                             :value="meta">{{ dep.field_label || meta }}
                     </option>
                 </select>
-                <select v-model="condition.operator" placeholder="Select" class="condition-operator">
-                    <option value="" disabled>- Select -</option>
-                    <option value="=">equal</option>
-                    <option value="!=">not equal</option>
+                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator">
+                    <option value="" disabled>- {{ $t('Select') }} -</option>
+                    <option value="=">{{ $t('equal') }}</option>
+                    <option value="!=">{{ $t('not equal') }}</option>
 
                     <template
                             v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
-                        <option value=">">greater than</option>
-                        <option value="<">less than</option>
-                        <option value=">=">greater than or equal</option>
-                        <option value="<=">less than or equal</option>
-                        <option value="contains">includes</option>
-                        <option value="doNotContains">not includes</option>
-                        <option value="startsWith">starts with</option>
-                        <option value="endsWith">ends with</option>
-                        <option value="test_regex">Regex match</option>
+                        <option value=">">{{ $t('greater than') }}</option>
+                        <option value="<">{{ $t('less than') }}</option>
+                        <option value=">=">{{ $t('greater than or equal') }}</option>
+                        <option value="<=">{{ $t('less than or equal') }}</option>
+                        <option value="contains">{{ $t('includes') }}</option>
+                        <option value="doNotContains">{{ $t('not includes') }}</option>
+                        <option value="startsWith">{{ $t('starts with') }}</option>
+                        <option value="endsWith">{{ $t('ends with') }}</option>
+                        <option value="test_regex">{{ $t('Regex match') }}</option>
                     </template>
                 </select>
 
@@ -57,9 +57,9 @@
                             v-model="condition.value"
                     >
                     <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
-                            v-model="condition.value" placeholder="Select" class="condition-value">
-                        <option value="" selected >- Select -</option>
-                        <option v-for="label, key, i in dependencies[condition.field].options"
+                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value">
+                        <option value="" selected >- {{ $t('Select') }} -</option>
+                        <option v-for="(label, key, i) in dependencies[condition.field].options"
                                 :key="key"
                                 :value="key">{{ label }}
                         </option>
@@ -68,7 +68,7 @@
 
                 <!-- JUST A PLACEHOLDER -->
                 <select v-else class="condition-value">
-                    <option value="" disabled selected>- Select -</option>
+                    <option value="" disabled selected>- {{ $t('Select') }} -</option>
                 </select>
 
                 <div class="action-btn">
@@ -84,9 +84,9 @@
                 top="30%"
                 style="text-align: center;"
                 :visible.sync="showPreventMessage">
-            <span>You have to have at least one item here.</span>
+            <span>{{ $t('You have to have at least one item here.') }}</span>
             <div style="margin-top: 20px;">
-                <el-button @click="showPreventMessage = false">Close</el-button>
+                <el-button @click="showPreventMessage = false">{{ $t('Close') }}</el-button>
             </div>
         </el-dialog>
     </div>

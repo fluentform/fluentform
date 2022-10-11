@@ -15,11 +15,11 @@
                         </div>
                         <div class="step-start text-center">
                             <div class="step-start__indicator">
-                                <strong>PAGING START</strong>
+                                <strong>{{ $t('PAGING START') }}</strong>
                                 <hr>
                             </div>
                             <div class="start-of-page">
-                                Click to configure your step settings
+                                {{ $t('Click to configure your step settings') }}
                             </div>
                         </div>
                     </div>
@@ -89,13 +89,15 @@
                     </div>
 
                     <div v-if="!form.dropzone.length" class="ff-user-guide">
-                        <div @click="introVisible = true" class="editor_play_video"><i class="el-icon-video-play"></i> Video Instruction</div>
+                        <div @click="introVisible = true" class="editor_play_video"><i class="el-icon-video-play"></i>
+                            {{ $t('Video Instruction') }}</div>
                         <img :src="instructionImage" alt="">
                         <div class="text-align-center">
-                            <el-button type="danger" @click="introVisible = true"><i class="el-icon-video-play"></i> Video Instruction</el-button>
+                            <el-button type="danger" @click="introVisible = true"><i class="el-icon-video-play"></i>
+                                {{ $t('Video Instruction') }}</el-button>
                         </div>
                         <el-dialog
-                            title="How to create a form"
+                            :title="$t('How to create a form')"
                             :visible.sync="introVisible"
                             :append-to-body="true"
                             width="60%">
@@ -106,7 +108,7 @@
                                         allowfullscreen></iframe>
                             </div>
                             <span slot="footer" class="dialog-footer">
-                            <el-button @click="introVisible = false">Close</el-button>
+                            <el-button @click="introVisible = false">{{ $t('Close') }}</el-button>
                           </span>
                         </el-dialog>
                     </div>
@@ -122,10 +124,10 @@
                         </div>
                         <div class="step-start text-center">
                             <div class="start-of-page">
-                                End of last page
+                                {{ $t('End of last page') }}
                             </div>
                             <div class="step-start__indicator">
-                                <strong>PAGING END</strong>
+                                <strong>{{ $t('PAGING END') }}</strong>
                                 <hr>
                             </div>
                         </div>
@@ -143,15 +145,15 @@
             <div class="form-editor--sidebar-content nav-tabs new-elements">
                 <ul class="nav-tab-list toggle-fields-options">
                     <li :class="fieldMode == 'add' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeFieldMode('add')">Input Fields</a>
+                        <a href="#" @click.prevent="changeFieldMode('add')">{{ $t('Input Fields') }}</a>
                     </li>
                     <li :class="fieldMode == 'edit' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeSidebarMode('edit')">Input Customization</a>
+                        <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
                     </li>
                 </ul>
 
                 <div v-loading="!isMockLoaded"
-                     element-loading-text="Loading Awesomeness..."
+                     :element-loading-text="$t('Loading Awesomeness...')"
                      style="min-height: 150px;"
                      class="panel-full-height nav-tab-items">
                     <template v-if="isMockLoaded">
@@ -160,7 +162,7 @@
                         ============================== -->
                         <template v-if="fieldMode == 'add'">
                             <searchElement
-                                placeholder="Search (name, address)..."
+                                :placeholder="$t('Search (name, address)...')"
                                 :isSidebarSearch.sync="isSidebarSearch"
                                 :moved="moved"
                                 :isDisabled="isDisabled"
@@ -184,15 +186,15 @@
                                     <h5 @click="toggleFieldsSection('post')"
                                         :class="optionFieldsSection == 'post' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        Post Fields
+                                        {{ $t('Post Fields') }}
                                     </h5>
 
                                     <transition name="slide-fade">
                                         <div v-show="optionFieldsSection == 'post'"
                                              class="option-fields-section--content">
-                                            <div v-for="itemMockList, i in postMockListChunked" :key="i"
+                                            <div v-for="(itemMockList, i) in postMockListChunked" :key="i"
                                                  class="v-row mb15">
-                                                <div class="v-col--33" v-for="itemMock, i in itemMockList" :key="i">
+                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
                                                     <vddl-draggable
                                                         class="btn-element"
                                                         :class="{ 'disabled': isDisabled(itemMock) }"
@@ -221,7 +223,7 @@
                                     <h5 @click="toggleFieldsSection('taxonomy')"
                                         :class="optionFieldsSection == 'taxonomy' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        Taxonomy Fields
+                                        {{ $t('Taxonomy Fields') }}
                                     </h5>
 
                                     <transition name="slide-fade">
@@ -232,12 +234,12 @@
                                             <div
                                                 :key="i"
                                                 class="v-row mb15"
-                                                v-for="itemMockList, i in taxonomyMockListChunked"
+                                                v-for="(itemMockList, i) in taxonomyMockListChunked"
                                             >
                                                 <div
                                                     :key="i"
                                                     class="v-col--33"
-                                                    v-for="itemMock, i in itemMockList"
+                                                    v-for="(itemMock, i) in itemMockList"
                                                 >
                                                     <vddl-draggable
                                                         class="btn-element"
@@ -266,7 +268,7 @@
                                     <h5 @click="toggleFieldsSection('general')"
                                         :class="optionFieldsSection == 'general' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        General Fields
+                                        {{ $t('General Fields') }}
                                     </h5>
 
                                     <transition name="slide-fade">
@@ -302,14 +304,14 @@
                                     <h5 @click="toggleFieldsSection('others')"
                                         :class="optionFieldsSection == 'others' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        Advanced Fields
+                                        {{ $t('Advanced Fields') }}
                                     </h5>
                                     <transition name="slide-fade">
                                         <div v-show="optionFieldsSection == 'others'"
                                                 class="option-fields-section--content">
-                                            <div v-for="itemMockList, i in otherItemsMockListChunked" :key="i"
+                                            <div v-for="(itemMockList, i) in otherItemsMockListChunked" :key="i"
                                                     class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                <div class="v-col--33" v-for="itemMock, i in itemMockList" :key="i">
+                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
                                                     <vddl-draggable
                                                         class="btn-element"
                                                         :draggable="itemMock"
@@ -338,13 +340,13 @@
                                     <h5 @click="toggleFieldsSection('container')"
                                         :class="optionFieldsSection == 'container' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        Container
+                                        {{ $t('Container') }}
                                     </h5>
                                     <transition name="slide-fade">
                                         <div v-show="optionFieldsSection == 'container'"
                                                 class="option-fields-section--content">
                                             <div class="v-row mb15">
-                                                <div class="v-col--50" v-for="mockItem, i in containerMockList">
+                                                <div class="v-col--50" v-for="(mockItem, i) in containerMockList">
                                                     <vddl-draggable
                                                         class="btn-element mb15"
                                                         :draggable="mockItem"
@@ -372,7 +374,7 @@
                                     <h5 @click="toggleFieldsSection('payment')"
                                         :class="optionFieldsSection == 'payment' ? 'active' : ''"
                                         class="option-fields-section--title">
-                                        Payment Fields
+                                        {{ $t('Payment Fields') }}
                                     </h5>
                                     <transition name="slide-fade">
                                         <div v-show="optionFieldsSection == 'payment'"
@@ -424,7 +426,7 @@
         <!-- OTHER MODAL/POPUP COMPONENTS -->
         <ItemDisabled
             :visibility.sync="whyDisabledModal"
-            :modal="itemDisableConditions[whyDisabledModal]">
+            :modal="itemDisableConditions[whyDisabledModal] || {}">
         </ItemDisabled>
 
         <editorInserter
@@ -718,7 +720,7 @@ export default {
             }
             if (item.element == 'container' && this.form.dropzone != list) {
                 this.$message({
-                    message: 'You can not insert a container into another.',
+                    message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
                 return false;
@@ -750,7 +752,7 @@ export default {
 
             if (this.editorInserterInContainer && freshCopy.element == 'container') {
                 this.$message({
-                    message: 'You can not insert a container into another.',
+                    message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
 
@@ -1044,7 +1046,7 @@ export default {
          */
         (new Clipboard('.copy')).on('success', (e) => {
             this.$message({
-                message: 'Copied to Clipboard!',
+                message: this.$t('Copied to Clipboard!'),
                 type: 'success'
             });
         });

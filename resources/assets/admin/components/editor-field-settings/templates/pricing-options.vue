@@ -3,8 +3,8 @@
         <el-form-item>
             <elLabel
                 slot="label"
-                label="Product Display Type"
-                helpText="Select which display type you want for your payment item. Please provide valid number only"
+                :label="$t('Product Display Type')"
+                :helpText="$t('Select which display type you want for your payment item. Please provide valid number only')"
             />
 
             <el-radio-group
@@ -12,10 +12,10 @@
                 v-model="editItem.attributes.type"
                 size="small"
             >
-                <el-radio-button label="single">Single Item</el-radio-button>
-                <el-radio-button label="radio">Radio Selection</el-radio-button>
-                <el-radio-button label="checkbox">Checkbox Selections</el-radio-button>
-                <el-radio-button label="select">Select Fields</el-radio-button>
+                <el-radio-button label="single">{{ $t('Single Item') }}</el-radio-button>
+                <el-radio-button label="radio">{{ $t('Radio Selection') }}</el-radio-button>
+                <el-radio-button label="checkbox">{{ $t('Checkbox Selections') }}</el-radio-button>
+                <el-radio-button label="select">{{ $t('Select Fields') }}</el-radio-button>
             </el-radio-group>
         </el-form-item>
 
@@ -23,8 +23,8 @@
             <el-form-item>
                 <elLabel
                     slot="label"
-                    label="Payment Amount"
-                    helpText="Please Provide the payment amount. Max 2 decimal point is excepted"
+                    :label="$t('Payment Amount')"
+                    :helpText="$t('Please Provide the payment amount. Max 2 decimal point is excepted')"
                 />
                 <el-input type="text" v-model="editItem.attributes.value" />
             </el-form-item>
@@ -32,8 +32,8 @@
             <el-form-item>
                 <elLabel
                 slot="label"
-                label="Amount Label"
-                helpText="Please Provide the Amount Label"
+                :label="$t('Amount Label')"
+                :helpText="$t('Please Provide the Amount Label')"
             />
                 <el-input type="text" v-model="editItem.settings.price_label" />
             </el-form-item>
@@ -80,7 +80,7 @@
                             />
                         </div>
 
-                        <vddl-handle :handle-left="20" :handle-top="20"class="handle"></vddl-handle>
+                        <vddl-handle :handle-left="20" :handle-top="20" class="handle"></vddl-handle>
 
                         <div
                             style="max-width: 64px; max-height: 32px; overflow: hidden;"
@@ -91,7 +91,7 @@
 
                         <div>
                             <el-input
-                                placeholder="label"
+                                :placeholder="$t('label')"
                                 v-model="option.label"
                                 @input="updateValue(option)"
                             />
@@ -102,7 +102,7 @@
                                 min="0"
                                 step="any"
                                 type="number"
-                                placeholder="Price"
+                                :placeholder="$t('Price')"
                                 v-model="option.value"
                             />
                         </div>
@@ -113,7 +113,7 @@
                         </div>
                     </vddl-nodrag>
                     <div v-if="editItem.settings.enable_desc_input" class="item_desc">
-                        <textarea placeholder="Item Short Description" v-model="option.desc" />
+                        <textarea :placeholder="$t('Item Short Description')" v-model="option.desc" />
                     </div>
                 </vddl-draggable>
             </vddl-list>
@@ -122,10 +122,10 @@
                 size="mini"
                 :disabled="!editItem.attributes.value"
                 @click.prevent="clear"
-            >Clear Selection</el-button>
+            >{{ $t('Clear Selection') }}</el-button>
         </el-form-item>
 
-        <el-form-item v-if="editItem.attributes.type == 'select'" label="Placeholder">
+        <el-form-item v-if="editItem.attributes.type == 'select'" :label="$t('Placeholder')">
             <el-input placeholder="Placeholder" v-model="editItem.settings.placeholder" />
         </el-form-item>
 

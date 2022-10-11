@@ -32,32 +32,32 @@
 
                 <el-col :md="5">
                     <el-select v-model="items[key].operator">
-                        <el-option-group label="General Operators">
-                            <el-option value="=" label="equal"></el-option>
-                            <el-option value="!=" label="not equal"></el-option>
+                        <el-option-group :label="$t('General Operators')">
+                            <el-option value="=" :label="$t('equal')"></el-option>
+                            <el-option value="!=" :label="$t('not equal')"></el-option>
                             <template v-if="fields[logic.field] && !Object.keys(fields[logic.field].options).length">
-                                <el-option value=">" label="greater than"></el-option>
-                                <el-option value="<" label="less than"></el-option>
-                                <el-option value=">=" label="greater than or equal"></el-option>
-                                <el-option value="<=" label="less than or equal"></el-option>
-                                <el-option value="contains" label="contains"></el-option>
-                                <el-option value="doNotContains" label="do not contains"></el-option>
-                                <el-option value="startsWith" label="starts with"></el-option>
-                                <el-option value="endsWith" label="ends with"></el-option>
+                                <el-option value=">" :label="$t('greater than')"></el-option>
+                                <el-option value="<" :label="$t('less than')"></el-option>
+                                <el-option value=">=" :label="$t('greater than or equal')"></el-option>
+                                <el-option value="<=" :label="('less than or equal')"></el-option>
+                                <el-option value="contains" :label="$t('contains')"></el-option>
+                                <el-option value="doNotContains" :label="$t('do not contains')"></el-option>
+                                <el-option value="startsWith" :label="$t('starts with')"></el-option>
+                                <el-option value="endsWith" :label="$t('ends with')"></el-option>
                             </template>
                         </el-option-group>
-                        <el-option-group label="Advanced Operators">
-                            <el-option value="length_equal" label="Equal to Data Length"></el-option>
-                            <el-option value="length_less_than" label="Less than to Data length"></el-option>
-                            <el-option value="length_greater_than" label="Greater than to Data Length"></el-option>
-                            <el-option value="test_regex" label="Regex Match"></el-option>
+                        <el-option-group :label="$t('Advanced Operators')">
+                            <el-option value="length_equal" :label="$t('Equal to Data Length')"></el-option>
+                            <el-option value="length_less_than" :label="$t('Less than to Data length')"></el-option>
+                            <el-option value="length_greater_than" :label="$t('Greater than to Data Length')"></el-option>
+                            <el-option value="test_regex" :label="$t('Regex Match')"></el-option>
                         </el-option-group>
                     </el-select>
                 </el-col>
 
                 <el-col :md="8">
                     <template v-if="items[key].operator == 'length_equal' || items[key].operator == 'length_less_than' || items[key].operator == 'length_greater_than'">
-                        <el-input type="number" step="1" placeholder="Enter length in number" v-model="items[key].value" />
+                        <el-input type="number" step="1" :placeholder="('Enter length in number')" v-model="items[key].value" />
                     </template>
                     <template v-else>
                         <el-select v-if="fields[logic.field] && Object.keys(fields[logic.field].options).length"
@@ -66,7 +66,7 @@
                                        :label="label" :value="value"
                             ></el-option>
                         </el-select>
-                        <el-input v-else placeholder="Enter a value" v-model="items[key].value"></el-input>
+                        <el-input v-else :placeholder="$t('Enter a value')" v-model="items[key].value"></el-input>
                     </template>
                 </el-col>
 

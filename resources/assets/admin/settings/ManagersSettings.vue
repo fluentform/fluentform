@@ -8,14 +8,14 @@
                         :class="{ ff_active: currentPage == 'roleBased' }"
                         @click="currentPage = 'roleBased'"
                     >
-                        Role Based
+                        {{ $t('Role Based') }}
                     </li>
 
                     <li
                         :class="{ ff_active: currentPage == 'advanced' }"
                         @click="currentPage = 'advanced'"
                     >
-                        Advanced
+                        {{ $t('Advanced') }}
                     </li>
                 </ul>
             </div>
@@ -23,7 +23,7 @@
             <privacy v-show="currentPage == 'roleBased'" />
 
             <managers v-show="currentPage == 'advanced'">
-                Advanced form
+                {{ $t('Advanced form') }}
             </managers>
         </div>
     </div>

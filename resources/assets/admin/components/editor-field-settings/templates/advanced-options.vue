@@ -2,13 +2,13 @@
     <el-form-item>
         <div class="clearfix">
             <div class="pull-right top-check-action">
-                <el-checkbox v-model="valuesVisible">Show Values</el-checkbox>
-                <el-checkbox v-if="hasCalValue" v-model="editItem.settings.calc_value_status">Calc Values</el-checkbox>
+                <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
+                <el-checkbox v-if="hasCalValue" v-model="editItem.settings.calc_value_status">{{ $t('Calc Values') }}</el-checkbox>
                 <template v-if="has_pro">
-                    <el-checkbox v-if="hasImageSupport" v-model="editItem.settings.enable_image_input">Photo</el-checkbox>
+                    <el-checkbox v-if="hasImageSupport" v-model="editItem.settings.enable_image_input">{{ $t('Photo') }}</el-checkbox>
                 </template>
                 <template v-else-if="hasImageSupport">
-                    <el-checkbox v-model="pro_mock" @change="showProMessage()">Photo</el-checkbox>
+                    <el-checkbox v-model="pro_mock" @change="showProMessage()">{{ $t('Photo') }}</el-checkbox>
                 </template>
             </div>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
@@ -47,19 +47,19 @@
 
                     <div>
                         <el-input
-                            placeholder="label"
+                            :placeholder="$t('label')"
                             v-model="option.label"
                             @input="updateValue(option)"
                         ></el-input>
                     </div>
 
                     <div v-if="valuesVisible">
-                        <el-input placeholder="value" v-model="option.value"></el-input>
+                        <el-input :placeholder="$t('value')" v-model="option.value"></el-input>
                     </div>
 
                     <div v-if="editItem.settings.calc_value_status">
                         <el-input
-                            placeholder="calc value"
+                            :placeholder="$t('calc value')"
                             type="number"
                             step="any"
                             v-model="option.calc_value"
@@ -79,22 +79,22 @@
             size="mini"
             :disabled="!editItem.attributes.value"
             @click.prevent="clear"
-        >Clear Selection</el-button>
+        >{{ $t('Clear Selection') }}</el-button>
 
         <el-button
             size="mini"
             @click="initBulkEdit()"
             v-if="!editItem.settings.calc_value_status && !editItem.settings.enable_image_input"
-        >Bulk Edit / Predefined Data Sets </el-button>
+        >{{ $t('Bulk Edit / Predefined Data Sets') }} </el-button>
 
         <el-dialog
             :append-to-body="true"
             class="ff_backdrop"
-            title="Edit your options"
+            :title="$t('Edit your options')"
             :visible.sync="bulkEditVisible"
         >
             <div v-if="bulkEditVisible" class="bulk_editor_wrapper">
-                <h4>Please provide the value as LABEL:VALUE as each line or select from predefined data sets</h4>
+                <h4>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</h4>
                 <el-row :gutter="20">
                     <el-col :span="12">
                         <ul class="ff_bulk_option_groups">
@@ -103,13 +103,13 @@
                     </el-col>
                     <el-col :span="12">
                         <el-input type="textarea" :rows="14" v-model="value_key_pair_text"></el-input>
-                        <p>You can simply give value only the system will convert the label as value</p>
+                        <p>{{ $t('You can simply give value only the system will convert the label as value') }}</p>
                     </el-col>
                 </el-row>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini" @click="bulkEditVisible = false">Cancel</el-button>
-                <el-button size="mini" type="primary" @click="confirmBulkEdit()">Confirm</el-button>
+                <el-button size="mini" @click="bulkEditVisible = false">{{ $t('Cancel') }}</el-button>
+                <el-button size="mini" type="primary" @click="confirmBulkEdit()">{{ $t('Confirm') }}</el-button>
             </span>
         </el-dialog>
 

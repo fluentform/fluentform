@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form-item label="Field Type">
+        <el-form-item :label="$t('Field Type')">
             <el-select value='' v-model="editItem.settings.product_type">
                 <el-option
                     v-for="(item, key) in fieldTypes"
@@ -12,10 +12,10 @@
         </el-form-item>
 
         <el-form-item v-if="editItem.settings.product_type == 'single'">
-            <el-label label="Price" />
+            <el-label :label="$t('Price')" />
             <el-input v-model="editItem.settings.product_price" type="text" class="el-form-item" />
             <el-checkbox v-model="editItem.settings.disable_quantity_field">
-                Disable Quantity
+                {{ $t('Disable Quantity') }}
             </el-checkbox>
         </el-form-item>
 

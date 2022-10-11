@@ -2,18 +2,16 @@
   <div>
     <el-row class="setting_header">
       <el-col :md="24">
-        <h2>hCaptcha Settings</h2>
+        <h2>{{ $t('hCaptcha Settings') }}</h2>
 
         <p>
-          Fluent Forms integrates with hCaptcha, a free service that protects
-          your website from spam and abuse. Please note, these settings are
-          required only if you decide to use the hCaptcha field.
+            {{('Fluent Forms integrates with hCaptcha, a free service that protects your website from spam and abuse.Please note, these settings are required only if you decide to use the hCaptcha field.') }}
 
           <a href="https://www.hcaptcha.com/" target="_blank">
-            Read more about hCaptcha.
+              {{ $t('Read more about hCaptcha.') }}
           </a>
         </p>
-        <p><b>Please generate API key and API secret using hCaptcha</b></p>
+        <p><b>{{ $t('Please generate API key and API secret using hCaptcha') }}</b></p>
       </el-col>
     </el-row>
 
@@ -23,14 +21,14 @@
         <!--Site key-->
         <el-form-item>
           <template slot="label">
-            Site Key
+              {{ $t('Site Key') }}
             <el-tooltip class="item" placement="bottom-start" effect="light">
               <div slot="content">
-                <h3>hCaptcha Site Key</h3>
+                <h3>{{ $t('hCaptcha Site Key') }}</h3>
                 <p>
-                  Enter your hCaptcha Site Key, if you do not have <br />
-                  a key you can register for one at the provided link. <br />
-                  hCaptcha is a free service.
+                    {{ $t('Enter your hCaptcha Site Key, if you do not have ') }}<br />
+                    {{ $t('a key you can register for one at the provided link.') }}<br />
+                    {{ $t('hCaptcha is a free service.') }}
                 </p>
               </div>
 
@@ -44,15 +42,15 @@
         <!--Secret key-->
         <el-form-item>
           <template slot="label">
-            Secret Key
+              {{ $t('Secret Key') }}
             <el-tooltip class="item" placement="bottom-start" effect="light">
               <div slot="content">
-                <h3>hCaptcha Secret Key</h3>
+                <h3>{{ $t('hCaptcha Secret Key') }}</h3>
 
                 <p>
-                  Enter your hCaptcha Secret Key, if you do not have <br />
-                  a key you can register for one at the provided link. <br />
-                  hCaptcha is a free service.
+                    {{ $t('Enter your hCaptcha Secret Key, if you do not have ') }}<br />
+                    {{ $t('a key you can register for one at the provided link.') }} <br />
+                    {{ $t('hCaptcha is a free service.') }}
                 </p>
               </div>
 
@@ -68,7 +66,7 @@
         </el-form-item>
 
         <!--Validate Keys-->
-        <el-form-item label="Validate Keys" v-if="siteKeyChanged">
+        <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
           <div
             class="h-captcha"
             id="hCaptcha"
@@ -83,7 +81,7 @@
             size="medium"
             @click="clearSettings"
             :loading="clearing"
-            >Clear Settings
+            >{{ $t('Clear Settings') }}
           </el-button>
 
           <el-button
@@ -93,13 +91,13 @@
             @click="save"
             :disabled="disabled"
             :loading="saving"
-            >Save Settings
+            >{{ $t('Save Settings') }}
           </el-button>
         </el-form-item>
       </el-form>
 
       <div v-if="hCaptcha_status">
-        <p>Your hCaptcha is valid</p>
+        <p>{{ $t('Your hCaptcha is valid') }}</p>
       </div>
     </div>
   </div>
@@ -157,7 +155,7 @@ export default {
       if (!this.validate()) {
         return this.$notify.error({
           title: "Error!",
-          message: "Missing required fields.",
+          message: 'Missing required fields.',
           offset: 30,
         });
       }

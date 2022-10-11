@@ -21,7 +21,7 @@
                 {{ settings.discard_settings.button_text }}
             </el-button>
             <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="success"
-                       size="small">Verify Connection Again
+                       size="small">{{ $t('Verify Connection Again') }}
             </el-button>
 
 
@@ -57,6 +57,11 @@
                     <template v-else-if="field.type == 'link'">
                         <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
                         <p>{{ field.tips }}</p>
+                    </template>
+                    <template v-else-if="field.type == 'checkbox-single'">
+                        <el-checkbox v-model="integration[fieldKey]">
+                            {{field.checkbox_label}}
+                        </el-checkbox>
                     </template>
                     <template v-else>
                         <el-input :placeholder="field.placeholder" :type="field.type"

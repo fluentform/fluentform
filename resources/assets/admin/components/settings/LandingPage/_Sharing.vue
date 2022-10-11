@@ -1,11 +1,11 @@
 <template>
     <div style="padding: 0px 20px;" class="ffc_sharing_settings">
-        <h2>Share Your Form</h2>
+        <h2>{{ $t('Share Your Form') }}</h2>
         <el-row :gutter="30">
             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
-                    <h3>Share Via Direct URL</h3>
-                    <p>Get the link or share on social sites</p>
+                    <h3>{{ $t('Share Via Direct URL') }}</h3>
+                    <p>{{ $t('Get the link or share on social sites') }}</p>
                     <el-input size="mini" v-model="share_url" :readonly="true">
                         <el-button type="success" @click="copyText()" class="copy_share"
                                    :data-clipboard-text='share_url' slot="append"
@@ -40,8 +40,8 @@
             </el-col>
             <el-col :md="12" :sm="24">
                 <div class="fcc_card">
-                    <h3>Shortcode</h3>
-                    <p>Use this following shortcode in your Page or Post</p>
+                    <h3>{{ $t('Shortcode') }}</h3>
+                    <p>{{ $t('Use this following shortcode in your Page or Post') }}</p>
                     <el-input size="mini" v-model="classic_shortcode" :readonly="true">
                         <el-button @click="copyText()" class="copy_share" :data-clipboard-text='classic_shortcode'
                                    slot="append" icon="el-icon-document-copy"></el-button>
@@ -52,14 +52,13 @@
         <el-row :gutter="30">
             <el-col :md="24" :sm="24">
                 <div class="fcc_card">
-                    <h3>Embed via HTML Code</h3>
-                    <p>Want to use this form in another domain or another site or even outside WordPress? Use the
-                        following code</p>
+                    <h3>{{ $t('Embed via HTML Code') }}</h3>
+                    <p>{{ $t('Want to use this form in another domain or another site or even outside WordPress ? Use the following code') }}</p>
                     <textarea style="width: 100%" type="textarea" :rows="5" :readonly="true">
 <iframe id="fluentform" width="100%" loading="lazy" height="500px" style="min-height: 500px;width: 100%" frameborder="0" src="{{share_url}}&embedded=1" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+40)+'px';"></iframe></textarea>
 
-                    <p style="font-style: italic;">- You can customize the height property.</p>
-                    <p style="font-style: italic;">- Please check if your wp hosting server supports iframe.</p>
+                    <p style="font-style: italic;">- {{ $t('You can customize the height property.') }}</p>
+                    <p style="font-style: italic;">- {{ $t('Please check if your wp hosting server supports iframe.') }}</p>
                 </div>
             </el-col>
         </el-row>

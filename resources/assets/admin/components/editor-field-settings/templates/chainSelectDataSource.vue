@@ -8,8 +8,8 @@
                 </el-tooltip>
             </div>
             <el-radio-group v-model="dataSourceType">
-              <el-radio label="file">File Upload</el-radio>
-              <el-radio label="url">Remote URL</el-radio>
+              <el-radio label="file">{{ $t('File Upload') }}</el-radio>
+              <el-radio label="url">{{ $t('Remote URL') }}</el-radio>
             </el-radio-group>
 
             <div style="margin-bottom: 10px;" class="uploader" v-if="dataSourceType === 'file'">
@@ -26,12 +26,12 @@
                     :on-remove="onRemove"
                 >
                     <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+                    <div class="el-upload__text">{{ $t('Drop file here or') }} <em>{{ $t(' click to upload') }}</em></div>
                 </el-upload>
             </div>
 
             <div v-else style="margin-top: 10px;">
-                <el-input placeholder="Please input a remote csv url..." v-model="dataSourceUrl">
+                <el-input :placeholder="$t('Please input a remote csv url...')" v-model="dataSourceUrl">
                     <template slot="append">
                         <el-button
                             size="mini"
@@ -39,7 +39,7 @@
                             icon="el-icon-download"
                             @click="fetchRemoteFile"
                             :loading="fetching"
-                        >Fetch
+                        >{{ $t('Fetch') }}
                         </el-button>
                     </template>
                 </el-input>
@@ -49,12 +49,12 @@
                     class="pull-right btn-danger"
                     :loading="removing"
                     @click="deleteDataSource"
-                >Clear Data Source
+                >{{ $t('Clear Data Source') }}
                 </el-button>
             </div>
         </el-form-item>
         <p>
-            <small><a :href="sample_csv_url" target="_blank">Download Sample CSV</a></small>
+            <small><a :href="sample_csv_url" target="_blank">{{ $t('Download Sample CSV') }}</a></small>
         </p>
     </div>
 </template>

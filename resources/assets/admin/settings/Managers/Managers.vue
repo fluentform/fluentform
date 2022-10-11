@@ -2,7 +2,7 @@
     <div>
         <el-row class="ff_manager_settings_header">
             <el-col :md="18">
-                <h2>Managers</h2>
+                <h2>{{ $t('Managers') }}</h2>
             </el-col>
 
             <el-col :md="6" class="action-buttons clearfix text-right">
@@ -12,31 +12,30 @@
                     icon="el-icon-plus"
                     @click="showForm()"
                 >
-                    Add Manager
+                    {{ $t('Add Manager') }}
                 </el-button>
             </el-col>
         </el-row>
 
         <p>
-            Administrators have full access to Fluent Forms. Add other managers
-            giving specific permissions.
+            {{ $t('Administrators have full access to Fluent Forms.Add other managers giving specific permissions.') }}
         </p>
 
         <hr />
 
         <div class="ff_managers_list">
             <el-table stripe class="el-fluid" :data="managers">
-                <el-table-column label="ID" prop="id" width="80" />
+                <el-table-column :label="$t('ID')" prop="id" width="80" />
 
-                <el-table-column label="Name" width="150">
+                <el-table-column :label="$t('Name')" width="150">
                     <template slot-scope="scope">
                         {{ scope.row.first_name }} {{ scope.row.last_name }}
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Email" prop="email" width="250" />
+                <el-table-column :label="$t('Email')" prop="email" width="250" />
 
-                <el-table-column label="Permissions">
+                <el-table-column :label="$t('Permissions')">
                     <template slot-scope="scope">
                         <el-tag
                             type="info"
@@ -49,7 +48,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Action" width="120">
+                <el-table-column :label="$t('Action')" width="120">
                     <template slot-scope="scope">
                         <el-button
                             size="mini"
@@ -91,21 +90,21 @@
             class="ff_managers_form"
         >
             <el-form :data="manager" label-position="top">
-                <el-form-item label="User Email">
+                <el-form-item :label="$t('User Email')">
                     <el-input
                         type="email"
-                        placeholder="User Email Address"
+                        :placeholder="$t('User Email Address')"
                         v-model="manager.email"
                     />
 
                     <error-view field="email" :errors="errors" />
 
                     <p v-show="!manager.id">
-                        Please provide email address of your existing user.
+                        {{ $t('Please provide email address of your existing user.') }}
                     </p>
                 </el-form-item>
 
-                <el-form-item label="Permissions">
+                <el-form-item :label="$t('Permissions')">
                     <el-checkbox-group v-model="manager.permissions">
                         <el-checkbox
                             style="min-width: 250px"
@@ -123,7 +122,7 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="store">
-                    Save
+                    {{ $t('Save') }}
                 </el-button>
             </span>
         </el-dialog>

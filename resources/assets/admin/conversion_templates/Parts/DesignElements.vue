@@ -1,8 +1,8 @@
 <template>
     <div class="ffc_design_elements">
         <el-form label-position="left" label-width="220px" :data="design_settings">
-            <el-form-item class="fcc_label_top" label="Font">
-                <el-select size="mini" style="width: 100%; margin-top: 10px; margin-bottom: 10px;" v-model="design_settings.font_family" clearable filterable placeholder="Use System Default">
+            <el-form-item class="fcc_label_top" :label="$t('Font')">
+                <el-select size="mini" style="width: 100%; margin-top: 10px; margin-bottom: 10px;" v-model="design_settings.font_family" clearable filterable :placeholder="$t('Use System Default')">
                     <el-option-group
                         v-for="(groups, groupName) in fonts"
                         :key="groupName"
@@ -15,55 +15,57 @@
                         </el-option>
                     </el-option-group>
                 </el-select>
-                <p style="text-align: left; font-style: italic; " v-if="design_settings.font_family">Select Font will apply only for landing page UI.</p>
+                <p style="text-align: left; font-style: italic; " v-if="design_settings.font_family">{{
+                        $t('Select Font will apply only for landing page UI.')
+                    }}</p>
             </el-form-item>
-            <el-form-item label="Questions">
+            <el-form-item :label="$t('Questions')">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.question_color = color; }"
                                  color-format="hex" v-model="design_settings.question_color"></el-color-picker>
             </el-form-item>
-            <el-form-item label="Answers">
+            <el-form-item :label="$t('Answers')">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.answer_color = color; }"
                                  color-format="hex" v-model="design_settings.answer_color"></el-color-picker>
             </el-form-item>
-            <el-form-item label="Button">
+            <el-form-item :label="$t('Button')">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.button_color = color; }"
                                  color-format="hex" v-model="design_settings.button_color"></el-color-picker>
             </el-form-item>
-            <el-form-item label="Button Text">
+            <el-form-item :label="$t('Button Text')">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.button_text_color = color; }"
                                  color-format="hex" v-model="design_settings.button_text_color"></el-color-picker>
             </el-form-item>
-            <el-form-item label="Background">
+            <el-form-item :label="$t('Background')">
                 <el-color-picker :predefine="predefinedColors"
                                  @active-change="(color) => { design_settings.background_color = color; }"
                                  color-format="hex" v-model="design_settings.background_color"></el-color-picker>
             </el-form-item>
 
-            <el-form-item label="Background Image">
+            <el-form-item :label="$t('Background Image')">
                 <photo-uploader v-model="design_settings.background_image" design_mode="horizontal" enable_clear="yes"/>
             </el-form-item>
 
-            <el-form-item class="fcc_label_top" v-if="design_settings.background_image" label="BG Brightness">
+            <el-form-item class="fcc_label_top" v-if="design_settings.background_image" :label="$t('BG Brightness')">
                 <el-slider :min="-100" input-size="mini" :max="100"
                            v-model="design_settings.background_brightness"></el-slider>
             </el-form-item>
-            <el-form-item class="fcc_eq_line" label="Disable Layout on Mobile Devices">
+            <el-form-item class="fcc_eq_line" :label="$t('Disable Layout on Mobile Devices')">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.hide_media_on_mobile"></el-switch>
             </el-form-item>
 
-            <el-form-item class="fcc_eq_line" label="Disable Scroll to Next">
+            <el-form-item class="fcc_eq_line" :label="$t('Disable Scroll to Next')">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_scroll_to_next"></el-switch>
             </el-form-item>
 
-            <el-form-item label="Disable Branding">
+            <el-form-item :label="$t('Disable Branding')">
                 <el-switch active-value="yes" inactive-value="no" v-model="design_settings.disable_branding"></el-switch>
             </el-form-item>
 
-            <el-form-item label="Key Hint">
+            <el-form-item :label="$t('Key Hint')">
                 <el-switch 
                     active-value="yes" 
                     inactive-value="no" 
@@ -72,8 +74,12 @@
             </el-form-item>
 
             <div v-if="!has_pro" class="fcc_pro_message">
-                Design customization available on pro only. This is just a preview version. To use this feature please upgrade to Pro.
-                <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>
+                {{
+                    $t('Design customization available on pro only.This is just a preview version.To use this feature please upgrade to Pro.')
+                }}
+                <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
+                        $t('Get Fluent Forms Pro')
+                    }}</a>
             </div>
         </el-form>
     </div>

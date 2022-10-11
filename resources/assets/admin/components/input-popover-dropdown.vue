@@ -10,7 +10,7 @@
                 <li v-for="item in data">
                     <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
                     <ul>
-                        <li v-for="title, code in item.shortcodes"
+                        <li v-for="(title, code) in item.shortcodes"
                             @click="insertShortcode(code)"
                             class="el-dropdown-menu__item">
                             {{ title }}
@@ -23,7 +23,7 @@
                    size="mini"
                    v-popover:input-popover1
                    type="primary">
-            Add Shortcodes
+            {{ $t('Add Shortcodes') }}
             <i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
     </div>

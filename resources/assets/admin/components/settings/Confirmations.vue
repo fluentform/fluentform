@@ -2,25 +2,25 @@
     <div>
         <el-row class="setting_header">
             <el-col :md="12">
-                <h2>Other Confirmations</h2>
+                <h2>{{ $t('Other Confirmations') }}</h2>
             </el-col>
 
             <!--Save settings-->
             <el-col :md="12" class="action-buttons clearfix mb15 text-right">
                 <el-button v-if="selected" @click="discard"
                            class="pull-right" icon="el-icon-arrow-left" size="small"
-                >Back
+                >{{ $t('Back') }}
                 </el-button>
 
                 <template v-else>
                     <el-button v-if='has_pro' @click="add" type="primary"
                            size="small" icon="el-icon-plus"
-                    >Add Confirmation
+                    >{{ $t('Add Confirmation') }}
                     </el-button>
 
                     <el-button v-else @click="comingSoonVisibility = true" type="primary"
                            size="small" icon="el-icon-plus"
-                    >Add Confirmation
+                    >{{ $t('Add Confirmation') }}
                     </el-button>
                 </template>
                 <video-doc btn_text="Learn" route_id="otherConfirmationSettings" />
@@ -39,7 +39,7 @@
 
             <el-table-column prop="name" label="Name" width="200" class-name="content-ellipsis"></el-table-column>
 
-            <el-table-column label="Content" class-name="content-ellipsis">
+            <el-table-column :label="$t('Content')" class-name="content-ellipsis">
                 <template slot-scope="scope">
                     <template v-if="scope.row.redirectTo === 'samePage'">
                         <span v-html="scope.row.messageToShow"></span>
@@ -55,9 +55,9 @@
                 </template>
             </el-table-column>
 
-            <el-table-column width="160" label="Actions" class-name="action-buttons">
+            <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="light" content="Duplicate notification settings" placement="top">
+                    <el-tooltip class="item" effect="light" :content="$t('Duplicate notification settings')" placement="top">
                         <el-button @click="clone(scope.$index)" type="success"
                                    icon="el-icon-plus" size="mini"
                         ></el-button>
@@ -76,13 +76,13 @@
         <el-form v-if="selected" label-width="205px" label-position="left">
             <el-form-item>
                 <template slot="label">
-                    Confirmation Name
+                    {{ $t('Confirmation Name') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Confirmation Name</h3>
+                            <h3>{{ $t('Confirmation Name') }}</h3>
 
-                            <p>The name to identify each confirmation.</p>
+                            <p>{{ $t('The name to identify each confirmation.') }}</p>
                         </div>
 
                         <i class="el-icon-info el-text-info"></i>
@@ -101,14 +101,14 @@
 
             <el-form-item>
                 <template slot="label">
-                    Conditional Logic
+                    {{ $t('Conditional Logic') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Conditional Logic</h3>
+                            <h3>{{ $t('Conditional Logic') }}</h3>
 
                             <p>
-                                Enable this feed conditionally
+                                {{ $t('Enable this feed conditionally') }}
                             </p>
                         </div>
 

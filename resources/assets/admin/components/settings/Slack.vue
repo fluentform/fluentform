@@ -1,34 +1,33 @@
 <template>
-    <el-form label-width="205px" label-position="left" v-loading="loading" element-loading-text="Loading Settings...">
+    <el-form label-width="205px" label-position="left" v-loading="loading" :element-loading-text="$t('Loading Settings...')">
         <el-row class="setting_header">
             <el-col :md="12">
-                <h2>Slack Integration</h2>
+                <h2>{{ $t('Slack Integration') }}</h2>
             </el-col>
             <el-col :md="12" class="action-buttons clearfix mb15">
                 <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving"
-                >{{ saving ? 'Saving': 'Save'}} Settings
+                > {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                 </el-button>
             </el-col>
         </el-row>
-        <el-form-item label="Integrate Slack">
+        <el-form-item :label="$t('Integrate Slack')">
             <el-switch active-color="#13ce66" v-model="slack.enabled"></el-switch>
         </el-form-item>
-        <el-form-item v-if="slack.enabled" style="margin-left: 17px;" label="Slack Title">
+        <el-form-item v-if="slack.enabled" style="margin-left: 17px;" :label="$t('Slack Title')">
             <el-input placeholder="optional" v-model="slack.textTitle"></el-input>
         </el-form-item>
 
         <transition name="slide-down">
             <el-form-item v-if="slack.enabled" class="conditional-items">
                 <div slot="label">
-                    Webhook URL
+                    {{ $t('Webhook URL') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Webhook URL</h3>
+                            <h3>{{ ('Webhook URL') }}</h3>
 
                             <p>
-                                The <a href="https://api.slack.com/incoming-webhooks" target="_blank">slack webhook
-                                URL</a> where Fluent Forms will send JSON payload.
+                                The <a href="https://api.slack.com/incoming-webhooks" target="_blank">{{ $t('slack webhook URL') }}</a> {{ $t(' where Fluent Forms will send JSON payload.') }}
                             </p>
                         </div>
 
@@ -44,7 +43,7 @@
                 <div slot="label">
                     {{$t('Select Fields')}}
                 </div>
-                <el-checkbox  :disabled="!hasPro"  :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">Check all</el-checkbox>
+                <el-checkbox  :disabled="!hasPro"  :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">{{ $t('Check all') }}</el-checkbox>
                 <br>
                 <el-checkbox-group v-model="slack.fields">
                     <el-checkbox
@@ -56,7 +55,7 @@
                     ></el-checkbox>
                 </el-checkbox-group>
                 <div v-show="!hasPro">
-                    Field Selection is a pro feature.
+                    {{ $t('Field Selection is a pro feature.') }}
                 </div>
             </el-form-item>
             
@@ -64,7 +63,7 @@
 
         <el-form-item>
             <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving">
-                {{ saving ? 'Saving': 'Save'}} Settings
+                {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
             </el-button>
         </el-form-item>
     </el-form>

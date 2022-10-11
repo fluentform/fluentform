@@ -3,7 +3,7 @@
         <el-dialog
             top="40px"
             width="90%"
-             element-loading-text="Creating Form, Please wait..."
+             :element-loading-text="$t('Creating Form, Please wait...')"
              element-loading-spinner="el-icon-loading"
             :loading="creatingForm"
             :visible="visibility"
@@ -18,16 +18,16 @@
 
             <div slot="title">
                 <b>
-                    Choose a pre-made form template or
+                    {{ $t('Choose a pre - made form template or') }}
                     <a href="#" type="info" @click.prevent="createForm('blank_form')">
-                        create a blank form
+                        {{ $t('create a blank form') }}
                     </a>
                 </b>
             </div>
 
             <div class="form_action_navigations">
                 <div class="form_item_group">
-                    <label>Category</label>
+                    <label>{{ $t('Category') }}</label>
                     <el-select size="mini" v-model="category" clearable placeholder="All Category">
                         <el-option
                             v-for="item in categories"
@@ -42,7 +42,7 @@
                     <el-input
                         size="mini"
                         v-model="search"
-                        placeholder="Search Form"
+                        :placeholder="$t('Search Form')"
                         class="input-with-select"
                     >
                         <el-button slot="append" icon="el-icon-search"></el-button>
@@ -51,7 +51,7 @@
             </div>
 
             <div
-                element-loading-text="Working..."
+                :element-loading-text="$t('Working...')"
                 element-loading-spinner="el-icon-loading"
                 v-loading="fetching || creatingForm"
                 style="min-height: 200px"
@@ -77,7 +77,7 @@
                                         </template>
                                         <template v-else>
                                             <span v-if="form.is_pro && !has_pro">Unlock in Pro</span>
-                                            <span v-else>Create Form</span>
+                                            <span v-else>{{ $t('Create Form') }}</span>
                                         </template>
                                     </el-button>
                                 </div>
@@ -97,8 +97,8 @@
                     :loading="creatingForm"
                     @click="postTypeSelectionDialogVisibility = true"
                 >
-                    <span v-if="creatingForm">Creating Form...</span>
-                    <span v-else>Create a Post Form</span>
+                    <span v-if="creatingForm">{{ $t('Creating Form...') }}</span>
+                    <span v-else>{{ $t('Create a Post Form') }}</span>
                 </el-button>
 
                 <el-button size="mini" @click="close">Cancel</el-button>
@@ -108,8 +108,8 @@
                     :loading="creatingForm"
                     @click="createForm('blank_form')"
                 >
-                    <span v-if="creatingForm">Creating Form...</span>
-                    <span v-else>Create a Blank Form</span>
+                    <span v-if="creatingForm">{{ $t('Creating Form...') }}</span>
+                    <span v-else>{{ $t('Create a Blank Form') }}</span>
                 </el-button>
 
             </span>

@@ -18,7 +18,7 @@
              class="el-alert el-alert--warning is-light">
             <i class="el-alert__icon el-icon-warning"></i>
             <div class="el-alert__content">
-                <span class="el-alert__title">Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping. You will need to recreate these with the new value.</span>
+                <span class="el-alert__title">{{ $t('Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.') }}</span>
             </div>
         </div>
     </el-form-item>
@@ -69,7 +69,7 @@ export default {
             return !!matched.length;
         },
         isCaptcha(){
-            let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response';
+            let isCaptcha = this.value == 'g-recaptcha-response' || this.value == 'h-captcha-response' || this.value == 'cf-turnstile-response';
             return isCaptcha;
         }
 

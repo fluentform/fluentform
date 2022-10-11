@@ -10,6 +10,7 @@
                         :dragend="handleDragend"
                         :moved="handleMoved"
                         :wrapper="wrapper">
+
             <div @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
                 <div class="item-actions">
@@ -28,6 +29,7 @@
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
 
             <div v-if="item.element == 'container'" class="item-container">
+                <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
                 <vddl-nodrag style="width: 100%">
                     <splitpanes
                                 class="default-theme"
@@ -81,30 +83,17 @@
 </template>
 
 <script type="text/babel">
-import NestedHandler from "./NestedHandler.js";
-
-export default {
-    name: 'list',
-    props: NestedHandler.props,
-    components: NestedHandler.components,
-    data() {
-        return {
-            showRemoveElConfirm: false,
-            removeElIndex: null,
-            handlers: ["l", "r"],
-            fit: true,
-            minW: 50,
-            maxW: "",
-            width: [],
-            left: [],
-        }
-    },
-    methods: NestedHandler.methods,
-
-    filters: {
-        checkEmpty(value) {
-            return typeof value !== "number" ? 0 : value;
-        }
-    }
-};
+    import NestedHandler from "./NestedHandler.js";
+    export default {
+        name: 'list',
+        props: NestedHandler.props,
+        components: NestedHandler.components,
+        data() {
+            return {
+                showRemoveElConfirm: false,
+                removeElIndex: null,
+            }
+        },
+        methods: NestedHandler.methods
+    };
 </script>

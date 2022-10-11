@@ -4,17 +4,18 @@
         <el-dialog
             :append-to-body="true"
             v-if="showing_modal"
-            title="Select User for this submission"
+            :title="$t('Select User for this submission')"
             :visible.sync="showing_modal"
             width="50%">
             <div class="ff_uc_body">
-                <p v-if="submission.user">This entry was submitted by <a target="_blank" rel="noopener" :href="submission.user.permalink">{{ submission.user.name }}</a>, You can change the associate user by using the following form</p>
-                <p v-else>This entry was submitted by guest user. You can assign a new user for this entry</p>
-                <h4>Select corresponding user</h4>
+                <p v-if="submission.user">{{ $t('This entry was submitted by') }} <a target="_blank" rel="noopener" :href="submission.user.permalink">{{ submission.user.name }}</a>,
+                    {{ $t('You can change the associate user by using the following form') }}</p>
+                <p v-else>{{ $t('This entry was submitted by guest user.You can assign a new user for this entry') }}</p>
+                <h4>{{ $t('Select corresponding user') }}</h4>
                 <el-select style="width: 100%" v-model="selected_id"
                            filterable
                            remote
-                           placeholder="Search User"
+                           :placeholder="$t('Search User')"
                            :remote-method="fetchUsers"
                            :loading="searching"
                 >
@@ -27,8 +28,8 @@
                 </el-select>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="showing_modal = false">Cancel</el-button>
-                <el-button type="primary" :disabled="!selected_id || selected_id == submission.user_id" @click="saveUser()">Change Submitter</el-button>
+                <el-button @click="showing_modal = false">{{ $t('Cancel') }}</el-button>
+                <el-button type="primary" :disabled="!selected_id || selected_id == submission.user_id" @click="saveUser()">{{ $t('Change Submitter') }}</el-button>
           </span>
         </el-dialog>
     </div>

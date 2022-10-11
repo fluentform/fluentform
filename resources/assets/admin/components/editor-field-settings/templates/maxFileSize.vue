@@ -2,7 +2,7 @@
     <el-form-item>
         <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         <el-input type="number" v-model.number="sizeInput" class="input-with-select">
-            <el-select v-model="max_file_size._valueFrom" slot="prepend" placeholder="Select">
+            <el-select v-model="max_file_size._valueFrom" slot="prepend" :placeholder="$t('Select')">
                 <el-option v-for="(_, unit) in byteOptions"
                            :label="unit"
                            :value="unit"

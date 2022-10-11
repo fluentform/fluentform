@@ -3,16 +3,16 @@
         <!--Limit Number of Entries-->
         <el-form-item>
             <div slot="label">
-                Maximum Number of Entries
+                {{ $t('Maximum Number of Entries') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Maximum Number of Entries</h3>
+                        <h3>{{ $t('Maximum Number of Entries') }}</h3>
 
                         <p>
-                            Enter a number in the input box below to limit <br>
-                            the number of entries allowed for this form. The <br>
-                            form will become inactive when that number is reached.
+                            {{ $t('Enter a number in the input box below to limit ')}}<br>
+                            {{ $t('the number of entries allowed for this form. The ')}}<br>
+                            {{ $t('form will become inactive when that number is reached.') }}
                         </p>
                     </div>
 
@@ -26,7 +26,7 @@
         <!--Additional fields when limit number of entries enabled-->
         <transition name="slide-down">
             <div v-if="form.limitNumberOfEntries.enabled" class="conditional-items">
-                <el-form-item label="Maximum Entries">
+                <el-form-item :label="$t('Maximum Entries')">
                     <el-col :md="6">
                         <el-input-number :min="0"
                                          v-model="form.limitNumberOfEntries.numberOfEntries"
@@ -43,7 +43,7 @@
                     </el-col>
                 </el-form-item>
 
-                <el-form-item class="label-lh-1-5" label="Message Shown on Reaching Max. Entries" key="limit-reached-msg">
+                <el-form-item class="label-lh-1-5" :label="$t('Message Shown on Reaching Max Entries')" key="limit-reached-msg">
                     <el-input v-model="form.limitNumberOfEntries.limitReachedMsg" type="textarea"></el-input>
                 </el-form-item>
             </div>
@@ -52,14 +52,14 @@
         <!--Schedule Form-->
         <el-form-item>
             <div slot="label">
-                Form Scheduling
+                {{ $t('Form Scheduling') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Form Scheduling</h3>
+                        <h3>{{ $t('Form Scheduling') }}</h3>
 
                         <p>
-                            Schedule a time period the form is active.
+                            {{ $t('Schedule a time period the form is active.') }}
                         </p>
                     </div>
 
@@ -74,9 +74,9 @@
         <transition name="slide-down">
             <div v-if="form.scheduleForm.enabled" class="conditional-items">
                 <el-row>
-                    <el-form-item label="Select Weekdays" v-if="form.scheduleForm.enabled">
+                    <el-form-item :label="$t('Select Weekdays')" v-if="form.scheduleForm.enabled">
 
-                        <el-checkbox   :indeterminate="isIndeterminate" v-model="checkAllWeekday"  @change="handleCheckAllChange">Check all</el-checkbox>
+                        <el-checkbox   :indeterminate="isIndeterminate" v-model="checkAllWeekday"  @change="handleCheckAllChange">{{ $t('Check all') }}</el-checkbox>
                         <br>
                         <el-checkbox-group v-model="selectedDays">
 
@@ -88,26 +88,26 @@
                 </el-row>
                 <el-row :gutter="30">
                     <el-col :md="12">
-                        <el-form-item label="Submission Starts" v-if="form.scheduleForm.enabled">
+                        <el-form-item :label="$t('Submission Starts')" v-if="form.scheduleForm.enabled">
                             <el-date-picker
                                     class="el-fluid"
                                     style="width: 100%;"
                                     v-model="form.scheduleForm.start"
                                     type="datetime"
-                                    placeholder="Select date and time"
+                                    :placeholder="$t('Select date and time')"
                             >
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-form labelWidth="160px">
                         <el-col :md="12">
-                            <el-form-item label="Submission Ends">
+                            <el-form-item :label="$t('Submission Ends')">
                                 <el-date-picker
                                         class="el-fluid"
                                         style="width: 100%;"
                                         v-model="form.scheduleForm.end"
                                         type="datetime"
-                                        placeholder="Select date and time"
+                                        :placeholder="$t('Select date and time')"
                                         :picker-options="datePickerOptions">
                                 </el-date-picker>
                             </el-form-item>
@@ -115,29 +115,29 @@
                     </el-form>
                 </el-row>
 
-                <el-form-item label="Form Waiting Message">
+                <el-form-item :label="$t('Form Waiting Message')">
                     <el-input v-model="form.scheduleForm.pendingMsg" type="textarea"></el-input>
                 </el-form-item>
 
-                <el-form-item label="Form Expired Message">
+                <el-form-item label="$t('Form Expired Message')">
                     <el-input v-model="form.scheduleForm.expiredMsg" type="textarea"></el-input>
                 </el-form-item>
             </div>
         </transition>
 
         <!--Require user to be logged in-->
-        <h4>Login Requirement Settings</h4>
+        <h4>{{ $t('Login Requirement Settings') }}</h4>
         <el-form-item>
             <div slot="label">
-                Require user to be logged in
+                {{ $t('Require user to be logged in') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Require user to be logged in</h3>
+                        <h3>{{ $t('Require user to be logged in') }}</h3>
 
                         <p>
-                            Check this option to require a user to be <br>
-                            logged in to view this form.
+                            {{ $t('Check this option to require a user to be ')}}<br>
+                            {{ $t('logged in to view this form.') }}
                         </p>
                     </div>
 
@@ -153,15 +153,15 @@
             <div v-if="form.requireLogin.enabled" class="conditional-items">
                 <el-form-item>
                     <template slot="label">
-                        Require Login Message
+                        {{ $t('Require Login Message') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Require Login Message</h3>
+                                <h3>{{ $t('Require Login Message') }}</h3>
 
                                 <p>
-                                    Enter a message to be displayed to users who <br>
-                                    are not logged in (shortcodes and HTML are supported).
+                                    {{ $t('Enter a message to be displayed to users who ') }} <br>
+                                    {{ $t('are not logged in (shortcodes and HTML are supported).') }}
                                 </p>
                             </div>
 
@@ -174,18 +174,18 @@
         </transition>
 
         <!--Allow empty form submission-->
-        <h4>Empty Submission Blocking</h4>
+        <h4>{{ $t('Empty Submission Blocking') }}</h4>
         <el-form-item>
             <div slot="label">
-                Deny empty submission
+                {{ $t('Deny empty submission') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Deny empty submission</h3>
+                        <h3>{{ $t('Deny empty submission') }}</h3>
 
                         <p>
-                            Enabling this won't allow users to submit empty <br>
-                            forms when there are no required form fields.
+                            {{ $t('Enabling this won\'t allow users to submit empty ') }} <br>
+                            {{ $t('forms when there are no required form fields.') }}
                         </p>
                     </div>
 
@@ -201,15 +201,15 @@
             <div v-if="form.denyEmptySubmission.enabled" class="conditional-items">
                 <el-form-item label-width="255px" class="label-lh-1-5">
                     <template slot="label">
-                        Message Shown Against on Empty Submission
+                        {{ $t('Message Shown Against on Empty Submission') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Message Shown Against on Empty Submission</h3>
+                                <h3>{{ $t('Message Shown Against on Empty Submission') }}</h3>
 
                                 <p>
-                                    Enter a message to be displayed to users <br>
-                                    when they try to submit an empty form.
+                                    {{ $t('Enter a message to be displayed to users ')}}<br>
+                                    {{ $t('when they try to submit an empty form.') }}
                                 </p>
                             </div>
 
@@ -238,7 +238,7 @@
                 isIndeterminate: false,
                 checkAllWeekday:'',
                 selectedDays:[],
-                weekdays: ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday' ],
+                weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'],
                 entryPeriodOptions: {
                     total: 'Total Entries',
                     day: 'Per Day',
@@ -257,7 +257,7 @@
                             }
                         },
                         {
-                            text: 'Yesterday',
+                            text: this.$t('Yesterday'),
                             onClick(picker) {
                                 const date = new Date();
                                 date.setTime(date.getTime() - 3600 * 1000 * 24);
@@ -265,7 +265,7 @@
                             }
                         },
                         {
-                            text: 'A week ago',
+                            text: this.$t('A week ago'),
                             onClick(picker) {
                                 const date = new Date();
                                 date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);

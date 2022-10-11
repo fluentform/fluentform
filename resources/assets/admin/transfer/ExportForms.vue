@@ -2,11 +2,11 @@
     <div>
         <el-row class="admin_menu_header">
             <el-col :md="24">
-                <h3>Export Forms</h3>
+                <h3>{{ $t('Export Forms') }}</h3>
                 <p>
-                    Select the forms you would like to export. When you click the download button below,
-                    Fluent Forms will create a JSON file for you to save to your computer. Once you've
-                    saved the downloaded file, you can use the Import tool to import the forms.
+                    {{
+                        $t('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer.Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.')
+                    }}
                 </p>
             </el-col>
         </el-row>
@@ -15,13 +15,13 @@
             <!--Select Forms-->
             <el-form-item>
                 <template slot="label">
-                    Select Forms
+                    {{ $t('Select Forms') }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Export Selected Forms</h3>
+                            <h3>{{ $t('Export Selected Forms') }}</h3>
                             <p>
-                                Select the forms you would like to export.
+                                {{ $t('Select the forms you would like to export.') }}
                             </p>
                         </div>
 
@@ -38,7 +38,7 @@
 
             <el-form-item>
                 <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="exportForms">
-                    Export
+                    {{ $t('Export') }}
                 </el-button>
             </el-form-item>
         </el-form>

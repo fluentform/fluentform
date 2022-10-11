@@ -18,7 +18,7 @@
                         :placeholder="$t('Please Provide Note Content')"
                         v-model="new_note.content">
                     </el-input>
-                    <el-button :loading="isAddingNote" @click="addNewNote()" size="small" type="success">Submit Note</el-button>
+                    <el-button :loading="isAddingNote" @click="addNewNote()" size="small" type="success">{{ $t('Submit Note') }}</el-button>
                 </div>
                 <template v-if="notes && notes.length">
                     <div v-for="activity in showingNotes" :key="activity.id"
@@ -29,7 +29,7 @@
                         <div class="wpf_entry_value" v-html="activity.value"></div>
                     </div>
 
-                    <el-button size="mini" v-if="notes.length > 5" type="info" @click="initial_limit =  !initial_limit"><span v-if="initial_limit">Load More</span><span v-else>Show Less</span></el-button>
+                    <el-button size="mini" v-if="notes.length > 5" type="info" @click="initial_limit =  !initial_limit"><span v-if="initial_limit">{{ $t('Load More') }}</span><span v-else>{{ $t('Show Less') }}</span></el-button>
 
                 </template>
                 <template v-else>

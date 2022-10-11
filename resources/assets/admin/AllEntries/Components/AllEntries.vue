@@ -62,11 +62,11 @@
                             format="dd MMM, yyyy"
                             value-format="yyyy-MM-dd"
                             range-separator="-"
-                            start-placeholder="Start date"
-                            end-placeholder="End date">
+                            :start-placeholder="$t('Start date')"
+                            :end-placeholder="$t('End date')">
                         </el-date-picker>
-                        <el-button @click="fetchEntries" size="mini" type="success">Search</el-button>
-                        <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
+                        <el-button @click="fetchEntries" size="mini" type="success">{{ $t('Search') }}</el-button>
+                        <el-button @click="resetAdvancedFilter()" size="mini">{{ $t('Hide') }}</el-button>
                     </div>
                 </div>
 

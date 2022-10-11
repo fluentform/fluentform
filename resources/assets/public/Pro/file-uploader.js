@@ -19,6 +19,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 style: 'font-size:12px; margin-top: 15px;'
             });
             element.closest('div').append(uploadedList);
+            // original width for preview filename ellipsis
+            const maxWidth = uploadedList.width();
 
             // Set maximum allowed files count protection
             var rules = form.rules[element.prop('name')];
@@ -164,7 +166,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     // set width for filename container
                     // filename larger than it's container will truncate
                     fileName.css({
-                        maxWidth: data.context.width()
+                        maxWidth: maxWidth
                             - 91 // width of left image area
                             + 'px'
                     });

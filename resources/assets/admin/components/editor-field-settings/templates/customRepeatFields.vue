@@ -11,7 +11,7 @@
     </template>
 
     <template v-if="editItem.settings.multi_column">
-        <div class="address-field-option" ref="highlight" v-for="field, i in editItem.fields">
+        <div class="address-field-option" ref="highlight" v-for="(field, i) in editItem.fields">
             <div class="field-options-settings">
                 <div class="action-btn pull-right">
                     <i @click="toggleAddressFieldInputs" class="icon el-icon-caret-bottom"></i>
@@ -76,8 +76,8 @@ export default {
                 this.highlightEl(this.$refs.highlight);
 
                 this.$notify.error({
-                    title: this.$t('Oops!'),
-                    message: this.$t("The last item can not be deleted."),
+                    title: 'Oops!',
+                    message: "The last item can not be deleted.",
                     offset: 30
                 });
             }

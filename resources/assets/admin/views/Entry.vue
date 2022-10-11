@@ -287,7 +287,7 @@
 
                         } else {
                             this.$notify.warning({
-                                message: 'No entry found.',
+                                message: this.$t('No entry found.'),
                                 offset: 30
                             });
                         }

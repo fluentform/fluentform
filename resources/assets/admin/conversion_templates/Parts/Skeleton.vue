@@ -4,22 +4,21 @@
             <div class="ffc_design_sidebar">
                 <div class="ffc_sidebar_header">
                     <ul>
-                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">Design</li>
-                        <li :class="{ffc_active : active_tab == 'meta'}" @click="active_tab = 'meta'">Meta</li>
-                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">Share</li>
+                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">{{ $t('Design') }}</li>
+                        <li :class="{ffc_active : active_tab == 'meta'}" @click="active_tab = 'meta'">{{ $t('Meta') }}</li>
+                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">{{ $t('Share') }}</li>
                     </ul>
                 </div>
                 <div v-loading="saving" class="ffc_sidebar_body">
                     <design-elements :has_pro="has_pro" :fonts="fonts" v-if="active_tab == 'design'" :design_settings="design_settings"/>
                     <div style="padding-top: 20px;" v-else-if="active_tab == 'meta'">
-                        <p>Set your social sharing meta texts and form messages here</p>
+                        <p>{{ $t('Set your social sharing meta texts and form messages here') }}</p>
                     </div>
                     <div style="padding-top: 20px;" v-else-if="active_tab == 'share'">
-                        <p>Share your form by unique URL or copy and paste the <em>shorcode</em> to embed in your page
-                            and post</p>
+                        <p>{{ $t('Share your form by unique URL or copy and paste the ') }}<em>shorcode</em>{{ $t(' to embed in your page and post') }}</p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
-                        <el-button type="primary" @click="saveDesignSettings()">Save Settings</el-button>
+                        <el-button type="primary" @click="saveDesignSettings()">{{ $t('Save Settings') }}</el-button>
                     </div>
                 </div>
             </div>
@@ -31,7 +30,7 @@
                 <sharing-view v-else-if="active_tab == 'share'" :form_id="form_id" :share_url="share_url" :meta_settings="meta_settings"/>
             </div>
         </template>
-        <h3 v-else>Loading Design... Please wait</h3>
+        <h3 v-else>{{ $t('Loading Design... Please wait') }}</h3>
     </div>
 </template>
 

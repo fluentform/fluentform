@@ -49,7 +49,7 @@
                         >
                             <div class="form-group">
                                 <div class="el-form-item">
-                                    <label class="el-form-item__label" for="">Label</label>
+                                    <label class="el-form-item__label" for="">{{ $t('Label') }}</label>
                                     
                                     <el-input
                                         v-model="editItem.fields[field.value].settings.label"
@@ -60,7 +60,7 @@
         
                             <div class="form-group">
                                 <div class="el-form-item">
-                                    <label class="el-form-item__label" for="">Placeholder</label>
+                                    <label class="el-form-item__label" for="">{{ $t('Placeholder') }}</label>
                                     
                                     <el-input
                                         v-model="editItem.fields[field.value].attributes.placeholder"
@@ -87,23 +87,23 @@
         </vddl-list>
        
 
-        <el-form-item v-if="has_gmap_api" label="Autocomplete Feature">
-            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete">Enable
-                Autocomplete (Google Map)
+        <el-form-item v-if="has_gmap_api" :label="$t('Autocomplete Feature')">
+            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete">{{
+                    $t('Enable Autocomplete(Google Map)')
+                }}
             </el-checkbox>
         </el-form-item>
-        <el-form-item v-if="has_gmap_api  && editItem.settings.enable_g_autocomplete =='yes'" label="Show Map">
+        <el-form-item v-if="has_gmap_api  && editItem.settings.enable_g_autocomplete =='yes'" :label="$t('Show Map')">
             <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_map">
-                Enable Map (Google Map)
+                {{ $t('Enable Map(Google Map)') }}
             </el-checkbox>
         </el-form-item>
 
 
         <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete =='yes'">
             <div slot="label">
-                Auto locate
-                <el-tooltip  effect="dark" content="When map is enabled Please enable
-Geocoding API if you want to populate address after map marker drag end" placement="top">
+                {{ $t('Auto locate') }}
+                <el-tooltip  effect="dark" :content="$t('When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end')" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>
@@ -116,7 +116,7 @@ Geocoding API if you want to populate address after map marker drag end" placeme
                     {{ $t('Page Load') }}
                 </el-radio-button>
                 <el-radio-button label="on_click">
-                    {{ $t('On Click ') }}
+                    {{ $t('On Click') }}
                 </el-radio-button>
                 <el-radio-button label="no">
                     {{ $t('Disable') }}

@@ -4,7 +4,7 @@
             <el-col :md="24">
                 <h3>{{ $t('Fluent Forms Migrator') }}</h3>
                 <p>
-                    {{ $t('Migrate other plugins\' forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.') }}
+                    {{ $t('Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.') }}
                 </p>
             </el-col>
         </el-row>

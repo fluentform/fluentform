@@ -3,14 +3,14 @@
         <!--Append survey result-->
         <el-form-item>
             <div slot="label">
-                Append
+                {{ $t('Append') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Append Survey Result</h3>
+                        <h3>{{ $t('Append Survey Result') }}</h3>
 
                         <p>
-                            Enable this to append survey result to the confirmation message.
+                            {{ $t('Enable this to append survey result to the confirmation message.') }}
                         </p>
                     </div>
 
@@ -26,14 +26,14 @@
             <div v-if="form.enabled" class="conditional-items">
                 <el-form-item>
                     <div slot="label">
-                        Show Label
+                        {{ $t('Show Label') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Show Label</h3>
+                                <h3>{{ $t('Show Label') }}</h3>
 
                                 <p>
-                                    Do you want to show form labels when displaying survey result.
+                                    {{ $t('Do you want to show form labels when displaying survey result?') }}
                                 </p>
                             </div>
 
@@ -46,14 +46,14 @@
 
                 <el-form-item>
                     <div slot="label">
-                        Show Count
+                        {{ $t('Show Count') }}
 
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
-                                <h3>Show Count</h3>
+                                <h3>{{ $t('Show Count') }}</h3>
 
                                 <p>
-                                    Do you want to show vote count when displaying survey result.
+                                    {{ $t('Do you want to show vote count when displaying survey result?') }}
                                 </p>
                             </div>
 

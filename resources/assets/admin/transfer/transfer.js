@@ -52,7 +52,11 @@ import Migrator from './Migrator';
 
 Vue.mixin({
     methods:{
-        $t(str){
+        $t(str) {
+            let transString = window.FluentFormApp.transfer_str[str];
+            if(transString) {
+                return transString;
+            }
             return str;
         }
     }

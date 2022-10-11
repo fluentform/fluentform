@@ -62,7 +62,7 @@
                         </div>
 
                         <p style="margin-top: 0">
-                            <span>Total Bills: </span>
+                            <span>{{ $t('Total Bills: ')}}</span>
                             <span
                                 class="table_payment_amount"
                                 v-html="subscription.bill_count"
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div v-if="subscription && subscription.related_payments" class="payment_head_bottom wpf_entry_order_items">
-                    <h3>Related Payments</h3>
+                    <h3>{{ $t('Related Payments') }}</h3>
 
                     <table
                         v-if="subscription.related_payments.length"
@@ -151,16 +151,17 @@
             v-if="canceling_subscription"
             v-loading="cancelling"
             width="50%">
-            <h3>You are about to cancel this subscription</h3>
-            <p v-if="payment_method == 'stripe'">This will also <b>cancel the subscription at stripe</b>. So no further
-                payment will be processed</p>
+            <h3>{{ $t('You are about to cancel this subscription') }}</h3>
+            <p v-if="payment_method == 'stripe'">{{ $t('This will also ') }} <b>{{ $t('cancel the subscription at stripe.') }}</b>
+                {{ $t('So no further payment will be processed') }}</p>
             <div v-else>
-                <p>{{payment_method|ucFirst}} payment gateway does not support remote cancellation at this moment.</p>
-                <p style="font-weight: bold;">Please cancel the subscription from {{payment_method}} dashboard too.</p>
+                <p>{{payment_method|ucFirst}} {{ $t('payment gateway does not support remote cancellation at this moment.') }}</p>
+                <p style="font-weight: bold;">{{ $t('Please cancel the subscription from ') }}{{payment_method}}
+                    {{ $t('dashboard too.') }}</p>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="sub_cancel_modal = false">close</el-button>
-                <el-button type="primary" @click="confirmCancel()">Yes, Cancel this subscription</el-button>
+                <el-button @click="sub_cancel_modal = false">{{ $t('close') }}</el-button>
+                <el-button type="primary" @click="confirmCancel()">{{ $t('Yes, Cancel this subscription') }}</el-button>
             </span>
         </el-dialog>
     </div>

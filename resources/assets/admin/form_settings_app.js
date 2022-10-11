@@ -104,8 +104,12 @@ Vue.mixin({
     },
     methods: {
         $t(str) {
+            let transString = window.FluentFormApp.form_settings_str[str];
+            if(transString) {
+                return transString;
+            }
             return str;
-        }
+        },
     },
 });
 

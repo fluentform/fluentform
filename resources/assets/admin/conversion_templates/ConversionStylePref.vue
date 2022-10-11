@@ -1,7 +1,7 @@
 <template>
     <div class="ff_style_pref">
         <el-form-item>
-            <el-label slot="label" label="Layout Type" helpText="Select the layout that you want to show for this input"></el-label>
+            <el-label slot="label" :label="$t('Layout Type')" :helpText="$t('Select the layout that you want to show for this input')"></el-label>
             <el-radio-group class="ff_iconed_radios" v-model="pref.layout">
                 <el-radio v-for="(layout, layoutName) in layouts" :key="layoutName" :label="layoutName">
                     <i :class="layout.icon" />
@@ -10,32 +10,32 @@
         </el-form-item>
         <template v-if="pref.layout != 'default' && pref.layout != 'media_raw_html'">
             <el-form-item>
-                <el-label slot="label" label="Media" helpText="Set the media image that you want to set for this input"></el-label>
+                <el-label slot="label" :label="$t('Media')" :helpText="$t('Set the media image that you want to set for this input')"></el-label>
                 <photo-widget enable_clear="yes" design_mode="horizontal" v-model="pref.media"/>
             </el-form-item>
             <el-form-item>
-                <el-label slot="label" label="Media Brightness" helpText="Brightness of your selected media"></el-label>
+                <el-label slot="label" :label="$t('Media Brightness')" :helpText="$t('Brightness of your selected media')"></el-label>
                 <el-slider :min="-100" input-size="mini" :max="100" v-model="pref.brightness" show-input></el-slider>
             </el-form-item>
             <template v-if="pref.layout == 'media_right_full' || pref.layout == 'media_left_full'">
                 <el-form-item>
-                    <el-label slot="label" label="Media Horizontal Position" helpText="Horizontal (X) Position of the media"></el-label>
+                    <el-label slot="label" :label="$t('Media Horizontal Position')" :helpText="$t('Horizontal (X) Position of the media')"></el-label>
                     <el-slider :min="0" input-size="mini" :max="100" v-model="pref.media_x_position" show-input></el-slider>
                 </el-form-item>
                 <el-form-item>
-                    <el-label slot="label" label="Media Vertical Position" helpText="Vertical (Y) Position of the media"></el-label>
+                    <el-label slot="label" :label="$t('Media Vertical Position')" :helpText="$t('Vertical (Y) Position of the media')"></el-label>
                     <el-slider :min="0" input-size="mini" :max="100" v-model="pref.media_y_position" show-input></el-slider>
                 </el-form-item>
             </template>
 
             <el-form-item>
-                <el-label slot="label" label="Media Alt Text" helpText="Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend"></el-label>
+                <el-label slot="label" :label="$t('Media Alt Text')" :helpText="$t('Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend')"></el-label>
                 <el-input type="textarea" v-model="pref.alt_text" show-input></el-input>
             </el-form-item>
         </template>
         <template v-else-if="pref.layout == 'media_raw_html'">
             <el-form-item>
-                <el-label slot="label" label="HTML to Show" helpText="Please provide your raw html that you want to show at the side of the form"></el-label>
+                <el-label slot="label" :label="$t('HTML to Show')" :helpText="$t('Please provide your raw html that you want to show at the side of the form')"></el-label>
                 <el-input :rows="8" type="textarea" v-model="pref.raw_html" show-input></el-input>
             </el-form-item>
         </template>

@@ -29,7 +29,7 @@
             <h5 @click="toggleFieldsSection('advancedEditOptions')"
                 :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
                 class="option-fields-section--title">
-                Advanced Options
+                {{ $t('Advanced Options') }}
             </h5>
 
             <transition name="slide-fade">
@@ -45,8 +45,12 @@
                         </component>
                     </template>
                     <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
-                        Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro
-                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">Get Fluent Forms Pro</a>
+                        {{
+                            $t('Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro')
+                        }}
+                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
+                                $t('Get Fluent Forms Pro')
+                            }}</a>
                     </div>
                 </div>
             </transition>
@@ -58,7 +62,7 @@
             <h5 @click="toggleFieldsSection('layoutOptions')"
                 :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
                 class="option-fields-section--title">
-                Layout Settings
+                {{ $t('Layout Settings') }}
             </h5>
 
             <transition name="slide-fade">
@@ -113,6 +117,7 @@ import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
 import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
 import ContainerWidth from "./templates/containerWidth";
+import inventoryStock from "./templates/inventoryStock";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -162,6 +167,7 @@ export default {
         ff_fieldsRepeatSettings: fieldsRepeatSettings,
         ConversionStylePref,
         ff_containerWidth: ContainerWidth,
+        ff_inventoryStock: inventoryStock,
     },
     data() {
         return {
@@ -272,7 +278,7 @@ export default {
             let unsupportedSettings = [
                 // 'conditional_logics',
                 'label_placement',
-                'calculation_settings',
+                // 'calculation_settings',
                 'prefix_label',
                 'suffix_label',
                 'numeric_formatter',

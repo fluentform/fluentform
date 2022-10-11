@@ -1,18 +1,20 @@
 <template>
 <div :class="{'ff_backdrop': visibility}">
     <el-dialog
-        title="Confirmation"
+        :title="$t('Confirmation')"
         :visible.sync="visibility"
         :before-close="close"
         class="text-center"
         width="30%">
-        <span><strong>Are you sure you want to delete this field?</strong></span>
+        <span><strong>{{ $t('Are you sure you want to delete this field?') }}</strong></span>
+
+        <p class="data-lost-msg">{{ dataLostMsg }}</p>
 
         <p class="data-lost-msg">{{ dataLostMsg }}</p>
 
         <div slot="footer" class="text-center dialog-footer">
-            <el-button @click="close">Cancel</el-button>
-            <el-button type="primary" @click="$emit('on-confirm')">Confirm</el-button>
+            <el-button @click="close">{{ $t('Cancel') }}</el-button>
+            <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Confirm') }}</el-button>
         </div>
     </el-dialog>
 </div>

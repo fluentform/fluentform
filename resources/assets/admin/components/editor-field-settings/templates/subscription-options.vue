@@ -3,8 +3,8 @@
         <el-form-item>
             <elLabel
                     slot="label"
-                    label="Subscription Type"
-                    helpText="Select your subscription plan type"
+                    :label="$t('Subscription Type')"
+                    helpText="$t('Select your subscription plan type')"
             />
 
             <el-radio-group
@@ -25,8 +25,8 @@
         <el-form-item v-if="editItem.attributes.type === 'multiple'">
             <elLabel
                     slot="label"
-                    label="Plan Display Type"
-                    helpText="Select how you want to display the plan options"
+                    :label="$t('Plan Display Type')"
+                    :helpText="$t('Select how you want to display the plan options')"
             />
 
             <el-radio-group
@@ -84,7 +84,7 @@
                 <el-form-item>
                     <elLabel
                             slot="label"
-                            label="Plan Name"
+                            :label="$t('Plan Name')"
                     />
 
                     <el-input
@@ -100,7 +100,7 @@
                         <el-form-item>
                             <elLabel
                                 slot="label"
-                                label="Price"
+                                :label="$t('Price')"
                             />
 
                             <el-input-number
@@ -124,7 +124,7 @@
                         <el-form-item>
                             <elLabel
                                 slot="label"
-                                label="Billing Interval"
+                                :label="$t('Billing Interval')"
                             />
 
                             <el-select
@@ -147,7 +147,7 @@
                     <el-form-item>
                         <elLabel
                             slot="label"
-                            label="User Input Amount label"
+                            :label="$t('User Input Amount label')"
                         />
 
                         <el-input
@@ -162,7 +162,7 @@
                             <el-form-item>
                                 <elLabel
                                     slot="label"
-                                    label="Minimum Amount"
+                                    :label="$t('Minimum Amount')"
                                 />
 
                                 <el-input-number
@@ -175,7 +175,7 @@
                             <el-form-item>
                                 <elLabel
                                     slot="label"
-                                    label="Default Amount"
+                                    :label="$t('Default Amount')"
                                 />
 
                                 <el-input-number
@@ -192,7 +192,7 @@
                         <el-form-item>
                             <elLabel
                                 slot="label"
-                                label="Has Signup Fee?"
+                                :label="$t('Has Signup Fee?')"
                             />
 
                             <el-switch
@@ -215,7 +215,7 @@
                         <el-form-item>
                             <elLabel
                                 slot="label"
-                                label="Has Trial Days? (in days)"
+                                :label="$t('Has Trial Days? (in days)')"
                             />
 
                             <el-switch
@@ -239,7 +239,7 @@
                 <el-form-item>
                     <elLabel
                             slot="label"
-                            label="Total Billing times"
+                            :label="$t('Total Billing times')"
                     />
 
                     <el-input-number
@@ -299,7 +299,7 @@
 
             add() {
                 this.editItem.settings.subscription_options.push({
-                    name: this.$t('Plan Name Here'),
+                    name: 'Plan Name Here',
                     trial_days: 0,
                     has_trial_days: 'no',
                     trial_preriod_days: 0,

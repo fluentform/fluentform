@@ -3,11 +3,11 @@
         <el-row class="setting_header">
             <el-col :md="12">
                 <template v-if="!selectedId">
-                    <h2>PDF Feeds</h2>
-                    <p>Create PDF template feed and you can download the PDFs from each submission</p>
+                    <h2>{{ $t('PDF Feeds') }}</h2>
+                    <p>{{ $t('Create PDF template feed and you can download the PDFs from each submission') }}</p>
                 </template>
                 <template v-else>
-                    <h2>Edit PDF Feed - {{selectedId}}</h2>
+                    <h2>{{ $t('Edit PDF Feed ') }} - {{selectedId}}</h2>
                 </template>
             </el-col>
             <!--Save selected.value-->
@@ -20,22 +20,22 @@
                         size="small"
                 >Back
                 </el-button>
-                <el-button v-else @click="addVisible = true" type="primary" size="small" icon="el-icon-plus">Add PDF Feed
+                <el-button v-else @click="addVisible = true" type="primary" size="small" icon="el-icon-plus">{{     $t('Add PDF Feed') }}
                 </el-button>
             </el-col>
         </el-row>
 
         <!-- Notification Table: 1 -->
         <el-table
-                element-loading-text="Fetching Notifications..."
+                :element-loading-text="$t('Fetching Notifications...')"
                 v-if="!selectedId"
                 :data="pdf_feeds"
                 stripe
                 class="el-fluid"
         >
-            <el-table-column prop="name" label="Name"></el-table-column>
+            <el-table-column prop="name" :label="$t('Name')"></el-table-column>
 
-            <el-table-column prop="template_key" label="Template"></el-table-column>
+            <el-table-column prop="template_key" :label="$t('Template')"></el-table-column>
 
             <el-table-column width="160" label="Actions" class-name="action-buttons">
                 <template slot-scope="scope">
@@ -61,12 +61,12 @@
 
         <el-dialog
                 v-loading="creating"
-                element-loading-text="Creating Feed. Please wait..."
-                title="Create new PDF Feed"
+                :element-loading-text="$t('Creating Feed. Please wait...')"
+                :title="$t('Create new PDF Feed')"
                 :visible.sync="addVisible"
                 width="60%">
             <div class="ff_modal_container">
-                <h3>Please Select a Template</h3>
+                <h3>{{ $t('Please Select a Template') }}</h3>
                 <el-row :gutter="20">
                     <el-col class="ff_each_template" v-for="(template, templateIndex) in templates" :key="templateIndex"
                             :span="6">
@@ -78,7 +78,7 @@
                 </el-row>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="addVisible = false">Cancel</el-button>
+                <el-button @click="addVisible = false">{{ $t('Cancel') }}</el-button>
             </span>
         </el-dialog>
 

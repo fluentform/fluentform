@@ -2,7 +2,7 @@
     <el-form-item v-if="editItem.editor_options.element != 'country-list'">
         <div class="clearfix">
             <div class="pull-right">
-                <el-checkbox v-model="valuesVisible">Show Values</el-checkbox>
+                <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
             </div>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         </div>
@@ -48,22 +48,22 @@
         <el-button type="warning" size="mini" :disabled="!editItem.attributes.value" @click.prevent="clear">Clear
             Selection
         </el-button>
-        <el-button @click="initBulkEdit()" size="mini">Bulk Edit</el-button>
+        <el-button @click="initBulkEdit()" size="mini">{{ $t('Bulk Edit') }}</el-button>
 
         <el-dialog
             :append-to-body="true"
             class="ff_backdrop"
-            title="Edit your options"
+            :title="$t('Edit your options')"
             :visible.sync="bulkEditVisible"
         >
             <div class="bulk_editor_wrapper">
-                <h4>Please provide the value as LABEL:VALUE as each line.</h4>
+                <h4>{{ $t('Please provide the value as LABEL:VALUE as each line.') }}</h4>
                 <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
-                <p>You can simply give value only the system will convert the label as value</p>
+                <p>{{ $t('You can simply give value only the system will convert the label as value') }}</p>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini" @click="bulkEditVisible = false">Cancel</el-button>
-                <el-button size="mini" type="primary" @click="confirmBulkEdit()">Confirm</el-button>
+                <el-button size="mini" @click="bulkEditVisible = false">{{ $t('Cancel') }}</el-button>
+                <el-button size="mini" type="primary" @click="confirmBulkEdit()">{{ $t('Confirm') }}</el-button>
             </span>
         </el-dialog>
 
