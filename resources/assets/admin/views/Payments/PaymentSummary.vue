@@ -227,10 +227,10 @@
             width="60%">
             <el-form label-position="left" v-if="editingTransaction" :data="editingTransaction">
                 <el-form-item :label="$t('Billing Name')">
-                    <el-input placeholder="$t('Billing Name')" v-model="editingTransaction.payer_name"/>
+                    <el-input :placeholder="$t('Billing Name')" v-model="editingTransaction.payer_name"/>
                 </el-form-item>
                 <el-form-item :label="$t('Billing Email')">
-                    <el-input type="email" placeholder="$t('Billing Email')" v-model="editingTransaction.payer_email"/>
+                    <el-input type="email" :placeholder="$t('Billing Email')" v-model="editingTransaction.payer_email"/>
                 </el-form-item>
                 <el-form-item :label="$t('Billing Address')">
                     <el-input type="textarea" :placeholder="$t('Billing Address')" v-model="editingTransaction.billing_address"/>
@@ -259,7 +259,7 @@
                 <template v-if="editingTransaction.status == 'partially-refunded'">
                     <el-form-item :label="$t('New Refund Amount')">
                         <el-input type="number" step="any" v-model="editingTransaction.refund_amount"></el-input>
-                        <p>{{$t('Please Provide new refund amount only.')</p>
+                        <p>{{$t('Please Provide new refund amount only.')}}</p>
                     </el-form-item>
                     <el-form-item :label="$t('Refund Note')">
                         <el-input type="textarea" v-model="editingTransaction.refund_note"></el-input>
