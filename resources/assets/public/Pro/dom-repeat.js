@@ -106,6 +106,12 @@ const registerRepeaterHandler = function ($theForm) {
         $freshCopy.find('td').each(function (i, td) {
             var el = jQuery(this).find('.ff-el-form-control:last-child');
             var tabIndex = el.attr('tabindex');
+
+            var dataMask = el.attr('data-mask');
+            if (dataMask) {
+                el.mask(dataMask);
+            }
+
             var newId = 'ffrpt-' + (new Date()).getTime() + i;
             let oldDataName = el.data('name');
             var itemProp = {

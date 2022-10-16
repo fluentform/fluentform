@@ -29,6 +29,9 @@
                 <div v-if="field.element == 'select'">
                     <fieldOptionSettings :field="field" :child-fields="selectChildFields"></fieldOptionSettings>
                 </div>
+                <div v-if="field.element == 'input_mask'">
+                    <fieldOptionSettings :field="field" :child-fields="inputMaskChildFields"></fieldOptionSettings>
+                </div>
                 <template v-else>
                     <fieldOptionSettings :child-fields="inputChildFields" :field="field"></fieldOptionSettings>
                 </template>
@@ -58,16 +61,19 @@
                     'input_text': 'Text Field',
                     'input_email': 'Email Field',
                     'input_number': 'Numeric Field',
-                    'select': 'Select Field'
+                    'select': 'Select Field',
+                    'input_mask': 'Input Mask Field',
                 },
                 elementMaps: {
                     input_text: 'text',
                     input_email: 'email',
                     input_number: 'number',
-                    select: 'select'
+                    select: 'select',
+                    input_mask: 'text'
                 },
                 inputChildFields: ['label', 'value', 'placeholder'],
-                selectChildFields: ['label', 'placeholder', 'advanced_options']
+                selectChildFields: ['label', 'placeholder', 'advanced_options'],
+                inputMaskChildFields: ['label', 'value', 'placeholder', 'temp_mask', 'data-mask', 'data-mask-reverse', 'temp_mask_list']
             }
         },
         methods: {
@@ -84,6 +90,7 @@
                         'type': this.elementMaps[element],
                         'value': '',
                         'placeholder': '',
+                        'data-mask': ''
                     },
                     'settings': {
                         'label': 'Column 1',
@@ -114,6 +121,42 @@
                         {
                             label: 'Option 2',
                             value: 'Option 2'
+                        }
+                    ];
+                }
+
+                if (element == 'input_mask') {
+                    item.settings.temp_mask = '';
+                    item.settings['data-mask-reverse'] = 'no';
+                    item.settings['data-clear-if-not-match'] = 'no';
+                    item.settings.temp_mask_list = [
+                        {
+                            label: 'None',
+                            value: ''
+                        },
+                        {
+                            label: '(###) ###-####',
+                            value: '(000) 000-0000'
+                        },
+                        {
+                            label: '(##) ####-####',
+                            value: '(00) 0000-0000'
+                        },
+                        {
+                            label: '23/03/2018',
+                            value: '00/00/0000'
+                        },
+                        {
+                            label: '23:59:59',
+                            value: '00:00:00'
+                        },
+                        {
+                            label: '23/03/2018 23:59:59',
+                            value: '00/00/0000 00:00:00'
+                        },
+                        {
+                            label: 'Custom',
+                            value: 'custom'
                         }
                     ];
                 }
