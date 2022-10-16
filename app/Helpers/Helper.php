@@ -640,4 +640,13 @@ class Helper
             (defined('FLUENTFORM_EXPORTING_ENTRIES') && FLUENTFORM_EXPORTING_ENTRIES)
         );
     }
+
+    public static function getInputNameFromShortCode($value)
+    {
+        preg_match('/{+(.*?)}/', $value, $matches);
+        if ($matches && strpos($matches[1], 'inputs.') !== false) {
+            return substr($matches[1], strlen('inputs.'));
+        }
+        return '';
+    }
 }
