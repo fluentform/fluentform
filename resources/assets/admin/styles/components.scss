@@ -205,6 +205,14 @@
   border: 1px dashed #ffb900;
   display: flex;
 
+  .splitpanes {
+    .splitpanes__pane {
+      .ff_custom_button {
+        margin-top: 23px;
+      }
+    }
+  }
+
   .col {
     box-sizing: border-box;
     flex-grow: 1; /* default 0 */
