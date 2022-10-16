@@ -318,6 +318,7 @@ class TranslationString
             'Read More' => __('Read More', 'fluentform'),
             'Slack Integration' => __('Slack Integration', 'fluentform'),
             'Integrate Slack' => __('Integrate Slack', 'fluentform'),
+            'Slack Footer message' => __('Slack Footer message', 'fluentform'),
             'Slack Title' => __('Slack Title', 'fluentform'),
             'Webhook URL' => __('Webhook URL', 'fluentform'),
             'slack webhook URL' => __('slack webhook URL', 'fluentform'),

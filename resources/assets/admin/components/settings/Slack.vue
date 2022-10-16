@@ -47,9 +47,9 @@
                 <br>
                 <el-checkbox-group v-model="slack.fields">
                     <el-checkbox
-                        v-for="(key, val) in formattedFields"
-                        :label="key"
-                        :key="key"
+                        v-for="(value, i) in formattedFields"
+                        :label="value"
+                        :key="value + i"
                         @change="handleCheckedChange"
                         :disabled="!hasPro"
                     ></el-checkbox>
@@ -60,6 +60,9 @@
             </el-form-item>
             
         </transition>
+        <el-form-item v-if="slack.enabled" style="margin-left: 17px;" :label="$t('Slack Footer message')">
+            <el-input placeholder="Default is 'fluentform'" v-model="slack.footerText"></el-input>
+        </el-form-item>
 
         <el-form-item>
             <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving">
@@ -81,6 +84,7 @@
                     enabled: false,
                     webhook: null,
                     textTitle:'',
+                    footerText:'',
                     fields:[],
                     checkAll:'',
                 },

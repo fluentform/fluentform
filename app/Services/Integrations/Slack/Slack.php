@@ -47,10 +47,15 @@ class Slack
 
         $slackTitle = ArrayHelper::get($settings, 'textTitle');
       
-        if($slackTitle === '') {
+        if ($slackTitle === '') {
              $title = "New submission on " . $form->title;
-        }else {
+        } else {
             $title = $slackTitle;
+        }
+
+        $footerText = ArrayHelper::get($settings, 'footerText');
+        if ($footerText === '') {
+            $footerText = "fluentform";
         }
 
         $fields = [];
@@ -86,7 +91,7 @@ class Slack
                         'title'      => $title,
                         'title_link' => $titleLink,
                         'fields'     => $fields,
-                        'footer'     => 'fluentform',
+                        'footer'     => $footerText,
                         'ts'         => round(microtime(true) * 1000)
                     ]
                 ]
