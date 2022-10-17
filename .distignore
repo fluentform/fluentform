@@ -16,4 +16,3 @@ resources/assets
 resources/img
 guten_block/
 public/js/*.css
-.phpcs.xml

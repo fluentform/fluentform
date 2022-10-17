@@ -1507,17 +1507,6 @@ if (! defined('FLUENTFORMPRO')) {
             'template'   => 'inputText',
         ],
     ];
-    $defaultElements['advanced']['custom_submit_button'] = [
-        'index'          => 12,
-        'element'        => 'custom_submit_button',
-        'attributes'     => [],
-        'settings'       => [],
-        'editor_options' => [
-            'title'      => __('Custom Submit Button', 'fluentform'),
-            'icon_class' => 'dashicons dashicons-arrow-right-alt',
-            'template'   => 'customButton',
-        ],
-    ];
     $defaultElements['payments'] = [
         'multi_payment_component' => [
             'index'          => 6,
