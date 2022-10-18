@@ -49,7 +49,7 @@ class Converter
                 ]),
                 'conditional_logics'   => self::parseConditionalLogic($field),
                 'calculation_settings' => ArrayHelper::get($field, 'settings.calculation_settings'),
-                'calc_value_status'    => ArrayHelper::get($field, 'settings.calc_value_status', false),
+                'is_calculable'        => ArrayHelper::get($field, 'settings.calc_value_status', false),
             ];
 
             if ($answer = self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form)) {
@@ -146,7 +146,7 @@ class Converter
                 $question['max'] = ArrayHelper::get($field, 'settings.validation_rules.max.value');
                 $question['min'] = is_numeric($question['min']) ? $question['min'] : null;
                 $question['max'] = is_numeric($question['max']) ? $question['max'] : null;
-                $question['calc_value_status'] = true;
+                $question['is_calculable'] = true;
                 do_action('ff_rendering_calculation_form', $form, $field);
             } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
                 $question['options'] = [
@@ -254,7 +254,7 @@ class Converter
                 }
 
                 $question['is_payment_field'] = true;
-                $question['calc_value_status'] = true;
+                $question['is_calculable'] = true;
             } elseif ('subscription_payment_component' === $field['element']) {
                 $question['is_payment_field'] = true;
                 $question['is_subscription_field'] = true;
@@ -314,7 +314,7 @@ class Converter
                 $question['max'] = is_numeric($question['max']) ? $question['max'] : null;
 
                 $question['is_payment_field'] = true;
-                $question['calc_value_status'] = true;
+                $question['is_calculable'] = true;
                 do_action('ff_rendering_calculation_form', $form, $field);
             } elseif ('item_quantity_component' === $field['element']) {
                 $question['type'] = $allowedFields['input_number'];
@@ -355,7 +355,7 @@ class Converter
                 $reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
                 $siteKey = ArrayHelper::get($reCaptchaConfig, 'siteKey');
 
-                if (!$siteKey) {
+                if (! $siteKey) {
                     continue;
                 }
 
@@ -390,7 +390,7 @@ class Converter
                 $hCaptchaConfig = get_option('_fluentform_hCaptcha_details');
                 $siteKey = ArrayHelper::get($hCaptchaConfig, 'siteKey');
 
-                if (!$siteKey) {
+                if (! $siteKey) {
                     continue;
                 }
 
@@ -434,10 +434,10 @@ class Converter
         $formattedFields = [];
 
         $allowedFields = static::fieldTypes();
-        if (is_array($fields) && !empty($fields)) {
+        if (is_array($fields) && ! empty($fields)) {
             foreach ($fields as $field) {
                 if (ArrayHelper::get($allowedFields, $field['element'])) {
-                    if (!ArrayHelper::exists($field, 'style_pref')) {
+                    if (! ArrayHelper::exists($field, 'style_pref')) {
                         $field['style_pref'] = [
                             'layout'           => 'default',
                             'media'            => fluentFormGetRandomPhoto(),
@@ -512,7 +512,7 @@ class Converter
 
     public static function hex2rgb($color, $opacity = 0.3)
     {
-        if (!$color) {
+        if (! $color) {
             return;
         }
         $rgbValues = list($r, $g, $b) = array_map(
@@ -532,7 +532,7 @@ class Converter
 
         // todo:: remove the 'with_extended_validation' check in future.
         $enabled = ArrayHelper::get($data, 'settings.validation_rules.valid_phone_number.value');
-        if (!$enabled) {
+        if (! $enabled) {
             $enabled = 'with_extended_validation' == ArrayHelper::get($data, 'settings.int_tel_number');
         }
 
@@ -640,7 +640,7 @@ class Converter
             }
         }
 
-        if (!$value) {
+        if (! $value) {
             return $value;
         }
         if (is_string($value)) {
@@ -654,7 +654,7 @@ class Converter
     {
         $logics = ArrayHelper::get($field, 'settings.conditional_logics', []);
 
-        if (!$logics || !$logics['status']) {
+        if (! $logics || ! $logics['status']) {
             return [];
         }
 
@@ -666,7 +666,7 @@ class Converter
             $validConditions[] = $condition;
         }
 
-        if (!$validConditions) {
+        if (! $validConditions) {
             return [];
         }
 
