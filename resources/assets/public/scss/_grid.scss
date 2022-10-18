@@ -22,7 +22,25 @@
             }
 
             .ff_submit_btn_wrapper_custom {
-                margin-top: 28px;
+                display: flex;
+                align-items: flex-end;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+
+                &.ff-text {
+                    &-center {
+                        justify-content: center;
+                    }
+
+                    &-right {
+                        justify-content: flex-end;
+                    }
+                }
+
+                button {
+                    margin-bottom: 20px;
+                }
             }
         }
     }
