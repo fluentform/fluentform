@@ -133,11 +133,11 @@ class Text extends BaseComponent
         if ($prefix || $suffix) {
             $wrapper = '<div class="ff_input-group">';
             if ($prefix) {
-                $wrapper .= '<div class="ff_input-group-prepend"><span class="ff_input-group-text">' . fluentform_sanitize_html($prefix) . '</span></div>';
+                $wrapper .= '<div class="ff_input-group-prepend"><span class="ff_input-group-text">' . fluentform_sanitize_html($prefix, false) . '</span></div>';
             }
             $wrapper .= $input;
             if ($suffix) {
-                $wrapper .= '<div class="ff_input-group-append"><span class="ff_input-group-text">' . fluentform_sanitize_html($suffix) . '</span></div>';
+                $wrapper .= '<div class="ff_input-group-append"><span class="ff_input-group-text">' . fluentform_sanitize_html($suffix, false) . '</span></div>';
             }
             $wrapper .= '</div>';
             return $wrapper;

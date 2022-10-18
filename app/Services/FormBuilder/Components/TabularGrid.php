@@ -27,12 +27,12 @@ class TabularGrid extends BaseComponent
         $elementHelpMessage = $this->getElementHelpMessage($data, $form);
         $elementLabel = $this->setClasses($data)->buildElementLabel($data, $form);
 
-        $elMarkup = "<table class='ff-table ff-checkable-grids ff_flexible_table'><thead><tr><th></th><th>" . fluentform_sanitize_html($columnHeaders) . '</th></tr></thead><tbody>';
+        $elMarkup = "<table class='ff-table ff-checkable-grids ff_flexible_table'><thead><tr><th></th><th>" . fluentform_sanitize_html($columnHeaders, false) . '</th></tr></thead><tbody>';
 
         $tabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex();
         foreach ($this->makeTabularData($data) as $index => $row) {
             $elMarkup .= '<tr>';
-            $elMarkup .= "<td class='ff_grid_header'>" . fluentform_sanitize_html($row['label']) . '</td>';
+            $elMarkup .= "<td class='ff_grid_header'>" . fluentform_sanitize_html($row['label'], false) . '</td>';
             $isRowChecked = in_array($row['name'], $checked) ? 'checked' : '';
             foreach ($row['columns'] as $column) {
                 $name = $data['attributes']['name'] . '[' . $row['name'] . ']';
@@ -51,14 +51,14 @@ class TabularGrid extends BaseComponent
                 $attributes = $this->buildAttributes($atts, $form);
 
                 $input = '<input ' . $attributes . " {$isChecked}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $attributes is escaped before being passed in.
-                $elMarkup .= "<td data-label='" . fluentform_sanitize_html($column['label']) . "'>{$input}</td>";
+                $elMarkup .= "<td data-label='" . fluentform_sanitize_html($column['label'], false) . "'>{$input}</td>";
             }
             $elMarkup .= '</tr>';
         }
 
         $elMarkup .= '</tbody></table>';
 
-        $elMarkup = "<div class='ff-el-input--content'>{$elMarkup}" . fluentform_sanitize_html($elementHelpMessage) . '</div>';
+        $elMarkup = "<div class='ff-el-input--content'>{$elMarkup}" . fluentform_sanitize_html($elementHelpMessage, false) . '</div>';
 
         $html = sprintf(
             "<div data-type='%s' data-name='%s' class='%s'>{$elementLabel}{$elMarkup}</div>",

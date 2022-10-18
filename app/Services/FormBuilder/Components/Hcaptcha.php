@@ -53,7 +53,7 @@ class Hcaptcha extends BaseComponent
 
         $el = "<div class='ff-el-input--content'><div data-fluent_id='" . $form->id . "' name='h-captcha-response'>{$hcaptchaBlock}</div></div>";
 
-        $html = "<div class='ff-el-group " . esc_attr($containerClass) . "' >" . fluentform_sanitize_html($label) . "{$el}</div>";
+        $html = "<div class='ff-el-group " . esc_attr($containerClass) . "' >" . fluentform_sanitize_html($label, false) . "{$el}</div>";
 
         $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
     }

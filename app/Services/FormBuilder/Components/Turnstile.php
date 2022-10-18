@@ -50,7 +50,7 @@ class Turnstile extends BaseComponent
 
         $label = '';
         if (! empty($data['settings']['label'])) {
-            $label = "<div class='ff-el-input--label'><label>" . fluentform_sanitize_html($data['settings']['label']) . '</label></div>';
+            $label = "<div class='ff-el-input--label'><label>" . fluentform_sanitize_html($data['settings']['label'], false) . '</label></div>';
         }
 
         $containerClass = '';

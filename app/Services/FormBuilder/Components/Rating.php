@@ -49,7 +49,7 @@ class Rating extends BaseComponent
 
             if ('yes' == ArrayHelper::get($data, 'settings.show_text')) {
                 $displayDefaultText = in_array($value, $defaultValues) ? 'display: inline-block' : 'display: none';
-                $ratingText .= "<span style='{$displayDefaultText}' class='ff-el-rating-text' data-id='{$id}'>" . fluentform_sanitize_html($label) . '</span>';
+                $ratingText .= "<span style='{$displayDefaultText}' class='ff-el-rating-text' data-id='{$id}'>" . fluentform_sanitize_html($label, false) . '</span>';
             }
         };
 

@@ -104,7 +104,7 @@ class Checkable extends BaseComponent
                 $elMarkup .= "<label style='background-image: url(" . esc_url($option['image']) . ")' class='ff-el-image-input-src' for={$id}></label>";
             }
 
-            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'> <span>" . fluentform_sanitize_html($option['label']) . '</span></label>';
+            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}'> <span>" . fluentform_sanitize_html($option['label'], false) . '</span></label>';
             $elMarkup .= '</div>';
         }
 

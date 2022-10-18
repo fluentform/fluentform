@@ -30,6 +30,8 @@
         <rule ref="WordPress.Security.EscapeOutput">
             <properties>
                 <property name="customEscapingFunctions" type="array">
+                    <element value="fluentform_kses"/>
+                    <element value="fluentform_kses_js"/>
                     <element value="fluentformSanitizeCSS"/>
                     <element value="fluentform_sanitize_html"/>
                 </property>

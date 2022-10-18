@@ -120,7 +120,7 @@ class FormCssJs
                             var formId = "<?php echo esc_attr($formId); ?>";
                             var $ = jQuery;
                             try {
-                                <?php echo wp_kses_post($customJS); ?>
+                                <?php echo fluentform_kses_js($customJS); ?>
                             } catch (e) {
                                 console.warn('Error in custom JS of Fluentform ID: ' + $form.data('form_id'));
                                 console.error(e);
@@ -152,7 +152,7 @@ class FormCssJs
         $formId = absint($this->request->get('form_id'));
 
         $css = fluentformSanitizeCSS($this->request->get('custom_css'));
-        $js = fluentform_sanitize_html(wp_unslash($this->request->get('custom_js')));
+        $js = fluentform_kses_js(wp_unslash($this->request->get('custom_js')));
 
         $this->store($formId, '_custom_form_css', $css);
         $this->store($formId, '_custom_form_js', $js);
