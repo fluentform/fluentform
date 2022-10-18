@@ -730,6 +730,7 @@ $defaultElements = [
                 ],
                 'calc_value_status'  => false,
                 'enable_image_input' => false,
+                'randomize_options'  => 'no',
                 'validation_rules'   => [
                     'required' => [
                         'value'   => false,

@@ -182,7 +182,6 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['advanced_options'] = $formattedOptions;
                 $element['settings']['enable_image_input'] = false;
                 $element['settings']['calc_value_status'] = false;
-                $element['settings']['calc_value_status'] = false;
                 unset($element['options']);
 
                 if ('input_radio' == $upgradeElement || 'input_checkbox' == $upgradeElement) {
@@ -202,11 +201,25 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                 $element['settings']['randomize_options'] = 'no';
             }
 
-            if ('select' == $upgradeElement && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple') && empty($element['settings']['max_selection'])) {
-                $element['settings']['max_selection'] = '';
+            if ('select' == $upgradeElement && \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple')) {
+                if (empty($element['settings']['max_selection'])) {
+                    $element['settings']['max_selection'] = '';
+                }
+                if (isset($element['settings']['enable_select_2'])) {
+                    \FluentForm\Framework\Helpers\ArrayHelper::forget($setting, 'settings.enable_select_2');
+                }
             }
 
-            if (('select' == $upgradeElement || 'select_country' == $upgradeElement) && !isset($element['settings']['enable_select_2'])) {
+            if (
+                (
+                    (
+                        'select' == $upgradeElement &&
+                        ! \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'attributes.multiple')
+                    ) ||
+                    'select_country' == $upgradeElement
+                ) &&
+                ! isset($element['settings']['enable_select_2'])
+            ) {
                 $element['settings']['enable_select_2'] = 'no';
             }
 
