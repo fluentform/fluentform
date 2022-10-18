@@ -333,6 +333,7 @@ class Form
             'input_checkbox',
             'input_password',
             'terms_and_condition',
+            'gdpr_agreement',
             'multi_payment_component',
             'subscription_payment_component',
             'custom_payment_component',
@@ -365,11 +366,13 @@ class Form
                         'media_x_position' => 50,
                         'media_y_position' => 50,
                     ];
-
-                    if ('terms_and_condition' == $element) {
+    
+                    if ($element == 'terms_and_condition' || $element == 'gdpr_agreement') {
                         $existingSettings = $field['settings'];
                         $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
-                        $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                        if ($element == 'terms_and_condition') {
+                            $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
+                        }
                         $field['settings'] = $existingSettings;
                     }
                     //adding required settings for captcha in conversational form

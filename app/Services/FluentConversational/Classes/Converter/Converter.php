@@ -148,17 +148,20 @@ class Converter
                 $question['max'] = is_numeric($question['max']) ? $question['max'] : null;
                 $question['is_calculable'] = true;
                 do_action('ff_rendering_calculation_form', $form, $field);
-            } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
-                $question['options'] = [
-                    [
-                        'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
-                        'value' => 'on',
-                    ],
-                    [
-                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I accept'),
+			} elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
+				$question['options'] = [
+					[
+						'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
+						'value' => 'on',
+					]
+				];
+
+                if ($field['element'] === 'terms_and_condition') {
+                    $question['options'][] = [
+                        'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
                         'value' => 'off',
-                    ],
-                ];
+                    ];
+                }
 
                 $question['nextStepOnAnswer'] = true;
                 $question['title'] = ArrayHelper::get($field, 'settings.tnc_html');

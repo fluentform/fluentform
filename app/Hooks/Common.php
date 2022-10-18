@@ -114,9 +114,11 @@ foreach ($elements as $element) {
             }
         }
 
-        if (in_array($field['element'], ['gdpr_agreement', 'terms_and_condition'])) {
-            if (!empty($response)) {
+        if (in_array($field['element'], array('gdpr_agreement', 'terms_and_condition'))) {
+            if (!empty($response) && $response == 'on') {
                 $response = __('Accepted', 'fluentform');
+            } else {
+                $response = __('Declined', 'fluentform');
             }
         }
 
