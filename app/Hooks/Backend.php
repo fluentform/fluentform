@@ -206,7 +206,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
                     $element['settings']['max_selection'] = '';
                 }
                 if (isset($element['settings']['enable_select_2'])) {
-                    \FluentForm\Framework\Helpers\ArrayHelper::forget($setting, 'settings.enable_select_2');
+                    \FluentForm\Framework\Helpers\ArrayHelper::forget($element, 'settings.enable_select_2');
                 }
             }
 
