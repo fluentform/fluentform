@@ -97,9 +97,9 @@ class ConditionApp {
         } else if (item.operator == '<=') {
             return val && val <= Number(item.value);
         } else if (item.operator == 'startsWith') {
-            return val.startsWith(item.value);
+            return val && val.startsWith(item.value);
         } else if (item.operator == 'endsWith') {
-            return val.endsWith(item.value);
+            return val && val.endsWith(item.value);
         } else if (item.operator == 'contains') {
             return val !== null && val.indexOf(item.value) != -1;
         } else if (item.operator == 'doNotContains') {
