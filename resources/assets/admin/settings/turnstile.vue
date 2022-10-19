@@ -182,6 +182,7 @@ export default {
 
                 let widgetID = turnstile.render(id, {
                     sitekey: siteKey,
+                    theme: this.turnstile.theme,
                     callback: (token) => {
                         this.turnstile.token = token;
                     }
@@ -211,6 +212,8 @@ export default {
                         message: response.data.message,
                         offset: 30
                     });
+                    this.siteKeyChanged = false;
+                    this.turnstile.token = null;
                 })
                 .fail(error => {
                     this.turnstile_status = parseInt(error.responseJSON.data.status, 10);
@@ -263,7 +266,7 @@ export default {
                     ]
                 })
                 .then(response => {
-                    const turnstile = response.data._fluentform_turnstile_details || {siteKey: '', secretKey: ''};
+                    const turnstile = response.data._fluentform_turnstile_details;
                     this.turnstile = turnstile;
                     this.turnstile_status = response.data._fluentform_turnstile_keys_status;
                 });
