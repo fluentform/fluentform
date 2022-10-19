@@ -4,7 +4,7 @@ Tags: contact form, contact forms, wp forms, forms, form builder, contact form b
 Requires at least: 4.5
 Tested up to: 6.0.1
 Requires PHP: 5.6
-Stable tag: 4.3.17
+Stable tag: 4.3.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -363,6 +363,11 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.18 (Date: October 19, 2022) =
+- Improves Turnstile
+- Fixes condition checker nullable bug
+- Fixes Multi-Select upgrade bug
 
 = 4.3.17 (Date: October 18, 2022) =
 - Adds GDPR field in Conversational Form
