@@ -643,7 +643,7 @@ $element_customization_settings = [
         'label'                => __('Column Width %', 'fluentform'),
         'help_text'            => __('Set the width of the columns. The minimum column width is 10%.', 'fluentform'),
         'width_limitation_msg' => __('The minimum column width is 10%', 'fluentform'),
-    ],
+    ]
 ];
 
 return apply_filters('fluent_editor_element_customization_settings', $element_customization_settings);

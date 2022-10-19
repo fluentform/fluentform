@@ -35,4 +35,17 @@ class Turnstile
 
         return $isValid;
     }
+
+    public static function ensureSettings($values)
+    {
+        $settings = ArrayHelper::get($values, '_fluentform_turnstile_details');
+
+        $settings['invisible'] = ArrayHelper::get($settings, 'invisible', 'no');
+        $settings['theme'] = ArrayHelper::get($settings, 'theme', 'auto');
+        unset($settings['token']);
+
+        $values['_fluentform_turnstile_details'] = $settings;
+
+        return $values;
+    }
 }

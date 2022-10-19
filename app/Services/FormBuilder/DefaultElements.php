@@ -1225,7 +1225,7 @@ $defaultElements = [
             'settings'   => [
                 'label'            => '',
                 'label_placement'  => '',
-                'validation_rules' => [],
+                'validation_rules' => []
             ],
             'editor_options' => [
                 'title'              => __('Turnstile', 'fluentform'),

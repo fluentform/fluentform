@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
+use FluentForm\Framework\Helpers\ArrayHelper;
+
 class Turnstile extends BaseComponent
 {
     /**
@@ -17,13 +19,8 @@ class Turnstile extends BaseComponent
         $elementName = $data['element'];
         $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
 
-        $key = get_option('_fluentform_turnstile_details');
-
-        if ($key && isset($key['siteKey'])) {
-            $siteKey = $key['siteKey'];
-        } else {
-            $siteKey = '';
-        }
+        $turnstile = get_option('_fluentform_turnstile_details');
+        $siteKey = ArrayHelper::get($turnstile, 'siteKey');
 
         if (! $siteKey) {
             return false;
@@ -44,6 +41,7 @@ class Turnstile extends BaseComponent
 
         $turnstileBlock = "<div
 		data-sitekey='" . esc_attr($siteKey) . "'
+		data-theme='" . esc_attr(ArrayHelper::get($turnstile, 'theme', 'auto')) . "'
 		id='fluentform-turnstile-{$form->id}'
 		class='ff-el-turnstile cf-turnstile'
 		data-callback='turnstileCallback'></div>";
@@ -58,7 +56,11 @@ class Turnstile extends BaseComponent
             $containerClass = 'ff-el-form-' . $data['settings']['label_placement'];
         }
 
-        $el = "<div class='ff-el-input--content'><div data-fluent_id='" . $form->id . "' name='cf-turnstile-response'>{$turnstileBlock}</div></div>";
+        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
+            $el = "<div class='ff-el-input--content'><div data-fluent_id='" . $form->id . "' name='cf-turnstile-response' style='display: none'>{$turnstileBlock}</div></div>";
+        } else {
+            $el = "<div class='ff-el-input--content'><div data-fluent_id='" . $form->id . "' name='cf-turnstile-response'>{$turnstileBlock}</div></div>";
+        }
 
         $html = "<div class='ff-el-group " . esc_attr($containerClass) . "' >{$label}{$el}</div>";
 

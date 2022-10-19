@@ -349,7 +349,7 @@ return [
             'label',
             'label_placement',
             'name',
-            'validation_rules',
+            'validation_rules'
         ],
     ],
     'custom_html' => [

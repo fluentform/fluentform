@@ -217,7 +217,15 @@ class Settings
         }
 
         $token = ArrayHelper::get($data, 'token');
-        $secretKey = ArrayHelper::get($data, 'secretKey');
+        $secretKey = sanitize_text_field(ArrayHelper::get($data, 'secretKey'));
+
+        // Prepare captcha data.
+        $captchaData = [
+            'siteKey'   => ArrayHelper::get($data, 'siteKey'),
+            'secretKey' => $secretKey,
+            'invisible' => ArrayHelper::get($data, 'invisible', 'no'),
+            'theme'     => ArrayHelper::get($data, 'theme', 'auto')
+        ];
 
         // If token is not empty meaning user verified their captcha.
         if ($token) {
@@ -226,13 +234,6 @@ class Settings
 
             // turnstile is valid. So proceed to store.
             if ($status) {
-                // Prepare captcha data.
-                $captchaData = [
-                    'siteKey'   => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
-                    'secretKey' => sanitize_text_field($secretKey),
-                    'token'     => $token,
-                ];
-
                 // Update the turnstile details with siteKey & secretKey.
                 update_option('_fluentform_turnstile_details', $captchaData, 'no');
 
@@ -242,12 +243,12 @@ class Settings
                 // Send success response letting the user know that
                 // that the turnstile is valid and saved properly.
                 wp_send_json_success([
-                    'message' => __('Your Turnstile is valid and saved.', 'fluentform'),
+                    'message' => __('Your Turnstile Keys are valid.', 'fluentform'),
                     'status'  => $status,
                 ], 200);
             } else {
                 // turnstile is not valid.
-                $message = __('Sorry, Your Turnstile is not valid. Please try again', 'fluentform');
+                $message = __('Sorry, Your Turnstile Keys are not valid. Please try again!', 'fluentform');
             }
         } else {
             // The token is empty, so the user didn't verify their captcha.
@@ -257,7 +258,13 @@ class Settings
             $status = get_option('_fluentform_turnstile_keys_status');
 
             if ($status) {
-                $message = __('Your Turnstile details are already valid. So no need to save again.', 'fluentform');
+                update_option('_fluentform_turnstile_details', $captchaData, 'no');
+                $message = __('Your Turnstile settings is saved.', 'fluentform');
+
+                wp_send_json_success([
+                    'message' => $message,
+                    'status'  => $status,
+                ], 200);
             }
         }
 

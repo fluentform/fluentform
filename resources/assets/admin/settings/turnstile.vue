@@ -64,6 +64,46 @@
                     <el-input type="password" v-model="turnstile.secretKey" @change="load"></el-input>
                 </el-form-item>
 
+                <el-form-item>
+                    <template slot="label">
+                        {{ $t('Enable Invisible Option') }}
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>{{ $t('Enable Invisible Option') }}</h3>
+
+                                <p>
+                                    {{ $t('If you enable this then the field will be invisible but works in the background') }}<br>
+                                </p>
+                            </div>
+
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-checkbox v-model="turnstile.invisible" true-label="yes" false-label="no"></el-checkbox>
+                </el-form-item>
+
+                <el-form-item>
+                    <template slot="label">
+                        {{ $t('Theme') }}
+                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                            <div slot="content">
+                                <h3>{{ $t('Choose Theme') }}</h3>
+
+                                <p>
+                                    {{ $t('Choose a theme for the field') }}<br>
+                                </p>
+                            </div>
+
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </template>
+
+                    <el-radio v-model="turnstile.theme" label="auto">Auto</el-radio>
+                    <el-radio v-model="turnstile.theme" label="light">Light</el-radio>
+                    <el-radio v-model="turnstile.theme" label="dark">Dark</el-radio>
+                </el-form-item>
+
                 <!--Validate Keys-->
                 <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
                     <div
@@ -112,6 +152,8 @@ export default {
             turnstile: {
                 siteKey: "",
                 secretKey: "",
+                invisible: "no",
+                theme: 'auto'
             },
             turnstile_status: false,
             siteKeyChanged: false,
@@ -127,6 +169,7 @@ export default {
                 this.siteKeyChanged = false;
                 return;
             } else {
+                this.disabled = true;
                 this.siteKeyChanged = true;
                 this.turnstile_status = false;
             }
@@ -143,6 +186,8 @@ export default {
                         this.turnstile.token = token;
                     }
                 });
+
+                this.disabled = false;
             })
         },
         save() {
@@ -160,7 +205,6 @@ export default {
                 key: 'turnstile',
                 turnstile: this.turnstile
             }).then(response => {
-                    this.disabled = true;
                     this.turnstile_status = response.data.status;
                     this.$notify.success({
                         title: 'Success!',

@@ -394,8 +394,14 @@ add_action('fluentform_addons_page_render_fluentform_pdf', function () {
 
 //Add file upload location in global settings
 add_filter('fluentform_get_global_settings_values', function ($values, $key) {
-    if (is_array($key) && in_array('_fluentform_global_form_settings', $key)) {
-        $values['file_upload_optoins'] = FluentForm\App\Helpers\Helper::fileUploadLocations();
+    if (is_array($key)) {
+        if (in_array('_fluentform_global_form_settings', $key)) {
+            $values['file_upload_optoins'] = FluentForm\App\Helpers\Helper::fileUploadLocations();
+        }
+
+        if (in_array('_fluentform_turnstile_details', $key)) {
+            $values = FluentForm\App\Modules\Turnstile\Turnstile::ensureSettings($values);
+        }
     }
     return $values;
 }, 10, 2);
