@@ -330,7 +330,7 @@ function fluentform_kses($html)
             'path'  => [
                 'd'         => true,
                 'fill'      => true,
-                'transform' => true
+                'transform' => true,
             ],
         ];
         $tags = array_merge($tags, $svg_args);
@@ -341,7 +341,7 @@ function fluentform_kses($html)
     return wp_kses($html, $tags);
 }
 
-function fluentform_kses_js($content) 
+function fluentform_kses_js($content)
 {
     if (function_exists('fluentform_kses_advanced')) {
         return fluentform_kses_advanced($content);
