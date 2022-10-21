@@ -80,10 +80,6 @@ Fluent Forms can be used for your regular contact forms, event forms, online for
 == DRAG & DROP CONTACT FORM BUILDER ==
 Our powerful drag & drop form builder allows you to easily create WordPress contact forms and other online forms in just a few minutes without writing any code. Building forms is now easier for you than writing and drawing it on a piece of paper!
 
-== ONE-CLICK MIGRATOR ==
-Already using a form plugin? If you are looking forward to switching to Fluent Forms, but already using Caldera Forms, Ninja Forms or Gravity Forms; we will make the switch easy for you. Now Fluent Forms comes packed with a one-click migrator. With this migrator, you can import all of your forms made with Caldera along with the customizations, configuration, and form entries! For Ninja Forms, and Gravity Forms the migrator will only import your forms and form settings, but not the form entries. 
-
-
 == MULTI-COLUMN FORM LAYOUT ==
 We have all faced the hassle of long forms, filling out which seems like meeting a Dementor from the Harry Potter series that might suck the soul out of you and leave you dead. These “long” forms are often nothing more than just mismanagement of space. Say, you are showing your potential lead a form that has ten input fields in it. Now stacking these 10 fields one after one makes it a long, tedious, and scary form. But if you cleverly stack them 2 or 3 columns, the whole thing looks compact, smart, and not that much scary at all!
 
@@ -297,6 +293,20 @@ Fluent Forms Documentation comes with a detailed step-by-step instruction of how
 >__Free Version Has Options Found only in Premium Plugins__
 >This is a fantastic email form. It’s fast (very light weight), easy to use, and the support is great. To boot, the free version also has options usually found only in premium email forms. Don’t waste your time looking for another form. I spent countless hours looking for the “right” form, and this one is it, hands down.
 - By @nevrsmer
+
+
+== ONE-CLICK MIGRATOR ==
+Already using a form plugin? If you are looking forward to switching to Fluent Forms, but already using Caldera Forms, Ninja Forms or Gravity Forms; we will make the switch easy for you. Now Fluent Forms comes packed with a one-click migrator. With this migrator, you can import all of your forms made with Caldera along with the customizations, configuration, and form entries! For Ninja Forms, and Gravity Forms the migrator will only import your forms and form settings, but not the form entries.
+
+== Migrating From Gravity Forms ==
+If you have forms in Gravity Forms then you can migrate Forms build with Gravity Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Gravity Forms. You can see all the Gravity Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Please note that, Entries of your Gravity Forms will not be migrated.
+
+== Migrating From Ninja Forms ==
+If you have forms in Ninja Forms then you can migrate Forms build with Ninja Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Ninja Forms. You can see all the Ninja Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Please note that, Entries of your Ninja Forms will not be migrated.
+
+== Migrating From Caldera Forms ==
+If you have forms in Caldera Forms then you can migrate Forms build with Caldera Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Caldera Forms. You can see all the Caldera Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Your Entries from Caldera Forms will be also migrated.
+
 
 == Other Plugins By WPManageNinja Team ==
 <ul>
