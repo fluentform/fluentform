@@ -176,7 +176,7 @@ class BaseComponent
         $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
 
-        return "<div class='" . esc_attr($classes) . "'><label for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label, false) . '</label>' . $helpMessage . '</div>';
+        return "<div class='" . esc_attr($classes) . "'><label for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
     }
 
     /**
@@ -238,12 +238,12 @@ class BaseComponent
                 "<div class='%s'><label %s>%s</label> %s</div>",
                 esc_attr($labelClass),
                 esc_attr($forStr),
-                fluentform_sanitize_html($label, false),
-                fluentform_sanitize_html($labelHelpText, false)
+                fluentform_sanitize_html($label),
+                fluentform_sanitize_html($labelHelpText)
             );
         }
 
-        $inputHelpText = fluentform_sanitize_html($inputHelpText, false);
+        $inputHelpText = fluentform_sanitize_html($inputHelpText);
 
         if ('after_label' == $labelPlacement) {
             $elMarkup = $inputHelpText . $elMarkup;
@@ -287,7 +287,7 @@ class BaseComponent
         $class = trim('ff-el-help-message ' . $hideClass);
 
         if (isset($data['settings']['help_message']) && ! empty($data['settings']['help_message'])) {
-            return "<div class='" . esc_attr($class) . "'>" . fluentform_sanitize_html($data['settings']['help_message'], false) . '</div>';
+            return "<div class='" . esc_attr($class) . "'>" . fluentform_sanitize_html($data['settings']['help_message']) . '</div>';
         }
         return false;
     }

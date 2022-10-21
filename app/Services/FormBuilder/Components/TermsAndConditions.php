@@ -49,7 +49,7 @@ class TermsAndConditions extends BaseComponent
         $html = "<div class='" . esc_attr($cls) . "'>";
         $html .= "<div class='ff-el-form-check ff-el-tc'>";
         $html .= "<label class='ff-el-form-check-label ff_tc_label' for={$uniqueId}>";
-        $html .= "{$checkbox} <div class='ff_t_c'>" . fluentform_sanitize_html($data['settings']['tnc_html'], false) . '</div>';
+        $html .= "{$checkbox} <div class='ff_t_c'>" . fluentform_sanitize_html($data['settings']['tnc_html']) . '</div>';
         $html .= '</label>';
         $html .= '</div>';
         $html .= '</div>';

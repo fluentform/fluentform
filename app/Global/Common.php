@@ -272,22 +272,14 @@ function fluentform_options_sanitize($options)
     return $options;
 }
 
-function fluentform_sanitize_html($html, $isSaving = true)
+function fluentform_sanitize_html($html)
 {
     if (! $html) {
         return $html;
     }
 
-    if (function_exists('fluentform_kses_advanced')) {
-        return fluentform_kses_advanced($html, $isSaving);
-    }
-
-    return fluentform_kses($html);
-}
-
-function fluentform_kses($html)
-{
-    if (! $html) {
+    // Return $html if it's just a plain text
+    if (! preg_match('/<[^>]*>/', $html)) {
         return $html;
     }
 
@@ -323,7 +315,7 @@ function fluentform_kses($html)
                 'xmlns'           => true,
                 'width'           => true,
                 'height'          => true,
-                'viewbox'         => true, // <= Must be lower case!
+                'viewbox'         => true,
             ],
             'g'     => ['fill' => true],
             'title' => ['title' => true],
@@ -343,11 +335,7 @@ function fluentform_kses($html)
 
 function fluentform_kses_js($content)
 {
-    if (function_exists('fluentform_kses_advanced')) {
-        return fluentform_kses_advanced($content);
-    }
-
-    return html_entity_decode(fluentform_kses($content));
+    return html_entity_decode(fluentform_sanitize_html($content));
 }
 
 /**
@@ -382,10 +370,6 @@ function fluentform_backend_sanitizer($array, $sanitizeMap = [])
  */
 function fluentformSanitizeCSS($css)
 {
-    if (function_exists('fluentform_kses_advanced')) {
-        return fluentform_kses_advanced($css);
-    }
-
     return preg_match('#</?\w+#', $css) ? '' : $css;
 }
 

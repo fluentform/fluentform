@@ -123,8 +123,8 @@ class WelcomeScreen extends BaseFieldManager
             ArrayHelper::except($data['attributes'], 'name')
         );
         $html = "<div {$atts}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
-        $html .= "<h3 class='ff-el-section-title'>" . fluentform_sanitize_html($data['settings']['label'], false) . '</h3>';
-        $html .= "<div class='ff-section_break_desk'>" . fluentform_sanitize_html($data['settings']['description'], false) . '</div>';
+        $html .= "<h3 class='ff-el-section-title'>" . fluentform_sanitize_html($data['settings']['label']) . '</h3>';
+        $html .= "<div class='ff-section_break_desk'>" . fluentform_sanitize_html($data['settings']['description']) . '</div>';
         $html .= '</div>';
 
         $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);

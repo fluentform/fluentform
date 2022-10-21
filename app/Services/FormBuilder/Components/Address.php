@@ -56,7 +56,7 @@ class Address extends BaseComponent
         do_action('fluentform_rendering_address_field', $data, $form);
         if ($data['settings']['label']):
             echo "<div class='ff-el-input--label'>";
-            echo '<label>' . fluentform_sanitize_html($data['settings']['label'], false) . '</label>';
+            echo '<label>' . fluentform_sanitize_html($data['settings']['label']) . '</label>';
             echo '</div>';
         endif;
         echo "<div class='ff-el-input--content'>";
