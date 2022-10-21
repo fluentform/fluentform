@@ -2,13 +2,13 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
-use FluentForm\App\Modules\Form\Settings\FormCssJs;
-use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
+use FluentForm\View;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\View;
+use FluentForm\App\Modules\Form\Settings\FormCssJs;
+use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
+use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
 
 class Form
 {
@@ -61,6 +61,7 @@ class Form
     {
         if (! Helper::isConversionForm($formId)) {
             echo 'Sorry! This is not a conversational form';
+
             return;
         }
 
@@ -366,11 +367,11 @@ class Form
                         'media_x_position' => 50,
                         'media_y_position' => 50,
                     ];
-    
-                    if ($element == 'terms_and_condition' || $element == 'gdpr_agreement') {
+
+                    if ('terms_and_condition' == $element || 'gdpr_agreement' == $element) {
                         $existingSettings = $field['settings'];
                         $existingSettings['tc_agree_text'] = __('I accept', 'fluentform');
-                        if ($element == 'terms_and_condition') {
+                        if ('terms_and_condition' == $element) {
                             $existingSettings['tc_dis_agree_text'] = __('I don\'t accept', 'fluentform');
                         }
                         $field['settings'] = $existingSettings;
@@ -538,7 +539,8 @@ class Form
                 'questions'      => $form->questions,
                 'image_preloads' => $form->image_preloads,
                 'submit_button'  => $form->submit_button,
-                'hasPayment'     => ! ! $form->has_payment,
+                'hasPayment'     => (bool) $form->has_payment,
+                'hasCalculation' => (bool) $form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
             ],
@@ -659,7 +661,8 @@ class Form
                 'questions'      => $form->questions,
                 'image_preloads' => $form->image_preloads,
                 'submit_button'  => $form->submit_button,
-                'hasPayment'     => ! ! $form->has_payment,
+                'hasPayment'     => (bool) $form->has_payment,
+                'hasCalculation' => (bool) $form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
             ],
@@ -687,7 +690,7 @@ class Form
         if (is_array($isRenderable) && ! $isRenderable['status']) {
             if (! Acl::hasAnyFormPermission($form->id)) {
                 echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . wp_kses_post($isRenderable['message']) . '</h1>';
-                die();
+                exit();
             }
         }
 

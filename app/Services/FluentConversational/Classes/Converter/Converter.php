@@ -18,6 +18,7 @@ class Converter
 
         $form->reCaptcha = false;
         $form->hCaptcha = false;
+        $form->hasCalculation = false;
 
         $questions = [];
 
@@ -115,7 +116,6 @@ class Converter
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
             } elseif ('input_checkbox' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field);
-                ;
                 $question['multiple'] = true;
                 $question = static::hasPictureMode($field, $question);
             } elseif ('input_radio' === $field['element']) {
@@ -147,16 +147,17 @@ class Converter
                 $question['min'] = is_numeric($question['min']) ? $question['min'] : null;
                 $question['max'] = is_numeric($question['max']) ? $question['max'] : null;
                 $question['is_calculable'] = true;
+                $form->hasCalculation = static::hasFormula($question);
                 do_action('ff_rendering_calculation_form', $form, $field);
-			} elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
-				$question['options'] = [
-					[
-						'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
-						'value' => 'on',
-					]
-				];
+            } elseif (in_array($field['element'], ['terms_and_condition', 'gdpr_agreement'])) {
+                $question['options'] = [
+                    [
+                        'label' => ArrayHelper::get($field, 'settings.tc_agree_text', 'I accept'),
+                        'value' => 'on',
+                    ],
+                ];
 
-                if ($field['element'] === 'terms_and_condition') {
+                if ('terms_and_condition' === $field['element']) {
                     $question['options'][] = [
                         'label' => ArrayHelper::get($field, 'settings.tc_dis_agree_text', 'I don\'t accept'),
                         'value' => 'off',
@@ -318,6 +319,7 @@ class Converter
 
                 $question['is_payment_field'] = true;
                 $question['is_calculable'] = true;
+                $form->hasCalculation = static::hasFormula($question);
                 do_action('ff_rendering_calculation_form', $form, $field);
             } elseif ('item_quantity_component' === $field['element']) {
                 $question['type'] = $allowedFields['input_number'];
@@ -456,6 +458,7 @@ class Converter
         }
 
         $formFields['fields'] = $formattedFields;
+
         return json_encode($formFields);
     }
 
@@ -518,7 +521,7 @@ class Converter
         if (! $color) {
             return;
         }
-        $rgbValues = list($r, $g, $b) = array_map(
+        $rgbValues = [$r, $g, $b] = array_map(
             function ($c) {
                 return hexdec(str_pad($c, 2, $c));
             },
@@ -526,6 +529,7 @@ class Converter
         );
         $rgbValues[3] = $opacity;
         $formattedValues = implode(',', $rgbValues);
+
         return "rgb({$formattedValues})";
     }
 
@@ -635,6 +639,7 @@ class Converter
 
             if ($dynamicVal && 'input_checkbox' == $element) {
                 $defaultValues = explode(',', $dynamicVal);
+
                 return array_map('trim', $defaultValues);
             }
 
@@ -687,5 +692,13 @@ class Converter
         }
 
         return $options;
+    }
+
+    private static function hasFormula($question)
+    {
+        return (bool) (
+            ArrayHelper::get($question, 'calculation_settings.status')
+            && ArrayHelper::get($question, 'calculation_settings.formula')
+        );
     }
 }
