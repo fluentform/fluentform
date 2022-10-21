@@ -110,6 +110,20 @@ Vue.mixin({
             }
             return str;
         },
+        $success(message, title = 'Success') {
+            this.$notify.success({
+                title: title,
+                message: message,
+                position: "bottom-right"
+            });
+        },
+        $fail(message, title = 'Error') {
+            this.$notify.error({
+                title: title,
+                message: message,
+                position: "bottom-right"
+            });
+        }
     },
 });
 
@@ -120,13 +134,13 @@ import PostFeeds from './components/settings/PostFeeds.vue';
 import BasicSettings from './components/settings/FormSettings.vue';
 import Confirmations from './components/settings/Confirmations.vue';
 import EmailNotifications from './components/settings/Notifications.vue';
-import WebHook from './components/settings/WebHook/WebHook';
-import CustomCssJs from './components/settings/FormCustomCssJs';
-import GeneralIntegration from './components/settings/GeneralIntegration/Integration';
+import WebHook from './components/settings/WebHook/WebHook.vue';
+import CustomCssJs from './components/settings/FormCustomCssJs.vue';
+import GeneralIntegration from './components/settings/GeneralIntegration/Integration.vue';
 import EditGeneralIntegration from './components/settings/GeneralIntegration/IntegrationEditor.vue';
 import PdfFeeds from './components/settings/PdfFeeds.vue';
-import PaymentSettings from './components/settings/PaymentSettings';
-import QuizSettings from './components/settings/QuizSettings';
+import PaymentSettings from './components/settings/PaymentSettings.vue';
+import QuizSettings from './components/settings/QuizSettings.vue';
 
 const routes = [
     {
@@ -205,7 +219,7 @@ const router = new Router({
     routes: routes
 });
 
-import App from './components/settings/SettingsApp';
+import App from './components/settings/SettingsApp.vue';
 
 const app = new Vue({
     el: '#ff_form_settings_app',

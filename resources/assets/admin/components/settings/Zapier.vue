@@ -93,10 +93,11 @@
             <div class="text-right">
 
                 <el-button
+                    plain
                     v-if="selected.id"
                     :loading="verifying"
                     @click="verifyEndpoint" 
-                    size="medium" 
+                    size="small" 
                     type="default"
                 >
                     {{ ('Send Data Sample') }}
@@ -105,10 +106,11 @@
                 <el-button 
                     :loading="loading"
                     @click="store" 
-                    size="medium" 
+                    size="small" 
                     type="primary"
+                    icon="el-icon-success"
                 >
-                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
+                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Feed') }}
                 </el-button>
             </div>
         </el-form>
@@ -190,11 +192,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .done(response => {
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success',
-                            message: 'Notification ' + enabled + ' successfully!'
-                        });
+                        this.$success(this.$t('Notification ' + enabled + ' successfully!'));
                     })
                     .fail(e => console.log(e));
             },
@@ -205,11 +203,7 @@
                 })
                 .done(response => {
                     this.notifications.splice(index, 1);
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully removed the notification.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully removed the notification.'));
                 })
                 .fail(e => console.log(e));
             },
@@ -245,11 +239,7 @@
                     this.selected.id = response.data.id;
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
                     
-                    this.$notify.success({
-                        offset: 30,
-                        title: 'Success',
-                        message: 'Notification saved successfully!'
-                    });
+                    this.$success(this.$t('Notification saved successfully!'));
 
                     // this.selected = this.selectedIndex = null;
                 })
@@ -265,17 +255,9 @@
                     zapier_hook_id: this.selected.id,
                     action: 'fluentform-verify-endpoint-zapier'
                 }).then(response => {
-                    this.$notify.success({
-                        offset: 30,
-                        title: 'Success!',
-                        message: response.data.message
-                    });
+                    this.$success(response.data.message);
                 }).fail(error => {
-                    this.$notify.error({
-                        offset: 30,
-                        title: 'Oops!',
-                        message: error.responseJSON.data.message
-                    });
+                    this.$fail(error.responseJSON.data.message);
                 }).always(r => {
                     this.verifying = false;
                 });

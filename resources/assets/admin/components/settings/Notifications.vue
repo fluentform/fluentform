@@ -449,8 +449,8 @@
                 <el-button
                     :loading="loading"
                     @click="store"
-                    size="medium"
-                    type="success"
+                    size="small"
+                    type="primary"
                     icon="el-icon-success">
                     {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
                 </el-button>
@@ -698,11 +698,7 @@ export default {
 
                     let handle = notification.value.enabled ? 'enabled' : 'disabled';
 
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully ' + handle + ' the notification.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully ' + handle + ' the notification.'));
                 })
                 .fail(e => {
                     notification.id = id;
@@ -716,11 +712,7 @@ export default {
             })
                 .done(response => {
                     this.notifications.splice(index, 1);
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully removed the notification.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully removed the notification.'));
                 })
                 .fail(e => {
                 });
@@ -776,11 +768,7 @@ export default {
 
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
 
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully saved the notification.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully saved the notification.'));
 
                     this.selected = null;
 

@@ -31,6 +31,7 @@
                    v-popover:input-popover1
                    :type="btnType"
                    v-html="buttonText"
+                   :plain="plain"
         />
     </div>
 </template>
@@ -56,6 +57,12 @@
                 type: String,
                 default() {
                     return 'success';
+                }
+            },
+            plain: {
+                type: Boolean,
+                default() {
+                    return false
                 }
             }
         },

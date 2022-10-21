@@ -181,19 +181,10 @@
                 };
                 FluentFormsGlobal.$post(data)
                     .then(response => {
-                        console.log(response);
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success!',
-                            message: response.data.message
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
-                        this.$notify.error({
-                            offset: 30,
-                            title: 'Success!',
-                            message: error.responseJSON.data.message
-                        });
+                        this.$fail(error.responseJSON.data.message);
                     });
             },
             remove(id, scope) {
@@ -206,11 +197,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .then(response => {
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success!',
-                            message: response.data.message
-                        });
+                        this.$success(response.data.message);
                         this.integrations.splice($index, 1);
                     })
                     .fail(e => console.log(e));

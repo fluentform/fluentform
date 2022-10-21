@@ -8,8 +8,8 @@
                 <el-button
                     :loading="saving"
                     class="pull-right"
-                    size="medium"
-                    type="success"
+                    size="small"
+                    type="primary"
                     icon="el-icon-success"
                     @click="saveSettings">
                     {{ saving ? $t('Saving') : $t('Save') }} {{ $t('Settings') }}
@@ -84,12 +84,12 @@
                         </div>
                     </el-form-item>
                 </div>
-                <div style="margin-top: 30px" class="action_right">
+                <div v-if="settings && settings.enabled" style="margin-top: 30px" class="action_right">
                     <el-button
                         :loading="saving"
                         class="pull-right"
-                        size="medium"
-                        type="success"
+                        size="small"
+                        type="primary"
                         icon="el-icon-success"
                         @click="saveSettings">
                         {{Saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
@@ -162,7 +162,7 @@ export default {
                 settings: JSON.stringify(this.settings)
             })
                 .then(response => {
-                    this.$notify.success(response.data.message);
+                    this.$success(response.data.message);
                 })
                 .fail(error => {
                     this.errors.record(e.responseJSON.errors);

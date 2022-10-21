@@ -138,11 +138,7 @@
 
                     this.feeds.splice(index, 1);
 
-                    this.$notify.success({
-                        offset: 32,
-                        title: 'Success',
-                        message: 'Successfully deleted the feed.'
-                    });
+                    this.$success(this.$t('Successfully deleted the feed.'));
                 });
             },
             handleActive(index) {
@@ -165,11 +161,7 @@
 
                     let handle = feed.value.status ? 'enabled' : 'disabled';
 
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully ' + handle + ' the feed.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully ' + handle + ' the feed.'));
                 }).fail(e => {
                     feed.id = id;
                 });

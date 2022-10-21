@@ -10,8 +10,8 @@
                 <el-button
                         :loading="saving"
                         class="pull-right"
-                        size="medium"
-                        type="success"
+                        size="small"
+                        type="primary"
                         icon="el-icon-success"
                         @click="saveSettings">
                     {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
@@ -238,7 +238,7 @@
                 </div>
 
                 <div style="margin-top: 30px" class="action_right">
-                    <el-button :loading="saving" @click="saveSettings()" type="success" size="small">
+                    <el-button class="pull-right" icon="el-icon-success" :loading="saving" @click="saveSettings()" type="primary" size="small">
                         {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                     </el-button>
                 </div>
@@ -307,7 +307,7 @@
                     settings: this.settings
                 })
                     .then(response => {
-                        this.$notify.success(response.data.message);
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
 

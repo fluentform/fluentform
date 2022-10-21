@@ -78,7 +78,7 @@
                 </el-row>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="addVisible = false">{{ $t('Cancel') }}</el-button>
+                <el-button plain size="small" @click="addVisible = false">{{ $t('Cancel') }}</el-button>
             </span>
         </el-dialog>
 
@@ -87,11 +87,6 @@
 
 <script>
     import remove from "../confirmRemove.vue";
-    import inputPopover from "../input-popover.vue";
-    import FilterFields from "./Includes/FilterFields.vue";
-    import ErrorView from "../../../common/errorView.vue";
-    import FiledGeneral from "../settings/GeneralIntegration/_FieldGeneral";
-    import wpeditor from "../../../common/_wp_editor";
     import FeedEditor from './PdfFeed';
 
     export default {

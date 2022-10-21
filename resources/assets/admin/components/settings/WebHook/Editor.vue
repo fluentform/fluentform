@@ -318,9 +318,8 @@
 
             </el-form-item>
             
-            <el-button :loading="saving" @click="saveWebHook" type="primary">
-                <span v-if="selected_id">{{ $t('Update WebHook Feed') }}</span>
-                <span v-else>{{ $t('Create WebHook Feed') }}</span>
+            <el-button class="pull-right" icon="el-icon-success" :loading="saving" @click="saveWebHook" type="primary" size="small">
+                {{ $t('Save Feed') }}
             </el-button>
 
     </el-form>
@@ -407,19 +406,11 @@
                 FluentFormsGlobal.$post(data)
                 .then(response => {
                     this.setSelectedId(response.data.notification_id);
-                    this.$notify.success({
-                        offset: 30,
-                        title: 'Success!',
-                        message: response.data.message
-                    });
+                    this.$success(response.data.message);
                 })
                 .fail(error => {
                     this.errors.record(error.responseJSON.data.errors);
-                    this.$notify.error({
-                        offset: 30,
-                        title: 'Oops!',
-                        message: error.responseJSON.data.message
-                    });
+                    this.$fail(error.responseJSON.data.message);
                 })
                 .always(() => this.saving = false);
             },

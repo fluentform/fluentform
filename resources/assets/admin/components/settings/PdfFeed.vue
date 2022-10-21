@@ -21,7 +21,7 @@
                             v-model="feed.settings[field.key]"
                      />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
+                <el-button class="pull-right" v-loading="saving" @click="saveFeed()" type="primary" size="small" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
             </el-tab-pane>
             <el-tab-pane :label="$t('Appearance')">
                 <el-form v-if="feed.appearance" label-position="left" label-width="205px">
@@ -34,7 +34,7 @@
                             v-model="feed.appearance[field.key]"
                     />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
+                <el-button class="pull-right" size="small" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -90,15 +90,10 @@
                     feed: this.feed
                 })
                     .then(response => {
-                        this.$notify.success({
-                            message: response.data.message
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail((error) => {
-                        this.$notify.error({
-                            message: error.responseJSON.data.message
-                        });
-                        console.log(error);
+                        this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.saving = false;

@@ -5,7 +5,7 @@
                 <h2>{{ $t('Slack Integration') }}</h2>
             </el-col>
             <el-col :md="12" class="action-buttons clearfix mb15">
-                <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving"
+                <el-button class="pull-right" size="small" type="primary" icon="el-icon-success" @click="save" :loading="saving"
                 > {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                 </el-button>
             </el-col>
@@ -13,12 +13,13 @@
         <el-form-item :label="$t('Integrate Slack')">
             <el-switch active-color="#13ce66" v-model="slack.enabled"></el-switch>
         </el-form-item>
-        <el-form-item v-if="slack.enabled" style="margin-left: 17px;" :label="$t('Slack Title')">
-            <el-input placeholder="optional" v-model="slack.textTitle"></el-input>
-        </el-form-item>
 
-        <transition name="slide-down">
-            <el-form-item v-if="slack.enabled" class="conditional-items">
+        <template v-if="slack.enabled">
+            <el-form-item style="margin-left: 17px;" :label="$t('Slack Title')">
+                <el-input placeholder="optional" v-model="slack.textTitle"></el-input>
+            </el-form-item>
+
+            <el-form-item class="conditional-items">
                 <div slot="label">
                     {{ $t('Webhook URL') }}
 
@@ -37,9 +38,8 @@
 
                 <el-input placeholder="https://hooks.slack.com/services/..." v-model="slack.webhook"></el-input>
             </el-form-item>
-        </transition>
-        <transition name="slide-down">
-            <el-form-item v-if="formattedFields && slack.enabled"  class="conditional-items" >
+
+            <el-form-item v-if="formattedFields"  class="conditional-items" >
                 <div slot="label">
                     {{$t('Select Fields')}}
                 </div>
@@ -58,14 +58,14 @@
                     {{ $t('Field Selection is a pro feature.') }}
                 </div>
             </el-form-item>
-            
-        </transition>
-        <el-form-item v-if="slack.enabled" style="margin-left: 17px;" :label="$t('Slack Footer message')">
-            <el-input placeholder="Default is 'fluentform'" v-model="slack.footerText"></el-input>
-        </el-form-item>
 
-        <el-form-item>
-            <el-button class="pull-right" size="medium" type="success" icon="el-icon-success" @click="save" :loading="saving">
+            <el-form-item style="margin-left: 17px;" :label="$t('Slack Footer message')">
+                <el-input placeholder="Default is 'fluentform'" v-model="slack.footerText"></el-input>
+            </el-form-item>
+        </template>
+
+        <el-form-item v-if="slack.enabled">
+            <el-button class="pull-right" size="small" type="primary" icon="el-icon-success" @click="save" :loading="saving">
                 {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
             </el-button>
         </el-form-item>
@@ -149,11 +149,7 @@
                     .then(response => {
                         this.slack.id = response.data.id;
 
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
                         this.errors.record(error.responseJSON.data.errors);

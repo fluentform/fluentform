@@ -11,22 +11,23 @@
 
             <div class="action-buttons clearfix mb15 text-right el-col el-col-24 el-col-md-12">
                 <el-button
-                        size="small"
-                        type="success"
-                        @click="saveFeed"
-                        icon="el-icon-success"
-                        style="margin-right:10px;"
-                >{{ $t('Save Feed') }}
-                </el-button>
-
-                <el-button
                         plain
                         size="small"
                         type="primary"
                         icon="el-icon-arrow-left"
+                        style="margin-right:10px;"
                         @click="$emit('show-post-feeds')"
                 >{{ $t('Back') }}
                 </el-button>
+
+                <el-button
+                        size="small"
+                        type="primary"
+                        @click="saveFeed"
+                        icon="el-icon-success"
+                >{{ $t('Save Feed') }}
+                </el-button>
+
             </div>
         </div>
 
@@ -238,20 +239,20 @@
 
                 <el-form-item class="pull-right">
                     <el-button
-                            size="small"
-                            type="success"
-                            @click="saveFeed"
-                            icon="el-icon-success"
-                    >{{ $t('Save Feed') }}
-                    </el-button>
-
-                    <el-button
                             plain
                             size="small"
                             type="primary"
                             icon="el-icon-arrow-left"
                             @click="$emit('show-post-feeds')"
                     >{{ $t('Back') }}
+                    </el-button>
+                    
+                    <el-button
+                            size="small"
+                            type="primary"
+                            @click="saveFeed"
+                            icon="el-icon-success"
+                    >{{ $t('Save Feed') }}
                     </el-button>
                 </el-form-item>
             </el-form>
@@ -289,12 +290,7 @@
                 this.saving = true;
 
                 if (!this.feed.value.feed_name) {
-                    return this.$notify({
-                        title: 'Error',
-                        message: 'Feed name is required.',
-                        type: 'error',
-                        offset: 32
-                    });
+                    return this.$fail(this.$t('Feed name is required.'));
                 }
 
                 let feed = {
@@ -314,12 +310,7 @@
 
                         this.$emit('show-post-feeds', this.feed);
 
-                        this.$notify({
-                            title: 'Success',
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 32
-                        });
+                        this.$success(response.data.message);
                     })
                     .always(() => {
                         this.saving = false;

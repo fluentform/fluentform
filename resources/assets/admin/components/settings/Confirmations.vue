@@ -7,6 +7,8 @@
 
             <!--Save settings-->
             <el-col :md="12" class="action-buttons clearfix mb15 text-right">
+                <video-doc btn_text="Learn" route_id="otherConfirmationSettings" style="margin-right: 5px" />
+                
                 <el-button v-if="selected" @click="discard"
                            class="pull-right" icon="el-icon-arrow-left" size="small"
                 >{{ $t('Back') }}
@@ -23,7 +25,6 @@
                     >{{ $t('Add Confirmation') }}
                     </el-button>
                 </template>
-                <video-doc btn_text="Learn" route_id="otherConfirmationSettings" />
             </el-col>
         </el-row>
 
@@ -120,7 +121,7 @@
             </el-form-item>
 
             <div class="text-right">
-                <el-button @click="store" size="medium" type="success" icon="el-icon-success">Save Notification</el-button>
+                <el-button @click="store" size="small" type="primary" icon="el-icon-success">Save Notification</el-button>
             </div>
         </el-form>
 
@@ -244,10 +245,7 @@
 
                         let handle = confirmation.active ? 'enabled' : 'disabled';
 
-                        this.$notify.success({
-                            message: 'Successfully ' + handle + ' the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully ' + handle + ' the confirmation.'));
                     })
                     .fail(e => {});
             },
@@ -261,10 +259,7 @@
 
                         this.confirmations.splice(index, 1);
 
-                        this.$notify.success({
-                            message: 'Successfully removed the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully removed the confirmation.'));
                     })
                     .fail(e => {});
             },
@@ -322,10 +317,7 @@
 
                         this.confirmations.splice(this.selectedIndex, 1, this.selected);
 
-                        this.$notify.success({
-                            message: 'Successfully saved the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully saved the confirmation.'));
 
                         this.selected = null;
 

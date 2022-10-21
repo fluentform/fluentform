@@ -14,14 +14,21 @@
                 <el-button
                         :loading="saving"
                         class="pull-right"
-                        size="medium"
-                        type="success"
+                        size="small"
+                        type="primary"
                         icon="el-icon-success"
-                        @click="saveSettings">
+                        @click="saveSettings()">
                     {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                 </el-button>
-                <a v-show="share_url && settings.status == 'yes'" style="margin-right: 10px" target="_blank" rel="noopener" :href="final_share_url" class="el-button pull-right el-button--danger el-button--mini">
-                    <span class="dashicons dashicons-share"></span>
+                <a 
+                    v-show="share_url && settings.status == 'yes'" 
+                    style="margin-right: 10px" 
+                    target="_blank" 
+                    rel="noopener" 
+                    :href="final_share_url" 
+                    class="el-button el-button--primary el-button--small is-plain pull-right"
+                >
+                    <i class="el-icon-share"></i>
                 </a>
             </el-col>
         </el-row>
@@ -167,10 +174,10 @@
                                 <el-button
                                     :loading="saving"
                                     class="pull-right"
-                                    size="medium"
-                                    type="success"
+                                    size="small"
+                                    type="primary"
                                     icon="el-icon-success"
-                                    @click="saveSettings">
+                                    @click="saveSettings()">
                                     {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                                 </el-button>
                             </el-form-item>
@@ -227,7 +234,8 @@
                     classic: 'Classic'
                 },
                 active_tab: 'design',
-                show_frame: true
+                show_frame: true,
+                setup: false
             }
         },
         computed: {
@@ -244,10 +252,10 @@
                 this.settings.share_url_salt = this.string_to_slug(value);
             },
             'settings.design_style': function (){
-                this.saveSettings(true);
+                this.setup && this.saveSettings(true);
             },
             'settings.background_image': function (){
-                this.saveSettings(true);
+                this.setup && this.saveSettings(true);
             }
         },
         methods: {
@@ -264,13 +272,12 @@
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
+                        console.log('silence', silence)
                         if(!silence) {
-                            this.$notify.success({
-                                title: 'Success',
-                                message: response.data.message,
-                                offset: 30
-                            });
+                            this.$success(response.data.message);
                         }
+
+                        this.setup = true;
                     })
                     .fail(error => {
 

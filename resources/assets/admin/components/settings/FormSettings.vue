@@ -12,7 +12,7 @@
                             <el-button
                                 :loading="loading"
                                 size="small"
-                                type="success"
+                                type="primary"
                                 icon="el-icon-success"
                                 @click="saveSettings">
                                 {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
@@ -484,8 +484,8 @@
                 <el-button
                     :loading="loading"
                     class="pull-right"
-                    size="medium"
-                    type="success"
+                    size="small"
+                    type="primary"
                     icon="el-icon-success"
                     @click="saveSettings">
                     {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
@@ -701,11 +701,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .then(response => {
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
                         this.errors.record(error.responseJSON.data.errors);

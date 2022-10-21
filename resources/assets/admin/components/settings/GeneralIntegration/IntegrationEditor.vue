@@ -265,14 +265,13 @@
                     <hr>
                     <el-button
                         type="primary"
+                        size="small"
                         class="pull-right"
                         :loading="saving"
                         @click="saveNotification"
+                        icon="el-icon-success"
                     >
-                        <span v-if="integration_id">
-                            {{ $t('Update ') }} {{settings_fields.integration_title}} {{ $t('Feed') }}
-                        </span>
-                        <span v-else>{{ $t('Create ') }} {{settings_fields.integration_title}} {{ $t('Feed') }}</span>
+                        {{ $t('Save Feed') }}
                     </el-button>
                 </template>
             </el-form>
@@ -385,7 +384,7 @@
                         if (this.fromChainedAjax && error.responseJSON.data.settings_fields) {
                             this.settings_fields = error.responseJSON.data.settings_fields;
                         }
-                        this.$notify.error(error.responseJSON.data.message);
+                        this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.loading_app = false;
@@ -420,7 +419,7 @@
                         this.merge_fields = response.data.merge_fields;
                     })
                     .fail(error => {
-                      this.$notify.error(error.responseJSON.data.message);
+                      this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.loading_list = false;
@@ -445,19 +444,11 @@
                                 name: 'allIntegrations'
                             });
                         }
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success!',
-                            message: response.data.message
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
                         this.errors.record(error.responseJSON.data.errors);
-                        this.$notify.error({
-                            offset: 30,
-                            title: 'Oops!',
-                            message: error.responseJSON.data.message
-                        });
+                        this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => this.saving = false);
             },
