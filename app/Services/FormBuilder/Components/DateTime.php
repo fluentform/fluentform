@@ -127,9 +127,9 @@ class DateTime extends BaseComponent
                             return;
                         }
                         flatpickr.localize(window.fluentFormVars.date_i18n);
-                        var config = JSON.parse(<?php echo wp_json_encode($config); ?>);
+                        var config = <?php echo fluentform_sanitize_html($config); ?> ;
                         try {
-                            var customConfig = JSON.parse(<?php echo wp_json_encode($customConfigObject); ?>);
+                            var customConfig = <?php echo fluentform_sanitize_html($customConfigObject); ?>;
                         } catch (e) {
                             var customConfig = {};
                         }
