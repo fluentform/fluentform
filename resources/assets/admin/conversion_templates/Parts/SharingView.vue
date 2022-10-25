@@ -117,7 +117,7 @@ export default {
                 setTimeout(() => {
                     jQuery(e.trigger).removeClass('fc_copy_success');
                 }, 2000);
-                this.$notify.success('copied to clipboard');
+                this.$copy();
             });
         }
     }

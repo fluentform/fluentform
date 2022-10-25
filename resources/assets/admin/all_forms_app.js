@@ -68,6 +68,7 @@ locale.use(lang);
 import Acl from '@/common/Acl';
 
 import AllForms from './views/AllForms.vue';
+import notifier from './notifier';
 
 Vue.mixin({
     methods: {
@@ -81,7 +82,9 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
-        }
+        },
+        
+        ...notifier
     },
     filters: {
         ucFirst(string) {

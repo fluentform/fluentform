@@ -560,10 +560,7 @@ export default {
         this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
 
         (new Clipboard('.copy')).on('success', event => {
-            this.$message({
-                message: this.$t('Copied to Clipboard!'),
-                type: 'success'
-            });
+            this.$copy();
         });
     },
     created() {

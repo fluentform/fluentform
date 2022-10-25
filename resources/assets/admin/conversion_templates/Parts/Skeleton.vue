@@ -18,7 +18,7 @@
                         <p>{{ $t('Share your form by unique URL or copy and paste the ') }}<em>shorcode</em>{{ $t(' to embed in your page and post') }}</p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
-                        <el-button type="primary" @click="saveDesignSettings()">{{ $t('Save Settings') }}</el-button>
+                        <el-button icon="el-icon-success" size="small" type="primary" @click="saveDesignSettings()">{{ $t('Save Settings') }}</el-button>
                     </div>
                 </div>
             </div>
@@ -78,11 +78,7 @@ export default {
 
             FluentFormsGlobal.$post(data)
                 .then(response => {
-                    this.$notify.success({
-                        title: 'Success',
-                        message: response.data.message,
-                        offset: 30
-                    });
+                    this.$success(response.data.message);
                 })
                 .fail(error => {
                     console.log(error);

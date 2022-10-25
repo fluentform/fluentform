@@ -450,7 +450,6 @@
 
 <script type="text/babel">
 import {mapActions, mapGetters, mapMutations} from 'vuex';
-import Clipboard from 'clipboard';
 import List from '../components/nested-list.vue';
 import ListConversion from '../components/nested-list-conversion.vue';
 import recaptcha from '../components/modals/Recaptcha.vue';
@@ -1044,11 +1043,8 @@ export default {
          * Copy to clip board
          * @type {Clipboard}
          */
-        (new Clipboard('.copy')).on('success', (e) => {
-            this.$message({
-                message: this.$t('Copied to Clipboard!'),
-                type: 'success'
-            });
+        (new ClipboardJS('.copy')).on('success', (e) => {
+            this.$copy();
         });
     }
 };

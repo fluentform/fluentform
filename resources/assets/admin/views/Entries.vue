@@ -407,7 +407,6 @@
     import each from 'lodash/each';
     import EmailResend from './Helpers/_ResentEmailNotification'
     import ColumnDragAndDrop from "./ColumnDragAndDrop";
-    import Clipboard from "clipboard";
 
     export default {
         name: 'FormEntries',
@@ -874,12 +873,8 @@
             this.getData();
             this.getEntryCounts();
             this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
-            (new Clipboard('.copy')).on('success', (e) => {
-                this.$message({
-                                  message: this.$t('Copied to Clipboard!'),
-                                  type: 'success',
-                                  offset: 40
-                              });
+            (new ClipboardJS('.copy')).on('success', (e) => {
+                this.$copy();
             });
         },
         beforeCreate() {

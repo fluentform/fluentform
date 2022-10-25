@@ -6,6 +6,7 @@ import Router from 'vue-router';
 import Errors from '../common/Errors';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
+import notifier from './notifier';
 
 import {
     Button,
@@ -110,20 +111,8 @@ Vue.mixin({
             }
             return str;
         },
-        $success(message, title = 'Success') {
-            this.$notify.success({
-                title: title,
-                message: message,
-                position: "bottom-right"
-            });
-        },
-        $fail(message, title = 'Error') {
-            this.$notify.error({
-                title: title,
-                message: message,
-                position: "bottom-right"
-            });
-        }
+        
+        ...notifier
     },
 });
 
