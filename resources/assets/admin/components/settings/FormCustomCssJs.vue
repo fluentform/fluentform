@@ -124,8 +124,8 @@
                     });
             },
             $showAjaxError(error) {
-                if (error.responseJSON && error.responseJSON.message) {
-                    this.$fail(error.responseJSON.message);
+                if (error.responseJSON && error.responseJSON.data.message) {
+                    this.$fail(error.responseJSON.data.message);
                 } else if (error.responseText) {
                     this.$fail(error.responseText);
                 } else {

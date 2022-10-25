@@ -149,6 +149,12 @@ class FormCssJs
      */
     public function saveSettingsAjax()
     {
+        if (!fluentformCanUnfilteredHTML()) {
+            wp_send_json_error([
+                'message' => __('You need unfiltered_html permission to save Custom CSS & JS', 'fluentform'),
+            ], 423);
+        }
+
         $formId = absint($this->request->get('form_id'));
 
         $css = fluentformSanitizeCSS($this->request->get('custom_css'));
@@ -158,7 +164,7 @@ class FormCssJs
         $this->store($formId, '_custom_form_js', $js);
 
         wp_send_json_success([
-            'message' => __('Custom CSS and JS successfully updated', 'fluentform'),
+            'message' => __('Custom CSS & JS successfully updated', 'fluentform'),
         ], 200);
     }
 
