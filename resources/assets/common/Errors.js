@@ -13,11 +13,11 @@ export default class Errors {
 
     first(field) {
         if (this.errors[field]) {
-            if (Array.isArray(this.errors[field])) {
+            if (typeof this.errors[field] === 'string') {
+                return this.errors[field];
+            } else {
                 let keys = Object.keys(this.errors[field]);
                 return keys.length ? this.errors[field][keys[0]] : '';
-            } else {
-                return this.errors[field];
             }
         }
     }
