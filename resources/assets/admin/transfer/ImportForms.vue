@@ -32,7 +32,7 @@
                 <input type="file" id="fileUpload" @click="clear">
             </el-form-item>
             <el-form-item>
-                <el-button size="medium" class="pull-right" type="success" icon="el-icon-success"
+                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success"
                            @click="importForms" :loading="importing"
                 >
                     {{ $t('Import') }}
@@ -53,7 +53,7 @@
                     <tr v-for="(form, formId) in importedForms">
                         <td>{{formId}}</td>
                         <td>{{form.title}}</td>
-                        <td><a class="el-button el-button--success el-button--mini" :href="form.edit_url">{{ $t('Edit Form') }}</a></td>
+                        <td><a class="el-button el-button--primary el-button--mini" :href="form.edit_url"><i class="el-icon-edit"></i> {{ $t('Edit') }}</a></td>
                     </tr>
                 </tbody>
             </table>

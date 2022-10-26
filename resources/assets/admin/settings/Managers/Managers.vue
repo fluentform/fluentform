@@ -121,7 +121,7 @@
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="store">
+                <el-button type="primary" size="small" @click="store" icon="el-icon-success">
                     {{ $t('Save') }}
                 </el-button>
             </span>
@@ -202,11 +202,7 @@ export default {
 
                     this.fetch();
 
-                    this.$notify.success({
-                        title: "Great!",
-                        message: response.message,
-                        offset: 30
-                    });
+                    this.$success(response.message);
                 })
                 .fail(e => {
                     this.errors.record(e.responseJSON.errors);
@@ -232,18 +228,10 @@ export default {
 
                     this.fetch();
 
-                    this.$notify.success({
-                        title: "Success!",
-                        message: response.message,
-                        offset: 30
-                    });
+                    this.$success(response.message);
                 })
                 .fail(error => {
-                    this.$notify.error({
-                        title: "Error!",
-                        message: error.responseJSON.message,
-                        offset: 30
-                    });
+                    this.$fail(error.responseJSON.message);
                 })
                 .always(() => {
                     this.loading = false;

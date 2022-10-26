@@ -78,16 +78,16 @@
           <el-button
             type="danger"
             icon="el-icon-delete"
-            size="medium"
+            size="small"
             @click="clearSettings"
             :loading="clearing"
             >{{ $t('Clear Settings') }}
           </el-button>
 
           <el-button
-            type="success"
+            type="primary"
             icon="el-icon-success"
-            size="medium"
+            size="small"
             @click="save"
             :disabled="disabled"
             :loading="saving"
@@ -153,11 +153,7 @@ export default {
     },
     save() {
       if (!this.validate()) {
-        return this.$notify.error({
-          title: "Error!",
-          message: 'Missing required fields.',
-          offset: 30,
-        });
+        return this.$fail(this.$t('Missing required fields.'));
       }
       this.saving = true;
 
@@ -168,21 +164,12 @@ export default {
       })
         .then((response) => {
           this.hCaptcha_status = response.data.status;
-          this.$notify.success({
-            title: "Success!",
-            message: response.data.message,
-            offset: 30,
-          });
+          this.$success(response.data.message);
         })
         .fail((error) => {
           this.hCaptcha_status = parseInt(error.responseJSON.data.status, 10);
-          let title = this.hCaptcha_status === 1 ? "Warning!" : "Error!";
-          let method = this.hCaptcha_status === 1 ? "warning" : "error";
-          this.$notify[method]({
-            title: title,
-            message: error.responseJSON.data.message,
-            offset: 30,
-          });
+          let method = this.hCaptcha_status === 1 ? "$warning" : "$error";
+          this[method](error.responseJSON.data.message);
         })
         .always((r) => {
           this.saving = false;
@@ -198,19 +185,11 @@ export default {
         .then((response) => {
           this.hCaptcha_status = response.data.status;
           this.hCaptcha = { siteKey: "", secretKey: "" };
-          this.$notify.success({
-            title: "Success!",
-            message: response.data.message,
-            offset: 30,
-          });
+          this.$success(response.data.message);
         })
         .fail((error) => {
           this.hCaptcha_status = error.responseJSON.data.status;
-          this.$notify.error({
-            title: "Oops!",
-            message: "Something went wrong.",
-            offset: 30,
-          });
+          this.$fail(this.$t("Something went wrong."));
         })
         .always((r) => {
           this.clearing = false;

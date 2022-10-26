@@ -13,8 +13,12 @@ export default class Errors {
 
     first(field) {
         if (this.errors[field]) {
-            let keys = Object.keys(this.errors[field]);
-            return keys.length ? this.errors[field][keys[0]] : '';
+            if (Array.isArray(this.errors[field])) {
+                let keys = Object.keys(this.errors[field]);
+                return keys.length ? this.errors[field][keys[0]] : '';
+            } else {
+                return this.errors[field];
+            }
         }
     }
 

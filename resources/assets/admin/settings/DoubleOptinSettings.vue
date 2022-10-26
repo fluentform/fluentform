@@ -22,7 +22,7 @@
                 </h2>
             </el-col>
             <el-col :md="6" class="action-buttons clearfix mb15">
-                <el-button v-loading="saving" size="medium" class="pull-right" type="success" icon="el-icon-success" @click="save"
+                <el-button v-loading="saving" size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
                 >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
@@ -166,6 +166,10 @@
                     </template>
                     <el-input-number v-model="settings.auto_delete_day_span" :min="1"></el-input-number>
                 </el-form-item>
+
+                <el-button v-loading="saving" size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
+                >{{ $t('Save Settings') }}
+                </el-button>
             </template>
         </el-form>
         <div v-else-if="!hasPro">
@@ -202,7 +206,7 @@
                     settings: this.settings
                 })
                     .then((response) => {
-                        this.$notify.success(response.data.message);
+                        this.$success(response.data.message);
                     })
                     .fail((errors) => {
                         console.log(errors);

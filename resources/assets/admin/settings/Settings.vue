@@ -15,7 +15,7 @@
                 </h2>
             </el-col>
             <el-col :md="6" class="action-buttons clearfix mb15">
-                <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="save"
+                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
                 >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
@@ -37,7 +37,7 @@
         <!--Save settings-->
         <el-row>
             <el-col class="action-buttons clearfix mb15">
-                <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="save"
+                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
                 >{{ $t('Save Settings') }}
                 </el-button>
             </el-col>
@@ -149,11 +149,7 @@
                     .done(response => {
                         if (response) {
                             this.loading = false;
-                            this.$notify.success({
-                                title: 'Great',
-                                message: response.data.message,
-                                offset: 30
-                            });
+                            this.$success(response.data.message);
                         }
                     })
                     .fail(e => {

@@ -15,6 +15,14 @@ export default {
         });
     },
 
+    $warning(message, title = 'Warning') {
+        this.$notify.warning({
+            title: title,
+            message: message,
+            position: "bottom-right"
+        });
+    },
+
     $copy() {
         this.$success(this.$t('Copied to Clipboard.'));
     }

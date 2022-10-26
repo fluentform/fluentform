@@ -37,7 +37,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button size="medium" class="pull-right" type="success" icon="el-icon-success" @click="exportForms">
+                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="exportForms">
                     {{ $t('Export') }}
                 </el-button>
             </el-form-item>

@@ -14,6 +14,8 @@ import ManagersSettings from './ManagersSettings.vue';
 import Errors from '@/common/Errors';
 global.Errors = Errors;
 
+import notifier from '@/admin/notifier';
+
 import {
     Button,
     Radio,
@@ -79,6 +81,8 @@ Vue.mixin({
             }
             return str;
         },
+
+        ...notifier
     }
 })
 

@@ -81,17 +81,10 @@ export default {
             };
             FluentFormsGlobal.$post(data)
                 .then(response => {
-                    this.$notify.success({
-                        title: "Great!",
-                        message: response.data.message,
-                        offset: 30
-                    });
+                    this.$success(response.data.message);
                 })
                 .fail(e => {
-                    this.$notify.error({
-                        message: e.responseJSON.data.message,
-                        offset: 30
-                    });
+                    this.$fail(e.responseJSON.data.message);
                 });
         },
         handleCheckAllChange(val) {

@@ -11,7 +11,7 @@
                 <el-button
                         class="pull-right"
                         size="small"
-                        type="success"
+                        type="primary"
                         icon="el-icon-success"
                         @click="save"
                 >{{ $t('Save Settings') }}
@@ -34,7 +34,7 @@
                     <el-button
                             size="small"
                             class="pull-right"
-                            type="success"
+                            type="primary"
                             icon="el-icon-success"
                             @click="save"
                     >{{ $t('Save Settings') }}
@@ -71,17 +71,10 @@
                     settings: this.settings
                 })
                     .then(response => {
-                        this.$notify.success({
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail(e => {
-                        this.$notify.error({
-                            title: 'Error',
-                            message: 'Global settings save error, please reload.',
-                            offset: 30
-                        });
+                        this.$fail(this.$t('Global settings save error, please reload.'));
                     })
                     .always(() => {
                         this.saving = false;
@@ -98,11 +91,7 @@
                         this.fields = response.data.fields;
                     })
                     .fail(e => {
-                        this.$notify.error({
-                            title: 'Error',
-                            message: $t('Global settings fetch error, please reload.'),
-                            offset: 30
-                        });
+                        this.$fail(this.$t('Global settings fetch error, please reload.'));
                     })
                     .always(() => {
                         this.loading = false;

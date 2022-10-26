@@ -84,7 +84,7 @@
                 <el-col :md="24">
                     <h2>{{ $t('Email Summaries') }}</h2>
                     <p>{{
-                            $t('Would you like to receive a weekly report showing how your forms are performing ? Enable Email Summaries option and you will get a report every week to the provided email address')
+                            $t('Would you like to receive a weekly report showing how your forms are performing? Enable Email Summaries option and you will get a report every week to the provided email address')
                         }}</p>
                 </el-col>
             </el-row>

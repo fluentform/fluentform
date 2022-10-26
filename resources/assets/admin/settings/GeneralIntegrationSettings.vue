@@ -20,8 +20,8 @@
             <el-button @click="disconnect(settings.discard_settings.data)" type="danger" size="small">
                 {{ settings.discard_settings.button_text }}
             </el-button>
-            <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="success"
-                       size="small">{{ $t('Verify Connection Again') }}
+            <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="primary"
+                       size="small" icon="el-icon-success">{{ $t('Verify Connection Again') }}
             </el-button>
 
 
@@ -72,7 +72,7 @@
                 <!--Validate Keys-->
 
                 <el-form-item>
-                    <el-button v-loading="saving" type="success" icon="el-icon-success" size="medium" @click="save">
+                    <el-button v-loading="saving" type="primary" icon="el-icon-success" size="small" @click="save">
                         {{ settings.save_button_text }}
                     </el-button>
                 </el-form-item>
@@ -124,11 +124,7 @@ export default {
                 integration: this.integration
             })
                 .then(response => {
-                    this.$notify.success({
-                        title: 'Great!',
-                        message: response.data.message,
-                        offset: 30
-                    });
+                    this.$success(response.data.message);
                     if (response.data.redirect_url) {
                         window.location.href = response.data.redirect_url;
                         return;
@@ -142,10 +138,7 @@ export default {
                 })
                 .fail(error => {
                     this.integration.status = false;
-                    this.$notify.error({
-                        message: error.responseJSON.data.message,
-                        offset: 30
-                    });
+                    this.fail(error.responseJSON.data.message);
                 })
                 .always(() => {
                     this.saving = false;
