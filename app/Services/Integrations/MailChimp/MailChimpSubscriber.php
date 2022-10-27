@@ -107,7 +107,7 @@ trait MailChimpSubscriber
             );
 
             foreach ($mergeFieldsSettings as $fieldSettings) {
-                if ('address' == $fieldSettings['type']) {
+                if ('address' == $fieldSettings['type'] || 'birthday' == $fieldSettings['type']) {
                     $fieldName = $fieldSettings['tag'];
 
                     $formFieldName = ArrayHelper::get($feed, 'settings.merge_fields.' . $fieldName);
@@ -120,14 +120,19 @@ trait MailChimpSubscriber
                         $formFieldValue = ArrayHelper::get($formData, $formFieldName);
 
                         if ($formFieldValue) {
-                            $mergeFields[$fieldName] = [
-                                'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
-                                'addr2'   => ArrayHelper::get($formFieldValue, 'address_line_2'),
-                                'city'    => ArrayHelper::get($formFieldValue, 'city'),
-                                'state'   => ArrayHelper::get($formFieldValue, 'state'),
-                                'zip'     => ArrayHelper::get($formFieldValue, 'zip'),
-                                'country' => ArrayHelper::get($formFieldValue, 'country'),
-                            ];
+                            if('address' == $fieldSettings['type']) {
+                                $mergeFields[$fieldName] = [
+                                    'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
+                                    'addr2'   => ArrayHelper::get($formFieldValue, 'address_line_2'),
+                                    'city'    => ArrayHelper::get($formFieldValue, 'city'),
+                                    'state'   => ArrayHelper::get($formFieldValue, 'state'),
+                                    'zip'     => ArrayHelper::get($formFieldValue, 'zip'),
+                                    'country' => ArrayHelper::get($formFieldValue, 'country'),
+                                ];
+                            }
+                            else {
+                                $mergeFields[$fieldName] = date('d/m', strtotime($formFieldValue));
+                            }
                         }
                     }
                 }
@@ -214,6 +219,10 @@ trait MailChimpSubscriber
         $endPoint = 'lists/' . $listId . '/members/' . $contactHash;
 
         $result = $MailChimp->put($endPoint, $arguments);
+
+        if (400 == $result['status']) {
+            return new \WP_Error(423, $result['detail']);
+        }
 
         if ($result && ! is_wp_error($result) && isset($result['id'])) {
             $noteEnpoint = 'lists/' . $listId . '/members/' . $contactHash . '/notes';

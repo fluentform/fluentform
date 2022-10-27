@@ -25,7 +25,7 @@ class MailChimpIntegration extends IntegrationManager
             12
         );
 
-        $this->description = 'Fluent Forms Mailchimp module allows you to create Mailchimp newsletter signup forms in WordPress';
+        $this->description = __('Fluent Forms Mailchimp module allows you to create Mailchimp newsletter signup forms in WordPress', 'fluentform');
 
         $this->logo = $this->app->url('public/img/integrations/mailchimp.png');
         $this->registerAdminHooks();
@@ -55,8 +55,8 @@ class MailChimpIntegration extends IntegrationManager
             ],
             'hide_on_valid'    => true,
             'discard_settings' => [
-                'section_description' => 'Your Mailchimp API integration is up and running',
-                'button_text'         => 'Disconnect Mailchimp',
+                'section_description' => __('Your Mailchimp API integration is up and running', 'fluentform'),
+                'button_text'         => __('Disconnect Mailchimp', 'fluentform'),
                 'data'                => [
                     'apiKey' => '',
                 ],
@@ -170,31 +170,31 @@ class MailChimpIntegration extends IntegrationManager
             'fields' => [
                 [
                     'key'         => 'name',
-                    'label'       => 'Name',
+                    'label'       => __('Name', 'fluentform'),
                     'required'    => true,
-                    'placeholder' => 'Your Feed Name',
+                    'placeholder' => __('Your Feed Name', 'fluentform'),
                     'component'   => 'text',
                 ],
                 [
                     'key'         => 'list_id',
-                    'label'       => 'Mailchimp List',
-                    'placeholder' => 'Select Mailchimp List',
-                    'tips'        => 'Select the Mailchimp list you would like to add your contacts to.',
+                    'label'       => __('Mailchimp List', 'fluentform'),
+                    'placeholder' => __('Select Mailchimp List', 'fluentform'),
+                    'tips'        => __('Select the Mailchimp list you would like to add your contacts to.', 'fluentform'),
                     'component'   => 'list_ajax_options',
                     'options'     => $this->getLists(),
                 ],
                 [
                     'key'                => 'merge_fields',
                     'require_list'       => true,
-                    'label'              => 'Map Fields',
-                    'tips'               => 'Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list.',
+                    'label'              => __('Map Fields', 'fluentform'),
+                    'tips'               => __('Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list.', 'fluentform'),
                     'component'          => 'map_fields',
-                    'field_label_remote' => 'Mailchimp Field',
-                    'field_label_local'  => 'Form Field',
+                    'field_label_remote' => __('Mailchimp Field', 'fluentform'),
+                    'field_label_local'  => __('Form Field', 'fluentform'),
                     'primary_fileds'     => [
                         [
                             'key'           => 'fieldEmailAddress',
-                            'label'         => 'Email Address',
+                            'label'         => __('Email Address', 'fluentform'),
                             'required'      => true,
                             'input_options' => 'emails',
                         ],
@@ -203,80 +203,80 @@ class MailChimpIntegration extends IntegrationManager
                 [
                     'key'               => 'interest_group',
                     'require_list'      => true,
-                    'label'             => 'Interest Group',
-                    'tips'              => 'You can map your mailchimp interest group for this contact',
+                    'label'             => __('Interest Group', 'fluentform'),
+                    'tips'              => __('You can map your mailchimp interest group for this contact', 'fluentform'),
                     'component'         => 'chained_fields',
                     'sub_type'          => 'radio',
-                    'category_label'    => 'Select Interest Category',
-                    'subcategory_label' => 'Select Interest',
+                    'category_label'    => __('Select Interest Category', 'fluentform'),
+                    'subcategory_label' => __('Select Interest', 'fluentform'),
                     'remote_url'        => admin_url('admin-ajax.php?action=fluentform_mailchimp_interest_groups'),
-                    'inline_tip'        => 'Select the mailchimp interest category and interest',
+                    'inline_tip'        => __('Select the mailchimp interest category and interest', 'fluentform'),
                 ],
                 [
                     'key'                => 'tags',
                     'require_list'       => true,
-                    'label'              => 'Tags',
-                    'tips'               => 'Associate tags to your Mailchimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.',
+                    'label'              => __('Tags', 'fluentform'),
+                    'tips'               => __('Associate tags to your Mailchimp contacts with a comma separated list (e.g. new lead, FluentForms, web source). Commas within a merge tag value will be created as a single tag.', 'fluentform'),
                     'component'          => 'selection_routing',
                     'simple_component'   => 'value_text',
                     'routing_input_type' => 'text',
                     'routing_key'        => 'tag_ids_selection_type',
                     'settings_key'       => 'tag_routers',
                     'labels'             => [
-                        'choice_label'      => 'Enable Dynamic Tag Input',
+                        'choice_label'      => __('Enable Dynamic Tag Input', 'fluentform'),
                         'input_label'       => '',
-                        'input_placeholder' => 'Tag',
+                        'input_placeholder' => __('Tag', 'fluentform'),
                     ],
-                    'inline_tip' => 'Please provide each tag by comma separated value, You can use dynamic smart codes',
+                    'inline_tip' => __('Please provide each tag by comma separated value, You can use dynamic smart codes', 'fluentform'),
                 ],
                 [
                     'key'          => 'note',
                     'require_list' => true,
-                    'label'        => 'Note',
-                    'tips'         => 'You can write a note for this contact',
+                    'label'        => __('Note', 'fluentform'),
+                    'tips'         => __('You can write a note for this contact', 'fluentform'),
                     'component'    => 'value_textarea',
                 ],
                 [
                     'key'            => 'doubleOptIn',
                     'require_list'   => true,
-                    'label'          => 'Double Opt-in',
-                    'tips'           => 'When the double opt-in option is enabled,<br />Mailchimp will send a confirmation email<br />to the user and will only add them to your <br /Mailchimp list upon confirmation.',
+                    'label'          => __('Double Opt-in', 'fluentform'),
+                    'tips'           => __('When the double opt-in option is enabled,<br />Mailchimp will send a confirmation email<br />to the user and will only add them to your <br /Mailchimp list upon confirmation.', 'fluentform'),
                     'component'      => 'checkbox-single',
-                    'checkbox_label' => 'Enable Double Opt-in',
+                    'checkbox_label' => __('Enable Double Opt-in', 'fluentform'),
                 ],
                 [
                     'key'            => 'resubscribe',
                     'require_list'   => true,
-                    'label'          => 'ReSubscribe',
-                    'tips'           => 'When this option is enabled, if the subscriber is in an inactive state or<br />has previously been unsubscribed, they will be re-added to the active list.<br />Therefore, this option should be used with caution and only when appropriate.',
+                    'label'          => __('ReSubscribe', 'fluentform'),
+                    'tips'           => __('When this option is enabled, if the subscriber is in an inactive state or<br />has previously been unsubscribed, they will be re-added to the active list.<br />Therefore, this option should be used with caution and only when appropriate.', 'fluentform'),
                     'component'      => 'checkbox-single',
-                    'checkbox_label' => 'Enable ReSubscription',
+                    'checkbox_label' => __('Enable ReSubscription', 'fluentform'),
                 ],
                 [
                     'key'            => 'markAsVIP',
                     'require_list'   => true,
-                    'label'          => 'VIP',
-                    'tips'           => 'When enabled,<br /> This contact will be marked as VIP.',
+                    'label'          => __('VIP', 'fluentform'),
+                    'tips'           => __('When enabled,<br /> This contact will be marked as VIP.', 'fluentform'),
                     'component'      => 'checkbox-single',
-                    'checkbox_label' => 'Mark as VIP Contact',
+                    'checkbox_label' => __('Mark as VIP Contact', 'fluentform'),
                 ],
                 [
                     'require_list' => true,
                     'key'          => 'conditionals',
-                    'label'        => 'Conditional Logics',
-                    'tips'         => 'Allow mailchimp integration conditionally based on your submission values',
+                    'label'        => __('Conditional Logics', 'fluentform'),
+                    'tips'         => __('Allow mailchimp integration conditionally based on your submission values', 'fluentform'),
                     'component'    => 'conditional_block',
                 ],
                 [
                     'require_list'   => true,
                     'key'            => 'enabled',
-                    'label'          => 'Status',
+                    'label'          => __('Status', 'fluentform'),
                     'component'      => 'checkbox-single',
-                    'checkbox_label' => 'Enable This feed',
+                    'checkbox_label' => __('Enable This feed', 'fluentform'),
                 ],
             ],
             'button_require_list' => true,
-            'integration_title'   => 'Mailchimp',
+            'integration_title'   => __('Mailchimp', 'fluentform'),
         ];
     }
 
@@ -482,10 +482,10 @@ class MailChimpIntegration extends IntegrationManager
     {
         $response = $this->subscribe($feed, $formData, $entry, $form);
 
-        if (true == $response) {
-            do_action('ff_integration_action_result', $feed, 'success', 'Mailchimp feed has been successfully initialed and pushed data');
+        if (true == $response && !is_wp_error($response)) {
+            do_action('ff_integration_action_result', $feed, 'success', __('Mailchimp feed has been successfully initialed and pushed data', 'fluentform'));
         } else {
-            $message = 'Mailchimp feed has been failed to deliver feed';
+            $message = __('Mailchimp feed has been failed to deliver feed', 'fluentform');
             if (is_wp_error($response)) {
                 $message = $response->get_error_message();
             }
