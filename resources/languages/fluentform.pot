@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-18 12:09+0000\n"
+"POT-Creation-Date: 2022-10-27 17:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -51,8 +51,8 @@ msgid "0% Completed"
 msgstr ""
 
 #: app/Modules/Component/Component.php:685
-#: app/Services/FluentConversational/Classes/Form.php:553
-#: app/Services/FluentConversational/Classes/Form.php:673
+#: app/Services/FluentConversational/Classes/Form.php:555
+#: app/Services/FluentConversational/Classes/Form.php:676
 msgid "100% Completed"
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "23:59:59"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:507
+#: app/Modules/Registerer/Menu.php:516
 msgid "<h2>No form found</h2>"
 msgstr ""
 
@@ -210,17 +210,18 @@ msgstr ""
 msgid "Alignment"
 msgstr ""
 
-#: resources/views/admin/global_menu.php:16
-msgid "All Entries"
-msgstr ""
-
-#: app/Modules/Registerer/Menu.php:350 app/Modules/Registerer/Menu.php:351
+#: app/Modules/Registerer/Menu.php:359 app/Modules/Registerer/Menu.php:360
 #: app/Modules/CLI/Commands.php:11 resources/views/admin/global_menu.php:12
 msgid "All Forms"
 msgstr ""
 
 #: app/Modules/CLI/Commands.php:15
 msgid "All Submissions"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:267
+msgid ""
+"Allow mailchimp integration conditionally based on your submission values"
 msgstr ""
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:148
@@ -305,8 +306,21 @@ msgstr ""
 msgid "As Per Global Settings"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:219
+msgid ""
+"Associate tags to your Mailchimp contacts with a comma separated list (e.g. "
+"new lead, FluentForms, web source). Commas within a merge tag value will be "
+"created as a single tag."
+msgstr ""
+
 #: app/Modules/Acl/Managers.php:81
 msgid "Associate user could not be found"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:190
+msgid ""
+"Associate your Mailchimp merge tags to the appropriate Fluent Forms fields "
+"by selecting the appropriate form field from the list."
 msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:141
@@ -798,6 +812,10 @@ msgstr ""
 msgid "Conditional Logic"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:266
+msgid "Conditional Logics"
+msgstr ""
+
 #: app/Modules/DocumentationModule.php:34
 msgid "Conditional logics"
 msgstr ""
@@ -1002,11 +1020,11 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: app/Modules/Form/Settings/FormCssJs.php:161
-msgid "Custom CSS and JS successfully updated"
+#: app/Modules/Form/Settings/FormCssJs.php:167
+msgid "Custom CSS & JS successfully updated"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:599
+#: app/Modules/Registerer/Menu.php:608
 msgid "Custom CSS/JS"
 msgstr ""
 
@@ -1129,6 +1147,10 @@ msgstr ""
 msgid "Disable auto focus when changing each page"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:59
+msgid "Disconnect Mailchimp"
+msgstr ""
+
 #: app/Modules/AddOnModule.php:286
 msgid "Discord"
 msgstr ""
@@ -1155,6 +1177,10 @@ msgstr ""
 msgid "Dominican Republic"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:242
+msgid "Double Opt-in"
+msgstr ""
+
 #: resources/views/admin/settings/index.php:37
 msgid "Double Optin Settings"
 msgstr ""
@@ -1176,7 +1202,7 @@ msgstr ""
 msgid "Ecuador"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:517
+#: app/Modules/Registerer/Menu.php:526
 msgid "Editor"
 msgstr ""
 
@@ -1201,6 +1227,7 @@ msgid "Email"
 msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:164
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:197
 msgid "Email Address"
 msgstr ""
 
@@ -1208,7 +1235,7 @@ msgstr ""
 msgid "Email address need to be unique."
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:561
+#: app/Modules/Registerer/Menu.php:570
 msgid "Email Notifications"
 msgstr ""
 
@@ -1233,12 +1260,24 @@ msgstr ""
 msgid "Enable auto page change for single radio field"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:245
+msgid "Enable Double Opt-in"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:226
+msgid "Enable Dynamic Tag Input"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:325
 msgid "Enable Multiple Columns"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:264
 msgid "Enable Per step data save (Save and Continue)"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:253
+msgid "Enable ReSubscription"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:140
@@ -1249,13 +1288,18 @@ msgstr ""
 msgid "Enable Smart UI"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:275
+msgid "Enable This feed"
+msgstr ""
+
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:52
 msgid ""
 "Enter your Mailchimp API Key, if you do not have <br>Please login to your "
 "Mailchimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:367 app/Modules/Registerer/Menu.php:534
+#: app/Modules/Registerer/Menu.php:376 app/Modules/Registerer/Menu.php:543
+#: resources/views/admin/global_menu.php:16
 #: resources/views/email/report/body.php:148
 msgid "Entries"
 msgstr ""
@@ -1397,7 +1441,7 @@ msgid "Fluent Form"
 msgstr ""
 
 #. Name of the plugin
-#: app/Modules/Registerer/Menu.php:329 app/Modules/Widgets/OxygenWidget.php:39
+#: app/Modules/Registerer/Menu.php:338 app/Modules/Widgets/OxygenWidget.php:39
 #: app/Modules/Widgets/FluentFormWidget.php:28
 #: app/Modules/Widgets/FluentFormWidget.php:93
 #: app/Modules/Widgets/FluentFormWidget.php:100
@@ -1441,15 +1485,21 @@ msgstr ""
 msgid "Fluent Forms Latest Form Submissions"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:28
+msgid ""
+"Fluent Forms Mailchimp module allows you to create Mailchimp newsletter "
+"signup forms in WordPress"
+msgstr ""
+
 #: app/Hooks/Backend.php:376
 msgid "Fluent Forms PDF"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:327
+#: app/Modules/Registerer/Menu.php:336
 msgid "Fluent Forms Pro"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:652
+#: app/Modules/Registerer/Menu.php:661
 msgid ""
 "Fluent Forms Pro has tons of integrations to take your forms to the next "
 "level. From payment gateways to quiz building, SMS notifications to email "
@@ -1511,6 +1561,10 @@ msgstr ""
 msgid "Form Container"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:193
+msgid "Form Field"
+msgstr ""
+
 #: app/Modules/Form/Form.php:651
 msgid "Form has been successfully converted to conversational form."
 msgstr ""
@@ -1531,7 +1585,7 @@ msgstr ""
 msgid "Form restrictions and scheduling"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:555
+#: app/Modules/Registerer/Menu.php:564
 msgid "Form Settings"
 msgstr ""
 
@@ -1641,7 +1695,7 @@ msgstr ""
 msgid "Germany"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:444 app/Modules/Registerer/Menu.php:445
+#: app/Modules/Registerer/Menu.php:453 app/Modules/Registerer/Menu.php:454
 msgid "Get Help"
 msgstr ""
 
@@ -1673,7 +1727,7 @@ msgstr ""
 msgid "Gist"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:403 app/Modules/Registerer/Menu.php:404
+#: app/Modules/Registerer/Menu.php:412 app/Modules/Registerer/Menu.php:413
 #: resources/views/admin/global_menu.php:28
 msgid "Global Settings"
 msgstr ""
@@ -1876,7 +1930,7 @@ msgstr ""
 msgid "Hungary"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:372
+#: app/Services/FluentConversational/Classes/Form.php:373
 msgid "I accept"
 msgstr ""
 
@@ -1886,7 +1940,7 @@ msgid ""
 "respond to my inquiry"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:374
+#: app/Services/FluentConversational/Classes/Form.php:375
 msgid "I don't accept"
 msgstr ""
 
@@ -2002,10 +2056,6 @@ msgstr ""
 msgid "Input Width"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:433 app/Modules/Registerer/Menu.php:434
-msgid "Integration Modules"
-msgstr ""
-
 #: app/Services/Integrations/GlobalIntegrationManager.php:255
 msgid "Integration successfully saved"
 msgstr ""
@@ -2014,8 +2064,13 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: resources/views/admin/global_menu.php:31
+#: app/Modules/Registerer/Menu.php:442 app/Modules/Registerer/Menu.php:443
+#: resources/views/admin/global_menu.php:34
 msgid "Integrations"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:206
+msgid "Interest Group"
 msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:899
@@ -2283,12 +2338,28 @@ msgstr ""
 msgid "Madagascar"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:279
+msgid "Mailchimp"
+msgstr ""
+
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:53
 msgid "Mailchimp API Key"
 msgstr ""
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:129
 msgid "Mailchimp Feed"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:488
+msgid "Mailchimp feed has been failed to deliver feed"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:486
+msgid "Mailchimp feed has been successfully initialed and pushed data"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:192
+msgid "Mailchimp Field"
 msgstr ""
 
 #: app/Modules/DocumentationModule.php:46
@@ -2308,6 +2379,10 @@ msgstr ""
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:134
 msgid ""
 "Mailchimp is not configured yet! Please configure your mailchimp api first"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:180
+msgid "Mailchimp List"
 msgstr ""
 
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:44
@@ -2374,6 +2449,10 @@ msgstr ""
 msgid "Managing form submissions"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:189
+msgid "Map Fields"
+msgstr ""
+
 #: app/Modules/Component/Component.php:1083
 msgid "Mar"
 msgstr ""
@@ -2399,7 +2478,11 @@ msgstr ""
 msgid "Margin Top"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:573
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:261
+msgid "Mark as VIP Contact"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:582
 msgid "Marketing & CRM Integrations"
 msgstr ""
 
@@ -2590,6 +2673,10 @@ msgstr ""
 msgid "Myanmar"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:173
+msgid "Name"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:40
 msgid "Name Attribute"
 msgstr ""
@@ -2633,7 +2720,7 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:360 app/Modules/Registerer/Menu.php:361
+#: app/Modules/Registerer/Menu.php:369 app/Modules/Registerer/Menu.php:370
 msgid "New Form"
 msgstr ""
 
@@ -2731,6 +2818,10 @@ msgstr ""
 msgid "Norway"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:235
+msgid "Note"
+msgstr ""
+
 #: app/Modules/Entries/Entries.php:505
 msgid "Note has been successfully added"
 msgstr ""
@@ -2796,7 +2887,7 @@ msgstr ""
 msgid "Order Items Table"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:567
+#: app/Modules/Registerer/Menu.php:576
 msgid "Other Confirmations"
 msgstr ""
 
@@ -2925,9 +3016,9 @@ msgstr ""
 msgid "Payment Total"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:392 app/Modules/Registerer/Menu.php:393
+#: app/Modules/Registerer/Menu.php:401 app/Modules/Registerer/Menu.php:402
 #: resources/views/admin/global_menu.php:22
-#: resources/views/admin/global_menu.php:37
+#: resources/views/admin/global_menu.php:40
 #: resources/views/email/report/body.php:168
 msgid "Payments"
 msgstr ""
@@ -2996,7 +3087,7 @@ msgstr ""
 msgid "Please enter a valid API key on FluentForms->Settings->Turnstile"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Converter/Converter.php:331
+#: app/Services/FluentConversational/Classes/Converter/Converter.php:333
 msgid ""
 "Please enter a valid value. The two nearest valid values are {lower_value} "
 "and {upper_value}"
@@ -3008,6 +3099,12 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:527
 msgid "Please provide digits count value"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:230
+msgid ""
+"Please provide each tag by comma separated value, You can use dynamic smart "
+"codes"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:503
@@ -3047,7 +3144,7 @@ msgstr ""
 msgid "Please validate your reCAPTCHA first and then hit save."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:254
+#: app/Modules/Settings/Settings.php:255
 msgid "Please validate your Turnstile first and then hit save."
 msgstr ""
 
@@ -3095,11 +3192,11 @@ msgstr ""
 msgid "Press to select"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:881
+#: app/Modules/Registerer/Menu.php:890
 msgid "Preview"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:878
+#: app/Modules/Registerer/Menu.php:887
 msgid "Preview & Design"
 msgstr ""
 
@@ -3251,6 +3348,10 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:160
 msgid "Required Validation Message"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:250
+msgid "ReSubscribe"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:269
@@ -3440,6 +3541,18 @@ msgstr ""
 msgid "Select Date Format"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:211
+msgid "Select Interest"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:210
+msgid "Select Interest Category"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:181
+msgid "Select Mailchimp List"
+msgstr ""
+
 #: app/Services/FormBuilder/ElementCustomization.php:567
 msgid ""
 "Select the format of numbers that are allowed in this field. You have the "
@@ -3448,6 +3561,14 @@ msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:583
 msgid "Select the Layout for checkable items"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:213
+msgid "Select the mailchimp interest category and interest"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:182
+msgid "Select the Mailchimp list you would like to add your contacts to."
 msgstr ""
 
 #: app/Services/FormBuilder/ValidationRuleSettings.php:75
@@ -3560,7 +3681,7 @@ msgstr ""
 msgid "Setting up form submission confirmation"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:523
+#: app/Modules/Registerer/Menu.php:532
 msgid "Settings & Integrations"
 msgstr ""
 
@@ -3649,7 +3770,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:581
+#: app/Modules/Registerer/Menu.php:590
 msgid "Slack"
 msgstr ""
 
@@ -3673,7 +3794,7 @@ msgstr ""
 msgid "SMS Notification"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:423 app/Modules/Registerer/Menu.php:424
+#: app/Modules/Registerer/Menu.php:432 app/Modules/Registerer/Menu.php:433
 msgid "SMTP"
 msgstr ""
 
@@ -3739,8 +3860,8 @@ msgstr ""
 msgid "Sorry, Your reCAPTCHA is not valid. Please try again"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:250
-msgid "Sorry, Your Turnstile is not valid. Please try again"
+#: app/Modules/Settings/Settings.php:251
+msgid "Sorry, Your Turnstile Keys are not valid. Please try again!"
 msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:66
@@ -3782,6 +3903,10 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:394
 #: app/Services/Migrator/Classes/BaseMigrator.php:1252
 msgid "State"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:273
+msgid "Status"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:531
@@ -3906,7 +4031,7 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: resources/views/admin/global_menu.php:46
+#: resources/views/admin/global_menu.php:49
 msgid "Support"
 msgstr ""
 
@@ -3956,6 +4081,14 @@ msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:341
 msgid "Table Outer Border Width"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:228
+msgid "Tag"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:218
+msgid "Tags"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:236
@@ -4137,7 +4270,7 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:1095
 #: app/Services/FormBuilder/DefaultElements.php:1148
 #: app/Services/FormBuilder/DefaultElements.php:1177
-#: app/Services/FluentConversational/Classes/Form.php:385
+#: app/Services/FluentConversational/Classes/Form.php:386
 #: app/Services/Migrator/Classes/GravityFormsMigrator.php:321
 #: app/Services/Migrator/Classes/GravityFormsMigrator.php:341
 #: app/Services/Migrator/Classes/BaseMigrator.php:209
@@ -4264,7 +4397,8 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:413 app/Modules/Registerer/Menu.php:414
+#: app/Modules/Registerer/Menu.php:422 app/Modules/Registerer/Menu.php:423
+#: resources/views/admin/global_menu.php:31
 #: resources/views/admin/transfer/index.php:6
 msgid "Tools"
 msgstr ""
@@ -4379,7 +4513,7 @@ msgstr ""
 msgid "Unread Submissions"
 msgstr ""
 
-#: resources/views/admin/global_menu.php:52
+#: resources/views/admin/global_menu.php:55
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -4388,8 +4522,8 @@ msgid "Uploaded files can be stored in media library or your server or both."
 msgstr ""
 
 #: app/Modules/Component/Component.php:687
-#: app/Services/FluentConversational/Classes/Form.php:552
-#: app/Services/FluentConversational/Classes/Form.php:672
+#: app/Services/FluentConversational/Classes/Form.php:554
+#: app/Services/FluentConversational/Classes/Form.php:675
 msgid "Uploading"
 msgstr ""
 
@@ -4525,6 +4659,10 @@ msgstr ""
 msgid "View Payments"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:258
+msgid "VIP"
+msgstr ""
+
 #: app/Services/FormBuilder/CountryNames.php:263
 msgid "Wallis and Futuna"
 msgstr ""
@@ -4576,6 +4714,25 @@ msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:264
 msgid "Western Sahara"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:259
+msgid "When enabled,<br /> This contact will be marked as VIP."
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:243
+msgid ""
+"When the double opt-in option is enabled,<br />Mailchimp will send a "
+"confirmation email<br />to the user and will only add them to your <br "
+"/Mailchimp list upon confirmation."
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:251
+msgid ""
+"When this option is enabled, if the subscriber is in an inactive state or<br "
+"/>has previously been unsubscribed, they will be re-added to the active list."
+"<br />Therefore, this option should be used with caution and only when "
+"appropriate."
 msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:759
@@ -4636,12 +4793,20 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:207
+msgid "You can map your mailchimp interest group for this contact"
+msgstr ""
+
 #: app/Services/FormBuilder/DefaultElements.php:895
 msgid "You can upload maximum 1 file"
 msgstr ""
 
 #: app/Services/FormBuilder/DefaultElements.php:849
 msgid "You can upload maximum 1 image"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:236
+msgid "You can write a note for this contact"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:30
@@ -4658,12 +4823,20 @@ msgstr ""
 msgid "You have a faulty JSON file, please export the Fluent Forms again."
 msgstr ""
 
+#: app/Modules/Form/Settings/FormCssJs.php:154
+msgid "You need unfiltered_html permission to save Custom CSS & JS"
+msgstr ""
+
 #: app/Services/Integrations/GlobalIntegrationManager.php:45
 msgid "Your API Key is not valid"
 msgstr ""
 
 #: app/Services/Integrations/GlobalIntegrationManager.php:41
 msgid "Your API Key is valid"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:175
+msgid "Your Feed Name"
 msgstr ""
 
 #: app/Modules/Settings/Settings.php:194
@@ -4678,7 +4851,11 @@ msgstr ""
 msgid "Your hCaptcha settings are deleted."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:330
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:58
+msgid "Your Mailchimp API integration is up and running"
+msgstr ""
+
+#: app/Modules/Settings/Settings.php:337
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:121
 msgid "Your mailchimp api key has been verfied and successfully set"
 msgstr ""
@@ -4703,7 +4880,7 @@ msgstr ""
 msgid "Your reCAPTCHA settings are deleted."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:301
+#: app/Modules/Settings/Settings.php:308
 msgid "Your settings has been updated"
 msgstr ""
 
@@ -4715,16 +4892,16 @@ msgstr ""
 msgid "Your shortcode to render desired content in current place."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:260
-msgid "Your Turnstile details are already valid. So no need to save again."
-msgstr ""
-
-#: app/Modules/Settings/Settings.php:245
-msgid "Your Turnstile is valid and saved."
+#: app/Modules/Settings/Settings.php:246
+msgid "Your Turnstile Keys are valid."
 msgstr ""
 
 #: app/Modules/Settings/Settings.php:214
 msgid "Your Turnstile settings are deleted."
+msgstr ""
+
+#: app/Modules/Settings/Settings.php:262
+msgid "Your Turnstile settings is saved."
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:189
