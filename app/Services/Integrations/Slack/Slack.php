@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\Integrations\Slack;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Integrations\LogResponseTrait;
@@ -40,7 +41,7 @@ class Slack
                 continue;
             }
             if ('tabular_grid' == ArrayHelper::get($input, 'element', '')) {
-                $formData[$name] = static::getTabularGridMarkdownValue($formData[$name], $input);
+                $formData[$name] = Helper::getTabularGridMarkdownValue($formData[$name], $input);
             }
         }
         $formData = FormDataParser::parseData((object) $formData, $inputs, $form->id);
@@ -127,39 +128,5 @@ class Slack
             'status'  => $status,
             'message' => $message,
         ];
-    }
-
-    // @todo make helper function for formatting in MarkDown Format
-    // make tabular-grid value markdown format
-    protected static function getTabularGridMarkdownValue($girdData, $field = [], $rowJoiner = '<br />', $colJoiner = ', ')
-    {
-        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
-        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', '');
-        $value = '';
-        foreach ($girdData as $row => $column) {
-            if ($girdRows && isset($girdRows[$row])) {
-                $row = $girdRows[$row];
-            }
-            $value .= '- *' . $row . '* :  ';
-            if (is_array($column)) {
-                foreach ($column as $index => $item) {
-                    $_colJoiner = $colJoiner;
-                    if ($girdCols && isset($girdCols[$item])) {
-                        $item = $girdCols[$item];
-                    }
-                    if ($index == (count($column) - 1)) {
-                        $_colJoiner = '';
-                    }
-                    $value .= $item . $_colJoiner;
-                }
-            } else {
-                if ($girdCols && isset($girdCols[$column])) {
-                    $column = $girdCols[$column];
-                }
-                $value .= $column;
-            }
-            $value .= $rowJoiner;
-        }
-        return $value;
     }
 }

@@ -640,6 +640,39 @@ class Helper
         );
     }
 
+    // make tabular-grid value markdown format
+    public static function getTabularGridMarkdownValue($girdData, $field, $rowJoiner = '<br />', $colJoiner = ', ')
+    {
+        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
+        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', '');
+        $value = '';
+        foreach ($girdData as $row => $column) {
+            if ($girdRows && isset($girdRows[$row])) {
+                $row = $girdRows[$row];
+            }
+            $value .= '- *' . $row . '* :  ';
+            if (is_array($column)) {
+                foreach ($column as $index => $item) {
+                    $_colJoiner = $colJoiner;
+                    if ($girdCols && isset($girdCols[$item])) {
+                        $item = $girdCols[$item];
+                    }
+                    if ($index == (count($column) - 1)) {
+                        $_colJoiner = '';
+                    }
+                    $value .= $item . $_colJoiner;
+                }
+            } else {
+                if ($girdCols && isset($girdCols[$column])) {
+                    $column = $girdCols[$column];
+                }
+                $value .= $column;
+            }
+            $value .= $rowJoiner;
+        }
+        return $value;
+    }
+
     public static function getInputNameFromShortCode($value)
     {
         preg_match('/{+(.*?)}/', $value, $matches);
