@@ -210,7 +210,15 @@ class Menu
         );
 
         add_filter('admin_footer_text', function ($text) {
-            return '<span id="footer-thankyou">Thanks for using <a target="_blank" rel="nofollow" href="https://wordpress.org/plugins/fluentform">Fluent Forms</a>.</span>';
+            return '<span id="footer-thankyou">Thanks for using <a target="_blank" rel="nofollow" href="https://wordpress.org/plugins/fluentform">Fluent Forms</a></span>';
+        });
+
+        add_filter('update_footer', function ($text) {
+            $footerContent = 'Version ' . FLUENTFORM_VERSION;
+            if (defined('FLUENTFORMPRO')) {
+                $footerContent .= ' & Pro ' . FLUENTFORMPRO_VERSION;
+            }
+            return $footerContent;
         });
 
         $elementUIStyle = $app->publicUrl('css/element-ui-css.css');
@@ -233,6 +241,7 @@ class Menu
 
     public function enqueuePageScripts()
     {
+        // dd('asas'. $this->isFluentPages());
         if (!$this->isFluentPages()) {
             return;
         }
@@ -430,8 +439,8 @@ class Menu
             // Register Add-Ons
             add_submenu_page(
                 'fluent_forms',
-                __('Integration Modules', 'fluentform'),
-                __('Integration Modules', 'fluentform'),
+                __('Integrations', 'fluentform'),
+                __('Integrations', 'fluentform'),
                 $fromRole ? $settingsCapability : 'fluentform_settings_manager',
                 'fluent_forms_add_ons',
                 [$this, 'renderAddOns']

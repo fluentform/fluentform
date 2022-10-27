@@ -13,7 +13,7 @@ $page = sanitize_text_field($_GET['page']);
     </a>
     <?php if (Acl::hasPermission('fluentform_entries_viewer')): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_all_entries'));?>" class="ninja-tab <?php echo ($page == 'fluent_forms_all_entries') ? 'ninja-tab-active' : '' ?>">
-            <?php _e('All Entries', 'fluentform'); ?>
+            <?php _e('Entries', 'fluentform'); ?>
         </a>
     <?php endif; ?>
 
@@ -26,6 +26,9 @@ $page = sanitize_text_field($_GET['page']);
     <?php if (Acl::hasPermission('fluentform_settings_manager')): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_settings') ? 'ninja-tab-active' : '' ?>">
             <?php _e('Global Settings', 'fluentform'); ?>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_transfer')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_transfer') ? 'ninja-tab-active' : '' ?>">
+            <?php _e('Tools', 'fluentform'); ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_add_ons')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_add_ons') ? 'ninja-tab-active' : '' ?>">
             <?php _e('Integrations', 'fluentform'); ?>
