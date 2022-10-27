@@ -79,10 +79,7 @@
             </el-col>
         </el-row>
         <hr/>
-        <div v-loading="loading"
-             class="ff_forms_table"
-             element-loading-text="Loading Forms..."
-        >
+        <div class="ff_forms_table">
             <template v-if="app.formsCount > 0">
                 <div
                     class="entries_table">
@@ -99,15 +96,21 @@
                               format="dd MMM, yyyy"
                               value-format="yyyy-MM-dd"
                               range-separator="-"
-                              start-placeholder="Start date"
-                              end-placeholder="End date">
+                              :start-placeholder="$t('Start date')"
+                              :end-placeholder="$t('End date')">
                           </el-date-picker>
-                          <el-button @click="fetchItems()" size="mini" type="success">Search</el-button>
-                          <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
+                          <el-button @click="fetchItems()" size="mini" type="primary" plain style="margin-left: 10px;">
+                            {{ $t('Search') }}
+                          </el-button>
+                          <el-button @click="resetAdvancedFilter()" size="mini">
+                            {{ $t('Hide') }}
+                          </el-button>
                         </div>
                       </div>
 
                       <el-table
+                            v-loading="loading"
+                            :element-loading-text="$t('Loading Forms...')"
                             :data="items"
                             :stripe="true"
                             @sort-change="handleTableSort"
@@ -235,9 +238,12 @@
             </template>
             <div v-else>
                 <div class="fluent_form_intro">
-                    <h1 class="text-center">Welcome to WP Fluent Froms</h1>
-                    <p class="text-center">Thank you for installing WP Fluent Froms - The Most Advanced Form Builder
-                        Plugin for WordPress</p>
+                    <h1 class="text-center">
+                        {{ $t('Welcome to WP Fluent Froms') }}
+                    </h1>
+                    <p class="text-center">
+                        {{ $t('Thank you for installing WP Fluent Froms - The Most Advanced Form Builder Plugin for WordPress') }}
+                    </p>
                     <div class="text-center">
                         <el-button
                             round
@@ -249,7 +255,7 @@
                     </div>
                 </div>
                 <div class="fluent_form_intro_video">
-                    <h2>{{$t('Check the video intro')}}</h2>
+                    <h2>{{$t('Check the Video Intro')}}</h2>
                     <div class="videoWrapper">
                         <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE"
                                 frameborder="0"
@@ -377,14 +383,10 @@ export default {
     
             FluentFormsGlobal.$post(data)
                 .then((response) => {
-                    this.$notify.success({
-                        title: 'Success!',
-                        message: response.message,
-                        offset: 30
-                    });
+                    this.$success(response.message);
                 })
                 .fail(error => {
-                    this.$message.error(this.$t('Something went wrong, please try again.'));
+                    this.$fail(this.$t('Something went wrong, please try again.'));
                 })
                 .always(() => {
                     this.loading = false;
@@ -424,7 +426,7 @@ export default {
                     this.paginate.last_page = response.last_page;
                 })
                 .fail(error => {
-                    this.$message.error(this.$t('Something went wrong, please try again.'));
+                    this.$fail(this.$t('Something went wrong, please try again.'));
                 })
                 .always(() => {
                     this.loading = false;
@@ -448,7 +450,7 @@ export default {
                 this.categories = res.categories;
                 this.predefinedDropDownForms = res.predefined_dropDown_forms;
             }).fail(error => {
-                this.$message.error(this.$t('Something went wrong, please try again.'));
+                this.$fail(this.$t('Something went wrong, please try again.'));
             })
                 .always(() => {
                     this.loading = false;
@@ -462,11 +464,7 @@ export default {
             FluentFormsGlobal.$get(data)
                 .done(res => {
                     this.items.splice(index, 1);
-                    this.$notify.success({
-                        title: 'Congratulations!',
-                        message: res.message,
-                        offset: 30
-                    });
+                    this.$success(res.message);
                 })
                 .fail(_ => {
                 });
@@ -478,11 +476,7 @@ export default {
             }
             FluentFormsGlobal.$post(data)
                 .then(res => {
-                    this.$notify.success({
-                        title: 'Congratulations!',
-                        message: res.message,
-                        offset: 30
-                    });
+                    this.$success(res.message);
                     if (res.redirect) {
                         window.location.href = res.redirect;
                     } else {

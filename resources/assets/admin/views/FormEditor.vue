@@ -637,9 +637,9 @@ export default {
             const saveBtn = jQuery('#saveFormData');
             if (this.form_saving) {
                 this.clearEditableObject(); // Empty {editItem} after form saved
-                saveBtn.text('Saving Form');
+                saveBtn.html('<i class="el-icon-success"></i> Saving Form');
             } else {
-                saveBtn.text('Save Form');
+                saveBtn.html('<i class="el-icon-success"></i> Save Form');
             }
         },
 
@@ -919,12 +919,12 @@ export default {
             var saveButton = jQuery('<button />', {
                 id: 'saveFormData',
                 class: 'el-button el-button--primary el-button--small',
-                text: 'Save Form'
+                html: '<i class="el-icon-success"></i> Save Form'
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
                 if (!$this.data('text')) $this.data('text', $this.text());
-                $this.text('Saving Form');
+                $this.html('<i class="el-icon-success"></i> Saving Form');
                 self.save_form();
             });
 

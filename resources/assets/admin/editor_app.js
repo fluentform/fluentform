@@ -256,27 +256,18 @@ new Vue({
 
             FluentFormsGlobal.$post(data)
                 .done(response => {
-                    this.$notify({
-                        title: "Success",
-                        message: response.message,
-                        type: "success",
-                        position: "bottom-right"
-                    });
+                    this.$success(response.message);
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
 
                     const saveFormBtn = jQuery("#saveFormData");
-                    saveFormBtn.text(saveFormBtn.data("text"));
+                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
 
                     // Update the hash now.
                     this.saveHash();
                 })
                 .error(error => {
-                    this.$notify.error({
-                        title: "Oops",
-                        message: error.responseJSON.title,
-                        offset: 30
-                    });
+                    this.$fail.error(error.responseJSON.title);
                     this.form_saving = false;
                 });
         },

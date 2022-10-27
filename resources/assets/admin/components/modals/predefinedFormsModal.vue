@@ -197,11 +197,7 @@
                 let selectedFormType = 'form';
                 if (form) {
                     if (form.is_pro && !window.FluentFormApp.hasPro) {
-                        return this.$notify.error({
-                            title: 'Pro Required!',
-                            message: 'This form required pro add-on of fluentform. Please install pro add-on',
-                            offset: 30
-                        });
+                        return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
                     }
                     selectedFormType = form.type;
                 }
@@ -227,15 +223,11 @@
             doCreateForm(data) {
                 FluentFormsGlobal.$get(data)
                     .done((response) => {
-                        this.$notify.success({
-                            title: 'Congratulations!',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
                         window.location.href = response.data.redirect_url;
                     })
                     .fail(error => {
-                        this.$message.error(error.responseJSON.data.message);
+                        this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.creatingForm = false;
