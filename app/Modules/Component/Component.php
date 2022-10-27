@@ -894,7 +894,7 @@ class Component
      */
     private function limitNumberOfEntries($restrictions, $form, &$isRenderable)
     {
-        if (!$restrictions['enabled']) {
+        if (!$restrictions['enabled'] || !isset($restrictions['period']) || !isset($restrictions['numberOfEntries'])) {
             return true;
         }
 
