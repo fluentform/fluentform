@@ -226,7 +226,7 @@ class BaseComponent
 
         $forStr = '';
         if (isset($data['attributes']['id'])) {
-            $forStr = "for='{$data['attributes']['id']}'";
+            $forStr = "for='" . esc_attr($data['attributes']['id']) . "'";
         }
 
         $labelMarkup = '';
@@ -237,7 +237,7 @@ class BaseComponent
             $labelMarkup = sprintf(
                 "<div class='%s'><label %s>%s</label> %s</div>",
                 esc_attr($labelClass),
-                esc_attr($forStr),
+                $forStr,
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
             );
