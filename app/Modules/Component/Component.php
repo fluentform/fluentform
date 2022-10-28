@@ -90,7 +90,7 @@ class Component
         // Date Pickckr Script
         wp_register_script(
             'flatpickr',
-            $app->publicUrl('libs/flatpickr/flatpickr.js'),
+            $app->publicUrl('libs/flatpickr/flatpickr.min.js'),
             ['jquery'],
             false,
             true

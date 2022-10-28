@@ -178,7 +178,7 @@ class Converter
                 $dateField = new DateTime();
 
                 wp_enqueue_style('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.min.css'));
-                wp_enqueue_script('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.js'), [], false, true);
+                wp_enqueue_script('flatpickr', $app->publicUrl('libs/flatpickr/flatpickr.min.js'), [], false, true);
 
                 $question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);
