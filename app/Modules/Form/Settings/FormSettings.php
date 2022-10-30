@@ -224,7 +224,7 @@ class FormSettings
             $this->settingsQuery->where('id', $settings->id)->update($data);
             $insertId = $settings->id;
         } else {
-            $insertId = $this->settingsQuery->insert($data);
+            $insertId = $this->settingsQuery->insertGetId($data);
         }
 
         wp_send_json_success([

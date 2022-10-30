@@ -2,8 +2,6 @@
 
 namespace FluentForm\App\Modules\Entries;
 
-use FluentForm\App;
-
 class EntryQuery
 {
     /**
@@ -30,7 +28,7 @@ class EntryQuery
 
     public function __construct()
     {
-        $this->request = App::make('request');
+        $this->request = wpFluentForm('request');
         $this->formModel = wpFluent()->table('fluentform_forms');
         $this->responseModel = wpFluent()->table('fluentform_submissions');
     }

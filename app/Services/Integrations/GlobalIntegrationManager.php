@@ -248,7 +248,7 @@ class GlobalIntegrationManager
         } else {
             $created = true;
             $integrationId = wpFluent()->table('fluentform_form_meta')
-                ->insert($data);
+                ->insertGetId($data);
         }
 
         wp_send_json_success([

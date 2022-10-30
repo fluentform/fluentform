@@ -3,8 +3,6 @@
 namespace FluentForm\App\Services\FormBuilder;
 
 use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Request;
 
 class EditorShortcodeParser
 {
@@ -316,7 +314,7 @@ class EditorShortcodeParser
      */
     private static function parseIp($value, $form = null)
     {
-        $ip = Request::getIp();
+        $ip = wpFluentForm('request')->getIp();
         return $ip ? $ip : $value;
     }
 

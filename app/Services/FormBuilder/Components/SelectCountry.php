@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\App;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -72,10 +71,10 @@ class SelectCountry extends BaseComponent
      */
     public function loadCountries($data)
     {
-        $app = App::make();
+        $app = wpFluentForm();
         $data['options'] = [];
         $activeList = ArrayHelper::get($data, 'settings.country_list.active_list');
-        $countries = $app->load($app->appPath('Services/FormBuilder/CountryNames.php'));
+        $countries = getFluentFormCountryList();
 
         if ('visible_list' == $activeList) {
             $selectCountries = ArrayHelper::get($data, 'settings.country_list.' . $activeList, []);
@@ -124,9 +123,8 @@ class SelectCountry extends BaseComponent
 
     public function getSelectedCountries($keys = [])
     {
-        $app = App::make();
         $options = [];
-        $countries = $app->load($app->appPath('Services/FormBuilder/CountryNames.php'));
+        $countries = getFluentFormCountryList();
         foreach ($keys as $value) {
             $options[$value] = $countries[$value];
         }

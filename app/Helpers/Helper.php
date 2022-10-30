@@ -24,7 +24,7 @@ class Helper
     public static function sanitizer($input, $attribute = null, $fields = [])
     {
         if (is_string($input)) {
-            if (ArrayHelper::get($fields, $attribute . '.element') === 'textarea') {
+            if ('textarea' === ArrayHelper::get($fields, $attribute . '.element')) {
                 $input = sanitize_textarea_field($input);
             } else {
                 $input = sanitize_text_field($input);
@@ -81,12 +81,13 @@ class Helper
     {
         json_decode($string);
 
-        return json_last_error() === JSON_ERROR_NONE;
+        return JSON_ERROR_NONE === json_last_error();
     }
 
     public static function isSlackEnabled()
     {
         $globalModules = get_option('fluentform_global_modules_status');
+
         return $globalModules && isset($globalModules['slack']) && 'yes' == $globalModules['slack'];
     }
 
@@ -97,6 +98,7 @@ class Helper
             'read'   => 'Read',
         ], $form_id);
         $statuses['trashed'] = 'Trashed';
+
         return $statuses;
     }
 
@@ -135,9 +137,10 @@ class Helper
         // decode the JSON data
         $result = json_decode($metaValue, true);
 
-        if (json_last_error() == JSON_ERROR_NONE) {
+        if (JSON_ERROR_NONE == json_last_error()) {
             return $result;
         }
+
         return $metaValue;
     }
 
@@ -154,11 +157,12 @@ class Helper
 
         if (!$meta) {
             $insetid = wpFluent()->table('fluentform_form_meta')
-                ->insert([
+                ->insertGetId([
                     'meta_key' => $metaKey,
                     'form_id'  => $formId,
                     'value'    => $value,
                 ]);
+
             return $insetid;
         } else {
             wpFluent()->table('fluentform_form_meta')
@@ -202,6 +206,7 @@ class Helper
                     'value'      => $value,
                     'updated_at' => current_time('mysql'),
                 ]);
+
             return $meta->id;
         }
 
@@ -237,7 +242,7 @@ class Helper
 
         $formSettings = json_decode($settings->value, true);
 
-        if ($formSettings && ArrayHelper::get($formSettings, 'delete_entry_on_submission') == 'yes') {
+        if ($formSettings && 'yes' == ArrayHelper::get($formSettings, 'delete_entry_on_submission')) {
             return true;
         }
 
@@ -272,14 +277,17 @@ class Helper
     {
         if (self::isTabIndexEnabled()) {
             static::$tabIndex += $increment;
+
             return static::$tabIndex;
         }
+
         return '';
     }
 
     public static function getFormInstaceClass($formId)
     {
         static::$formInstance += 1;
+
         return 'ff_form_instance_' . $formId . '_' . static::$formInstance;
     }
 
@@ -345,8 +353,9 @@ class Helper
     {
         if ('na' == static::$tabIndexStatus) {
             $globalSettings = get_option('_fluentform_global_form_settings');
-            static::$tabIndexStatus = ArrayHelper::get($globalSettings, 'misc.tabIndex') == 'yes';
+            static::$tabIndexStatus = 'yes' == ArrayHelper::get($globalSettings, 'misc.tabIndex');
         }
+
         return static::$tabIndexStatus;
     }
 
@@ -358,6 +367,7 @@ class Helper
         if (ArrayHelper::get($fields, 'stepsWrapper')) {
             return true;
         }
+
         return false;
     }
 
@@ -365,12 +375,13 @@ class Helper
     {
         $form = wpFluent()->table('fluentform_forms')->find($formId);
         $fieldsJson = $form->form_fields;
-        return strpos($fieldsJson, '"element":"' . $elementName . '"') != false;
+
+        return false != strpos($fieldsJson, '"element":"' . $elementName . '"');
     }
 
     public static function isUniqueValidation($validation, $field, $formData, $fields, $form)
     {
-        if (ArrayHelper::get($field, 'raw.settings.is_unique') == 'yes') {
+        if ('yes' == ArrayHelper::get($field, 'raw.settings.is_unique')) {
             $fieldName = ArrayHelper::get($field, 'name');
             if ($inputValue = ArrayHelper::get($formData, $fieldName)) {
                 $exist = wpFluent()->table('fluentform_entry_details')
@@ -392,11 +403,11 @@ class Helper
     public static function getNumericFormatters()
     {
         return apply_filters('fluentform_numeric_styles', [
-            'none'                 => [
+            'none' => [
                 'value' => '',
                 'label' => 'None',
             ],
-            'comma_dot_style'      => [
+            'comma_dot_style' => [
                 'value'    => 'comma_dot_style',
                 'label'    => __('US Style with Decimal (EX: 123,456.00)', 'fluentform'),
                 'settings' => [
@@ -416,7 +427,7 @@ class Helper
                     'symbol'    => '',
                 ],
             ],
-            'dot_comma_style'      => [
+            'dot_comma_style' => [
                 'value'    => 'dot_comma_style',
                 'label'    => __('EU Style with Decimal (Ex: 123.456,00)', 'fluentform'),
                 'settings' => [
@@ -461,6 +472,7 @@ class Helper
             return $input;
         }
         $settings = $formatters[$formatterName]['settings'];
+
         return number_format($input, $settings['precision'], $settings['decimal'], $settings['separator']);
     }
 
@@ -483,7 +495,7 @@ class Helper
         $names = [];
 
         foreach ($fields as $field) {
-            if (ArrayHelper::get($field, 'element') == 'container') {
+            if ('container' == ArrayHelper::get($field, 'element')) {
                 $columns = ArrayHelper::get($field, 'columns', []);
                 foreach ($columns as $column) {
                     $columnInputs = self::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
@@ -506,7 +518,8 @@ class Helper
             return $cache[$formId];
         }
 
-        $cache[$formId] = self::getFormMeta($formId, 'is_conversion_form') == 'yes';
+        $cache[$formId] = 'yes' == self::getFormMeta($formId, 'is_conversion_form');
+
         return $cache[$formId];
     }
 
@@ -528,12 +541,14 @@ class Helper
     public static function getFormAdminPermalink($route, $form)
     {
         $baseUrl = admin_url('admin.php?page=fluent_forms');
+
         return $baseUrl . '&route=' . $route . '&form_id=' . $form->id;
     }
 
     public static function getFormSettingsUrl($form)
     {
         $baseUrl = admin_url('admin.php?page=fluent_forms');
+
         return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#basic_settings';
     }
 
@@ -548,6 +563,7 @@ class Helper
         if ($key) {
             return site_url('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
+
         return site_url('?' . $paramKey . '=' . $formId);
     }
 
@@ -611,7 +627,7 @@ class Helper
 
     public static function hasBrTag($content)
     {
-        return is_string($content) && strpos($content, '<br />') !== false;
+        return is_string($content) && false !== strpos($content, '<br />');
     }
 
     public static function sanitizeForCSV($content)
@@ -670,15 +686,17 @@ class Helper
             }
             $value .= $rowJoiner;
         }
+
         return $value;
     }
 
     public static function getInputNameFromShortCode($value)
     {
         preg_match('/{+(.*?)}/', $value, $matches);
-        if ($matches && strpos($matches[1], 'inputs.') !== false) {
+        if ($matches && false !== strpos($matches[1], 'inputs.')) {
             return substr($matches[1], strlen('inputs.'));
         }
+
         return '';
     }
 }

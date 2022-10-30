@@ -1432,7 +1432,7 @@ abstract class BaseMigrator
      */
     public function insertForm($form, $insertedForms, $formItem)
     {
-        $formId = wpFluent()->table('fluentform_forms')->insert($form);
+        $formId = wpFluent()->table('fluentform_forms')->insertGetId($form);
         $insertedForms[$formId] = [
             'title'    => $form['title'],
             'edit_url' => admin_url('admin.php?page=fluent_forms&route=editor&form_id=' . $formId)
@@ -1567,7 +1567,7 @@ abstract class BaseMigrator
                 'created_at'    => current_time('mysql'),
                 'updated_at'    => current_time('mysql')
             ];
-            $insertId = wpFluent()->table('fluentform_submissions')->insert($insertData);
+            $insertId = wpFluent()->table('fluentform_submissions')->insertGetId($insertData);
 
             $uidHash = md5(wp_generate_uuid4() . $insertId);
 

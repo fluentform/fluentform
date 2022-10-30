@@ -251,7 +251,8 @@ new Vue({
                 action: 'fluentform-form-update',
                 formId: this.form_id,
                 title: this.form.title,
-                formFields: JSON.stringify(formFields)
+                formFields: JSON.stringify(formFields),
+                adre: formFields
             };
 
             FluentFormsGlobal.$post(data)

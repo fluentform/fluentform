@@ -116,7 +116,7 @@ class FormHandler
             do_action('fluentform_before_insert_payment_form', $insertData, $data, $this->form);
         }
 
-        $insertId = wpFluent()->table('fluentform_submissions')->insert($insertData);
+        $insertId = wpFluent()->table('fluentform_submissions')->insertGetId($insertData);
 
         $uidHash = md5(wp_generate_uuid4() . $insertId);
         Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
@@ -329,7 +329,7 @@ class FormHandler
             $validations = $originalValidations;
         }
 
-        $validator = \FluentValidator\Validator::make($this->formData, $validations[0], $validations[1]);
+        $validator = wpFluentForm('validator')->make($this->formData, $validations[0], $validations[1]);
 
         $errors = [];
         if ($validator->validate()->fails()) {

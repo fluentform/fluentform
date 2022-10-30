@@ -1,6 +1,7 @@
-<?php
+<?php defined('ABSPATH') or die;
+
 /*
-Plugin Name: Fluent Forms
+Plugin Name: Fluent Forms Latest
 Description: Contact Form By Fluent Forms is the advanced Contact form plugin with drag and drop, multi column supported form builder plugin
 Version: 4.3.21
 Author: Contact Form - WPManageNinja LLC
@@ -21,16 +22,8 @@ if (!defined('FLUENTFORM_HAS_NIA')) {
     define('FLUENTFORM_HAS_NIA', true);
 }
 
-include FLUENTFORM_DIR_PATH . 'framework/Foundation/Bootstrap.php';
+require __DIR__.'/vendor/autoload.php';
 
-use FluentForm\Framework\Foundation\Bootstrap;
-
-Bootstrap::run(__FILE__);
-
-// Handle Newtwork new Site Activation
-add_action('wp_insert_site', function ($blog) {
-    switch_to_blog($blog->blog_id);
-    include_once plugin_dir_path(__FILE__) . 'app/Modules/Activator.php';
-    (new FluentForm\App\Modules\Activator)->migrate();
-    restore_current_blog();
-});
+call_user_func(function($bootstrap) {
+    $bootstrap(__FILE__);
+}, require(__DIR__.'/boot/app.php'));

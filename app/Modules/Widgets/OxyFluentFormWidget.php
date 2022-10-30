@@ -490,14 +490,14 @@ class OxyFluentFormWidget extends OxygenEl
         if ($app->request->get('ct_builder')) {
             wp_enqueue_style(
                 'fluent-form-styles',
-                $app->publicUrl('css/fluent-forms-public.css'),
+                fluentFormsMix('css/fluent-forms-public.css'),
                 [],
                 FLUENTFORM_VERSION
             );
 
             wp_enqueue_style(
                 'fluentform-public-default',
-                $app->publicUrl('css/fluentform-public-default.css'),
+                fluentFormsMix('css/fluentform-public-default.css'),
                 [],
                 FLUENTFORM_VERSION
             );
@@ -505,13 +505,13 @@ class OxyFluentFormWidget extends OxygenEl
             if (!wp_script_is('flatpickr', 'registered')) {
                 wp_enqueue_style(
                     'flatpickr',
-                    $app->publicUrl('libs/flatpickr/flatpickr.min.css')
+                    fluentFormsMix('libs/flatpickr/flatpickr.min.css')
                 );
             }
 
             wp_enqueue_style(
                 'ff_choices',
-                $app->publicUrl('css/choices.css'),
+                fluentFormsMix('css/choices.css'),
                 [],
                 FLUENTFORM_VERSION
             );

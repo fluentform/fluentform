@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -80,9 +79,7 @@ class Inputs
         foreach ($fields as $index => $field) {
             $element = ArrayHelper::get($field, 'element');
             if ('select_country' == $element) {
-                $fields[$index]['options'] = App::load(
-                    App::appPath('Services/FormBuilder/CountryNames.php')
-                );
+                $fields[$index]['options'] = getFluentFormCountryList();
             } elseif ('gdpr-agreement' == $element || 'terms_and_condition' == $element) {
                 $fields[$index]['options'] = ['on' => 'Checked'];
             }

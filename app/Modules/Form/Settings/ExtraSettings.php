@@ -2,8 +2,6 @@
 
 namespace FluentForm\App\Modules\Form\Settings;
 
-use FluentForm\App;
-use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Foundation\Application;
 
 class ExtraSettings

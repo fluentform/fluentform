@@ -29,6 +29,6 @@ class ElementorWidget
 
     public function enqueueAssets()
     {
-        wp_enqueue_style('fluentform-elementor-widget', $this->app->publicUrl('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_style('fluentform-elementor-widget', fluentformMix('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Services\FormBuilder\Notifications;
 
-use FluentForm\View;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
@@ -210,21 +209,21 @@ class EmailNotification
         $emailFooter = apply_filters('fluentform_email_footer', '', $form, $notification);
 
         if (empty($emailHeader)) {
-            $emailHeader = View::make('email.template.header', [
+            $emailHeader = wpFluentForm('view')->make('email.template.header', [
                 'form'         => $form,
                 'notification' => $notification,
             ]);
         }
 
         if (empty($emailFooter)) {
-            $emailFooter = View::make('email.template.footer', [
+            $emailFooter = wpFluentForm('view')->make('email.template.footer', [
                 'form'         => $form,
                 'notification' => $notification,
                 'footerText'   => $this->getFooterText($form, $notification),
             ]);
         }
 
-        $css = View::make('email.template.styles');
+        $css = wpFluentForm('view')->make('email.template.styles');
         $css = apply_filters('fluentform_email_styles', $css, $form, $notification);
         $emailBody = $emailHeader . $emailBody . $emailFooter;
 

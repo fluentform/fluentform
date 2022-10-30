@@ -3,13 +3,12 @@
 namespace FluentForm\App\Modules\Registerer;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\View;
 
 class Menu
 {
@@ -44,25 +43,25 @@ class Menu
 
         wp_register_script(
             'fluent_forms_global',
-            $app->publicUrl('js/fluent_forms_global.js'),
+            fluentFormsMix('js/fluent_forms_global.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        $settingsGlobalStyle = $app->publicUrl('css/settings_global.css');
-        $allFormsStyle = $app->publicUrl('css/fluent-all-forms.css');
-        $fluentFormAdminEditorStyles = $app->publicUrl('css/fluent-forms-admin-sass.css');
-        $fluentFormAdminCSS = $app->publicUrl('css/fluent-forms-admin.css');
-        $addOnsCss = $app->publicUrl('css/add-ons.css');
-        $adminDocCss = $app->publicUrl('css/admin_docs.css');
+        $settingsGlobalStyle = fluentFormsMix('css/settings_global.css');
+        $allFormsStyle = fluentFormsMix('css/fluent-all-forms.css');
+        $fluentFormAdminEditorStyles = fluentFormsMix('css/fluent-forms-admin-sass.css');
+        $fluentFormAdminCSS = fluentFormsMix('css/fluent-forms-admin.css');
+        $addOnsCss = fluentFormsMix('css/add-ons.css');
+        $adminDocCss = fluentFormsMix('css/admin_docs.css');
         if (is_rtl()) {
-            $settingsGlobalStyle = $app->publicUrl('css/settings_global_rtl.css');
-            $allFormsStyle = $app->publicUrl('css/fluent-all-forms-rtl.css');
-            $fluentFormAdminEditorStyles = $app->publicUrl('css/fluent-forms-admin-sass-rtl.css');
-            $fluentFormAdminCSS = $app->publicUrl('css/fluent-forms-admin-rtl.css');
-            $addOnsCss = $app->publicUrl('css/add-ons-rtl.css');
-            $adminDocCss = $app->publicUrl('css/admin_docs_rtl.css');
+            $settingsGlobalStyle = fluentFormsMix('css/settings_global_rtl.css');
+            $allFormsStyle = fluentFormsMix('css/fluent-all-forms-rtl.css');
+            $fluentFormAdminEditorStyles = fluentFormsMix('css/fluent-forms-admin-sass-rtl.css');
+            $fluentFormAdminCSS = fluentFormsMix('css/fluent-forms-admin-rtl.css');
+            $addOnsCss = fluentFormsMix('css/add-ons-rtl.css');
+            $adminDocCss = fluentFormsMix('css/admin_docs_rtl.css');
         }
 
         wp_register_style(
@@ -75,7 +74,7 @@ class Menu
 
         wp_register_script(
             'clipboard',
-            $app->publicUrl('libs/clipboard.min.js'),
+            fluentFormsMix('libs/clipboard.min.js'),
             [],
             false,
             true
@@ -83,7 +82,7 @@ class Menu
 
         wp_register_script(
             'copier',
-            $app->publicUrl('js/copier.js'),
+            fluentFormsMix('js/copier.js'),
             [],
             false,
             true
@@ -91,7 +90,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_settings',
-            $app->publicUrl('js/form_settings_app.js'),
+            fluentFormsMix('js/form_settings_app.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -99,7 +98,7 @@ class Menu
 
         wp_register_script(
             'fluent_all_forms',
-            $app->publicUrl('js/fluent-all-forms-admin.js'),
+            fluentFormsMix('js/fluent-all-forms-admin.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -115,7 +114,7 @@ class Menu
 
         wp_register_script(
             'fluentform_editor_script',
-            $app->publicUrl('js/fluent-forms-editor.js'),
+            fluentFormsMix('js/fluent-forms-editor.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -139,7 +138,7 @@ class Menu
 
         wp_register_script(
             'fluentform-transfer-js',
-            $app->publicUrl('js/fluentform-transfer.js'),
+            fluentFormsMix('js/fluentform-transfer.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -147,7 +146,7 @@ class Menu
 
         wp_register_script(
             'fluentform-global-settings-js',
-            $app->publicUrl('js/fluentform-global-settings.js'),
+            fluentFormsMix('js/fluentform-global-settings.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -155,7 +154,7 @@ class Menu
 
         wp_register_script(
             'fluentform-modules',
-            $app->publicUrl('js/modules.js'),
+            fluentFormsMix('js/modules.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -163,7 +162,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_entries',
-            $app->publicUrl('js/form_entries.js'),
+            fluentFormsMix('js/form_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -171,7 +170,7 @@ class Menu
 
         wp_register_script(
             'fluentform_all_entries',
-            $app->publicUrl('js/all_entries.js'),
+            fluentFormsMix('js/all_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -179,7 +178,7 @@ class Menu
 
         wp_register_script(
             'fluentform_chart_js',
-            $app->publicUrl('libs/chartjs/chart.min.js'),
+            fluentFormsMix('libs/chartjs/chart.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -187,7 +186,7 @@ class Menu
 
         wp_register_script(
             'fluentform_vue_chart_js',
-            $app->publicUrl('libs/chartjs/vue-chartjs.min.js'),
+            fluentFormsMix('libs/chartjs/vue-chartjs.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -221,9 +220,9 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = $app->publicUrl('css/element-ui-css.css');
+        $elementUIStyle = fluentFormsMix('css/element-ui-css.css');
         if (is_rtl()) {
-            $elementUIStyle = $app->publicUrl('css/element-ui-css-rtl.css');
+            $elementUIStyle = fluentFormsMix('css/element-ui-css-rtl.css');
         }
         wp_enqueue_style(
             'fluentform_global_elements',
@@ -241,7 +240,6 @@ class Menu
 
     public function enqueuePageScripts()
     {
-        // dd('asas'. $this->isFluentPages());
         if (!$this->isFluentPages()) {
             return;
         }
@@ -305,7 +303,7 @@ class Menu
      * Register menu and sub-menus.
      */
     public function register()
-    {
+    {        
         $dashBoardCapability = apply_filters(
             'fluentform_dashboard_capability',
             'fluentform_dashboard_access'
@@ -493,7 +491,7 @@ class Menu
             if ($hasPermission) {
                 return $this->renderFormInnerPages();
             } else {
-                return View::render('admin.no_permission');
+                return $this->app->view->render('admin.no_permission');
             }
         }
 
@@ -503,7 +501,7 @@ class Menu
     public function renderAllEntriesAdminRoute()
     {
         wp_enqueue_script('fluentform_all_entries');
-        View::render('admin.all_entries', []);
+        $this->app->view->render('admin.all_entries', []);
     }
 
     public function renderFormInnerPages()
@@ -549,7 +547,7 @@ class Menu
 
         $route = sanitize_key($this->app->request->get('route'));
 
-        View::render('admin.form.form_wrapper', [
+        $this->app->view->render('admin.form.form_wrapper', [
             'route'      => $route,
             'form_id'    => $form_id,
             'form'       => $form,
@@ -615,7 +613,7 @@ class Menu
 
         $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
 
-        View::render('admin.form.settings_wrapper', [
+        $this->app->view->render('admin.form.settings_wrapper', [
             'form_id'           => $form_id,
             'settings_menus'    => $settingsMenus,
             'current_sub_route' => $currentRoute,
@@ -645,24 +643,24 @@ class Menu
     {
         wp_localize_script('fluentform_form_settings', 'FluentFormApp', [
             'form_id'              => $form_id,
-            'plugin'               => $this->app->getSlug(),
+            'plugin'               => $this->app->config->get('app.slug'),
             'hasPro'               => defined('FLUENTFORMPRO'),
             'hasPDF'               => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM'         => defined('FLUENTCRM'),
             'upgrade_url'          => fluentform_upgrade_url(),
-            'ace_path_url'         => $this->app->publicUrl('libs/ace'),
+            'ace_path_url'         => fluentformMix('libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
             'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
-                'asset_url'   => $this->app->publicUrl('img/integrations.png'),
+                'asset_url'   => fluentformMix('img/integrations.png'),
                 'list_url'    => fluentform_integrations_url(),
                 'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform'),
             ],
         ]);
 
-        View::render('admin.form.settings', [
+        $this->app->view->render('admin.form.settings', [
             'form_id' => $form_id,
         ]);
     }
@@ -670,13 +668,13 @@ class Menu
     public function renderForms()
     {
         if (!get_option('_fluentform_installed_version')) {
-            (new Activator())->migrate();
+            (new ActivationHandler())->migrate();
         }
 
         $formsCount = wpFluent()->table('fluentform_forms')->count();
 
         wp_localize_script('fluent_all_forms', 'FluentFormApp', apply_filters('fluent_all_forms_vars', [
-            'plugin'             => $this->app->getSlug(),
+            'plugin'             => $this->app->config->get('app.slug'),
             'formsCount'         => $formsCount,
             'hasPro'             => defined('FLUENTFORMPRO'),
             'upgrade_url'        => fluentform_upgrade_url(),
@@ -684,13 +682,13 @@ class Menu
             'isDisableAnalytics' => apply_filters('fluentform-disabled_analytics', false),
         ]));
 
-        View::render('admin.all_forms', []);
+        $this->app->view->render('admin.all_forms', []);
     }
 
     public function renderEditor($form_id)
     {
-        View::render('admin.form.editor', [
-            'plugin'  => $this->app->getSlug(),
+        $this->app->view->render('admin.form.editor', [
+            'plugin'  => $this->app->config->get('app.slug'),
             'form_id' => $form_id,
         ]);
     }
@@ -716,7 +714,7 @@ class Menu
         wp_enqueue_style('fluentform_editor_sass');
         wp_enqueue_style('fluentform_editor_style');
 
-        $pluginSlug = $this->app->getSlug();
+        $pluginSlug = $this->app->config->get('app.slug');
 
         if (function_exists('wp_enqueue_editor')) {
             add_filter('user_can_richedit', '__return_true');
@@ -773,36 +771,26 @@ class Menu
             $form->form_fields = $formFields;
         }
 
-        $searchTags = $this->app->load(
-            $this->app->appPath('Services/FormBuilder/ElementSearchTags.php')
-        );
+        $searchTags = fluentformLoadFile('Services/FormBuilder/ElementSearchTags.php');
 
         $searchTags = apply_filters('fluent_editor_element_search_tags', $searchTags, $form);
 
         $elementPlacements = apply_filters(
             'fluent_editor_element_settings_placement',
-            $this->app->load($this->app->appPath('Services/FormBuilder/ElementSettingsPlacement.php')),
+            fluentformLoadFile('Services/FormBuilder/ElementSettingsPlacement.php'),
             $form
         );
 
         wp_localize_script('fluentform_editor_script', 'FluentFormApp', apply_filters('fluentform_editor_vars', [
             'plugin'            => $pluginSlug,
             'form_id'           => $formId,
-            'plugin_public_url' => $this->app->publicUrl(),
+            'plugin_public_url' => fluentformMix(),
             'preview_url'       => Helper::getPreviewUrl($formId),
             'form'              => $form,
             'hasPro'            => defined('FLUENTFORMPRO'),
-            'countries'         => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/CountryNames.php')
-            ),
-            'element_customization_settings' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ElementCustomization.php')
-            ),
-
-            'validation_rule_settings' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ValidationRuleSettings.php')
-            ),
-
+            'countries'         => getFluentFormCountryList(),
+            'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
+            'validation_rule_settings' => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
             'form_editor_str'            => TranslationString::getEditorI18n(),
             'element_search_tags'        => $searchTags,
             'element_settings_placement' => $elementPlacements,
@@ -858,7 +846,7 @@ class Menu
             'title' => 'Turnstile (Beta)',
         ];
 
-        View::render('admin.settings.index', [
+        $this->app->view->render('admin.settings.index', [
             'components'       => $components,
             'currentComponent' => $currentComponent,
         ]);
@@ -872,14 +860,14 @@ class Menu
             ->get();
 
         wp_localize_script('fluentform-transfer-js', 'FluentFormApp', [
-            'plugin'       => $this->app->getSlug(),
+            'plugin'       => $this->app->config->get('app.slug'),
             'forms'        => $forms,
             'upgrade_url'  => fluentform_upgrade_url(),
             'hasPro'       => defined('FLUENTFORMPRO'),
             'transfer_str' => TranslationString::getTransferModuleI18n(),
         ]);
 
-        View::render('admin.transfer.index');
+        $this->app->view->render('admin.transfer.index');
     }
 
     public function addPreviewButton($formId)
@@ -939,7 +927,7 @@ class Menu
                 $showPayment = $formCount > 2;
             }
         }
-        View::render('admin.global_menu', [
+        $this->app->view->render('admin.global_menu', [
             'show_payment'         => $showPayment,
             'show_payment_entries' => apply_filters('fluentform_show_payment_entries', false),
         ]);
@@ -956,9 +944,9 @@ class Menu
             'jquery',
         ], FLUENTFORM_VERSION);
 
-        View::render('admin.smtp.index', [
-            'logo'         => $this->app->publicUrl('img/fluentsmtp.svg'),
-            'banner_image' => $this->app->publicUrl('img/fluentsmtp-banner.png'),
+        $this->app->view->render('admin.smtp.index', [
+            'logo'         => fluentformMix('img/fluentsmtp.svg'),
+            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);

@@ -7,7 +7,6 @@ use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Registerer\TranslationString;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\View;
 
 class Entries extends EntryQuery
 {
@@ -121,7 +120,7 @@ class Entries extends EntryQuery
             wpFluent()->raw('DATE(created_at) AS date'),
             wpFluent()->raw('COUNT(id) AS count'),
         ])
-            ->whereBetween('created_at', $from, $to)
+            ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC');
 
@@ -183,9 +182,7 @@ class Entries extends EntryQuery
             'has_pro'             => defined('FLUENTFORMPRO'),
             'printStyles'         => [fluentformMix('css/settings_global.css')],
             'email_notifications' => $formattedNotification,
-            'available_countries' => $app->load(
-                $app->appPath('Services/FormBuilder/CountryNames.php')
-            ),
+            'available_countries' => getFluentFormCountryList(),
             'upgrade_url'      => fluentform_upgrade_url(),
             'form_entries_str' => TranslationString::getEntriesI18n(),
         ], $form);
@@ -196,7 +193,7 @@ class Entries extends EntryQuery
             $fluentFormEntriesVars
         );
 
-        View::render('admin.form.entries', [
+        wpFluentForm('view')->render('admin.form.entries', [
             'form_id' => $form_id,
             'has_pdf' => defined('FLUENTFORM_PDF_VERSION') ? 'true' : 'false',
         ]);
@@ -495,7 +492,7 @@ class Entries extends EntryQuery
 
         $response_note = apply_filters('fluentform_add_response_note', $response_note);
 
-        $insertId = $this->responseMetaModel->insert($response_note);
+        $insertId = $this->responseMetaModel->insertGetId($response_note);
 
         $added_note = $this->responseMetaModel->find($insertId);
 

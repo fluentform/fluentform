@@ -44,6 +44,11 @@ class Form
     protected $hasPayment = 0;
 
     /**
+     * @var \FluentForm\Framework\Database\Query\Builder
+     */
+    protected $model = null;
+
+    /**
      * Form constructor.
      *
      * @param \FluentForm\Framework\Foundation\Application $application
@@ -108,7 +113,7 @@ class Form
             $insertData['has_payment'] = $this->hasPayment;
         }
 
-        $formId = $this->model->insert($insertData);
+        $formId = $this->model->insertGetId($insertData);
 
         // Rename the form name  here
         wpFluent()->table('fluentform_forms')->where('id', $formId)->update([
@@ -556,7 +561,7 @@ class Form
             'updated_at'          => current_time('mysql'),
         ];
 
-        $newFormId = $this->model->insert($data);
+        $newFormId = $this->model->insertGetId($data);
 
         // Rename the form name  here
         wpFluent()->table('fluentform_forms')
@@ -697,7 +702,7 @@ class Form
                     'value'    => $pdf_feed->value,
                     'form_id'  => $newFormId,
                 ];
-                $pdfFeedMap[$pdf_feed->id] = wpFluent()->table('fluentform_form_meta')->insert($pdfData);
+                $pdfFeedMap[$pdf_feed->id] = wpFluent()->table('fluentform_form_meta')->insertGetId($pdfData);
             }
         }
         return $pdfFeedMap;

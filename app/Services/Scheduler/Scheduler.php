@@ -3,7 +3,6 @@
 namespace FluentForm\App\Services\Scheduler;
 
 use FluentForm\App\Services\Emogrifier\Emogrifier;
-use FluentForm\View;
 
 class Scheduler
 {
@@ -114,7 +113,7 @@ class Scheduler
             'payments' => $paymentCounts,
             'days' => $days
         );
-        $emailBody = View::make('email.report.body', $data);
+        $emailBody = wpFluentForm('view')->make('email.report.body', $data);
 
         $emailBody = apply_filters('fluentform_email_summary_body', $emailBody, $data);
 

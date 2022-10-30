@@ -102,7 +102,7 @@ class Transfer
                     }
 
                     // Insert the form to the DB.
-                    $formId = wpFluent()->table('fluentform_forms')->insert($form);
+                    $formId = wpFluent()->table('fluentform_forms')->insertGetId($form);
 
                     $insertedForms[$formId] = [
                         'title'    => $form['title'],

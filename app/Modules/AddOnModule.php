@@ -2,8 +2,8 @@
 
 namespace FluentForm\App\Modules;
 
-use FluentForm\App;
-use FluentForm\View;
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Registerer\TranslationString;
 
 class AddOnModule
 {
@@ -38,7 +38,7 @@ class AddOnModule
             $current_menu_item = sanitize_key($subPage);
         }
 
-        View::render('admin.addons.index', [
+        wpFluentForm('view')->render('admin.addons.index', [
             'menus'             => $extraMenus,
             'base_url'          => admin_url('admin.php?page=fluent_forms_add_ons'),
             'current_menu_item' => $current_menu_item,
@@ -57,8 +57,8 @@ class AddOnModule
         $addOns['slack'] = [
             'title'       => 'Slack',
             'description' => 'Get realtime notification in slack channel when a new submission will be added.',
-            'logo'        => App::publicUrl('img/integrations/slack.png'),
-            'enabled'     => App\Helpers\Helper::isSlackEnabled() ? 'yes' : 'no',
+            'logo'        => fluentformMix('img/integrations/slack.png'),
+            'enabled'     => Helper::isSlackEnabled() ? 'yes' : 'no',
             'config_url'  => '',
             'category'    => 'crm',
         ];
@@ -70,10 +70,10 @@ class AddOnModule
         wp_localize_script('fluentform-modules', 'fluent_addon_modules', [
             'addons'          => $addOns,
             'has_pro'         => defined('FLUENTFORMPRO'),
-            'addOnModule_str' => App\Modules\Registerer\TranslationString::getAddOnModuleI18n(),
+            'addOnModule_str' => TranslationString::getAddOnModuleI18n(),
         ]);
 
-        View::render('admin.addons.list', []);
+        wpFluentForm('view')->render('admin.addons.list', []);
     }
 
     public function updateAddOnsStatus()
@@ -93,7 +93,7 @@ class AddOnModule
             'paypal' => [
                 'title'        => __('PayPal', 'fluentform'),
                 'description'  => __('Accept Payments via paypal as a part of your form submission', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/paypal.png'),
+                'logo'         => fluentformMix('img/integrations/paypal.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'payment',
@@ -101,7 +101,7 @@ class AddOnModule
             'stripe' => [
                 'title'        => __('Stripe', 'fluentform'),
                 'description'  => __('Accept Payments via stripe as a part of your form submission', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/stripe.png'),
+                'logo'         => fluentformMix('img/integrations/stripe.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'payment',
@@ -109,7 +109,7 @@ class AddOnModule
             'UserRegistration' => [
                 'title'        => __('User Registration', 'fluentform'),
                 'description'  => __('Create WordPress user when when a form is submitted', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/user_registration.png'),
+                'logo'         => fluentformMix('img/integrations/user_registration.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core',
@@ -117,7 +117,7 @@ class AddOnModule
             'PostFeeds' => [
                 'title'        => __('Advanced Post/CPT Creation', 'fluentform'),
                 'description'  => __('Create post/any cpt on form submission. It will enable many new features including dedicated post fields.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/post-creation.png'),
+                'logo'         => fluentformMix('img/integrations/post-creation.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core',
@@ -125,7 +125,7 @@ class AddOnModule
             'sharePages' => [
                 'title'        => __('Landing Pages', 'fluentform'),
                 'description'  => __('Create completely custom "distraction-free" form landing pages to boost conversions', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/landing_pages.png'),
+                'logo'         => fluentformMix('img/integrations/landing_pages.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core',
@@ -133,7 +133,7 @@ class AddOnModule
             'webhook' => [
                 'title'        => __('WebHooks', 'fluentform'),
                 'description'  => __('Broadcast your Fluent Forms Submission to any web api endpoint with the powerful webhook module.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/webhook.png'),
+                'logo'         => fluentformMix('img/integrations/webhook.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -141,7 +141,7 @@ class AddOnModule
             'zapier' => [
                 'title'        => __('Zapier', 'fluentform'),
                 'description'  => __('Connect your Fluent Forms data with Zapier and push data to thousands of online softwares.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/zapier.png'),
+                'logo'         => fluentformMix('img/integrations/zapier.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -149,7 +149,7 @@ class AddOnModule
             'trello' => [
                 'title'        => __('Trello', 'fluentform'),
                 'description'  => __('Fluent Forms Trello Module allows you to create Trello card from submiting forms.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/trello.png'),
+                'logo'         => fluentformMix('img/integrations/trello.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -157,7 +157,7 @@ class AddOnModule
             'google_sheet' => [
                 'title'        => __('Google Sheet', 'fluentform'),
                 'description'  => __('Add Fluent Forms Submission to Google sheets when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/google-sheets.png'),
+                'logo'         => fluentformMix('img/integrations/google-sheets.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -165,7 +165,7 @@ class AddOnModule
             'activecampaign' => [
                 'title'        => __('ActiveCampaign', 'fluentform'),
                 'description'  => __('Fluent Forms ActiveCampaign Module allows you to create ActiveCampaign list signup forms in WordPress, so you can grow your email list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/activecampaign.png'),
+                'logo'         => fluentformMix('img/integrations/activecampaign.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -173,7 +173,7 @@ class AddOnModule
             'campaign_monitor' => [
                 'title'        => __('Campaign Monitor', 'fluentform'),
                 'description'  => __('Fluent Forms Campaign Monitor module allows you to create Campaign Monitor newsletter signup forms in WordPress, so you can grow your email list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/campaignmonitor.png'),
+                'logo'         => fluentformMix('img/integrations/campaignmonitor.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -181,7 +181,7 @@ class AddOnModule
             'constatantcontact' => [
                 'title'        => __('Constant Contact', 'fluentform'),
                 'description'  => __('Connect Constant Contact with Fluent Forms and create subscriptions forms right into WordPress and grow your list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/constantcontact.png'),
+                'logo'         => fluentformMix('img/integrations/constantcontact.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -189,7 +189,7 @@ class AddOnModule
             'convertkit' => [
                 'title'        => __('ConvertKit', 'fluentform'),
                 'description'  => __('Connect ConvertKit with Fluent Forms and create subscription forms right into WordPress and grow your list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/convertkit.png'),
+                'logo'         => fluentformMix('img/integrations/convertkit.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -197,7 +197,7 @@ class AddOnModule
             'getresponse' => [
                 'title'        => __('GetResponse', 'fluentform'),
                 'description'  => __('Fluent Forms GetResponse module allows you to create GetResponse newsletter signup forms in WordPress, so you can grow your email list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/getresponse.png'),
+                'logo'         => fluentformMix('img/integrations/getresponse.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -205,7 +205,7 @@ class AddOnModule
             'hubspot' => [
                 'title'        => __('Hubspot', 'fluentform'),
                 'description'  => __('Connect HubSpot with Fluent Forms and subscribe a contact when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/hubspot.png'),
+                'logo'         => fluentformMix('img/integrations/hubspot.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -213,7 +213,7 @@ class AddOnModule
             'icontact' => [
                 'title'        => __('iContact', 'fluentform'),
                 'description'  => __('Connect iContact with Fluent Forms and subscribe a contact when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/icontact.png'),
+                'logo'         => fluentformMix('img/integrations/icontact.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -221,7 +221,7 @@ class AddOnModule
             'platformly' => [
                 'title'        => __('Platformly', 'fluentform'),
                 'description'  => __('Connect Platform.ly with Fluent Forms and subscribe a contact when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/platformly.png'),
+                'logo'         => fluentformMix('img/integrations/platformly.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -229,7 +229,7 @@ class AddOnModule
             'moosend' => [
                 'title'        => __('MooSend', 'fluentform'),
                 'description'  => 'Connect MooSend with Fluent Forms and subscribe a contact when a form is submitted.',
-                'logo'         => App::publicUrl('img/integrations/moosend_logo.png'),
+                'logo'         => fluentformMix('img/integrations/moosend_logo.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -237,7 +237,7 @@ class AddOnModule
             'sendfox' => [
                 'title'        => __('SendFox', 'fluentform'),
                 'description'  => __('Connect SendFox with Fluent Forms and subscribe a contact when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/sendfox.png'),
+                'logo'         => fluentformMix('img/integrations/sendfox.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -245,7 +245,7 @@ class AddOnModule
             'mailerlite' => [
                 'title'        => __('MailerLite', 'fluentform'),
                 'description'  => __('Connect your Fluent Forms with MailerLite and add subscribers easily.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/mailerlite.png'),
+                'logo'         => fluentformMix('img/integrations/mailerlite.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -253,7 +253,7 @@ class AddOnModule
             'sms_notifications' => [
                 'title'        => __('SMS Notification', 'fluentform'),
                 'description'  => __('Send SMS in real time when a form is submitted with Twilio.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/twilio.png'),
+                'logo'         => fluentformMix('img/integrations/twilio.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -261,7 +261,7 @@ class AddOnModule
             'get_gist' => [
                 'title'        => __('Gist', 'fluentform'),
                 'description'  => __('GetGist is Easy to use all-in-one software for live chat, email marketing automation, forms, knowledge base, and more for a complete 360° view of your contacts.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/getgist.png'),
+                'logo'         => fluentformMix('img/integrations/getgist.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -269,7 +269,7 @@ class AddOnModule
             'sendinblue' => [
                 'title'        => __('SendInBlue', 'fluentform'),
                 'description'  => __('Fluent Forms Sendinblue Module allows you to create contacts on your list, so you can grow your email list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/sendinblue.png'),
+                'logo'         => fluentformMix('img/integrations/sendinblue.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -277,7 +277,7 @@ class AddOnModule
             'drip' => [
                 'title'        => __('Drip', 'fluentform'),
                 'description'  => __('Fluent Forms Drip Module allows you to create contacts on your Drip list, so you can grow your email list.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/drip.png'),
+                'logo'         => fluentformMix('img/integrations/drip.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -285,7 +285,7 @@ class AddOnModule
             'discord' => [
                 'title'        => __('Discord', 'fluentform'),
                 'description'  => __('Send notification with form data to your Discord channel when a form is submitted', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/discord.png'),
+                'logo'         => fluentformMix('img/integrations/discord.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -293,7 +293,7 @@ class AddOnModule
             'telegram' => [
                 'title'        => __('Telegram', 'fluentform'),
                 'description'  => __('Send notification to Telegram channel or group when a form is submitted', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/telegram.png'),
+                'logo'         => fluentformMix('img/integrations/telegram.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -301,7 +301,7 @@ class AddOnModule
             'affiliateWp' => [
                 'title'        => __('AffiliateWP', 'fluentform'),
                 'description'  => __('Generate AffiliateWP referrals automatically when a customer is referred to your site via an affiliate link', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/affiliatewp.png'),
+                'logo'         => fluentformMix('img/integrations/affiliatewp.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -309,7 +309,7 @@ class AddOnModule
             'clicksend_sms_notification' => [
                 'title'        => __('ClickSend', 'fluentform'),
                 'description'  => __('Send SMS in real time when a form is submitted with ClickSend', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/clicksend.png'),
+                'logo'         => fluentformMix('img/integrations/clicksend.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -317,7 +317,7 @@ class AddOnModule
             'zohocrm' => [
                 'title'        => __('Zoho CRM', 'fluentform'),
                 'description'  => __('Zoho CRM is an online Sales CRM software that manages your sales, marketing and support in one CRM platform.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/zohocrm.png'),
+                'logo'         => fluentformMix('img/integrations/zohocrm.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -325,7 +325,7 @@ class AddOnModule
             'cleverreach' => [
                 'title'        => __('CleverReach', 'fluentform'),
                 'description'  => __('CleverReach is web-based email marketing software for managing email campaigns and contacts. Use Fluent Forms to grow your CleverReach subscriber list', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/clever_reach.png'),
+                'logo'         => fluentformMix('img/integrations/clever_reach.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -333,7 +333,7 @@ class AddOnModule
             'salesflare' => [
                 'title'        => __('Salesflare', 'fluentform'),
                 'description'  => __('Create Salesflare contact from WordPress, so you can grow your contact list', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/salesflare.png'),
+                'logo'         => fluentformMix('img/integrations/salesflare.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -341,7 +341,7 @@ class AddOnModule
             'automizy' => [
                 'title'        => __('Automizy', 'fluentform'),
                 'description'  => __('Connect Automizy with Fluent Forms and subscribe a contact when a form is submitted.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/automizy.png'),
+                'logo'         => fluentformMix('img/integrations/automizy.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -349,7 +349,7 @@ class AddOnModule
             'salesforce' => [
                 'title'        => __('Salesforce', 'fluentform'),
                 'description'  => __('Salesforce helps your marketing, sales, commerce, service and IT teams work as one from anywhere — so you can keep your customers happy everywhere.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/salesforce.png'),
+                'logo'         => fluentformMix('img/integrations/salesforce.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -357,7 +357,7 @@ class AddOnModule
             'airtable' => [
                 'title'        => __('Airtable', 'fluentform'),
                 'description'  => __('Airtable is a low-code platform for building collaborative apps. Customize your workflow, collaborate, and achieve ambitious outcomes.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/airtable.png'),
+                'logo'         => fluentformMix('img/integrations/airtable.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -365,7 +365,7 @@ class AddOnModule
             'mailjet' => [
                 'title'        => __('Mailjet', 'fluentform'),
                 'description'  => __('Mailjet is an easy-to-use all-in-one e-mail platform.', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/mailjet.png'),
+                'logo'         => fluentformMix('img/integrations/mailjet.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
@@ -373,7 +373,7 @@ class AddOnModule
             'quiz_addon' => [
                 'title'        => __('Quiz Module', 'fluentform'),
                 'description'  => __('With this module, you can create quizzes and show scores with grades, points, fractions, or percentages', 'fluentform'),
-                'logo'         => App::publicUrl('img/integrations/quiz-icon.svg'),
+                'logo'         => fluentformMix('img/integrations/quiz-icon.svg'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core',

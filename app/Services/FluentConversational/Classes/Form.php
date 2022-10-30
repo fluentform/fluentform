@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes;
 
-use FluentForm\View;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -563,7 +562,7 @@ class Form
             }
         }
 
-        return View::make('public.conversational-form-inline', [
+        return wpFluentForm('view')->make('public.conversational-form-inline', [
             'generated_css'   => $this->getGeneratedCss($formId),
             'design'          => $designSettings,
             'submit_css'      => $submitCss,
@@ -700,7 +699,7 @@ class Form
             }
         }
 
-        View::render('public.conversational-form', [
+        wpFluentForm('view')->render('public.conversational-form', [
             'generated_css' => $this->getGeneratedCss($formId),
             'design'        => $designSettings,
             'submit_css'    => $submitCss,

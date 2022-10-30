@@ -2,11 +2,11 @@
 
 namespace FluentForm\App\Services\FormBuilder;
 
-use FluentForm\App;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Helpers\Helper;
 
 class ShortCodeParser
 {
@@ -283,7 +283,7 @@ class ShortCodeParser
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
         } elseif (false !== strpos($key, 'meta.')) {
             $metaKey = substr($key, strlen('meta.'));
-            $data = App\Helpers\Helper::getSubmissionMeta($entry->id, $metaKey);
+            $data = Helper::getSubmissionMeta($entry->id, $metaKey);
             if (! is_array($data)) {
                 return $data;
             }
@@ -384,7 +384,7 @@ class ShortCodeParser
 
     protected static function getRequest()
     {
-        return App::make('request');
+        return wpFluentForm('request');
     }
 
     protected static function getUserAgent()

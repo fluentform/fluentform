@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App;
+use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Predefined extends Form
@@ -17,7 +17,7 @@ class Predefined extends Form
         $forms = [
 
             'blank_form' => [
-                'screenshot' => App::publicUrl('img/forms/new_blank.png'),
+                'screenshot' => fluentformMix('img/forms/new_blank.png'),
                 'createable' => true,
                 'title'      => 'Blank Form',
                 'tag'        => ['blank'],
@@ -27,7 +27,7 @@ class Predefined extends Form
             ],
 
             // 'login_form' => array(
-            //     'screenshot' => App::publicUrl('img/forms/login_form.png'),
+            //     'screenshot' => fluentformMix('img/forms/login_form.png'),
             //     'createable' => true,
             //     'title'      => 'Login Form',
             //     'tag'        => ["login", 'sign-in', 'signin'],
@@ -38,7 +38,7 @@ class Predefined extends Form
             // ),
 
             'basic_contact_form' => [
-                'screenshot' => App::publicUrl('img/forms/contact_form.png'),
+                'screenshot' => fluentformMix('img/forms/contact_form.png'),
                 'createable' => true,
                 'title'      => 'Contact Form',
                 'is_pro'     => false,
@@ -49,7 +49,7 @@ class Predefined extends Form
             ],
 
             'conversational' => [
-                'screenshot' => App::publicUrl('img/forms/conversational.gif'),
+                'screenshot' => fluentformMix('img/forms/conversational.gif'),
                 'createable' => true,
                 'title'      => 'Conversational Form',
                 'brief'      => 'Create Smart form UI',
@@ -60,7 +60,7 @@ class Predefined extends Form
 
             //form number : 84
             'newsletter_form' => [
-                'screenshot' => App::publicUrl('img/forms/comment_rating.png'),
+                'screenshot' => fluentformMix('img/forms/comment_rating.png'),
                 'createable' => true,
                 'title'      => 'Newsletter Form',
                 'is_pro'     => false,
@@ -71,7 +71,7 @@ class Predefined extends Form
             ],
 
             'support_form' => [
-                'screenshot' => App::publicUrl('img/forms/support_form.png'),
+                'screenshot' => fluentformMix('img/forms/support_form.png'),
                 'createable' => true,
                 'title'      => 'Support Form',
                 'brief'      => 'Using this support form users can ask questions.',
@@ -81,7 +81,7 @@ class Predefined extends Form
             ],
 
             'inline_subscription' => [
-                'screenshot' => App::publicUrl('img/forms/inline_subscription.png'),
+                'screenshot' => fluentformMix('img/forms/inline_subscription.png'),
                 'createable' => true,
                 'title'      => 'Optin Form',
                 'brief'      => 'Create inline optin form.',
@@ -91,7 +91,7 @@ class Predefined extends Form
             ],
 
             'polling_form' => [
-                'screenshot' => App::publicUrl('img/forms/polling_form.png'),
+                'screenshot' => fluentformMix('img/forms/polling_form.png'),
                 'createable' => true,
                 'title'      => 'Polling Form',
                 'brief'      => 'A sample polling form to get user opinion from your scheduled time.',
@@ -827,7 +827,7 @@ class Predefined extends Form
      */
     public function all()
     {
-        if (! App\Modules\Acl\Acl::hasAnyFormPermission()) {
+        if (! Acl::hasAnyFormPermission()) {
             return [];
         }
 

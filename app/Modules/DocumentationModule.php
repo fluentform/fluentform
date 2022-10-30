@@ -2,15 +2,12 @@
 
 namespace FluentForm\App\Modules;
 
-use FluentForm\App;
-use FluentForm\View;
-
 class DocumentationModule
 {
     public function render()
     {
-        View::render('admin.docs.index', [
-            'icon_path_url' => App::publicUrl(),
+        wpFluentForm('view')->render('admin.docs.index', [
+            'icon_path_url' => fluentformMix(''),
             'user_guides'   => $this->getUserGuides(),
         ]);
     }

@@ -38,7 +38,7 @@ class Text extends BaseComponent
         if (isset($data['attributes']['data-mask'])) {
             wp_enqueue_script(
                 'jquery-mask',
-                $this->app->publicUrl('libs/jquery.mask.min.js'),
+                fluentformMix('libs/jquery.mask.min.js'),
                 ['jquery'],
                 false,
                 true
@@ -94,7 +94,7 @@ class Text extends BaseComponent
                     $data['attributes']['data-formatter'] = json_encode($formatters[$formatter]['settings']);
                     wp_enqueue_script(
                         'currency',
-                        $this->app->publicUrl('libs/currency.min.js'),
+                        fluentformMix('libs/currency.min.js'),
                         [],
                         '2.0.3',
                         true

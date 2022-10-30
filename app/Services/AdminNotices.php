@@ -2,7 +2,6 @@
 
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\View;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -71,11 +70,11 @@ class AdminNotices
 			'jquery'
 		), FLUENTFORM_VERSION);
 		//print_r($notice);
-		View::render('admin.notices.info', array(
+		wpFluentForm('view')->render('admin.notices.info', array(
 			'notice' => $notice,
 			'show_logo' => true,
 			'show_hide_nag' => true,
-			'logo_url' => $this->app->publicUrl('img/fluent_icon.png')
+			'logo_url' => fluentformMix('img/fluent_icon.png')
 		));
 	}
 	

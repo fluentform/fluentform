@@ -41,12 +41,12 @@ class Component
 
         // We will just register the scripts here. We will not load any scripts from here
 
-        $fluentFormPublicCss = $app->publicUrl('css/fluent-forms-public.css');
-        $fluentFormPublicDefaultCss = $app->publicUrl('css/fluentform-public-default.css');
+        $fluentFormPublicCss = fluentFormsMix('css/fluent-forms-public.css');
+        $fluentFormPublicDefaultCss = fluentFormsMix('css/fluentform-public-default.css');
 
         if (is_rtl()) {
-            $fluentFormPublicCss = $app->publicUrl('css/fluent-forms-public-rtl.css');
-            $fluentFormPublicDefaultCss = $app->publicUrl('css/fluentform-public-default-rtl.css');
+            $fluentFormPublicCss = fluentFormsMix('css/fluent-forms-public-rtl.css');
+            $fluentFormPublicDefaultCss = fluentFormsMix('css/fluentform-public-default-rtl.css');
         }
 
         wp_register_style(
@@ -65,7 +65,7 @@ class Component
 
         wp_register_script(
             'fluent-form-submission',
-            $app->publicUrl('js/form-submission.js'),
+            fluentFormsMix('js/form-submission.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -73,7 +73,7 @@ class Component
 
         wp_register_script(
             'fluentform-advanced',
-            $app->publicUrl('js/fluentform-advanced.js'),
+            fluentFormsMix('js/fluentform-advanced.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -84,13 +84,13 @@ class Component
         if (!wp_script_is('flatpickr', 'registered')) {
             wp_register_style(
                 'flatpickr',
-                $app->publicUrl('libs/flatpickr/flatpickr.min.css')
+                fluentFormsMix('libs/flatpickr/flatpickr.min.css')
             );
         }
         // Date Pickckr Script
         wp_register_script(
             'flatpickr',
-            $app->publicUrl('libs/flatpickr/flatpickr.min.js'),
+            fluentFormsMix('libs/flatpickr/flatpickr.min.js'),
             ['jquery'],
             false,
             true
@@ -98,7 +98,7 @@ class Component
 
         wp_register_script(
             'choices',
-            $app->publicUrl('libs/choices/choices.min.js'),
+            fluentFormsMix('libs/choices/choices.min.js'),
             [],
             '9.0.1',
             true
@@ -106,14 +106,14 @@ class Component
 
         wp_register_style(
             'ff_choices',
-            $app->publicUrl('css/choices.css'),
+            fluentFormsMix('css/choices.css'),
             [],
             FLUENTFORM_VERSION
         );
 
         wp_register_script(
             'form-save-progress',
-            $app->publicUrl('js/form-save-progress.js'),
+            fluentFormsMix('js/form-save-progress.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -162,10 +162,8 @@ class Component
         $editorComponents = $components->sort()->toArray();
         $editorComponents = apply_filters('fluent_editor_components', $editorComponents, $formId);
 
-        $countries = $this->app->load($this->app->appPath('Services/FormBuilder/CountryNames.php'));
-
         wp_send_json_success([
-            'countries'           => $countries,
+            'countries'           => getFluentFormCountryList(),
             'components'          => $editorComponents,
             'disabled_components' => $this->getDisabledComponents(),
         ]);
@@ -226,7 +224,7 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Action Hook', 'fluentform'),
                 'description' => __('Action Hook is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Action Hook.png'),
+                'image'       => fluentformMix('img/pro-fields/Action Hook.png'),
                 'video'       => '',
             ],
             'form_step' => [
@@ -257,35 +255,35 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Chained Select Field', 'fluentform'),
                 'description' => __('Chained Select Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Chained Select Field.png'),
+                'image'       => fluentformMix('img/pro-fields/Chained Select Field.png'),
                 'video'       => '',
             ];
             $disabled['phone'] = [
                 'disabled'    => true,
                 'title'       => 'Phone Field',
                 'description' => __('Phone Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Phone Field.png'),
+                'image'       => fluentformMix('img/pro-fields/Phone Field.png'),
                 'video'       => '',
             ];
             $disabled['rich_text_input'] = [
                 'disabled'    => true,
                 'title'       => __('Rich Text Input', 'fluentform'),
                 'description' => __('Rich Text Input is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Rich Text Input.png'),
+                'image'       => fluentformMix('img/pro-fields/Rich Text Input.png'),
                 'video'       => '',
             ];
             $disabled['save_progress_button'] = [
                 'disabled'    => true,
                 'title'       => __('Save & Resume', 'fluentform'),
                 'description' => __('Save & Resume is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Save Progress Button.png'),
+                'image'       => fluentformMix('img/pro-fields/Save Progress Button.png'),
                 'video'       => '',
             ];
             $disabled['cpt_selection'] = [
                 'disabled'    => true,
                 'title'       => __('Post/CPT Selection', 'fluentform'),
                 'description' => __('Post/CPT Selection is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Post_CPT Selection.png'),
+                'image'       => fluentformMix('img/pro-fields/Post_CPT Selection.png'),
                 'video'       => '',
             ];
             $disabled['quiz_score'] = [
@@ -299,7 +297,7 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Net Promoter Score', 'fluentform'),
                 'description' => __('Net Promoter Score is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Net Promoter Score.png'),
+                'image'       => fluentformMix('img/pro-fields/Net Promoter Score.png'),
                 'video'       => '',
             ];
             $disabled['repeater_field'] = [
@@ -320,7 +318,7 @@ class Component
                 'disabled'    => true,
                 'title'       => __('Color Picker', 'fluentform'),
                 'description' => __('Color Picker is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Color Picker.png'),
+                'image'       => fluentformMix('img/pro-fields/Color Picker.png'),
                 'video'       => '',
             ];
             $disabled['multi_payment_component'] = [
@@ -328,7 +326,7 @@ class Component
                 'is_payment'  => true,
                 'title'       => __('Payment Field', 'fluentform'),
                 'description' => __('Payment Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Payment Field.png'),
+                'image'       => fluentformMix('img/pro-fields/Payment Field.png'),
                 'video'       => '',
             ];
             $disabled['custom_payment_component'] = [
@@ -336,7 +334,7 @@ class Component
                 'is_payment'  => true,
                 'title'       => 'Custom Payment Amount',
                 'description' => __('Custom Payment Amount is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Custom Payment Amount.png'),
+                'image'       => fluentformMix('img/pro-fields/Custom Payment Amount.png'),
                 'video'       => '',
             ];
             $disabled['subscription_payment_component'] = [
@@ -344,7 +342,7 @@ class Component
                 'is_payment'  => true,
                 'title'       => __('Subscription Field', 'fluentform'),
                 'description' => __('Subscription Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Subscription Field.png'),
+                'image'       => fluentformMix('img/pro-fields/Subscription Field.png'),
                 'video'       => '',
             ];
             $disabled['item_quantity_component'] = [
@@ -352,7 +350,7 @@ class Component
                 'is_payment'  => true,
                 'title'       => __('Item Quantity', 'fluentform'),
                 'description' => __('Item Quantity is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Item Quantity.png'),
+                'image'       => fluentformMix('img/pro-fields/Item Quantity.png'),
                 'video'       => '',
             ];
             $disabled['payment_method'] = [
@@ -360,7 +358,7 @@ class Component
                 'is_payment'  => true,
                 'title'       => __('Payment Method', 'fluentform'),
                 'description' => __('Payment Method is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Payment Method.png'),
+                'image'       => fluentformMix('img/pro-fields/Payment Method.png'),
                 'video'       => '',
             ];
             $disabled['payment_summary_component'] = [
@@ -368,14 +366,14 @@ class Component
                 'is_payment'  => true,
                 'title'       => __('Payment Summary', 'fluentform'),
                 'description' => __('Payment Summary is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Payment Summary.png'),
+                'image'       => fluentformMix('img/pro-fields/Payment Summary.png'),
                 'video'       => '',
             ];
             $disabled['payment_coupon'] = [
                 'disabled'    => true,
                 'title'       => __('Coupon', 'fluentform'),
                 'description' => __('Coupon is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => $this->app->publicUrl('img/pro-fields/Coupon.png'),
+                'image'       => fluentformMix('img/pro-fields/Coupon.png'),
                 'video'       => '',
             ];
         }
@@ -842,7 +840,7 @@ class Component
         foreach ($actionMappings as $handler => $actions) {
             foreach ($actions as $action) {
                 $this->app->addAction($action, function () use ($path, $handler) {
-                    list($class, $method) = $this->app->parseHandler($path . $handler);
+                    list($class, $method) = $this->app->parseHookHandler($path . $handler);
                     call_user_func_array([$class, $method], func_get_args());
                 }, 10, 2);
             }
