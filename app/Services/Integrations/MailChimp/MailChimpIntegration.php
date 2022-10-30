@@ -27,7 +27,7 @@ class MailChimpIntegration extends IntegrationManager
 
         $this->description = __('Fluent Forms Mailchimp module allows you to create Mailchimp newsletter signup forms in WordPress', 'fluentform');
 
-        $this->logo = fluentFormsMix('img/integrations/mailchimp.png');
+        $this->logo = fluentFormMix('img/integrations/mailchimp.png');
         $this->registerAdminHooks();
 
         add_action('wp_ajax_fluentform_mailchimp_interest_groups', [$this, 'fetchInterestGroups']);

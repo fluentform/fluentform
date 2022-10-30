@@ -43,25 +43,25 @@ class Menu
 
         wp_register_script(
             'fluent_forms_global',
-            fluentFormsMix('js/fluent_forms_global.js'),
+            fluentFormMix('js/fluent_forms_global.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        $settingsGlobalStyle = fluentFormsMix('css/settings_global.css');
-        $allFormsStyle = fluentFormsMix('css/fluent-all-forms.css');
-        $fluentFormAdminEditorStyles = fluentFormsMix('css/fluent-forms-admin-sass.css');
-        $fluentFormAdminCSS = fluentFormsMix('css/fluent-forms-admin.css');
-        $addOnsCss = fluentFormsMix('css/add-ons.css');
-        $adminDocCss = fluentFormsMix('css/admin_docs.css');
+        $settingsGlobalStyle = fluentFormMix('css/settings_global.css');
+        $allFormsStyle = fluentFormMix('css/fluent-all-forms.css');
+        $fluentFormAdminEditorStyles = fluentFormMix('css/fluent-forms-admin-sass.css');
+        $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin.css');
+        $addOnsCss = fluentFormMix('css/add-ons.css');
+        $adminDocCss = fluentFormMix('css/admin_docs.css');
         if (is_rtl()) {
-            $settingsGlobalStyle = fluentFormsMix('css/settings_global_rtl.css');
-            $allFormsStyle = fluentFormsMix('css/fluent-all-forms-rtl.css');
-            $fluentFormAdminEditorStyles = fluentFormsMix('css/fluent-forms-admin-sass-rtl.css');
-            $fluentFormAdminCSS = fluentFormsMix('css/fluent-forms-admin-rtl.css');
-            $addOnsCss = fluentFormsMix('css/add-ons-rtl.css');
-            $adminDocCss = fluentFormsMix('css/admin_docs_rtl.css');
+            $settingsGlobalStyle = fluentFormMix('css/settings_global_rtl.css');
+            $allFormsStyle = fluentFormMix('css/fluent-all-forms-rtl.css');
+            $fluentFormAdminEditorStyles = fluentFormMix('css/fluent-forms-admin-sass-rtl.css');
+            $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin-rtl.css');
+            $addOnsCss = fluentFormMix('css/add-ons-rtl.css');
+            $adminDocCss = fluentFormMix('css/admin_docs_rtl.css');
         }
 
         wp_register_style(
@@ -74,7 +74,7 @@ class Menu
 
         wp_register_script(
             'clipboard',
-            fluentFormsMix('libs/clipboard.min.js'),
+            fluentFormMix('libs/clipboard.min.js'),
             [],
             false,
             true
@@ -82,7 +82,7 @@ class Menu
 
         wp_register_script(
             'copier',
-            fluentFormsMix('js/copier.js'),
+            fluentFormMix('js/copier.js'),
             [],
             false,
             true
@@ -90,7 +90,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_settings',
-            fluentFormsMix('js/form_settings_app.js'),
+            fluentFormMix('js/form_settings_app.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -98,7 +98,7 @@ class Menu
 
         wp_register_script(
             'fluent_all_forms',
-            fluentFormsMix('js/fluent-all-forms-admin.js'),
+            fluentFormMix('js/fluent-all-forms-admin.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -114,7 +114,7 @@ class Menu
 
         wp_register_script(
             'fluentform_editor_script',
-            fluentFormsMix('js/fluent-forms-editor.js'),
+            fluentFormMix('js/fluent-forms-editor.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -138,7 +138,7 @@ class Menu
 
         wp_register_script(
             'fluentform-transfer-js',
-            fluentFormsMix('js/fluentform-transfer.js'),
+            fluentFormMix('js/fluentform-transfer.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -146,7 +146,7 @@ class Menu
 
         wp_register_script(
             'fluentform-global-settings-js',
-            fluentFormsMix('js/fluentform-global-settings.js'),
+            fluentFormMix('js/fluentform-global-settings.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -154,7 +154,7 @@ class Menu
 
         wp_register_script(
             'fluentform-modules',
-            fluentFormsMix('js/modules.js'),
+            fluentFormMix('js/modules.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -162,7 +162,7 @@ class Menu
 
         wp_register_script(
             'fluentform_form_entries',
-            fluentFormsMix('js/form_entries.js'),
+            fluentFormMix('js/form_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -170,7 +170,7 @@ class Menu
 
         wp_register_script(
             'fluentform_all_entries',
-            fluentFormsMix('js/all_entries.js'),
+            fluentFormMix('js/all_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -178,7 +178,7 @@ class Menu
 
         wp_register_script(
             'fluentform_chart_js',
-            fluentFormsMix('libs/chartjs/chart.min.js'),
+            fluentFormMix('libs/chartjs/chart.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -186,7 +186,7 @@ class Menu
 
         wp_register_script(
             'fluentform_vue_chart_js',
-            fluentFormsMix('libs/chartjs/vue-chartjs.min.js'),
+            fluentFormMix('libs/chartjs/vue-chartjs.min.js'),
             [],
             FLUENTFORM_VERSION,
             true
@@ -220,9 +220,9 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = fluentFormsMix('css/element-ui-css.css');
+        $elementUIStyle = fluentFormMix('css/element-ui-css.css');
         if (is_rtl()) {
-            $elementUIStyle = fluentFormsMix('css/element-ui-css-rtl.css');
+            $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
         }
         wp_enqueue_style(
             'fluentform_global_elements',

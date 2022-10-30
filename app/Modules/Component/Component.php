@@ -41,12 +41,12 @@ class Component
 
         // We will just register the scripts here. We will not load any scripts from here
 
-        $fluentFormPublicCss = fluentFormsMix('css/fluent-forms-public.css');
-        $fluentFormPublicDefaultCss = fluentFormsMix('css/fluentform-public-default.css');
+        $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
+        $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
 
         if (is_rtl()) {
-            $fluentFormPublicCss = fluentFormsMix('css/fluent-forms-public-rtl.css');
-            $fluentFormPublicDefaultCss = fluentFormsMix('css/fluentform-public-default-rtl.css');
+            $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
+            $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
         }
 
         wp_register_style(
@@ -65,7 +65,7 @@ class Component
 
         wp_register_script(
             'fluent-form-submission',
-            fluentFormsMix('js/form-submission.js'),
+            fluentFormMix('js/form-submission.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -73,7 +73,7 @@ class Component
 
         wp_register_script(
             'fluentform-advanced',
-            fluentFormsMix('js/fluentform-advanced.js'),
+            fluentFormMix('js/fluentform-advanced.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -84,13 +84,13 @@ class Component
         if (!wp_script_is('flatpickr', 'registered')) {
             wp_register_style(
                 'flatpickr',
-                fluentFormsMix('libs/flatpickr/flatpickr.min.css')
+                fluentFormMix('libs/flatpickr/flatpickr.min.css')
             );
         }
         // Date Pickckr Script
         wp_register_script(
             'flatpickr',
-            fluentFormsMix('libs/flatpickr/flatpickr.min.js'),
+            fluentFormMix('libs/flatpickr/flatpickr.min.js'),
             ['jquery'],
             false,
             true
@@ -98,7 +98,7 @@ class Component
 
         wp_register_script(
             'choices',
-            fluentFormsMix('libs/choices/choices.min.js'),
+            fluentFormMix('libs/choices/choices.min.js'),
             [],
             '9.0.1',
             true
@@ -106,14 +106,14 @@ class Component
 
         wp_register_style(
             'ff_choices',
-            fluentFormsMix('css/choices.css'),
+            fluentFormMix('css/choices.css'),
             [],
             FLUENTFORM_VERSION
         );
 
         wp_register_script(
             'form-save-progress',
-            fluentFormsMix('js/form-save-progress.js'),
+            fluentFormMix('js/form-save-progress.js'),
             ['jquery'],
             FLUENTFORM_VERSION,
             true

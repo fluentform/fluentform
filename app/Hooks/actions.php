@@ -153,7 +153,7 @@ add_action('admin_init', function () {
 add_action('enqueue_block_editor_assets', function () {
     wp_enqueue_script(
         'fluentform-gutenberg-block',
-        fluentFormsMix('js/fluent_gutenblock.js'),
+        fluentFormMix('js/fluent_gutenblock.js'),
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components'],
         FLUENTFORM_VERSION
     );
@@ -169,13 +169,13 @@ add_action('enqueue_block_editor_assets', function () {
     ]);
 
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo'  => fluentFormsMix('img/fluent_icon.png'),
+        'logo'  => fluentFormMix('img/fluent_icon.png'),
         'forms' => $forms,
     ]);
 
     wp_enqueue_style(
         'fluentform-gutenberg-block',
-        fluentFormsMix('css/fluent_gutenblock.css'),
+        fluentFormMix('css/fluent_gutenblock.css'),
         ['wp-edit-blocks']
     );
 });
@@ -632,7 +632,7 @@ add_action('wp', function () use ($app) {
             wp_enqueue_script('jquery');
             wp_enqueue_script(
                 'fluent_forms_global',
-                fluentFormsMix('js/fluent_forms_global.js'),
+                fluentFormMix('js/fluent_forms_global.js'),
                 ['jquery'],
                 FLUENTFORM_VERSION,
                 true
@@ -647,7 +647,7 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            wp_enqueue_style('fluent-form-preview', fluentFormsMix('css/preview.css'));
+            wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'));
         });
 
         (new \FluentForm\App\Modules\ProcessExteriorModule())->handleExteriorPages();

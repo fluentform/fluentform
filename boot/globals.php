@@ -47,21 +47,9 @@ function wpFluentForm($key = null)
  *
  * @return string
  */
-function fluentFormsMix($path = '')
-{
-    return wpFluentForm('url.assets') . ltrim($path, '/');
-}
-
-/**
- * Generate URL for static assets
- *
- * @param string $path
- *
- * @return string
- */
 function fluentFormMix($path = '')
 {
-    return fluentFormsMix($path);
+    return wpFluentForm('url.assets') . ltrim($path, '/');
 }
 
 /**

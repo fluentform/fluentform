@@ -196,11 +196,6 @@ trait FoundationTrait
         return $instance;
     }
 
-    public function url($url = '')
-	{
-		return $this->baseUrl.ltrim($url, '/');
-	}
-
     private function addAjaxAction($tag, $handler, $priority, $scope)
     {
     	if ($scope == 'admin') {
@@ -228,5 +223,27 @@ trait FoundationTrait
     public function addPublicAjaxAction($tag, $handler, $priority = 10)
     {
         return $this->addAjaxAction($tag, $handler, $priority, 'public');
+    }
+
+    public function url($path = '')
+    {
+        _deprecated_function(
+            __METHOD__,
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentformMix to get asset URL'
+        );
+
+        return $this->baseUrl.ltrim($path, '/');
+    }
+
+    public function publicUrl($path = '')
+    {
+        _deprecated_function(
+            __METHOD__,
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentformMix to get asset URL'
+        );
+
+        return fluentFormMix($path);
     }
 }
