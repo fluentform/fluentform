@@ -414,3 +414,10 @@ function fluentformLoadFile($path)
 {
     return require wpFluentForm('path.app') . '/' . ltrim($path, '/');
 }
+
+if (!function_exists('fluentValidator')) {
+    function fluentValidator($data = [], $rules = [], $messages = [])
+    {
+        return wpFluentForm('validator')->make($data, $rules, $messages);
+    }
+}

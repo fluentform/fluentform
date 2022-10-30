@@ -3,7 +3,7 @@
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Hooks\Handlers\DeactivationHandler;
-use FluentForm\App\Services\Migrator\Bootstrap as FormMigrator;
+use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
 
 return function ($file) {
@@ -33,5 +33,5 @@ return function ($file) {
     fluentformLoadFile('Services/FluentConversational/plugin.php');
     (new FluentConversational)->boot();
     
-    (new FormMigrator())->boot();
+    (new FormsMigrator())->boot();
 };

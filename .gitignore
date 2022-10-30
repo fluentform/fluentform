@@ -4,8 +4,12 @@
 /.phpintel
 svn
 svn.php
+/public/*
+!/public/js
+/public/js/*
+!/public/js/fluent_gutenblock.js
+package-lock.json
 /assets/*
 !/assets/js
 /assets/js/*
 !/assets/js/fluent_gutenblock.js
-package-lock.json
