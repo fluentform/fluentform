@@ -14,3 +14,7 @@ svn.php
 !/public/js/fluent_gutenblock.js
 package-lock.json
 public_build
+/assets/*
+!/assets/js
+/assets/js/*
+!/assets/js/fluent_gutenblock.js
