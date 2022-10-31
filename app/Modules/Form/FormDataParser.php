@@ -3,7 +3,6 @@
 namespace FluentForm\App\Modules\Form;
 
 use FluentForm\Framework\Helpers\ArrayHelper;
-use WpFluent\Exception;
 
 class FormDataParser
 {
@@ -192,7 +191,7 @@ class FormDataParser
                 <?php
             }
             return ob_get_clean();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
         }
 
         return $value;
@@ -247,7 +246,7 @@ class FormDataParser
             $elMarkup .= '</tbody></table>';
 
             return $elMarkup;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
         }
         return '';
     }

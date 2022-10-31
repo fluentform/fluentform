@@ -61,8 +61,6 @@ class FormProperties
      * Get Email Notifications as an array
      *
      * @return array
-     *
-     * @throws \WpFluent\Exception
      */
     public function emailNotifications()
     {

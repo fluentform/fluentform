@@ -476,8 +476,6 @@ class Form
 
     /**
      * Delete a from from database
-     *
-     * @throws \WpFluent\Exception
      */
     public function delete()
     {
@@ -540,8 +538,6 @@ class Form
 
     /**
      * Duplicate a from
-     *
-     * @throws \WpFluent\Exception
      */
     public function duplicate()
     {
