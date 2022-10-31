@@ -2,7 +2,6 @@
 
 namespace FluentForm\Framework\Support;
 
-use Closure;
 use Countable;
 use ArrayAccess;
 use Traversable;
@@ -389,7 +388,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
             return $this->items[$key];
         }
 
-        return value($default);
+        return Helper::value($default);
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace FluentForm\Framework\Helpers;
 
-use Closure;
 use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Support\Helper;
 
 class ArrayHelper extends Arr
 {
@@ -15,7 +15,7 @@ class ArrayHelper extends Arr
      */
     public static function value($value)
     {
-        return $value instanceof Closure ? $value() : $value;
+        return Helper::value($value);
     }
 
     public static function isTrue($array, $key)

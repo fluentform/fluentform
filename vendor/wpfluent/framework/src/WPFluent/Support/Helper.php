@@ -2,6 +2,7 @@
 
 namespace FluentForm\Framework\Support;
 
+use Closure;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Support\Collection;
 
@@ -40,8 +41,14 @@ class Helper
         return $target;
     }
 
-    public static function value($value)
+    /**
+     * Return the default value of the given value.
+     *
+     * @param  mixed  $value
+     * @return mixed
+     */
+    public static function value($value, ...$args)
     {
-        return $value instanceof Closure ? $value() : $value;
+        return $value instanceof Closure ? $value(...$args) : $value;
     }
 }
