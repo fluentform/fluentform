@@ -65,7 +65,7 @@ class Transfer
      */
     public function import()
     {
-        $file = $this->request->get('file');
+        $file = $this->request->file('file');
 
         if ($file instanceof File) {
             $forms = \json_decode($file->getContents(), true);
