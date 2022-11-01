@@ -586,6 +586,22 @@ class Builder
     }
 
     /**
+     * Set a "where not" constraint on the query.
+     *
+     * @param  string  $column
+     * @param  array|string  $value
+     * @return $this
+     */
+    public function whereNot($column, $value)
+    {
+        if (is_array($value)) {
+            return $this->whereNotIn($column, $value);
+        }
+
+        return $this->where($column, '!'.$value);
+    }
+
+    /**
      * Add an "or where" clause to the query.
      *
      * @param  string  $column
