@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Support\Str;
 use FluentForm\Framework\Foundation\App;
+use FluentForm\Framework\Support\Helper;
 use FluentForm\Framework\Support\UrlRoutable;
 use FluentForm\Framework\Database\Orm\DateTime;
 use FluentForm\Framework\Foundation\Dispatcher;
@@ -2381,7 +2382,7 @@ abstract class Model implements ArrayAccess, ArrayableInterface, JsonableInterfa
             return $key;
         }
 
-        return last(explode('.', $key));
+        return Helper::last(explode('.', $key));
     }
 
     /**

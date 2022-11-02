@@ -2,6 +2,7 @@
 
 namespace FluentForm\Framework\Database\Orm\Relations;
 
+use FluentForm\Framework\Support\Helper;
 use FluentForm\Framework\Database\Orm\Model;
 use FluentForm\Framework\Database\Orm\Builder;
 
@@ -199,7 +200,7 @@ abstract class MorphOneOrMany extends HasOneOrMany
     {
         $model->{$this->getPlainForeignKey()} = $this->getParentKey();
 
-        $model->{last(explode('.', $this->morphType))} = $this->morphClass;
+        $model->{Helper::last(explode('.', $this->morphType))} = $this->morphClass;
     }
 
     /**
@@ -219,7 +220,7 @@ abstract class MorphOneOrMany extends HasOneOrMany
      */
     public function getPlainMorphType()
     {
-        return last(explode('.', $this->morphType));
+        return Helper::last(explode('.', $this->morphType));
     }
 
     /**

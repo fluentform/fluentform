@@ -3,6 +3,7 @@
 namespace FluentForm\Framework\Database\Orm\Relations;
 
 use BadMethodCallException;
+use FluentForm\Framework\Support\Helper;
 use FluentForm\Framework\Database\Orm\Model;
 use FluentForm\Framework\Database\Orm\Builder;
 use FluentForm\Framework\Database\Orm\Collection;
@@ -200,8 +201,8 @@ class MorphTo extends BelongsTo
     {
         $foreign = $this->foreignKey;
 
-        return collect($this->dictionary[$type])->map(function ($models) use ($foreign) {
-            return head($models)->{$foreign};
+        return Helper::collect($this->dictionary[$type])->map(function ($models) use ($foreign) {
+            return Helper::head($models)->{$foreign};
         })->values()->unique();
     }
 

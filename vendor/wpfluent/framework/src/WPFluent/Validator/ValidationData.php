@@ -3,6 +3,7 @@
 namespace FluentForm\Framework\Validator;
 
 use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Support\Helper;
 
 class ValidationData
 {
@@ -33,7 +34,7 @@ class ValidationData
             return $data;
         }
 
-        return static::dataSet($data, $attribute, null, true);
+        return Helper::dataSet($data, $attribute, null, true);
     }
 
     /**
@@ -105,66 +106,5 @@ class ValidationData
     public static function getLeadingExplicitAttributePath($attribute)
     {
         return rtrim(explode('*', $attribute)[0], '.') ?: null;
-    }
-
-    /**
-     * Set an item on an array or object using dot notation.
-     *
-     * @param mixed $target
-     * @param string|array $key
-     * @param mixed $value
-     * @param bool $overwrite
-     *
-     * @return mixed
-     */
-    public static function dataSet(&$target, $key, $value, $overwrite = true)
-    {
-        $segments = is_array($key) ? $key : explode('.', $key);
-
-        if (($segment = array_shift($segments)) === '*') {
-            if (! Arr::accessible($target)) {
-                $target = [];
-            }
-
-            if ($segments) {
-                foreach ($target as &$inner) {
-                    static::dataSet($inner, $segments, $value, $overwrite);
-                }
-            } elseif ($overwrite) {
-                foreach ($target as &$inner) {
-                    $inner = $value;
-                }
-            }
-        } elseif (Arr::accessible($target)) {
-            if ($segments) {
-                if (! Arr::exists($target, $segment)) {
-                    $target[$segment] = [];
-                }
-
-                static::dataSet($target[$segment], $segments, $value, $overwrite);
-            } elseif ($overwrite || ! Arr::exists($target, $segment)) {
-                $target[$segment] = $value;
-            }
-        } elseif (is_object($target)) {
-            if ($segments) {
-                if (! isset($target->{$segment})) {
-                    $target->{$segment} = [];
-                }
-
-                static::dataSet($target->{$segment}, $segments, $value, $overwrite);
-            } elseif ($overwrite || ! isset($target->{$segment})) {
-                $target->{$segment} = $value;
-            }
-        } else {
-            $target = [];
-
-            if ($segments) {
-                static::dataSet($target[$segment], $segments, $value, $overwrite);
-            } elseif ($overwrite) {
-                $target[$segment] = $value;
-            }
-        }
-
-        return $target;
     }
 }

@@ -219,7 +219,7 @@ class Helper
         }
 
         return wpFluent()->table('fluentform_submission_meta')
-            ->insert([
+            ->insertGetId([
                 'response_id' => $submissionId,
                 'form_id'     => $formId,
                 'meta_key'    => $metaKey,

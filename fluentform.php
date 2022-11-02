@@ -1,7 +1,7 @@
 <?php defined('ABSPATH') or die;
 
 /*
-Plugin Name: Fluent Forms Latest
+Plugin Name: Fluent Forms
 Description: Contact Form By Fluent Forms is the advanced Contact form plugin with drag and drop, multi column supported form builder plugin
 Version: 4.3.21
 Author: Contact Form - WPManageNinja LLC

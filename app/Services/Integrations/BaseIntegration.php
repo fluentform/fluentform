@@ -39,7 +39,7 @@ class BaseIntegration
     public function save($settings)
     {
         return wpFluent()->table('fluentform_form_meta')
-                         ->insert([
+                         ->insertGetId([
                              'meta_key' => $this->setting_key,
                              'form_id'  => $this->formId,
                              'value'    => json_encode($settings),

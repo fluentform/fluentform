@@ -1,7 +1,8 @@
 <?php
 
-use FluentForm\App\Services\FormBuilder\FormBuilder;
 use FluentForm\App\Services\FormBuilder\Components;
+use FluentForm\App\Services\FormBuilder\FormBuilder;
+use FluentForm\App\Services\WPAsync\FluentFormAsyncRequest;
 
 /**
  * Add only the plugin specific bindings here.
@@ -17,4 +18,8 @@ $app->bind('formBuilder', function ($app) {
 
 $app->singleton('components', function($app) {
     return new Components(fluentformLoadFile('Services/FormBuilder/DefaultElements.php'));
+});
+
+$app->bind('fluentFormAsyncRequest', function ($app) {
+    return new FluentFormAsyncRequest($app);
 });

@@ -1,6 +1,6 @@
 <?php namespace FluentForm\App\Modules\Logger;
 
-use FluentForm\App\Databases\Migrations\FormLogs;
+use FluentForm\Database\Migrations\FormLogs;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
@@ -82,8 +82,7 @@ class DataLogger
             FormLogs::migrate();
         }
 
-        return wpFluent()->table('fluentform_logs')
-            ->insert($data);
+        wpFluent()->table('fluentform_logs')->insert($data);
     }
 
     public function getLogsByEntry($entry_id, $log_type = 'logs', $sourceType = 'submission_item')

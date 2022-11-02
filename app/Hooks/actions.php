@@ -827,11 +827,6 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
     }
 }
 
-$app->bind(
-    'fluentFormAsyncRequest',
-    new \FluentForm\App\Services\WPAsync\FluentFormAsyncRequest($app),
-);
-
 $app->addFilter('fluentform-disabled_analytics', function ($status) {
     $settings = get_option('_fluentform_global_form_settings');
     if (isset($settings['misc']['isAnalyticsDisabled']) && $settings['misc']['isAnalyticsDisabled']) {

@@ -8,6 +8,7 @@ use BadMethodCallException;
 use InvalidArgumentException;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Support\Str;
+use FluentForm\Framework\Support\Helper;
 use FluentForm\Framework\Support\Collection;
 use FluentForm\Framework\Pagination\Paginator;
 use FluentForm\Framework\Pagination\LengthAwarePaginator;
@@ -923,7 +924,7 @@ class Builder
             return $this->whereInSub($column, $values, $boolean, $not);
         }
 
-        if ($values instanceof Arrayable) {
+        if ($values instanceof ArrayableInterface) {
             $values = $values->toArray();
         }
 
@@ -1815,7 +1816,7 @@ class Builder
                 return false;
             }
 
-            $lastId = last($results)->{$alias};
+            $lastId = Helper::last($results)->{$alias};
 
             $results = $this->forPageAfterId($count, $lastId, $column)->get();
         }

@@ -288,7 +288,7 @@ class Form
                 ]);
         }
 
-        return wpFluent()->table('fluentform_form_meta')->insert([
+        return wpFluent()->table('fluentform_form_meta')->insertGetId([
             'form_id'  => $formId,
             'meta_key' => $metaKey,
             'value'    => $metaValue,
