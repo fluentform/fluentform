@@ -7,17 +7,17 @@ use FluentForm\App\Services\Parser\Form as FormParser;
 /**
  * Available methods
  *
- * @method array      getShortCodeInputs(\stdClass $form, array $with = ['admin_label'])
- * @method array      getValidations(\stdClass $form, array $inputs, array $fields = [])
- * @method array      getElement(\stdClass $form, string|array $name, array $with = [])
- * @method boolean    hasElement(\stdClass $form, string $name)
- * @method boolean    hasPaymentFields(\stdClass $form)
- * @method array      getPaymentFields(\stdClass $form, $with = [])
- * @method array      getPaymentInputFields(\stdClass $form, $with = [])
- * @method array      getAttachmentInputFields(\stdClass $form, $with = [])
- * @method boolean    hasRequiredFields(\stdClass $form, array $fields)
- * @method array      getInputsByElementTypes(\stdClass $form, array $elements, array $with = [])
- * @method array|null getField(\stdClass $form, string|array $element, string|array $attribute, array $with = [])
+ * @method static array      getShortCodeInputs(\stdClass $form, array $with = ['admin_label'])
+ * @method static array      getValidations(\stdClass $form, array $inputs, array $fields = [])
+ * @method static array      getElement(\stdClass $form, string|array $name, array $with = [])
+ * @method static boolean    hasElement(\stdClass $form, string $name)
+ * @method static boolean    hasPaymentFields(\stdClass $form)
+ * @method static array      getPaymentFields(\stdClass $form, $with = [])
+ * @method static array      getPaymentInputFields(\stdClass $form, $with = [])
+ * @method static array      getAttachmentInputFields(\stdClass $form, $with = [])
+ * @method static boolean    hasRequiredFields(\stdClass $form, array $fields)
+ * @method static array      getInputsByElementTypes(\stdClass $form, array $elements, array $with = [])
+ * @method static array|null getField(\stdClass $form, string|array $element, string|array $attribute, array $with = [])
  */
 class FormFieldsParser
 {
