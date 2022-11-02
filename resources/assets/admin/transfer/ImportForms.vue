@@ -43,18 +43,19 @@
         <div v-else>
             <table class="wp-list-table widefat fixed striped pages">
                 <thead>
-                    <tr>
-                        <td>{{ $t('ID') }}</td>
-                        <td>{{ $t('Title') }}</td>
-                        <td>{{ $t('Action') }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $t('ID') }}</td>
+                    <td>{{ $t('Title') }}</td>
+                    <td>{{ $t('Action') }}</td>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(form, formId) in importedForms">
-                        <td>{{formId}}</td>
-                        <td>{{form.title}}</td>
-                        <td><a class="el-button el-button--primary el-button--mini" :href="form.edit_url"><i class="el-icon-edit"></i> {{ $t('Edit') }}</a></td>
-                    </tr>
+                <tr v-for="(form, formId) in importedForms">
+                    <td>{{ formId }}</td>
+                    <td>{{ form.title }}</td>
+                    <td><a class="el-button el-button--primary el-button--mini" :href="form.edit_url"><i
+                            class="el-icon-edit"></i> {{ $t('Edit') }}</a></td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -101,23 +102,12 @@
                     success: (response) => {
                         this.importing = false;
                         this.importedForms = response.inserted_forms;
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.message,
-                            offset: 30
-                        });
-
+                        this.$success(response.message);
                         this.clear();
                     },
                     error: (error) => {
                         this.importing = false;
-
-                        this.$notify.error({
-                            title: 'Error',
-                            message: error.responseJSON.message,
-                            offset: 30
-                        });
-
+                        this.$fail(error.responseJSON.message);
                         this.clear();
                     }
                 });

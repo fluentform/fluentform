@@ -43,7 +43,7 @@ import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
-
+import notifier from '@/admin/notifier';
 import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
@@ -58,7 +58,8 @@ Vue.mixin({
                 return transString;
             }
             return str;
-        }
+        },
+        ...notifier
     }
 })
 new Vue({

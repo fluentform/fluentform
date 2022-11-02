@@ -200,14 +200,11 @@
                         this.page_number = 1;
                         this.getLogs();
                         this.multipleSelection = [];
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
+
                     })
                     .fail(error => {
-                        console.log(error);
+                        this.$fail(error.responseJSON.message);
                     })
                     .always(() => {
                         this.loading = false;
