@@ -127,11 +127,11 @@ class DataLogger
         global $wpdb;
         $logsQuery = wpFluent()->table('fluentform_logs')
             ->select([
-                'fluentform_logs.*'
+                'fluentform_logs.*',
+                wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'),
+                wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'),
+                wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id')
             ])
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'))
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id'))
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
             ->orderBy('fluentform_logs.id', 'DESC');
         // ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
@@ -193,8 +193,8 @@ class DataLogger
                 'ff_scheduled_actions.status',
                 'ff_scheduled_actions.note',
                 'ff_scheduled_actions.created_at',
+                wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title')
             ])
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'ff_scheduled_actions.form_id')
             ->orderBy('ff_scheduled_actions.id', 'DESC');
 

@@ -120,8 +120,8 @@ class Report
                 'fluentform_entry_details.field_name',
                 'fluentform_entry_details.sub_field_name',
                 'fluentform_entry_details.field_value',
+                wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count')
             ])
-            ->select(wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count'))
             ->where('fluentform_entry_details.form_id', $formId)
             ->whereIn('fluentform_entry_details.field_name', $fieldNames)
             ->rightJoin('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_entry_details.submission_id');
@@ -160,8 +160,8 @@ class Report
                 'fluentform_entry_details.field_name',
                 'fluentform_entry_details.sub_field_name',
                 'fluentform_entry_details.field_value',
+                wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count')
             ])
-            ->select(wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count'))
             ->where('fluentform_entry_details.form_id', $formId)
             ->whereIn('fluentform_entry_details.field_name', $fieldNames)
             ->leftJoin('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_entry_details.submission_id');

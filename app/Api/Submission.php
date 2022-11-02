@@ -265,7 +265,7 @@ class Submission
         }
 
         if ($args['form_title']) {
-            $query->select(['fluentform_forms.title'])
+            $query->addSelect(['fluentform_forms.title'])
                 ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_subscriptions.form_id');
         }
 
