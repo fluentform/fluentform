@@ -221,15 +221,18 @@
                 this.postTypeSelectionDialogVisibility = true;
             },
             doCreateForm(data) {
-                FluentFormsGlobal.$get(data)
-                    .done((response) => {
-                        this.$success(response.data.message);
-                        window.location.href = response.data.redirect_url;
+                FluentFormsGlobal.$rest.post('forms', data)
+                    .then((response) => {
+                        this.$success(response.message);
+
+                        if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        }
                     })
-                    .fail(error => {
-                        this.$fail(error.responseJSON.data.message);
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.creatingForm = false;
                     });
             },

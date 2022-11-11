@@ -248,15 +248,14 @@ new Vue({
             }
 
             let data = {
-                action: 'fluentform-form-update',
-                formId: this.form_id,
                 title: this.form.title,
                 formFields: JSON.stringify(formFields),
-                adre: formFields
             };
 
-            FluentFormsGlobal.$post(data)
-                .done(response => {
+            const url = 'forms/' + this.form_id;
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
                     this.$success(response.message);
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
@@ -267,7 +266,7 @@ new Vue({
                     // Update the hash now.
                     this.saveHash();
                 })
-                .error(error => {
+                .catch(error => {
                     this.$fail.error(error.responseJSON.title);
                     this.form_saving = false;
                 });

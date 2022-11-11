@@ -52,8 +52,6 @@ class Form
      * Form constructor.
      *
      * @param \FluentForm\Framework\Foundation\Application $application
-     *
-     * @throws \Exception
      */
     public function __construct(Application $application)
     {
@@ -63,8 +61,6 @@ class Form
 
     /**
      * Get all forms from database
-     *
-     * @throws \Exception
      */
     public function index()
     {
@@ -325,8 +321,6 @@ class Form
 
     /**
      * Save/update a form from backend/editor
-     *
-     * @throws \WpFluent\Exception
      */
     public function update()
     {

@@ -30,11 +30,13 @@ $app->addAction('wp_ajax_fluentform-global-settings-store', function () use ($ap
 });
 
 $app->addAction('wp_ajax_fluentform-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-forms');
     Acl::verify('fluentform_dashboard_access');
     (new \FluentForm\App\Modules\Form\Form($app))->index();
 });
 
 $app->addAction('wp_ajax_fluentform-form-store', function () use ($app) {
+    dd('wp_ajax_fluentform-form-store');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->store();
 });
@@ -45,21 +47,25 @@ $app->addAction('wp_ajax_fluentform-form-find', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
+    dd('wp_ajax_fluentform-form-update');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->update();
 });
 
 $app->addAction('wp_ajax_fluentform-form-delete', function () use ($app) {
+    dd('wp_ajax_fluentform-form-delete');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->delete();
 });
 
 $app->addAction('wp_ajax_fluentform-form-duplicate', function () use ($app) {
+    dd('wp_ajax_fluentform-form-duplicate');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->duplicate();
 });
 
 $app->addAction('wp_ajax_fluentform-convert-to-conversational', function () use ($app) {
+    dd('wp_ajax_fluentform-convert-to-conversational');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->convertToConversational();
 });

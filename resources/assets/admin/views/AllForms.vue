@@ -286,7 +286,6 @@
 <script type="text/babel">
 import Clipboard from 'clipboard';
 import remove from '../components/confirmRemove'
-import AddFormModal from '../components/modals/AddFormModal';
 import predefinedFormsModal from '../components/modals/predefinedFormsModal';
 import PostTypeSelectionModal from '../components/modals/PostTypeSelectionModal';
 import moment from "moment";
@@ -295,7 +294,6 @@ export default {
     name: 'AllForms',
     components: {
         predefinedFormsModal,
-        AddFormModal,
         remove,
         PostTypeSelectionModal
     },
@@ -371,24 +369,24 @@ export default {
         }
     },
     methods: {
-        toggleStatus(id,title,status){
+        toggleStatus(id, title, status) {
             this.loading = true;
     
             let data = {
-                action: 'fluentform-form-update',
-                title: title,
-                formId: id,
-                status: status,
+                title,
+                status,
             };
+
+            const url = 'forms/' + id;
     
-            FluentFormsGlobal.$post(data)
+            FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
                 })
-                .fail(error => {
-                    this.$fail(this.$t('Something went wrong, please try again.'));
+                .catch(error => {
+                    this.$fail(error.message);
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
@@ -418,17 +416,17 @@ export default {
             if (this.advancedFilter) {
               data.date_range = this.filter_date_range;
             }
-            FluentFormsGlobal.$get(data)
-                .done((response) => {
+            FluentFormsGlobal.$rest.get('forms', data)
+                .then((response) => {
                     this.items = response.data;
                     this.paginate.total = response.total;
                     this.paginate.current_page = response.current_page;
                     this.paginate.last_page = response.last_page;
                 })
-                .fail(error => {
+                .catch(error => {
                     this.$fail(this.$t('Something went wrong, please try again.'));
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
@@ -459,32 +457,33 @@ export default {
         removeForm(id, index) {
             let data = {
                 action: 'fluentform-form-delete',
-                formId: id
+                id
             }
-            FluentFormsGlobal.$get(data)
-                .done(res => {
+            const url = 'forms/' + id;
+
+            FluentFormsGlobal.$rest.delete(url)
+                .then(res => {
                     this.items.splice(index, 1);
                     this.$success(res.message);
                 })
-                .fail(_ => {
+                .catch(error => {
+                    this.$fail(error.message);
                 });
         },
         duplicateForm(id) {
-            let data = {
-                action: 'fluentform-form-duplicate',
-                formId: id
-            }
-            FluentFormsGlobal.$post(data)
+            const url = 'forms/' + id + '/duplicate';
+
+            FluentFormsGlobal.$rest.post(url)
                 .then(res => {
                     this.$success(res.message);
                     if (res.redirect) {
                         window.location.href = res.redirect;
                     } else {
-                        alert(this.$t('Something is wrong! Please try again'));
+                        this.$fail(this.$t('Something is wrong! Please try again'));
                     }
                 })
-                .fail(error => {
-                    alert(this.$t('Something is wrong! Please try again'));
+                .catch(error => {
+                    this.$fail(error.message);
                 });
         },
         handleTableSort(column) {

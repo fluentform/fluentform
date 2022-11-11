@@ -1,20 +1,58 @@
 <?php
 
-namespace FluentForm\App\Modules\Form;
+namespace FluentForm\App\Models\Traits;
 
-use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use Exception;
+use FluentForm\Framework\Support\Arr;
 
-class Predefined extends Form
+trait PredefinedForms
 {
-    /**
-     * all JSON data will be stored here
-     *
-     * @return array
-     */
-    private function getPredefinedForms()
+    public static function resolvePredefiendForm($attributes = [])
     {
-        $forms = [
+        $predefinedForm = static::findPredefinedForm($attributes);
+
+        if (!$predefinedForm) {
+            throw new Exception(
+                __("The selected template couldn't be found.", 'fluentform')
+            );
+        }
+
+        $predefinedForm = json_decode($predefinedForm['json'], true)[0];
+
+        if (isset($predefinedForm['form_fields'])) {
+            $predefinedForm['formFields'] = json_encode($predefinedForm['form_fields']);
+        } else {
+            if (isset($predefinedForm['form'])) {
+                $predefinedForm['formFields'] = json_encode($predefinedForm['form']);
+            }
+        }
+
+        return $predefinedForm;
+    }
+
+    public static function findPredefinedForm($attributes = [])
+    {
+        $type = Arr::get($attributes, 'type');
+
+        if ('blank_conversational' === $type) {
+            $predefinedForm = static::getBlankConversationalForm();
+        } else {
+            $predefined = Arr::get($attributes, 'predefined');
+
+            $predefinedForms = apply_filters(
+                'fluentform_predefined_forms',
+                static::getPredefinedForms()
+            );
+
+            $predefinedForm = Arr::get($predefinedForms, $predefined);
+        }
+
+        return $predefinedForm;
+    }
+    
+    public static function getPredefinedForms()
+    {
+        return [
 
             'blank_form' => [
                 'screenshot' => fluentformMix('img/forms/new_blank.png'),
@@ -806,11 +844,9 @@ class Predefined extends Form
                 'json'       => '[{"id":"12","title":"Website Feedback","form":{"fields":[{"index":0,"element":"input_name","attributes":{"name":"names","data-type":"name-element"},"settings":{"container_class":"","admin_field_label":"Full Name","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"fields":{"first_name":{"element":"input_text","attributes":{"type":"text","name":"first_name","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Enter Your Full Name","help_message":"","visible":true,"validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"middle_name":{"element":"input_text","attributes":{"type":"text","name":"middle_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Middle Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}},"last_name":{"element":"input_text","attributes":{"type":"text","name":"last_name","value":"","id":"","class":"","placeholder":"","required":false},"settings":{"container_class":"","label":"Last Name","help_message":"","error_message":"","visible":false,"validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"template":"inputText"}}},"editor_options":{"title":"Name Fields","element":"name-fields","icon_class":"icon-user","template":"nameFields"},"uniqElKey":"el_1559114141631"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Your Email address","label_placement":"","help_message":"","admin_field_label":"Email","validation_rules":{"required":{"value":true,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":[]},"editor_options":{"title":"Email Address","icon_class":"icon-envelope-o","template":"inputText"},"uniqElKey":"el_1559114139212"},{"index":8,"element":"input_radio","attributes":{"type":"radio","name":"input_radio","value":""},"settings":{"container_class":"","label":"Is this the first time you have visited the website?","admin_field_label":"Is this the first time you have visited the website?","label_placement":"","display_type":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"options":{"yes":"Yes","no":"No"},"editor_options":{"title":"Radio Button","icon_class":"icon-dot-circle-o","element":"input-radio","template":"inputRadio"},"uniqElKey":"el_1559114154264"},{"index":3,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"","rows":4,"cols":2},"settings":{"container_class":"","label":"What is the PRIMARY reason you came to the site?","admin_field_label":"What is the PRIMARY reason you came to the site?","label_placement":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[]},"editor_options":{"title":"Text Area","icon_class":"icon-paragraph","template":"inputTextarea"},"uniqElKey":"el_1559114186791"},{"index":9,"element":"input_checkbox","attributes":{"type":"checkbox","name":"checkbox","value":[]},"settings":{"container_class":"","label":"Did you find what you needed?","admin_field_label":"Did you find what you needed?","label_placement":"","display_type":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[]},"options":{"Yes, all of it":"Yes, all of it","Yes, some of it":"Yes, some of it","No, none of it":"No, none of it"},"editor_options":{"title":"Check Box","icon_class":"icon-check-square-o","template":"inputCheckbox"},"uniqElKey":"el_1559114208705"},{"index":8,"element":"ratings","attributes":{"class":"","value":0,"name":"ratings"},"settings":{"label":"User Friendlyness","show_text":false,"help_message":"","label_placement":"","admin_field_label":"User Friendlyness","container_class":"","conditional_logics":[],"validation_rules":{"required":{"value":true,"message":"This field is required"}}},"options":{"1":"Nice","2":"Good","3":"Very Good","4":"Awesome","5":"Amazing"},"editor_options":{"title":"Ratings","icon_class":"icon-eye-slash","template":"ratings"},"uniqElKey":"el_1559114515484"}],"submitButton":{"uniqElKey":"el_1559114078404","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Send your feedback","img_url":""}},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline","cssClassName":""}},"notifications":{"name":" Website Feedback Notification","sendTo":{"type":"email","email":"{wp.admin_email}","field":null,"routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"Website Feedback","message":"<p>{all_data}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]',
             ],
         ];
-
-        return apply_filters('fluentform_predefined_forms', $forms);
     }
 
-    private function getBlankConversationalForm()
+    public static function getBlankConversationalForm()
     {
         return [
             'screenshot' => '',
@@ -820,156 +856,5 @@ class Predefined extends Form
             'category'   => 'Basic',
             'tags'       => ['contact', 'typeform', 'conversational', 'form'],
             'json'       => '[{"id":"12","title":"Conversational Form","status":"published","appearance_settings":null,"form_fields":{"fields":[],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit","img_url":""},"normal_styles":{"backgroundColor":"#409EFF","borderColor":"#409EFF","color":"#ffffff","borderRadius":"","minWidth":""},"hover_styles":{"backgroundColor":"#ffffff","borderColor":"#409EFF","color":"#409EFF","borderRadius":"","minWidth":""},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"has_payment":"0","type":"form","conditions":null,"created_by":"1","created_at":"2021-06-01 06:04:42","updated_at":"2021-06-01 06:05:49","metas":[{"meta_key":"formSettings","value":"{\"confirmation\":{\"redirectTo\":\"samePage\",\"messageToShow\":\"<h2>Thank you for your message. We will get in touch with you shortly</h2>\",\"customPage\":null,\"samePageFormBehavior\":\"hide_form\",\"customUrl\":null},\"restrictions\":{\"limitNumberOfEntries\":{\"enabled\":false,\"numberOfEntries\":null,\"period\":\"total\",\"limitReachedMsg\":\"Maximum number of entries exceeded.\"},\"scheduleForm\":{\"enabled\":false,\"start\":null,\"end\":null,\"pendingMsg\":\"Form submission is not started yet.\",\"expiredMsg\":\"Form submission is now closed.\",\"selectedDays\":[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]},\"requireLogin\":{\"enabled\":false,\"requireLoginMsg\":\"You must be logged in to submit the form.\"},\"denyEmptySubmission\":{\"enabled\":false,\"message\":\"Sorry, you cannot submit an empty form. Let us hear what you wanna say.\"}},\"layout\":{\"labelPlacement\":\"top\",\"helpMessagePlacement\":\"with_label\",\"errorMessagePlacement\":\"inline\",\"asteriskPlacement\":\"asterisk-right\"},\"delete_entry_on_submission\":\"no\",\"appendSurveyResult\":{\"enabled\":false,\"showLabel\":false,\"showCount\":false}}"},{"meta_key":"notifications","value":"{\"name\":\"Admin Notification Email\",\"sendTo\":{\"type\":\"email\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] New Form Submission\",\"message\":\"<p>{all_data}</p> <p>This form submitted at: {embed_post.permalink}</p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\"}"},{"meta_key":"is_conversion_form","value":"yes"}]}]', ];
-    }
-
-    /**
-     * Fetch simplified information for all predefined forms
-     */
-    public function all()
-    {
-        if (! Acl::hasAnyFormPermission()) {
-            return [];
-        }
-
-        $data = [
-            'Basic' => [],
-        ];
-
-        foreach ($this->getPredefinedForms() as $key => $item) {
-            if (! $item['category']) {
-                $item['category'] = 'Other';
-            }
-
-            if (! isset($data[$item['category']])) {
-                $data[$item['category']] = [];
-            }
-
-            $itemClass = 'item_' . str_replace([' ', '&', '/'], '_', strtolower($item['category']));
-
-            if (empty($item['screenshot'])) {
-                $itemClass .= ' item_no_image';
-            } else {
-                $itemClass .= ' item_has_image';
-            }
-
-            $data[$item['category']][$key] = [
-                'class'      => $itemClass,
-                'tags'       => ArrayHelper::get($item, 'tag', ''),
-                'title'      => $item['title'],
-                'brief'      => $item['brief'],
-                'category'   => $item['category'],
-                'screenshot' => $item['screenshot'],
-                'createable' => $item['createable'],
-                'is_pro'     => ArrayHelper::get($item, 'is_pro'),
-                'type'       => isset($item['type']) ? $item['type'] : 'form',
-            ];
-        }
-
-        wp_send_json([
-            'forms'                     => $data,
-            'categories'                => array_keys($data),
-            'predefined_dropDown_forms' => apply_filters('fluentform-predefined-dropDown-forms', [
-                'post' => [
-                    'title' => 'Post Form',
-                ],
-            ]),
-        ], 200);
-    }
-
-    /**
-     * Create a predefined form
-     *
-     * @param $name
-     */
-    public function create()
-    {
-        $predefined = $this->request->get('predefined');
-
-        if ('blank_conversational' == $this->request->get('type')) {
-            $predefinedForm = $this->getBlankConversationalForm();
-        } else {
-            $predefinedForm = ArrayHelper::get($this->getPredefinedForms(), $predefined);
-        }
-        if ($predefinedForm) {
-            $predefinedForm = json_decode($predefinedForm['json'], true)[0];
-            $returnData = $this->createForm($predefinedForm, $predefined);
-            wp_send_json_success($returnData, 200);
-        }
-
-        wp_send_json_error([
-            'message' => __("The selected template couldn't be found.", 'fluentform'),
-        ], 422);
-    }
-
-    public function createForm($predefinedForm, $predefinedName = '')
-    {
-        $this->request->merge([
-            'title' => $this->request->get('title', $predefinedForm['title']),
-        ]);
-
-        if (isset($predefinedForm['form_fields'])) {
-            $this->formFields = json_encode($predefinedForm['form_fields']);
-        } else {
-            if (isset($predefinedForm['form'])) {
-                $this->formFields = json_encode($predefinedForm['form']);
-            }
-        }
-        //take global default setting when creating new form
-        $defaultSettings = (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->getFormsDefaultSettings();
-        $this->defaultSettings = apply_filters('fluentform_create_default_settings', $defaultSettings);
-
-        $predefinedForm['metas'][] = [
-            'meta_key' => 'formSettings',
-            'value'    => json_encode($this->defaultSettings),
-        ];
-
-        if (isset($predefinedForm['notifications'])) {
-            $this->defaultNotifications = $predefinedForm['notifications'];
-            $predefinedForm['metas'][] = [
-                'meta_key' => 'notifications',
-                'value'    => json_encode($this->defaultNotifications),
-            ];
-        }
-
-        if ($predefinedName) {
-            if (empty($predefinedForm['metas'])) {
-                $predefinedForm['metas'] = [];
-            }
-            $predefinedForm['metas'][] = [
-                'meta_key' => 'template_name',
-                'value'    => $predefinedName,
-            ];
-        }
-
-        if (isset($predefinedForm['metas'])) {
-            $this->metas = $predefinedForm['metas'];
-        }
-
-        if (! empty($predefinedForm['has_payment'])) {
-            $this->hasPayment = 1;
-        }
-
-        if (! empty($predefinedForm['type'])) {
-            $this->formType = $predefinedForm['type'];
-        }
-
-        return $this->store(false);
-    }
-
-    private function getRandomPhoto()
-    {
-        $photos = [
-            'demo_1.jpg',
-            'demo_2.jpg',
-            'demo_3.jpg',
-            'demo_4.jpg',
-            'demo_5.jpg',
-        ];
-
-        $selected = array_rand($photos, 1);
-
-        $photoName = $photos[$selected];
-
-        return fluentformMix('img/conversational/' . $photoName);
     }
 }

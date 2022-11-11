@@ -275,7 +275,7 @@ class Helper
 
     public static function getNextTabIndex($increment = 1)
     {
-        if (self::isTabIndexEnabled()) {
+        if (static::isTabIndexEnabled()) {
             static::$tabIndex += $increment;
 
             return static::$tabIndex;
@@ -452,7 +452,7 @@ class Helper
 
     public static function getNumericValue($input, $formatterName)
     {
-        $formatters = self::getNumericFormatters();
+        $formatters = static::getNumericFormatters();
         if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
@@ -467,7 +467,7 @@ class Helper
         if (!is_numeric($input)) {
             return $input;
         }
-        $formatters = self::getNumericFormatters();
+        $formatters = static::getNumericFormatters();
         if (empty($formatters[$formatterName]['settings'])) {
             return $input;
         }
@@ -480,7 +480,7 @@ class Helper
     {
         $fields = json_decode($fields, true);
         $items = $fields['fields'];
-        $inputNames = self::getFieldNamesStatuses($items);
+        $inputNames = static::getFieldNamesStatuses($items);
         $uniqueNames = array_unique($inputNames);
 
         if (count($inputNames) == count($uniqueNames)) {
@@ -498,7 +498,7 @@ class Helper
             if ('container' == ArrayHelper::get($field, 'element')) {
                 $columns = ArrayHelper::get($field, 'columns', []);
                 foreach ($columns as $column) {
-                    $columnInputs = self::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
+                    $columnInputs = static::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
                     $names = array_merge($names, $columnInputs);
                 }
             } else {
@@ -518,7 +518,7 @@ class Helper
             return $cache[$formId];
         }
 
-        $cache[$formId] = 'yes' == self::getFormMeta($formId, 'is_conversion_form');
+        $cache[$formId] = 'yes' == static::getFormMeta($formId, 'is_conversion_form');
 
         return $cache[$formId];
     }
@@ -526,12 +526,12 @@ class Helper
     public static function getPreviewUrl($formId, $type = '')
     {
         if ('conversational' == $type) {
-            return self::getConversionUrl($formId);
+            return static::getConversionUrl($formId);
         } elseif ('classic' == $type) {
             return site_url('?fluent_forms_pages=1&design_mode=1&preview_id=' . $formId) . '#ff_preview';
         } else {
-            if (self::isConversionForm($formId)) {
-                return self::getConversionUrl($formId);
+            if (static::isConversionForm($formId)) {
+                return static::getConversionUrl($formId);
             }
         }
 
@@ -554,7 +554,7 @@ class Helper
 
     private static function getConversionUrl($formId)
     {
-        $meta = self::getFormMeta($formId, 'ffc_form_settings_meta', []);
+        $meta = static::getFormMeta($formId, 'ffc_form_settings_meta', []);
         $key = ArrayHelper::get($meta, 'share_key', '');
         $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
         if ('form' == $paramKey) {
@@ -698,5 +698,23 @@ class Helper
         }
 
         return '';
+    }
+
+    public static function getRestInfo()
+    {
+        $config = wpFluentForm('config');
+
+        $namespace = $config->get('app.rest_namespace');
+        $version = $config->get('app.rest_version');
+        $restUrl = rest_url($namespace . '/' . $version);
+        $restUrl = rtrim($restUrl, '/\\');
+
+        return [
+            'base_url'  => esc_url_raw(rest_url()),
+            'url'       => $restUrl,
+            'nonce'     => wp_create_nonce('wp_rest'),
+            'namespace' => $namespace,
+            'version'   => $version,
+        ];
     }
 }

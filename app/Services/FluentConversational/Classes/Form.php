@@ -360,7 +360,7 @@ class Form
                 if (in_array($element, $acceptedFieldElements)) {
                     $field['style_pref'] = [
                         'layout'           => 'default',
-                        'media'            => $this->getRandomPhoto(),
+                        'media'            => fluentFormGetRandomPhoto(),
                         'brightness'       => 0,
                         'alt_text'         => '',
                         'media_x_position' => 50,

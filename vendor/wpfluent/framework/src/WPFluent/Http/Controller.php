@@ -9,8 +9,19 @@ use FluentForm\Framework\Validator\ValidationException;
 
 abstract class Controller
 {
+    /**
+     * @var \FluentForm\Framework\Foundation\Application
+     */
     protected $app = null;
+
+    /**
+     * @var \FluentForm\Framework\Request\Request
+     */
     protected $request = null;
+
+    /**
+     * @var \FluentForm\Framework\Response\Response
+     */
     protected $response = null;
 
     public function __construct()

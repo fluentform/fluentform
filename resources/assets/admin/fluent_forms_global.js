@@ -1,3 +1,6 @@
+import Request from "./Request.js";
+import Rest from "./Rest.js";
+
 (function ($) {
     class FluentFormsGlobal {
         constructor() {
@@ -22,6 +25,10 @@
 
             return $.post(url, data);
         }
+
+        request = Request;
+
+        $rest = Rest;
     }
     window.FluentFormsGlobal = new FluentFormsGlobal();
 

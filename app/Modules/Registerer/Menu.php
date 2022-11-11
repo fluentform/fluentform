@@ -251,6 +251,7 @@ class Menu
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
+            'rest'                     => Helper::getRestInfo()
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));

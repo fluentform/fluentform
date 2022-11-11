@@ -52,21 +52,21 @@
                 this.loading = true;
 
                 let data = {
-                    action: 'fluentform-form-update',
                     title: this.model,
-                    formId: window.FluentFormApp.form_id
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = 'forms/' + window.FluentFormApp.form_id;
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
                         this.$success(response.message);
                         this.close();
                         this.$emit('rename-success', data.title);
                     })
-                    .fail(error => {
-                        this.$fail(this.$t('Please Provide the form name'));
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             }
