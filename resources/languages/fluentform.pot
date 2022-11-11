@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-27 17:29+0000\n"
+"POT-Creation-Date: 2022-11-11 12:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid "23:59:59"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:516
+#: app/Modules/Registerer/Menu.php:517
 msgid "<h2>No form found</h2>"
 msgstr ""
 
@@ -210,7 +210,7 @@ msgstr ""
 msgid "Alignment"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:359 app/Modules/Registerer/Menu.php:360
+#: app/Modules/Registerer/Menu.php:360 app/Modules/Registerer/Menu.php:361
 #: app/Modules/CLI/Commands.php:11 resources/views/admin/global_menu.php:12
 msgid "All Forms"
 msgstr ""
@@ -1024,7 +1024,7 @@ msgstr ""
 msgid "Custom CSS & JS successfully updated"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:608
+#: app/Modules/Registerer/Menu.php:609
 msgid "Custom CSS/JS"
 msgstr ""
 
@@ -1202,7 +1202,7 @@ msgstr ""
 msgid "Ecuador"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:526
+#: app/Modules/Registerer/Menu.php:527
 msgid "Editor"
 msgstr ""
 
@@ -1235,7 +1235,7 @@ msgstr ""
 msgid "Email address need to be unique."
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:570
+#: app/Modules/Registerer/Menu.php:571
 msgid "Email Notifications"
 msgstr ""
 
@@ -1298,7 +1298,7 @@ msgid ""
 "Mailchimp account and go to<br>Profile -> Extras -> Api Keys"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:376 app/Modules/Registerer/Menu.php:543
+#: app/Modules/Registerer/Menu.php:377 app/Modules/Registerer/Menu.php:544
 #: resources/views/admin/global_menu.php:16
 #: resources/views/email/report/body.php:148
 msgid "Entries"
@@ -1441,7 +1441,7 @@ msgid "Fluent Form"
 msgstr ""
 
 #. Name of the plugin
-#: app/Modules/Registerer/Menu.php:338 app/Modules/Widgets/OxygenWidget.php:39
+#: app/Modules/Registerer/Menu.php:339 app/Modules/Widgets/OxygenWidget.php:39
 #: app/Modules/Widgets/FluentFormWidget.php:28
 #: app/Modules/Widgets/FluentFormWidget.php:93
 #: app/Modules/Widgets/FluentFormWidget.php:100
@@ -1495,11 +1495,11 @@ msgstr ""
 msgid "Fluent Forms PDF"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:336
+#: app/Modules/Registerer/Menu.php:337
 msgid "Fluent Forms Pro"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:661
+#: app/Modules/Registerer/Menu.php:662
 msgid ""
 "Fluent Forms Pro has tons of integrations to take your forms to the next "
 "level. From payment gateways to quiz building, SMS notifications to email "
@@ -1565,11 +1565,11 @@ msgstr ""
 msgid "Form Field"
 msgstr ""
 
-#: app/Modules/Form/Form.php:651
-msgid "Form has been successfully converted to conversational form."
+#: app/Modules/Form/Form.php:665
+msgid "Form has been successfully converted."
 msgstr ""
 
-#: app/Modules/Form/Form.php:606
+#: app/Modules/Form/Form.php:608
 msgid "Form has been successfully duplicated."
 msgstr ""
 
@@ -1577,7 +1577,7 @@ msgstr ""
 msgid "Form layout settings"
 msgstr ""
 
-#: app/Modules/Form/Form.php:642
+#: app/Modules/Form/Form.php:644
 msgid "Form Not Found! Try Again."
 msgstr ""
 
@@ -1585,7 +1585,7 @@ msgstr ""
 msgid "Form restrictions and scheduling"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:564
+#: app/Modules/Registerer/Menu.php:565
 msgid "Form Settings"
 msgstr ""
 
@@ -1609,11 +1609,11 @@ msgstr ""
 msgid "Form submission button text."
 msgstr ""
 
-#: app/Modules/Form/Form.php:189
+#: app/Modules/Form/Form.php:191
 msgid "Form submission is not started yet."
 msgstr ""
 
-#: app/Modules/Form/Form.php:190
+#: app/Modules/Form/Form.php:192
 msgid "Form submission is now closed."
 msgstr ""
 
@@ -1695,7 +1695,7 @@ msgstr ""
 msgid "Germany"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:453 app/Modules/Registerer/Menu.php:454
+#: app/Modules/Registerer/Menu.php:454 app/Modules/Registerer/Menu.php:455
 msgid "Get Help"
 msgstr ""
 
@@ -1727,7 +1727,7 @@ msgstr ""
 msgid "Gist"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:412 app/Modules/Registerer/Menu.php:413
+#: app/Modules/Registerer/Menu.php:413 app/Modules/Registerer/Menu.php:414
 #: resources/views/admin/global_menu.php:28
 msgid "Global Settings"
 msgstr ""
@@ -2064,7 +2064,7 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:442 app/Modules/Registerer/Menu.php:443
+#: app/Modules/Registerer/Menu.php:443 app/Modules/Registerer/Menu.php:444
 #: resources/views/admin/global_menu.php:34
 msgid "Integrations"
 msgstr ""
@@ -2482,7 +2482,7 @@ msgstr ""
 msgid "Mark as VIP Contact"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:582
+#: app/Modules/Registerer/Menu.php:583
 msgid "Marketing & CRM Integrations"
 msgstr ""
 
@@ -2720,7 +2720,7 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:369 app/Modules/Registerer/Menu.php:370
+#: app/Modules/Registerer/Menu.php:370 app/Modules/Registerer/Menu.php:371
 msgid "New Form"
 msgstr ""
 
@@ -2887,7 +2887,7 @@ msgstr ""
 msgid "Order Items Table"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:576
+#: app/Modules/Registerer/Menu.php:577
 msgid "Other Confirmations"
 msgstr ""
 
@@ -3016,7 +3016,7 @@ msgstr ""
 msgid "Payment Total"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:401 app/Modules/Registerer/Menu.php:402
+#: app/Modules/Registerer/Menu.php:402 app/Modules/Registerer/Menu.php:403
 #: resources/views/admin/global_menu.php:22
 #: resources/views/admin/global_menu.php:40
 #: resources/views/email/report/body.php:168
@@ -3192,11 +3192,11 @@ msgstr ""
 msgid "Press to select"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:890
+#: app/Modules/Registerer/Menu.php:892
 msgid "Preview"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:887
+#: app/Modules/Registerer/Menu.php:889
 msgid "Preview & Design"
 msgstr ""
 
@@ -3681,7 +3681,7 @@ msgstr ""
 msgid "Setting up form submission confirmation"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:532
+#: app/Modules/Registerer/Menu.php:533
 msgid "Settings & Integrations"
 msgstr ""
 
@@ -3770,7 +3770,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:590
+#: app/Modules/Registerer/Menu.php:591
 msgid "Slack"
 msgstr ""
 
@@ -3794,7 +3794,7 @@ msgstr ""
 msgid "SMS Notification"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:432 app/Modules/Registerer/Menu.php:433
+#: app/Modules/Registerer/Menu.php:433 app/Modules/Registerer/Menu.php:434
 msgid "SMTP"
 msgstr ""
 
@@ -3844,7 +3844,7 @@ msgid ""
 "permissions"
 msgstr ""
 
-#: app/Modules/Form/Form.php:198
+#: app/Modules/Form/Form.php:200
 msgid "Sorry, you cannot submit an empty form. Let's hear what you wanna say."
 msgstr ""
 
@@ -4003,11 +4003,11 @@ msgstr ""
 msgid "Success Message"
 msgstr ""
 
-#: app/Modules/Form/Form.php:157
+#: app/Modules/Form/Form.php:159
 msgid "Successfully created a form."
 msgstr ""
 
-#: app/Modules/Form/Form.php:486
+#: app/Modules/Form/Form.php:488
 msgid "Successfully deleted the form."
 msgstr ""
 
@@ -4181,7 +4181,7 @@ msgstr ""
 msgid "Thailand"
 msgstr ""
 
-#: app/Modules/Form/Form.php:172
+#: app/Modules/Form/Form.php:174
 msgid "Thank you for your message. We will get in touch with you shortly"
 msgstr ""
 
@@ -4202,7 +4202,7 @@ msgstr ""
 msgid "The form can be filled in the actual <a href=\"%s\">website url</a>."
 msgstr ""
 
-#: app/Modules/Form/Form.php:370
+#: app/Modules/Form/Form.php:372
 msgid "The form is successfully updated."
 msgstr ""
 
@@ -4397,7 +4397,7 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:422 app/Modules/Registerer/Menu.php:423
+#: app/Modules/Registerer/Menu.php:423 app/Modules/Registerer/Menu.php:424
 #: resources/views/admin/global_menu.php:31
 #: resources/views/admin/transfer/index.php:6
 msgid "Tools"
