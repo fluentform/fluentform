@@ -7,6 +7,7 @@ use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
+use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\View;
@@ -802,6 +803,7 @@ class Menu
             'validation_rule_settings' => $this->app->load(
                 $this->app->appPath('Services/FormBuilder/ValidationRuleSettings.php')
             ),
+            'conversational_form_fields' => array_keys(Converter::fieldTypes()),
 
             'form_editor_str'            => TranslationString::getEditorI18n(),
             'element_search_tags'        => $searchTags,

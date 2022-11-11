@@ -1,5 +1,5 @@
 <template>
-    <div class="ff_conv_section">
+    <div class="ff_conv_section" v-if="supportedFields.includes(item.element)">
         <vddl-draggable class="panel__body--item js-editor-item"
                         :class="{ 'selected': editItem.uniqElKey == item.uniqElKey }"
                         :draggable="item"
@@ -52,6 +52,7 @@ export default {
         return {
             showRemoveElConfirm: false,
             removeElIndex: null,
+            supportedFields: window.FluentFormApp.conversational_form_fields
         }
     },
     methods: NestedHandler.methods

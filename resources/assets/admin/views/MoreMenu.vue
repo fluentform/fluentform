@@ -1,6 +1,6 @@
 <template>
     <div :class="{ ff_backdrop: visible }">
-        <el-dropdown v-if="!is_conversion_form" @command="handle">
+        <el-dropdown @command="handle">
             <span class="el-dropdown-link">
                 <i 
                     class="el-icon-more" 
@@ -10,43 +10,45 @@
 
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="conversational">
-                    {{ $t("Convert to Conversational Forms") }}
+                    {{ convertBtnText }}
                 </el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
 
         <el-dialog
-            :title="$t('Are you sure?')"
+            :title="$t('Confirmation')"
             :visible.sync="visible"
             :append-to-body="true"
             width="40%"
         >
             <p>
-                <b>{{ $t('This process is irreversible.') }}</b>
+                <b>{{ $t('Are you sure you want to convert this form?') }}</b>
             </p>
 
-            <p>
-                {{
-                    $t('Conversational Forms currently doesn\'t support the following fields:')
-                }}
-            </p>
+            <template v-if="!is_conversion_form">
+                <p>
+                    {{
+                        $t('Conversational Forms currently doesn\'t support the following fields:')
+                    }}
+                </p>
 
-            <el-row :gutter="20">
-                <el-col :span="8" v-for="(field, i) in fields" :key="i">
-                    <i class="el-icon-caret-right"></i> {{ field }}
-                </el-col>
-            </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8" v-for="(field, i) in fields" :key="i">
+                        <i class="el-icon-caret-right"></i> {{ field }}
+                    </el-col>
+                </el-row>
 
-            <p>
-                {{ $t('You may also lose data of these fields.') }}
-            </p>
+                <p>
+                    {{ $t('You may also lose data of these fields.') }}
+                </p>
+            </template>
 
             <span slot="footer" class="text-center dialog-footer">
-                <el-button @click="visible = false">
+                <el-button @click="visible = false" size="small">
                     {{ $t('Cancel') }}
                 </el-button>
 
-                <el-button type="primary" size="small" @click="confirm">
+                <el-button type="primary" size="small" icon="el-icon-success" @click="confirm">
                     {{ $t('Convert') }}
                 </el-button>
             </span>
@@ -81,9 +83,16 @@ export default {
         };
     },
 
+    computed: {
+        convertBtnText() {
+            const text = this.is_conversion_form ? 'Convert to Regular Form' : 'Convert to Conversational Form';
+
+            return this.$t(text);
+        }
+    },
+
     methods: {
-        handle(command) {
-            // this.convert();
+        handle() {
             this.visible = !this.visible;
         },
 
@@ -95,11 +104,7 @@ export default {
 
             FluentFormsGlobal.$post(data)
                 .then(response => {
-                    this.$notify.success({
-                        title: "Success",
-                        message: response.data.message,
-                        offset: 30
-                    });
+                    this.$success(response.data.message);
 
                     setTimeout(() => {
                         window.location.reload();
@@ -107,11 +112,7 @@ export default {
                 })
                 .fail(error => {
                     if (error.responseJSON.data.message) {
-                        this.$notify.error({
-                            title: "Error",
-                            message: error.responseJSON.data.message,
-                            offset: 30
-                        });
+                        this.$fail(error.responseJSON.data.message);
                     }
                 });
         },
