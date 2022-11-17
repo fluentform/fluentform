@@ -182,7 +182,7 @@ new Vue({
         form_saving: false
     },
     methods: {
-        ...mapActions(["loadEditorShortcodes"]),
+        ...mapActions(["loadResources"]),
 
         /**
          * Prepare the form for the dropzone
@@ -287,7 +287,7 @@ new Vue({
     },
     mounted() {
         this.prepareForm();
-        this.loadEditorShortcodes(this.form_id);
+        this.loadResources(this.form_id);
         if(this.is_conversion_form) {
             jQuery('#wpcontent').addClass('ff_conversion_editor');
         }

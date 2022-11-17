@@ -485,7 +485,6 @@ export default {
             form_id: window.FluentFormApp.form_id,
             labelPlacement: 'top',
             original_label_placement: 'top',
-            isMockLoaded: false,
             editorConfig: {
                 bodyWidth: 0,
                 sidebarWidth: 0
@@ -496,13 +495,6 @@ export default {
             whyDisabledModal: '',
             optionFieldsSection: window.FluentFormApp.form.type === 'post' ? 'post' : 'general',
             nameEditable: false,
-            postMockList: [],
-            taxonomyMockList: [],
-            generalMockList: [],
-            advancedMockList: [],
-            paymentsMockList: [],
-            containerMockList: [],
-            itemDisableConditions: {},
             searchElementStr: '',
             searchResult: [],
             isSidebarSearch: false,
@@ -521,7 +513,15 @@ export default {
     computed: {
         ...mapGetters({
             fieldMode: 'fieldMode',
-            sidebarLoading: 'sidebarLoading'
+            sidebarLoading: 'sidebarLoading',
+            itemDisableConditions: 'editorDisabledComponents',
+            postMockList: 'postMockList',
+            taxonomyMockList: 'taxonomyMockList',
+            generalMockList: 'generalMockList',
+            advancedMockList: 'advancedMockList',
+            paymentsMockList: 'paymentsMockList',
+            containerMockList: 'containerMockList',
+            isMockLoaded: 'isMockLoaded',
         }),
 
         /**
@@ -671,8 +671,6 @@ export default {
             updateSidebar: 'updateSidebar'
         }),
 
-        ...mapActions(['loadEditorShortcodes']),
-
         moved(o) {
             // vddl has issue with this method.
             // we can remove this method once fixed.
@@ -807,28 +805,6 @@ export default {
         },
 
         /**
-         * Fetch default elements from the server
-         * prepare those for editor render.
-         */
-        initiateMockLists() {
-            FluentFormsGlobal.$get({
-                action: 'fluentform-load-editor-components',
-                formId: window.FluentFormApp.form.id
-            })
-                .done(response => {
-                    _ff.each(response.data.components, (components, key) => {
-                        this[`${key}MockList`] = components;
-                    });
-
-                    this.itemDisableConditions = response.data.disabled_components;
-
-                    this.isMockLoaded = true;
-                })
-                .fail(res => console.log(res));
-        },
-
-
-        /**
          * Rearrange elements in the editor
          * Action when drag starts
          * @param el
@@ -860,13 +836,11 @@ export default {
          * And do necessary adjustments to the editor
          */
         fetchSettings() {
-            FluentFormsGlobal.$get({
-                action: 'fluentform-settings-formSettings',
-                form_id: this.form_id,
-                meta_key: 'formSettings'
-            })
-                .done(response => {
-                    let result = response.data.result[0];
+            const url = 'forms/' + this.form_id + '/settings';
+            
+            FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
+                .then(response => {
+                    let result = response[0];
                     if (result && result.value) {
                         let settings = result.value;
                         this.original_label_placement = settings.layout.labelPlacement;
@@ -877,7 +851,7 @@ export default {
                         }
                     }
                 })
-                .fail(res => {
+                .catch(error => {
                     // ...
                 });
         },
@@ -1028,7 +1002,7 @@ export default {
     },
     mounted() {
         this.fetchSettings();
-        this.initiateMockLists();
+
 
         this.garbageCleaner();
         this.initSaveBtn();

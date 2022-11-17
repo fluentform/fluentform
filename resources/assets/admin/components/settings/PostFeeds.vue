@@ -96,13 +96,13 @@
                 });
             },
             fetchPostFeeds() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-settings-formSettings',
-                    form_id: this.form_id,
+                const url = 'forms/' + this.form_id + '/settings';
+            
+                FluentFormsGlobal.$rest.get(url, {
                     meta_key: 'postFeeds',
                     is_multiple: true
-                }).done(response => {
-                    this.feeds = response.data.result;
+                }).then(response => {
+                    this.feeds = response;
                 });
             },
             addPostFeed() {
@@ -129,17 +129,13 @@
                 this.show_feeds = false;
             },
             deletePostFeed(index, feed) {
-                FluentFormsGlobal.$post({
-                    action: 'fluentform-settings-formSettings-remove',
-                    id: feed.id,
-                    form_id: feed.form_id
-                })
-                .done(response => {
+                const url = 'forms/' + feed.form_id + '/settings';
 
-                    this.feeds.splice(index, 1);
-
-                    this.$success(this.$t('Successfully deleted the feed.'));
-                });
+                FluentFormsGlobal.$rest.delete(url, {meta_id: feed.id})
+                    .then(response => {
+                        this.feeds.splice(index, 1);
+                        this.$success(this.$t('Successfully deleted the feed.'));
+                    });
             },
             handleActive(index) {
                 let feed = this.feeds[index];
@@ -149,22 +145,23 @@
                 delete (feed.id);
 
                 let data = {
-                    id,
-                    form_id: this.form_id,
+                    meta_id: id,
                     meta_key: 'postFeeds',
                     value: JSON.stringify(feed.value),
-                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                FluentFormsGlobal.$post(data).done(response => {
-                    feed.id = response.data.id;
+                const url = 'forms/' + this.form_id + '/settings';
+            
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        feed.id = response.id;
 
-                    let handle = feed.value.status ? 'enabled' : 'disabled';
+                        let handle = feed.value.status ? 'enabled' : 'disabled';
 
-                    this.$success(this.$t('Successfully ' + handle + ' the feed.'));
-                }).fail(e => {
-                    feed.id = id;
-                });
+                        this.$success(this.$t('Successfully ' + handle + ' the feed.'));
+                    }).catch(e => {
+                        feed.id = id;
+                    });
             },
             showPostFeeds(feed) {
                 if (!feed) {

@@ -86,26 +86,31 @@ $app->addAction('wp_ajax_fluentform-form-inputs', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform-load-editor-shortcodes', function () use ($app) {
+    dd('wp_ajax_fluentform-load-editor-shortcodes');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->getEditorShortcodes();
 });
 
 $app->addAction('wp_ajax_fluentform-load-all-editor-shortcodes', function () use ($app) {
+    dd('wp_ajax_fluentform-load-all-editor-shortcodes');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->getAllEditorShortcodes();
 });
 
 $app->addAction('wp_ajax_fluentform-settings-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->index();
 });
 
 $app->addAction('wp_ajax_fluentform-settings-general-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-general-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->getGeneralSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-save-settings-general-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->saveGeneralSettingsAjax();
 });
@@ -276,6 +281,7 @@ $app->addAction('wp_ajax_fluentform-get-form-settings-extra-component', function
 $app->addAction(
     'wp_ajax_fluentform-get-pages',
     function () {
+        dd('wp_ajax_fluentform-get-pages');
         Acl::verify('fluentform_forms_manager');
 
         $pages = get_pages();
@@ -324,6 +330,7 @@ $app->addAction('wp_ajax_fluentform-get-all-forms', function () use ($app) {
 
 // Fetch simplified information for all predefined forms
 $app->addAction('wp_ajax_fluentform-predefined-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-predefined-forms');
     Acl::hasAnyFormPermission();
     (new \FluentForm\App\Modules\Form\Predefined($app))->all();
 });

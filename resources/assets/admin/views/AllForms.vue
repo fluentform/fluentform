@@ -406,7 +406,6 @@ export default {
             this.loading = true;
             let data = {
                 search: this.searchFormsKeyWord,
-                action: 'fluentform-forms',
                 filter_by: this.filter_by,
                 per_page: this.paginate.per_page,
                 page: this.paginate.current_page,
@@ -441,24 +440,19 @@ export default {
         getPredefinedForms() {
             this.loading = true;
 
-            FluentFormsGlobal.$get({
-                action: 'fluentform-predefined-forms'
-            }).done(res => {
-                this.predefinedForms = res.forms;
-                this.categories = res.categories;
-                this.predefinedDropDownForms = res.predefined_dropDown_forms;
-            }).fail(error => {
-                this.$fail(this.$t('Something went wrong, please try again.'));
-            })
-                .always(() => {
+            FluentFormsGlobal.$rest.get('forms/templates')
+                .then(response => {
+                    this.predefinedForms = response.forms;
+                    this.categories = response.categories;
+                    this.predefinedDropDownForms = response.predefined_dropDown_forms;
+                }).catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
                     this.loading = false;
                 });
         },
         removeForm(id, index) {
-            let data = {
-                action: 'fluentform-form-delete',
-                id
-            }
             const url = 'forms/' + id;
 
             FluentFormsGlobal.$rest.delete(url)

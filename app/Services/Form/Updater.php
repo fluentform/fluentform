@@ -197,9 +197,6 @@ class Updater
             $emailInputName = '';
         }
 
-        FormMeta::updateOrCreate(
-            ['form_id' => $form->id, 'meta_key' => '_primary_email_field'],
-            ['value' => $emailInputName]
-        );
+        FormMeta::persist($form->id, '_primary_email_field', $emailInputName);
     }
 }

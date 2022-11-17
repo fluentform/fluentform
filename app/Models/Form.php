@@ -117,7 +117,9 @@ class Form extends Model
 
     public static function getFormMeta($metaKey, $formId = null)
     {
-        $settingsMeta = static::formMeta()
+        $instance = new static;
+
+        $settingsMeta = $instance->formMeta()
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })
@@ -189,9 +191,42 @@ class Form extends Model
             }
         }
 
+        $defaultSettings = apply_filters(
+            'fluentform/forms_default_settings',
+            $defaultSettings
+        );
+
         return apply_filters(
             'fluentform_create_default_settings',
             $defaultSettings
+        );
+    }
+
+    public static function getAdvancedValidationSettings($formId)
+    {
+        $settings = [
+            'status'     => false,
+            'type'       => 'all',
+            'conditions' => [
+                [
+                    'field'    => '',
+                    'operator' => '=',
+                    'value'    => '',
+                ],
+            ],
+            'error_message'   => '',
+            'validation_type' => 'fail_on_condition_met',
+        ];
+
+        $metaSettings = static::getFormMeta('advancedValidationSettings', $formId);
+
+        if ($metaSettings && is_array($metaSettings)) {
+            $settings = wp_parse_args($metaSettings, $settings);
+        }
+
+        return apply_filters(
+            'fluentform/advanced_validation_settings',
+            $settings
         );
     }
 }

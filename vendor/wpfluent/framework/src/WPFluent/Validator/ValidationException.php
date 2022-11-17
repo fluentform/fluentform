@@ -6,7 +6,9 @@ use Exception;
 
 class ValidationException extends Exception
 {
-    public function __construct($message = "", $code = 0 , Exception $previous = NULL, $errors = [])
+    private $errors;
+
+    public function __construct($message = '', $code = 0, Exception $previous = null, $errors = [])
     {
         $this->errors = $errors;
 

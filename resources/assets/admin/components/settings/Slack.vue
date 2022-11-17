@@ -106,18 +106,14 @@
             },
             fetch() {
                 this.loading = true;
-              
-                let data = {
-                    form_id: this.form_id,
-                    meta_key: 'slack',
-                    action: 'fluentform-settings-formSettings'
-                };
 
-                FluentFormsGlobal.$get(data)
+                const url = 'forms/' + this.form_id + '/settings';
+            
+                FluentFormsGlobal.$rest.get(url, {meta_key: 'slack'})
                     .then(response => {
-                        if (response.data.result[0]) {
-                            this.slack = response.data.result[0].value;
-                            this.slack.id = response.data.result[0].id;
+                        if (response[0]) {
+                            this.slack = response[0].value;
+                            this.slack.id = response[0].id;
                             if(!this.slack.fields){
                                 this.$set(this.slack , 'fields', []);
                             }
@@ -125,12 +121,12 @@
                                 this.$set(this.slack , 'checkAll', '');
                             }
                         }
-                        this.formattedFields = response.data.result.formattedFields ? response.data.result.formattedFields : [];
+                        this.formattedFields = response.formattedFields ? response.formattedFields : [];
     
                     })
-                    .fail(e => {
+                    .catch(e => {
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     })
             },
@@ -138,23 +134,23 @@
                 this.saving = true;
 
                 let data = {
-                    form_id: this.form_id,
                     meta_key: 'slack',
                     value: JSON.stringify(this.slack),
-                    id: this.slack.id,
-                    action: 'fluentform-settings-formSettings-store'
+                    meta_id: this.slack.id,
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = 'forms/' + this.form_id + '/settings';
+            
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.slack.id = response.data.id;
+                        this.slack.id = response.id;
 
-                        this.$success(response.data.message);
+                        this.$success(response.message);
                     })
-                    .fail(error => {
-                        this.errors.record(error.responseJSON.data.errors);
+                    .catch(error => {
+                        this.errors.record(error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.saving = false;
                     });
             }

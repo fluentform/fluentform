@@ -30,26 +30,21 @@
         },
         methods: {
             fetchInputs() {
-                let data = {
-                    action: 'fluentform-form-inputs',
-                    formId: this.form_id
-                };
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = 'forms/' + this.form_id + '/fields'
+                
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
                         this.inputs = Object.assign({}, response);
                         this.app_ready = true;
                     })
-                    .fail(e => {
+                    .catch(e => {
                     });
             },
             fetchAllEditorShortcodes() {
-                let data = {
-                    action: 'fluentform-load-all-editor-shortcodes',
-                    formId: this.form_id,
-                    input_only: true
-                };
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = 'forms/' + this.form_id + '/shortcodes'
+                
+                FluentFormsGlobal.$rest.get(url, {input_only: true})
+                    .then(response => {
                         let allShortCodes = response;
                         if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {
                             delete allShortCodes[0]['shortcodes']['{all_data}'];
@@ -59,7 +54,7 @@
                         this.editorShortcodes = allShortCodes;
                         this.app_ready = true;
                     })
-                    .fail(e => {
+                    .catch(e => {
                     });
             },
         },

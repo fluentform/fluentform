@@ -136,6 +136,7 @@ function fluentImplodeRecursive($glue, array $array)
                 $result .= $glue . $item;
             }
         }
+
         return $result;
     };
 
@@ -153,6 +154,7 @@ function fluentform_get_active_theme_slug()
     if (defined('TEMPLATELY_FILE')) {
         return 'templately';
     }
+
     return get_option('template');
 }
 
@@ -163,7 +165,7 @@ function getFluentFormCountryList()
     if (is_null($countries)) {
         $countries = fluentformLoadFile('/Services/FormBuilder/CountryNames.php');
     }
-    
+
     return $countries;
 }
 
@@ -172,7 +174,7 @@ function fluentFormWasSubmitted($action = 'fluentform_submit')
     return wpFluentForm('request')->get('action') == $action;
 }
 
-if (! function_exists('isWpAsyncRequest')) {
+if (!function_exists('isWpAsyncRequest')) {
     function isWpAsyncRequest($action)
     {
         return false !== strpos(wpFluentForm('request')->get('action'), $action);
@@ -182,6 +184,7 @@ if (! function_exists('isWpAsyncRequest')) {
 function fluentFormIsHandlingSubmission()
 {
     $status = fluentFormWasSubmitted() || isWpAsyncRequest('fluentform_async_request');
+
     return apply_filters('fluentform_is_handling_submission', $status);
 }
 
@@ -190,6 +193,7 @@ function fluentform_mb_strpos($haystack, $needle)
     if (function_exists('mb_strpos')) {
         return mb_strpos($haystack, $needle);
     }
+
     return strpos($haystack, $needle);
 }
 
@@ -223,9 +227,9 @@ function fluentform_integrations_url()
 function fluentFormApi($module = 'forms')
 {
     if ('forms' == $module) {
-        return (new \FluentForm\App\Api\Form());
+        return new \FluentForm\App\Api\Form();
     } elseif ('submissions' == $module) {
-        return (new \FluentForm\App\Api\Submission());
+        return new \FluentForm\App\Api\Submission();
     }
 
     throw new \Exception('No Module found with name ' . $module);
@@ -294,12 +298,12 @@ function fluentform_options_sanitize($options)
 
 function fluentform_sanitize_html($html)
 {
-    if (! $html) {
+    if (!$html) {
         return $html;
     }
 
     // Return $html if it's just a plain text
-    if (! preg_match('/<[^>]*>/', $html)) {
+    if (!preg_match('/<[^>]*>/', $html)) {
         return $html;
     }
 
@@ -408,4 +412,20 @@ if (!function_exists('fluentValidator')) {
     {
         return wpFluentForm('validator')->make($data, $rules, $messages);
     }
+}
+
+function fluentformGetPages()
+{
+    $pages = get_pages();
+    $formattedPages = [];
+
+    foreach ($pages as $page) {
+        $formattedPages[] = [
+            'ID'         => $page->ID,
+            'post_title' => $page->post_title,
+            'guid'       => $page->guid,
+        ];
+    }
+
+    return $formattedPages;
 }

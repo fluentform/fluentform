@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentForm\App\Modules\Form\Settings\Validator;
+namespace FluentForm\App\Services\Settings;
 
 class Validator
 {
@@ -14,13 +14,13 @@ class Validator
     {
         $key = ucwords($key);
 
-        $class = '\FluentForm\App\Modules\Form\Settings\Validator\\' . $key;
+        $class = '\FluentForm\App\Services\Settings\Validator\\' . $key;
 
         if (class_exists($class)) {
             /**
              * Validator class
              *
-             * @var $class Confirmations|MailChimps|Notifications|Pdfs
+             * @var $class \FluentForm\App\Services\Settings\Validator\Validate
              */
             $class::validate($data);
         }

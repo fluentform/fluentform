@@ -69,7 +69,7 @@ class Analytics
             'browser'    => $browser->getBrowser(),
             'platform'   => $browser->getPlatform(),
             'created_at' => current_time('mysql'),
-            'source_url' => $this->app->request->server('HTTP_REFERER'),
+            'source_url' => $this->app->request->server('HTTP_REFERER', ''),
         ];
 
         $query = wpFluent()

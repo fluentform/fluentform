@@ -232,46 +232,43 @@
                 delete (confirmation.id);
 
                 let data = {
-                    form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(confirmation),
-                    id,
-                    action: 'fluentform-settings-formSettings-store'
+                    meta_id: id,
                 };
 
-                FluentFormsGlobal.$post(data)
-                    .done(response => {
+                const url = 'forms/' + this.form.id + '/settings';
+            
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
                         confirmation.id = response.id;
 
                         let handle = confirmation.active ? 'enabled' : 'disabled';
 
                         this.$success(this.$t('Successfully ' + handle + ' the confirmation.'));
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
             remove(index, id) {
-                FluentFormsGlobal.$post({
-                    action: 'fluentform-settings-formSettings-remove',
-                    id,
-                    form_id: this.form.id
-                })
-                    .done(response => {
+                const url = 'forms/' + this.form.id + '/settings';
 
+                FluentFormsGlobal.$rest.delete(url, {meta_id: id})
+                    .then(response => {
                         this.confirmations.splice(index, 1);
 
                         this.$success(this.$t('Successfully removed the confirmation.'));
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
 
             getPages() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-pages'
-                })
-                    .done(response => {
-                        this.pages = response.data.pages;
+                const url = 'forms/' + this.form.id + '/pages';
+                
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
+                        this.pages = response.pages;
                     })
-                    .fail(e => {})
+                    .catch(e => {})
             },
             getPageUrl(id) {
                 let page = this.pages[id];
@@ -280,21 +277,17 @@
             },
 
             fetch() {
-                let data = {
-                    form_id: this.form.id,
-                    meta_key: 'confirmations',
-                    action: 'fluentform-settings-formSettings'
-                };
-
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
-                        this.confirmations = response.data.result.map((item) => {
+                const url = 'forms/' + this.form.id + '/settings';
+            
+                FluentFormsGlobal.$rest.get(url, {meta_key: 'confirmations'})
+                    .then(response => {
+                        this.confirmations = response.map((item) => {
                             const {value, ...rest} = item;
                             return {...rest, ...value};
                         });
                     })
-                    .fail(e => {})
-                    .always(_ => this.confLoading = false)
+                    .catch(e => {})
+                    .finally(_ => this.confLoading = false)
             },
             store() {
                 this.errors.clear();
@@ -304,16 +297,16 @@
                 delete (this.selected.id);
 
                 let data = {
-                    form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(this.selected),
-                    id,
-                    action: 'fluentform-settings-formSettings-store'
+                    meta_id: id,
                 };
 
-                FluentFormsGlobal.$post(data)
-                    .done(response => {
-                        this.selected.id = response.data.id;
+                const url = 'forms/' + this.form.id + '/settings';
+            
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.selected.id = response.id;
 
                         this.confirmations.splice(this.selectedIndex, 1, this.selected);
 
@@ -323,8 +316,8 @@
 
                         this.selectedIndex = null;
                     })
-                    .fail(errors => {
-                        this.errors.record(errors.responseJSON.errors);
+                    .catch(errors => {
+                        this.errors.record(errors);
 
                         this.selected.id = id;
                     });

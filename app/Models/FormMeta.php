@@ -72,4 +72,23 @@ class FormMeta extends Model
             ]);
         }
     }
+
+    public static function persist($formId, $metaKey, $metaValue)
+    {
+        if (is_array($metaValue) || is_object($metaValue)) {
+            $metaValue = json_encode($metaValue);
+        }
+
+        static::updateOrCreate(
+            ['form_id' => $formId, 'meta_key' => $metaKey],
+            ['value' => $metaValue]
+        );
+    }
+
+    public static function remove($formId, $metaKey)
+    {
+        static::where('form_id', $formId)
+            ->where('meta_key', $metaKey)
+            ->delete();
+    }
 }

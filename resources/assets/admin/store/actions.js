@@ -1,14 +1,11 @@
 export default {
-    loadEditorShortcodes({ commit }, form_id) {
-        let data = {
-            form_id,
-            action: 'fluentform-load-editor-shortcodes'
-        };
-        FluentFormsGlobal.$get(data)
-            .done(res => {
-                if (res.success)
-                    commit('loadEditorShortcodes', res.data.shortcodes);
+    loadResources({ commit }, form_id) {
+        const url = 'forms/' + form_id + '/resources';
+
+        FluentFormsGlobal.$rest.get(url)
+            .then(res => {
+                commit('loadResources', res);
             })
-            .fail( _ => {});
-    }
+            .catch( _ => {});
+    },
 }

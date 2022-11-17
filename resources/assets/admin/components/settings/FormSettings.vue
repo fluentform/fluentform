@@ -628,13 +628,12 @@
                 }
             },
             fetchSettings() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-settings-general-formSettings',
-                    form_id: this.form_id
-                })
-                    .done(response => {
-                        if (response.data.generalSettings) {
-                            let settings = response.data.generalSettings;
+                const url = 'forms/' + this.form_id + '/settings/general';
+            
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
+                        if (response.generalSettings) {
+                            let settings = response.generalSettings;
                             if (!settings.confirmation)
                                 settings.confirmation = {};
                             if (!settings.restrictions)
@@ -664,49 +663,49 @@
                         } else {
                             this.setDefaultSettings();
                         }
-                        this.advancedValidationSettings = response.data.advancedValidationSettings;
+                        this.advancedValidationSettings = response.advancedValidationSettings;
 
-                        this.double_optin = response.data.double_optin;
-                        this.affiliate_wp = response.data.affiliate_wp;
+                        this.double_optin = response.double_optin;
+                        this.affiliate_wp = response.affiliate_wp;
 
                     })
-                    .fail(e => {
+                    .catch(e => {
                         this.setDefaultSettings();
                     })
-                    .always(() => {
+                    .finally(() => {
                     });
             },
             fetchPages() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-pages',
-                    form_id: this.form_id
-                })
+                const url = 'forms/' + this.form_id + '/pages';
+
+                FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        this.pages = response.data.pages;
+                        this.pages = response.pages;
                     })
-                    .fail(e => {
+                    .catch(e => {
                         this.loading = false;
                     })
             },
             saveSettings() {
                 this.loading = true;
+
                 let data = {
-                    form_id: this.form_id,
                     formSettings: JSON.stringify(this.formSettings),
                     advancedValidationSettings: JSON.stringify(this.advancedValidationSettings),
                     double_optin: JSON.stringify(this.double_optin),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
-                    action: 'fluentform-save-settings-general-formSettings'
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = 'forms/' + this.form_id + '/settings/general';
+            
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.$success(response.data.message);
+                        this.$success(response.message);
                     })
-                    .fail(error => {
-                        this.errors.record(error.responseJSON.data.errors);
+                    .catch(error => {
+                        this.errors.record(error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },

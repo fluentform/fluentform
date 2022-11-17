@@ -685,53 +685,51 @@ export default {
             delete (notification.id);
 
             let data = {
-                form_id: this.form_id,
                 meta_key: 'notifications',
                 value: JSON.stringify(notification.value),
-                id,
-                action: 'fluentform-settings-formSettings-store'
+                meta_id: id,
             };
 
-            FluentFormsGlobal.$post(data)
-                .done(response => {
-                    notification.id = response.data.id;
+            const url = 'forms/' + this.form_id + '/settings';
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    notification.id = response.id;
 
                     let handle = notification.value.enabled ? 'enabled' : 'disabled';
 
                     this.$success(this.$t('Successfully ' + handle + ' the notification.'));
                 })
-                .fail(e => {
+                .catch(e => {
                     notification.id = id;
                 });
         },
         remove(index, id) {
-            FluentFormsGlobal.$post({
-                action: 'fluentform-settings-formSettings-remove',
-                id,
-                form_id: this.form_id
-            })
-                .done(response => {
+            const url = 'forms/' + this.form_id + '/settings';
+
+            FluentFormsGlobal.$rest.delete(url, {meta_id: id})
+                .then(response => {
                     this.notifications.splice(index, 1);
                     this.$success(this.$t('Successfully removed the notification.'));
                 })
-                .fail(e => {
+                .catch(e => {
                 });
         },
         fetchNotifications() {
             let data = {
-                form_id: this.form_id,
                 meta_key: 'notifications',
                 is_multiple: true,
-                action: 'fluentform-settings-formSettings'
             };
 
-            FluentFormsGlobal.$get(data)
+            const url = 'forms/' + this.form_id + '/settings';
+            
+            FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    this.notifications = response.data.result;
+                    this.notifications = response;
                 })
-                .fail(e => {
+                .catch(e => {
                 })
-                .always(_ => {
+                .finally(_ => {
                     this.loading = false;
                 });
         },
@@ -758,13 +756,14 @@ export default {
                 form_id: this.form_id,
                 meta_key: 'notifications',
                 value: JSON.stringify(this.selected.value),
-                id,
-                action: 'fluentform-settings-formSettings-store'
+                meta_id: id,
             };
 
-            FluentFormsGlobal.$post(data)
-                .done(response => {
-                    this.selected.id = response.data.id;
+            const url = 'forms/' + this.form_id + '/settings';
+            
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.selected.id = response.id;
 
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
 
@@ -774,12 +773,12 @@ export default {
 
                     this.selectedIndex = null;
                 })
-                .fail(errors => {
-                    this.errors.record(errors.responseJSON.data.errors);
+                .catch(errors => {
+                    this.errors.record(errors);
 
                     this.selected.id = id;
                 })
-                .always(_ => this.loading = false);
+                .finally(_ => this.loading = false);
         },
         closeSmtp() {
             this.smtp_closed = true;

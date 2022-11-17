@@ -64,16 +64,13 @@
         },
         methods: {
             fetchInputs() {
-                let data = {
-                    action: 'fluentform-form-inputs',
-                    formId: this.form.id
-                };
-
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = 'forms/' + this.form_id + '/fields'
+                
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
                         console.log(response);
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
             loadExtraSettings() {
                 let data = {

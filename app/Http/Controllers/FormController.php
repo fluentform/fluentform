@@ -123,4 +123,45 @@ class FormController extends Controller
             ], 422);
         }
     }
+
+    public function templates(FormService $formService)
+    {
+        try {
+            return $this->sendSuccess($formService->templates(), 200);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    public function resources(FormService $formService)
+    {
+        $formId = intval($this->request->get('formId'));
+
+        $components = $formService->components($formId);
+
+        $disabledComponents = $formService->getDisabledComponents();
+
+        return $this->sendSuccess([
+            'components'          => $components,
+            'disabled_components' => $disabledComponents,
+            'shortcodes'          => fluentFormEditorShortCodes(),
+        ]);
+    }
+
+    public function fields(FormService $formService, $id)
+    {
+        return $this->sendSuccess($formService->fields($id));
+    }
+
+    public function shortcodes(FormService $formService, $id)
+    {
+        return $this->sendSuccess($formService->shortcodes($id));
+    }
+
+    public function pages(FormService $formService)
+    {
+        return $this->sendSuccess($formService->pages());
+    }
 }

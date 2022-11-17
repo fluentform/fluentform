@@ -295,24 +295,24 @@
 
                 let feed = {
                     meta_key: 'postFeeds',
-                    id: this.feed.id,
-                    form_id: this.form_id,
+                    meta_id: this.feed.id,
                     value: JSON.stringify(this.feed.value),
-                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                FluentFormsGlobal.$post(feed)
-                    .done(response => {
-                        this.feed.id = response.data.id;
+                const url = 'forms/' + this.form_id + '/settings';
+            
+                FluentFormsGlobal.$rest.post(url, feed)
+                    .then(response => {
+                        this.feed.id = response.id;
                         this.feed.form_id = feed.form_id;
                         this.feed.meta_key = feed.meta_key;
-                        this.feed.value = response.data.settings;
+                        this.feed.value = response.settings;
 
                         this.$emit('show-post-feeds', this.feed);
 
-                        this.$success(response.data.message);
+                        this.$success(response.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.saving = false;
                     });
             },
