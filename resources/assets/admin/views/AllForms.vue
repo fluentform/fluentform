@@ -361,7 +361,15 @@ export default {
               ]
             },
             filter_by:'all',
-            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Step Form')},
+            form_statuses: {
+                all: this.$t('All'),
+                published: this.$t('Active'),
+                unpublished: this.$t('Inactive'),
+                is_payment: this.$t('Payment Form'),
+                post: this.$t('Post Form'),
+                conv_form: this.$t('Conversational Form'),
+                step_form: this.$t('Step Form')
+            },
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
@@ -546,9 +554,15 @@ export default {
         },
         tableRowClass({row}) {
             return row.status == 'unpublished' ? 'inactive_form' : '';
+        },
+        setQueryParams(){
+            if( this.app.filterBy && this.app.filterBy in this.form_statuses ){
+                this.filter_by = this.app.filterBy
+            }
         }
     },
     mounted() {
+        this.setQueryParams()
         this.fetchItems();
         this.getPredefinedForms();
         this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];

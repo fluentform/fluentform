@@ -65,7 +65,22 @@ class Menu
             $addOnsCss = $app->publicUrl('css/add-ons-rtl.css');
             $adminDocCss = $app->publicUrl('css/admin_docs_rtl.css');
         }
-
+        
+        wp_register_script(
+            'fluentform_dashboard',
+            fluentFormMix('js/fluentform_dashboard.js'),
+            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
+            FLUENTFORM_VERSION,
+            true
+        );
+        
+        wp_register_style(
+            'fluent_forms_dashboard_style',
+            fluentFormMix('css/fluent-forms-dashboard.css'),
+            [],
+            FLUENTFORM_VERSION,
+            'all'
+        );
         wp_register_style(
             'fluentform_settings_global',
             $settingsGlobalStyle,
@@ -299,6 +314,10 @@ class Menu
             wp_enqueue_style('fluentform-add-ons');
         } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {
             wp_enqueue_style('fluentform_doc_style');
+        } elseif ('fluent_forms_dashboard' == $page) {
+//            wp_enqueue_style('fluentform_settings_global');
+            wp_enqueue_style('fluent_forms_dashboard_style');
+            wp_enqueue_script('fluentform_dashboard');
         }
     }
 
@@ -354,7 +373,17 @@ class Menu
             $this->getMenuIcon(),
             $menuPriority
         );
-
+    
+        add_submenu_page(
+            'fluent_forms',
+            __('FluentForm Dashboard', 'fluentform'),
+            __('Dashboard', 'fluentform'),
+            $dashBoardCapability,
+            'fluent_forms_dashboard',
+            [$this, 'renderDashboard']
+        );
+        remove_submenu_page('fluent_forms', 'fluent_forms');
+        
         add_submenu_page(
             'fluent_forms',
             __('All Forms', 'fluentform'),
@@ -365,6 +394,8 @@ class Menu
         );
 
         if ($settingsCapability) {
+            
+            
             add_submenu_page(
                 'fluent_forms',
                 __('New Form', 'fluentform'),
@@ -499,6 +530,20 @@ class Menu
         }
 
         $this->renderForms();
+    }
+    
+    public function renderDashboard()
+    {
+        wp_localize_script('fluentform_dashboard', 'FluentFormDashboard', [
+            'hasPro'               => defined('FLUENTFORMPRO'),
+            'entry_statuses'      => Helper::getEntryStatuses(112),
+            'all_forms_url'       => admin_url('admin.php?page=fluent_forms'),
+            'demo_graph_bar_url'  => fluentformMix('img/demo_graph_bar.png'),
+            'demo_graph_pie_url'  => fluentformMix('img/demo_graph_pie.png'),
+            'form_edit_link_base' => admin_url('admin.php?page=fluent_forms&route=editor'),
+        ]);
+
+        $this->app->view->render('admin.dashboard');
     }
 
     public function renderAllEntriesAdminRoute()
@@ -675,7 +720,7 @@ class Menu
         }
 
         $formsCount = wpFluent()->table('fluentform_forms')->count();
-
+        $filterBy = sanitize_key($this->app->request->get('filter_by'));
         wp_localize_script('fluent_all_forms', 'FluentFormApp', apply_filters('fluent_all_forms_vars', [
             'plugin'             => $this->app->getSlug(),
             'formsCount'         => $formsCount,
@@ -683,6 +728,7 @@ class Menu
             'upgrade_url'        => fluentform_upgrade_url(),
             'adminUrl'           => admin_url('admin.php?page=fluent_forms'),
             'isDisableAnalytics' => apply_filters('fluentform-disabled_analytics', false),
+            'filterBy'           => $filterBy
         ]));
 
         View::render('admin.all_forms', []);
@@ -905,21 +951,10 @@ class Menu
         echo '<button style="background:#dedede;color:#545454;padding:5px;max-width: 200px;overflow: hidden;" title="Click to Copy" class="btn copy" data-clipboard-text=\'' . $shortcode . '\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
-
+    
     public function commonAction()
     {
-        $fluentFormPages = [
-            'fluent_forms',
-            'fluent_forms_transfer',
-            'fluent_forms_settings',
-            'fluent_forms_add_ons',
-            'fluent_forms_docs',
-            'fluent_forms_smtp',
-        ];
-
-        $page = sanitize_text_field($this->app->request->get('page'));
-
-        if ($page && in_array($page, $fluentFormPages)) {
+        if (Helper::isFluentAdminPage()) {
             // Let's deregister existing vuejs by other devs
             // Other devs should not regis
             add_action('admin_print_scripts', function () {

@@ -45,6 +45,7 @@ mix
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `public/js/conversational_design.js`)
+    .js('resources/assets/admin/Dashboard/fluentform_dashboard.js', `assets/js/fluentform_dashboard.js`)
     .vue({ 
         version: 2,
         extractStyles: true
@@ -64,6 +65,7 @@ mix
     .sass('resources/assets/public/scss/choices.scss', `public/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `public/css/fluent-forms-elementor-widget.css`)
     .sass('resources/assets/admin/conversion_templates/design_css.scss', `public/css/conversational_design.css`)
+    .sass('resources/assets/admin/css/fluent-forms-dashboard.scss', `assets/css/fluent-forms-dashboard.css`)
 
     .less('resources/assets/admin/styles/index.less', `public/css/fluent-forms-admin.css`, {
         lessOptions: {

@@ -8,6 +8,9 @@ $page = sanitize_text_field($_GET['page']);
     <span class="plugin-name">
         <?php _e('Fluent Forms', 'fluentform'); ?> <?php if(defined('FLUENTFORMPRO')): ?>Pro<?php endif; ?>
     </span>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_dashboard')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_dashboard') ? 'ninja-tab-active' : '' ?>">
+        <?php _e('Dashboard', 'fluentform'); ?>
+    </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms') ? 'ninja-tab-active' : '' ?>">
         <?php _e('All Forms', 'fluentform'); ?>
     </a>

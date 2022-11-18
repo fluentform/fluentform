@@ -47,6 +47,10 @@ class Submission
         if ($args['user_id']) {
             $entryQuery->where('user_id', (int) $args['user_id']);
         }
+    
+        if ($args['payment_status'] && defined('FLUENTFORMPRO') && 'all' != $args['payment_status']) {
+            $entryQuery->where('payment_status', '=', sanitize_key($args['payment_status']));
+        }
 
         $count = $entryQuery->count();
 
