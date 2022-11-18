@@ -1,18 +1,15 @@
 <template>
-    <el-carousel v-if="Object.entries(card_data).length>0" class="dashboard-card" trigger="click" height="140px" arrow="never" :autoplay="true" :interval="parseInt(interval)">
-        <el-carousel-item v-for="(item,i) in card_data" :key="i">
+    <div v-if="Object.entries(card_data).length>0" class="dashboard-card" trigger="click" height="140px" arrow="never" :autoplay="true" :interval="parseInt(interval)">
+        <div  class="dashboard-card-wrapper" v-for="(item,i) in card_data" :key="i">
             <div class="dashboard-card-info">
                 <div class="dashboard-card-content">
                     <h1>{{ item.value }}</h1>
                     <h6>{{ item.info }} </h6>
                     <div class="form-link" v-if="maybeAddFormLink(item)" v-html="maybeAddFormLink(item)"></div>
                 </div>
-                <span class="dashboard-card-icon">
-                    <i :class="card_icon"></i>
-                </span>
             </div>
-        </el-carousel-item>
-    </el-carousel>
+        </div>
+    </div>
 
 
 </template>

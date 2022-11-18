@@ -46,7 +46,7 @@
     position: relative;
     margin-bottom: 30px;
     overflow: hidden;
-    gap: 30px;
+    gap: 15px;
     flex-wrap: wrap;
     @media (max-width: 1024px) {
       gap: 10px;
@@ -64,6 +64,10 @@
           min-width: 32%;
         }
       }
+    }
+
+    .dashboard-card-wrapper{
+      margin-bottom: 15px;
     }
 
     .dashboard-card {

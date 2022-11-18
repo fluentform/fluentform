@@ -3,11 +3,6 @@
 
         <div class="dashboard-row dashboard-row-top bg-white p-20">
             <dashboard-card
-                    :card_data="analytics_data"
-                    card_icon="el-icon-s-marketing"
-                    interval=3000>
-            </dashboard-card>
-            <dashboard-card
                     :card_data="forms_data"
                     card_icon="el-icon-info"
                     interval=3050>
@@ -21,6 +16,11 @@
                     :card_data="payment_data"
                     card_icon="el-icon-money"
                     interval=3150>
+            </dashboard-card>
+            <dashboard-card
+                    :card_data="analytics_data"
+                    card_icon="el-icon-s-marketing"
+                    interval=3000>
             </dashboard-card>
         </div>
 
