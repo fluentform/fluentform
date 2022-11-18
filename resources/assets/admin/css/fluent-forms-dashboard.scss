@@ -67,11 +67,11 @@
     }
 
     .dashboard-card-wrapper{
-      margin-bottom: 15px;
     }
 
     .dashboard-card {
       border-radius: 4px;
+      margin-bottom: 15px;
 
       .el-carousel__indicator {
         padding: 4px;
@@ -126,7 +126,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
-        background: rgb(31 160 255 / 2%);
+        //background: rgb(31 160 255 / 2%);
         border: 1px solid rgb(131 145 165 / 20%);
         border-radius: 4px;
         padding: 20px;

@@ -87,7 +87,7 @@ class DashboardController
     
     private function getFormInfo()
     {
-        $forms = fluentFormApi()->forms();
+        $forms = fluentFormApi()->forms(['per_page'=>9999]);
         $highestSubmission = $highestViews = $highestConversion = $paymentForm = $postForm = $conversionForm = $stepForm = 0;
         $formattedFormData = [];
         foreach ($forms['data'] as $form) {
