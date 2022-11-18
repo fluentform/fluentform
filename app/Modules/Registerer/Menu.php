@@ -68,7 +68,7 @@ class Menu
         
         wp_register_script(
             'fluentform_dashboard',
-            fluentFormMix('js/fluentform_dashboard.js'),
+            $app->publicUrl('js/fluentform_dashboard.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -76,7 +76,7 @@ class Menu
         
         wp_register_style(
             'fluent_forms_dashboard_style',
-            fluentFormMix('css/fluent-forms-dashboard.css'),
+            $app->publicUrl('css/fluent-forms-dashboard.css'),
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -542,8 +542,8 @@ class Menu
             'demo_graph_pie_url'  => fluentformMix('img/demo_graph_pie.png'),
             'form_edit_link_base' => admin_url('admin.php?page=fluent_forms&route=editor'),
         ]);
-
-        $this->app->view->render('admin.dashboard');
+    
+        View::render('admin.dashboard');
     }
 
     public function renderAllEntriesAdminRoute()

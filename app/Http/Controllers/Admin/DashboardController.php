@@ -3,12 +3,10 @@
 namespace FluentForm\App\Http\Controllers\Admin;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\App\Http\Controllers\Controller;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\Framework\Request\Request;
 use FluentFormPro\Payments\PaymentHelper;
 
-class DashboardController extends Controller
+class DashboardController
 {
     protected $request;
     
