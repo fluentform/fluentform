@@ -15,17 +15,17 @@
   }
 
   canvas#bar-chart, canvas#pie-chart {
-    background: rgb(31 160 255 / 2%);
+    //background: rgb(31 160 255 / 2%);
     border: 1px solid rgb(131 145 165 / 20%);
-    border-radius: 4px;
+    //border-radius: 4px;
     padding: 20px;
-    height: calc(100% - 22px);
+    //height: calc(100% - 22px);
   }
 
   .dashboard-table {
     background: rgb(31 160 255 / 2%);
     border: 1px solid rgb(131 145 165 / 20%);
-    border-radius: 4px;
+    //border-radius: 4px;
   }
 
   .el-carousel__button {
@@ -42,7 +42,6 @@
 
   .dashboard-row {
     display: flex;
-    width: 100%;
     position: relative;
     margin-bottom: 30px;
     overflow: hidden;
@@ -53,13 +52,23 @@
     }
 
     > * {
-      flex: 1;
+      //flex: 1;
     }
 
     &-top {
       padding: 30px 20px 20px;
+      gap: 0px;
+      .dashboard-card-wrapper {
+        flex-direction: row;
+        display: flex;
+
+        .dashboard-card{
+        }
+
+      }
 
       .dashboard-card {
+
         @media (max-width: 1024px) {
           min-width: 32%;
         }
@@ -70,8 +79,8 @@
     }
 
     .dashboard-card {
-      border-radius: 4px;
-      margin-bottom: 15px;
+      //border-radius: 4px;
+      //margin-bottom: 15px;
 
       .el-carousel__indicator {
         padding: 4px;
@@ -128,9 +137,9 @@
         gap: 20px;
         //background: rgb(31 160 255 / 2%);
         border: 1px solid rgb(131 145 165 / 20%);
-        border-radius: 4px;
+        //border-radius: 4px;
         padding: 20px;
-        height: calc(100% - 22px);
+        //height: calc(100% - 30px);
 
         .dashboard-card-icon {
           width: 35px;
@@ -153,6 +162,8 @@
 
           h1 {
             margin: 0 0 10px 0;
+            font-size: 17px;
+
           }
 
           h6 {
@@ -176,6 +187,7 @@
 
     .dashboard-card-table {
       overflow: auto;
+      width: 100%;
     }
 
     &-chart {

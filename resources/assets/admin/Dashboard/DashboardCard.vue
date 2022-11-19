@@ -7,7 +7,6 @@
                     <h6>{{ item.info }} </h6>
                     <div class="form-link" v-if="maybeAddFormLink(item)" v-html="maybeAddFormLink(item)"></div>
                 </div>
-                <div v-if="maybeAddFormLinkNewTab(item)" v-html="maybeAddFormLinkNewTab(item)"></div>
 <!--                <span class="dashboard-card-icon">-->
 <!--                    <i :class="card_icon"></i>-->
 <!--                </span>-->
@@ -26,14 +25,14 @@
             maybeAddFormLink(item) {
                 if (item.title && item.view_url) {
                     let link = `<a class="form-url" href="${item.view_url}"><div class="elispse">${item.title}</div></a>`
-                    return link ;
+                    let newTablLink =  ` <a target="_blank" class="" href="${item.view_url}"><i class="el-icon-edit-outline"></i></a>`;
+
+                    return link + newTablLink;
                 }
                 return false;
             },
             maybeAddFormLinkNewTab(item) {
-                if (item.title && item.view_url) {
-                    return `<a target="_blank" class="el-button el-button--primary is-plain is-circle" href="${item.view_url}"><i class="el-icon-edit-outline"></i></a>`;
-                }
+
                 return false;
             }
         }
