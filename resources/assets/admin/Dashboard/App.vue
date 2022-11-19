@@ -1,27 +1,45 @@
 <template>
     <div class="dashboard-wrapper" v-loading="loading">
 
+        <div class="payment_header">
+            <div class="payment_title">{{$t('Dashboard')}}</div>
+            <div class="payment_actions">
+                
+                <a href="#" class="el-button el-button--default el-button--mini"><span
+                        class="el-icon-setting el-icon"></span></a>
+
+            </div>
+        </div>
+
         <div class="dashboard-row dashboard-row-top bg-white p-20">
-            <dashboard-card
-                    :card_data="forms_data"
-                    card_icon="el-icon-info"
-                    interval=3050>
-            </dashboard-card>
-            <dashboard-card
-                    :card_data="submission_data"
-                    card_icon="el-icon-tickets"
-                    interval=3100>
-            </dashboard-card>
-            <dashboard-card
-                    :card_data="payment_data"
-                    card_icon="el-icon-money"
-                    interval=3150>
-            </dashboard-card>
-            <dashboard-card
-                    :card_data="analytics_data"
-                    card_icon="el-icon-s-marketing"
-                    interval=3000>
-            </dashboard-card>
+            <el-carousel trigger="click" height="240px" indicator-position="outside" arrow="never" :autoplay="false">
+                <el-carousel-item>
+                    <dashboard-card
+                            :card_data="forms_data"
+                            card_icon="el-icon-info"
+                            interval=3050>
+                    </dashboard-card>
+                    <dashboard-card
+                            :card_data="submission_data"
+                            card_icon="el-icon-tickets"
+                            interval=3100>
+                    </dashboard-card>
+                </el-carousel-item>
+                <el-carousel-item>
+                    <dashboard-card
+                            :card_data="payment_data"
+                            card_icon="el-icon-money"
+                            interval=3150>
+                    </dashboard-card>
+                    <dashboard-card
+                            :card_data="analytics_data"
+                            card_icon="el-icon-s-marketing"
+                            interval=3000>
+                    </dashboard-card>
+                </el-carousel-item>
+            </el-carousel>
+
+
         </div>
 
         <div class="dashboard-row dashboard-row-chart bg-white p-20">
