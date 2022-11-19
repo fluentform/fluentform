@@ -14,8 +14,9 @@
     display: inline;
   }
 
-  canvas#bar-chart, canvas#pie-chart {
-    //background: rgb(31 160 255 / 2%);
+
+  canvas#line-chart, canvas#pie-chart {
+    background: rgb(31 160 255 / 2%);
     border: 1px solid rgb(131 145 165 / 20%);
     //border-radius: 4px;
     padding: 20px;
