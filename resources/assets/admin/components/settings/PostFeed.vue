@@ -299,7 +299,7 @@
                     value: JSON.stringify(this.feed.value),
                 };
 
-                const url = 'forms/' + this.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.post(url, feed)
                     .then(response => {

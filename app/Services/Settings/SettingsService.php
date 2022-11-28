@@ -12,7 +12,7 @@ class SettingsService
     {
         $metaKey = sanitize_text_field(Arr::get($attributes, 'meta_key'));
 
-        $formId = intval(Arr::get($attributes, 'id'));
+        $formId = intval(Arr::get($attributes, 'form_id'));
 
         $result = FormMeta::where(['meta_key' => $metaKey, 'form_id' => $formId])->get();
 
@@ -51,7 +51,7 @@ class SettingsService
 
     public function saveGeneral($attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'id'));
+        $formId = intval(Arr::get($attributes, 'form_id'));
 
         $formSettings = json_decode(Arr::get($attributes, 'formSettings'), true);
 
@@ -141,7 +141,7 @@ class SettingsService
 
     public function store($attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'id'));
+        $formId = intval(Arr::get($attributes, 'form_id'));
 
         $value = Arr::get($attributes, 'value', '');
 
@@ -198,7 +198,7 @@ class SettingsService
 
     public function remove($attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'id'));
+        $formId = intval(Arr::get($attributes, 'form_id'));
         $id = intval(Arr::get($attributes, 'meta_id'));
 
         FormMeta::where('form_id', $formId)->where('id', $id)->delete();

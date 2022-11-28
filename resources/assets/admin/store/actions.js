@@ -1,6 +1,6 @@
 export default {
     loadResources({ commit }, form_id) {
-        const url = 'forms/' + form_id + '/resources';
+        const url = FluentFormsGlobal.$rest.route('getFormResources', form_id);
 
         FluentFormsGlobal.$rest.get(url)
             .then(res => {

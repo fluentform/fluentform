@@ -97,7 +97,7 @@ export default {
         },
 
         convert() {
-            const url = 'forms/' + this.form_id + '/convert';
+            const url = FluentFormsGlobal.$rest.route('convertForm', this.form_id);
 
             FluentFormsGlobal.$rest.post(url)
                 .then(response => {

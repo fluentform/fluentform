@@ -55,7 +55,7 @@
                     title: this.model,
                 };
 
-                const url = 'forms/' + window.FluentFormApp.form_id;
+                const url = FluentFormsGlobal.$rest.route('updateForm', window.FluentFormApp.form_id);
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {

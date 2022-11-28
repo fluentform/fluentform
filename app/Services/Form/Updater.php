@@ -13,7 +13,7 @@ class Updater
 {
     public function update($attributes = [])
     {
-        $formId = Arr::get($attributes, 'id');
+        $formId = Arr::get($attributes, 'form_id');
         $formFields = Arr::get($attributes, 'formFields');
         $status = Arr::get($attributes, 'status', 'published');
         $title = sanitize_text_field(Arr::get($attributes, 'title'));

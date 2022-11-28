@@ -7,6 +7,7 @@ use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 
 class FormService
@@ -111,7 +112,7 @@ class FormService
      */
     public function duplicate($attributes = [])
     {
-        $formId = absint(Arr::get($attributes, 'id'));
+        $formId = Arr::get($attributes, 'form_id');
 
         $existingForm = $this->model->with([
             'formMeta' => function ($formMeta) {
@@ -178,7 +179,7 @@ class FormService
     }
 
     /**
-     * Duplicate a form with its associated meta.
+     * Update a form with its relevant fields.
      *
      * @param  array                       $attributes
      * @throws Exception
@@ -506,5 +507,31 @@ class FormService
     public function pages()
     {
         return fluentformGetPages();
+    }
+
+    public function getInputsAndLabels($formId, $with = ['admin_label', 'raw'])
+    {
+        try {
+            $form = $this->model->findOrFail($formId);
+
+            $inputs = FormFieldsParser::getEntryInputs($form, $with);
+            $labels = FormFieldsParser::getAdminLabels($form, $inputs);
+
+            $labels = apply_filters('fluentfoform_entry_lists_labels', $labels, $form);
+            $labels = apply_filters('fluentform_all_entry_labels', $labels, $formId);
+
+            if ($form->has_payment) {
+                $labels = apply_filters('fluentform_all_entry_labels_with_payment', $labels, false, $form);
+            }
+
+            return [
+                'inputs' => $inputs,
+                'labels' => $labels,
+            ];
+        } catch (Exception $e) {
+            throw new Exception(
+                __("The form couldn't be found.", 'fluentform')
+            );
+        }
     }
 }

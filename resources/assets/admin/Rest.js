@@ -1,3 +1,5 @@
+import Route from "./Route.js";
+
 export default {
     get(route, data = {}) {
         return window.FluentFormsGlobal.request('GET', route, data);
@@ -13,6 +15,9 @@ export default {
     },
     patch(route, data = {}) {
         return window.FluentFormsGlobal.request('PATCH', route, data);
+    },
+    route(name, ...args) {
+        return Route.get(name, ...args);
     }
 };
 

@@ -17,13 +17,6 @@ class Form extends Model
     protected $table = 'fluentform_forms';
 
     /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id'];
-
-    /**
      * A form has many form meta.
      *
      * @return \FluentForm\Framework\Database\Orm\Relations\HasMany

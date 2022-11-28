@@ -30,7 +30,7 @@
         },
         methods: {
             fetchInputs() {
-                const url = 'forms/' + this.form_id + '/fields'
+                const url = FluentFormsGlobal.$rest.route('getFormFields', this.form_id);
                 
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
@@ -41,7 +41,7 @@
                     });
             },
             fetchAllEditorShortcodes() {
-                const url = 'forms/' + this.form_id + '/shortcodes'
+                const url = FluentFormsGlobal.$rest.route('getFormShortcodes', this.form_id);
                 
                 FluentFormsGlobal.$rest.get(url, {input_only: true})
                     .then(response => {

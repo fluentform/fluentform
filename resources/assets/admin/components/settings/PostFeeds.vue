@@ -96,7 +96,7 @@
                 });
             },
             fetchPostFeeds() {
-                const url = 'forms/' + this.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.get(url, {
                     meta_key: 'postFeeds',
@@ -129,7 +129,7 @@
                 this.show_feeds = false;
             },
             deletePostFeed(index, feed) {
-                const url = 'forms/' + feed.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('deleteFormSettings', feed.form_id);
 
                 FluentFormsGlobal.$rest.delete(url, {meta_id: feed.id})
                     .then(response => {
@@ -150,7 +150,7 @@
                     value: JSON.stringify(feed.value),
                 };
 
-                const url = 'forms/' + this.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {

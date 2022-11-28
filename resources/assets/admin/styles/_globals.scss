@@ -446,3 +446,7 @@ label.el-radio, label.el-checkbox {
     line-height: 30px;
   }
 }
+
+.el-button+.el-button {
+  margin-left: auto;
+}

@@ -54,7 +54,6 @@
             }
         },
         mounted() {
-            console.log('mountedaceeditcss')
             if (this.aceLoaded) {
                 this.initEditor();
             }

@@ -81,6 +81,7 @@ $app->addAction('wp_ajax_fluentform_get_all_entries_report', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-form-inputs', function () use ($app) {
+    dd('wp_ajax_fluentform-form-inputs');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Inputs($app))->index();
 });
@@ -116,36 +117,43 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
 });
 
 $app->addAction('wp_ajax_fluentform-settings-formSettings-store', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings-store');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->store();
 });
 
 $app->addAction('wp_ajax_fluentform-settings-formSettings-remove', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings-remove');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->remove();
 });
 
 $app->addAction('wp_ajax_fluentform-get-form-custom_css_js', function () {
+    dd('wp_ajax_fluentform-get-form-custom_css_js');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->getSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-save-form-custom_css_js', function () {
+    dd('wp_ajax_fluentform-save-form-custom_css_js');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->saveSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-save-form-entry_column_view_settings', function () {
+    dd('wp_ajax_fluentform-save-form-entry_column_view_settings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->saveVisibleColumnsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-save-form-entry_column_order_settings', function () {
+    dd('wp_ajax_fluentform-save-form-entry_column_order_settings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->saveEntryColumnsOrderAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-reset-form-entry_column_order_settings', function () {
+    dd('wp_ajax_fluentform-reset-form-entry_column_order_settings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->resetEntryDisplaySettings();
 });
@@ -156,11 +164,13 @@ $app->addAction('wp_ajax_fluentform-load-editor-components', function () use ($a
 });
 
 $app->addAction('wp_ajax_fluentform-form-entry-counts', function () {
+    dd('wp_ajax_fluentform-form-entry-counts');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntriesGroup();
 });
 
 $app->addAction('wp_ajax_fluentform-form-entries', function () {
+    dd('wp_ajax_fluentform-form-entries');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntries();
 });

@@ -116,9 +116,9 @@
                     :columns="columns"
                     :columns_order ="columnsOrder"
                     :form_id="form_id"
-                    :visible_columns="visibleColumns" >
-
-            </ColumnDragAndDrop>
+                    :visible_columns="visibleColumns" 
+                    @save="refreshColumnsOrder"        
+            />
         </el-dialog>
 
         <el-alert
@@ -219,13 +219,8 @@
                             :start-placeholder="$t('Start date')"
                             :end-placeholder="$t('End date')">
                     </el-date-picker>
-                    <el-button @click="getData" size="mini" type="success">{{ $t('Search') }}</el-button>
+                    <el-button @click="getData" size="mini" type="primary">{{ $t('Search') }}</el-button>
                     <el-button @click="resetAdvancedFilter()" size="mini">{{ $t('Hide') }}</el-button>
-                </div>
-                <div style="margin-top: 20px" class="widget-title">
-                    <el-checkbox @change="getData()" true-label="yes" false-label="no" v-model="show_favorites">
-                        {{$t('Show Favorites Entries only')}}
-                    </el-checkbox>
                 </div>
             </div>
 
@@ -246,7 +241,7 @@
                         label="#"
                         sortable="custom"
                         prop="id"
-                        width="90px"
+                        width="100px"
                 >
                     <template slot-scope="scope">
                         <div class="has_hover_item">
@@ -266,36 +261,46 @@
                                 {{ scope.row.serial_number }}
                             </router-link>
                             <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
-                                    <span @click="changeFavorite(scope.row.id, scope.$index, 0)"
-                                          :title="$t('Remove from Favorites')" v-if="scope.row.is_favourite != '0'"
-                                          class="el-icon-star-on action_button"></span>
-                                <span @click="changeFavorite(scope.row.id, scope.$index, 1)"
-                                      :title="$t('Mark as Favorite')" v-else=""
-                                      class="el-icon-star-off action_button"></span>
-                                <span @click="changeStatus(scope.row.id, scope.$index, 'unread')"
-                                      :title="$t('Mark as Unread')" v-if="scope.row.status == 'read'"
-                                      class="el-icon-circle-check action_button"></span>
-                                <span @click="changeStatus(scope.row.id, scope.$index, 'read')" :title="$t('Mark as Read')"
-                                      v-else="" class="el-icon-circle-check-outline action_button"></span>
+                                <span v-if="scope.row.is_favourite != '0'"
+                                    @click="changeFavorite(scope.row.id, scope.$index, 0)"
+                                    :title="$t('Remove from Favorites')" 
+                                    class="el-icon-star-on action_button"
+                                />
+                                <span v-else 
+                                    @click="changeFavorite(scope.row.id, scope.$index, 1)"
+                                    :title="$t('Mark as Favorites')"
+                                    class="el-icon-star-off action_button"
+                                />
+
+                                <span v-if="scope.row.status == 'read'" 
+                                    @click="changeStatus(scope.row.id, scope.$index, 'unread')"
+                                    :title="$t('Mark as Unread')"
+                                    class="el-icon-circle-check action_button"
+                                />
+                                <span v-else 
+                                    @click="changeStatus(scope.row.id, scope.$index, 'read')" 
+                                    :title="$t('Mark as Read')"
+                                    class="el-icon-finished action_button"
+                                />
                             </div>
 
                             <div class="inline_actions inline_item" v-else>
                                     <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                          class="el-icon-circle-check-outline action_button">{{ $t('Restore') }}</span>
+                                          class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
                             </div>
                         </div>
                     </template>
                 </el-table-column>
 
                 <el-table-column
-                        v-for="(column, column_name) in formattedColumn"
-                        v-if="visibleColumns.includes(column_name)"
-                        :label="column"
+                        v-for="(column, index) in formattedColumn"
+
+                        :label="column.label"
                         :show-overflow-tooltip="isCompact"
                         min-width="200"
-                        :key="column_name">
+                        :key="index">
                     <template slot-scope="scope">
-                        <span v-html="scope.row.user_inputs[column_name]"></span>
+                        <span v-html="scope.row.user_inputs[column.field]"></span>
                     </template>
                 </el-table-column>
 
@@ -373,7 +378,7 @@
                             <remove 
                                 v-if="hasPermission('fluentform_manage_entries')"
                                 icon="el-icon-delete" 
-                                @on-confirm="removeEntry(scope.row.id)"
+                                @on-confirm="removeEntry(scope.row.id, scope.$index)"
                             />
                         </el-button-group>
                     </template>
@@ -504,11 +509,11 @@
                     'statuses': [],
                     'other': [
                         {
-                            label: this.$t('Mark as Favorite'),
+                            label: this.$t('Mark as Favorites'),
                             action: 'other.make_favorite'
                         },
                         {
-                            label: this.$t('Remove from Favorite'),
+                            label: this.$t('Remove from Favorites'),
                             action: 'other.unmark_favorite'
                         }
                     ]
@@ -524,7 +529,7 @@
                 }
 
                 each(this.entry_statuses, (status_name, status_key) => {
-                    if (this.entry_type != status_key) {
+                    if (this.entry_type != status_key && status_key != 'favorites') {
                         bulk_actions.statuses.push({
                             label: 'Mark as ' + status_name,
                             action: status_key
@@ -542,18 +547,27 @@
                 });
                 return selectedEntries;
             },
-            formattedColumn(){
-                // if null, display order is not set now set default column data
-                if( this.columnsOrder === null){
-                    return this.columns;
+            formattedColumn() {
+                let columnsOrder = [];
+
+                if (this.columnsOrder) {
+                    each(this.columnsOrder, (column) => {
+                        columnsOrder.push({
+                            field: column.value,
+                            label: this.columns[column.value],
+                        });
+                    })
+                } else {
+                    each(this.columns, (label, field) => {
+                        columnsOrder.push({field, label});
+                    })
                 }
-                // if column display order is set
-                let columns = this.columnsOrder;
-                let array = {};
-                each(columns, (key, index) => {
-                    array[key.value] = key.label;
-                });
-                return array;
+
+                if (this.visibleColumns) {
+                    columnsOrder = columnsOrder.filter(column => this.visibleColumns.includes(column.field));
+                }
+
+                return columnsOrder;
             }
         },
         methods: {
@@ -563,63 +577,63 @@
                 }
                 return status;
             },
-            setDefaultPaginate() {
+            setPaginate(data = {}) {
                 this.paginate = {
-                    total: 0,
-                    current_page: 1,
-                    last_page: 1,
-                    per_page: localStorage.getItem('entriesPerPage') || 20
+                    total: data.total || 0,
+                    current_page: data.current_page || 1,
+                    last_page: data.last_page || 1,
+                    per_page: data.per_page || localStorage.getItem('entriesPerPage') || 20
                 }
             },
-            getEntryCounts() {
+            getEntryResources() {
                 let data = {
-                    action: 'fluentform-form-entry-counts',
                     form_id: this.form_id
                 };
-                FluentFormsGlobal.$get(data)
+                
+                const url = FluentFormsGlobal.$rest.route('getEntriesResources');
+
+                FluentFormsGlobal.$rest.get(url, data)
                     .then((response) => {
-                        this.counts = response.data.counts;
+                        this.counts = response.counts;
+                        this.columns = response.labels;
+
+                        this.visibleColumns = response.visibleColumns ;
+                        this.columnsOrder = response.columnsOrder ;
                     })
-                    .fail((error) => {
+                    .catch((error) => {
 
                     });
             },
             getData() {
                 let data = {
-                    action: 'fluentform-form-entries',
                     form_id: this.form_id,
                     entry_type: this.entry_type,
-                    current_page: this.paginate.current_page,
+                    page: this.paginate.current_page,
                     per_page: this.paginate.per_page,
                     search: this.search_string,
                     sort_by: this.sort_by,
-                    payment_statuses: this.selectedPaymentStatuses
+                    payment_statuses: this.selectedPaymentStatuses,
+                    parse_entry: true,
                 };
 
                 if (this.advancedFilter) {
                     data.date_range = this.filter_date_range;
-                    if (this.show_favorites == 'yes') {
-                        data.entry_type = 'favorite';
-                    }
-                    data.show_favorites = this.show_favorites;
                 }
 
                 this.loading = true;
-                FluentFormsGlobal.$get(data)
+                
+                const url = FluentFormsGlobal.$rest.route('getEntries');
+
+                FluentFormsGlobal.$rest.get(url, data)
                     .then((response) => {
-                        this.entries = response.data.submissions.data;
-                        this.paginate = response.data.submissions.paginate;
-                        this.columns = response.data.labels;
-
-                        this.visibleColumns = response.data.visible_columns ;
-                        this.columnsOrder = response.data.columns_order ;
-
+                        this.entries = response.data;
+                        this.setPaginate(response);
                         this.resetUrlParams();
                     })
-                    .fail((error) => {
+                    .catch((error) => {
 
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.getVisibleColumns();
                         this.loading = false;
                     });
@@ -635,69 +649,58 @@
             handleSelectionChange(val) {
                 this.entrySelections = val;
             },
-            removeEntry(entryId) {
-                let action = 'fluentform-change-entry-status';
+            removeEntry(entryId, index) {
+                let action = 'post';
+                let route = 'updateEntryStatus';
+
                 if (this.entry_type === 'trashed') {
-                    action = 'fluentform-delete-entry';
+                    action = 'delete';
+                    route = 'deleteEntry';
                 }
-                let data = {
-                    action: action,
-                    form_id: this.form_id,
-                    entry_id: entryId,
+
+                const url = FluentFormsGlobal.$rest.route(route, entryId);
+
+                const data = {
                     status: 'trashed'
                 };
 
-                FluentFormsGlobal.$post(data)
+                FluentFormsGlobal.$rest[action](url, data)
                     .then(response => {
-                        this.$notify({
-                            title: 'Success',
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 30
-                        });
-                        this.getData();
-                        this.getEntryCounts();
+                        const statusToBeDecreased = this.entries[index].status;
+                        this.counts[statusToBeDecreased] -= 1;
+
+                        this.counts.trashed += 1;
+
+                        this.entries.splice(index, 1);
+
+                        this.$success(response.message);
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
             handleBulkAction() {
                 if (this.bulkAction) {
-                    let actionType = this.bulkAction;
-                    this.operationOnSelectedEntries(actionType);
+                    this.operationOnSelectedEntries(this.bulkAction);
                 }
             },
             operationOnSelectedEntries(actionType) {
-                let selectedEntries = [];
-
-                this.entrySelections.forEach(function (element) {
-                    selectedEntries.push(element.id);
-                });
-
                 let data = {
-                    action: 'fluentform-do_entry_bulk_actions',
                     form_id: this.form_id,
-                    entries: selectedEntries,
+                    entries: this.selection_ids,
                     action_type: actionType
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('handleEntriesBulkActions');
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.$notify.success({
-                            title: 'Success',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.message);
                         this.getData();
-                        this.getEntryCounts();
+                        this.getEntryResources();
                     })
-                    .fail(error => {
-                        this.$notify.error({
-                            title: 'Error',
-                            message: error.responseJSON.data.message,
-                            offset: 30
-                        });
+                    .catch(error => {
+                        this.$fail(error.message);
                         console.log(error);
                     });
 
@@ -714,17 +717,17 @@
             filterEntryType() {
                 this.bulkAction = '';
                 this.search_string = '';
-                this.setDefaultPaginate();
+                this.setPaginate();
                 this.getData();
             },
             filterPaymentStatuses() {
                 this.bulkAction = '';
                 this.search_string = '';
-                this.setDefaultPaginate();
+                this.setPaginate();
                 this.getData();
             },
             handleSearch() {
-                this.setDefaultPaginate();
+                this.setPaginate();
                 this.getData();
             },
             resetUrlParams() {
@@ -738,62 +741,71 @@
                         type: this.entry_type,
                         page: this.paginate.current_page
                     }
+                })
+                .catch(failure => {
+
                 });
             },
-            changeFavorite(entry_id, index, is_favourite) {
+            changeFavorite(entryId, index, is_favourite) {
                 let data = {
-                    action: 'fluentform-change-entry-favorites',
-                    form_id: this.form_id,
-                    entry_id: entry_id,
-                    is_favourite: is_favourite
+                    is_favourite
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('toggleEntryIsFavorite', entryId)
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.entries[index].is_favourite = response.data.is_favourite;
-                        this.getEntryCounts();
+                        this.entries[index].is_favourite = response.is_favourite;
+                        
+                        const amount = is_favourite ? 1 : -1;
+                        this.counts.favorites += amount;
+
+                        if (this.entry_type === 'favorites') {
+                            this.entries.splice(index, 1);
+                        }
+
+                        this.$success(response.message);
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
-            changeStatus(entry_id, index, status) {
+            changeStatus(entryId, index, status) {
                 let data = {
-                    action: 'fluentform-change-entry-status',
-                    form_id: this.form_id,
-                    entry_id: entry_id,
-                    status: status
+                    status
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('updateEntryStatus', entryId);
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.entries[index].status = response.data.status;
-                        this.getEntryCounts();
+                        this.counts[status] += 1;
+                        
+                        const statusToBeDecreased = this.entries[index].status;
+                        this.counts[statusToBeDecreased] -= 1;
+
+                        this.entries[index].status = response.status;
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
-            restoreEntry(entry_id, index) {
+            restoreEntry(entryId, index) {
                 let data = {
-                    action: 'fluentform-change-entry-status',
-                    form_id: this.form_id,
-                    entry_id: entry_id,
                     status: 'read'
                 };
 
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('updateEntryStatus', entryId);
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
+                        this.counts.trashed -= 1;
+                        this.counts.read += 1;
                         this.entries.splice(index, 1);
-                        this.getEntryCounts();
-                        this.$notify({
-                            type: 'success',
-                            title: 'Success',
-                            message: this.$t('Entry has been restored'),
-                            offset: 30
-                        });
+
+                        this.$success(this.$t('The Entry has been restored'));
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
@@ -850,15 +862,17 @@
                 return status;
             },
             handleColumnChange(){
-                let data = {
-                    action : 'fluentform-save-form-entry_column_view_settings',
-                    form_id : this.form_id,
-                    visible_columns : JSON.stringify(this.visibleColumns)
+                const data = {
+                    meta_key: '_visible_columns',
+                    settings: JSON.stringify(this.visibleColumns)
                 };
-                FluentFormsGlobal.$post(data)
+
+                const url = FluentFormsGlobal.$rest.route('storeEntryColumns', this.form_id);
+                
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
@@ -868,10 +882,14 @@
                     this.visibleColumns = Object.keys(this.columns);
                 }
             },
+            refreshColumnsOrder(columnsOrder) {
+                this.columnsOrder = columnsOrder ? [...columnsOrder] : null;
+                this.visibleColReorderModal = false;
+            }
         },
         mounted() {
             this.getData();
-            this.getEntryCounts();
+            this.getEntryResources();
             this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
             (new ClipboardJS('.copy')).on('success', (e) => {
                 this.$copy();

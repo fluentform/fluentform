@@ -65,7 +65,7 @@ class FormController extends Controller
     public function find(FormService $formService)
     {
         try {
-            $id = $this->request->get('id');
+            $id = $this->request->get('form_id');
 
             $form = $formService->find($id);
 
@@ -80,7 +80,7 @@ class FormController extends Controller
     public function delete(FormService $formService)
     {
         try {
-            $id = $this->request->get('id');
+            $id = $this->request->get('form_id');
 
             $formService->delete($id);
 
@@ -112,7 +112,7 @@ class FormController extends Controller
     public function convert(FormService $formService)
     {
         try {
-            $formService->convert($this->request->get('id'));
+            $formService->convert($this->request->get('form_id'));
 
             return $this->sendSuccess([
                 'message' => __('The form is successfully converted.', 'fluentform'),
@@ -135,10 +135,8 @@ class FormController extends Controller
         }
     }
 
-    public function resources(FormService $formService)
+    public function resources(FormService $formService, $formId)
     {
-        $formId = intval($this->request->get('formId'));
-
         $components = $formService->components($formId);
 
         $disabledComponents = $formService->getDisabledComponents();
@@ -150,14 +148,14 @@ class FormController extends Controller
         ]);
     }
 
-    public function fields(FormService $formService, $id)
+    public function fields(FormService $formService, $formId)
     {
-        return $this->sendSuccess($formService->fields($id));
+        return $this->sendSuccess($formService->fields($formId));
     }
 
-    public function shortcodes(FormService $formService, $id)
+    public function shortcodes(FormService $formService, $formId)
     {
-        return $this->sendSuccess($formService->shortcodes($id));
+        return $this->sendSuccess($formService->shortcodes($formId));
     }
 
     public function pages(FormService $formService)

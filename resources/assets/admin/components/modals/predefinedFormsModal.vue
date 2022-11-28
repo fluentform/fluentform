@@ -221,7 +221,9 @@
                 this.postTypeSelectionDialogVisibility = true;
             },
             doCreateForm(data) {
-                FluentFormsGlobal.$rest.post('forms', data)
+                const url = FluentFormsGlobal.$rest.route('getForms');
+                
+                FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
                         this.$success(response.message);
 

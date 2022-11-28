@@ -25,11 +25,11 @@
             </div>
 
             <span slot="footer" class="dialog-footer">
-                <el-button size="mini"  @click="resetColumnOrder">
+                <el-button size="mini"  @click="resetColumnOrder()">
                     {{ $t('Reset') }}
                 </el-button>
 
-                <el-button size="mini" type="primary" @click="saveColumnOrder">
+                <el-button size="mini" type="primary" @click="saveColumnOrder()">
                      {{ $t('Save') }}
                 </el-button>
             </span>
@@ -39,17 +39,17 @@
 
 <script>
     export default {
-        name: 'ColumnDragAndDrop',
-        props: ['columns','columns_order','form_id','visible_columns'],
+        name: "ColumnDragAndDrop",
+        props: ["columns", "columns_order", "form_id", "visible_columns"],
         data() {
             return {
-                list : [],
-                optionsToRender : [],
-            }
+                list: [],
+                optionsToRender: [],
+            };
         },
         methods: {
             handleDrop(data) {
-                const {index, list, item} = data;
+                const { index, list, item } = data;
                 item.id = new Date().getTime();
                 list.splice(index, 0, item);
             },
@@ -64,64 +64,46 @@
                     let i = 0;
                     for (let key in this.columns) {
                         optionToRender.push({
-                            index : i++,
-                            value : key,
-                            label : this.columns[key],
+                            index: i++,
+                            value: key,
+                            label: this.columns[key],
                         });
                     }
                     this.optionsToRender = optionToRender;
                     return;
                 }
                 //column display order is set
-                this.optionsToRender = this.columns_order;
+                this.optionsToRender = [...this.columns_order];
             },
-            saveColumnOrder(){
-                let data = {
-                    form_id : this.form_id,
-                    action : 'fluentform-save-form-entry_column_order_settings',
-                    columns_order : JSON.stringify(this.optionsToRender)
+            saveColumnOrder(settings) {
+                settings = settings === undefined ? this.optionsToRender : settings;
+
+                const data = {
+                    meta_key: "_columns_order",
+                    settings: settings ? JSON.stringify(settings) : null,
                 };
-                FluentFormsGlobal.$post(data)
-                    .then(response=>{
-                        if(response.success){
-                            location.reload();
-                        }else{
-                            this.$notify.error({
-                                   title: this.$t('Oops!'),
-                                   message: this.$t('Something went wrong, please try again') ,
-                               offset: 30
-                            });
-                        }
+
+                const url = FluentFormsGlobal.$rest.route(
+                    "storeEntryColumns",
+                    this.form_id
+                );
+
+                FluentFormsGlobal.$rest
+                    .post(url, data)
+                    .then(response => {
+                        this.$success(response.message);
+                        this.$emit("save", settings);
                     })
-                    .fail((error) => {
-                        console.log(error)
+                    .catch(error => {
+                        this.$fail(error.message);
                     });
             },
-            resetColumnOrder(){
-                let data = {
-                    form_id: this.form_id,
-                    action:'fluentform-reset-form-entry_column_order_settings',
-                };
-                FluentFormsGlobal.$post( data )
-                    .then( response =>{
-                        if(response.success){
-                            location.reload();
-                        }else{
-                            this.$notify.error({
-                                   title: this.$t('Oops!'),
-                                   message: this.$t('Something went wrong, please try again') ,
-                                   offset: 30
-                            });
-                        }
-                    })
-                    .fail((error) => {
-                        console.log(error)
-                    });
+            resetColumnOrder() {
+                this.saveColumnOrder(null)
             }
         },
         mounted() {
             this.createOptionsToRender();
-        }
-    }
+        },
+    };
 </script>
-

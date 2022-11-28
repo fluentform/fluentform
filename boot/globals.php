@@ -70,7 +70,7 @@ function wpFluentFormAddComponent(BaseComponent $component)
  *
  * @param $input
  *
- * @return string $input
+ * @return mixed $input
  */
 function fluentFormSanitizer($input, $attribute = null, $fields = [])
 {

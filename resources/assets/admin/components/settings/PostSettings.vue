@@ -103,7 +103,7 @@
         },
         methods: {
             fetchSettings() {
-                const url = 'forms/' + window.FluentFormApp.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', window.FluentFormApp.form_id);
             
                 FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
 
@@ -124,7 +124,7 @@
             saveSettings() {
                 this.saving = true;
 
-                const url = 'forms/' + window.FluentFormApp.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', window.FluentFormApp.form_id);
             
                 FluentFormsGlobal.$rest.post(url, {
                     meta_key: 'formSettings',

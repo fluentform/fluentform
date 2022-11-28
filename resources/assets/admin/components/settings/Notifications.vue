@@ -690,7 +690,7 @@ export default {
                 meta_id: id,
             };
 
-            const url = 'forms/' + this.form_id + '/settings';
+            const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
@@ -705,7 +705,7 @@ export default {
                 });
         },
         remove(index, id) {
-            const url = 'forms/' + this.form_id + '/settings';
+            const url = FluentFormsGlobal.$rest.route('deleteFormSettings', this.form_id);
 
             FluentFormsGlobal.$rest.delete(url, {meta_id: id})
                 .then(response => {
@@ -721,7 +721,7 @@ export default {
                 is_multiple: true,
             };
 
-            const url = 'forms/' + this.form_id + '/settings';
+            const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
             
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
@@ -759,7 +759,7 @@ export default {
                 meta_id: id,
             };
 
-            const url = 'forms/' + this.form_id + '/settings';
+            const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
             
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {

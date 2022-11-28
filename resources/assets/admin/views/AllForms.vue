@@ -377,7 +377,7 @@ export default {
                 status,
             };
 
-            const url = 'forms/' + id;
+            const url = FluentFormsGlobal.$rest.route('updateForm', id);
     
             FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
@@ -415,7 +415,10 @@ export default {
             if (this.advancedFilter) {
               data.date_range = this.filter_date_range;
             }
-            FluentFormsGlobal.$rest.get('forms', data)
+            
+            const url = FluentFormsGlobal.$rest.route('getForms');
+            
+            FluentFormsGlobal.$rest.get(url, data)
                 .then((response) => {
                     this.items = response.data;
                     this.paginate.total = response.total;
@@ -440,7 +443,9 @@ export default {
         getPredefinedForms() {
             this.loading = true;
 
-            FluentFormsGlobal.$rest.get('forms/templates')
+            const url = FluentFormsGlobal.$rest.route('getTemplates');
+
+            FluentFormsGlobal.$rest.get(url)
                 .then(response => {
                     this.predefinedForms = response.forms;
                     this.categories = response.categories;
@@ -453,7 +458,7 @@ export default {
                 });
         },
         removeForm(id, index) {
-            const url = 'forms/' + id;
+            const url = FluentFormsGlobal.$rest.route('deleteForm', id);
 
             FluentFormsGlobal.$rest.delete(url)
                 .then(res => {
@@ -465,7 +470,7 @@ export default {
                 });
         },
         duplicateForm(id) {
-            const url = 'forms/' + id + '/duplicate';
+            const url = FluentFormsGlobal.$rest.route('duplicateForm', id);
 
             FluentFormsGlobal.$rest.post(url)
                 .then(res => {

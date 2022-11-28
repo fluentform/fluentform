@@ -237,7 +237,7 @@
                     meta_id: id,
                 };
 
-                const url = 'forms/' + this.form.id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
             
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
@@ -250,7 +250,7 @@
                     .catch(e => {});
             },
             remove(index, id) {
-                const url = 'forms/' + this.form.id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('deleteFormSettings', this.form.id);
 
                 FluentFormsGlobal.$rest.delete(url, {meta_id: id})
                     .then(response => {
@@ -262,8 +262,8 @@
             },
 
             getPages() {
-                const url = 'forms/' + this.form.id + '/pages';
-                
+                const url = FluentFormsGlobal.$rest.route('getFormPages', this.form.id);
+
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
                         this.pages = response.pages;
@@ -277,7 +277,7 @@
             },
 
             fetch() {
-                const url = 'forms/' + this.form.id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form.id);
             
                 FluentFormsGlobal.$rest.get(url, {meta_key: 'confirmations'})
                     .then(response => {
@@ -302,7 +302,7 @@
                     meta_id: id,
                 };
 
-                const url = 'forms/' + this.form.id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
             
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {

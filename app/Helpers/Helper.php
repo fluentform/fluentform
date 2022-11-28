@@ -96,6 +96,7 @@ class Helper
         $statuses = apply_filters('fluentform_entry_statuses_core', [
             'unread' => 'Unread',
             'read'   => 'Read',
+            'favorites' => 'Favorites'
         ], $form_id);
         $statuses['trashed'] = 'Trashed';
 

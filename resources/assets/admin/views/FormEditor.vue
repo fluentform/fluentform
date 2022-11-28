@@ -836,7 +836,7 @@ export default {
          * And do necessary adjustments to the editor
          */
         fetchSettings() {
-            const url = 'forms/' + this.form_id + '/settings';
+            const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
             
             FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
                 .then(response => {

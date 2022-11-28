@@ -628,7 +628,7 @@
                 }
             },
             fetchSettings() {
-                const url = 'forms/' + this.form_id + '/settings/general';
+                const url = FluentFormsGlobal.$rest.route('getGeneralFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
@@ -676,7 +676,7 @@
                     });
             },
             fetchPages() {
-                const url = 'forms/' + this.form_id + '/pages';
+                const url = FluentFormsGlobal.$rest.route('getFormPages', this.form_id);
 
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
@@ -696,7 +696,7 @@
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
                 };
 
-                const url = 'forms/' + this.form_id + '/settings/general';
+                const url = FluentFormsGlobal.$rest.route('storeGeneralFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {

@@ -252,7 +252,7 @@ new Vue({
                 formFields: JSON.stringify(formFields),
             };
 
-            const url = 'forms/' + this.form_id;
+            const url = FluentFormsGlobal.$rest.route('updateForm', this.form_id);
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {

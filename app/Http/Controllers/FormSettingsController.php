@@ -2,6 +2,9 @@
 
 namespace FluentForm\App\Http\Controllers;
 
+use Exception;
+use FluentForm\App\Services\Entry\EntryService;
+use FluentForm\App\Services\Settings\Customizer;
 use FluentForm\App\Services\Settings\SettingsService;
 use FluentForm\Framework\Validator\ValidationException;
 
@@ -14,9 +17,9 @@ class FormSettingsController extends Controller
         return $this->sendSuccess($result);
     }
 
-    public function general(SettingsService $settingsService, $id)
+    public function general(SettingsService $settingsService, $formId)
     {
-        $result = $settingsService->general($id);
+        $result = $settingsService->general($formId);
 
         return $this->sendSuccess($result);
     }
@@ -53,6 +56,41 @@ class FormSettingsController extends Controller
     {
         $settingsService->remove($this->request->all());
 
-        wp_send_json([], 200);
+        return $this->sendSuccess([]);
+    }
+
+    public function customizer(Customizer $customizer, $id)
+    {
+        return $this->sendSuccess($customizer->get($id));
+    }
+
+    public function storeCustomizer(Customizer $customizer, $id)
+    {
+        try {
+            $customizer->store($this->request->all());
+
+            return $this->sendSuccess([
+                'message' => __('Custom CSS & JS successfully saved.', 'fluentform'),
+            ]);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 423);
+        }
+    }
+
+    public function storeEntryColumns(EntryService $entryService, $id)
+    {
+        try {
+            $entryService->storeColumnSettings($this->request->all());
+
+            return $this->sendSuccess([
+                'message' => __('The column display order has been saved.', 'fluentform'),
+            ]);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 423);
+        }
     }
 }

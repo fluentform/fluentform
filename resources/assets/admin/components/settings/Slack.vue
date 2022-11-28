@@ -107,7 +107,7 @@
             fetch() {
                 this.loading = true;
 
-                const url = 'forms/' + this.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.get(url, {meta_key: 'slack'})
                     .then(response => {
@@ -139,7 +139,7 @@
                     meta_id: this.slack.id,
                 };
 
-                const url = 'forms/' + this.form_id + '/settings';
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
             
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
