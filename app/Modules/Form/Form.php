@@ -693,6 +693,13 @@ class Form
         wp_send_json($forms, 200);
     }
 
+    public function getAvailableForms()
+    {
+        wp_send_json_success([
+            "forms" => (new \FluentForm\App\Api\Form())->getAvailableForms()
+        ], 200);
+    }
+
     /**
      * Map pdf feed ID to replace with duplicated PDF feed ID when duplicating form
      *

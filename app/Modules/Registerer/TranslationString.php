@@ -1499,5 +1499,43 @@ class TranslationString
 
         return apply_filters('fluentform/payments_i18n', $i18n);
     }
+
+    public static function getReportsI18n()
+    {
+        $i18n = array(
+            'Reports'                                          => __('Reports', 'fluentform'),
+            'Select Form'                                      => __('Select Form', 'fluentform'),
+            'Search'                                           => __('Search', 'fluentform'),
+            'Start date'                                       => __('Start date', 'fluentform'),
+            'End date'                                         => __('End date', 'fluentform'),
+            'Already there. Select a form to view its report.' => __('Already there! Select a form to view its report.',
+                'fluentform'),
+            'Overview'                                         => __('Overview', 'fluentform'),
+            'Showing report from'                              => __('Showing report from', 'fluentform'),
+            'Last Submission'                                  => __('Last Submission', 'fluentform'),
+            'Views'                                            => __('Views', 'fluentform'),
+            'IP Views'                                         => __('IP Views', 'fluentform'),
+            'Submission'                                       => __('Submission', 'fluentform'),
+            'Conversion Rate'                                  => __('Conversion Rate', 'fluentform'),
+            'Ip Conversion Rate'                               => __('Ip Conversion Rate', 'fluentform'),
+            'No integrations connected. Connect a'             => __('No integrations connected. Connect a',
+                'fluentform'),
+            'integrations'                                     => __('integrations', 'fluentform'),
+            'to view data in report.'                          => __('to view data in report.', 'fluentform'),
+            'Payment not implemented. Add'                     => __('Payment not implemented. Add', 'fluentform'),
+            'payment'                                          => __('payment', 'fluentform'),
+            'to your form to start collecting payments.'       => __('to your form to start collecting payments.',
+                'fluentform'),
+            'Purchase'                                         => __('Purchase', 'fluentform'),
+            'out of'                                           => __('out of', 'fluentform'),
+            'paid'                                             => __('paid', 'fluentform'),
+            'times billed'                                     => __('times billed', 'fluentform'),
+            'Payments'                                         => __('Payments', 'fluentform'),
+            'Total'                                            => __('Total', 'fluentform'),
+            'Quantity'                                         => __('Quantity', 'fluentform'),
+            'Interval'                                         => __('Interval', 'fluentform'),
+        );
+        return apply_filters('fluentform/reports_i18n', $i18n);
+    }
 }
 

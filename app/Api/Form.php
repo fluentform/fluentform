@@ -165,4 +165,28 @@ class Form
 
         return (new Entry($form));
     }
+
+    /**
+     * Form id title pair
+     *
+     *
+     * @return array
+     */
+    public function getAvailableForms()
+    {
+        $forms = wpFluent()->table('fluentform_forms')
+            ->select(['id', 'title'])
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        $formattedForms = [];
+        foreach ($forms as $form) {
+            $formattedForms[] = [
+                'id'    => $form->id,
+                'title' => $form->title,
+            ];
+        }
+
+        return $formattedForms;
+    }
 }

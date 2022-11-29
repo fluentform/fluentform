@@ -294,6 +294,7 @@ class Helper
             'fluent_forms',
             'fluent_forms_all_entries',
             'fluent_forms_transfer',
+            'fluent_forms_reports',
             'fluent_forms_settings',
             'fluent_forms_add_ons',
             'fluent_forms_docs',
@@ -531,10 +532,10 @@ class Helper
         return $baseUrl . '&route=' . $route . '&form_id=' . $form->id;
     }
 
-    public static function getFormSettingsUrl($form)
+    public static function getFormSettingsUrl($form, $hashUrl = 'basic_settings')
     {
         $baseUrl = admin_url('admin.php?page=fluent_forms');
-        return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#basic_settings';
+        return $baseUrl . '&form_id=' . $form->id . '&route=settings&sub_route=form_settings#'. $hashUrl;
     }
 
     private static function getConversionUrl($formId)

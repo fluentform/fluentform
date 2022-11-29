@@ -57,6 +57,7 @@ class Menu
         $fluentFormAdminCSS = $app->publicUrl('css/fluent-forms-admin.css');
         $addOnsCss = $app->publicUrl('css/add-ons.css');
         $adminDocCss = $app->publicUrl('css/admin_docs.css');
+        $reportsStyle = $app->publicUrl('css/reports.css');
         if (is_rtl()) {
             $settingsGlobalStyle = $app->publicUrl('css/settings_global_rtl.css');
             $allFormsStyle = $app->publicUrl('css/fluent-all-forms-rtl.css');
@@ -64,6 +65,7 @@ class Menu
             $fluentFormAdminCSS = $app->publicUrl('css/fluent-forms-admin-rtl.css');
             $addOnsCss = $app->publicUrl('css/add-ons-rtl.css');
             $adminDocCss = $app->publicUrl('css/admin_docs_rtl.css');
+            $reportsStyle = $app->publicUrl('css/reports-rtl.css');
         }
 
         wp_register_style(
@@ -109,6 +111,13 @@ class Menu
         wp_register_style(
             'fluent_all_forms',
             $allFormsStyle,
+            [],
+            FLUENTFORM_VERSION,
+            'all'
+        );
+        wp_register_style(
+            'fluentform_reports_styles',
+            $reportsStyle,
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -173,6 +182,13 @@ class Menu
         wp_register_script(
             'fluentform_all_entries',
             $app->publicUrl('js/all_entries.js'),
+            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
+            FLUENTFORM_VERSION,
+            true
+        );
+        wp_register_script(
+            'fluentform_reports',
+            $app->publicUrl('js/reports.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
             FLUENTFORM_VERSION,
             true
@@ -250,10 +266,11 @@ class Menu
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'admin_i18n'               => TranslationString::getAdminI18n(),
-            'payments_str'             => TranslationString::getPaymentsI18n(),
-            'permissions'              => Acl::getCurrentUserPermissions(),
+            'ajaxurl'      => admin_url('admin-ajax.php'),
+            'admin_i18n'   => TranslationString::getAdminI18n(),
+            'reports_i18n' => TranslationString::getReportsI18n(),
+            'payments_str' => TranslationString::getPaymentsI18n(),
+            'permissions'  => Acl::getCurrentUserPermissions(),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -299,6 +316,8 @@ class Menu
             wp_enqueue_style('fluentform-add-ons');
         } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {
             wp_enqueue_style('fluentform_doc_style');
+        } elseif ('fluent_forms_reports' == $page) {
+            wp_enqueue_style('fluentform_reports_styles');
         }
     }
 
@@ -397,15 +416,33 @@ class Menu
             );
 
             if (apply_filters('fluentform_show_payment_entries', false)) {
+                $paymentsTitle = __('Payments', 'fluentform');
+                if (Helper::isFluentAdminPage()) {
+                    $paymentPendingCount = wpFluent()->table('fluentform_transactions')->where('status',
+                        'pending')->count();
+                    if ($paymentPendingCount) {
+                        $paymentsTitle .= ' <span class="ff_pending_count" style="background: #ca4a20;color: white;border-radius: 8px;padding: 1px 8px;">' . $paymentPendingCount . '</span>';
+                    }
+                }
+
                 add_submenu_page(
                     'fluent_forms',
-                    __('Payments', 'fluentform'),
-                    __('Payments', 'fluentform'),
+                    $paymentsTitle,
+                    $paymentsTitle,
                     $fromRole ? $settingsCapability : 'fluentform_view_payments',
                     'fluent_forms_payment_entries',
                     [$this, 'renderPaymentEntries']
                 );
             }
+            // Register entries intermediary page
+            add_submenu_page(
+                'fluent_forms',
+                __('Reports', 'fluentform'),
+                __('Reports', 'fluentform'),
+                $fromRole ? $settingsCapability : 'fluentform_reports_viewer',
+                'fluent_forms_reports',
+                [$this, 'renderReportsAdminRoute']
+            );
 
             // Register global settings sub menu page.
             add_submenu_page(
@@ -505,6 +542,11 @@ class Menu
     {
         wp_enqueue_script('fluentform_all_entries');
         View::render('admin.all_entries', []);
+    }
+    public function renderReportsAdminRoute()
+    {
+        wp_enqueue_script('fluentform_reports');
+        View::render('admin.reports', []);
     }
 
     public function renderFormInnerPages()

@@ -71,7 +71,7 @@ $app->addAdminAjaxAction('fluentform_get_all_entries', function () use ($app) {
 });
 
 $app->addAdminAjaxAction('fluentform_get_all_entries_report', function () use ($app) {
-    Acl::verify('fluentform_entries_viewer');
+    Acl::verify(['fluentform_entries_viewer', 'fluentform_reports_viewer']);
     (new \FluentForm\App\Modules\Entries\Entries())->getEntriesReport();
 });
 
@@ -157,8 +157,14 @@ $app->addAdminAjaxAction('fluentform-form-entries', function () use ($app) {
 
 $app->addAdminAjaxAction('fluentform-form-report', function () use ($app) {
     $formId = intval($app->request->get('form_id'));
-    Acl::verify('fluentform_entries_viewer', $formId);
+    Acl::verify(['fluentform_entries_viewer', 'fluentform_reports_viewer'], $formId);
     (new \FluentForm\App\Modules\Entries\Report($app))->getReport($formId);
+});
+
+$app->addAdminAjaxAction('fluentform_get_form_reports', function () use ($app) {
+    $formId = intval($app->request->get('form_id'));
+    Acl::verify('fluentform_reports_viewer', $formId);
+    (new \FluentForm\App\Modules\Reports\Reports($app))->getFormReports($formId);
 });
 
 $app->addAdminAjaxAction('fluentform-form-entries-export', function () use ($app) {
@@ -315,6 +321,11 @@ $app->addAdminAjaxAction('fluentform-import-forms', function () use ($app) {
 $app->addAdminAjaxAction('fluentform-get-all-forms', function () use ($app) {
     Acl::verify(['fluentform_settings_manager', 'fluentform_forms_manager']);
     (new \FluentForm\App\Modules\Form\Form($app))->getAllForms();
+});
+
+$app->addAdminAjaxAction('fluentform-get-available-forms', function () use ($app) {
+    Acl::verify('fluentform_dashboard_access');
+    (new \FluentForm\App\Modules\Form\Form($app))->getAvailableForms();
 });
 
 // Fetch simplified information for all predefined forms

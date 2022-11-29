@@ -44,6 +44,7 @@ mix
     .js('resources/assets/admin/admin_notices.js', `public/js/admin_notices.js`)
     .js('resources/assets/admin/modules.js', `public/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `public/js/all_entries.js`)
+    .js('resources/assets/admin/views/Reports/reports_app.js', `public/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `public/js/conversational_design.js`)
     .vue({ 
         version: 2,
@@ -57,6 +58,7 @@ mix
     .sass('resources/assets/admin/css/admin_notices.scss', `public/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `public/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'public/css/add-ons.css')
+    .sass('resources/assets/admin/css/reports.scss', 'public/css/reports.css')
     .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'public/css/fluent_gutenblock.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `public/css/fluent-forms-public.css`)
     .sass('resources/assets/public/scss/fluentform-public-default.scss', `public/css/fluentform-public-default.css`)
@@ -122,6 +124,13 @@ mix.then(() => {
     });
 
     exec('rtlcss public/css/add-ons.css ./public/css/add-ons-rtl.css', (error) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+        }
+    });
+
+    exec('rtlcss public/css/reports.css ./public/css/reports-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return;

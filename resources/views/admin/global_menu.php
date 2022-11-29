@@ -23,6 +23,12 @@ $page = sanitize_text_field($_GET['page']);
         </a>
     <?php endif; ?>
 
+    <?php if (Acl::hasPermission('fluentform_reports_viewer')): ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_reports')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_reports') ? 'ninja-tab-active' : '' ?>">
+            <?php _e('Reports', 'fluentform'); ?>
+        </a>
+    <?php endif; ?>
+
     <?php if (Acl::hasPermission('fluentform_settings_manager')): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_settings')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms_settings') ? 'ninja-tab-active' : '' ?>">
             <?php _e('Global Settings', 'fluentform'); ?>

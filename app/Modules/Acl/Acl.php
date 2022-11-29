@@ -18,6 +18,7 @@ class Acl
             'fluentform_entries_viewer',
             'fluentform_manage_entries',
             'fluentform_view_payments',
+            'fluentform_reports_viewer',
             'fluentform_manage_payments',
             'fluentform_settings_manager',
             'fluentform_full_access',
@@ -204,6 +205,12 @@ class Acl
             ],
             'fluentform_entries_viewer' => [
                 'title'   => __('View Entries', 'fluentform'),
+                'depends' => [
+                    'fluentform_dashboard_access',
+                ],
+            ],
+            'fluentform_reports_viewer' => [
+                'title'   => __('View Reports', 'fluentform'),
                 'depends' => [
                     'fluentform_dashboard_access',
                 ],

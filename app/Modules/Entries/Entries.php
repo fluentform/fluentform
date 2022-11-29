@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Entries;
 
+use FluentForm\App\Api\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
@@ -89,11 +90,19 @@ class Entries extends EntryQuery
             'entries'         => $entries,
             'total'           => $total,
             'last_page'       => ceil($total / $limit),
-            'available_forms' => $this->getAvailableForms(),
+            'available_forms' => (new Form())->getAvailableForms(),
         ]);
     }
 
     public function getEntriesReport()
+    {
+        $range = $this->getEntriesReportForChart();
+        wp_send_json_success([
+            'stats' => $range,
+        ]);
+    }
+
+    public function getEntriesReportForChart()
     {
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
@@ -135,10 +144,7 @@ class Entries extends EntryQuery
         foreach ($items as $item) {
             $range[$item->date] = $item->count; //Filling value in the array
         }
-
-        wp_send_json_success([
-            'stats' => $range,
-        ]);
+        return $range;
     }
 
     public function renderEntries($form_id)
@@ -893,23 +899,5 @@ class Entries extends EntryQuery
             ],
             'user_id' => $userId,
         ]);
-    }
-
-    public function getAvailableForms()
-    {
-        $forms = wpFluent()->table('fluentform_forms')
-            ->select(['id', 'title'])
-            ->orderBy('id', 'DESC')
-            ->get();
-
-        $formattedForms = [];
-        foreach ($forms as $form) {
-            $formattedForms[] = [
-                'id'    => $form->id,
-                'title' => $form->title,
-            ];
-        }
-
-        return $formattedForms;
     }
 }
