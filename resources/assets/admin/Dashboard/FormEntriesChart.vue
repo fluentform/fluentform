@@ -1,12 +1,10 @@
 <template>
     <div>
-        <div class="card_header">
-            <h6> {{ $t('Submissions Per Form') }}</h6>
-        </div>
         <div class="ff_card_body">
-            <pie-chart v-if="Object.entries(chartData).length > 0" :chartdata="data" :options="chartOptions"></pie-chart>
+            <pie-chart  v-if="Object.entries(chartData).length > 0" :chartdata="data" :options="chartOptions"></pie-chart>
+
             <div v-else class="demo-graph">
-                <img class="ff-blur" :src="demoGraph">
+                <img :src="demoGraph">
                 <span>{{ $t('Nothing to show yet') }}</span>
             </div>
         </div>
@@ -42,7 +40,12 @@
                     },
                     onHover: (event, chartElement) => {
                         event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                    }
+                    },
+                    title: {
+                        display: true,
+                        text: this.$t('Entries Per Form')
+                    },
+
 
                 }
             }
@@ -55,7 +58,8 @@
                     backgroundColor: [],
                     borderColor: '#ffffff',
                     data: [],
-                    hoverOffset: 5
+                    hoverOffset: 5,
+
                 };
 
                 let currentTotal = 0;
@@ -71,25 +75,23 @@
                 return {
                     labels: labels,
                     datasets: [ItemValues],
-
                 }
             }
         },
         methods: {
             getColors(times, type) {
                 let colors = [
-                    '#ff6384',
-                    '#a32f80',
-                    '#ffcd56',
-                    '#B6583B',
-                    '#590d82',
-                    '#d4a5a5',
-                    '#5F5771',
-                    '#f38181',
-                    '#1f5f8b',
-                    '#de95ba',
-                    '#086972',
-                    '#3f9eff'
+                    'rgb(72 115 208/70%)',
+                    'rgb(71 140 255/70%)',
+                    'rgb(81 160 255/70%)',
+                    'rgb(91 260 255/70%)',
+                    'rgb(11 160 255/70%)',
+                    'rgb(91 180 255/70%)',
+                    'rgb(21 260 255/70%)',
+                    'rgb(61 240 255/70%)',
+                    'rgb(51 110 255/70%)',
+                    'rgb(41 110 255/70%)',
+
                 ];
                 return colors[Math.floor(Math.random() * colors.length)];
             }

@@ -549,7 +549,11 @@ class Menu
     public function renderAllEntriesAdminRoute()
     {
         wp_enqueue_script('fluentform_all_entries');
-        View::render('admin.all_entries', []);
+        wp_localize_script('fluentform_all_entries','AllEntriesApp',[
+            'filterBy' => isset($_REQUEST['filter_by_status']) ? sanitize_key($_REQUEST['filter_by_status']) : ''
+        ]);
+       
+        View::render('admin.all_entries',[]);
     }
 
     public function renderFormInnerPages()

@@ -11,6 +11,10 @@ export default {
         options: {
             type: Object,
             default: null
+        },
+        height : {
+            type: String,
+            default: '300px'
         }
     },
     mounted () {

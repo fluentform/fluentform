@@ -12,8 +12,10 @@ import {
     Notification,
     DatePicker,
     Row,
-    Carousel,
-    CarouselItem
+    Col,
+    Radio,
+    RadioGroup,
+    RadioButton,
 
 } from 'element-ui';
 
@@ -22,19 +24,19 @@ Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 
-
 Vue.use(Button);
 Vue.use(Select);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
 Vue.use(Row)
-Vue.use(Carousel)
-Vue.use(CarouselItem)
+Vue.use(Col)
 locale.use(lang);
+Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(RadioButton);
 
 Vue.mixin({
-
     methods: {
         $t(str) {
             return str;
@@ -42,9 +44,7 @@ Vue.mixin({
     },
 });
 
-
 import App from './App.vue';
-
 new Vue({
     el: "#ff_admin_dashboard",
     components: {

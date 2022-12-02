@@ -235,6 +235,12 @@
                     this.chart_status = 'yes';
                 }
                 localStorage.setItem('ff_chart_status', this.chart_status);
+            },
+            setQueryParams(){
+                let validStatus = ['unread','read'];
+                if (window.AllEntriesApp.filterBy && window.AllEntriesApp.filterBy!= 'all' && validStatus.indexOf(window.AllEntriesApp.filterBy) !== -1 ){
+                    this.entry_status = window.AllEntriesApp.filterBy;
+                }
             }
         },
         filters: {
@@ -245,6 +251,7 @@
             }
         },
         mounted() {
+            this.setQueryParams();
             let status = localStorage.getItem('ff_chart_status');
             if(status) {
                 this.chart_status = status;

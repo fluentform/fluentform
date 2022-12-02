@@ -1,12 +1,16 @@
 <template>
-    <div>
-        <submission-chart v-if="Object.entries(data).length > 0" :key="refreshToggle" :chartData="chartData" :options="options"></submission-chart>
-        <div v-else class="demo-graph">
-            <img :src="demoGraph">
-            <span>{{ $t('Nothing to show yet') }}</span>
+    <div class="">
+        <div class="dashboard-card-info chart-card">
+            <div class="dashboard-card-content" v-if="Object.entries(data).length > 0">
+                <submission-chart height="300px" :key="refreshToggle" :chartData="chartData" :options="options"></submission-chart>
+            </div>
+            <div v-else class="demo-graph">
+                <img style="width: 100%" :src="demoGraph">
+                <span>{{ $t('Nothing to show yet') }}</span>
+            </div>
         </div>
-
     </div>
+
 </template>
 
 <script type="text/babel">
@@ -18,7 +22,7 @@
         components: {
             SubmissionChart
         },
-        props: ['data'],
+        props: ['data', 'submission_type'],
         data() {
             return {
                 refreshToggle: false,
@@ -27,12 +31,23 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                // stepSize: 1
+                                beginAtZero: true,
+                                autoSkip: true,
+                            },
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                autoSkip: true,
+                            },
+                            gridLines: {
+                                display: false
                             }
-                        }]
-                    }
+                        }],
+                    },
                 },
                 chartData: {},
+                total: 0,
                 demoGraph: window.FluentFormDashboard.demo_graph_bar_url
             }
         },
@@ -41,27 +56,34 @@
             setupChartItems() {
                 const labels = [];
                 const ItemValues = {
-                    label: 'Submissions',
+                    label: this.ucFirst(this.submission_type),
                     borderColor: "rgb(31 160 255/30%)",
                     pointBackgroundColor: "#1fa0ff",
-                    backgroundColor: 'rgb(31 160 255)',
+                    backgroundColor: 'rgb(31 160 255/50%)',
+                    pointRadius: 0,
                     fill: false,
-                    data: []
+                    data: [],
+                    tension: 0.2
                 }
-                let currentTotal = 0;
+                let currentMax = 0;
 
                 each(this.data, (count, label) => {
                     ItemValues.data.push(count);
                     labels.push(label);
-                    currentTotal += parseInt(count);
+                    if (parseInt(count) > currentMax) {
+                        currentMax = parseInt(count);
+                    }
                 });
-
+                this.options.scales.yAxes[0].ticks.suggestedMax = currentMax + 2;
                 this.chartData = {
                     labels: labels,
                     datasets: [ItemValues]
                 }
                 this.refreshToggle = !this.refreshToggle
 
+            },
+            ucFirst(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
             }
         },
         mounted() {
