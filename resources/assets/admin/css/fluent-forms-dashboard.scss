@@ -4,11 +4,35 @@
 @import "../styles/entries.scss";
 
 .dashboard-wrapper {
+  .el-table__header-wrapper table.el-table__header tr th {
+    background-color: #ffffff !important;
+  }
   .card_header h6 {
     font-size: 15px;
     font-weight: 500;
     margin: 0 10px 10px 0;
     display: inline;
+  }
+  .dashboard-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    .dashboard-radio-input{
+        min-width: 180px;
+    }
+    div{
+      width: 100%;
+    }
+    p{
+      margin: 15px 0;
+      padding-bottom: 5px;
+      font-weight: 500;
+      border-bottom: 1px solid #dddddd;
+    }
+    div:first-child {
+     p{
+       margin-top: 0px;
+     }
+    }
   }
 
   canvas#line-chart, canvas#pie-chart {
@@ -18,10 +42,12 @@
   .dashboard-row {
     background-color: #ffffff;
     padding: 20px;
+    box-shadow: 0 7px 14px 0 rgb(60 66 87 / 10%), 0 3px 6px 0 rgb(0 0 0 / 7%);
+    border-radius: 4px;
 
     .row-header {
       display: flex;
-      margin-bottom: 20px;
+      //margin-bottom: 20px;
       align-items: center;
       gap: 25px;
 
@@ -51,8 +77,8 @@
     }
 
     .dashboard-card {
-      flex: 3 1 33%;
-
+      flex: 3 1 32%;
+      position: relative;
       .card_header {
         margin-bottom: 10px;
         min-height: 30px;
@@ -142,8 +168,14 @@
         height: 300px;
       }
 
-      .is-align-top {
-        align-items: flex-start;
+      .dashboard-card-settings{
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        span{
+          font-size: small;
+          color: #363b419c;
+        }
       }
 
     }

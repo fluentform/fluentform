@@ -16,6 +16,9 @@ import {
     Radio,
     RadioGroup,
     RadioButton,
+    Dialog,
+    Checkbox,
+    CheckboxGroup
 
 } from 'element-ui';
 
@@ -35,12 +38,23 @@ locale.use(lang);
 Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(RadioButton);
+Vue.use(Dialog);
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
 
 Vue.mixin({
     methods: {
         $t(str) {
             return str;
         },
+    },
+    filters: {
+        title(string){
+            let name = string.replaceAll('_',' ')
+            return name.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                return letter.toUpperCase();
+            });
+        }
     },
 });
 

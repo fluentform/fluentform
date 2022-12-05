@@ -418,6 +418,10 @@ $app->addAction('wp_ajax_fluent_forms_dashboard', function () {
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Http\Controllers\Admin\DashboardController())->index();
 });
+$app->addAction('wp_ajax_fluent_forms_dashboard_cards', function () {
+    Acl::verify('fluentform_settings_manager');
+    (new \FluentForm\App\Http\Controllers\Admin\DashboardController())->updateVisibleCards();
+});
 
 /*
  * Background Process Receiver

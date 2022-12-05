@@ -52,11 +52,6 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="created_at"
-                        :label="$t('Date')"
-                        width="180">
-                </el-table-column>
-                <el-table-column
                         prop="human_date"
                         :label="$t('Time')"
                         width="120">

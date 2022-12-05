@@ -57,13 +57,13 @@
                 const labels = [];
                 const ItemValues = {
                     label: this.ucFirst(this.submission_type),
-                    borderColor: "rgb(31 160 255/30%)",
+                    borderColor: "#3f9eff",
                     pointBackgroundColor: "#1fa0ff",
-                    backgroundColor: 'rgb(31 160 255/50%)',
+                    backgroundColor: '#3f9eff',
                     pointRadius: 0,
                     fill: false,
                     data: [],
-                    tension: 0.2
+                    tension: 0.0
                 }
                 let currentMax = 0;
 

@@ -4,7 +4,6 @@ namespace FluentForm\App\Http\Controllers\Admin;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentFormPro\Payments\PaymentHelper;
 
 class DashboardController
 {
@@ -19,43 +18,80 @@ class DashboardController
     {
         $formsInfo = $this->getFormInfo();
         $this->addToPro();
-        
+        $visibleCards = $this->getDashboardCards();
         $dashboardData = apply_filters('fluentform_dashboard_data', [
-            'forms_data'                  => $formsInfo['forms_data'],
-            'analytics_data'              => $formsInfo['analytics_data'],
-            'submission_types_sum'        => $this->getSubmissionInfo(),
-            'submission_chart_data'       => $this->getSubmissionOverviewInfo(),
-            'submission_overview_details' => $this->getMonthlyOverViewDetails(),
+            'forms_count'                 => $formsInfo['forms_data'],
+            'analytics_info'              => $formsInfo['analytics_data'],
+            'submission_summary'          => $this->getSubmissionInfo(),
+            'monthly_submission_chart'       => $this->getSubmissionOverviewInfo(),
+            'monthly_submission_overview' => $this->getMonthlyOverViewDetails(),
             'activities_data'             => $this->getRecentActivity(),
             'submission_per_form_data'    => $this->getSubmissionPerForm(),
+            'visible_cards'               => $visibleCards
+        
+        
         ]);
         wp_send_json_success($dashboardData);
     }
     
     private function getSubmissionInfo()
     {
-        $query = wpFluent()->table('fluentform_submissions')->select([
-            'payment_status',
-            wpFluent()->raw('count(id) as total_count')
-        ]);
-        if (defined('FLUENTFORMPRO')) {
-            $query->whereIn('payment_status', ['paid', 'pending', 'refunded'])
-                ->orWhereNull('payment_status');
+        $submissions = wpFluent()->table('fluentform_submissions')
+            ->select([
+                'id',
+                'payment_status',
+                'status',
+            ])
+            ->get();
+        
+        $statuses = self::getSubmissionStatuses();
+        $formattedStatus = [];
+        foreach ($statuses as $key => $status) {
+            $formattedStatus[$key] = 0;
         }
-        $submissionsGroups = $query->groupBy('payment_status')->get();
         
         $sumTotal = 0;
-        $formattedSubmissions = [];
-        foreach ($submissionsGroups as $group) {
-            $sumTotal += $group->total_count;
-            if ($group->payment_status) {
-                $formattedSubmissions[] = [
-                    'info'     => sprintf(__('%s Submission', 'fluentform'), ucfirst($group->payment_status)),
-                    'value'    => $group->total_count,
-                    'title'    => __('View', 'fluentform'),
-                    'view_url' => admin_url('admin.php?page=fluent_forms_payment_entries&filter_by_status=' . $group->payment_status),
-                ];
+        foreach ($submissions as $submission) {
+            $sumTotal ++;
+            if ($submission->payment_status && in_array($submission->payment_status, $formattedStatus)) {
+                $formattedStatus[$submission->payment_status] ++;
+            } elseif (in_array($submission->status, $formattedStatus)) {
+                $formattedStatus[$submission->status] ++;
             }
+        }
+        $formattedSubmissions = [];
+        foreach ($formattedStatus as $statusKey => $value) {
+            if($value == 0){
+                continue;
+            }
+            $arr = [
+                'info'  => ArrayHelper::get(self::getSubmissionStatuses(),$statusKey).' '.__('Submissions','fluentform'),
+                'value' => $value,
+                'title' => __('View', 'fluentform')
+            ];
+            if ($statusKey == 'read' || $statusKey == 'unread') {
+                $arr['view_url'] = admin_url('admin.php?page=fluent_forms_all_entries&filter_by_status=' . $statusKey);
+            } else {
+                $arr['view_url'] = admin_url('admin.php?page=fluent_forms_payment_entries&filter_by_status=' . $statusKey);
+            }
+            if($statusKey == 'trashed'){
+                unset($arr['view_url']);
+            }
+            $formattedSubmissions[] = $arr;
+        }
+    
+        $lastSubmission = $this->getLastSubmission();
+        if ($lastSubmission) {
+            
+            $lastSubmission->human_date = human_time_diff(strtotime($lastSubmission->created_at), strtotime(current_time('mysql'))) . __(' ago', 'fluentform');
+            $lastSubmission->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $lastSubmission->form_id . '#/entries/' . $lastSubmission->id);
+            
+            array_unshift($formattedSubmissions, [
+                'info'     => __('Last Submission', 'fluentform'),
+                'value'    => $lastSubmission->human_date,
+                'title'    => $lastSubmission->title,
+                'view_url' => $lastSubmission->submission_url
+            ]);
         }
         array_unshift($formattedSubmissions, [
             'info'     => __("Total Submission", 'fluentform'),
@@ -205,8 +241,12 @@ class DashboardController
     
     public function addToPro()
     {
+        if (!defined('FLUENTFORMPRO')) {
+            return;
+        }
+        
         add_filter('fluentform_dashboard_data', function ($data) {
-            $paymentSettings = PaymentHelper::getPaymentSettings();
+            $paymentSettings = \FluentFormPro\Payments\PaymentHelper::getPaymentSettings();
             $currency = ArrayHelper::get($paymentSettings, 'currency', 'USD');
             
             $payments = $this->getPaymentInfo();
@@ -214,13 +254,13 @@ class DashboardController
             foreach ($payments as $payment) {
                 $formattedPayments[] = [
                     'info'     => sprintf(__('Payments %s', 'fluentform'), ucfirst($payment->payment_status)),
-                    'value'    => PaymentHelper::formatMoney($payment->total_amount, $currency),
+                    'value'    => \FluentFormPro\Payments\PaymentHelper::formatMoney($payment->total_amount, $currency),
                     'title'    => __('View', 'fluentform'),
                     'view_url' => admin_url('admin.php?page=fluent_forms_payment_entries&filter_by_status=' . $payment->payment_status),
                 ];
             }
             return array_merge($data, [
-                'payment_data' => $formattedPayments
+                'payment_info' => $formattedPayments
             ]);
         });
     }
@@ -245,10 +285,11 @@ class DashboardController
         $endDate = ArrayHelper::get($dateRange, '1');
         $entries = wpFluent()->table('fluentform_submissions')
             ->select('*')
-            ->where('status', '!=', 'trashed')
+//            ->where('status', '!=', 'trashed')
             ->where('fluentform_submissions.created_at', '>=', $startDate . ' 00:00:01')
             ->where('fluentform_submissions.created_at', '<=', $endDate . ' 23:59:59')
             ->get();
+        
         
         $submissionCounts = [
             'read'       => 0,
@@ -269,37 +310,36 @@ class DashboardController
             $submissionCounts['total']++;
         }
         $overViewInfo = [];
-        $paymentSettings = PaymentHelper::getPaymentSettings();
-        $currency = ArrayHelper::get($paymentSettings, 'currency', 'USD');
+        if (defined('FLUENTFORMPRO')) {
+            $paymentSettings = \FluentFormPro\Payments\PaymentHelper::getPaymentSettings();
+            $currency = ArrayHelper::get($paymentSettings, 'currency', 'USD');
+            
+            $overViewInfo[] = [
+                'info'  => __('Monthly Total Paid', 'fluentform'),
+                'value' => \FluentFormPro\Payments\PaymentHelper::formatMoney($submissionCounts['total_paid'],
+                    $currency),
+                'title' => __('View', 'fluentform'),
+            ];
+        }
+        
         
         $overViewInfo[] = [
-            'info'     => __('Total Paid', 'fluentform'),
-            'value'    => PaymentHelper::formatMoney($submissionCounts['total_paid'], $currency),
-            'title'    => __('View', 'fluentform'),
-            'view_url' => admin_url('admin.php?page=fluent_forms_payment_entries&filter_by_status=paid'),
+            'info'  => __('Monthly Unread', 'fluentform'),
+            'value' => $submissionCounts['unread'],
+            'title' => __('View', 'fluentform'),
+        
+        ];
+        $overViewInfo[] = [
+            'info'  => __('Monthly Read', 'fluentform'),
+            'value' => $submissionCounts['read'],
+            'title' => __('View', 'fluentform'),
         
         ];
         
         $overViewInfo[] = [
-            'info'     => __('Unread', 'fluentform'),
-            'value'    => $submissionCounts['unread'],
-            'title'    => __('View', 'fluentform'),
-            'view_url' => admin_url('admin.php?page=fluent_forms_all_entries&filter_by_status=unread'),
-        
-        ];
-        $overViewInfo[] = [
-            'info'     => __('Read', 'fluentform'),
-            'value'    => $submissionCounts['read'],
-            'title'    => __('View', 'fluentform'),
-            'view_url' => admin_url('admin.php?page=fluent_forms_all_entries&filter_by_status=read'),
-        
-        ];
-        
-        $overViewInfo[] = [
-            'info'     => __('Total Submissions', 'fluentform'),
-            'value'    => $submissionCounts['total'],
-            'title'    => __('View', 'fluentform'),
-            'view_url' => admin_url('admin.php?page=fluent_forms_all_entries'),
+            'info'  => __('Monthly Total Submissions', 'fluentform'),
+            'value' => $submissionCounts['total'],
+            'title' => __('View', 'fluentform'),
         ];
         
         return $overViewInfo;
@@ -319,8 +359,8 @@ class DashboardController
                 'total_paid',
                 wpFluent()->raw('count(id) as total_count'),
                 wpFluent()->raw('date(created_at) as date'),
-            ])
-            ->where('status', '!=', 'trashed');
+            ]);
+//            ->where('status', '!=', 'trashed');
         if ($status && $status != 'all') {
             $query->where('status', $status);
         }
@@ -360,9 +400,7 @@ class DashboardController
     protected function getSubmissionPerForm()
     {
         global $wpdb;
-        $dateRange = $this->request->get('date_range');
-        $startDate = ArrayHelper::get($dateRange, '0');
-        $endDate = ArrayHelper::get($dateRange, '1');
+        
         $submissionGroup = wpFluent()->table('fluentform_submissions')
             ->select([
                 'fluentform_submissions.form_id',
@@ -370,9 +408,7 @@ class DashboardController
                 wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_submissions.id) as total_count'),
             ])
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_submissions.form_id')
-            ->where('fluentform_submissions.status', '!=', 'trashed')
-            ->where('fluentform_submissions.created_at', '>=', $startDate . ' 00:00:01')
-            ->where('fluentform_submissions.created_at', '<=', $endDate . ' 23:59:59')
+//            ->where('fluentform_submissions.status', '!=', 'trashed')
             ->groupBy('form_id')
             ->get();
         $formattedData = [];
@@ -380,5 +416,71 @@ class DashboardController
             $formattedData[$group->form_title . '#' . $group->form_id] = $group->total_count;
         }
         return $formattedData;
+    }
+    
+    public function updateVisibleCards()
+    {
+        $cards = wp_unslash($this->request->get('visible_cards'));
+        update_option('fluentform_dashboard_visible_cards', $cards, 'no');
+        
+        wp_send_json_success([
+            'message' => 'Dashboard successfully updated',
+        ], 200);
+    }
+    
+    private function getDashboardCards()
+    {
+        
+        $visibleCards = [
+            "Total Forms",
+            "Last Submission",
+            "Total Submission",
+            "Trashed Submissions",
+            "Unread Submissions",
+            "Active Forms",
+            "Inactive Forms",
+            "Highest View",
+            "Highest Submissions",
+            "Monthly Read",
+            "Monthly Unread",
+            "Monthly Total Submissions",
+            "Monthly Submission Chart",
+        ];
+        if (defined('FLUENTFORMPRO')) {
+            $visibleCards = array_merge($visibleCards, [
+                "Paid Submission",
+                "Payments Paid",
+                "Monthly Total Paid",
+            ]);
+        }
+        if (get_option('fluentform_dashboard_visible_cards')) {
+            $visibleCards = get_option('fluentform_dashboard_visible_cards');
+        }
+       return $visibleCards;
+    }
+    
+    private static function getSubmissionStatuses()
+    {
+        $statuses = \FluentForm\App\Helpers\Helper::getEntryStatuses();
+        if (defined('FLUENTFORMPRO')) {
+            $paymentStatuses = \FluentFormPro\Payments\PaymentHelper::getPaymentStatuses();
+            $statuses = array_merge($statuses, $paymentStatuses);
+        }
+        return $statuses;
+    }
+    
+    private function getLastSubmission()
+    {
+        return wpFluent()->table('fluentform_submissions')
+            ->select([
+                'fluentform_submissions.id',
+                'fluentform_submissions.form_id',
+                'fluentform_forms.title',
+                'fluentform_submissions.created_at'
+            ])
+            ->orderBy('fluentform_submissions.id', 'DESC')
+            ->where('fluentform_submissions.status', '!=', 'trashed')
+            ->join('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_submissions.form_id')
+            ->first();
     }
 }

@@ -1,19 +1,19 @@
 <template>
-    <div class="dashboard-card-wrapper top-row">
-        <div class="dashboard-card" v-if="allFormData">
+    <div class="dashboard-card-wrapper top-row"  >
+        <div class="dashboard-card" v-if="Object.entries(cardHeaderData).length > 0" >
             <div class="dashboard-card-info">
                 <div class="dashboard-card-content">
-                    <h1>{{ allFormData.value }}</h1>
-                    <h6> {{ allFormData.info }} </h6>
-                    <div class="form-link" v-if="viewLink(allFormData)" v-html="viewLink(allFormData)"></div>
+                    <h1>{{ cardHeaderData.value }}</h1>
+                    <h6> {{ cardHeaderData.info }} </h6>
+                    <div class="form-link" v-if="viewLink(cardHeaderData)" v-html="viewLink(cardHeaderData)"></div>
                 </div>
             </div>
         </div>
-        <div class="dashboard-card" v-if="Object.entries(firstRow).length > 0">
+        <div class="dashboard-card" v-for="rows in rowsFormatted" v-if="rows.length > 0" >
             <div class="dashboard-card-info ">
                 <div class="dashboard-card-content">
                     <ul class="card-content-list">
-                        <li v-for="item in firstRow">
+                        <li v-for="item in rows">
                             <div class="form-link" v-html="viewLink(item)"></div>
                             <div class="content-list-info">{{ item.value }}</div>
                         </li>
@@ -21,37 +21,32 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-card " v-if="Object.entries(secondRow).length > 0">
-            <div class="dashboard-card-info ">
-                <div class="dashboard-card-content">
-                    <ul class="card-content-list">
-                        <li v-for="item in secondRow">
-                            <div class="form-link" v-html="viewLink(item)"></div>
-                            <span class="content-list-info">{{ item.value }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+
 
     </div>
 </template>
 <script>
     export default {
         name: 'DashboardListCard',
-        props: ['card_data'],
+        props: ['card_data','visible_cards'],
         data() {
             return {
-                firstRow: {},
-                secondRow: {},
+                rowCount: 0,
+                rowsFormatted: [],
             }
         },
         computed: {
-            allFormData() {
-                let totalForms = this.card_data.shift();
+            cardHeaderData() {
+                let cardHeader = this.formattedCardData.shift();
                 this.splitDataInTwoArray();
-                return totalForms;
+                if (cardHeader && this.visible_cards.indexOf(cardHeader.info) !== -1){
+                    return cardHeader;
+                }
+                return [];
             },
+            formattedCardData(){
+                return this.card_data.filter((item) => this.visible_cards.indexOf(item.info) !== -1);
+            }
         },
         methods: {
             viewLink(item) {
@@ -60,17 +55,25 @@
                     let newTablLink = ` <a target="_blank" class="" href="${item.view_url}"><i class="el-icon-edit-outline"></i></a>`;
 
                     return link + newTablLink;
+                }else if (item.info){
+                    return  item.info;
                 }
                 return false;
             },
             splitDataInTwoArray() {
-                const splitIntoTwo = Math.ceil(Object.entries(this.card_data).length) > 3;
-                if (splitIntoTwo) {
-                    this.firstRow = this.card_data.splice(0, 3);
-                    this.secondRow = this.card_data;
+                const visibleCards = this.formattedCardData
+                this.rowCount = Math.ceil(visibleCards.length / 4);
+                this.rowsFormatted = [];
+
+                if (this.rowCount > 1) {
+                    for (let i =0 ; i< this.rowCount ; i ++){
+                        let items = visibleCards.splice(0,4);
+                        this.rowsFormatted.splice(i,0,items)
+                    }
                 } else {
-                    this.firstRow = this.card_data.splice(0, 3);
+                    this.rowsFormatted.push(visibleCards.splice(0,4))
                 }
+
             }
         },
     }
