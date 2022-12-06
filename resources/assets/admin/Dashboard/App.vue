@@ -38,7 +38,7 @@
             <el-row :gutter="0">
                 <el-col class="row-header" >
                     <div class="row-filter-one">
-                        <span> {{ $t('Monthly Submission') }} / {{visibleCards.includes('Monthly Submission Chart') || rowVisibility.monthlySubmissionOverview}}</span>
+                        <span> {{ $t('Monthly Submission') }} </span>
                         <el-date-picker
                                 v-model="startDate"
                                 size="mini"
