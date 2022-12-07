@@ -63,8 +63,8 @@ export default {
             const ItemValues = {
                 label: 'Submission Count',
                 yAxisID: 'byDate',
-                backgroundColor: 'rgba(81, 52, 178, 0.5)',
-                borderColor: '#b175eb',
+                backgroundColor: 'rgb(63 158 255)',
+                borderColor: 'rgb(63 158 255/70%)',
                 data: [],
                 fill: false,
                 gridLines: {
