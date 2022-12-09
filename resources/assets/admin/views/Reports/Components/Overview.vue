@@ -6,29 +6,37 @@
         </div>
 
         <el-row class="overview-details" :gutter="16">
-            <el-col :span="8" :md="4" class="overview-info">
+            <el-col :span="12" :md="6" class="overview-info">
                 <h4>{{ $t('Last Submission') }}</h4>
                 <span>{{ lastSubmissionDate }}</span>
             </el-col>
-            <el-col :span="8" :md="4" class="overview-info">
+            <el-col :span="12" :md="6" class="overview-info">
                 <h4>{{ $t('Views') }}</h4>
                 <span>{{ data.views }}</span>
             </el-col>
-            <el-col :span="8" :md="4" class="overview-info">
-                <h4>{{ $t('IP Views') }}</h4>
+            <el-col :span="12" :md="6" class="overview-info">
+                <h4>{{ $t('Unique Views') }}</h4>
                 <span>{{ data.ip_views }}</span>
             </el-col>
-            <el-col :span="8" :md="4" class="overview-info">
+            <el-col :span="12" :md="6" class="overview-info">
                 <h4>{{ $t('Submission') }}</h4>
                 <span>{{ data.submissions }}</span>
             </el-col>
-            <el-col :span="8" :md="4" class="overview-info">
+            <el-col :span="12" :md="6" class="overview-info">
                 <h4>{{ $t('Conversion Rate') }}</h4>
                 <span>{{ data.conversion }}%</span>
             </el-col>
-            <el-col :span="8" :md="4" class="overview-info">
-                <h4>{{ $t('Ip Conversion Rate') }}</h4>
+            <el-col :span="12" :md="6" class="overview-info">
+                <h4>{{ $t('Unique Conversion Rate') }}</h4>
                 <span>{{ data.ip_conversion }}%</span>
+            </el-col>
+            <el-col :span="12" :md="6" class="overview-info">
+                <h4>{{ $t('Integrations') }}</h4>
+                <span>{{ data.integrations }}</span>
+            </el-col>
+            <el-col :span="12" :md="6" class="overview-info">
+                <h4>{{ $t('Payments') }}</h4>
+                <span>{{ data.payments.join(', ') }}</span>
             </el-col>
         </el-row>
         <subscriber-chart :chart-data="chartData" :maxCumulativeValue="maxCumulativeValue"></subscriber-chart>

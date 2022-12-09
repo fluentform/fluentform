@@ -46,6 +46,8 @@ class Reports
         $total_conversion_rate = $this->conversionRate($total_view, $total_submission);
         $total_ip_conversion_rate = $this->conversionRate($total_ip_view, $total_submission);
         $last_submission = $this->getLastSubmissionDate($formId);
+        $payments = $form->has_payment ? $this->getPaymentReports($formId, $date_range) : false;
+        $integrations = $this->getIntegrationReports($formId, $date_range);
         return [
             "overview"     => [
                 "conversion"      => $total_conversion_rate,
@@ -55,19 +57,21 @@ class Reports
                 "ip_views"        => $total_ip_view,
                 "views"           => $total_view,
                 "submissions"     => $total_submission,
+                "payments"        => $payments ? $payments['transactions']['total']['payments'] : ['0'],
+                "integrations"    => $integrations ? count($integrations) : 0,
                 "date_range"      => $date_range
             ],
             "views"        => [
                 "label"       => __('Views', 'fluentform'),
                 "description" => __('Views for selected period.', 'fluentform'),
-                "ip_label"    => __('Ip Views', 'fluentform'),
+                "ip_label"    => __('Unique Views', 'fluentform'),
                 "total"       => $total_view,
                 "ip_total"    => $total_ip_view,
             ],
             "conversion"   => [
                 "label"       => __('Conversion', 'fluentform'),
                 "description" => __('Conversion Rate for selected period.', 'fluentform'),
-                "ip_label"    => __('Ip Conversion', 'fluentform'),
+                "ip_label"    => __('Unique Conversion', 'fluentform'),
                 "total"       => $total_conversion_rate,
                 "ip_total"    => $total_ip_conversion_rate,
             ],
@@ -81,12 +85,12 @@ class Reports
                 "label"       => __('Integrations', 'fluentform'),
                 "description" => __('Data sent to third party apps over the selected period.'),
                 "url"         => Helper::getFormSettingsUrl($form, 'all-integrations'),
-                "data"        => $this->getIntegrationReports($formId, $date_range)
+                "data"        => $integrations,
             ],
             "payments"     => [
                 "label"       => __('Payments', 'fluentform'),
                 "description" => __('Payments reports over the selected period.'),
-                "data"        => $form->has_payment ? $this->getPaymentReports($formId, $date_range) : false,
+                "data"        => $payments,
             ],
         ];
     }

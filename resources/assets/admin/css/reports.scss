@@ -2,10 +2,6 @@
 @import "../styles/var";
 
 $border: 1px solid #e6e6e6;
-$success-color: #339900;
-$danger-color: #f56c6c;
-$pending-color: #ffc107;
-$info-color: #9278e4;
 .ff_reports {
   .reports_header {
     padding: 20px 0;
@@ -70,15 +66,15 @@ $info-color: #9278e4;
         color: #888;
 
         &.text-danger {
-          color: $danger-color;
+          color: $danger;
         }
 
         &.text-pending {
-          color: $pending-color;
+          color: $info;
         }
 
         &.text-success {
-          color: $success-color;
+          color: $success;
         }
 
         &.text-info {
@@ -86,7 +82,7 @@ $info-color: #9278e4;
         }
 
         &.btn-success, &.btn-info, &.btn-danger {
-          background: $info-color;
+          background: $primary-color;
           color: white;
           padding: 1px 5px;
           margin: 3px;
@@ -98,11 +94,11 @@ $info-color: #9278e4;
         }
 
         &.btn-success {
-          background: $success-color;
+          background: $success;
         }
 
         &.btn-danger {
-          background: $danger-color;
+          background: $danger;
         }
       }
 
@@ -189,24 +185,24 @@ $info-color: #9278e4;
                 .ff-status-item {
                   margin-bottom: 20px;
                   background: white;
-                  box-shadow: 1px 1px 4px -1px #a2a2a2;
+                  border: 1px dotted #a2a2a2;
                   padding: 10px;
                   border-radius: 2px;
 
-                  &.shadow-success {
-                    box-shadow: 1px 1px 4px -1px $success-color;
+                  &.border-success {
+                    border: 1px dotted $success;
                   }
 
-                  &.shadow-danger {
-                    box-shadow: 1px 1px 4px -1px $danger-color;
+                  &.border-danger {
+                    border: 1px dotted $danger;
                   }
 
-                  &.shadow-pending {
-                    box-shadow: 1px 1px 4px -1px $pending-color;
+                  &.border-pending {
+                    border: 1px dotted $info;
                   }
 
-                  &.shadow-info {
-                    box-shadow: 1px 1px 4px -1px $info-color;
+                  &.border-info {
+                    border: 1px dotted $primary-color;
                   }
                 }
               }
@@ -257,13 +253,13 @@ $info-color: #9278e4;
 
         p {
           font-size: 1.3em;
-          color: $info-color;
+          color: $primary-color;
           margin: 0;
         }
 
         i {
           font-size: 3em;
-          color: $info-color;
+          color: $primary-color;
           margin-right: 5px;
         }
       }

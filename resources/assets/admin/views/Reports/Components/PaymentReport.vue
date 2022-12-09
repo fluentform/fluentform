@@ -25,7 +25,7 @@
                 <el-col :span="12" v-for="(item, i) in data.items" :key="i + item.name">
                     <div
                         class="ff-status-item"
-                        :class="'shadow-' + getStatusClassPostfix(item.status)"
+                        :class="'border-' + getStatusClassPostfix(item.status)"
                     >
                         <div class="payment-items-header">
                             <h5>{{ item.name }}

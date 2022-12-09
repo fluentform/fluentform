@@ -27,7 +27,7 @@
                                         <el-col  :span="12" v-for="status in item.statuses" :key="status.status">
                                             <div
                                                 class="ff-status-item"
-                                                :class="{'shadow-success': status.status === 'success', 'shadow-danger': status.status === 'failed'}"
+                                                :class="{'border-success': status.status === 'success', 'border-danger': status.status === 'failed'}"
                                             >
                                                 <h5>{{ status.status }}</h5>
                                                 <span :class="{'text-success': status.status === 'success', 'text-danger': status.status === 'failed'}">{{

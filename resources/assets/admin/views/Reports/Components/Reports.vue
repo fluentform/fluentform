@@ -196,8 +196,10 @@ export default {
                             if (filter_date_range) {
                                 this.filter_date_range = filter_date_range;
                             }
-                            this.getReports()
+                        } else {
+                            this.selectedFormId = this.available_forms[0].id;
                         }
+                        this.getReports()
                     }
                 })
                 .fail(error => {
