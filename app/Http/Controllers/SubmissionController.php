@@ -3,6 +3,7 @@
 namespace FluentForm\App\Http\Controllers;
 
 use Exception;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Services\Submission\SubmissionService;
 
 class SubmissionController extends Controller
@@ -87,6 +88,21 @@ class SubmissionController extends Controller
 
             return $this->sendSuccess(['message' => $message]);
         } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    
+    public function remove(Submission $submission, $submissionId)
+    {
+        try {
+            $submission::remove([$submissionId]);
+            return $this->sendSuccess([
+                'message' => __('Selected submission successfully deleted Permanently', 'fluentform'),
+            ]);
+    
+        } catch (Exception $e){
             return $this->sendError([
                 'message' => $e->getMessage(),
             ]);

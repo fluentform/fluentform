@@ -46,9 +46,11 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
     $router->get('resources', 'SubmissionController@resources');
     $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
 
+    $router->delete('/{entry_id}', 'SubmissionController@remove');
+
     $router->prefix('{entry_id}')->group(function ($router) {
         $router->get('/', 'SubmissionController@find');
-
+    
         $router->post('status', 'SubmissionController@updateStatus');
         $router->post('is-favorite', 'SubmissionController@toggleIsFavorite');
 
