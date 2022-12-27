@@ -16,25 +16,16 @@ class FormPolicy extends Policy
      */
     public function verifyRequest(Request $request)
     {
-        return true;
         return Acl::hasPermission('fluentform_forms_manager');
     }
 
     public function index()
     {
-        return true;
         return Acl::hasPermission('fluentform_dashboard_access');
     }
 
     public function templates()
     {
-        return true;
         return Acl::hasAnyFormPermission();
-    }
-
-    public function find()
-    {
-        return true;
-        return Acl::hasPermission('fluentform_dashboard_access');
     }
 }

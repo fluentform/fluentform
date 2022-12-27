@@ -36,18 +36,32 @@ $router->prefix('settings')->withPolicy('FormPolicy')->group(function ($router) 
 
         $router->get('customizer', 'FormSettingsController@customizer');
         $router->post('customizer', 'FormSettingsController@storeCustomizer');
-        
+
         $router->post('entry-columns', 'FormSettingsController@storeEntryColumns');
     });
 });
 
-$router->prefix('entries')->withPolicy('FormPolicy')->group(function ($router) {
-    $router->get('/', 'EntryController@index');
-    $router->get('resources', 'EntryController@resources');
-    $router->post('bulk-actions', 'EntryController@handleBulkActions');
+$router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function ($router) {
+    $router->get('/', 'SubmissionController@index');
+    $router->get('resources', 'SubmissionController@resources');
+    $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
 
     $router->prefix('{entry_id}')->group(function ($router) {
-        $router->post('status', 'EntryController@updateStatus');
-        $router->post('is-favorite', 'EntryController@toggleIsFavorite');
+        $router->get('/', 'SubmissionController@find');
+
+        $router->post('status', 'SubmissionController@updateStatus');
+        $router->post('is-favorite', 'SubmissionController@toggleIsFavorite');
+
+        $router->get('logs', 'SubmissionLogController@get');
+        $router->delete('logs', 'SubmissionLogController@remove');
+
+        $router->get('notes', 'SubmissionNoteController@get');
+        $router->post('notes', 'SubmissionNoteController@store');
     });
+});
+
+$router->prefix('logs')->withPolicy('SubmissionPolicy')->group(function ($router) {
+    $router->get('/', 'LogController@get');
+    $router->delete('/', 'LogController@remove');
+    $router->get('/filters', 'LogController@getFilters');
 });

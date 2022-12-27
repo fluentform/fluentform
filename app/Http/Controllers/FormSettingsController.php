@@ -3,10 +3,10 @@
 namespace FluentForm\App\Http\Controllers;
 
 use Exception;
-use FluentForm\App\Services\Entry\EntryService;
 use FluentForm\App\Services\Settings\Customizer;
 use FluentForm\App\Services\Settings\SettingsService;
 use FluentForm\Framework\Validator\ValidationException;
+use FluentForm\App\Services\Submission\SubmissionService;
 
 class FormSettingsController extends Controller
 {
@@ -79,10 +79,10 @@ class FormSettingsController extends Controller
         }
     }
 
-    public function storeEntryColumns(EntryService $entryService, $id)
+    public function storeEntryColumns(SubmissionService $submissionService, $id)
     {
         try {
-            $entryService->storeColumnSettings($this->request->all());
+            $submissionService->storeColumnSettings($this->request->all());
 
             return $this->sendSuccess([
                 'message' => __('The column display order has been saved.', 'fluentform'),

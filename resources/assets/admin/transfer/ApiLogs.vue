@@ -15,9 +15,9 @@
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_form" :placeholder="$t('Select Form')">
                     <el-option
                         v-for="item in available_forms"
-                        :key="item.form_id"
+                        :key="item.id"
                         :label="item.title"
-                        :value="item.form_id">
+                        :value="item.id">
                     </el-option>
                 </el-select>
             </div>
@@ -26,9 +26,9 @@
                 <el-select  @change="getLogs()" size="mini" clearable v-model="selected_component" :placeholder="$t('Select Component')">
                     <el-option
                         v-for="item in available_components"
-                        :key="item"
-                        :label="getReadableName(item)"
-                        :value="item"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
                         style="text-transform:capitalize;"
                     >
                     </el-option>
@@ -39,9 +39,9 @@
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_status" :placeholder="$t('Select Status')">
                     <el-option
                         v-for="item in available_statuses"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
                     </el-option>
                 </el-select>
             </div>
@@ -72,7 +72,7 @@
                         width="120px"
                         :label="$t('Submission Id')">
                     <template slot-scope="props">
-                        <a :href="props.row.submission_url">#{{props.row.origin_id}}</a>
+                        <a :href="props.row.submission_url">#{{props.row.submission_id}}</a>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -90,7 +90,7 @@
                 <el-table-column
                     :label="$t('Component')">
                     <template slot-scope="props">
-                        <div style="text-transform: capitalize">{{getReadableName(props.row.action)}}</div>
+                        <div style="text-transform: capitalize">{{props.row.component}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -141,7 +141,7 @@
                 page_number: 1,
                 per_page: 20,
                 total: 0,
-                available_statuses: ['pending', 'processing', 'success', 'failed'],
+                available_statuses: [],
                 available_components: [],
                 available_forms: [],
                 selected_form: '',
@@ -153,22 +153,25 @@
         methods: {
             getLogs() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_api_logs',
-                    page_number: this.page_number,
+                
+                const url = FluentFormsGlobal.$rest.route('getLogs');
+
+                FluentFormsGlobal.$rest.get(url, {
+                    page: this.page_number,
                     per_page: this.per_page,
                     form_id: this.selected_form,
                     status: this.selected_status,
-                    component: this.selected_component
+                    component: this.selected_component,
+                    type: 'api',
                 })
                     .then(response => {
-                        this.logs = response.data.logs;
-                        this.total = response.data.total;
+                        this.logs = response.data;
+                        this.total = response.total;
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
@@ -184,21 +187,20 @@
                   });
                 }
 
-                FluentFormsGlobal.$post({
-                    action: 'fluentform_delete_api_logs_by_ids',
-                    log_ids: logIds,
-                })
+                const url = FluentFormsGlobal.$rest.route('deleteLogs');
+
+                FluentFormsGlobal.$rest.delete(url, {log_ids: logIds, type: 'api'})
                     .then(response => {
                         this.page_number = 1;
                         this.getLogs();
                         this.multipleSelection = [];
-                        this.$success(response.data.message);
+                        this.$success(response.message);
 
                     })
-                    .fail(error => {
-                        this.$fail(error.responseJSON.message);
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
@@ -206,17 +208,14 @@
                 this.multipleSelection = val;
             },
             getAvailableFilters() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_activity_api_log_filters'
-                })
+                const url = FluentFormsGlobal.$rest.route('getLogFilters');
+
+                FluentFormsGlobal.$rest.get(url, {type: 'api'})
                     .then(response => {
-                        this.available_statuses = response.data.api_statuses;
-                        this.available_forms = response.data.available_forms;
-                        this.available_components = response.data.available_components;
+                        this.available_statuses = response.statuses;
+                        this.available_forms = response.forms;
+                        this.available_components = response.components;
                     })
-                    .fail(error => {
-                        console.log(error);
-                    });
             },
             getReadableName(actionName) {
                 if(!actionName) {

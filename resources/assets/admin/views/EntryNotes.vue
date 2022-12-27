@@ -6,7 +6,9 @@
                 {{$t('Submission Notes')}}
             </div>
             <div class="info_box_header_actions">
-                <el-button @click="add_note_box = !add_note_box" size="mini" type="primary">{{ $t('Add Note') }}</el-button>
+                <el-button @click="add_note_box = !add_note_box" size="mini" type="primary" icon="el-icon-plus">
+                    {{ $t('Add Note') }}
+                </el-button>
             </div>
         </div>
         <div v-loading="loading" class="entry_info_body">
@@ -18,7 +20,7 @@
                         :placeholder="$t('Please Provide Note Content')"
                         v-model="new_note.content">
                     </el-input>
-                    <el-button :loading="isAddingNote" @click="addNewNote()" size="small" type="success">{{ $t('Submit Note') }}</el-button>
+                    <el-button :loading="isAddingNote" @click="addNewNote()" size="mini" type="primary" plain>{{ $t('Submit Note') }}</el-button>
                 </div>
                 <template v-if="notes && notes.length">
                     <div v-for="activity in showingNotes" :key="activity.id"
@@ -82,37 +84,35 @@
         methods: {
             fetchNotes() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-entry-notes', 
-                    form_id: this.form_id, 
-                    entry_id: this.entry_id,
+                
+                const url = FluentFormsGlobal.$rest.route('getSubmissionNotes', this.entry_id);
+
+                FluentFormsGlobal.$rest.get(url, {
                     api_log: this.api_log
                 })
-                    .then(response => {
-                        this.notes = response.data.notes;
+                    .then(notes => {
+                        this.notes = notes;
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
             addNewNote() {
                 this.isAddingNote = true;
+
+                const url = FluentFormsGlobal.$rest.route('storeSubmissionNote', this.entry_id);
+
                 let data = {
-                    action: 'fluentform-add-entry-note',
                     note: this.new_note,
-                    entry_id: this.entry_id,
                     form_id: this.form_id
                 };
 
-                FluentFormsGlobal.$post(data)
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        this.$notify({
-                            title: 'Success',
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 30
-                        });
-                        this.notes.unshift(response.data.note);
+                        this.$success(response.message);
+
+                        this.notes.unshift(response.note);
+
                         this.new_note = {
                             content: '',
                             email_id: '',
@@ -120,10 +120,10 @@
                             status: 'info'
                         };
                     })
-                    .fail(error => {
+                    .catch(error => {
                         
                     })
-                    .always(() =>{
+                    .finally(() =>{
                         this.isAddingNote = false;
                     })
             }

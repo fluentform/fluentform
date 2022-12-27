@@ -2,7 +2,7 @@
 
 namespace FluentForm\Database\Migrations;
 
-class FormSubmissionMeta
+class Logs
 {
     /**
      * Migrate the table.
@@ -15,23 +15,24 @@ class FormSubmissionMeta
 
         $charsetCollate = $wpdb->get_charset_collate();
 
-        $table = $wpdb->prefix . 'fluentform_submission_meta';
+        $table = $wpdb->prefix . 'fluentform_logs';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
             $sql = "CREATE TABLE $table (
-			  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			  `response_id` BIGINT(20) UNSIGNED NULL,
-			  `form_id` INT UNSIGNED NULL,
-			  `meta_key` VARCHAR(45) NULL,
-			  `value` LONGTEXT NULL,
-			  `status` VARCHAR(45) NULL,
-			  `user_id` INT UNSIGNED NULL,
-			  `name` VARCHAR(45) NULL,
+			  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+			  `parent_source_id` INT UNSIGNED NULL,
+			  `source_type` VARCHAR(255) NULL,
+			  `source_id` INT UNSIGNED NULL,
+			  `component` VARCHAR(255) NULL,
+			  `status` CHAR(30) NULL,
+			  `title` VARCHAR(255) NOT NULL,
+			  `description` LONGTEXT NULL,
 			  `created_at` TIMESTAMP NULL,
-			  `updated_at` TIMESTAMP NULL,
-			  PRIMARY KEY (`id`)) $charsetCollate;";
+			  PRIMARY KEY (`id`) ) $charsetCollate;";
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
             dbDelta($sql);
         }
+
+        update_option('fluentform_db_fluentform_logs_added', true, 'no');
     }
 }

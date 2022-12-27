@@ -42,14 +42,24 @@ class Route {
     storeFormSettingsCustomizer = this.getFormSettingsCustomizer;
     storeEntryColumns = this.getFormSettings + '/entry-columns';
 
-    getEntries = "entries";
-    getEntriesResources = this.getEntries + '/resources';
-    handleEntriesBulkActions = this.getEntries + '/bulk-actions';
+    getSubmissions = "submissions";
+    getSubmissionsResources = this.getSubmissions + '/resources';
+    handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';
 
-    findEntry = this.getEntries + '/{param}';
-    deleteEntry = this.findEntry; // not implemented
-    updateEntryStatus = this.findEntry + '/status';
-    toggleEntryIsFavorite = this.findEntry + '/is-favorite';
+    findSubmission = this.getSubmissions + '/{param}'; // not implemented
+    deleteSubmission = this.findSubmission;
+    updateSubmissionStatus = this.findSubmission + '/status';
+    toggleSubmissionIsFavorite = this.findSubmission + '/is-favorite';
+    
+    getSubmissionLogs = this.findSubmission + '/logs';
+    deleteSubmissionLogs = this.findSubmission + '/logs';
+
+    getSubmissionNotes = this.findSubmission + '/notes';
+    storeSubmissionNote = this.findSubmission + '/notes';
+    
+    getLogs = 'logs';
+    getLogFilters = this.getLogs + '/filters';
+    deleteLogs = this.getLogs;
 }
 
 export default new Route();

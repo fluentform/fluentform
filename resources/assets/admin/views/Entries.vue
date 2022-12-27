@@ -504,6 +504,10 @@
             }
         },
         computed: {
+            /**
+             * Compute bulk action options
+             * @return {Array}
+             */
             bulkActions() {
                 let bulk_actions = {
                     'statuses': [],
@@ -539,6 +543,10 @@
 
                 return bulk_actions;
             },
+            /**
+             * Compute selected entry IDs
+             * @return {Array}
+             */
             selection_ids() {
                 let selectedEntries = [];
 
@@ -547,6 +555,11 @@
                 });
                 return selectedEntries;
             },
+
+            /**
+             * Compute columns order
+             * @return {Array}
+             */
             formattedColumn() {
                 let columnsOrder = [];
 
@@ -587,10 +600,14 @@
             },
             getEntryResources() {
                 let data = {
-                    form_id: this.form_id
+                    form_id: this.form_id,
+                    counts: true,
+                    labels: true,
+                    visibleColumns: true,
+                    columnsOrder: true,
                 };
                 
-                const url = FluentFormsGlobal.$rest.route('getEntriesResources');
+                const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
 
                 FluentFormsGlobal.$rest.get(url, data)
                     .then((response) => {
@@ -602,6 +619,9 @@
                     })
                     .catch((error) => {
 
+                    })
+                    .finally(() => {
+                        this.getData();
                     });
             },
             getData() {
@@ -622,7 +642,7 @@
 
                 this.loading = true;
                 
-                const url = FluentFormsGlobal.$rest.route('getEntries');
+                const url = FluentFormsGlobal.$rest.route('getSubmissions');
 
                 FluentFormsGlobal.$rest.get(url, data)
                     .then((response) => {
@@ -651,11 +671,11 @@
             },
             removeEntry(entryId, index) {
                 let action = 'post';
-                let route = 'updateEntryStatus';
+                let route = 'updateSubmissionStatus';
 
                 if (this.entry_type === 'trashed') {
                     action = 'delete';
-                    route = 'deleteEntry';
+                    route = 'deleteSubmission';
                 }
 
                 const url = FluentFormsGlobal.$rest.route(route, entryId);
@@ -691,12 +711,11 @@
                     action_type: actionType
                 };
 
-                const url = FluentFormsGlobal.$rest.route('handleEntriesBulkActions');
+                const url = FluentFormsGlobal.$rest.route('handleSubmissionsBulkActions');
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.$success(response.message);
-                        this.getData();
                         this.getEntryResources();
                     })
                     .catch(error => {
@@ -751,7 +770,7 @@
                     is_favourite
                 };
 
-                const url = FluentFormsGlobal.$rest.route('toggleEntryIsFavorite', entryId)
+                const url = FluentFormsGlobal.$rest.route('toggleSubmissionIsFavorite', entryId)
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
@@ -775,7 +794,7 @@
                     status
                 };
 
-                const url = FluentFormsGlobal.$rest.route('updateEntryStatus', entryId);
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', entryId);
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
@@ -795,7 +814,7 @@
                     status: 'read'
                 };
 
-                const url = FluentFormsGlobal.$rest.route('updateEntryStatus', entryId);
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', entryId);
 
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
@@ -876,8 +895,8 @@
                         console.log(error);
                     });
             },
-            getVisibleColumns(){
-                if(this.visibleColumns === null){
+            getVisibleColumns() {
+                if (this.visibleColumns === null){
                     //visibleColumns is not set initially so set all columns to visible
                     this.visibleColumns = Object.keys(this.columns);
                 }
@@ -888,7 +907,6 @@
             }
         },
         mounted() {
-            this.getData();
             this.getEntryResources();
             this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
             (new ClipboardJS('.copy')).on('success', (e) => {

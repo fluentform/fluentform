@@ -13,11 +13,11 @@
         </div>
         <div v-loading="loading" class="entry_info_body">
             <div class="wpf_entry_details">
-                <template v-if="logs && logs.length && log_type == 'logs'">
+                <template v-if="logs && logs.length">
                     <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
                         <div class="wpf_entry_label">
                             <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
-                                class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> {{ $t('at') }}
+                                class="entry_submission_log_component">{{log.title}}</span> {{ $t('at') }}
                             {{log.created_at}}
                             <span class="pull-right">
                               <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
@@ -26,20 +26,7 @@
                         <div class="entry_submission_log_des" v-html="log.description"></div>
                     </div>
                 </template>
-                <template v-if="logs && logs.length && log_type == 'api_calls'">
-                    <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
-                        <div class="wpf_entry_label">
-                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
-                                class="entry_submission_log_component">{{getReadableName(log.action)}}</span> {{ $t('at') }}
-                            {{log.created_at}}
-                            <span class="pull-right">
-                              <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
-                            </span>
-                        </div>
-                        <div class="entry_submission_log_des" v-html="log.note"></div>
-                    </div>
-                </template>
-                <template v-if="!logs || !logs.length">
+                <template v-else>
                     <h3>{{$t('No Logs found')}}</h3>
                 </template>
             </div>
@@ -73,56 +60,37 @@
         methods: {
             fetchLogs() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-entry-logs',
-                    entry_id: this.entry_id,
+                
+                const url = FluentFormsGlobal.$rest.route('getSubmissionLogs', this.entry_id);
+                
+                FluentFormsGlobal.$rest.get(url, {
                     source_type: 'submission_item',
                     log_type: this.log_type
                 })
-                    .then(response => {
-                        this.logs = response.data.logs;
+                    .then(logs => {
+                        this.logs = logs;
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
-            getReadableName(actionName) {
-                if (!actionName) {
-                    return 'n/a';
-                }
-                return actionName.replace('fluentform_integration_notify_', '')
-                    .replace('fluentform_', '')
-                    .replace('_notification_feed', '')
-                    .replace('_', ' ');
-
-            },
+            
             removeLog(logId) {
-                let action = '';
-                if (this.log_type === 'logs') {
-                  action = 'fluentform_delete_logs_by_ids';
-                } else if (this.log_type === 'api_calls') {
-                  action = 'fluentform_delete_api_logs_by_ids';
-                } else {
-                  return;
-                }
-                  let data = {
-                    action: action,
+                const url = FluentFormsGlobal.$rest.route('deleteSubmissionLogs', this.entry_id);
+                
+                let data = {
                     log_ids: [logId],
-                  };
+                    log_type: this.log_type
+                };
 
-                  FluentFormsGlobal.$post(data)
-                      .then(response => {
-                        this.$notify({
-                          title: 'Success',
-                          message: response.data.message,
-                          type: 'success',
-                          offset: 30
-                        });
+                FluentFormsGlobal.$rest.delete(url, data)
+                    .then(response => {
+                        this.$success(response.message);
                         this.fetchLogs();
-                      })
-                      .fail(error => {
+                    })
+                    .catch(error => {
                         console.log(error);
-                      });
+                    });
             },
         },
         mounted() {

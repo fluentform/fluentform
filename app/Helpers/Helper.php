@@ -94,9 +94,9 @@ class Helper
     public static function getEntryStatuses($form_id = false)
     {
         $statuses = apply_filters('fluentform_entry_statuses_core', [
-            'unread' => 'Unread',
-            'read'   => 'Read',
-            'favorites' => 'Favorites'
+            'unread'    => 'Unread',
+            'read'      => 'Read',
+            'favorites' => 'Favorites',
         ], $form_id);
         $statuses['trashed'] = 'Trashed';
 
@@ -717,5 +717,22 @@ class Helper
             'namespace' => $namespace,
             'version'   => $version,
         ];
+    }
+
+    public static function getLogInitiator($action, $type = 'log')
+    {
+        if ('log' === $type) {
+            $title = ucwords(implode(' ', preg_split('/(?=[A-Z])/', $action)));
+        } else {
+            $title = ucwords(
+                str_replace(
+                    ['fluentform_integration_notify_', 'fluentform_', '_notification_feed', '_'],
+                    ['', '', '', ' '],
+                    $action
+                )
+            );
+        }
+
+        return $title;
     }
 }

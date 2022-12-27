@@ -59,9 +59,9 @@
                     <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
                             v-model="condition.value" :placeholder="$t('Select')" class="condition-value">
                         <option value="" selected >- {{ $t('Select') }} -</option>
-                        <option v-for="(label, key, i) in dependencies[condition.field].options"
-                                :key="key"
-                                :value="key">{{ label }}
+                        <option v-for="(option, i) in dependencies[condition.field].options"
+                                :key="i"
+                                :value="option.value">{{ option.label }}
                         </option>
                     </select>
                 </template>
@@ -167,7 +167,7 @@
                         if (this.editItem.uniqElKey != formItem.uniqElKey) {
                             if (['terms_and_condition', 'gdpr_agreement'].includes(formItem.element)) {
                                 dependencies[formItem.attributes.name] = {
-                                    options: {'on': 'Checked'},
+                                    options: this.formatOptions({'on': 'Checked'}),
                                     field_label: formItem.settings.label
                                 }
                             } else if (['address', 'input_name'].includes(formItem.element)) {
@@ -175,11 +175,11 @@
                                     if (item.settings.visible) {
                                         let name = formItem.attributes.name + '[' + item.attributes.name + ']';
                                         dependencies[name] = {
-                                            options: item.options,
+                                            options: item.options ? this.formatOptions(item.options) : null,
                                             field_label: formItem.attributes.name + '[' + item.settings.label + ']'
                                         };
                                         if (item.element == 'select_country') {
-                                            dependencies[name]['options'] = window.FluentFormApp.countries;
+                                            dependencies[name]['options'] = this.formatOptions(window.FluentFormApp.countries);
                                         }
                                     }
                                 });
@@ -187,31 +187,31 @@
                                 this.mapElements(formItem.settings.data_source.headers, item => {
                                     let name = formItem.attributes.name + '[' + item + ']';
                                     dependencies[name] = {
-                                        options: formItem.options || null,
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
                                         field_label: formItem.attributes.name + '[' + item + ']'
                                     };
                                 });
                             } else if (formItem.element == 'select_country') {
                                 dependencies[formItem.attributes.name] = {
-                                    options: window.FluentFormApp.countries,
+                                    options: this.formatOptions(window.FluentFormApp.countries),
                                     field_label: formItem.settings.label
                                 };
                             } else if (['input_radio', 'select', 'input_checkbox'].includes(formItem.element)) {
-                                let options = formItem.options;
+                                let options = formItem.options ? this.formatOptions(formItem.options) : null;
                                 if (!options) {
-                                    options = {};
-                                    each(formItem.settings.advanced_options, (optionItem) => {
-                                        options[optionItem.value] = optionItem.label;
-                                    });
+                                    options = formItem.settings.advanced_options;
                                 }
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
                                     field_label: formItem.settings.label
                                 }
                             } else if (formItem.element == 'payment_method') {
-                                let options = {};
+                                let options = [];
                                 each(formItem.settings.payment_methods, (optionItem, itemName) => {
-                                    options[itemName] = optionItem.title;
+                                    options.push({
+                                        label: optionItem.title,
+                                        value: itemName
+                                    })
                                 });
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
@@ -224,20 +224,15 @@
                                         field_label: formItem.settings.label
                                     }
                                 } else {
-                                    let options = {};
-                                    each(formItem.settings.pricing_options, (optionItem) => {
-                                        options[optionItem.label] = optionItem.label;
-                                    });
-
                                     dependencies[formItem.attributes.name] = {
-                                        options: options,
+                                        options: formItem.settings.pricing_options,
                                         field_label: formItem.settings.label
                                     }
                                 }
                             } else {
                                 if (formItem.attributes.name) {
                                     dependencies[formItem.attributes.name] = {
-                                        options: formItem.options || null,
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
                                         field_label: formItem.settings.label
                                     }
                                 }
@@ -267,6 +262,16 @@
                 if (!this.conditional_logics.conditions.length) {
                     this.conditional_logics.conditions.push(this.emptyRules);
                 }
+            },
+            formatOptions(items) {
+                let options = [];
+                
+                each(items, (value, key) => options.push({
+                    label: value,
+                    value: key
+                }));
+
+                return options;
             }
         },
         beforeMount() {

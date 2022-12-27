@@ -225,7 +225,7 @@
                 entry_type: this.$route.query.type || 'all',
                 developer_mode: true,
                 form_id: window.fluent_form_entries_vars.form_id,
-                entry_id: this.$route.params.entry_id,
+                entry_id: Number.parseInt(this.$route.params.entry_id),
                 nextId: null,
                 prevId: null,
                 order_data: null,
@@ -234,7 +234,6 @@
                     total: null,
                     current_page: this.$route.query.current_page
                 },
-                entry_statuses: window.fluent_form_entries_vars.entry_statuses,
                 entry_position: this.$route.query.pos,
                 operator: null,
                 currentSerialNo: null,
@@ -246,105 +245,71 @@
                 extraCards :{}
             }
         },
+        computed: {
+            entry_statuses() {
+                let statuses = {...window.fluent_form_entries_vars.entry_statuses}
+
+                delete statuses['favorites'];
+
+                return statuses;
+            }
+        },
         methods: {
             getEntry() {
-                let data = {
-                    action: 'fluentform-get-entry',
-                    current_page: this.paginate.current_page,
-                    form_id: this.form_id,
-                    entry_id: this.entry_id,
-                    entry_type: this.entry_type,
-                    search: this.search_string,
-                    sort_by: this.sort_by,
-                };
-                this.loading = true;
-                FluentFormsGlobal.$get(data)
-                    .then((res) => {
-                        if (res.data.submission && res.data.submission.id) {
-                            this.entry = res.data.submission;
-                            
-                            this.original_data = JSON.parse(res.data.submission.response);
-                            this.labels = res.data.labels;
-                            this.formFields = res.data.fields;
-                            this.currentSerialNo = this.entry.myRowSerial;
-                            this.entry_id = this.entry.id;
-                            this.order_data = res.data.order_data;
-                            this.widgets = res.data.widgets;
-                            this.extraCards = res.data.extraCards;
+                const url = FluentFormsGlobal.$rest.route('findSubmission', this.entry_id);
 
-                            this.nextId = res.data.next && res.data.next.id;
-                            this.prevId = res.data.prev && res.data.prev.id;
+                FluentFormsGlobal.$rest.get(url)
+                    .then(submission => {
+                        this.entry = submission;
+                        this.original_data = JSON.parse(submission.response);
+                        this.currentSerialNo = this.entry.myRowSerial;
+                        this.entry_id = this.entry.id;
 
+                        if (this.entry_id != this.$route.params.entry_id) {
                             this.$router.push({
                                 name: 'form-entry', params: {entry_id: this.entry.id},
                                 query: this.$route.query
                             });
-
-                            ffEntriesEvents.$emit(
-                                'change-title',
-                                `Entry ${ this.entry.serial_number || '' }`
-                            );
-
-                        } else {
-                            this.$notify.warning({
-                                message: this.$t('No entry found.'),
-                                offset: 30
-                            });
                         }
+
+                        ffEntriesEvents.$emit(
+                            'change-title',
+                            `Entry ${ this.entry.serial_number || '' }`
+                        );
                     })
-                    .fail((error) => {
-                        console.log(error);
-                        this.$notify.warning({
-                            message: error.responseJSON.data.message,
-                            offset: 30
-                        });
+                    .then(() => {
+                        this.getEntryResources();
                     })
-                    .always(() => {
+                    .catch(error => {
+                        this.$fail(error.message);
+                    })
+                    .finally(() => {
                         this.loading = false;
                     });
             },
             changeFavorite() {
-                let newStatus = this.entry.is_favourite;
-                if(newStatus == '0' || newStatus === 0) {
-                    newStatus = 1;
-                } else {
-                    newStatus = '0';
-                }
+                const url = FluentFormsGlobal.$rest.route('toggleSubmissionIsFavorite', this.entry_id);
 
-                let data = {
-                    action: 'fluentform-change-entry-favorites',
-                    form_id: this.form_id,
-                    entry_id: this.entry_id,
-                    is_favourite: newStatus
-                };
-
-                FluentFormsGlobal.$post(data)
+                FluentFormsGlobal.$rest.post(url)
                     .then(response => {
-                        this.entry.is_favourite = newStatus;
+                        this.entry.is_favourite = response.is_favourite;
+                        this.$success(response.message);
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
             handleStatusChange(status) {
-                let data = {
-                    action: 'fluentform-change-entry-status',
-                    form_id: this.form_id,
-                    entry_id: this.entry_id,
-                    status: status
-                };
+                let data = {status: status};
 
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('updateSubmissionStatus', this.entry_id);
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.entry.status = status;
-                        this.$notify({
-                            title: 'Success',
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 30
-                        });
+                        this.$success(response.message);
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     });
             },
@@ -420,7 +385,37 @@
                 };
 
                 return JSON.stringify(data, null, 8);
-            }
+            },
+            getEntryResources() {
+                let data = {
+                    form_id: this.form_id,
+                    entry_id: this.entry_id,
+                    fields: true,
+                    labels: true,
+                    next: true,
+                    previous: true,
+                    cards: true,
+                    widgets: true,
+                    orderData: true,
+                };
+                
+                const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
+
+                FluentFormsGlobal.$rest.get(url, data)
+                    .then((response) => {
+                        this.labels = response.labels;
+                        this.formFields = response.fields;
+                        this.order_data = response.orderData;
+                        this.widgets = response.widgets;
+                        this.extraCards = response.cards;
+
+                        this.nextId = response.next && response.next.id;
+                        this.prevId = response.previous && response.previous.id;
+                    })
+                    .catch((error) => {
+                        this.$fail(error.message);
+                    });
+            },
         },
         mounted() {
             this.getEntry();

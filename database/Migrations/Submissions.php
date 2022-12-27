@@ -2,7 +2,7 @@
 
 namespace FluentForm\Database\Migrations;
 
-class FormSubmissions
+class Submissions
 {
     /**
      * Migrate the table.

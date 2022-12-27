@@ -2,14 +2,14 @@
 
 namespace FluentForm\Database;
 
+use FluentForm\Database\Migrations\Logs;
 use FluentForm\Database\Migrations\Forms;
-use FluentForm\Database\Migrations\FormLogs;
 use FluentForm\Database\Migrations\FormMeta;
+use FluentForm\Database\Migrations\Submissions;
 use FluentForm\Database\Migrations\FormAnalytics;
-use FluentForm\Database\Migrations\FormSubmissions;
+use FluentForm\Database\Migrations\SubmissionMeta;
 use FluentForm\Database\Migrations\ScheduledActions;
-use FluentForm\Database\Migrations\FormSubmissionMeta;
-use FluentForm\Database\Migrations\FormSubmissionDetails;
+use FluentForm\Database\Migrations\SubmissionDetails;
 
 class DBMigrator
 {
@@ -17,11 +17,11 @@ class DBMigrator
     {
         Forms::migrate();
         FormMeta::migrate();
-        FormSubmissions::migrate(true);
-        FormSubmissionMeta::migrate();
+        Submissions::migrate(true);
+        SubmissionMeta::migrate();
         FormAnalytics::migrate();
-        FormSubmissionDetails::migrate();
-        FormLogs::migrate();
+        SubmissionDetails::migrate();
+        Logs::migrate();
         ScheduledActions::migrate();
     }
 }

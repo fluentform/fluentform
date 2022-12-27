@@ -15,9 +15,9 @@
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_form" :placeholder="$t('Select Form')">
                     <el-option
                         v-for="item in available_forms"
-                        :key="item.form_id"
+                        :key="item.id"
                         :label="item.title"
-                        :value="item.form_id">
+                        :value="item.id">
                     </el-option>
                 </el-select>
             </div>
@@ -26,9 +26,9 @@
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_component" :placeholder="$t('Select Component')">
                     <el-option
                         v-for="item in available_components"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
                     </el-option>
                 </el-select>
             </div>
@@ -37,9 +37,9 @@
                 <el-select @change="getLogs()" size="mini" clearable v-model="selected_status" :placeholder="$t('Select Status')">
                     <el-option
                         v-for="item in available_statuses"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
                     </el-option>
                 </el-select>
             </div>
@@ -147,9 +147,9 @@
                 logs: [],
                 loading: false,
                 page_number: 1,
-                per_page: 20,
+                per_page: 10,
                 total: 0,
-                available_statuses: ['pending', 'processing', 'success', 'failed'],
+                available_statuses: [],
                 available_components: [],
                 available_forms: [],
                 selected_form: '',
@@ -161,52 +161,53 @@
         methods: {
             getLogs() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_all_logs',
-                    page_number: this.page_number,
+
+                const url = FluentFormsGlobal.$rest.route('getLogs');
+
+                FluentFormsGlobal.$rest.get(url, {
+                    page: this.page_number,
                     per_page: this.per_page,
                     form_id: this.selected_form,
                     status: this.selected_status,
                     component: this.selected_component
                 })
                     .then(response => {
-                        this.logs = response.data.logs;
-                        this.total = response.data.total;
+                        this.logs = response.data;
+                        this.total = response.total;
                     })
-                    .fail(error => {
+                    .catch(error => {
                         console.log(error);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
             deleteItems(singlelogId = false) {
-              this.loading = true;
-              let logIds = [];
+                this.loading = true;
+                let logIds = [];
 
-              if (singlelogId) {
-                logIds = [singlelogId]
-              } else {
-                each(this.multipleSelection, (item) => {
-                  logIds.push(item.id);
-                });
-              }
+                if (singlelogId) {
+                    logIds = [singlelogId]
+                } else {
+                    each(this.multipleSelection, (item) => {
+                    logIds.push(item.id);
+                    });
+                }
 
-                FluentFormsGlobal.$post({
-                    action: 'fluentform_delete_logs_by_ids',
-                    log_ids: logIds,
-                })
+                const url = FluentFormsGlobal.$rest.route('deleteLogs');
+
+                FluentFormsGlobal.$rest.delete(url, {log_ids: logIds})
                     .then(response => {
                         this.page_number = 1;
                         this.getLogs();
                         this.multipleSelection = [];
-                        this.$success(response.data.message);
+                        this.$success(response.message);
 
                     })
-                    .fail(error => {
-                        this.$fail(error.responseJSON.message);
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
@@ -214,17 +215,14 @@
                 this.multipleSelection = val;
             },
             getAvailableFilters() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_activity_log_filters'
-                })
+                const url = FluentFormsGlobal.$rest.route('getLogFilters');
+
+                FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        this.available_statuses = response.data.available_statuses;
-                        this.available_forms = response.data.available_forms;
-                        this.available_components = response.data.available_components;
+                        this.available_statuses = response.statuses;
+                        this.available_forms = response.forms;
+                        this.available_components = response.components;
                     })
-                    .fail(error => {
-                        console.log(error);
-                    });
             },
         },
         mounted() {

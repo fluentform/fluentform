@@ -343,20 +343,26 @@ class ShortCodeParser
         } elseif ('http_referer' === $key) {
             return wp_get_referer();
         } elseif (0 === strpos($key, 'pdf.download_link.')) {
-            return apply_filters('fluentform_shortcode_parser_callback_pdf.download_link.public', $key, self::getInstance());
+            return apply_filters('fluentform_shortcode_parser_callback_pdf.download_link.public', $key, static::getInstance());
+        } elseif (false !== strpos($key, 'random_string.')) {
+            $exploded = explode('.', $key);
+            $prefix = array_pop($exploded);            
+            $value = $prefix . uniqid();
+
+            return apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, static::getInstance());
         }
 
         $groups = explode('.', $key);
         if (count($groups) > 1) {
             $group = array_shift($groups);
             $property = implode('.', $groups);
-            $handlerValue = apply_filters('fluentform_smartcode_group_' . $group, $property, self::getInstance());
+            $handlerValue = apply_filters('fluentform_smartcode_group_' . $group, $property, static::getInstance());
             if ($handlerValue != $property) {
                 return $handlerValue;
             }
         }
         // This fallback actually
-        $handlerValue = apply_filters('fluentform_shortcode_parser_callback_' . $key, '{' . $key . '}', self::getInstance());
+        $handlerValue = apply_filters('fluentform_shortcode_parser_callback_' . $key, '{' . $key . '}', static::getInstance());
 
         if ($handlerValue) {
             return $handlerValue;

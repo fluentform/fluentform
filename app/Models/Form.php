@@ -89,6 +89,8 @@ class Form extends Model
 
     public static function prepare($attributes = [])
     {
+        $now = current_time('mysql');
+
         $data = [
             'title'               => Arr::get($attributes, 'title', 'My New Form'),
             'status'              => Arr::get($attributes, 'status', 'published'),
@@ -98,8 +100,8 @@ class Form extends Model
             'type'                => Arr::get($attributes, 'type', 'form'),
             'conditions'          => Arr::get($attributes, 'conditions'),
             'created_by'          => get_current_user_id(),
-            'created_at'          => current_time('mysql'),
-            'updated_at'          => current_time('mysql'),
+            'created_at'          => $now,
+            'updated_at'          => $now,
         ];
 
         return apply_filters(
@@ -221,5 +223,31 @@ class Form extends Model
             'fluentform/advanced_validation_settings',
             $settings
         );
+    }
+
+    public static function remove($formId)
+    {
+        static::where('id', $formId)->delete();
+
+        Submission::where('form_id', $formId)->delete();
+        SubmissionMeta::where('form_id', $formId)->delete();
+        EntryDetails::where('form_id', $formId)->delete();
+        FormMeta::where('form_id', $formId)->delete();
+        FormAnalytics::where('form_id', $formId)->delete();
+        Log::where('parent_source_id', $formId)
+            ->whereIn('source_type', [
+                'submission_item', 'form_item', 'draft_submission_meta',
+            ])
+            ->delete();
+
+        if (defined('FLUENTFORMPRO')) {
+            wpFluent()->table('fluentform_order_items')
+                ->where('form_id', $formId)
+                ->delete();
+
+            wpFluent()->table('fluentform_transactions')
+                ->where('form_id', $formId)
+                ->delete();
+        }
     }
 }

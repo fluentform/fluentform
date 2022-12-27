@@ -159,6 +159,7 @@ $app->addAction('wp_ajax_fluentform-reset-form-entry_column_order_settings', fun
 });
 
 $app->addAction('wp_ajax_fluentform-load-editor-components', function () use ($app) {
+    dd('wp_ajax_fluentform-load-editor-components');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->index();
 });
@@ -202,6 +203,7 @@ $app->addAction('wp_ajax_fluentform-get-users', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-get-entry-notes', function () {
+    dd('wp_ajax_fluentform-get-entry-notes');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getNotes();
 });
@@ -212,6 +214,7 @@ $app->addAction('wp_ajax_fluentform-add-entry-note', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-get-entry-logs', function () use ($app) {
+    dd('wp_ajax_fluentform-get-entry-logs');
     Acl::verify('fluentform_entries_viewer');
     $entry_id = intval($app->request->get('entry_id'));
     $logType = sanitize_text_field($app->request->get('log_type'));
@@ -229,11 +232,13 @@ $app->addAction('wp_ajax_fluentform_get_activity_api_log_filters', function () u
 });
 
 $app->addAction('wp_ajax_fluentform_get_all_logs', function () use ($app) {
+    dd('wp_ajax_fluentform_get_all_logs');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getAllLogs();
 });
 
 $app->addAction('wp_ajax_fluentform_get_api_logs', function () use ($app) {
+    dd('wp_ajax_fluentform_get_api_logs');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getApiLogs();
 });
@@ -244,11 +249,13 @@ $app->addAction('wp_ajax_fluentform_retry_api_action', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform_delete_logs_by_ids', function () use ($app) {
+    dd('wp_ajax_fluentform_delete_logs_by_ids');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteLogsByIds();
 });
 
 $app->addAction('wp_ajax_fluentform_delete_api_logs_by_ids', function () use ($app) {
+    dd('wp_ajax_fluentform_delete_api_logs_by_ids');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteApiLogsByIds();
 });

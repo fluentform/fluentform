@@ -5,7 +5,7 @@ namespace FluentForm\App\Models;
 use Exception;
 use FluentForm\Framework\Support\Arr;
 
-class Submission extends Model
+class Entry extends Model
 {
     /**
      * The table associated with the model.
@@ -15,17 +15,7 @@ class Submission extends Model
     protected $table = 'fluentform_submissions';
 
     /**
-     * A submission is owned by a form.
-     *
-     * @return \FluentForm\Framework\Database\Orm\Relations\BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'ID');
-    }
-
-    /**
-     * A submission is owned by a form.
+     * A formMeta is owned by a form.
      *
      * @return \FluentForm\Framework\Database\Orm\Relations\BelongsTo
      */
@@ -35,17 +25,17 @@ class Submission extends Model
     }
 
     /**
-     * A submission has many meta.
+     * An entry has many meta.
      *
      * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
      */
-    public function submissionMeta()
+    public function entryMeta()
     {
-        return $this->hasMany(SubmissionMeta::class, 'response_id', 'id');
+        return $this->hasMany(EntryMeta::class, 'response_id', 'id');
     }
 
     /**
-     * A submission has many logs.
+     * An entry has many logs.
      *
      * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
      */
@@ -55,7 +45,7 @@ class Submission extends Model
     }
 
     /**
-     * A submission has many entry details.
+     * An entry has many entry details.
      *
      * @return \FluentForm\Framework\Database\Orm\Relations\HasMany
      */
@@ -64,33 +54,17 @@ class Submission extends Model
         return $this->hasMany(EntryDetails::class, 'submission_id', 'id');
     }
 
-    public function customQuery($attributes = [])
+    public function paginateEntries($attributes = [])
     {
-        $entryType = Arr::get($attributes, 'entry_type');
-        $dateRange = Arr::get($attributes, 'date_range');
-        $isFavourite = false;
-        $status = $entryType;
-
-        // We have to handle favorites separately because status and favorites are different
-        if ('favorites' === $entryType) {
-            $isFavourite = true;
-            $status = false;
-        }
-
         $formId = Arr::get($attributes, 'form_id');
-        $startDate = Arr::get($dateRange, 0);
-        $endDate = Arr::get($dateRange, 1);
+        $isFavourite = Arr::get($attributes, 'is_favourite');
+        $status = Arr::get($attributes, 'status');
+        $startDate = Arr::get($attributes, 'start_date');
+        $endDate = Arr::get($attributes, 'end_date');
         $search = Arr::get($attributes, 'search');
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
+        $wheres = Arr::get($attributes, 'wheres');
 
-        $wheres = [];
-        $paymentStatuses = Arr::get($attributes, 'payment_statuses');
-
-        if ($paymentStatuses && is_array($paymentStatuses)) {
-            $wheres[] = ['payment_status', $paymentStatuses];
-        }
-
-        $query = $this->orderBy('id', $sortBy)
+        $query = $this->orderBy('id', $attributes['sort_by'])
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })
@@ -143,58 +117,7 @@ class Submission extends Model
                 }
             });
 
-        return $query;
-    }
-
-    public function paginateEntries($attributes = [])
-    {
-        $formId = Arr::get($attributes, 'form_id');
-        $query = $this->customQuery($attributes);
-
         return apply_filters('fluentform_get_raw_responses', $query->paginate(), $formId);
-    }
-
-    public function findPreviousSubmission($attributes = [])
-    {
-        $query = $this->customQuery($attributes);
-
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
-
-        $operator = 'ASC' === $sortBy ? '<' : '>';
-
-        $entryId = Arr::get($attributes, 'entry_id');
-
-        $columns = Arr::get($attributes, 'columns', 'id');
-
-        $submission = $query->select($columns)->where('id', $operator, $entryId)->first();
-
-        return apply_filters('fluentform/next_submission', $submission, $entryId, $attributes);
-    }
-
-    public function findAdjacentSubmission($attributes = [])
-    {
-        $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
-
-        $direction = Arr::get($attributes, 'direction', 'next');
-
-        $operator = 'ASC' === $sortBy && 'next' === $direction ? '>' : '<';
-
-        if ('next' === $direction) {
-            $operator = 'ASC' === $sortBy ? '>' : '<';
-        } else {
-            $operator = 'ASC' === $sortBy ? '<' : '>';
-            $attributes['sort_by'] = 'ASC' === $sortBy ? 'DESC' : 'ASC';
-        }
-
-        $entryId = Arr::get($attributes, 'entry_id');
-
-        $columns = Arr::get($attributes, 'columns', 'id');
-
-        $query = $this->customQuery($attributes);
-
-        $submission = $query->select($columns)->where('id', $operator, $entryId)->first();
-
-        return apply_filters('fluentform/next_submission', $submission, $entryId, $attributes);
     }
 
     public function countByGroup($formId)
@@ -235,35 +158,35 @@ class Submission extends Model
         $this->where('id', $id)->update($data);
     }
 
-    public static function remove($submissionIds)
+    public static function remove($entryIds)
     {
-        static::whereIn('id', $submissionIds)->delete();
+        static::whereIn('id', $entryIds)->delete();
 
-        SubmissionMeta::whereIn('response_id', $submissionIds)->delete();
+        EntryMeta::whereIn('response_id', $entryIds)->delete();
 
-        Log::whereIn('source_id', $submissionIds)
+        Log::whereIn('source_id', $entryIds)
             ->where('source_type', 'submission_item')
             ->delete();
 
-        EntryDetails::whereIn('submission_id', $submissionIds)->delete();
+        EntryDetails::whereIn('submission_id', $entryIds)->delete();
 
         //delete the pro models this way for now
         // todo: handle these pro models deletion
         try {
             wpFluent()->table('fluentform_order_items')
-                ->whereIn('submission_id', $submissionIds)
+                ->whereIn('submission_id', $entryIds)
                 ->delete();
 
             wpFluent()->table('fluentform_transactions')
-                ->whereIn('submission_id', $submissionIds)
+                ->whereIn('submission_id', $entryIds)
                 ->delete();
 
             wpFluent()->table('fluentform_subscriptions')
-                ->whereIn('submission_id', $submissionIds)
+                ->whereIn('submission_id', $entryIds)
                 ->delete();
 
             wpFluent()->table('ff_scheduled_actions')
-                ->whereIn('origin_id', $submissionIds)
+                ->whereIn('origin_id', $entryIds)
                 ->where('type', 'submission_action')
                 ->delete();
         } catch (Exception $exception) {

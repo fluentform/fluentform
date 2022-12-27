@@ -37,13 +37,13 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FluentForm\\Database\\DBMigrator' => __DIR__ . '/../..' . '/database/DBMigrator.php',
         'FluentForm\\Database\\Migrations\\FormAnalytics' => __DIR__ . '/../..' . '/database/Migrations/FormAnalytics.php',
-        'FluentForm\\Database\\Migrations\\FormLogs' => __DIR__ . '/../..' . '/database/Migrations/FormLogs.php',
         'FluentForm\\Database\\Migrations\\FormMeta' => __DIR__ . '/../..' . '/database/Migrations/FormMeta.php',
-        'FluentForm\\Database\\Migrations\\FormSubmissionDetails' => __DIR__ . '/../..' . '/database/Migrations/FormSubmissionDetails.php',
-        'FluentForm\\Database\\Migrations\\FormSubmissionMeta' => __DIR__ . '/../..' . '/database/Migrations/FormSubmissionMeta.php',
-        'FluentForm\\Database\\Migrations\\FormSubmissions' => __DIR__ . '/../..' . '/database/Migrations/FormSubmissions.php',
         'FluentForm\\Database\\Migrations\\Forms' => __DIR__ . '/../..' . '/database/Migrations/Forms.php',
+        'FluentForm\\Database\\Migrations\\Logs' => __DIR__ . '/../..' . '/database/Migrations/Logs.php',
         'FluentForm\\Database\\Migrations\\ScheduledActions' => __DIR__ . '/../..' . '/database/Migrations/ScheduledActions.php',
+        'FluentForm\\Database\\Migrations\\SubmissionDetails' => __DIR__ . '/../..' . '/database/Migrations/SubmissionDetails.php',
+        'FluentForm\\Database\\Migrations\\SubmissionMeta' => __DIR__ . '/../..' . '/database/Migrations/SubmissionMeta.php',
+        'FluentForm\\Database\\Migrations\\Submissions' => __DIR__ . '/../..' . '/database/Migrations/Submissions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

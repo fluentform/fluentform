@@ -20,10 +20,10 @@ trait PredefinedForms
         $predefinedForm = json_decode($predefinedForm['json'], true)[0];
 
         if (isset($predefinedForm['form_fields'])) {
-            $predefinedForm['formFields'] = json_encode($predefinedForm['form_fields']);
+            $predefinedForm['form_fields'] = json_encode($predefinedForm['form_fields']);
         } else {
             if (isset($predefinedForm['form'])) {
-                $predefinedForm['formFields'] = json_encode($predefinedForm['form']);
+                $predefinedForm['form_fields'] = json_encode($predefinedForm['form']);
             }
         }
 

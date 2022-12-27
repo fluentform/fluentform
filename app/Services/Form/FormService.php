@@ -154,28 +154,7 @@ class FormService
 
     public function delete($id)
     {
-        $this->model->where('id', $id)->delete();
-
-        $this->model->submissions()->where('form_id', $id)->delete();
-        $this->model->submissionMeta()->where('form_id', $id)->delete();
-        $this->model->entryDetails()->where('form_id', $id)->delete();
-        $this->model->formMeta()->where('form_id', $id)->delete();
-        $this->model->formAnalytics()->where('form_id', $id)->delete();
-        $this->model->logs()->where('parent_source_id', $id)
-            ->whereIn('source_type', [
-                'submission_item', 'form_item', 'draft_submission_meta',
-            ])
-            ->delete();
-
-        if (defined('FLUENTFORMPRO')) {
-            wpFluent()->table('fluentform_order_items')
-                ->where('form_id', $id)
-                ->delete();
-
-            wpFluent()->table('fluentform_transactions')
-                ->where('form_id', $id)
-                ->delete();
-        }
+        Form::remove($id);
     }
 
     /**
