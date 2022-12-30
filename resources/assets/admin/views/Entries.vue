@@ -3,6 +3,7 @@
         <div class="ff_nav_top">
             <div class="ff_nav_title">
                 <h3>{{$t('Entries')}}</h3>
+                
                 <div class="ff_nav_sub_actions">
                     <el-select
                             clearable

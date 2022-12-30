@@ -35,7 +35,11 @@ mix
     .js('resources/assets/admin/form_settings_app.js', `public/js/form_settings_app.js`)
     .js('resources/assets/admin/editor_app.js', `public/js/fluent-forms-editor.js`)
     .js('resources/assets/admin/form_entries_app.js', `public/js/form_entries.js`)
+
     .js('resources/assets/admin/all_forms_app.js', `public/js/fluent-all-forms-admin.js`)
+
+    .js('resources/assets/admin/add_new_forms.js', `public/js/add_new_forms.js`)
+
     .js('resources/assets/public/fluentform-advanced.js', `public/js/fluentform-advanced.js`)
     .js('resources/assets/public/form-submission.js', `public/js/form-submission.js`)
     .js('resources/assets/public/form-save-progress.js', `public/js/form-save-progress.js`)
@@ -49,11 +53,14 @@ mix
         version: 2,
         extractStyles: true
     })
-
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)
-    .sass('resources/assets/admin/css/settings_global.scss', `public/css/settings_global.css`)
+
+    .sass('resources/assets/admin/scss/fluentform-settings-global.scss', `public/css/fluentform-settings-global.css`)
     .sass('resources/assets/admin/css/fluent-all-forms.scss', `public/css/fluent-all-forms.css`)
+
+    .sass('resources/assets/admin/scss/fluentform-all-forms.scss', `public/css/fluentform-all-forms.css`)
+
     .sass('resources/assets/admin/css/admin_notices.scss', `public/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `public/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'public/css/add-ons.css')

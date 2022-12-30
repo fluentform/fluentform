@@ -2,6 +2,7 @@
     <withLabel :item="item">
       <div class="ff-el-form-captcha-img-wrapper">
         <img :src="plugin_url+'img/recaptcha-placeholder.png'" alt="recaptcha-placeholder">
+        
       </div>
     </withLabel>
 </template>

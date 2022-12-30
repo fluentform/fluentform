@@ -6,11 +6,13 @@ $page = sanitize_text_field($_GET['page']);
 ?>
 <div class="ff_form_main_nav">
     <span class="plugin-name">
-        <?php _e('Fluent Forms', 'fluentform'); ?> <?php if(defined('FLUENTFORMPRO')): ?>Pro<?php endif; ?>
+        <img src="<?php echo esc_url($logo); ?>"/>
+        
     </span>
     <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" class="ninja-tab <?php echo ($page == 'fluent_forms') ? 'ninja-tab-active' : '' ?>">
         <?php _e('All Forms', 'fluentform'); ?>
     </a>
+    
     <?php if (Acl::hasPermission('fluentform_entries_viewer')): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms_all_entries'));?>" class="ninja-tab <?php echo ($page == 'fluent_forms_all_entries') ? 'ninja-tab-active' : '' ?>">
             <?php _e('Entries', 'fluentform'); ?>

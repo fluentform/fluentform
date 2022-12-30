@@ -1,11 +1,11 @@
 <?php do_action('fluentform_global_menu'); ?>
 <div class="ff_form_wrap ff_app">
     <div class="ff_form_wrap_area">
-        <?php do_action('fluentform_before_all_entries_render'); ?>
-        <div class="ff_all_forms" id="ff_all_forms_app">
-            <div id="ff_all_entries"><ff-all-entries></ff-all-entries></div>
+        <?php do_action('fluentform_before_add_new_form_render'); ?>
+        <div class="ff_add_new_forms" id="ff_add_new_forms_app">
+            <ff_add_new_forms></ff_add_new_forms>
         </div>
-        <?php do_action('fluentform_after_all_entries_render'); ?>
+        <?php do_action('fluentform_after_add_new_form_render'); ?>
     </div>
 </div>
 <?php

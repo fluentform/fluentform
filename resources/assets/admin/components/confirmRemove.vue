@@ -1,20 +1,19 @@
 <template>
 <span>
 	<el-popover
-            ref="popover"
-            placement="top"
-            width="160"
-            v-model="visible"
+        ref="popover"
+        placement="top"
+        :width="180"
+        v-model="visible"
     >
 		<p>{{ $t('Are you sure to delete this?') }}</p>
-		<div style="text-align: right; margin: 0">
-			<el-button size="mini" type="text"
-                       @click="visible = false"
-            >{{ $t('cancel') }}</el-button>
-
-			<el-button type="primary" size="mini"
-                       @click="confirmAction"
-            >{{ $t('confirm') }}</el-button>
+		<div class="text-right">
+			<el-button size="mini" type="text" @click="visible = false">
+                {{ $t('Cancel') }}
+            </el-button>
+			<el-button type="primary" size="mini" @click="confirmAction">
+                {{ $t('Confirm') }}
+            </el-button>
 		</div>
 	</el-popover>
 

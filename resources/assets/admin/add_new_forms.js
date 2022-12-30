@@ -68,8 +68,7 @@ locale.use(lang);
 
 import Acl from '@/common/Acl';
 
-import AllForms from './views/AllForms.vue';
-import notifier from './notifier';
+import AddNewForms from './views/AddNewForms.vue';
 
 Vue.mixin({
     methods: {
@@ -83,9 +82,7 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
-        },
-        
-        ...notifier
+        }
     },
     filters: {
         ucFirst(string) {
@@ -98,15 +95,15 @@ Vue.mixin({
 });
 
 new Vue({
-    el: '#ff_all_forms_app',
+    el: '#ff_add_new_forms_app',
     components: {
-        'ff_all_forms_table': AllForms
+        'ff_add_new_forms': AddNewForms
     },
     data: {},
     beforeCreate() {
         this.$on('change-title', (module) => {
             jQuery('title').text(`${module} - FluentForm`);
         });
-        this.$emit('change-title', 'All Forms');
+        this.$emit('change-title', 'Add new forms');
     }
 });

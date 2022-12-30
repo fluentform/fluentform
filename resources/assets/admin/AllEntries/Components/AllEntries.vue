@@ -1,7 +1,7 @@
 <template>
     <div v-loading="loading" class="payments_wrapper">
         <div class="payment_header">
-            <div class="payment_title">{{$t('All Form Entries')}}</div>
+            <div class="payment_title">{{$t('All Entries')}}</div>
             <div class="payment_actions">
                 <el-button @click="toggleChart()" type="info" size="mini">
                     <span v-if="chart_status == 'yes'">{{$t('Hide Chart')}}</span>

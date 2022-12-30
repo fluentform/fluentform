@@ -61,5 +61,11 @@ new Vue({
     el: "#ff_all_entries",
     components: {
         'ff-all-entries': App
+    },
+    beforeCreate() {
+        this.$on('change-title', (module) => {
+            jQuery('title').text(`${module} - FluentForm`);
+        });
+        this.$emit('change-title', 'All Entries');
     }
 });
