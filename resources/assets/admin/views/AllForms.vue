@@ -529,11 +529,12 @@ export default {
         this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
 
         (new Clipboard('.copy')).on('success', event => {
-            event.clearSelection();
-            this.$message({
-                message: this.$t('Copied to Clipboard!'),
-                type: 'success'
-            });
+            this.$copy();
+            // event.clearSelection();
+            // this.$message({
+            //     message: this.$t('Copied to Clipboard!'),
+            //     type: 'success'
+            // });
         });
     },
     created() {

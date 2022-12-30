@@ -7,6 +7,7 @@
 @import "./partials/el-customize";
 @import "./partials/table";
 @import "./partials/switch";
+@import "./partials/layouts";
 //@import "../styles/responsive";
 
 .ff_all_forms {
@@ -41,11 +42,6 @@
     }
     &_form_wrap {
       margin: 0;
-    }
-    &_section_title {
-      font-size: $ff-section-title-font-size;
-      font-weight: $ff-section-title-font-weight;
-      color: $ff-section-title-color;
     }
     &_nav_sub_actions{
       width: $ff-nav-sub-actions;
@@ -194,6 +190,13 @@
     }
     &_advanced_filter_wrap{
         position: relative;
+    }
+    &_link_btn{
+        color: $ff-link-btn-color;
+        font-size: $ff-link-btn-font-size;
+        font-weight: $ff-link-btn-font-weight;
+        display: inline-flex;
+        align-items: center;
     }
 }
   

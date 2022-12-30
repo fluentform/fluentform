@@ -283,9 +283,11 @@ class Menu
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'adminUrl'                 => admin_url('admin.php'),
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
+            'plugin_public_url'        => $this->app->publicUrl(),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
