@@ -3,7 +3,7 @@ class Route {
         const route = this[name];
 
         if (!route) {
-            throw "Route Not Found";
+            throw `${name}:Route Not Found`;
         }
 
         let continuation = 0;
@@ -60,6 +60,18 @@ class Route {
     getLogs = 'logs';
     getLogFilters = this.getLogs + '/filters';
     deleteLogs = this.getLogs;
+
+
+    integrations = 'integrations';
+    getGlobalIntegration = this.integrations;
+    updateGlobalIntegration = this.integrations;
+    findIntegration = this.integrations + "/{param}";
+    getFormIntegrationSettings = this.findIntegration;
+    updateFormIntegrationSettings = this.findIntegration;
+    deleteFormIntegration = this.findIntegration;
+    getIntegrations = this.findIntegration + "/form-integrations";
+    getFormIntegrationList = this.findIntegration + '/integration-list-id';
+
 }
 
 export default new Route();

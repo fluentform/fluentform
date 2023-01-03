@@ -1,9 +1,9 @@
 <template>
     <div class="edit_integration">
         <el-row class="setting_header">
-            <el-col :md="12"><h2>{{title}}</h2></el-col>
+            <el-col :md="12"><h2>{{ title }}</h2></el-col>
             <el-col :md="12" class="action-buttons mb15 clearfix">
-                <video-doc class="pull-right ff-left-spaced" :route_id="integration_name" :btn_text="$t('View Video Instruction')" />
+                <video-doc class="pull-right ff-left-spaced" :route_id="integration_name" :btn_text="$t('View Video Instruction')"/>
                 <router-link
                     class="pull-right el-button el-button--default el-button--small"
                     :to="{name: 'allIntegrations'}"
@@ -12,7 +12,7 @@
         </el-row>
 
         <div v-loading="loading_app" :element-loading-text="$t('Loading Settings...')" class="integration_edit">
-            <el-form v-if="!loading_app"  label-position="left" label-width="205px">
+            <el-form v-if="!loading_app" label-position="left" label-width="205px">
                 <template v-for="field in settings_fields.fields">
                     <el-form-item
                         v-if="(field.require_list && merge_fields) || !field.require_list"
@@ -100,7 +100,7 @@
 
                         <template v-else-if="field.component == 'checkbox-single'">
                             <el-checkbox v-model="settings[field.key]">
-                                {{field.checkbox_label}}
+                                {{ field.checkbox_label }}
                             </el-checkbox>
                         </template>
 
@@ -237,7 +237,7 @@
                                 :editorShortcodes="editorShortcodes"
                                 :settings="settings" />
                         </template>
-                        
+
                         <template v-else-if="field.component == 'datetime'">
                             <el-date-picker
                                 v-model="settings[field.key]"
@@ -312,9 +312,7 @@
             VideoDoc
         },
         props: ['form_id', 'inputs', 'has_pro', 'editorShortcodes'],
-        watch: {
-
-        },
+        watch: {},
         data() {
             return {
                 loading_app: false,
@@ -334,7 +332,7 @@
         computed: {
             title() {
                 let integrationName = this.settings_fields.integration_title || '';
-                if(this.integration_id) {
+                if (this.integration_id) {
                     return `Update ${integrationName} Integration Feed`;
                 } else {
                     return `Add New ${integrationName} Integration Feed`;
@@ -350,7 +348,6 @@
             loadIntegrationSettings() {
                 this.loading_app = true;
                 let data = {
-                    action: 'fluentform_get_form_integration_settings',
                     integration_id: this.integration_id,
                     integration_name: this.integration_name,
                     form_id: this.form_id
@@ -364,29 +361,27 @@
                 if (this.refreshQuery) {
                     data = {...data, ...this.refreshQuery}
                 }
+                const url = FluentFormsGlobal.$rest.route('getFormIntegrationSettings', this.form_id);
 
-                FluentFormsGlobal.$get(data)
+                FluentFormsGlobal.$rest.get(url, data)
                     .then(response => {
-                        this.settings_fields = response.data.settings_fields;
-                        this.settings = response.data.settings;
-
-                        if(!this.settings.name) {
-                            this.settings.name = response.data.settings_fields.integration_title + ' Integration Feed' || '';
+                        this.settings_fields = response.settings_fields;
+                        this.settings = response.settings;
+                        if (!this.settings.name) {
+                            this.settings.name = response.settings_fields.integration_title + ' Integration Feed' || '';
                         }
-
-                        this.merge_fields = response.data.merge_fields;
-
-                        jQuery('head title').text(this.title+' - Fluent Forms');
+                        this.merge_fields = response.merge_fields;
+                        jQuery('head title').text(this.title + ' - Fluent Forms');
 
                     })
-                    .fail(error => {
+                    .catch(error => {
                         // when failed show default field if available
-                        if (this.fromChainedAjax && error.responseJSON.data.settings_fields) {
-                            this.settings_fields = error.responseJSON.data.settings_fields;
+                        if (this.fromChainedAjax && error.responseJSON.settings_fields) {
+                            this.settings_fields = error.responseJSON.settings_fields;
                         }
                         this.$fail(error.responseJSON.data.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading_app = false;
                     });
             },
@@ -408,26 +403,27 @@
             },
             loadMergeFields() {
                 this.loading_list = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_form_integration_list',
+                const url = FluentFormsGlobal.$rest.route('getFormIntegrationList', this.form_id,this.integration_id)
+                FluentFormsGlobal.$rest.get(url, {
                     integration_id: this.integration_id,
                     list_id: this.settings.list_id,
                     form_id: this.form_id,
                     integration_name: this.integration_name
                 })
                     .then(response => {
-                        this.merge_fields = response.data.merge_fields;
+                        const result = response?.merge_fields || response?.data?.merge_fields
+                        this.merge_fields = result
                     })
-                    .fail(error => {
-                      this.$fail(error.responseJSON.data.message);
+                    .catch(error => {
+                        const message = error?.message || error?.data?.message
+                        this.$fail(message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading_list = false;
                     });
             },
             saveNotification() {
                 this.errors.clear();
-
                 this.saving = true;
                 let data = {
                     form_id: this.form_id,
@@ -435,22 +431,26 @@
                     integration_name: this.integration_name,
                     integration: JSON.stringify(this.settings),
                     data_type: 'stringify',
-                    action: 'fluentform_post_form_integration_settings'
                 };
-                FluentFormsGlobal.$post(data)
+                const url = FluentFormsGlobal.$rest.route('updateFormIntegrationSettings', this.form_id, this.integration_id);
+
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
-                        if(response.data.created) {
+                        if (response.created) {
                             this.$router.push({
                                 name: 'allIntegrations'
                             });
                         }
-                        this.$success(response.data.message);
+                        this.$success(response.message);
                     })
-                    .fail(error => {
-                        this.errors.record(error.responseJSON.data.errors);
-                        this.$fail(error.responseJSON.data.message);
+                    .catch((error) => {
+                        const getError = error?.errors || error?.data?.errors
+                        const message = error?.message || error?.data?.message
+
+                        this.errors.record(getError)
+                        this.$fail(message);
                     })
-                    .always(() => this.saving = false);
+                    .finally(() => this.saving = false);
             },
         },
         mounted() {

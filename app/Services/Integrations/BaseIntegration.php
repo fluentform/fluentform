@@ -2,6 +2,11 @@
 
 namespace FluentForm\App\Services\Integrations;
 
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\IntegrationManagerHelper;
+ */
+
+
 class BaseIntegration
 {
     private $setting_key = '';

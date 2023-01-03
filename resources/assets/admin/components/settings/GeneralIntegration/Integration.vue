@@ -68,7 +68,7 @@
                         type="primary"
                         icon="el-icon-setting"
                         size="mini"></el-button>
-                    <remove @on-confirm="remove(scope.row.id, scope)"></remove>
+                    <remove @on-confirm="remove(scope.row, scope)"></remove>
                 </template>
             </el-table-column>
         </el-table>
@@ -156,12 +156,6 @@
                     }
                 });
                 return;
-
-                console.log(integration);
-                this.selectedIndex = this.integrations.length;
-                this.selected_id = 0;
-                this.editing_item = false;
-                this.show_edit = true;
             },
             edit(integration) {
                 this.$router.push({
@@ -176,47 +170,69 @@
                 let data = {
                     form_id: this.form_id,
                     status: row.enabled,
-                    notification_id: row.id,
-                    action: 'fluentform_post_update_form_integration_status'
-                };
-                FluentFormsGlobal.$post(data)
-                    .then(response => {
-                        this.$success(response.data.message);
-                    })
-                    .fail(error => {
-                        this.$fail(error.responseJSON.data.message);
-                    });
-            },
-            remove(id, scope) {
-               let $index  = scope.$index;
-                let data = {
-                    action: 'fluentform-delete-general_integration_feed',
-                    integration_id: id,
-                    form_id: this.form_id
+                    integration_id: row.id,
                 };
 
-                FluentFormsGlobal.$post(data)
+                this.errors.clear();
+
+                this.saving = true;
+
+                const url = FluentFormsGlobal.$rest.route('updateFormIntegrationSettings',this.form_id);
+
+                FluentFormsGlobal.$rest.post(url,data)
                     .then(response => {
-                        this.$success(response.data.message);
+                        if(response.created) {
+                            this.$router.push({
+                                name: 'allIntegrations'
+                            });
+                        }
+                        this.$success(response.message);
+                    })
+                    .catch((error) => {
+                        const message = error?.message || error?.data?.message
+                        this.$fail(message);
+                    })
+                    .finally(() => this.saving = false);
+            },
+            remove(item, scope) {
+                const url = FluentFormsGlobal.$rest.route('deleteFormIntegration',this.form_id, item.id);
+                let $index  = scope.$index;
+                let data = {
+                    integration_id: item.id,
+                    form_id: this.form_id
+                };
+                this.deleting = true;
+                FluentFormsGlobal.$rest.delete(url,data)
+                    .then(response => {
+                        this.$success(response.message);
                         this.integrations.splice($index, 1);
                     })
-                    .fail(e => console.log(e));
+                    .catch((error) => {
+                        const message = error?.message || error?.data?.message
+                        this.$fail(message);
+                    })
+                    .finally(()=>{});
+
             },
             getFeeds() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_all-general-integration-feeds',
-                    form_id: this.form_id
-                })
+
+                const url = FluentFormsGlobal.$rest.route('getIntegrations', this.form_id);
+                FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        this.integrations = response.data.feeds;
-                        this.available_integrations = response.data.available_integrations;
-                        this.all_module_config_url = response.data.all_module_config_url;
+                        this.integrations = response.feeds;
+                        this.available_integrations = response.available_integrations;
+                        this.all_module_config_url = response.all_module_config_url;
+                        // this.$success(response.message);
                     })
-                    .fail(error => {
-                        console.log(error);
+                    .catch(error => {
+                        console.log(error)
+                        this.errors.record(error);
                     })
-                    .always(r => this.loading = false);
+                    .finally(() => {
+                        this.loading = false;
+                    });
+
             },
             isEmpty
         },

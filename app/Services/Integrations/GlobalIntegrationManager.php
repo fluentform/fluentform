@@ -5,6 +5,10 @@ namespace FluentForm\App\Services\Integrations;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Foundation\Application;
 
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\GlobalIntegrationController;
+ */
+
 class GlobalIntegrationManager
 {
     /**
@@ -17,6 +21,7 @@ class GlobalIntegrationManager
     public function __construct(Application $app)
     {
         $this->request = wpFluentForm('request');
+        
     }
 
     public function getGlobalSettingsAjax()

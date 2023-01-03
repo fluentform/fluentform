@@ -19,7 +19,7 @@ class FormMeta extends Model
      * @var bool
      */
     public $timestamps = false;
-
+    
     /**
      * A formMeta is owned by a form.
      *
@@ -72,7 +72,7 @@ class FormMeta extends Model
             $metaValue = json_encode($metaValue);
         }
 
-        static::updateOrCreate(
+        return static::updateOrCreate(
             ['form_id' => $formId, 'meta_key' => $metaKey],
             ['value' => $metaValue]
         );

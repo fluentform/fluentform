@@ -393,46 +393,54 @@ $app->addAction('wp_ajax_fluentform_del_managers', function () {
 
 // General Integration Settings Here
 $app->addAction('wp_ajax_fluentform_get_global_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_settings_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getGlobalSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform_post_global_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->saveGlobalSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform_get_all-general-integration-feeds', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getAllFormIntegrations();
 });
 
 $app->addAction('wp_ajax_fluentform_post_update_form_integration_status', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->updateNotificationStatus();
 });
 
 $app->addAction('wp_ajax_fluentform_get_form_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getIntegrationSettings();
 });
 $app->addAction('wp_ajax_fluentform_post_form_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->saveIntegrationSettings();
 });
 $app->addAction('wp_ajax_fluentform-delete-general_integration_feed', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->deleteIntegrationFeed();
 });
 
 $app->addAction('wp_ajax_fluentform_get_form_integration_list', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getIntegrationList();

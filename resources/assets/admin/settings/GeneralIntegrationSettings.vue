@@ -68,6 +68,8 @@
                                   v-model="integration[fieldKey]"></el-input>
                         <p v-if="field.tips">{{ field.tips }}</p>
                     </template>
+                    <error-view :field="field.key" :errors="errors"></error-view>
+
                 </el-form-item>
                 <!--Validate Keys-->
 
@@ -92,12 +94,15 @@
 
 <script type="text/babel">
 import VideoDoc from '@/common/VideoInstruction.vue';
+import Errors from '@/common/Errors';
+import ErrorView from '@/common/errorView';
+
 
 export default {
     name: "generalIntegration",
     props: ['app', 'settings_key'],
     components: {
-        VideoDoc
+        VideoDoc ,Errors , ErrorView
     },
     data() {
         return {
@@ -105,7 +110,8 @@ export default {
             loading: false,
             saving: false,
             settings: {},
-            error_message: ''
+            error_message: '',
+            errors : new Errors()
         }
     },
     watch: {
@@ -118,8 +124,8 @@ export default {
     methods: {
         save() {
             this.saving = true;
-            FluentFormsGlobal.$post({
-                action: 'fluentform_post_global_integration_settings',
+            const url = FluentFormsGlobal.$rest.route('updateGlobalIntegration')
+            FluentFormsGlobal.$rest.post(url,{
                 settings_key: this.settings_key,
                 integration: this.integration
             })
@@ -136,28 +142,31 @@ export default {
                         this.getIntegrationSettings();
                     }
                 })
-                .fail(error => {
+                .catch(error => {
+
                     this.integration.status = false;
-                    this.fail(error.responseJSON.data.message);
+                    const message = error?.message || error?.data?.message
+                    this.$fail(message);
+
                 })
-                .always(() => {
+                .finally(() => {
                     this.saving = false;
                 });
         },
         getIntegrationSettings() {
             this.loading = true;
-            FluentFormsGlobal.$get({
-                action: 'fluentform_get_global_integration_settings',
+            const url = FluentFormsGlobal.$rest.route('getGlobalIntegration')
+            FluentFormsGlobal.$rest.get(url, {
                 settings_key: this.settings_key
             })
                 .then(response => {
-                    this.integration = response.data.integration;
-                    this.settings = response.data.settings;
+                    this.integration = response.integration;
+                    this.settings = response.settings;
                 })
-                .fail(error => {
-                    this.error_message = error.responseJSON.data.message;
+                .catch(error => {
+                    this.error_message = error?.responseJSON?.data.message ||error?.message;
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },

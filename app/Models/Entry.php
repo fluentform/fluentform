@@ -172,6 +172,7 @@ class Entry extends Model
 
         //delete the pro models this way for now
         // todo: handle these pro models deletion
+        // todo: delete files
         try {
             wpFluent()->table('fluentform_order_items')
                 ->whereIn('submission_id', $entryIds)

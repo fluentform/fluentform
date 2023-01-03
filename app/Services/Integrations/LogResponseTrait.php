@@ -2,6 +2,12 @@
 
 namespace FluentForm\App\Services\Integrations;
 
+
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\GlobalIntegrationController;
+ */
+
+
 trait LogResponseTrait
 {
     protected function logResponse($response, $feed, $data, $form, $entryId, $status)

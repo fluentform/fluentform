@@ -3,6 +3,9 @@
 namespace FluentForm\App\Services\Integrations;
 
 use FluentForm\App\Databases\Migrations\ScheduledActions;
+use FluentForm\App\Models\EntryDetails;
+use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\ConditionAssesor;
@@ -10,6 +13,9 @@ use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
+/**
+ * @deprecated deprecated use  FluentForm\App\Hooks\Handlers\GlobalNotificationHandler;
+ */
 class GlobalNotificationManager
 {
     private $app;
@@ -31,8 +37,7 @@ class GlobalNotificationManager
 
         $feedMetaKeys = array_keys($feedKeys);
 
-        $feeds = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', $form->id)
+        $feeds = FormMeta::where('form_id', $form->id)
             ->whereIn('meta_key', $feedMetaKeys)
             ->orderBy('id', 'ASC')
             ->get();
@@ -121,7 +126,7 @@ class GlobalNotificationManager
 
     public function getEntry($id, $form)
     {
-        $submission = wpFluent()->table('fluentform_submissions')->find($id);
+        $submission = Submission::find($id);
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         return FormDataParser::parseFormEntry($submission, $form, $formInputs);
     }
@@ -137,15 +142,13 @@ class GlobalNotificationManager
         $passwordKeys = array_keys($inputs);
 
         // Let's delete from entry details
-        wpFluent()->table('fluentform_entry_details')
-            ->where('form_id', $form->id)
+        EntryDetails::where('form_id', $form->id)
             ->whereIn('field_name', $passwordKeys)
             ->where('submission_id', $entryId)
             ->delete();
 
         // Let's alter from main submission data
-        $submission = wpFluent()->table('fluentform_submissions')
-                        ->where('id', $entryId)
+        $submission = Submission::where('id', $entryId)
                         ->first();
 
         if (! $submission) {
@@ -163,8 +166,7 @@ class GlobalNotificationManager
         }
 
         if ($replaced) {
-            wpFluent()->table('fluentform_submissions')
-                ->where('id', $entryId)
+            Submission::where('id', $entryId)
                 ->update([
                     'response' => \json_encode($responseInputs),
                 ]);

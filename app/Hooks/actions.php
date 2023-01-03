@@ -854,7 +854,7 @@ $app->addAction('fluentform_load_form_assets', function ($formId) {
 });
 
 $app->addAction('fluentform_submission_inserted', function ($insertId, $formData, $form) use ($app) {
-    $notificationManager = new \FluentForm\App\Services\Integrations\GlobalNotificationManager($app);
+    $notificationManager = new \FluentForm\App\Hooks\Handlers\GlobalNotificationHandler($app);
     $notificationManager->globalNotify($insertId, $formData, $form);
 }, 10, 3);
 
@@ -946,7 +946,7 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
 add_action('fluentform_global_notify_completed', function ($insertId, $form) use ($app) {
     if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform_truncate_password_values', true, $form->id)) {
         // we have password
-        (new \FluentForm\App\Services\Integrations\GlobalNotificationManager($app))->cleanUpPassword($insertId, $form);
+        (new \FluentForm\App\Services\Integrations\GlobalNotificationService())->cleanUpPassword($insertId, $form);
     }
 }, 10, 2);
 

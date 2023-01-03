@@ -67,3 +67,20 @@ $router->prefix('logs')->withPolicy('SubmissionPolicy')->group(function ($router
     $router->delete('/', 'LogController@remove');
     $router->get('/filters', 'LogController@getFilters');
 });
+
+$router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($router) {
+    
+    $router->get('/', 'GlobalIntegrationController@index');
+    $router->post('/', 'GlobalIntegrationController@update');
+    
+    $router->prefix('{form_id}')->group(function ($router) {
+        $router->get('/form-integrations', 'FormIntegrationController@index');
+        $router->get('/', 'FormIntegrationController@find');
+        $router->post('/', 'FormIntegrationController@update');
+        $router->delete('/', 'FormIntegrationController@delete');
+        
+        $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
+        
+    });
+    
+});

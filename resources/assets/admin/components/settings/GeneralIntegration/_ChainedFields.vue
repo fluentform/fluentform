@@ -39,6 +39,7 @@
         },
         data() {
             return {
+                loading : false,
                 app_ready: false,
                 categories: [],
                 subcategories: [],
