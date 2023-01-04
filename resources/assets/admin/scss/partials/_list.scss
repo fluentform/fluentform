@@ -1,0 +1,38 @@
+$ff:         'ff_radio';
+
+
+.#{$ff}{
+    &_list{
+        display: flex;
+        flex-direction: column;
+        &_item{
+            width: 100%;
+            margin-bottom: 2px;
+            .el-radio-button__inner{
+                background-color: transparent;
+                border: 0 !important;
+                padding: 13px 16px;
+                border-radius: 0.375rem !important;
+                color: $base-text;
+                width: 100%;
+                text-align: left;
+                box-shadow: none !important;
+                transition: 0.2s;
+                font-weight: 600;
+                &:hover{
+                    background-color: #E7E6E6;
+                    color: $base-color;
+                }
+            }
+            &.is-active{
+                &:focus{
+                    box-shadow: none !important;
+                }
+                .el-radio-button__inner{
+                    background-color: #E7E6E6;
+                    color: $base-color;
+                }
+            }
+        }
+    }
+}

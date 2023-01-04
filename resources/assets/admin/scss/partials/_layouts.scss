@@ -1,4 +1,23 @@
-.ff_layouts_options{
-    display: flex;
-    flex-wrap: wrap;
+$ff:              'ff_layout';
+
+.#{$ff}{
+    &_options{
+        display: flex;
+    }
+    &_sidebar{
+        width: 200px;
+        margin-right: 65px;
+        margin-top: 14px;
+        flex-shrink: 0;
+    }
+    &_main{
+        flex-grow: 1;
+        .form_item_group{
+            display: flex;
+        }
+    }
+    &_wrap{
+        height: 615px;
+        overflow: scroll;
+    }
 }

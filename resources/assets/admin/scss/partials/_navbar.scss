@@ -1,39 +1,70 @@
-.ff_form_main_nav {
-    display: flex;
-    align-items: center;
-    border-bottom: $header-border;
-    background: $white;
-    padding: $header-padding-y $header-padding-x;
-    .plugin-name {
-        margin-right: $header-logo-gap-x;
-        height: $header-logo-height;
-        img {
-            height: 100%;
+.ff{
+    &_header {
+        display: flex;
+        align-items: center;
+        border-bottom: $header-border;
+        background: $header-bg;
+        padding: $header-padding-y $header-padding-x;
+        &_setting{
+            padding-top: 0;
+            padding-bottom: 0;
+            justify-content: space-between;
+            .ff_menu{
+                padding: 0.75rem 1.25rem;
+            }
+            .shortcode_btn{
+                font-weight: 500;
+            }
+            .shortcode_btn,
+            .el-button--info,
+            #saveFormData{
+                margin-right: 0.875rem;
+            }
+            .el-button{
+                margin-left: 0;
+            }
+        }
+        .plugin-name {
+            margin-right: $header-logo-gap-x;
+            height: $header-logo-height;
+            img {
+                height: 100%;
+            }
+        }
+        &_col{
+            display: flex;
+
         }
     }
-
-    .ninja-tab {
-        padding: $header-menu-link-gap-y $header-menu-link-gap-x;
-        display: inline-block;
-        text-decoration: none;
-        color: $header-menu-link-color;
-        font-size: $header-menu-link-font-size;
-        font-weight: $header-menu-link-font-weight;
-        background-color: transparent;
-        border-radius: $header-menu-link-border-radius;
-        &:focus {
-            box-shadow: none;
+    &_menu{
+        display: flex;
+        align-items: center;
+        li{
+            margin: 0;
         }
-        &:hover{
-            color: $header-menu-link-hover-color;
-        }
-        &.ninja-tab-active {
-            background-color: $header-menu-link-active-bg;
-            color: $header-menu-link-active-color;
-        }
-        &.buy_pro_tab {
-            background: $buy-pro-link-bg;
-            color: $buy-pro-link-color;
+        .menu-link {
+            padding: $header-menu-link-gap-y $header-menu-link-gap-x;
+            display: inline-block;
+            text-decoration: none;
+            color: $header-menu-link-color;
+            font-size: $header-menu-link-font-size;
+            font-weight: $header-menu-link-font-weight;
+            background-color: transparent;
+            border-radius: $header-menu-link-border-radius;
+            &:focus {
+                box-shadow: none;
+            }
+            &:hover{
+                color: $header-menu-link-hover-color;
+            }
+            &.menu-link-active {
+                background-color: $header-menu-link-active-bg;
+                color: $header-menu-link-active-color;
+            }
+            &.buy_pro_tab {
+                background: $buy-pro-link-bg;
+                color: $buy-pro-link-color;
+            }
         }
     }
 }

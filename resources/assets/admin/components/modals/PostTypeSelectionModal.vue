@@ -3,28 +3,33 @@
         <el-dialog
             width="500px"
             v-loading="loading"
-            :title="$t('Select Post Type')"
             @close="cancelSelection"
             :visible="visibility"
             :close-on-click-modal="false"
             :close-on-press-escape="false"
             custom-class="post-type-selection"
         >
-            <el-select v-model="post_type" style="width:100%">
-                <el-option
-                    :key="i"
-                    :value="type"
-                    :label="type"
-                    v-for="(type, i) in post_types"
-                />
-            </el-select>
-
-            <el-button
-                type="primary"
-                @click="visibility=false"
-                style="margin-top:10px; float:right;"
-            >{{ $t('Continue') }}
-            </el-button>
+            <div slot="title">
+                <h4>{{$t('Select Post Type')}}</h4>
+            </div>
+            <div class="ff_post_type_action_wrap mt-5">
+                <el-select v-model="post_type" class="mb-4">
+                    <el-option
+                        v-for="(type, i) in post_types"
+                        :value="type"
+                        :label="type"
+                        :key="i"
+                    />
+                </el-select>
+                <div class="text-right">
+                    <el-button
+                        type="primary"
+                        @click="visibility = false"
+                    >
+                        {{ $t('Continue') }}
+                    </el-button>
+                </div>
+            </div>
         </el-dialog>
     </div>
 
@@ -56,12 +61,12 @@
             FluentFormsGlobal.$get({action: 'fluentform_get_post_types'}).done(res => {
                 this.post_types = res.data.post_types;
             })
-                .fail(res => {
-                    console.log(res)
-                })
-                .always(() => {
-                    this.loading = false;
-                })
+            .fail(res => {
+                console.log(res);
+            })
+            .always(() => {
+                this.loading = false;
+            })
         },
         computed: {
             visibility: {

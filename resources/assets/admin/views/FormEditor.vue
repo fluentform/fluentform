@@ -916,15 +916,18 @@ export default {
          **/
         initSaveBtn() {
             const self = this;
-            var saveButton = jQuery('<button />', {
-                id: 'saveFormData',
-                class: 'el-button el-button--primary el-button--small',
-                html: '<i class="el-icon-success"></i> Save Form'
-            });
+            // var saveButton = jQuery('<button />', {
+            //     id: 'saveFormData',
+            //     class: 'el-button el-button--primary',
+            //     html: '<i class="el-icon-success el-icon"></i> <span>Save Form</span>'
+            // });
+
+            const saveButton = jQuery("#saveFormData");
             saveButton.on('click', function () {
                 const $this = jQuery(this);
                 if (!$this.data('text')) $this.data('text', $this.text());
-                $this.html('<i class="el-icon-success"></i> Saving Form');
+                //$this.html('<i class="el-icon-success el-icon"></i> <span>Saving Form</span>');
+                $this.html('Saving Form');
                 self.save_form();
             });
 
@@ -985,7 +988,7 @@ export default {
         initRenameForm() {
             jQuery('#js-ff-nav-title')
                 .on('click', _ => this.renameFormVisibility = true)
-                .prepend('<i class="el-icon-edit"></i> ')
+                .prepend('<i class="el-icon-edit el-icon"></i> ')
                 .css('cursor', 'pointer');
         },
 

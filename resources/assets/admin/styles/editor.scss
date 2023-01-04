@@ -156,10 +156,6 @@ div#js-form-editor--body {
   }
 }
 
-#ff_form_editor_app {
-  margin-right: -30px;
-}
-
 body.ff_full_screen {
   overflow-y: hidden;
 
@@ -428,7 +424,6 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
   font-size: 25px;
   vertical-align: middle;
   font-weight: bold;
-  margin-left: 10px;
   cursor: pointer;
 }
 
@@ -442,26 +437,6 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 
     &:hover,
     &.active {
-      opacity: 1;
-    }
-  }
-}
-
-.ff_form_name {
-  opacity: 0.5;
-
-  &:hover {
-    opacity: 1;
-  }
-}
-
-.ff-navigation-right {
-  .btn.copy, > a {
-    opacity: 0.5;
-  }
-
-  &:hover {
-    .btn.copy, > a {
       opacity: 1;
     }
   }

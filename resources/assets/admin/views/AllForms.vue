@@ -1,10 +1,8 @@
 <template>
     <div>
-        <el-row>
-            <div class="ff_section_title mb-4">
-                {{ $t('All Forms') }}
-            </div>
-        </el-row>
+        <div class="ff_section_head sm">
+            <div class="ff_section_title">{{ $t('All Forms') }}</div>
+        </div>
         <el-row class="mb-4">
             <el-col :sm="12">
                 <el-row>
@@ -158,10 +156,10 @@
                                         <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
                                     </div>
                                     <div class="shortcode_btn conversational_shortcode" v-if="scope.row.conversion_preview">
-                                        <code :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                        <code :id="`fluentform_conversational_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
                                            [fluentform type="conversational" id="{{scope.row.id }}"]
                                         </code>
-                                        <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
+                                        <span class="copy copy_btn" :data-clipboard-target="`#fluentform_conversational_${scope.row.id}`">Copy</span>
                                     </div>
                                 </template>
                             </el-table-column>

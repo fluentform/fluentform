@@ -53,10 +53,10 @@ class Menu
 
         $settingsGlobalStyle = $app->publicUrl('css/fluentform-settings-global.css');
         $allFormsStyle = $app->publicUrl("css/fluentform-all-forms.css");
-        
-        //$allFormsStyleTwo = $app->publicUrl("css/fluentform-all-forms.css");
 
         $fluentFormAdminEditorStyles = $app->publicUrl("css/fluent-forms-admin-sass.css");
+
+
         $fluentFormAdminCSS = $app->publicUrl("css/fluent-forms-admin.css");
         $addOnsCss = $app->publicUrl("css/add-ons.css");
         $adminDocCss = $app->publicUrl("css/admin_docs.css");
@@ -126,25 +126,6 @@ class Menu
             FLUENTFORM_VERSION,
             'all'
         );
-        
-
-
-
-
-
-        // wp_register_style(
-        //     'fluent_add_new_forms',
-        //     $allFormsStyle,
-        //     array(),
-        //     FLUENTFORM_VERSION,
-        //     'all'
-        // );
-
-
-
-
-
-
 
         wp_register_script(
             'fluentform_editor_script',
@@ -283,7 +264,6 @@ class Menu
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'adminUrl'                 => admin_url('admin.php'),
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
@@ -552,6 +532,12 @@ class Menu
     // add new forms page render
     public function renderAddNewFormRoute()
     {
+        wp_localize_script('add_new_forms', 'FluentFormApp', [
+            'hasPro'               => defined('FLUENTFORMPRO'),
+            'adminUrl'             => admin_url('admin.php'),
+            'plugin_public_url'    => $this->app->publicUrl(),
+        ]);
+
         View::render('admin.add_new_forms', array());
     }
 
@@ -939,13 +925,13 @@ class Menu
 
     public function addPreviewButton($formId)
     {
-        $previewText = __('Preview & Design', 'fluentform');
+        $previewText = __('Preview', 'fluentform');
         $previewUrl = Helper::getPreviewUrl($formId);
         if ($isConversational = Helper::isConversionForm($formId)) {
             $previewText = __('Preview', 'fluentform');
         }
 
-        echo '<a target="_blank" class="el-button el-button--small" href="' . esc_url($previewUrl) . '">' . '<i class="el-icon-view"></i> ' . esc_attr($previewText) . '</a>';
+        echo '<a target="_blank" class="el-button el-button--info is-plain" href="' . esc_url($previewUrl) . '">' . '<i class="el-icon-view el-icon"></i> ' . '<span>' . esc_attr($previewText) . '</span>' . '</a>';
     }
 
     public function addCopyShortcodeButton($formId)
@@ -955,7 +941,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button style="background:#dedede;color:#545454;padding:5px;max-width: 200px;overflow: hidden;" title="Click to Copy" class="btn copy" data-clipboard-text=\'' . $shortcode . '\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button class="shortcode_btn shortcode_btn_md copy" title="Click to Copy" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon-document-copy el-icon"></i>' . '<span>' . $shortcode . '</span>' . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 

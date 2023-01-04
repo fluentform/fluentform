@@ -28,7 +28,9 @@ import {
     DropdownMenu,
     DropdownItem,
     Switch,
-    DatePicker
+    DatePicker,
+    RadioButton
+    
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -44,6 +46,7 @@ Vue.use(TableColumn);
 Vue.use(Tooltip);
 Vue.use(Popover);
 Vue.use(RadioGroup);
+Vue.use(RadioButton);
 Vue.use(Radio);
 Vue.use(Select);
 Vue.use(Option);
@@ -69,6 +72,7 @@ locale.use(lang);
 import Acl from '@/common/Acl';
 
 import AddNewForms from './views/AddNewForms.vue';
+import notifier from './notifier';
 
 Vue.mixin({
     methods: {
@@ -82,7 +86,9 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
-        }
+        },
+        
+        ...notifier
     },
     filters: {
         ucFirst(string) {

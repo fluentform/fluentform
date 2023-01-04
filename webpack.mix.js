@@ -56,11 +56,14 @@ mix
     .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `public/css/fluent-forms-admin-sass.css`)
 
-    .sass('resources/assets/admin/scss/fluentform-settings-global.scss', `public/css/fluentform-settings-global.css`)
+    
     .sass('resources/assets/admin/css/fluent-all-forms.scss', `public/css/fluent-all-forms.css`)
 
+    
     .sass('resources/assets/admin/scss/fluentform-all-forms.scss', `public/css/fluentform-all-forms.css`)
+    .sass('resources/assets/admin/scss/fluentform-settings-global.scss', `public/css/fluentform-settings-global.css`)
 
+    
     .sass('resources/assets/admin/css/admin_notices.scss', `public/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `public/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'public/css/add-ons.css')

@@ -80,6 +80,15 @@
             background-color: $button-danger-bg;
             border-color: $button-danger-border-color;
         }
+        &--info{
+            background-color: $button-info-bg;
+            border-color: $button-info-border-color;
+            &.is-plain{
+                color: $button-info-plain-color;
+                background-color: $button-info-plain-bg;
+                border-color: $button-info-plain-border-color;
+            }
+        }
     }
     &-input-search{
         input{
@@ -110,12 +119,12 @@
         padding: $el-dialog-gap-y $el-dialog-gap-x;
         border-radius: $el-dialog-border-radius;
         &__header {
-            padding: 0 0 1.25rem 0;
+            padding: 0 0 1.5rem 0;
             border-bottom: $el-dialog-header-border;
         }
         &__headerbtn{
-            top: 26px;
-            right: 30px;
+            top: 18px;
+            right: 22px;
             font-size: $el-dialog-header-btn-fontsize;
             width: $el-dialog-header-btn-width;
             height: $el-dialog-header-btn-height;
@@ -142,6 +151,11 @@
     }
     &-popover{
         border-radius: $el-popover-border-radius;
+    }
+    &-input-border{
+        input{
+            background-color: $white;
+        }
     }
 }
 
