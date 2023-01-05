@@ -1,38 +1,25 @@
 <template>
-    <div :class="{'ff_backdrop': visibility}">
-        <el-dialog
-            width="500px"
-            v-loading="loading"
-            @close="cancelSelection"
-            :visible="visibility"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            custom-class="post-type-selection"
-        >
-            <div slot="title">
-                <h4>{{$t('Select Post Type')}}</h4>
-            </div>
-            <div class="ff_post_type_action_wrap mt-5">
-                <el-select v-model="post_type" class="mb-4">
-                    <el-option
-                        v-for="(type, i) in post_types"
-                        :value="type"
-                        :label="type"
-                        :key="i"
-                    />
-                </el-select>
-                <div class="text-right">
-                    <el-button
-                        type="primary"
-                        @click="visibility = false"
-                    >
-                        {{ $t('Continue') }}
-                    </el-button>
-                </div>
-            </div>
-        </el-dialog>
-    </div>
-
+    <el-dialog
+        width="390px"
+        v-loading="loading"
+        @close="cancelSelection"
+        :visible="visibility"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        custom-class="post-type-selection"
+    >
+        <div slot="title">
+            <h4>{{$t('Select Post Type')}}</h4>
+        </div>
+        <div class="ff_post_type_action_wrap mt-4">
+            <el-radio-group v-model="post_type" class="el-radio-group-column ff_post_type_radios">
+                <el-radio  v-for="(type, i) in post_types" :key="i" :label="type">{{type}}</el-radio>    
+            </el-radio-group>
+            <el-button class="el-button--block" type="primary" @click="visibility = false">
+                {{ $t('Continue') }}
+            </el-button>
+        </div>
+    </el-dialog>
 </template>
 
 <script>

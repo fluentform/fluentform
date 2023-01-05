@@ -56,10 +56,12 @@
                         </el-button>
                         <div v-if="advancedFilter" class="ff_advanced_search">
                             <div class="ff_advanced_search_radios">
-                                <el-radio v-model="radioOption" label="today">Today</el-radio>
-                                <el-radio v-model="radioOption" label="yesterday">Yesterday</el-radio>
-                                <el-radio v-model="radioOption" label="last-week">Last Week</el-radio>
-                                <el-radio v-model="radioOption" label="last-month">Last Month</el-radio>
+                                <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                    <el-radio label="today">Today</el-radio>
+                                    <el-radio label="yesterday">Yesterday</el-radio>
+                                    <el-radio label="last-week">Last Week</el-radio>
+                                    <el-radio label="last-month">Last Month</el-radio>
+                                </el-radio-group>
                             </div>
                             <div class="ff_advanced_search_date_range">
                                 <p>Select a Timeframe</p>

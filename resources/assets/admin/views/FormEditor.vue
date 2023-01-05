@@ -1,427 +1,423 @@
 <template>
     <div class="form-editor" id="form-editor">
-        <div id="js-form-editor--body" class="form-editor--body"
-             :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
-            <div class="form-editor__body-content">
-                <div class="">
-                    <!-- =========================
-                         PAGING START
-                    ============================== -->
-                    <div v-if="haveFormSteps" class="form-step__wrapper form-step__start panel__body--item">
-                        <div @click="editSelected(stepStart)" class="item-actions-wrapper hover-action-middle">
-                            <div class="item-actions">
-                                <i @click="editSelected(stepStart)" class="icon icon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="step-start text-center">
-                            <div class="step-start__indicator">
-                                <strong>{{ $t('PAGING START') }}</strong>
-                                <hr>
-                            </div>
-                            <div class="start-of-page">
-                                {{ $t('Click to configure your step settings') }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- =========================
-                         FORM DROPZONE
-                    ============================== -->
-                    <el-form :class="'label_position_org_'+original_label_placement" class="form-editor-elements"
-                             :label-position="labelPlacement" label-width="120px">
-                        <vddl-list class="panel__body--list"
-                                   :class="{'empty-dropzone': !form.dropzone.length}"
-                                   :list="form.dropzone"
-                                   :drop="handleDrop"
-                                   :horizontal="false">
-
-                            <!-- Placeholder shown when element dragged -->
-                            <vddl-placeholder :style="{ minHeight: dragSourceHeight }">
-                            </vddl-placeholder>
-
-                            <!-- Empty dropzone placeholder -->
-                            <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
-                                <i @click.stop="editorInserterPopup(0, form.dropzone)"
-                                   class="popup-search-element">+</i>
-                            </div>
-
-                            <template v-if="is_conversion_form">
-                                <list-conversion v-for="(item, index) in form.dropzone"
-                                :handleDragstart="handleDragstart"
-                                :handleDragend="handleDragend"
-                                :allElements="form.dropzone"
-                                :handleEdit="editSelected"
-                                :handleDrop="handleDrop"
-                                :wrapper="form.dropzone"
-                                :key="item.uniqElKey"
-                                :editItem="editItem"
-                                :index="index"
-                                :item="item">
-                                </list-conversion>
-                            </template>
-                            <template v-else>
-                                <list v-for="(item, index) in form.dropzone"
-                                      :handleDragstart="handleDragstart"
-                                      :handleDragend="handleDragend"
-                                      :allElements="form.dropzone"
-                                      :handleEdit="editSelected"
-                                      :handleDrop="handleDrop"
-                                      :wrapper="form.dropzone"
-                                      :key="item.uniqElKey"
-                                      :editItem="editItem"
-                                      :index="index"
-                                      :item="item">
-                                </list>
-                            </template>
-
-                        </vddl-list>
-                    </el-form>
-
-                    <!-- =========================
-                        SUBMIT BUTTON
-                    ============================== -->
-                    <div class="ff_default_submit_button_wrapper">
-                        <submitButton
-                            v-if="Object.keys(submitButton).length"
-                            :editItem="editItem"
-                            :submitButton="submitButton"
-                            :editSelected="editSelected"/>
-                    </div>
-
-                    <div v-if="!form.dropzone.length" class="ff-user-guide">
-                        <div @click="introVisible = true" class="editor_play_video"><i class="el-icon-video-play"></i>
-                            {{ $t('Video Instruction') }}</div>
-                        <img :src="instructionImage" alt="">
-                        <div class="text-align-center">
-                            <el-button type="danger" @click="introVisible = true"><i class="el-icon-video-play"></i>
-                                {{ $t('Video Instruction') }}</el-button>
-                        </div>
-                        <el-dialog
-                            :title="$t('How to create a form')"
-                            :visible.sync="introVisible"
-                            :append-to-body="true"
-                            width="60%">
-                            <div v-if="introVisible" class="videoWrapper">
-                                <iframe width="1237" height="696" src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                            </div>
-                            <span slot="footer" class="dialog-footer">
-                            <el-button @click="introVisible = false">{{ $t('Close') }}</el-button>
-                          </span>
-                        </el-dialog>
-                    </div>
-
-                    <!-- =========================
-                         PAGING END
-                    ============================== -->
-                    <div v-if="haveFormSteps" class="form-step__wrapper form-step__end panel__body--item">
-                        <div @click="editSelected(stepEnd)" class="item-actions-wrapper hover-action-middle">
-                            <div class="item-actions">
-                                <i @click="editSelected(stepEnd)" class="icon icon-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="step-start text-center">
-                            <div class="start-of-page">
-                                {{ $t('End of last page') }}
-                            </div>
-                            <div class="step-start__indicator">
-                                <strong>{{ $t('PAGING END') }}</strong>
-                                <hr>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- =========================
-             SIDEBAR
-        ============================== -->
-        <div class="form-editor--sidebar"
-             :style="{width: editorConfig.sidebarWidth ? editorConfig.sidebarWidth + 'px' : ''}">
-
-            <div class="form-editor--sidebar-content nav-tabs new-elements">
-                <ul class="nav-tab-list toggle-fields-options">
-                    <li :class="fieldMode == 'add' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeFieldMode('add')">{{ $t('Input Fields') }}</a>
-                    </li>
-                    <li :class="fieldMode == 'edit' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
-                    </li>
-                </ul>
-
-                <div v-loading="!isMockLoaded"
-                     :element-loading-text="$t('Loading Awesomeness...')"
-                     style="min-height: 150px;"
-                     class="panel-full-height nav-tab-items">
-                    <template v-if="isMockLoaded">
-                        <!-- =========================
-                             ADD FIELDS
-                        ============================== -->
-                        <template v-if="fieldMode == 'add'">
-                            <searchElement
-                                :placeholder="$t('Search (name, address)...')"
-                                :isSidebarSearch.sync="isSidebarSearch"
-                                :moved="moved"
-                                :isDisabled="isDisabled"
-                                :insertItemOnClick="insertItemOnClick"
-                                :list="[
-                                    ...postMockList,
-                                    ...taxonomyMockList,
-                                    ...generalMockList,
-                                    ...advancedMockList,
-                                    ...containerMockList,
-                                    ...paymentsMockList
-                                ]"/>
-
-                            <div class="sidebar_elements_wrapper" v-show="!isSidebarSearch">
-                                <!-- Post Fields -->
-                                <div
-                                    v-if="isPostForm"
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'post') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('post')"
-                                        :class="optionFieldsSection == 'post' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('Post Fields') }}
-                                    </h5>
-
-                                    <transition name="slide-fade">
-                                        <div v-show="optionFieldsSection == 'post'"
-                                             class="option-fields-section--content">
-                                            <div v-for="(itemMockList, i) in postMockListChunked" :key="i"
-                                                 class="v-row mb15">
-                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                    <vddl-draggable
-                                                        class="btn-element"
-                                                        :class="{ 'disabled': isDisabled(itemMock) }"
-                                                        :draggable="itemMock"
-                                                        :selected="insertItemOnClick"
-                                                        :index="i"
-                                                        :wrapper="itemMockList"
-                                                        :disable-if="isDisabled(itemMock)"
-                                                        :moved="moved"
-                                                        effectAllowed="copy">
-                                                        <i :class="itemMock.editor_options.icon_class"></i>
-                                                        {{ itemMock.editor_options.title }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
+        <div class="ff_editor_row">
+            <div class="ff_editor_main">
+                <div id="js-form-editor--body" class="form-editor--body">
+                    <div class="form-editor__body-content">
+                        <div class="">
+                            <!-- =========================
+                                PAGING START
+                            ============================== -->
+                            <div v-if="haveFormSteps" class="form-step__wrapper form-step__start panel__body--item">
+                                <div @click="editSelected(stepStart)" class="item-actions-wrapper hover-action-middle">
+                                    <div class="item-actions">
+                                        <i @click="editSelected(stepStart)" class="icon icon-pencil"></i>
+                                    </div>
                                 </div>
-
-                                <!-- Taxonomy Fields -->
-                                <div
-                                    v-if="isPostForm"
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'taxonomy') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('taxonomy')"
-                                        :class="optionFieldsSection == 'taxonomy' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('Taxonomy Fields') }}
-                                    </h5>
-
-                                    <transition name="slide-fade">
-                                        <div
-                                            class="option-fields-section--content"
-                                            v-show="optionFieldsSection == 'taxonomy'"
-                                        >
-                                            <div
-                                                :key="i"
-                                                class="v-row mb15"
-                                                v-for="(itemMockList, i) in taxonomyMockListChunked"
-                                            >
-                                                <div
-                                                    :key="i"
-                                                    class="v-col--33"
-                                                    v-for="(itemMock, i) in itemMockList"
-                                                >
-                                                    <vddl-draggable
-                                                        class="btn-element"
-                                                        :class="{ 'disabled': isDisabled(itemMock) }"
-                                                        :draggable="itemMock"
-                                                        :selected="insertItemOnClick"
-                                                        :index="i"
-                                                        :wrapper="itemMockList"
-                                                        :disable-if="isDisabled(itemMock)"
-                                                        :moved="moved"
-                                                        effectAllowed="copy">
-                                                        <i :class="itemMock.editor_options.icon_class"></i>
-                                                        {{ itemMock.editor_options.title }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
+                                <div class="step-start text-center">
+                                    <div class="step-start__indicator">
+                                        <strong>{{ $t('PAGING START') }}</strong>
+                                        <hr>
+                                    </div>
+                                    <div class="start-of-page">
+                                        {{ $t('Click to configure your step settings') }}
+                                    </div>
                                 </div>
-
-                                <!-- General Fields -->
-                                <div
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'general') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('general')"
-                                        :class="optionFieldsSection == 'general' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('General Fields') }}
-                                    </h5>
-
-                                    <transition name="slide-fade">
-                                        <div v-show="optionFieldsSection == 'general'"
-                                             class="option-fields-section--content">
-                                            <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
-                                                 class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                    <vddl-draggable
-                                                        class="btn-element"
-                                                        :class="{ 'disabled': isDisabled(itemMock) }"
-                                                        :draggable="itemMock"
-                                                        :selected="insertItemOnClick"
-                                                        :index="i"
-                                                        :wrapper="itemMockList"
-                                                        :disable-if="isDisabled(itemMock)"
-                                                        :moved="moved"
-                                                        effectAllowed="copy">
-                                                        <i :class="itemMock.editor_options.icon_class"></i>
-                                                        {{ itemMock.editor_options.title }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-
-                                <!-- Advanced Fields -->
-                                <div
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'others') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('others')"
-                                        :class="optionFieldsSection == 'others' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('Advanced Fields') }}
-                                    </h5>
-                                    <transition name="slide-fade">
-                                        <div v-show="optionFieldsSection == 'others'"
-                                                class="option-fields-section--content">
-                                            <div v-for="(itemMockList, i) in otherItemsMockListChunked" :key="i"
-                                                    class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                    <vddl-draggable
-                                                        class="btn-element"
-                                                        :draggable="itemMock"
-                                                        :index="i"
-                                                        :wrapper="itemMockList"
-                                                        :selected="insertItemOnClick"
-                                                        :disable-if="isDisabled(itemMock)"
-                                                        :moved="moved"
-                                                        effect-allowed="copy"
-                                                    ><i :class="itemMock.editor_options.icon_class"></i> {{
-                                                            itemMock.editor_options.title
-                                                        }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-
-                                <!-- Container Fields -->
-                                <div
-                                v-if="!is_conversion_form"
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'container') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('container')"
-                                        :class="optionFieldsSection == 'container' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('Container') }}
-                                    </h5>
-                                    <transition name="slide-fade">
-                                        <div v-show="optionFieldsSection == 'container'"
-                                                class="option-fields-section--content">
-                                            <div class="v-row mb15">
-                                                <div class="v-col--50" v-for="(mockItem, i) in containerMockList">
-                                                    <vddl-draggable
-                                                        class="btn-element mb15"
-                                                        :draggable="mockItem"
-                                                        :wrapper="containerMockList"
-                                                        :index="i"
-                                                        :selected="insertItemOnClick"
-                                                        :moved="moved"
-                                                        effect-allowed="copy"
-                                                    ><i :class="mockItem.editor_options.icon_class"></i> {{
-                                                            mockItem.editor_options.title
-                                                        }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-
-                                <!-- Payment Fields -->
-                                <div
-                                    v-if="has_payment_features"
-                                    class="option-fields-section"
-                                    :class="(optionFieldsSection == 'payment') ? 'option-fields-section_active' : ''"
-                                >
-                                    <h5 @click="toggleFieldsSection('payment')"
-                                        :class="optionFieldsSection == 'payment' ? 'active' : ''"
-                                        class="option-fields-section--title">
-                                        {{ $t('Payment Fields') }}
-                                    </h5>
-                                    <transition name="slide-fade">
-                                        <div v-show="optionFieldsSection == 'payment'"
-                                                class="option-fields-section--content">
-                                            <div v-for="(itemMockList, i) in paymentsMockListChunked" :key="i"
-                                                    class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
-                                                    <vddl-draggable
-                                                        class="btn-element"
-                                                        :class="{ 'disabled': isDisabled(itemMock) }"
-                                                        :draggable="itemMock"
-                                                        :selected="insertItemOnClick"
-                                                        :index="i"
-                                                        :wrapper="itemMockList"
-                                                        :disable-if="isDisabled(itemMock)"
-                                                        :moved="moved"
-                                                        effectAllowed="copy">
-                                                        <i :class="itemMock.editor_options.icon_class"></i>
-                                                        {{ itemMock.editor_options.title }}
-                                                    </vddl-draggable>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-
                             </div>
-                        </template>
 
-                        <!-- =========================
-                             EDIT FIELDS
-                        ============================== -->
-                        <template
-                            v-if="fieldMode == 'edit' && Object.keys(editItem).length">
-                            <div v-loading="sidebarLoading" style="min-height: 100px;">
-                                <EditorSidebar
-                                    v-if="!sidebarLoading"
+                            <!-- =========================
+                                FORM DROPZONE
+                            ============================== -->
+                            <el-form :class="'label_position_org_'+original_label_placement" class="form-editor-elements"
+                                    :label-position="labelPlacement" label-width="120px">
+                                <vddl-list class="panel__body--list"
+                                        :class="{'empty-dropzone': !form.dropzone.length}"
+                                        :list="form.dropzone"
+                                        :drop="handleDrop"
+                                        :horizontal="false">
+
+                                    <!-- Placeholder shown when element dragged -->
+                                    <vddl-placeholder :style="{ minHeight: dragSourceHeight }">
+                                    </vddl-placeholder>
+
+                                    <!-- Empty dropzone placeholder -->
+                                    <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
+                                        <div class="popup-search-element" @click.stop="editorInserterPopup(0, form.dropzone)">
+                                            <i class="el-icon-plus"></i>
+                                        </div>
+                                    </div>
+
+                                    <template v-if="is_conversion_form">
+                                        <list-conversion v-for="(item, index) in form.dropzone"
+                                        :handleDragstart="handleDragstart"
+                                        :handleDragend="handleDragend"
+                                        :allElements="form.dropzone"
+                                        :handleEdit="editSelected"
+                                        :handleDrop="handleDrop"
+                                        :wrapper="form.dropzone"
+                                        :key="item.uniqElKey"
+                                        :editItem="editItem"
+                                        :index="index"
+                                        :item="item">
+                                        </list-conversion>
+                                    </template>
+                                    <template v-else>
+                                        <list v-for="(item, index) in form.dropzone"
+                                            :handleDragstart="handleDragstart"
+                                            :handleDragend="handleDragend"
+                                            :allElements="form.dropzone"
+                                            :handleEdit="editSelected"
+                                            :handleDrop="handleDrop"
+                                            :wrapper="form.dropzone"
+                                            :key="item.uniqElKey"
+                                            :editItem="editItem"
+                                            :index="index"
+                                            :item="item">
+                                        </list>
+                                    </template>
+
+                                </vddl-list>
+                            </el-form>
+
+                            <!-- =========================
+                                SUBMIT BUTTON
+                            ============================== -->
+                            <div class="ff_default_submit_button_wrapper mt-2">
+                                <submitButton
+                                    v-if="Object.keys(submitButton).length"
                                     :editItem="editItem"
-                                    :form_items="form.dropzone"
-                                    :haveFormSteps="haveFormSteps"
-                                />
+                                    :submitButton="submitButton"
+                                    :editSelected="editSelected"/>
                             </div>
-                        </template>
-                    </template>
+
+                            <div v-if="!form.dropzone.length" class="ff_editor_user_guide">
+                                <el-button @click="introVisible = true" class="ff_editor_play_video_btn">
+                                    <svg class="el-icon" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="m9.5 16.5 7-4.5-7-4.5ZM12 22q-2.075 0-3.9-.788-1.825-.787-3.175-2.137-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175 1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138 1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"/></svg>
+                                    {{ $t('Video Instruction') }}
+                                </el-button>
+                                <img :src="instructionImage" alt="">
+                                <el-dialog
+                                    :visible.sync="introVisible"
+                                    :append-to-body="true"
+                                    width="60%"
+                                >
+                                    <div slot="title">
+                                        <h4 class="mb-2">{{$t('How to create a form')}}</h4>
+                                        <p>Watch our fluentform's video to better understand.</p>
+                                    </div>
+                                    <div v-if="introVisible" class="ff_video_wrapper mt-5">
+                                        <iframe width="500" height="380" src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </el-dialog>
+                            </div>
+
+                            <!-- =========================
+                                PAGING END
+                            ============================== -->
+                            <div v-if="haveFormSteps" class="form-step__wrapper form-step__end panel__body--item">
+                                <div @click="editSelected(stepEnd)" class="item-actions-wrapper hover-action-middle">
+                                    <div class="item-actions">
+                                        <i @click="editSelected(stepEnd)" class="icon icon-pencil"></i>
+                                    </div>
+                                </div>
+                                <div class="step-start text-center">
+                                    <div class="start-of-page">
+                                        {{ $t('End of last page') }}
+                                    </div>
+                                    <div class="step-start__indicator">
+                                        <strong>{{ $t('PAGING END') }}</strong>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div><!-- .ff_editor_main -->
+            <div class="ff_editor_sidebar">
+                <div class="form-editor--sidebar">
+                    <div class="form-editor--sidebar-content nav-tabs new-elements">
+                        <ul class="nav-tab-list toggle-fields-options">
+                            <li :class="fieldMode == 'add' ? 'active' : ''">
+                                <a href="#" @click.prevent="changeFieldMode('add')">{{ $t('Input Fields') }}</a>
+                            </li>
+                            <li :class="fieldMode == 'edit' ? 'active' : ''">
+                                <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
+                            </li>
+                        </ul>
+
+                        <div v-loading="!isMockLoaded"
+                            :element-loading-text="$t('Loading Awesomeness...')"
+                            style="min-height: 150px;"
+                            class="panel-full-height nav-tab-items">
+                            <template v-if="isMockLoaded">
+                                <!-- =========================
+                                    ADD FIELDS
+                                ============================== -->
+                                <template v-if="fieldMode == 'add'">
+                                    <searchElement
+                                        :placeholder="$t('Search (name, address)...')"
+                                        :isSidebarSearch.sync="isSidebarSearch"
+                                        :moved="moved"
+                                        :isDisabled="isDisabled"
+                                        :insertItemOnClick="insertItemOnClick"
+                                        :list="[
+                                            ...postMockList,
+                                            ...taxonomyMockList,
+                                            ...generalMockList,
+                                            ...advancedMockList,
+                                            ...containerMockList,
+                                            ...paymentsMockList
+                                        ]"/>
+
+                                    <div class="sidebar_elements_wrapper" v-show="!isSidebarSearch">
+                                        <!-- Post Fields -->
+                                        <div
+                                            v-if="isPostForm"
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'post') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('post')"
+                                                :class="optionFieldsSection == 'post' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('Post Fields') }}
+                                            </h5>
+
+                                            <transition name="slide-fade">
+                                                <div v-show="optionFieldsSection == 'post'"
+                                                    class="option-fields-section--content">
+                                                    <div v-for="(itemMockList, i) in postMockListChunked" :key="i"
+                                                        class="v-row mb15">
+                                                        <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                            <vddl-draggable
+                                                                class="btn-element"
+                                                                :class="{ 'disabled': isDisabled(itemMock) }"
+                                                                :draggable="itemMock"
+                                                                :selected="insertItemOnClick"
+                                                                :index="i"
+                                                                :wrapper="itemMockList"
+                                                                :disable-if="isDisabled(itemMock)"
+                                                                :moved="moved"
+                                                                effectAllowed="copy">
+                                                                <i :class="itemMock.editor_options.icon_class"></i>
+                                                                {{ itemMock.editor_options.title }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                        <!-- Taxonomy Fields -->
+                                        <div
+                                            v-if="isPostForm"
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'taxonomy') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('taxonomy')"
+                                                :class="optionFieldsSection == 'taxonomy' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('Taxonomy Fields') }}
+                                            </h5>
+
+                                            <transition name="slide-fade">
+                                                <div
+                                                    class="option-fields-section--content"
+                                                    v-show="optionFieldsSection == 'taxonomy'"
+                                                >
+                                                    <div
+                                                        :key="i"
+                                                        class="v-row mb15"
+                                                        v-for="(itemMockList, i) in taxonomyMockListChunked"
+                                                    >
+                                                        <div
+                                                            :key="i"
+                                                            class="v-col--33"
+                                                            v-for="(itemMock, i) in itemMockList"
+                                                        >
+                                                            <vddl-draggable
+                                                                class="btn-element"
+                                                                :class="{ 'disabled': isDisabled(itemMock) }"
+                                                                :draggable="itemMock"
+                                                                :selected="insertItemOnClick"
+                                                                :index="i"
+                                                                :wrapper="itemMockList"
+                                                                :disable-if="isDisabled(itemMock)"
+                                                                :moved="moved"
+                                                                effectAllowed="copy">
+                                                                <i :class="itemMock.editor_options.icon_class"></i>
+                                                                {{ itemMock.editor_options.title }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                        <!-- General Fields -->
+                                        <div
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'general') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('general')"
+                                                :class="optionFieldsSection == 'general' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('General Fields') }}
+                                            </h5>
+
+                                            <transition name="slide-fade">
+                                                <div v-show="optionFieldsSection == 'general'"
+                                                    class="option-fields-section--content">
+                                                    <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
+                                                        class="v-row mb15" :class="'ff_items_'+itemMockList.length">
+                                                        <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                            <vddl-draggable
+                                                                class="btn-element"
+                                                                :class="{ 'disabled': isDisabled(itemMock) }"
+                                                                :draggable="itemMock"
+                                                                :selected="insertItemOnClick"
+                                                                :index="i"
+                                                                :wrapper="itemMockList"
+                                                                :disable-if="isDisabled(itemMock)"
+                                                                :moved="moved"
+                                                                effectAllowed="copy">
+                                                                <i :class="itemMock.editor_options.icon_class"></i>
+                                                                {{ itemMock.editor_options.title }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                        <!-- Advanced Fields -->
+                                        <div
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'others') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('others')"
+                                                :class="optionFieldsSection == 'others' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('Advanced Fields') }}
+                                            </h5>
+                                            <transition name="slide-fade">
+                                                <div v-show="optionFieldsSection == 'others'"
+                                                        class="option-fields-section--content">
+                                                    <div v-for="(itemMockList, i) in otherItemsMockListChunked" :key="i"
+                                                            class="v-row mb15" :class="'ff_items_'+itemMockList.length">
+                                                        <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                            <vddl-draggable
+                                                                class="btn-element"
+                                                                :draggable="itemMock"
+                                                                :index="i"
+                                                                :wrapper="itemMockList"
+                                                                :selected="insertItemOnClick"
+                                                                :disable-if="isDisabled(itemMock)"
+                                                                :moved="moved"
+                                                                effect-allowed="copy"
+                                                            ><i :class="itemMock.editor_options.icon_class"></i> {{
+                                                                    itemMock.editor_options.title
+                                                                }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                        <!-- Container Fields -->
+                                        <div
+                                        v-if="!is_conversion_form"
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'container') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('container')"
+                                                :class="optionFieldsSection == 'container' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('Container') }}
+                                            </h5>
+                                            <transition name="slide-fade">
+                                                <div v-show="optionFieldsSection == 'container'"
+                                                        class="option-fields-section--content">
+                                                    <div class="v-row mb15">
+                                                        <div class="v-col--50" v-for="(mockItem, i) in containerMockList">
+                                                            <vddl-draggable
+                                                                class="btn-element mb15"
+                                                                :draggable="mockItem"
+                                                                :wrapper="containerMockList"
+                                                                :index="i"
+                                                                :selected="insertItemOnClick"
+                                                                :moved="moved"
+                                                                effect-allowed="copy"
+                                                            ><i :class="mockItem.editor_options.icon_class"></i> {{
+                                                                    mockItem.editor_options.title
+                                                                }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                        <!-- Payment Fields -->
+                                        <div
+                                            v-if="has_payment_features"
+                                            class="option-fields-section"
+                                            :class="(optionFieldsSection == 'payment') ? 'option-fields-section_active' : ''"
+                                        >
+                                            <h5 @click="toggleFieldsSection('payment')"
+                                                :class="optionFieldsSection == 'payment' ? 'active' : ''"
+                                                class="option-fields-section--title">
+                                                {{ $t('Payment Fields') }}
+                                            </h5>
+                                            <transition name="slide-fade">
+                                                <div v-show="optionFieldsSection == 'payment'"
+                                                        class="option-fields-section--content">
+                                                    <div v-for="(itemMockList, i) in paymentsMockListChunked" :key="i"
+                                                            class="v-row mb15" :class="'ff_items_'+itemMockList.length">
+                                                        <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                            <vddl-draggable
+                                                                class="btn-element"
+                                                                :class="{ 'disabled': isDisabled(itemMock) }"
+                                                                :draggable="itemMock"
+                                                                :selected="insertItemOnClick"
+                                                                :index="i"
+                                                                :wrapper="itemMockList"
+                                                                :disable-if="isDisabled(itemMock)"
+                                                                :moved="moved"
+                                                                effectAllowed="copy">
+                                                                <i :class="itemMock.editor_options.icon_class"></i>
+                                                                {{ itemMock.editor_options.title }}
+                                                            </vddl-draggable>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+
+                                    </div>
+                                </template>
+
+                                <!-- =========================
+                                    EDIT FIELDS
+                                ============================== -->
+                                <template
+                                    v-if="fieldMode == 'edit' && Object.keys(editItem).length">
+                                    <div v-loading="sidebarLoading" style="min-height: 100px;">
+                                        <EditorSidebar
+                                            v-if="!sidebarLoading"
+                                            :editItem="editItem"
+                                            :form_items="form.dropzone"
+                                            :haveFormSteps="haveFormSteps"
+                                        />
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .ff_editor_sidebar  -->
+        </div><!-- .ff_editor_row  -->
 
         <!-- OTHER MODAL/POPUP COMPONENTS -->
         <ItemDisabled
@@ -634,12 +630,12 @@ export default {
     },
     watch: {
         form_saving() {
-            const saveBtn = jQuery('#saveFormData');
+            const saveButtonText = jQuery('#saveFormData #text');
             if (this.form_saving) {
                 this.clearEditableObject(); // Empty {editItem} after form saved
-                saveBtn.html('<i class="el-icon-success"></i> Saving Form');
+                saveButtonText.html('Saving Form');
             } else {
-                saveBtn.html('<i class="el-icon-success"></i> Save Form');
+                saveButtonText.html('Save Form');
             }
         },
 
@@ -916,29 +912,19 @@ export default {
          **/
         initSaveBtn() {
             const self = this;
-            // var saveButton = jQuery('<button />', {
-            //     id: 'saveFormData',
-            //     class: 'el-button el-button--primary',
-            //     html: '<i class="el-icon-success el-icon"></i> <span>Save Form</span>'
-            // });
 
+            // save the form when clicking on the save form button
             const saveButton = jQuery("#saveFormData");
+            const saveButtonText = jQuery("#saveFormData #text");
             saveButton.on('click', function () {
-                const $this = jQuery(this);
-                if (!$this.data('text')) $this.data('text', $this.text());
-                //$this.html('<i class="el-icon-success el-icon"></i> <span>Saving Form</span>');
-                $this.html('Saving Form');
+                // const $this = jQuery(this);
+                // if (!$this.data('text')) $this.data('text', $this.text());
+                saveButtonText.html('Saving Form');
                 self.save_form();
             });
 
-            jQuery('.ff-navigation-right').append(saveButton);
-
-            var screenButton = jQuery('<span />', {
-                id: 'switchScreen',
-                class: 'ff_icon_switch_full el-icon-full-screen',
-                text: ''
-            });
-
+            // toggle fullscreen
+            var screenButton = jQuery('#switchScreen');
             screenButton.on('click', function () {
                 const $body = jQuery('body');
                 let wasFullScreen = $body.hasClass('ff_full_screen');
@@ -959,8 +945,6 @@ export default {
             } else {
                 jQuery('body').addClass('ff_full_screen').addClass('folded');
             }
-
-            jQuery('.ff-navigation-right').append(screenButton);
         },
 
         /**

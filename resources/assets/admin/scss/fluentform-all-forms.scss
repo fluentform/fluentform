@@ -23,10 +23,6 @@
     }
 }
 
-.v-modal {
-    display: none !important;
-}
-
 .mtb10 {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -66,14 +62,6 @@
         border-radius: $ff-advanced-search-border-radius;
         top: 100%;
         margin-top: 10px;
-        &_radios{
-            display: flex;
-            flex-direction: column;
-            .el-radio{
-                margin-right: 0;
-                margin-bottom: 1.25rem;
-            }
-        }
         &_date_range{
             background-color: $ff-advanced-search-date-range-bg;
             padding: $ff-advanced-search-date-range-padding;
@@ -197,6 +185,11 @@
         .el-select{
             width: 100%;
         }
+    }
+    &_post_type_radios{
+      .el-radio__label{
+        text-transform: capitalize;
+      }
     }
 }
   

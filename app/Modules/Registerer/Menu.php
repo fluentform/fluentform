@@ -54,7 +54,7 @@ class Menu
         $settingsGlobalStyle = $app->publicUrl('css/fluentform-settings-global.css');
         $allFormsStyle = $app->publicUrl("css/fluentform-all-forms.css");
 
-        $fluentFormAdminEditorStyles = $app->publicUrl("css/fluent-forms-admin-sass.css");
+        $formEditorStyle = $app->publicUrl("css/fluentform-editor.css");
 
 
         $fluentFormAdminCSS = $app->publicUrl("css/fluent-forms-admin.css");
@@ -63,7 +63,7 @@ class Menu
         if (is_rtl()) {
             $settingsGlobalStyle = $app->publicUrl('css/settings_global_rtl.css');
             $allFormsStyle = $app->publicUrl('css/fluent-all-forms-rtl.css');
-            $fluentFormAdminEditorStyles = $app->publicUrl('css/fluent-forms-admin-sass-rtl.css');
+            $formEditorStyle = $app->publicUrl('css/fluent-forms-admin-sass-rtl.css');
             $fluentFormAdminCSS = $app->publicUrl('css/fluent-forms-admin-rtl.css');
             $addOnsCss = $app->publicUrl('css/add-ons-rtl.css');
             $adminDocCss = $app->publicUrl('css/admin_docs_rtl.css');
@@ -137,7 +137,7 @@ class Menu
 
         wp_register_style(
             'fluentform_editor_style',
-            $fluentFormAdminEditorStyles,
+            $formEditorStyle,
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -396,7 +396,7 @@ class Menu
                 array($this, 'renderAddNewFormRoute')
             );
 
-            $entriesTitle =  __('All Entries', 'fluentform');
+            $entriesTitle =  __('Entries', 'fluentform');
 
             if (Helper::isFluentAdminPage()) {
                 $entriesCount = wpFluent()->table('fluentform_submissions')

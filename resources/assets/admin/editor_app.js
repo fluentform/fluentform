@@ -35,7 +35,8 @@ import {
     Upload,
     Switch,
     InputNumber,
-    Card
+    Card,
+    Alert
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -76,6 +77,7 @@ Vue.use(Tooltip);
 Vue.use(Upload);
 Vue.use(Switch);
 Vue.use(InputNumber);
+Vue.use(Alert);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -260,8 +262,8 @@ new Vue({
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
 
-                    const saveFormBtn = jQuery("#saveFormData");
-                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
+                    // const saveFormBtn = jQuery("#saveFormData");
+                    // saveFormBtn.html('Saving Form');
 
                     // Update the hash now.
                     this.saveHash();
@@ -303,7 +305,7 @@ new Vue({
 
 // More menus app
 new Vue({
-    el: '#more-menu',
+    el: '#moreMenu',
     components: {
         MoreMenu
     }

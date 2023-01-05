@@ -2,10 +2,7 @@
     <div :class="{ ff_backdrop: visible }">
         <el-dropdown @command="handle">
             <span class="el-dropdown-link">
-                <i 
-                    class="el-icon-more" 
-                    style="cursor: pointer; transform: rotate(90deg);font-size: 20px;margin-top: 2px;"
-                />
+                <i class="el-icon-more el-icon"/>
             </span>
 
             <el-dropdown-menu slot="dropdown">
@@ -16,42 +13,42 @@
         </el-dropdown>
 
         <el-dialog
-            :title="$t('Confirmation')"
             :visible.sync="visible"
             :append-to-body="true"
-            width="40%"
+            width="60%"
         >
-            <p>
-                <b>{{ $t('Are you sure you want to convert this form?') }}</b>
-            </p>
+            <div slot="title">
+                <h4 class="mb-2">{{$t('Confirmation')}}</h4>
+                <p>{{ $t('Are you sure you want to convert this form?') }}</p>
+            </div>
 
             <template v-if="!is_conversion_form">
-                <p>
-                    {{
-                        $t('Conversational Forms currently doesn\'t support the following fields:')
-                    }}
-                </p>
-
-                <el-row :gutter="20">
+                 <el-alert
+                    class="mt-4"
+                    type="warning"
+                    title="Warning"
+                    :description="$t('Conversational Forms currently doesn\'t support the following fields: You may also lose data of these fields.')"
+                    show-icon
+                    :closable="false"
+                >
+                </el-alert>
+                <el-row :gutter="20" class="mt-5 ff_data_row">
                     <el-col :span="8" v-for="(field, i) in fields" :key="i">
-                        <i class="el-icon-caret-right"></i> {{ field }}
+                        <div class="ff_data_item mb-3">
+                            <i class="el-icon-caret-right el-icon"></i> <span>{{ field }}</span>
+                        </div>
                     </el-col>
                 </el-row>
-
-                <p>
-                    {{ $t('You may also lose data of these fields.') }}
-                </p>
             </template>
 
-            <span slot="footer" class="text-center dialog-footer">
-                <el-button @click="visible = false" size="small">
+            <div class="dialog-footer mt-2 text-right">
+                <el-button @click="visible = false" type="text" class="el-button--text-light">
                     {{ $t('Cancel') }}
                 </el-button>
-
-                <el-button type="primary" size="small" icon="el-icon-success" @click="confirm">
+                <el-button type="primary" icon="el-icon-success" @click="confirm">
                     {{ $t('Convert') }}
                 </el-button>
-            </span>
+            </div>
         </el-dialog>
     </div>
 </template>

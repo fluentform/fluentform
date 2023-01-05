@@ -1,5 +1,6 @@
 @import "../styles/_var.scss";
 @import "./partials/variables";
+@import "./partials/spacing";
 @import "./partials/fonts";
 @import "./partials/globals";
 @import "./partials/navbar";
@@ -73,18 +74,6 @@
     float: right !important;
 }
 
-.text-left {
-    text-align: left;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.text-center {
-    text-align: center;
-}
-
 .icon-clickable {
     cursor: pointer;
 }
@@ -94,15 +83,6 @@
     font-style: italic;
     font-size: 0.9em;
 }
-
-#wpfooter {
-    // display: none !important;
-}
-
-.ff_form_application_container {
-    margin-top: 56px;
-}
-
 
 .ff_settings_wrapper, .ff_admin_menu_wrapper {
     display: table;
@@ -177,26 +157,53 @@
 }
 
 // ff form name
-.ff_form_name {
-    padding-right: $ff-form-name-padding-x;
-    padding-top: $ff-form-name-padding-y;
-    padding-bottom: $ff-form-name-padding-y;
-    border-right: $ff-form-name-border;
-    text-overflow: ellipsis;
-    max-width: $ff-form-name-max-width;
-    white-space: nowrap;
-    overflow: hidden;
-    font-size: $ff-form-name-font-size;
-    font-weight: $ff-form-name-font-weight;
+.ff{
+    &_form_name {
+        padding-right: $ff-form-name-padding-x;
+        padding-top: $ff-form-name-padding-y;
+        padding-bottom: $ff-form-name-padding-y;
+        border-right: $ff-form-name-border;
+        text-overflow: ellipsis;
+        max-width: $ff-form-name-max-width;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: $ff-form-name-font-size;
+        font-weight: $ff-form-name-font-weight;
+    }
+    &_editor_action_wrap{
+        display: flex;
+        align-items: center;
+    }
 }
 
-.wp-admin.folded {
-    .ff_form_wrap {
-        left: 56px;
+// full screen button
+#switchScreen {
+    font-size: $full-screen-button-font-size;
+    cursor: pointer;
+    color: $full-screen-button-color;
+    opacity: 0.8;
+    svg{
+        path{
+            fill: $full-screen-button-color;;
+        }
     }
+    &:hover{
+        opacity: 1;
+    }
+}
 
-    .form_internal_menu {
-        left: 36px;
+// more buton
+#moreMenu {
+    padding-top: 2px;
+    .el-icon {
+      font-size: 1.625rem;
+      color: $base-text;
+      transform: rotate(90deg);
+      opacity: 0.8;
+      cursor: pointer;
+      &:hover{
+        opacity: 1;
+      }
     }
 }
 

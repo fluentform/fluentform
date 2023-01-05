@@ -11,6 +11,7 @@ $gray-100:                  #CED0D4;
 
 $body-bg:                   #F2F2F2;
 
+$bg-dark:                  #33383F;
 $bg-light:                  #F2F2F2;
 
 $border-color:              $gray-50;
@@ -67,6 +68,9 @@ $input-border-color:            $gray-100;
 $input-border-radius:            $border-radius;
 $input-color:                    $base-color;
 
+$input-focus-border-color:       $primary;
+
+
 // el input
 $el-input-search-bg:            #E7E6E6;
 $el-input-search-border-color:    $el-input-search-bg;
@@ -98,6 +102,9 @@ $button-info-border-color:            $button-info-bg;
 $button-info-plain-bg:                $bg-light;
 $button-info-plain-border-color:      $button-info-plain-bg;
 $button-info-plain-color:             $base-color;
+
+$button-text-light-color:                 $base-text;
+
 
 // ff nav sub action
 $ff-nav-sub-actions:                 248px;
@@ -204,3 +211,31 @@ $ff-form-name-max-width:                                160px;
 $ff-form-name-font-size:                                15px;
 $ff-form-name-font-weight:                              500;
 $ff-form-name-border:                                   1px solid $border-color;
+
+// full screen button
+$full-screen-button-font-size:                          2rem;
+$full-screen-button-color:                              $base-text;
+
+// form editor
+$ff-editor-main-bg:                                     $white;
+$ff-editor-main-padding-y:                              3.125rem;
+$ff-editor-main-padding-x:                              4rem;
+$ff-editor-main-width:                                  70%;
+
+$ff-editor-user-guide-gap:                              180px;
+$ff-editor-user-guide-padding:                          2rem;
+
+// dropzone
+$empty-dropzone-height:                                80px;
+$empty-dropzone-border:                                1px dashed $gray-100;
+$empty-dropzone-border-radius:                         0.375rem;
+
+// popup search element
+$popup-search-element-width:                         1.75rem;
+$popup-search-element-height:                        $popup-search-element-width;
+$popup-search-element-bg:                            $primary;
+$popup-search-element-bg-dark:                       $bg-dark;
+$popup-search-element-hover-bg:                       $primary;
+
+
+
