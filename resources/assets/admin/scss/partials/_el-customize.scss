@@ -1,29 +1,4 @@
 
-
-.el-text-primary {
-    color: #20A0FF;
-}
-
-.el-text-info {
-    color: #58B7FF;
-}
-
-.el-text-success {
-    color: #13CE66;
-}
-
-.el-text-warning {
-    color: #F7BA2A;
-}
-
-.el-text-danger {
-    color: #FF4949;
-}
-
-.el-notification__content {
-    text-align: left;
-}
-
 .el-input-group--append {
     .el-input-group__append {
         left: -2px;
@@ -175,6 +150,11 @@
     }
     &-form--label-top .el-form-item__label{
         line-height: 1.6;
+    }
+    &-input-transparent{
+        input{
+            background-color: transparent;
+        }
     }
 }
 

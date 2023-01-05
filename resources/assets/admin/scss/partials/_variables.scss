@@ -237,5 +237,40 @@ $popup-search-element-bg:                            $primary;
 $popup-search-element-bg-dark:                       $bg-dark;
 $popup-search-element-hover-bg:                       $primary;
 
+// ff navtabs
+$ff-navtabs-padding-x:                               1.25rem;
+
+$ff-navtabs-item-gap-x:                              1.875rem;
+
+$ff-navtabs-link-padding-y:                          0.875rem;
+$ff-navtabs-link-font-size:                          0.875rem;
+$ff-navtabs-link-color:                              $base-text;
+$ff-navtabs-link-border:                             2px solid transparent;
+$ff-navtabs-link-active-color:                       $primary;
+$ff-navtabs-link-active-border:                      $primary;
+
+// search element
+$search-element-padding-y:                          0.875rem;
+$search-element-padding-x:                          1.25rem;
+
+// element card
+$element-card-bg:                                    $white;
+$element-card-padding-y:                               0.75rem;
+$element-card-padding-x:                               1.5rem;
+$element-card-border-radius:                         $border-radius;
+$element-card-font-size:                             0.875rem;
+$element-card-color:                                 $base-color;
+$element-card-box-shadow:                            0 1px 4px rgba($base-color, 0.04);
+
+// option fields section
+$option-fields-section-padding-y:                         0.375rem;
+$option-fields-section-padding-x:                         1.25rem;
+
+$option-fields-section-title-bg:                           $white;
+$option-fields-section-title-border-radius:                $border-radius;
+$option-fields-section-title-padding-y:                    0.875rem;
+$option-fields-section-title-padding-x:                    1.25rem;
+$option-fields-section-title-font-size:                    0.875rem;
+$option-fields-section-title-box-shadow:                   0 1px 3px rgba($base-color, 0.04);
 
 

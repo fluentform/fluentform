@@ -1,0 +1,25 @@
+.ff_navtabs{
+    display: flex;
+    padding-left: $ff-navtabs-padding-x;
+    padding-right: $ff-navtabs-padding-x;
+    &_item{
+        margin-bottom: 0;
+        &.active{
+            .ff_navtabs_link{
+                color: $ff-navtabs-link-active-color;
+                border-bottom-color: $ff-navtabs-link-active-border;
+            }
+        }
+        &:not(:last-child){
+            margin-right: $ff-navtabs-item-gap-x;
+        }
+    }
+    &_link{
+        padding: $ff-navtabs-link-padding-y 0;
+        font-size: $ff-navtabs-link-font-size;
+        font-weight: 600;
+        color: $ff-navtabs-link-color;
+        display: inline-flex;
+        border-bottom: $ff-navtabs-link-border;
+    }
+}

@@ -22,9 +22,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.ff-icon-lock:before {
-  font-size: 30px;
-}
 
 .ff-edit-column-2:before {
   content: "\62";

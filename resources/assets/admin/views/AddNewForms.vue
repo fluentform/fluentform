@@ -17,7 +17,7 @@
                             </div>
                         </div><!-- .ff_card -->
                     </el-col>
-                    <el-col :sm="8">
+                    <el-col :sm="8" v-if="has_post_feature">
                         <div class="ff_card ff_card_form_action" @click="postTypeSelectionDialogVisibility = true">
                             <div class="ff_card_img mb-4">
                                 <img :src="createPostFormImg" alt="">
@@ -122,6 +122,7 @@
         },
         data() {
             return {
+                has_post_feature: !!window.FluentFormApp.has_post_feature,
                 postFormData: {
                     type: 'post',
                     predefined: 'blank_form',

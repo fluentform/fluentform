@@ -1,5 +1,8 @@
 @import "./partials/variables";
 @import "./partials/spacing";
+@import "./partials/tabs";
+@import "../assets/editor-icons/editor_icons.css";
+
 
 // fullscreen
 .fullscreen_exit{
@@ -40,10 +43,11 @@ body.ff_full_screen{
   }
   &_main{
     background-color: $ff-editor-main-bg;
-    height: calc(100vh - 40px);
+    height: 100%;
     overflow-y: scroll;
     padding: $ff-editor-main-padding-y $ff-editor-main-padding-x;
     width: $ff-editor-main-width;
+    border-right: 1px solid $border-color;
   }
   &_user_guide{
     margin-top: -$ff-editor-user-guide-gap;
@@ -86,7 +90,87 @@ body.ff_full_screen{
   }
   &_sidebar{
     width: 30%;
-    
+    &_navtabs{
+      background-color: $white;
+    }
+    &_element_wrap{
+      padding-top: 0.5rem;
+    }
+  }
+}
+
+// search-element
+.search-element{
+  padding: $search-element-padding-y $search-element-padding-x;
+  input{
+    height: 44px;
+  }
+}
+
+// option fields
+.option-fields-section {
+  padding: $option-fields-section-padding-y $option-fields-section-padding-x;
+  .element-card{
+    margin-top: 0.625rem;
+  }
+  &-title{
+    padding: $option-fields-section-title-padding-y $option-fields-section-title-padding-x;
+    font-size: $option-fields-section-title-font-size;
+    cursor: pointer;
+    background-color: $option-fields-section-title-bg;
+    border-radius: $option-fields-section-title-border-radius;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 500;
+    box-shadow: $option-fields-section-title-box-shadow;
+    .el-icon{
+      font-size: 1rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    &.active{
+      font-weight: 600;
+      .el-icon{
+        transform: rotate(-180deg);
+      }
+    }
+  }
+}
+
+// element card
+.element-card{
+  background-color: $element-card-bg;
+  color: $element-card-color;
+  cursor: move;
+  text-align: center;
+  display: block;
+  font-size: $element-card-font-size;
+  overflow: hidden;
+  padding: $element-card-padding-y $element-card-padding-x;
+  text-align: center;
+  text-overflow: ellipsis;
+  transition: 0.2s;
+  white-space: nowrap;
+  border-radius: $element-card-border-radius;
+  box-shadow: $element-card-box-shadow;
+  position: relative;
+  .ff-icon{
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    height: auto;
+  }
+  &[draggable=false] {
+    cursor: pointer;
+    opacity: 0.45;
+  }
+  &:hover{
+    background-color: $bg-dark;
+    color: $white;
   }
 }
 
@@ -169,4 +253,26 @@ body.ff_full_screen{
   //visibility: visible;
 }
 
+.video-content{
+  .title{
+    font-weight: 700;
+  }
+  .text{
+    font-size: 1rem;
+  }
+}
+
+// disabled info
+.disabled-info {
+  .el-dialog{
+    &__header {
+      border: 0;
+      padding: 0;
+    }
+    &__headerbtn{
+      z-index: 1024;
+    }
+  }
+
+}
 
