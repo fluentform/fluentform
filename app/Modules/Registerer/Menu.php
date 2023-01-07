@@ -235,12 +235,12 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = $app->publicUrl('css/element-ui-css.css');
+        $elementUIStyle = $app->publicUrl('css/element-ui.css');
         if (is_rtl()) {
             $elementUIStyle = $app->publicUrl('css/element-ui-css-rtl.css');
         }
         wp_enqueue_style(
-            'fluentform_global_elements',
+            'fluentform_element_ui',
             $elementUIStyle,
             [],
             FLUENTFORM_VERSION,

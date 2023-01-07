@@ -6,32 +6,31 @@
         <el-row class="mb-4">
             <el-col :sm="12">
                 <el-row>
-                    <div class="ff_nav_sub_actions mr-3">
+                    <div class="ff_action_wrap">
                         <el-select
+                           class="mr-3 ff_filter_form_select"
                             clearable
                             v-model="filter_by"
                             :placeholder="$t('All Types')"
                             @change="filterFormType()"
                         >
-                        <el-option
-                            v-for="(status, status_key) in form_statuses"
-                            :key="status_key"
-                            :value="status_key"
-                            :label="status"
-                        >
-                            {{status}}
-                        </el-option>
+                            <el-option
+                                v-for="(status, status_key) in form_statuses"
+                                :key="status_key"
+                                :value="status_key"
+                                :label="status"
+                            >
+                                {{status}}
+                            </el-option>
                         </el-select>
-                    </div>
-                    <div class="ff_action_btn_wrap">
                         <a
                             class="el-button el-button--primary"
                             v-if="hasPermission('fluentform_forms_manager')"
                             type="primary"
                             :href="addNewFormURL"
                         >
-                            <i class="el-icon-plus el-icon-left"></i>
-                            {{ $t('Add New Form') }}
+                            <i class="el-icon-plus el-icon-left el-icon"></i>
+                            <span>{{ $t('Add New Form') }}</span>
                         </a>
                     </div>
                 </el-row>
@@ -45,7 +44,7 @@
                             v-model="searchFormsKeyWord"
                             :placeholder="$t('Search Forms')"
                             prefix-icon="el-icon-search"
-                            class="el-input-search"
+                            class="el-input-gray"
                         >
                         </el-input>
                     </el-form>
@@ -187,14 +186,16 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <div class="ff_pagination text-right mt-4">
+                        <div class="ff_pagination_wrap text-right mt-4">
                             <el-pagination
+                                class="ff_pagination"
+                                background
                                 @size-change="handleSizeChange"
                                 @current-change="goToPage"
                                 :current-page.sync="paginate.current_page"
                                 :page-sizes="[5, 10, 20, 50, 100]"
                                 :page-size="parseInt(paginate.per_page)"
-                                layout="total, sizes, prev, pager, next, jumper"
+                                layout="total, sizes, prev, pager, next"
                                 :total="paginate.total">
                             </el-pagination>
                         </div>

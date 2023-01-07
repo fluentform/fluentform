@@ -15,7 +15,7 @@ body{
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: $base-text;
+  color: $--color-text-regular;
   * {
     box-sizing: border-box;
   }
@@ -57,22 +57,14 @@ p{
   }
 }
 a{
-  color: $primary;
+  color: $--color-primary;
   text-decoration: none;
   &:hover{
-    color: $primary;
+    color: $--color-primary;
   }
   &:focus{
     box-shadow: none;
   }
-}
-
-.w-100{
-  width: 100%;
-}
-.img-thumb{
-  border-radius: $border-radius;
-  border: 1px solid $border-color;
 }
 
 input[type=text], 
@@ -90,115 +82,164 @@ input[type=email],
 input[type=month], 
 input[type=number], 
 textarea {
-    -webkit-appearance: none;
-    background-color: $input-bg;
-    border-radius: $input-border-radius;
-    border-color: $input-border-color;
-    color: $input-color;
-    box-shadow: none;
-    margin: 0;
-    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    padding-left: 1rem;
+    background-color: $--input-background-color;
+    border-radius: $--input-border-radius;
+    border: $--input-border;
+    color: $--input-font-color;
+    padding: 0 15px;
     &:focus {
-        box-shadow: none;
-        border-color: $input-focus-border-color;
+      box-shadow: none;
+      border-color: $--input-focus-border;
     }
-    &::-webkit-input-placeholder {
-      color: $base-text;
-    }
-    &::-ms-input-placeholder {
-      color: $base-text;
-    }
-    &:-ms-input-placeholder {
-      color: $base-text;
-    }
-    &::placeholder {
-      color: $base-text;
-    }
-    &.el-select__input {
-        border: none;
-        background-color: transparent;
-    }
-}
-
-p {
-    margin-top: 0;
-    margin-bottom: 10px;
 }
 
 .icon {
-    font: normal normal normal 14px/1 ultimateform;
-    display: inline-block;
+  font: normal normal normal 14px/1 ultimateform;
+  display: inline-block;
 }
+
 .el-icon + span,
 span + .el-icon{
   margin-left: 0.375rem;
 }
-
 /* HELPER CLASSES */
-.mr15 {
-    margin-right: 15px;
+.w-100{
+  width: 100%;
 }
-
-.mb15 {
-    margin-bottom: 15px;
+.img-thumb{
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
 }
-
-.pull-left {
-    float: left !important;
-}
-
-.pull-right {
-    float: right !important;
-}
-
 .text-left {
-    text-align: left;
+  text-align: left;
 }
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 .el-icon-clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .help-text {
-    margin: 0;
-    font-style: italic;
-    font-size: 0.9em;
+  margin: 0;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.is-sticky {
+  position: fixed;
+  top: 40px;
+  z-index: 1020;
 }
 
 // align items
 .items-center{
   align-items: center;
 }
+.justify-end{
+  justify-content: flex-end;
+}
 
-// section block
-.ff_section{
-  &_head{
-    margin-bottom: 2.5rem;
-    &.sm{
-      margin-bottom: 1.5rem;
+/*===============================
+  Element ui
+================================*/
+.el{
+  &-row{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &-button{
+    line-height: 1.2;
+  }
+  &-input__prefix{
+    left: 14px;
+  }
+  &-input--prefix .el-input__inner{
+    padding-left: 38px;
+  }
+  &-radio-group-column{
+    display: flex;
+    flex-direction: column;
+    .el-radio{
+        margin-right: 0;
+        margin-bottom: 1.25rem;
     }
   }
-  &_block{
-    margin-bottom: 4rem;
-    &:last-child{
-      margin-bottom: 0;
+  &-input-gray{
+    .el-input__prefix{
+      color: $--color-text-regular;
+    }
+    .el-input__inner{
+      background-color: $input-bg-gray;
+      border-color: $input-bg-gray;
+      &::-webkit-input-placeholder{
+        color: $--color-text-regular;
+      }
     }
   }
-  &_title {
-    font-size: $ff-section-title-font-size;
-    font-weight: $ff-section-title-font-weight;
-    color: $ff-section-title-color;
-  }
-  &_desc{
-    font-size: $ff-section-desc-font-size;
+  &-pagination__total{
+    font-weight: 500;
+    color: $--color-text-regular;
   }
 }
+
+.el-pagination.is-background .btn-prev, 
+.el-pagination.is-background .btn-next, 
+.el-pagination.is-background .el-pager li {
+  background-color: transparent;
+  border-radius: 0.25rem;
+}
+
+// fluentform classes
+.ff{
+  &_section{
+    &_head{
+      margin-bottom: 2.5rem;
+      &.sm{
+        margin-bottom: 1.5rem;
+      }
+    }
+    &_block{
+      margin-bottom: 4rem;
+      &:last-child{
+        margin-bottom: 0;
+      }
+    }
+    &_title {
+      font-size: $ff-section-title-font-size;
+      font-weight: $ff-section-title-font-weight;
+      color: $ff-section-title-color;
+    }
+    &_desc{
+      font-size: $ff-section-desc-font-size;
+    }
+  }
+  &_pagination{
+    background: #fff;
+    display: inline-flex;
+    border-radius: 8px;
+    padding: 12px 20px;
+    box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+    .el-input__inner{
+      background: #f2f2f2;
+      border-color: #f2f2f2;
+      border-radius: 4px !important;
+      color: $--color-text-regular;
+      font-weight: 500;
+      &:focus,
+      &:hover{
+        border-color: #f2f2f2 !important;
+      }
+    }
+    .el-select .el-input .el-select__caret{
+      color: $--color-text-regular;
+    }
+  }
+}
+
 
 code{
   padding: 5px 5px 5px 8px;
@@ -251,13 +292,13 @@ code{
   font-size:28px;
   width: 58px;
   height: 58px;
-  background-color: rgba($primary, 0.1);
+  background-color: rgba($--color-primary, 0.1);
   border-radius: 50%;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $primary;
+  color: $--color-primary;
 }
 /* BUTTONS */
 .btn {

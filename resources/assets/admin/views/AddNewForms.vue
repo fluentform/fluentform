@@ -2,7 +2,7 @@
     <div>
         <div class="ff_section_block">
             <div class="ff_section_head">
-                <div class="ff_section_title">{{$t('Create A New Form')}}</div>
+                <div class="ff_section_title">{{$t('Choose a Option')}}</div>
             </div>
             <div class="ff_card_wrap">
                 <el-row :gutter="32">
@@ -17,7 +17,7 @@
                             </div>
                         </div><!-- .ff_card -->
                     </el-col>
-                    <el-col :sm="8" v-if="has_post_feature">
+                    <el-col :sm="8">
                         <div class="ff_card ff_card_form_action" @click="postTypeSelectionDialogVisibility = true">
                             <div class="ff_card_img mb-4">
                                 <img :src="createPostFormImg" alt="">
@@ -48,8 +48,8 @@
                 <p class="ff_section_desc">{{$t('Here are some beautiful, fully customizable templates to get you started.')}}</p>
             </div>
             <div class="ff_layout_options">
-                <div class="ff_layout_sidebar">
-                    <h5 class="ff_layout_title mb-4">{{$t('Categoires')}}</h5>
+                <div class="ff_layout_sidebar" id="sticky-menu">
+                    <h5 class="ff_layout_title mb-3">{{$t('Categoires')}}</h5>
                     <el-radio-group v-model="category" class="ff_radio_list">
                         <el-radio-button class="ff_radio_list_item" v-for="item in categories" :key="item" :label="item">{{item}}</el-radio-button>
                     </el-radio-group>
@@ -131,7 +131,6 @@
                 loading: true,
                 categories: [],
                 search: '',
-                activeItem: null,
                 creatingForm: false,
                 predefinedForms: {},
                 isNewForm: false,
@@ -176,7 +175,9 @@
                     return allForms;
                 } else {
                     if (this.category) {
-                       items[this.category] = this.predefinedForms[this.category];
+                        items[this.category] = this.predefinedForms[this.category];
+                        console.log(this.category);
+                        
                     } else {
                         return this.predefinedForms;
                     }
@@ -256,13 +257,24 @@
             gotoPage(url) {
                 location.href = url;
             },
-            addActiveClass(index){
-                this.activeItem = index;
+            stickyMenu(){
+                let el = jQuery('#sticky-menu');
+                let stickyTop = el.offset().top;
+
+                jQuery(window).scroll(function() {
+                    let windowTop = jQuery(window).scrollTop();
+                    if (stickyTop < windowTop) {
+                        el.addClass('is-sticky');
+                    } else {
+                       el.removeClass('is-sticky');
+                    }
+                });
             },
             
             
         },
         mounted(){
+            this.stickyMenu();
             this.getPredefinedForms();
         },
     }

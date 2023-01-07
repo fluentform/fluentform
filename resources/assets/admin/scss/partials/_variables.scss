@@ -1,9 +1,12 @@
+/*======================================
+    INCLUDES ELEMENT UI VARIABLES 
+ ======================================*/
+@import "../partials/element-ui-variables";
+
 // colors
 $white:                      #ffffff;
-$primary:                    #1A7EFB;
 $base-color:                 #1E1F21;
 $base-text:                   #626261;
-$red:                        #FF6154;
 
 // gray colors
 $gray-50:                  #ececec;
@@ -15,11 +18,11 @@ $bg-dark:                  #33383F;
 $bg-light:                  #F2F2F2;
 
 $border-color:              $gray-50;
+$border-radius:            0.5rem;
 
-$plugin-font-family:      'Manrope';
 
 // reboot
-$border-radius:            0.5rem;
+$plugin-font-family:      'Manrope';
 $h-color:                  $base-color;
 
 // ff backgrop
@@ -47,12 +50,12 @@ $header-menu-link-font-weight:       600;
 $header-menu-link-color:             $base-color;
 $header-menu-link-border-radius:      0.375rem;
 
-$header-menu-link-hover-color:       $primary;
+$header-menu-link-hover-color:       $--color-primary;
 $header-menu-link-active-bg:         #E8F2FF;
-$header-menu-link-active-color:       $primary;
+$header-menu-link-active-color:       $--color-primary;
 
-$buy-pro-link-bg:                     $red;
-$buy-pro-link-color:                    $white;
+$buy-pro-link-bg:                     $--color-danger;
+$buy-pro-link-color:                  $--color-white;
 
 // section title
 $ff-section-title-color:               $base-color;
@@ -63,18 +66,7 @@ $ff-section-title-font-weight:           700;
 $ff-section-desc-font-size:           1rem;
 
 // input
-$input-bg:                        $white;
-$input-border-color:            $gray-100;
-$input-border-radius:            $border-radius;
-$input-color:                    $base-color;
-
-$input-focus-border-color:       $primary;
-
-
-// el input
-$el-input-search-bg:            #E7E6E6;
-$el-input-search-border-color:    $el-input-search-bg;
-$el-input-search-placeholder-color:           #65676B;
+$input-bg-gray:                 #E7E6E6;
 
 // el input prefix
 $el-input-prefix-gap:             2.25rem;
@@ -86,7 +78,7 @@ $button-border-radius:            $border-radius;
 $button-border-color:             $gray-100;
 $button-font-weight:               600;
 
-$button-primary-bg:                $primary;
+$button-primary-bg:                $--color-primary;
 $button-primary-border-color:      $button-primary-bg;
 $button-primary-hover-bg:          #2b87fa;
 $button-primary-hover-border-color:  $button-primary-hover-bg;
@@ -94,7 +86,7 @@ $button-primary-hover-border-color:  $button-primary-hover-bg;
 $button-primary-plain-bg:            #E9F1FF;
 $button-primary-plain-border-color:    $button-primary-plain-bg;
 
-$button-danger-bg:                    $red;
+$button-danger-bg:                    $--color-danger;
 $button-danger-border-color:          $button-danger-bg;
 
 $button-info-bg:                    #909399;
@@ -105,9 +97,8 @@ $button-info-plain-color:             $base-color;
 
 $button-text-light-color:                 $base-text;
 
-
-// ff nav sub action
-$ff-nav-sub-actions:                 248px;
+// ff filter select
+$ff-filter-form-select:                 250px;
 
 // modal 
 $el-dialog-border-radius:            0.625rem;
@@ -140,7 +131,7 @@ $row-action-item-after-right:     3px;
 $row-action-item-after-width:     1px;
 $row-action-item-after-height:     10px;
 
-$row-action-trash-link-color:        $red;
+$row-action-trash-link-color:        $--color-danger;
 $row-action-trash-link-hover-color:        #fb4738;
 
 // el switch
@@ -150,7 +141,7 @@ $el-switch-core-after-height:                        $el-switch-core-after-width
 $el-switch-core-after-checked:                       13px;
 
 $el-switch-label-right-gap:                          6px;
-$el-switch-label-active-color:                       $primary;
+$el-switch-label-active-color:                       $--color-primary;
 
 // shorcode btn
 $shortcode-btn-padding:                             0.25rem;
@@ -179,7 +170,7 @@ $ff-advanced-search-date-range-border-radius:          $border-radius;
 $ff-advanced-search-date-range-input-width:           282px;
 
 // el pager
-$el-pager-li-active-color:                            $primary;
+$el-pager-li-active-color:                            $--color-primary;
 
 // el popover
 $el-popover-border-radius:                             $border-radius;
@@ -233,9 +224,9 @@ $empty-dropzone-border-radius:                         0.375rem;
 // popup search element
 $popup-search-element-width:                         1.75rem;
 $popup-search-element-height:                        $popup-search-element-width;
-$popup-search-element-bg:                            $primary;
+$popup-search-element-bg:                            $--color-primary;
 $popup-search-element-bg-dark:                       $bg-dark;
-$popup-search-element-hover-bg:                       $primary;
+$popup-search-element-hover-bg:                       $--color-primary;
 
 // ff navtabs
 $ff-navtabs-padding-x:                               1.25rem;
@@ -246,8 +237,8 @@ $ff-navtabs-link-padding-y:                          0.875rem;
 $ff-navtabs-link-font-size:                          0.875rem;
 $ff-navtabs-link-color:                              $base-text;
 $ff-navtabs-link-border:                             2px solid transparent;
-$ff-navtabs-link-active-color:                       $primary;
-$ff-navtabs-link-active-border:                      $primary;
+$ff-navtabs-link-active-color:                       $--color-primary;
+$ff-navtabs-link-active-border:                      $--color-primary;
 
 // search element
 $search-element-padding-y:                          0.875rem;
@@ -272,5 +263,23 @@ $option-fields-section-title-padding-y:                    0.875rem;
 $option-fields-section-title-padding-x:                    1.25rem;
 $option-fields-section-title-font-size:                    0.875rem;
 $option-fields-section-title-box-shadow:                   0 1px 3px rgba($base-color, 0.04);
+
+// ff editor inserter popup
+$ff-editor-inserter-popup-padding-y:                       1.25rem;
+$ff-editor-inserter-popup-bg:                              $white;
+$ff-editor-inserter-popup-border-radius:                   $border-radius;
+$ff-editor-inserter-popup-box-shadow:                      0px 40px 64px -12px rgba(0, 0, 0, 0.08), 0px 0px 14px -4px rgba(0, 0, 0, 0.05), 0px 32px 48px -8px rgba(0, 0, 0, 0.1);
+
+// ff editor inserter search
+$ff-editor-inserter-search-padding-y:                      1rem;
+$ff-editor-inserter-search-padding-x:                      1.25rem;
+
+// sidebar
+
+
+
+
+
+
 
 

@@ -20,7 +20,7 @@
             color: $input-color;
         }
     }
-    &-button{
+    &-butto{
         border-radius: $button-border-radius;
         border-color: $button-border-color;
         font-weight: $button-font-weight;
@@ -138,14 +138,6 @@
     &-input-border{
         input{
             background-color: $white;
-        }
-    }
-    &-radio-group-column{
-        display: flex;
-        flex-direction: column;
-        .el-radio{
-            margin-right: 0;
-            margin-bottom: 1.25rem;
         }
     }
     &-form--label-top .el-form-item__label{

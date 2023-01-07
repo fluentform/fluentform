@@ -53,7 +53,7 @@ mix
         version: 2,
         extractStyles: true
     })
-    .sass('resources/assets/admin/css/element-ui-css.scss', `public/css/element-ui-css.css`)
+    .sass('resources/assets/admin/scss/element-ui.scss', `public/css/element-ui.css`)
     
 
    

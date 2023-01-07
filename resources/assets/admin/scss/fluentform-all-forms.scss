@@ -3,30 +3,10 @@
 @import "./partials/fonts";
 @import "./partials/navbar";
 @import "./partials/card";
-@import "./partials/globals";
-@import "./partials/el-customize";
 @import "./partials/table";
 @import "./partials/switch";
 @import "./partials/layouts";
 @import "./partials/list";
-//@import "../styles/responsive";
-
-.ff_all_forms {
-    .pull-right {
-        float: right;
-    }
-    .form_navigation {
-        margin-bottom: 20px;
-    }
-    .inactive_form{
-        opacity: .6;
-    }
-}
-
-.mtb10 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
 
 // form app
 .ff{
@@ -40,11 +20,8 @@
     &_form_wrap {
       margin: 0;
     }
-    &_nav_sub_actions{
-      width: $ff-nav-sub-actions;
-      .el-select{
-        width: 100%;
-      }
+    &_filter_form_select{
+      width: $ff-filter-form-select;
     }
     &_advanced_search {
     //   display: flex;
@@ -75,13 +52,13 @@
       font-size: 0.875rem;
       font-weight: 500;
     }
-    &_pagination{
+    &_paginatio{
       .el-pagination__total{
         color: $base-color;
       }
       .btn-prev,
       .btn-next{
-        border: 1px solid $input-border-color;
+        border: $--input-border;
         height: 30px;
         .el-icon{
           font-size: 13px;
@@ -96,8 +73,8 @@
         border-bottom-right-radius: 0.188rem;
       }
       .el-pager{
-        border-top: 1px solid $input-border-color;
-        border-bottom: 1px solid $input-border-color;
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
         li.active{
           color: $el-pager-li-active-color;
         }
@@ -235,15 +212,3 @@
     padding: 0;
 }
 
-.el-notification.right {
-    z-index: 9999999999 !important;
-}
-button.el-button.ff_create_post_form.el-button--info.el-button--mini {
-    float: left !important;
-}
-
-small {
-    font-weight: normal;
-    font-size: 13px;
-    margin-left: 15px;
-}

@@ -63,7 +63,7 @@
                 color: $header-menu-link-active-color;
             }
             &.buy_pro_tab {
-                background: $buy-pro-link-bg;
+                background-color: $--color-danger;
                 color: $buy-pro-link-color;
             }
         }
