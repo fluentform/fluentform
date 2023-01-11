@@ -52,40 +52,6 @@
       font-size: 0.875rem;
       font-weight: 500;
     }
-    &_paginatio{
-      .el-pagination__total{
-        color: $base-color;
-      }
-      .btn-prev,
-      .btn-next{
-        border: $--input-border;
-        height: 30px;
-        .el-icon{
-          font-size: 13px;
-        }
-      }
-      .btn-prev{
-        border-top-left-radius: 0.188rem;
-        border-bottom-left-radius: 0.188rem;
-      }
-      .btn-next{
-        border-top-right-radius: 0.188rem;
-        border-bottom-right-radius: 0.188rem;
-      }
-      .el-pager{
-        border-top: 1px solid $border-color;
-        border-bottom: 1px solid $border-color;
-        li.active{
-          color: $el-pager-li-active-color;
-        }
-      }
-      .el-pagination__editor{
-        height: 30px;
-        input{
-          border-radius: 0.188rem;
-        }
-      }
-    }
     &_label{
         font-size: 0.875rem;
         font-weight: 500;

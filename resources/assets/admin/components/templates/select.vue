@@ -1,10 +1,8 @@
 <template>
     <withLabel :item="item">
-        <div class="ff_with_arrow">
-            <select class="select el-input__inner">
-                <option>{{defaultVal || item.settings.placeholder}}</option>
-            </select>
-        </div>
+        <el-select class="el-select-block" :placeholder="item.settings.placeholder">
+            <el-option :value="defaultVal"></el-option>
+        </el-select>
     </withLabel>
 </template>
 

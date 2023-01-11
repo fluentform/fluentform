@@ -274,10 +274,18 @@ $ff-editor-inserter-popup-box-shadow:                      0px 40px 64px -12px r
 $ff-editor-inserter-search-padding-y:                      1rem;
 $ff-editor-inserter-search-padding-x:                      1.25rem;
 
-// sidebar
+// panel body
+$panel-body-item-padding-y:                               1rem;
+$panel-body-item-padding-x:                               1rem;
 
+$panel-item-hover-action-bg:                              rgba($base-color, 0.05);
+$panel-item-hover-action-border:                          4px solid $--color-primary;
+$panel-item-hover-action-border-radius:                   0.25rem;
 
-
+// column container
+$column-container-min-height:                            80px;
+$column-container-border:                                1px dashed $gray-100;
+$column-container-border-radius:                         0.375rem;
 
 
 

@@ -1,7 +1,7 @@
 <template>
-    <div class="section-break" :class="'text-' + item.settings.align">
-        <h4 class="section-break__title">{{ item.settings.label }}</h4>
-        <div v-html="item.settings.description"></div>
+    <div class="ff_section_break" :class="'text-' + item.settings.align">
+        <h4 class="ff_section_break_title">{{ item.settings.label }}</h4>
+        <div class="ff_section_break_desc" v-html="item.settings.description"></div>
         <hr>
     </div>
 </template>

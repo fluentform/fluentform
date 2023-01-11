@@ -20,7 +20,7 @@ $ff:         'ff_radio';
                 transition: 0.2s;
                 font-weight: 600;
                 &:hover{
-                    background-color: #E7E6E6;
+                    background-color: rgba($--color-text-regular, 0.1);
                     color: $base-color;
                 }
             }
@@ -29,7 +29,7 @@ $ff:         'ff_radio';
                     box-shadow: none !important;
                 }
                 .el-radio-button__inner{
-                    background-color: #E7E6E6;
+                    background-color: rgba($--color-text-regular, 0.1);
                     color: $base-color;
                 }
             }

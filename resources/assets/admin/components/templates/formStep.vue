@@ -1,17 +1,15 @@
 <template>
-
-    <div class="form-step__wrapper">
-        <div class="step-start text-center">
-            <div class="end-of-page">
-                {{ $t('End of page') }}
+    <div class="ff_step_wrapper">
+        <div class="ff_step text-center">
+            <div class="ff_step_indicator_text">
+                {{ $t('End of last page') }}
             </div>
 
-            <div class="step-start__indicator">
-                <strong>{{ $t('PAGE BREAK') }}</strong>
-                <hr>
+            <div class="ff_step_indicator_title ff_title_separetor">
+                <span>{{ $t('page break') }}</span>
             </div>
 
-            <div class="start-of-page">
+            <div class="ff_step_indicator_text">
                 {{ $t('Top of new page') }}
             </div>
         </div>

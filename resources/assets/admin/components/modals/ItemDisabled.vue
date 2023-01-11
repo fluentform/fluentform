@@ -3,7 +3,7 @@
         <el-dialog
             :visible.sync="isVisible"
             :before-close="close"
-            :width="modal.video || modal.image ? '70%' : '50%'"
+            :width="modal.video || modal.image ? '65%' : '50%'"
         >
         <div slot="title">
             <h4>{{!modal ? $t('Field disabled') : ''}}</h4>
@@ -30,7 +30,7 @@
                         </div>
                     </el-col>
 
-                    <el-col :span="modal.video || modal.image ? '12' : '24'">
+                    <el-col :span="modal.video || modal.image ? 12 : 24">
                         <div class="video-content">
                             <div class="ff_icon_btn mb-4" v-if="!modal.hidePro">
                                  <i class="ff-edit-password el-icon"/>
@@ -47,7 +47,7 @@
 
             <div v-else>
                 <p>{{ $t('This field is only available on pro add - on') }}</p>
-                <a  target="_blank"
+                <a target="_blank"
                     class="el-button el-button--danger"
                     :href="campaignUrl" >
                     {{ $t('Upgrade to Pro Now') }}
@@ -70,7 +70,7 @@
                     </div>
                     <div v-else>
                         <p>{{ $t('This field is only available on pro add - on') }}</p>
-                        <a  target="_blank"
+                        <a target="_blank"
                             class="el-button el-button--danger"
                             :href="campaignUrl" >
                             {{ $t('Upgrade to Pro Now') }}

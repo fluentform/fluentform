@@ -53,7 +53,7 @@
                     <el-radio-group v-model="category" class="ff_radio_list">
                         <el-radio-button class="ff_radio_list_item" v-for="item in categories" :key="item" :label="item">{{item}}</el-radio-button>
                     </el-radio-group>
-                </div>
+                </div><!-- .ff_layout_sidebar -->
                 <div class="ff_layout_main">
                     <div class="form_item_group form_item_group_search mb-5">
                         <el-input
@@ -66,9 +66,9 @@
                     </div>
 
                     <div
-                        :element-loading-text="$t('Working...')"
+                        :element-loading-text="$t('Loading Forms...')"
                         element-loading-spinner="el-icon-loading"
-                        v-loading="fetching || creatingForm"
+                        v-loading="loading || creatingForm"
                         class="ff_layout_wrap"
                     >
                         <div v-for="(forms, category) in filteredForms" class="ff_form_group" :key="category">
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><!-- .ff_laout_main -->
             </div>
         </div><!-- .ff_section_block -->
 
@@ -129,13 +129,26 @@
                     action: 'fluentform-predefined-create'
                 },
                 loading: true,
-                categories: [],
+                categories: [
+                    'All',
+                    'Basic',
+                    'Marketing',
+                    'Product',
+                    'Education',
+                    'Nonprofit',
+                    'IT',
+                    'Finance',
+                    'HR',
+                    'Social',
+                    'Government',
+                    'Healthcare'
+                ],
                 search: '',
                 creatingForm: false,
                 predefinedForms: {},
                 isNewForm: false,
                 selectedPredefinedForm: '',
-                category: '',
+                category: 'All',
                 fetching: false,
                 search: '',
                 postTypeSelectionDialogVisibility: false,
@@ -149,6 +162,7 @@
         computed: {
             filteredForms() {
                 let items = {};
+                this.loading = true;
 
                 if (this.search) {
                     let search = this.search.toLocaleLowerCase();
@@ -174,16 +188,23 @@
 
                     return allForms;
                 } else {
-                    if (this.category) {
+                    if (this.category == 'All') {
+                        setTimeout(() => {
+                            this.loading = false;
+                        }, 2000);
+                        return this.predefinedForms;
+                    }else if(this.category){
+                        setTimeout(() => {
+                            this.loading = false;
+                        }, 2000);
                         items[this.category] = this.predefinedForms[this.category];
-                        console.log(this.category);
-                        
                     } else {
                         return this.predefinedForms;
                     }
                 }
-
+                
                 return items;
+
             },
         },
         methods: {
@@ -194,7 +215,7 @@
                     action: 'fluentform-predefined-forms'
                 }).done(res => {
                     this.predefinedForms = res.forms;
-                    this.categories = res.categories;
+                    //this.categories = res.categories;
                     //this.predefinedDropDownForms = res.predefined_dropDown_forms;
                 }).fail(error => {
                     this.$fail(this.$t('Something went wrong, please try again.'));
@@ -258,15 +279,15 @@
                 location.href = url;
             },
             stickyMenu(){
-                let el = jQuery('#sticky-menu');
-                let stickyTop = el.offset().top;
+                let stickyElem = jQuery('#sticky-menu');
+                let stickyTop = stickyElem.offset().top;
 
                 jQuery(window).scroll(function() {
                     let windowTop = jQuery(window).scrollTop();
                     if (stickyTop < windowTop) {
-                        el.addClass('is-sticky');
+                        stickyElem.addClass('is-sticky');
                     } else {
-                       el.removeClass('is-sticky');
+                        stickyElem.removeClass("is-sticky");
                     }
                 });
             },

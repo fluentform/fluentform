@@ -8,19 +8,22 @@
                             <!-- =========================
                                 PAGING START
                             ============================== -->
-                            <div v-if="haveFormSteps" class="form-step__wrapper form-step__start panel__body--item">
-                                <div @click="editSelected(stepStart)" class="item-actions-wrapper hover-action-middle">
-                                    <div class="item-actions">
-                                        <i @click="editSelected(stepStart)" class="icon icon-pencil"></i>
+                            <div v-if="haveFormSteps" class="ff_step_wrapper ff_step_start_wrapper panel-body-item mb-3">
+                                <div @click="editSelected(stepStart)" class="panel-body-item-actions panel-item-hover-action">
+                                    <div class="icon-group">
+                                        <div class="icon-group-btn" @click="editSelected(stepStart)">
+                                            <i class="el-icon el-icon-edit"></i>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="step-start text-center">
-                                    <div class="step-start__indicator">
-                                        <strong>{{ $t('PAGING START') }}</strong>
-                                        <hr>
-                                    </div>
-                                    <div class="start-of-page">
-                                        {{ $t('Click to configure your step settings') }}
+                                <div class="ff_step text-center">
+                                    <div class="ff_step_indicator">
+                                        <div class="ff_step_indicator_title ff_title_separetor">
+                                            <span>{{ $t('paging start') }}</span>
+                                        </div>
+                                        <div class="ff_step_indicator_text">
+                                            {{ $t('Click to configure your step settings') }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -30,7 +33,7 @@
                             ============================== -->
                             <el-form :class="'label_position_org_'+original_label_placement" class="form-editor-elements"
                                     :label-position="labelPlacement" label-width="120px">
-                                <vddl-list class="panel__body--list"
+                                <vddl-list class="panel-body-list"
                                         :class="{'empty-dropzone': !form.dropzone.length}"
                                         :list="form.dropzone"
                                         :drop="handleDrop"
@@ -43,7 +46,7 @@
                                     <!-- Empty dropzone placeholder -->
                                     <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
                                         <div class="popup-search-element" @click.stop="editorInserterPopup(0, form.dropzone)">
-                                            <i class="el-icon-plus"></i>
+                                            <i class="el-icon el-icon-plus"></i>
                                         </div>
                                     </div>
 
@@ -82,7 +85,7 @@
                             <!-- =========================
                                 SUBMIT BUTTON
                             ============================== -->
-                            <div class="ff_default_submit_button_wrapper mt-2">
+                            <div class="ff_editor_default_submit_button_wrapper">
                                 <submitButton
                                     v-if="Object.keys(submitButton).length"
                                     :editItem="editItem"
@@ -114,19 +117,22 @@
                             <!-- =========================
                                 PAGING END
                             ============================== -->
-                            <div v-if="haveFormSteps" class="form-step__wrapper form-step__end panel__body--item">
-                                <div @click="editSelected(stepEnd)" class="item-actions-wrapper hover-action-middle">
-                                    <div class="item-actions">
-                                        <i @click="editSelected(stepEnd)" class="icon icon-pencil"></i>
+                            <div v-if="haveFormSteps" class="ff_step_wrapper ff_step_end_wrapper panel-body-item mt-3">
+                                <div @click="editSelected(stepEnd)" class="panel-body-item-actions panel-item-hover-action">
+                                    <div class="icon-group">
+                                        <div class="icon-group-btn" @click="editSelected(stepEnd)">
+                                            <i class="el-icon el-icon-edit"></i>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="step-start text-center">
-                                    <div class="start-of-page">
-                                        {{ $t('End of last page') }}
-                                    </div>
-                                    <div class="step-start__indicator">
-                                        <strong>{{ $t('PAGING END') }}</strong>
-                                        <hr>
+                                <div class="ff_step text-center">
+                                    <div class="ff_step_indicator">
+                                        <div class="ff_step_indicator_text">
+                                            {{ $t('End of last page') }}
+                                        </div>
+                                        <div class="ff_step_indicator_title ff_title_separetor">
+                                            <span>{{ $t('paging end') }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

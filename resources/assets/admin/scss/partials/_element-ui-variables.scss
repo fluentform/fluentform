@@ -56,9 +56,9 @@ $--color-text-regular: #606266;
 /// color|1|Font Color|2
 $--color-text-secondary: #909399;
 /// color|1|Font Color|2
-$--color-text-placeholder: #C0C4CC;
+$--color-text-placeholder: #b0b0b0;
 /// color|1|Border Color|3
-$--border-color-base: #DCDFE6;
+$--border-color-base: #dadbdd;
 /// color|1|Border Color|3
 $--border-color-light: #E4E7ED;
 /// color|1|Border Color|3
@@ -79,7 +79,7 @@ $--link-hover-color: $--color-primary;
 -------------------------- */
 $--border-width-base: 1px;
 $--border-style-base: solid;
-$--border-color-hover: $--color-text-placeholder;
+$--border-color-hover: #b5b5b6;
 $--border-base: $--border-width-base $--border-style-base $--border-color-base;
 /// borderRadius|1|Radius|0
 $--border-radius-base: 8px;
@@ -120,6 +120,8 @@ $--font-size-small: 13px;
 $--font-size-extra-small: 12px;
 /// fontWeight|1|Font Weight|1
 $--font-weight-primary: 500;
+/// fontWeight|1|Font Weight|1
+$--font-weight-semibold: 600;
 /// fontWeight|1|Font Weight|1
 $--font-weight-secondary: 100;
 /// fontLineHeight|1|Line Height|2
@@ -218,7 +220,7 @@ $--checkbox-button-checked-border-color: $--color-primary;
 /// fontSize||Font|1
 $--radio-font-size: $--font-size-base;
 /// fontWeight||Font|1
-$--radio-font-weight: $--font-weight-primary;
+$--radio-font-weight: $--font-weight-semibold;
 /// color||Color|0
 $--radio-font-color: $--color-text-regular;
 $--radio-input-height: 14px;
@@ -512,7 +514,7 @@ $--tab-vertical-header-count-fill: $--color-text-secondary;
 /// fontSize||Font|1
 $--button-font-size: $--font-size-base;
 /// fontWeight||Font|1
-$--button-font-weight: $--font-weight-primary;
+$--button-font-weight: $--font-weight-semibold;
 /// borderRadius||Border|2
 $--button-border-radius: $--border-radius-base;
 /// padding||Spacing|3

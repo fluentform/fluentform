@@ -1,11 +1,9 @@
 <template>
-    <div class="ff_tc">
+    <div class="ff_form_note_wrap">
         <el-checkbox v-if="item.settings.has_checkbox">
             <span v-html="item.settings.tnc_html"></span>
         </el-checkbox>
-        <div v-else class="el-checkbox">
-            <div class="el-checkbox__label" v-html="item.settings.tnc_html"></div>
-        </div>
+        <div v-else class="ff_form_note" v-html="item.settings.tnc_html"></div>
     </div>
 </template>
 

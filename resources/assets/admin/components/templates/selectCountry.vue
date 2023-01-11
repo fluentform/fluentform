@@ -1,10 +1,8 @@
 <template>
     <withLabel :item="item">
-        <select v-model="item.attributes.value"
-                class="select el-input__inner">
-            <option value="">{{ item.attributes.placeholder }}</option>
-            <option v-for="(label, value, i) in countries" :value="value">{{ label }}</option>
-        </select>
+        <el-select v-model="item.attributes.value" :placeholder="item.attributes.placeholder" class="el-select-block">
+            <el-option v-for="(label, value, i) in countries" :label="label" :value="value" :key="i"></el-option>
+        </el-select>
     </withLabel>
 </template>
 

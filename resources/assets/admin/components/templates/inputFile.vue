@@ -1,6 +1,6 @@
 <template>
     <withLabel :item="item">
-        <el-button type="info">{{ item.settings.btn_text }}</el-button>
+        <el-button icon="el-icon-upload">{{ item.settings.btn_text }}</el-button>
     </withLabel>
 </template>
 

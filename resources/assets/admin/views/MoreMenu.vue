@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ ff_backdrop: visible }">
+    <div>
         <el-dropdown @command="handle">
             <span class="el-dropdown-link">
                 <i class="el-icon-more el-icon"/>
@@ -15,7 +15,7 @@
         <el-dialog
             :visible.sync="visible"
             :append-to-body="true"
-            width="60%"
+            width="54%"
         >
             <div slot="title">
                 <h4 class="mb-2">{{$t('Confirmation')}}</h4>
@@ -23,7 +23,7 @@
             </div>
 
             <template v-if="!is_conversion_form">
-                 <el-alert
+                <el-alert
                     class="mt-4"
                     type="warning"
                     title="Warning"
@@ -56,7 +56,6 @@
 <script>
 export default {
     name: "MoreMenu",
-
     data() {
         return {
             form_id: window.FluentFormApp.form_id,
@@ -79,7 +78,6 @@ export default {
             ]
         };
     },
-
     computed: {
         convertBtnText() {
             const text = this.is_conversion_form ? 'Convert to Regular Form' : 'Convert to Conversational Form';
@@ -87,7 +85,6 @@ export default {
             return this.$t(text);
         }
     },
-
     methods: {
         handle() {
             this.visible = !this.visible;

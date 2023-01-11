@@ -3,11 +3,12 @@
         width="40%"
         :visible.sync="visible"
         :before-close="close"
+        :append-to-body="true"
     >
         <div slot="title">
             <h4> {{ $t('Rename Form') }}</h4>
         </div>
-        <el-form class="mt-4" :model="{}" label-position="top" @submit.native.prevent="rename">
+        <el-form class="mt-3" :model="{}" label-position="top" @submit.native.prevent="rename">
             <el-form-item :label="$t('Your Form Title')">
                 <el-input class="rename_form" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
             </el-form-item>
@@ -36,7 +37,7 @@ export default {
         visible() {
             if (this.visible) {
                 this.model = this.formTitle;
-                this.$nextTick( _ => jQuery('.renameForm input').focus());
+                this.$nextTick( _ => jQuery('.rename_form input').focus());
             }
         }
     },

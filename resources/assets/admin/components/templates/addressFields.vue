@@ -3,9 +3,16 @@
     <label v-if="item.settings.label" class="label-block" :class="item.settings.required ? 'is-required' : ''" v-html="item.settings.label"></label>
 
     <el-row :gutter="20">
-        <el-col v-for="(field, i) in getOrerderFields" :key="i" :md="12" v-if="getField(field).settings.visible"  class="address-field-wrapper">
-            <component :is="guessElTemplate(getField(field))" :item="getField(field)"></component>
-        </el-col>
+        <template v-for="(field, i) in getOrerderFields">
+            <el-col
+                :key="i" 
+                :md="12" 
+                v-if="getField(field).settings.visible"  
+                class="ff-form-group"
+            >
+                <component :is="guessElTemplate(getField(field))" :item="getField(field)"></component>
+            </el-col>
+        </template>
     </el-row>
 </div>
 </template>

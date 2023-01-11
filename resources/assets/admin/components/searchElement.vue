@@ -10,7 +10,7 @@
 
         <div class="search-element-result mt-3" v-if="searchResult.length">
             <el-row :gutter="10" v-for="(itemMockList, i) in searchResult" :key="i">
-                <el-col :span="8" v-for="(itemMock, i) in itemMockList" :key="i">
+                <el-col :span="12" v-for="(itemMock, i) in itemMockList" :key="i">
                     <vddl-draggable
                         class="element-card"
                         :draggable="itemMock"
@@ -21,7 +21,7 @@
                         :moved="moved"
                         effectAllowed="copy"
                     >
-                        <i :class="itemMock.editor_options.icon_class"></i>
+                        <i class="ff-icon" :class="itemMock.editor_options.icon_class"></i>
                         {{ itemMock.editor_options.title }}
                     </vddl-draggable>
                 </el-col>
@@ -78,7 +78,7 @@ export default {
             } else {
                 this.$emit('update:isSidebarSearch', false);
             }
-            this.searchResult = _ff.chunk( searchResult, 3 );
+            this.searchResult = _ff.chunk( searchResult, 2 );
         }
     }
 }

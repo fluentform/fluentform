@@ -110,8 +110,8 @@ export default {
     data() {
         return {
             editorInserterStyle: {
-                width: "434px",
-                height: "370px"
+                width: "444px",
+                height: "374px"
             },
             inserterPos: 'is-bottom',
             topOffset: 0,

@@ -42,8 +42,9 @@ class CustomSubmitButton extends BaseFieldManager
                 'align'            => 'left',
                 'container_class'  => '',
                 'current_state'    => 'normal_styles',
-                'background_color' => 'rgb(64, 158, 255)',
-                'color'            => 'rgb(255, 255, 255)',
+                'background_color' => 'rgb(255, 255, 255)',
+                'border_color' => 'rgb(255, 255, 255)',
+                'color'            => 'rgb(96 98 102)',
                 'hover_styles'     => (object) [
                     'backgroundColor' => '#ffffff',
                     'borderColor'     => '#409EFF',
@@ -52,8 +53,8 @@ class CustomSubmitButton extends BaseFieldManager
                     'minWidth'        => '100%',
                 ],
                 'normal_styles' => (object) [
-                    'backgroundColor' => '#409EFF',
-                    'borderColor'     => '#409EFF',
+                    'backgroundColor' => '#1A7EFB',
+                    'borderColor'     => '#1A7EFB',
                     'color'           => '#ffffff',
                     'borderRadius'    => '',
                     'minWidth'        => '100%',
@@ -171,7 +172,7 @@ class CustomSubmitButton extends BaseFieldManager
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } elseif ('no_style' != $btnStyle) {
-            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . esc_attr(ArrayHelper::get($data, 'settings.background_color')) . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
+            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . esc_attr(ArrayHelper::get($data, 'settings.background_color')) . '; . border-color: ' . esc_attr(ArrayHelper::get($data, 'settings.border_color')) . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);

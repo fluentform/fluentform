@@ -12,7 +12,7 @@ body{
 }
 #wpbody-content {
   box-sizing: border-box;
-  font-weight: 400;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $--color-text-regular;
@@ -24,6 +24,7 @@ body{
 h2,h3,h4,h5,h6{
   margin: 0;
   color: $h-color;
+  font-weight: 700;
 }
 ul,
 ol{
@@ -66,7 +67,10 @@ a{
     box-shadow: none;
   }
 }
-
+b, strong{
+  font-weight: bolder;
+  color: $base-color;
+}
 input[type=text], 
 input[type=search], 
 input[type=tel], 
@@ -106,6 +110,13 @@ span + .el-icon{
 .w-100{
   width: 100%;
 }
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
+}
+.text-base{
+  font-size: 1rem;
+}
 .img-thumb{
   border-radius: $border-radius;
   border: 1px solid $border-color;
@@ -128,7 +139,9 @@ span + .el-icon{
   font-style: italic;
   font-size: 0.9em;
 }
-
+.remove-btn{
+  cursor: pointer;
+}
 .is-sticky {
   position: fixed;
   top: 40px;
@@ -143,6 +156,15 @@ span + .el-icon{
   justify-content: flex-end;
 }
 
+.ff_backdrop {
+  background: rgba(0,0,0,.8);
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 99999;
+}
 /*===============================
   Element ui
 ================================*/
@@ -153,6 +175,15 @@ span + .el-icon{
   }
   &-button{
     line-height: 1.2;
+    &--info{
+      background-color: $button-info-bg;
+      border-color: $button-info-border-color;
+      &.is-plain{
+          color: $button-info-plain-color;
+          background-color: $button-info-plain-bg;
+          border-color: $button-info-plain-border-color;
+      }
+    }
   }
   &-input__prefix{
     left: 14px;
@@ -183,6 +214,62 @@ span + .el-icon{
   &-pagination__total{
     font-weight: 500;
     color: $--color-text-regular;
+  }
+  &-popover,
+  &-dialog{
+    border-radius: $--border-radius-base;
+  }
+  &-dialog{
+    padding: $el-dialog-gap-y $el-dialog-gap-x;
+    &-no-header{
+      .el-dialog__header{
+        display: none;
+      }
+    }
+    &__header {
+      padding: 0 0 1.5rem 0;
+      border-bottom: $el-dialog-header-border;
+    }
+    &__headerbtn{
+      top: 18px;
+      right: 22px;
+      font-size: $el-dialog-header-btn-fontsize;
+      width: $el-dialog-header-btn-width;
+      height: $el-dialog-header-btn-height;
+      border-radius: $el-dialog-header-btn-border-radius;
+      background-color: $el-dialog-header-btn-bg;
+      transition: 0.2s;
+      .el-dialog__close{
+        color: $el-dialog-header-btn-color;
+      }
+      &:hover{
+        background-color: $gray-50;
+        .el-dialog__close{
+            color: $el-dialog-header-btn-color;
+        }
+      }
+    }
+    &__body{
+      padding: 0;
+    }
+  }
+  &-loading-mask{
+    background-color: $white;
+  }
+  &-form-item__label{
+    color: $base-color;
+    line-height: 30px;
+    font-weight: 600;
+  }
+  &-select-block{
+    display: block;
+    width: 100%;
+  }
+  &-form-item__content{
+    line-height: inherit;
+  }
+  &-checkbox__label{
+    font-weight: 600;
   }
 }
 
@@ -237,6 +324,15 @@ span + .el-icon{
     .el-select .el-input .el-select__caret{
       color: $--color-text-regular;
     }
+  }
+  &_radio_wrap{
+    &:not(:last-child){
+      margin-bottom: 0.75rem;
+    }
+  }
+  &_form_note{
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 }
 
@@ -299,6 +395,85 @@ code{
   align-items: center;
   justify-content: center;
   color: $--color-primary;
+  &.warning{
+    background-color: rgba($--color-warning, 0.1);
+    color: $--color-warning;
+  }
+  &.md{
+    font-size: 36px;
+    width: 72px;
+    height: 72px;
+  }
+}
+
+// element card
+.element-card{
+  background-color: $element-card-bg;
+  color: $element-card-color;
+  cursor: move;
+  text-align: center;
+  display: block;
+  font-size: $element-card-font-size;
+  overflow: hidden;
+  padding: $element-card-padding-y $element-card-padding-x;
+  text-align: center;
+  text-overflow: ellipsis;
+  transition: 0.2s;
+  white-space: nowrap;
+  border-radius: $element-card-border-radius;
+  box-shadow: $element-card-box-shadow;
+  position: relative;
+  font-weight: 500;
+  .ff-icon{
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    height: auto;
+  }
+  &[draggable=false] {
+    cursor: pointer;
+    opacity: 0.45;
+  }
+  &:hover{
+    background-color: $bg-dark;
+    color: $white;
+  }
+  &-s1{
+    box-shadow: none;
+    cursor: pointer;
+    padding: 0.75rem;
+    &:hover{
+      background-color: $white;
+      color: $base-color;
+      box-shadow: 0 1px 4px rgba($base-color, 0.1);
+    }
+  }
+}
+
+// icon group
+.icon-group{
+  display: inline-flex;
+  background-color: $base-color;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  &-btn{
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: $white;
+    cursor: pointer;
+    &:hover{
+      background-color: $--color-primary;
+    }
+  }
+}
+
+.panel-body-column-container .splitpanes__pane{
+  overflow: inherit;
 }
 /* BUTTONS */
 .btn {
