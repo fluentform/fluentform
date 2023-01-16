@@ -1,8 +1,11 @@
 .ff_table{
-    .el-table tr,
-    .el-table th.el-table__cell,
-    .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell,
-    .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+    border-radius: $el-table-border-radius;
+    box-shadow: $el-table-box-shadow;
+    padding: $el-table-gap-y $el-table-gap-x;
+    tr,
+    th.el-table__cell,
+    .el-table__body tr.el-table__row--striped td.el-table__cell,
+    &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
         background-color: transparent;
     }
     .el-table--border::after, 
@@ -10,38 +13,33 @@
     .el-table::before{
         display: none;
     }
-    .el-table{
-        border-radius: $el-table-border-radius;
-        box-shadow: $el-table-box-shadow;
-        padding: $el-table-gap-y $el-table-gap-x;
-        thead{
-            color: $el-table-color;
-            th{
-                padding-top: 0;
-            }
-        }
-        th.el-table__cell>.cell,
-        .cell{
-            padding-left: 0;
-            padding-right: 0;
-        }
-        .sort-caret{
-            border-width: 3px;
-        }
-        .sort-caret.ascending{
-            top: 9px;
-        }
-        .sort-caret.descending{
-            bottom: 11px;
-        }
-        .cell {
-            strong {
-                color: $el-table-color;
-            }
+    thead{
+        color: $el-table-color;
+        th{
+            padding-top: 0;
         }
     }
-    .el-table td.el-table__cell, 
-    .el-table th.el-table__cell.is-leaf{
+    th.el-table__cell>.cell,
+    .cell{
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .sort-caret{
+        border-width: 3px;
+    }
+    .sort-caret.ascending{
+        top: 9px;
+    }
+    .sort-caret.descending{
+        bottom: 11px;
+    }
+    .cell {
+        strong {
+            color: $el-table-color;
+        }
+    }
+    td.el-table__cell, 
+    th.el-table__cell.is-leaf{
         border-bottom-color: $el-table-row-border-color;
     }
     tbody{

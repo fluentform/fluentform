@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" class="entriest_chart_wrapper">
+    <div v-loading="loading" class="ff_card">
         <subscriber-chart v-if="show_stats" :chart-data="chartData" :maxCumulativeValue="maxCumulativeValue"></subscriber-chart>
     </div>
 </template>
@@ -35,25 +35,27 @@
                     form_id: this.form_id,
                     date_range: this.date_range
                 })
-                    .then(response => {
-                        this.stats = response.data.stats;
-                        this.setupChartItems();
-                    })
-                    .fail(error => {
-                        console.log(error);
-                    })
-                    .always(() => {
-                        this.loading = false;
-                        this.show_stats = true;
-                    });
+                .then(response => {
+                    this.stats = response.data.stats;
+                    this.setupChartItems();
+                })
+                .fail(error => {
+                    console.log(error);
+                })
+                .always(() => {
+                    this.loading = false;
+                    this.show_stats = true;
+                });
             },
             setupChartItems() {
                 const labels = [];
                 const ItemValues = {
                     label: 'Submission Count',
                     yAxisID: 'byDate',
-                    backgroundColor: 'rgba(81, 52, 178, 0.5)',
-                    borderColor: '#b175eb',
+                    backgroundColor: '#1a7efb',
+                    borderColor: '#1a7efb',
+                     borderRadius: 20, // This will round the corners
+                    borderSkipped: false, // To make all side rounded
                     data: [],
                     fill: false,
                     gridLines: {

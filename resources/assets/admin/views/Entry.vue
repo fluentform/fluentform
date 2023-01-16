@@ -74,7 +74,7 @@
                     </div>
                 </div>
     
-                <div v-for="(card, cardKey) in extraCards" class="entry_info_box">
+                <div v-for="(card, cardKey) in extraCards" class="entry_info_box" :key="cardKey">
                     <div class="entry_info_header">
                         <b>{{card.title}}</b>
                     </div>

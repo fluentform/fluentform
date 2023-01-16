@@ -316,7 +316,8 @@ class Menu
             'fluent_forms_payment_entries' == $page ||
             'fluent_forms_all_entries' == $page
         ) {
-            wp_enqueue_style('fluentform_settings_global');
+            wp_enqueue_style('fluent_all_forms');
+            
         } elseif ('fluent_forms_add_ons' == $page) {
             wp_enqueue_style('fluentform-add-ons');
         } elseif ('fluent_forms_docs' == $page || 'fluent_forms_smtp' == $page) {

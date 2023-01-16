@@ -1,8 +1,8 @@
 <template>
     <div>
         <vddl-draggable 
-            class="panel-body-item js-editor-item"
-            :class="{ 'selected': editItem.uniqElKey == item.uniqElKey }"
+            class="js-editor-item"
+            :class="[{ 'selected': editItem.uniqElKey == item.uniqElKey }, (item.element == 'container' ? 'panel-body-item-container' : 'panel-body-item')]"
             :draggable="item"
             :index="index"
             effect-allowed="move"

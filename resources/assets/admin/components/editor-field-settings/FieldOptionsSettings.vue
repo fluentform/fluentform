@@ -1,14 +1,15 @@
 <template>
-<el-form label-position="top" label-width="120px">
-    <div :class="optionFieldsSection == 'generalEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+<el-form label-position="top" label-width="120px" class="ff_field_settings_options_wrap">
+    <div :class="optionFieldsSection == 'generalEditOptions' ? 'option-fields-section-active' : ''" class="option-fields-section">
         <h5 @click="toggleFieldsSection('generalEditOptions')"
             :class="optionFieldsSection == 'generalEditOptions' ? 'active' : ''"
-            class="option-fields-section--title">
+            class="option-fields-section-title">
             {{ editItem.editor_options.title }}
+            <i class="el-icon el-icon-arrow-down"></i>
         </h5>
 
         <transition name="slide-fade">
-            <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section--content">
+            <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section-content">
                 <template v-for="(listItem, key, i) in generalEditOptions">
                     <component
                         v-if="willShow(key, listItem)"
@@ -17,23 +18,25 @@
                         :editItem="editItem"
                         :prop="key"
                         :form_items="form_items"
-                        :listItem="listItem">
+                        :listItem="listItem"
+                        :key="i">
                     </component>
                 </template>
             </div>
         </transition>
     </div>
 
-    <div :class="optionFieldsSection == 'advancedEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+    <div :class="optionFieldsSection == 'advancedEditOptions' ? 'option-fields-section-active' : ''" class="option-fields-section">
         <template v-if="haveSettings(advancedEditOptions)">
             <h5 @click="toggleFieldsSection('advancedEditOptions')"
                 :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
-                class="option-fields-section--title">
+                class="option-fields-section-title">
                 {{ $t('Advanced Options') }}
+                <i class="el-icon el-icon-arrow-down"></i>
             </h5>
 
             <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section--content">
+                <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section-content">
                     <template v-for="(listItem, key, i) in advancedEditOptions">
                         <component
                             v-if="willShow(key, listItem)"
@@ -41,7 +44,8 @@
                             v-model="vModelFinder(key)[key]"
                             :form_items="form_items"
                             :editItem="editItem"
-                            :listItem="listItem">
+                            :listItem="listItem"
+                            :key="i">
                         </component>
                     </template>
                     <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
@@ -57,16 +61,17 @@
         </template>
     </div>
 
-    <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+    <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section-active' : ''" class="option-fields-section">
         <template v-if="editItem.style_pref">
             <h5 @click="toggleFieldsSection('layoutOptions')"
                 :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
-                class="option-fields-section--title">
+                class="option-fields-section-title">
                 {{ $t('Layout Settings') }}
+                <i class="el-icon el-icon-arrow-down"></i>
             </h5>
 
             <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section--content">
+                <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section-content">
                     <conversion-style-pref :pref="editItem.style_pref" />
                 </div>
             </transition>

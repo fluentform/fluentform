@@ -36,3 +36,38 @@ $ff:         'ff_radio';
         }
     }
 }
+
+// ff data item group
+.ff_data_item{
+    &_group{
+        overflow-x: auto;
+        background: $white;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        .ff_data_item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            background-color: mix($white, $base-color, 95%);
+            border-radius: 50px;
+            &:not(:last-child){
+                margin-right: 0.5rem;
+            }
+            &:hover{
+                background-color: mix($white, $base-color, 90%);
+            }
+            &.active{
+                background-color: $--color-primary;
+                color: $--color-white;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+

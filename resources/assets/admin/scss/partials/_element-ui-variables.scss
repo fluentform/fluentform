@@ -431,7 +431,7 @@ $--input-font-color: $--color-text-regular;
 /// height||Other|4
 $--input-width: 140px;
 /// height||Other|4
-$--input-height: 44px;
+$--input-height: 41px;
 $--input-border: $--border-base;
 $--input-border-color: $--border-color-base;
 /// borderRadius||Border|2
@@ -537,14 +537,14 @@ $--button-small-border-radius: #{$--border-radius-base - 1};
 /// padding||Spacing|3
 $--button-small-padding-vertical: 9px;
 /// padding||Spacing|3
-$--button-small-padding-horizontal: 15px;
+$--button-small-padding-horizontal: 12px;
 /// fontSize||Font|1
 $--button-mini-font-size: 12px;
 $--button-mini-border-radius: #{$--border-radius-base - 1};
 /// padding||Spacing|3
 $--button-mini-padding-vertical: 7px;
 /// padding||Spacing|3
-$--button-mini-padding-horizontal: 15px;
+$--button-mini-padding-horizontal: 10px;
 
 /// color||Color|0
 $--button-default-font-color: $--color-text-regular;

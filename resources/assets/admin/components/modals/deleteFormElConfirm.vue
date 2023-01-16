@@ -6,15 +6,17 @@
         width="30%"
         :show-close="false"
     >
-        <div class="text-center mb-5">
-            <div class="ff_icon_btn md warning mx-auto">
+        <div class="text-center">
+            <div class="ff_icon_btn lg warning-soft mx-auto">
                 <i class="el-icon-warning-outline"></i>
             </div>
             <h1 class="mt-4 mb-3">{{$t('Are you sure?')}}</h1>
-            <p class="text-base">{{$t('You want to delete this field?')}}</p>
+            <p class="text-base mb-5">{{$t('You want to delete this field?')}}</p>
+            <p class="text-base text-center mb-3" v-if="dataLostMsg">
+                <strong>Note:</strong>
+                {{ dataLostMsg }}
+            </p>
         </div>
-        <p class="data-lost-msg" v-if="dataLostMsg">{{ dataLostMsg }}</p>
-
         <div class="dialog-footer mt-2 text-center">
             <el-button @click="close" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
             <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>

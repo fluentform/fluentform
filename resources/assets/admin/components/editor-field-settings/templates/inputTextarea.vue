@@ -2,7 +2,7 @@
     <el-form-item>
         <div slot="label">
             {{ listItem.label }}
-            <el-tooltip v-if="listItem.help_text" effect="dark" :content="listItem.help_text" placement="top">
+            <el-tooltip v-if="listItem.help_text" effect="dark" :content="listItem.help_text" placement="top" popper-class="ff_tooltip_popper">
                 <i class="tooltip-icon el-icon-info"></i>
             </el-tooltip>
         </div>

@@ -12,8 +12,10 @@
         <template v-if="submitButton.settings.button_ui">
             <el-button 
                 type="primary"
+                :class="btnSize"
                 v-if="submitButton.settings.button_ui.type == 'default'"
                 v-html="submitButton.settings.button_ui.text"
+                :style="btnStyles"
             >
             </el-button>
             <img v-else :src="submitButton.settings.button_ui.img_url" alt="Submit Button" style="max-width: 200px;">
@@ -39,6 +41,7 @@ export default {
             if(this.submitButton.settings.button_style != '') {
                 return {
                     backgroundColor: this.submitButton.settings.background_color,
+                    borderColor: this.submitButton.settings.border_color,
                     color: this.submitButton.settings.color,
                 }
             }

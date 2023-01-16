@@ -53,6 +53,7 @@
             font-weight: $header-menu-link-font-weight;
             background-color: transparent;
             border-radius: $header-menu-link-border-radius;
+            line-height: 1.6;
             &:focus {
                 box-shadow: none;
             }

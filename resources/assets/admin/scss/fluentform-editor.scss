@@ -2,8 +2,9 @@
 @import "./partials/spacing";
 @import "./partials/tabs";
 @import "./partials/splitpanes";
+@import "./partials/vddl-base";
 @import "../assets/editor-icons/editor_icons.css";
-
+@import "./partials/list";
 
 // fullscreen
 .fullscreen_exit{
@@ -88,8 +89,10 @@ body.ff_full_screen{
     }
   }
   &_sidebar{
-    width: 30%;
+    width: $ff-editor-sidebar-width;
     height: 100vh;
+    position: relative;
+    overflow-y: auto;
     &_navtabs{
       background-color: $white;
     }
@@ -188,8 +191,8 @@ body.ff_full_screen{
     }
   }
   &-content{
-    max-height: 354px;
-    overflow-y: auto;
+    // max-height: 354px;
+    // overflow-y: auto;
   }
 }
 
@@ -206,6 +209,8 @@ body.ff_full_screen{
     align-items: center;
     justify-content: center;
     height: 100%;
+    position: relative;
+    z-index: 1;
     .popup-search-element{
       background-color: $popup-search-element-bg-dark;
       position: relative;
@@ -239,6 +244,7 @@ body.ff_full_screen{
     max-width: 100%;
     position: relative;
     padding: $panel-body-item-padding-y $panel-body-item-padding-x;
+    margin-bottom: 2px;
     >.popup-search-element {
       bottom: -14px;
       left: 50%;
@@ -252,6 +258,16 @@ body.ff_full_screen{
       .panel-item-hover-action{
         opacity: 1;
         visibility: visible;
+      }
+      .icon-group{
+        opacity: 0;
+        visibility: hidden;
+      }
+      &:hover{
+        .icon-group{
+          opacity: 1;
+          visibility: visible;
+        }
       }
     }
   }
@@ -276,12 +292,11 @@ body.ff_full_screen{
       }
       &-container{
         position: absolute;
-        top: -0.5rem;
-        left: 2rem;
+        top: -1.5rem;
+        right: 1rem;
         opacity: 0;
         visibility: hidden;
-        transition: 0.3s;
-        z-index: 7;
+        z-index: 2;
       }
     }
   }
@@ -293,6 +308,9 @@ body.ff_full_screen{
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -300,7 +318,7 @@ body.ff_full_screen{
 .panel-body-item.is-editor-inserter>.item-actions-wrapper, 
 .panel-body-item.is-editor-inserter>.popup-search-element, 
 .panel-body-item:hover>.panel-item-hover-action,
-.panel-body-item:hover>.panel-item-hover-action-container,
+.panel-body-item-container:hover>.panel-item-hover-action-container,
 .panel-body-item:hover>.popup-search-element {
   opacity: 1;
   visibility: visible;
@@ -467,9 +485,103 @@ body.ff_full_screen{
       background-color: $bg-light;
       color: $base-color;
       border-color: $bg-light;
-
     }
   }
 }
+
+.ff_chained_select_template .el-select{
+  width: 100%;
+  &:not(:last-child){
+    margin-bottom: 0.75rem;
+  }
+}
+
+// repeat field
+.ff_repeat_field_item{
+  display: flex;
+  align-items: center;
+  .el-form-item{
+    width: calc(100% - 60px);
+    margin-right: 0.75rem;
+  }
+}
+
+// field setting options wrap
+.ff_field_settings_options_wrap {
+  .option-fields-section-content{
+    margin-top: 1rem;
+  }
+  .el-form-item{
+    margin-bottom: 1rem;
+    &__label{
+      line-height: 18px;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+  }
+  .el-input__inner {
+    height: 38px;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+  }
+  .el-input--mini{
+    .el-input__inner{
+      height: 28px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+  }
+  .el-input__icon{
+    line-height: 38px;
+  }
+}
+
+// field customization option
+.ff_field_customization_option {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  &_title{
+    font-size: 15px;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    &_group{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      + .ff_field_customization_option_settings{
+        margin-top: 0.75rem;
+      }
+    }
+  }
+  &_settings{
+    display: none;
+    border-bottom: 1px solid rgba($base-color, 0.09);
+    padding-bottom: 0.5rem;
+    &.is-open{
+      display: block;
+    }
+  }
+}
+
+// condition icon
+.ff_condition_icon {
+  position: absolute;
+  right: 16px;
+  opacity: 0.8;
+}
+
+// input textarea value
+.ff_input_textarea_value{
+  .el-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: -21px;
+  }
+}
+
+
+
+
 
 

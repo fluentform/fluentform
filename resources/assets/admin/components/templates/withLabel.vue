@@ -1,5 +1,5 @@
 <template>
-    <el-form-item :class="{ 'is-required' : required, ['ff-el-form-'+item.settings.label_placement]: item.settings.label_placement }">
+    <el-form-item :class="{ 'is-required' : required, ['ff-form-label-' + item.settings.label_placement]: item.settings.label_placement }">
         <elLabel slot="label" :label="item.settings.label"></elLabel>
         <slot></slot>
     </el-form-item>

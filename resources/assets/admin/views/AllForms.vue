@@ -83,123 +83,121 @@
            
         </el-row>
         
-        <div v-loading="loading" class="ff_forms_table ff_table" element-loading-text="Loading Forms...">
+        <div v-loading="loading" class="ff_table_wrap" element-loading-text="Loading Forms...">
             <template v-if="app.formsCount > 0">
-                <div class="entries_table">
-                    <div class="tablenav">
-                       <el-table
-                            :data="items"
-                            :stripe="true"
-                            @sort-change="handleTableSort"
-                            @selection-change="handleSelectionChange"
-                            :row-class-name="tableRowClass">
+                <el-table
+                    :data="items"
+                    :stripe="true"
+                    @sort-change="handleTableSort"
+                    @selection-change="handleSelectionChange"
+                    :row-class-name="tableRowClass"
+                    class="ff_table"
+                >
 
-                            <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="60"></el-table-column>
+                    <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="60"></el-table-column>
 
-                            <el-table-column sortable="custom" :label="$t('Title')" prop="title" width="480">
-                                <template slot-scope="scope">
-                                    <strong>
-                                        {{ scope.row.title }}
-                                    </strong>
-                                    <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
-                                    <div class="row-actions row-actions-pipe">
-                                        <template v-if="hasPermission('fluentform_forms_manager')">
-                                            <span class="row-actions-item ff_edit">
-                                                <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a>
-                                            </span>
-                                            <span class="row-actions-item ff_edit">
-                                                <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a>
-                                            </span>
-                                        </template>
-                                        <span v-if="hasPermission('fluentform_entries_viewer')" class="row-actions-item ff_entries">
-                                             <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a>
-                                        </span>
-                                        <span v-if="scope.row.conversion_preview" class="row-actions-item ff_entries">
-                                             <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a>
-                                        </span>
-                                        <span class="row-actions-item ff_entries">
-                                             <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a>
-                                        </span>
-
-                                        <template v-if="hasPermission('fluentform_forms_manager')">
-                                            <span class="row-actions-item ff_duplicate">
-                                                <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
-                                                    $t('Duplicate')
-                                                }}</a>
-                                            </span>
-                                            <span class="row-actions-item trash">
-                                                <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                                    <a slot="icon">{{ $t('Delete') }}</a>
-                                                </remove>
-                                            </span>
-                                            <el-switch
-                                                class="ff_switch"
-                                                active-color="#00B27F" 
-                                                :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
-                                                @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
-                                                :width="28"
-                                                active-value="published" 
-                                                inactive-value="unpublished" 
-                                                v-model="scope.row.status" 
-                                            />
-
-                                        </template>
-                                    </div>
+                    <el-table-column sortable="custom" :label="$t('Title')" prop="title" width="480">
+                        <template slot-scope="scope">
+                            <strong>
+                                {{ scope.row.title }}
+                            </strong>
+                            <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
+                            <div class="row-actions row-actions-pipe">
+                                <template v-if="hasPermission('fluentform_forms_manager')">
+                                    <span class="row-actions-item ff_edit">
+                                        <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a>
+                                    </span>
+                                    <span class="row-actions-item ff_edit">
+                                        <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a>
+                                    </span>
                                 </template>
-                            </el-table-column>
+                                <span v-if="hasPermission('fluentform_entries_viewer')" class="row-actions-item ff_entries">
+                                        <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a>
+                                </span>
+                                <span v-if="scope.row.conversion_preview" class="row-actions-item ff_entries">
+                                        <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a>
+                                </span>
+                                <span class="row-actions-item ff_entries">
+                                        <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a>
+                                </span>
 
-                            <el-table-column :label="$t('Short Code')" width="310">
-                                <template slot-scope="scope">
-                                    <div class="shortcode_btn">
-                                        <code :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
-                                            [fluentform id="{{ scope.row.id }}"]
-                                        </code>
-                                        <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
-                                    </div>
-                                    <div class="shortcode_btn conversational_shortcode" v-if="scope.row.conversion_preview">
-                                        <code :id="`fluentform_conversational_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
-                                           [fluentform type="conversational" id="{{scope.row.id }}"]
-                                        </code>
-                                        <span class="copy copy_btn" :data-clipboard-target="`#fluentform_conversational_${scope.row.id}`">Copy</span>
-                                    </div>
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column :label="$t('Entries')">
-                                <template slot-scope="scope">
-                                    <a :href="scope.row.entries_url"><span
-                                        v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
-                                        scope.row.total_Submissions
+                                <template v-if="hasPermission('fluentform_forms_manager')">
+                                    <span class="row-actions-item ff_duplicate">
+                                        <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
+                                            $t('Duplicate')
                                         }}</a>
-                                </template>
-                            </el-table-column>
+                                    </span>
+                                    <span class="row-actions-item trash">
+                                        <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
+                                            <a slot="icon">{{ $t('Delete') }}</a>
+                                        </remove>
+                                    </span>
+                                    <el-switch
+                                        class="ff_switch"
+                                        active-color="#00B27F" 
+                                        :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
+                                        @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
+                                        :width="28"
+                                        active-value="published" 
+                                        inactive-value="unpublished" 
+                                        v-model="scope.row.status" 
+                                    />
 
-                            <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')">
-                                <template slot-scope="scope">
-                                    {{ scope.row.total_views }}
                                 </template>
-                            </el-table-column>
+                            </div>
+                        </template>
+                    </el-table-column>
 
-                            <el-table-column v-if="!isDisabledAnalytics" :label="$t('Conversion')">
-                                <template slot-scope="scope">
-                                    {{ scope.row.conversion }}%
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div class="ff_pagination_wrap text-right mt-4">
-                            <el-pagination
-                                class="ff_pagination"
-                                background
-                                @size-change="handleSizeChange"
-                                @current-change="goToPage"
-                                :current-page.sync="paginate.current_page"
-                                :page-sizes="[5, 10, 20, 50, 100]"
-                                :page-size="parseInt(paginate.per_page)"
-                                layout="total, sizes, prev, pager, next"
-                                :total="paginate.total">
-                            </el-pagination>
-                        </div>
-                    </div>
+                    <el-table-column :label="$t('Short Code')" width="310">
+                        <template slot-scope="scope">
+                            <div class="shortcode_btn">
+                                <code :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
+                                    [fluentform id="{{ scope.row.id }}"]
+                                </code>
+                                <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
+                            </div>
+                            <div class="shortcode_btn conversational_shortcode" v-if="scope.row.conversion_preview">
+                                <code :id="`fluentform_conversational_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                    [fluentform type="conversational" id="{{scope.row.id }}"]
+                                </code>
+                                <span class="copy copy_btn" :data-clipboard-target="`#fluentform_conversational_${scope.row.id}`">Copy</span>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column :label="$t('Entries')">
+                        <template slot-scope="scope">
+                            <a :href="scope.row.entries_url"><span
+                                v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
+                                scope.row.total_Submissions
+                                }}</a>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')">
+                        <template slot-scope="scope">
+                            {{ scope.row.total_views }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column v-if="!isDisabledAnalytics" :label="$t('Conversion')">
+                        <template slot-scope="scope">
+                            {{ scope.row.conversion }}%
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="ff_pagination_wrap text-right mt-4">
+                    <el-pagination
+                        class="ff_pagination"
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="goToPage"
+                        :current-page.sync="paginate.current_page"
+                        :page-sizes="[5, 10, 20, 50, 100]"
+                        :page-size="parseInt(paginate.per_page)"
+                        layout="total, sizes, prev, pager, next"
+                        :total="paginate.total">
+                    </el-pagination>
                 </div>
             </template>
             <div v-else>

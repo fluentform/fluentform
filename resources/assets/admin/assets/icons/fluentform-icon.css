@@ -1,0 +1,234 @@
+@font-face {
+  font-family: 'fluentform-icon';
+  src:  url('fonts/fluentform.eot');
+  src:  url('fonts/fluentform.eot') format('embedded-opentype'),
+    url('fonts/fluentform.ttf') format('truetype'),
+    url('fonts/fluentform.woff') format('woff'),
+    url('fonts/fluentform.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ff-icon-"], [class*=" ff-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'fluentform-icon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ff-icon-eye-off:before {
+  content: "\e928";
+}
+.ff-icon-warning:before {
+  content: "\e900";
+}
+.ff-icon-undo:before {
+  content: "\e901";
+}
+.ff-icon-underline-bold:before {
+  content: "\e902";
+}
+.ff-icon-underline-light:before {
+  content: "\e903";
+}
+.ff-icon-trash:before {
+  content: "\e904";
+}
+.ff-icon-tablet:before {
+  content: "\e905";
+}
+.ff-icon-star:before {
+  content: "\e906";
+}
+.ff-icon-share:before {
+  content: "\e907";
+}
+.ff-icon-setting:before {
+  content: "\e908";
+}
+.ff-icon-right-align:before {
+  content: "\e909";
+}
+.ff-icon-minus:before {
+  content: "\e90a";
+}
+.ff-icon-redo:before {
+  content: "\e90b";
+}
+.ff-icon-promotion:before {
+  content: "\e90c";
+}
+.ff-icon-play-circle-filled:before {
+  content: "\e90d";
+}
+.ff-icon-play-circle-light:before {
+  content: "\e90e";
+}
+.ff-icon-card:before {
+  content: "\e90f";
+}
+.ff-icon-more-vertical:before {
+  content: "\e910";
+}
+.ff-icon-mobile:before {
+  content: "\e911";
+}
+.ff-icon-left-align:before {
+  content: "\e912";
+}
+.ff-icon-italic-bold:before {
+  content: "\e913";
+}
+.ff-icon-italic-light:before {
+  content: "\e914";
+}
+.ff-icon-filter:before {
+  content: "\e915";
+}
+.ff-icon-files:before {
+  content: "\e916";
+}
+.ff-icon-file-add:before {
+  content: "\e917";
+}
+.ff-icon-fullscreen:before {
+  content: "\e918";
+}
+.ff-icon-donut-chart:before {
+  content: "\e919";
+}
+.ff-icon-document:before {
+  content: "\e91a";
+}
+.ff-icon-design:before {
+  content: "\e91b";
+}
+.ff-icon-copy-filled:before {
+  content: "\e91c";
+}
+.ff-icon-copy-light:before {
+  content: "\e91d";
+}
+.ff-icon-code:before {
+  content: "\e91e";
+}
+.ff-icon-close-circle-filled:before {
+  content: "\e91f";
+}
+.ff-icon-chevron-down-left:before {
+  content: "\e920";
+}
+.ff-icon-check:before {
+  content: "\e921";
+}
+.ff-icon-center-align:before {
+  content: "\e922";
+}
+.ff-icon-bookmark:before {
+  content: "\e923";
+}
+.ff-icon-bold:before {
+  content: "\e924";
+}
+.ff-icon-bold-alt:before {
+  content: "\e925";
+}
+.ff-icon-bank:before {
+  content: "\e926";
+}
+.ff-icon-plus-circle-filled:before {
+  content: "\e927";
+}
+.ff-icon-download:before {
+  content: "\e929";
+}
+.ff-icon-eye:before {
+  content: "\e92a";
+}
+.ff-icon-list:before {
+  content: "\e92b";
+}
+.ff-icon-monitor:before {
+  content: "\e92c";
+}
+.ff-icon-move:before {
+  content: "\e92d";
+}
+.ff-icon-plus:before {
+  content: "\e92e";
+}
+.ff-icon-search:before {
+  content: "\e92f";
+}
+.ff-icon-arrow-down:before {
+  content: "\e930";
+}
+.ff-icon-close:before {
+  content: "\e931";
+}
+.ff-icon-expand:before {
+  content: "\e932";
+}
+.ff-icon-eye-filled:before {
+  content: "\e933";
+}
+.ff-icon-info-filled:before {
+  content: "\e934";
+}
+.ff-icon-keypad:before {
+  content: "\e935";
+}
+.ff-icon-more-horizontal:before {
+  content: "\e936";
+}
+.ff-icon-setting-filled:before {
+  content: "\e937";
+}
+.ff-icon-strikethrough:before {
+  content: "\e938";
+}
+.ff-icon-edit:before {
+  content: "\e939";
+}
+.ff-icon-filter-alt:before {
+  content: "\e93a";
+}
+.ff-icon-refresh:before {
+  content: "\e93b";
+}
+.ff-icon-caret-up-down:before {
+  content: "\e93c";
+}
+.ff-icon-erase:before {
+  content: "\e93d";
+}
+.ff-icon-decrease-inedit:before {
+  content: "\e945";
+}
+.ff-icon-caret-up:before {
+  content: "\e946";
+}
+.ff-icon-increase-inedit:before {
+  content: "\e947";
+}
+.ff-icon-list-ordered:before {
+  content: "\e948";
+}
+.ff-icon-quote-left:before {
+  content: "\e949";
+}
+.ff-icon-text:before {
+  content: "\e94a";
+}
+.ff-icon-upload:before {
+  content: "\e94b";
+}

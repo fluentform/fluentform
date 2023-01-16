@@ -1,3 +1,4 @@
+@import "../assets/icons/fluentform-icon.css";
 @import "./partials/variables";
 @import "./partials/spacing";
 @import "./partials/fonts";
@@ -29,24 +30,29 @@
     //   padding: $ff-advanced-search-gap-y $ff-advanced-search-gap-x;
     //   background: $ff-advanced-search-bg;
     //   border-radius: $ff-advanced-search-border-radius;
-        position: absolute;
-        width: $ff-advanced-search-width;
-        background: $ff-advanced-search-bg;
-        right: 0;
-        z-index: 1024;
-        box-shadow: $ff-advanced-search-box-shadow;
-        padding: $ff-advanced-search-gap-y $ff-advanced-search-gap-x;
-        border-radius: $ff-advanced-search-border-radius;
-        top: 100%;
-        margin-top: 10px;
-        &_date_range{
-            background-color: $ff-advanced-search-date-range-bg;
-            padding: $ff-advanced-search-date-range-padding;
-            border-radius: $ff-advanced-search-date-range-border-radius;
-            .el-date-editor--daterange.el-input__inner{
-                width: $ff-advanced-search-date-range-input-width;
-            }
+      position: absolute;
+      width: $ff-advanced-search-width;
+      background: $ff-advanced-search-bg;
+      right: 0;
+      z-index: 1024;
+      box-shadow: $ff-advanced-search-box-shadow;
+      padding: $ff-advanced-search-gap-y $ff-advanced-search-gap-x;
+      border-radius: $ff-advanced-search-border-radius;
+      top: 100%;
+      margin-top: 10px;
+      &_date_range{
+          background-color: $ff-advanced-search-date-range-bg;
+          padding: $ff-advanced-search-date-range-padding;
+          border-radius: $ff-advanced-search-date-range-border-radius;
+          .el-date-editor--daterange.el-input__inner{
+              width: $ff-advanced-search-date-range-input-width;
+          }
+      }
+      &_date_range{
+        p{
+          margin-top: 0;
         }
+      }
     }
     &_advanced_title{
       font-size: 0.875rem;

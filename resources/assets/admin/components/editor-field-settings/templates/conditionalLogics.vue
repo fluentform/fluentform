@@ -10,73 +10,91 @@
         <template v-if="conditional_logics.status">
             <el-form-item>
                 <elLabel slot="label" :label="$t('Condition Match')"
-                         :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')"></elLabel>
-
+                         :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')">
+                </elLabel>
                 <el-radio v-model="conditional_logics.type" label="any">{{ $t('Any') }}</el-radio>
                 <el-radio v-model="conditional_logics.type" label="all">{{ $t('All') }}</el-radio>
             </el-form-item>
 
-            <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
-                <select
+            <el-row class="items-center" v-for="(condition, i) in conditional_logics.conditions" :key="i" :gutter="4">
+                <el-col :span="6">
+                    <el-select
                         v-model="condition.field"
                         @change="condition.value = ''"
                         :placeholder="$t('Select')"
-                        class="condition-field"
-                >
-                    <option value="" disabled>- Select -</option>
-                    <option v-for="(dep, meta, i) in dependencies"
-                            v-if="meta != editItem.attributes.name"
-                            :key="i"
-                            :value="meta">{{ dep.field_label || meta }}
-                    </option>
-                </select>
-                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator">
-                    <option value="" disabled>- {{ $t('Select') }} -</option>
-                    <option value="=">{{ $t('equal') }}</option>
-                    <option value="!=">{{ $t('not equal') }}</option>
-
-                    <template
-                            v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
-                        <option value=">">{{ $t('greater than') }}</option>
-                        <option value="<">{{ $t('less than') }}</option>
-                        <option value=">=">{{ $t('greater than or equal') }}</option>
-                        <option value="<=">{{ $t('less than or equal') }}</option>
-                        <option value="contains">{{ $t('includes') }}</option>
-                        <option value="doNotContains">{{ $t('not includes') }}</option>
-                        <option value="startsWith">{{ $t('starts with') }}</option>
-                        <option value="endsWith">{{ $t('ends with') }}</option>
-                        <option value="test_regex">{{ $t('Regex match') }}</option>
-                    </template>
-                </select>
-
-                <template v-if="condition.field">
-                    <input
-                            v-if="!dependencies[condition.field] ||!dependencies[condition.field].options"
-                            class="form-control-2 condition-value"
-                            type="text"
-                            v-model="condition.value"
                     >
-                    <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
-                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value">
-                        <option value="" selected >- {{ $t('Select') }} -</option>
-                        <option v-for="(label, key, i) in dependencies[condition.field].options"
+                        <template v-for="(dep, meta, i) in dependencies">
+                            <el-option 
+                                v-if="meta != editItem.attributes.name" 
+                                :key="i" 
+                                :label="dep.field_label || meta"
+                                :value="meta"
+                            >
+                            </el-option>
+                        </template>
+                    </el-select>
+                </el-col>
+                <el-col :span="6">
+                    <el-select 
+                        v-model="condition.operator" 
+                        :placeholder="$t('Select')"
+                    >
+                        <el-option value="=" :label="$t('equal')"></el-option>
+                        <el-option value="!=" :label="$t('not equal')"></el-option>
+
+                        <template v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
+                            <el-option value=">" :label=" $t('greater than')"></el-option>
+                            <el-option value="<" :label=" $t('less than')"></el-option>
+                            <el-option value=">=" :label="$t('greater than or equal')"></el-option>
+                            <el-option value="<=" :label="$t('less than or equal')"></el-option>
+                            <el-option value="contains" :label=" $t('includes')"></el-option>
+                            <el-option value="doNotContains" :label="$t('not includes')"></el-option>
+                            <el-option value="startsWith" :label=" $t('starts with')"></el-option>
+                            <el-option value="endsWith" :label="$t('ends with')"></el-option>
+                            <el-option value="test_regex" :label="$t('Regex match') "></el-option>
+                        </template>
+                    </el-select>
+                </el-col>
+                <el-col :span="6">
+                    <template v-if="condition.field">
+                        <el-input 
+                            v-if="!dependencies[condition.field] ||!dependencies[condition.field].options" 
+                            v-model="condition.value"
+                        ></el-input>
+                        <el-select 
+                            v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
+                            v-model="condition.value" 
+                            :placeholder="$t('Select')"
+                        >
+                            <el-option 
+                                v-for="(label, key) in dependencies[condition.field].options"
                                 :key="key"
-                                :value="key">{{ label }}
-                        </option>
-                    </select>
-                </template>
-
-                <!-- JUST A PLACEHOLDER -->
-                <select v-else class="condition-value">
-                    <option value="" disabled selected>- {{ $t('Select') }} -</option>
-                </select>
-
-                <div class="action-btn">
-                    <i @click.prevent="conditional_logics.conditions.pushAfter(i, emptyRules)"
-                       class="icon icon-plus-circle"></i>
-                    <i @click.prevent="decreaseLogic(i)" class="icon icon-minus-circle"></i>
-                </div>
-            </div>
+                                :value="key"
+                                :label="label"
+                            ></el-option>
+                        </el-select>
+                    </template>
+                
+                    <!-- JUST A PLACEHOLDER -->
+                    <el-select v-model="emptyValue" v-else class="condition-value">
+                        <el-option value="" disabled selected :label="$t('Select')"></el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="6">
+                    <ul class="ff_icon_group ml-1 mt-1">
+                        <li>
+                            <div class="ff_icon_btn mini dark ff_icon_btn_clickable" @click.prevent="conditional_logics.conditions.pushAfter(i, emptyRules)">
+                                <i class="el-icon el-icon-plus"></i>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="ff_icon_btn mini dark ff_icon_btn_clickable" @click.prevent="decreaseLogic(i)">
+                                <i class="el-icon el-icon-minus"></i>
+                            </div>
+                        </li>
+                    </ul>
+                </el-col>
+            </el-row>
         </template>
 
         <el-dialog
@@ -142,7 +160,8 @@
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
-                emptyRules: { field: '', value: '', operator: '' }
+                emptyRules: { field: '', value: '', operator: '' },
+                emptyValue: ''
             }
         },
         computed: {

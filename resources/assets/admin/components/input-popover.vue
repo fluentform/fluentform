@@ -1,34 +1,38 @@
 <template>
-<div>
-    <el-popover
-        ref="input-popover"
-        :placement="placement"
-        width="200"
-        popper-class="el-dropdown-list-wrapper"
-        trigger="click">
-            <ul class="el-dropdown-menu el-dropdown-list">
-                <li v-for="item in data">
+    <div>
+        <el-popover
+            ref="input-popover"
+            :placement="placement"
+            width="240"
+            popper-class="ff_dropdown_menu_wrapper has-scroll"
+            trigger="click"
+        >
+            <ul class="el-dropdown-menu ff_dropdown_menu">
+                <li v-for="(item, i) in data" :key="i">
                     <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
                     <ul>
-                        <li v-for="(title, code) in item.shortcodes"
-                            @click="insertShortcode(code)"
-                            class="el-dropdown-menu__item">
+                        <li 
+                            class="el-dropdown-menu__item"
+                            v-for="(title, code, i) in item.shortcodes" 
+                            @click="insertShortcode(code)" 
+                            :key="i"
+                        >
                             {{ title }}
                         </li>
                     </ul>
                 </li>
             </ul>
-    </el-popover>
+        </el-popover>
 
-    <div v-if="fieldType == 'textarea'" class="input-textarea-value">
-        <i class="icon el-icon-tickets" v-popover:input-popover></i>
-        <el-input :rows="rows" :placeholder="placeholder" type="textarea" v-model="model"></el-input>
+        <div v-if="fieldType == 'textarea'" class="ff_input_textarea_value">
+            <i class="el-icon el-icon-tickets" v-popover:input-popover></i>
+            <el-input :rows="rows" :placeholder="placeholder" type="textarea" v-model="model"></el-input>
+        </div>
+
+        <el-input class="ff_input_group_append" :placeholder="placeholder" v-else v-model="model" :type="fieldType">
+            <el-button class="el-more-button" slot="append" :icon="icon" v-popover:input-popover></el-button>
+        </el-input>
     </div>
-
-    <el-input :placeholder="placeholder" v-else v-model="model" :type="fieldType">
-        <el-button slot="append" :icon="icon" v-popover:input-popover></el-button>
-    </el-input>
-</div>
 </template>
 
 <script>

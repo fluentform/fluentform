@@ -1,8 +1,10 @@
 <template>
     <withLabel :item="item">
-        <el-select class="el-select-block" :placeholder="item.settings.placeholder">
-            <el-option :value="defaultVal"></el-option>
-        </el-select>
+        <div class="ff_select_wrap">
+            <select class="ff_select ff_select_block">
+                <option>{{defaultVal || item.settings.placeholder}}</option>
+            </select>
+        </div>
     </withLabel>
 </template>
 
@@ -18,7 +20,7 @@ export default {
             let option = find(this.item.settings.advanced_options, { value: this.item.attributes.value });
 
             return option ? option.label : null;
-        }
+        },
     },
     components: {
         withLabel
