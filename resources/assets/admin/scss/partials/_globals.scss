@@ -53,9 +53,14 @@ h6{
 }
 p{
   font-size: 0.875rem;
+  margin-top: 0;
   &:last-child{
     margin: 0;
   }
+}
+hr{
+  border-top: 0;
+  border-bottom-color: $border-color;
 }
 a{
   color: $--color-primary;
@@ -163,7 +168,9 @@ span + .ff-icon{
   top: 40px;
   z-index: 1020;
 }
-
+.small{
+  font-size: 13px !important;
+}
 // text color
 .text{
   &-white{
@@ -258,13 +265,40 @@ span + .ff-icon{
         }
       }
       &-2{
-        background-color: $--color-primary-light-9;
-        border-color: $--color-primary-light-9;
-        color: $--color-primary;
         .ff-icon{
           &::before{
             color: inherit;
           }
+        }
+        &.el-button{
+          &--primary{
+            background-color: $--color-primary-light-9;
+            border-color: $--color-primary-light-9;
+            color: $--color-primary;
+            &:hover{
+              background-color: $--color-primary;
+              border-color: $--color-primary;
+              color: $--color-white;
+            }
+          }
+          &--danger{
+            background-color: $--color-danger-lighter;
+            border-color: $--color-danger-lighter;
+            color: $--color-danger;
+            &:hover{
+              background-color: $--color-danger;
+              border-color: $--color-danger;
+              color: $--color-white;
+            }
+          }
+        }
+      }
+    }
+    &--icon{
+      &.el-button{
+        &--mini{
+          padding: 7px 7px;
+          border-radius: 5px;
         }
       }
     }
@@ -419,6 +453,19 @@ span + .ff-icon{
   }
   &-checkbox{
     margin-right: 10px;
+  }
+  &-switch__core{
+    &::after{
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), inset 0px 2px 2px #FFFFFF, inset 0px -1px 1px rgba(0, 0, 0, 0.1);
+    }
+  }
+  &-form-item__error {
+    position: relative;
+    top: auto;
+    left: auto;
+  }
+  &-tag--mini{
+    line-height: 17px;
   }
 }
 
@@ -629,6 +676,28 @@ span + .ff-icon{
   &_footer_none{
     #wpfooter{
       display: none;
+    }
+  }
+  &_checkbox_group_col{
+    &_2{
+      display: flex;
+      flex-wrap: wrap;
+      .el-checkbox{
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+        width: 50%;
+      }
+    }
+  }
+  &_editor_wrapper{
+    border: 1px solid $--border-color-base;
+    border-radius: $border-radius;
+    overflow: hidden;
+    .wp-editor-container{
+      border: 0;
+    }
+    .wp-editor-tabs{
+      float: none;
     }
   }
 }

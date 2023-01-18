@@ -1,30 +1,12 @@
 <template>
-    <!-- <div v-loading="loading"> -->
-    <div class="ff_managers_settings">
-        <div class="ff_manager_settings_wrapper">
-            <div class="ff_manager_settings_nav">
-                <ul>
-                    <li
-                        :class="{ ff_active: currentPage == 'roleBased' }"
-                        @click="currentPage = 'roleBased'"
-                    >
-                        {{ $t('Role Based') }}
-                    </li>
-
-                    <li
-                        :class="{ ff_active: currentPage == 'advanced' }"
-                        @click="currentPage = 'advanced'"
-                    >
-                        {{ $t('Advanced') }}
-                    </li>
-                </ul>
-            </div>
-
-            <privacy v-show="currentPage == 'roleBased'" />
-
-            <managers v-show="currentPage == 'advanced'">
-                {{ $t('Advanced form') }}
-            </managers>
+    <div class="ff_managers_settings ff_card">
+        <div class="ff_card_head">
+            <h5 class="title">{{ $t('Managers') }}</h5>
+        </div>
+        <div class="ff_card_body">
+            <Privacy />
+            <hr class="mt-5 mb-4">
+            <Managers />
         </div>
     </div>
 </template>
@@ -35,17 +17,12 @@ import Managers from "./Managers/Managers.vue";
 
 export default {
     name: "ManagersSettings",
-
     components: {
         Privacy,
         Managers
     },
-
-    data() {
-        return {
-            loading: true,
-            currentPage: "roleBased",
-        };
+    mounted(){
+        jQuery('body').addClass('ff_footer_none');
     }
 };
 </script>

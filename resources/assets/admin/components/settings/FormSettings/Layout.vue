@@ -230,7 +230,7 @@
                 </div>
                 <div class="ff_card_body">
                     <div class="ff_block_item ff_block_item_flex">
-                        <div class="ff_block_title_group" style="width: 410px">
+                        <div class="ff_block_title_group" style="width: 400px">
                             <h6 class="ff_block_title">{{ $t('Disable IP Logging') }}</h6>
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
@@ -240,12 +240,12 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                           <el-switch active-color="#13ce66" v-model="misc.isIpLogingDisabled"></el-switch>
+                           <el-switch :width="48" active-color="#00B27F" v-model="misc.isIpLogingDisabled"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
                     
                     <div class="ff_block_item ff_block_item_flex">
-                        <div class="ff_block_title_group" style="width: 410px">
+                        <div class="ff_block_title_group" style="width: 400px">
                             <h6 class="ff_block_title">{{ $t('Disable Form Analytics') }}</h6>
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
@@ -255,12 +255,12 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                           <el-switch active-color="#13ce66" v-model="misc.isAnalyticsDisabled"></el-switch>
+                           <el-switch :width="48" active-color="#00B27F" v-model="misc.isAnalyticsDisabled"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
                     
                     <div class="ff_block_item ff_block_item_flex">
-                        <div style="width: 410px">
+                        <div style="width: 400px">
                             <div class="ff_block_title_group mb-1">
                                 <h6 class="ff_block_title">{{$t('Enable Honeypot Security') }}</h6>
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
@@ -273,14 +273,14 @@
                             <p>{{ $t('Recommended settings: Enabled') }}</p>
                         </div>
                         <div class="ff_block_item_body">
-                            <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                            <el-switch :width="48" active-color="#00B27F" active-value="yes" inactive-value="no"
                                v-model="misc.honeypotStatus"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
 
                     <template v-if="akismet_available">
                         <div class="ff_block_item ff_block_item_flex">
-                            <div style="width: 410px">
+                            <div style="width: 400px">
                                 <div class="ff_block_title_group mb-1">
                                     <h6 class="ff_block_title">{{ $t('Enable Akismet Integration') }}</h6>
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
@@ -293,7 +293,7 @@
                                 <p>{{ $t('Recommended settings: Enabled') }}</p>
                             </div>
                             <div class="ff_block_item_body">
-                                <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                                <el-switch :width="48" active-color="#00B27F" active-value="yes" inactive-value="no"
                                     v-model="misc.akismet_status"></el-switch>
                             </div><!-- .ff_block_item_body -->
                         </div><!-- .ff_block_item -->
@@ -318,7 +318,7 @@
                     </template>
 
                     <div class="ff_block_item ff_block_item_flex">
-                        <div class="ff_block_title_group" style="width: 410px">
+                        <div class="ff_block_title_group" style="width: 400px">
                             <h6 class="ff_block_title">{{ $t('Classic Editor Button') }}</h6>
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
@@ -328,13 +328,13 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                            <el-switch :width="48" active-color="#00B27F" active-value="yes" inactive-value="no"
                                 v-model="misc.classicEditorButton"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
                     
                     <div class="ff_block_item ff_block_item_flex">
-                        <div style="width: 410px">
+                        <div style="width: 400px">
                             <div class="ff_block_title_group mb-1">
                                 <h6 class="ff_block_title">{{$t('Enable No - Conflict Mode') }}</h6>
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
@@ -347,13 +347,13 @@
                             <p>{{ $t('Recommended settings: Enabled') }}</p>
                         </div>
                         <div class="ff_block_item_body">
-                            <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                            <el-switch :width="48" active-color="#00B27F" active-value="yes" inactive-value="no"
                                v-model="misc.noConflictStatus"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
                     
                     <div class="ff_block_item ff_block_item_flex">
-                        <div class="ff_block_title_group" style="width: 410px">
+                        <div class="ff_block_title_group" style="width: 400px">
                             <h6 class="ff_block_title">{{ $t('Enable Auto Tab - Index') }}</h6>
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
@@ -363,7 +363,7 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-switch active-color="#13ce66" active-value="yes" inactive-value="no"
+                            <el-switch :width="48" active-color="#00B27F" active-value="yes" inactive-value="no"
                                v-model="misc.tabIndex"></el-switch>
                         </div><!-- .ff_block_item_body -->
                     </div><!-- .ff_block_item -->
@@ -433,7 +433,7 @@
                     
                     <div class="ff_block_item_wrap">
                         <div class="ff_block_item ff_block_item_flex">
-                            <div style="width: 410px">
+                            <div style="width: 400px">
                                 <div class="ff_block_title_group mb-1">
                                     <h6 class="ff_block_title">{{ $t('Autoload Captcha') }}</h6>
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
@@ -443,10 +443,10 @@
                                         <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                                     </el-tooltip>
                                 </div><!-- .ff_block_title_group -->
-                                <p v-if="!hasCaptcha">{{$t('For using the captcha, you have to enable captcha first.')}}</p>
+                                <p v-if="!hasCaptcha">{{$t('For using captcha, you have to enable captcha first.')}}</p>
                             </div>
                             <div class="ff_block_item_body">
-                                <el-switch :disabled="!hasCaptcha" active-color="#13ce66" v-model="misc.autoload_captcha"></el-switch>
+                                <el-switch :width="48" :disabled="!hasCaptcha" active-color="#00B27F" v-model="misc.autoload_captcha"></el-switch>
                             </div><!-- .ff_block_item_body -->
                         </div><!-- .ff_block_item -->
 

@@ -1,6 +1,9 @@
 <template>
-    <div v-loading="loading">
-        <!--Different form settings section-->
+    <div 
+        v-loading="loading" 
+        :element-loading-text="$t('Loading Settings...')"
+        element-loading-spinner="el-icon-loading"
+    >
         <div class="ff_global_setting_option_form_wrap" v-if="app_ready">
             <layout 
                 :email_report="email_report" 
@@ -11,7 +14,6 @@
             />
         </div>
 
-        <!--Save settings-->
         <div class="mt-4">
             <el-button type="primary" icon="el-icon-success" @click="save">{{ $t('Save Settings') }}</el-button>
         </div>

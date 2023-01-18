@@ -38,7 +38,7 @@ $--color-warning: #E6A23C;
 /// color|1|Functional Color|1
 $--color-danger: #FF6154;
 /// color|1|Functional Color|1
-$--color-info: #909399;
+$--color-info: #606266;
 
 $--color-success-light: mix($--color-white, $--color-success, 80%);
 $--color-warning-light: mix($--color-white, $--color-warning, 80%);
@@ -604,16 +604,16 @@ $--cascader-height: 200px;
 /// color||Color|0
 $--switch-on-color: $--color-primary;
 /// color||Color|0
-$--switch-off-color: $--border-color-base;
+$--switch-off-color: #EDEAE9;
 /// fontSize||Font|1
 $--switch-font-size: $--font-size-base;
-$--switch-core-border-radius: 10px;
+$--switch-core-border-radius: 20px;
 // height||Other|4 TODO: width 代码写死的40px 所以下面这三个属性都没意义
-$--switch-width: 40px;
+$--switch-width: 48px;
 // height||Other|4
-$--switch-height: 20px;
+$--switch-height: 24px;
 // height||Other|4
-$--switch-button-size: 16px;
+$--switch-button-size: 20px;
 
 /* Dialog
 -------------------------- */

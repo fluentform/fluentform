@@ -129,7 +129,7 @@
                                     </span>
                                     <span class="row-actions-item trash">
                                         <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                            <a slot="icon">{{ $t('Delete') }}</a>
+                                            <a>{{ $t('Delete') }}</a>
                                         </remove>
                                     </span>
                                     <el-switch

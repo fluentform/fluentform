@@ -47,13 +47,14 @@ $ff:         'ff_radio';
         .ff_data_item {
             &_link{
                 display: block;
-                padding: 10px 20px;
+                padding: 11px 20px;
                 cursor: pointer;
                 transition: 0.2s;
                 background-color: mix($white, $base-color, 95%);
                 border-radius: 50px;
                 color: $base-color;
                 font-weight: 600;
+                font-size: 15px;
                 &:hover{
                     background-color: mix($white, $base-color, 90%);
                 }

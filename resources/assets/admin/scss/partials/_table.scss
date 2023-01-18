@@ -1,7 +1,7 @@
 .ff_table{
-    border-radius: $el-table-border-radius;
-    box-shadow: $el-table-box-shadow;
-    padding: $el-table-gap-y $el-table-gap-x;
+    border-radius: $ff-table-border-radius;
+    box-shadow: $ff-table-box-shadow;
+    padding: $ff-table-gap-y $ff-table-gap-x;
     tr,
     th.el-table__cell,
     .el-table__body tr.el-table__row--striped td.el-table__cell,
@@ -14,7 +14,7 @@
         display: none;
     }
     thead{
-        color: $el-table-color;
+        color: $ff-table-color;
         th{
             padding-top: 0;
         }
@@ -35,12 +35,12 @@
     }
     .cell {
         strong {
-            color: $el-table-color;
+            color: $ff-table-color;
         }
     }
     td.el-table__cell, 
     th.el-table__cell.is-leaf{
-        border-bottom-color: $el-table-row-border-color;
+        border-bottom-color: $ff-table-row-border-color;
     }
     tbody{
         tr{
@@ -54,5 +54,39 @@
         .cell{
             font-weight: 500;
         }
-    }    
+    }
+    &_s2{
+        tr,
+        th.el-table__cell,
+        .el-table__body tr.el-table__row--striped td.el-table__cell,
+        &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+            background-color: transparent;
+        }
+        thead{
+            color: $ff-table-color;
+            th.el-table__cell{
+                background-color: $ff-table-s2-cell-bg;
+                border-bottom: 0 !important;
+            }
+            tr {
+                th:first-child{
+                    border-top-left-radius: $border-radius;
+                    border-bottom-left-radius: $border-radius;
+                }
+                th:last-child{
+                    border-top-right-radius: $border-radius;
+                    border-bottom-right-radius: $border-radius;
+                }
+            }
+        }
+        td.el-table__cell, 
+        th.el-table__cell.is-leaf{
+            border-bottom-color: $ff-table-row-border-color;
+        }
+        th.el-table__cell > .cell,
+        .cell {
+            padding-left: $ff-table-s2-cell-padding-x;
+            padding-right: $ff-table-s2-cell-padding-x;
+        }
+    }
 }
