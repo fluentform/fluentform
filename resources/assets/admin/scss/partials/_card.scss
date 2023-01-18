@@ -16,4 +16,19 @@
     &_form_action{
         cursor: pointer;
     }
+    &_head{
+        border-bottom: $ff-card-head-border;
+        margin-bottom: $ff-card-head-padding-y + .5;
+        padding-bottom: $ff-card-head-padding-y;
+        .title + .text{
+            margin-top: 0.75rem;
+        }
+        &_title_group{
+            display: flex;
+            align-items: center;
+            .ff-icon{
+                font-size: 15px;
+            }
+        }
+    }
 }

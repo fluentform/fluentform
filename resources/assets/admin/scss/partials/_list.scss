@@ -41,25 +41,52 @@ $ff:         'ff_radio';
 .ff_data_item{
     &_group{
         overflow-x: auto;
-        background: $white;
         white-space: nowrap;
         display: flex;
         align-items: center;
         .ff_data_item {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: 0.2s;
-            background-color: mix($white, $base-color, 95%);
-            border-radius: 50px;
+            &_link{
+                display: block;
+                padding: 10px 20px;
+                cursor: pointer;
+                transition: 0.2s;
+                background-color: mix($white, $base-color, 95%);
+                border-radius: 50px;
+                color: $base-color;
+                font-weight: 600;
+                &:hover{
+                    background-color: mix($white, $base-color, 90%);
+                }
+            }
             &:not(:last-child){
                 margin-right: 0.5rem;
             }
-            &:hover{
-                background-color: mix($white, $base-color, 90%);
-            }
             &.active{
-                background-color: $--color-primary;
-                color: $--color-white;
+                .ff_data_item_link{
+                    background-color: $--color-primary;
+                    color: $--color-white;
+                }
+            }
+        }
+        &_s2{
+            display: block;
+            overflow-x: inherit;
+            .ff_data_item{
+                margin-bottom: 0.25rem;
+                &:not(:last-child){
+                    margin-right: 0;
+                }
+                &_link{
+                    border-radius: 0.5rem;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    background-color: transparent;
+                }
+                &.active{
+                    .ff_data_item_link{
+                        background-color: $base-color;
+                    }
+                }
             }
         }
     }

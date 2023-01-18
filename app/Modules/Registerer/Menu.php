@@ -120,7 +120,7 @@ class Menu
         );
 
         wp_register_style(
-            'fluent_all_forms',
+            'fluentform_style',
             $allFormsStyle,
             [],
             FLUENTFORM_VERSION,
@@ -299,14 +299,14 @@ class Menu
             }
         } elseif ('fluent_forms' == $page) {
             wp_enqueue_script('fluent_all_forms');
-            wp_enqueue_style('fluent_all_forms');
+            wp_enqueue_style('fluentform_style');
         } else if ($page == 'fluent_forms') {
             wp_enqueue_script('fluent_all_forms');
-            wp_enqueue_style('fluent_all_forms');
+            wp_enqueue_style('fluentform_style');
         }else if ($page == 'fluent_forms_add_new_form') {
             
             wp_enqueue_script('add_new_forms');
-            wp_enqueue_style('fluent_all_forms');
+            wp_enqueue_style('fluentform_style');
 
         } else if ($page == 'fluent_forms_transfer') {
             wp_enqueue_style('fluentform_settings_global');
@@ -316,7 +316,7 @@ class Menu
             'fluent_forms_payment_entries' == $page ||
             'fluent_forms_all_entries' == $page
         ) {
-            wp_enqueue_style('fluent_all_forms');
+            wp_enqueue_style('fluentform_style');
             
         } elseif ('fluent_forms_add_ons' == $page) {
             wp_enqueue_style('fluentform-add-ons');

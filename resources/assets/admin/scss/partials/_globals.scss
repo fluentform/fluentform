@@ -96,6 +96,15 @@ textarea {
       border-color: $--input-focus-border;
     }
 }
+input.disabled, 
+input:disabled, 
+select.disabled, 
+select:disabled, 
+textarea.disabled, 
+textarea:disabled{
+  box-shadow: none;
+}
+
 input[type=radio]:checked::before{
   background-color: $--color-primary !important;
 }
@@ -108,10 +117,6 @@ input[type=radio]{
 input[type=radio]:focus{
   box-shadow: none !important;
   outline: none !important;
-}
-.icon {
-  font: normal normal normal 14px/1 ultimateform;
-  display: inline-block;
 }
 
 .el-icon + span,
@@ -157,6 +162,22 @@ span + .ff-icon{
   position: fixed;
   top: 40px;
   z-index: 1020;
+}
+
+// text color
+.text{
+  &-white{
+    color: $white !important;
+  }
+  &-primary{
+    color: $--color-primary !important;
+  }
+  &-warning{
+    color: $--color-warning !important;
+  }
+  &-danger{
+    color: $--color-danger !important;
+  }
 }
 
 // align items
@@ -587,8 +608,75 @@ span + .ff-icon{
       border-color: $select-border-color;
     }
   }
+  &_settings{
+    &_wrapper{
+      display: flex;
+      flex-wrap: wrap;
+      height: 100vh;
+    }
+    &_sidebar{
+      background-color: $setting-sidebar-bg;
+      box-shadow: $setting-sidebar-box-shadow;
+      flex-shrink: 0;
+      width: $setting-sidebar-width;
+      padding: $setting-sidebar-padding-y $setting-sidebar-padding-x;
+    }
+    &_container{
+      width: calc(100% - $setting-sidebar-width);
+      padding: $setting-container-padding;
+    }
+  }
+  &_footer_none{
+    #wpfooter{
+      display: none;
+    }
+  }
 }
 
+.el-notification__content{
+  text-align: left;
+}
+
+// ff block 
+.ff_block{
+  .ff_card{
+    &:not(:last-child){
+      margin-bottom: 2rem;
+    }
+  }
+  &_item {
+    &_flex{
+      display: flex;
+      align-items: center;
+    }
+    &_wrap:not(:last-child),
+    &:not(:last-child){
+      margin-bottom: 1.5rem;
+    }
+  }
+  &_title{
+    &_group{
+      display: flex;
+      align-items: center;
+      .ff-icon{
+        font-size: 15px;
+      }
+    }
+    font-size: 15px;
+  }
+}
+
+.ff_setting_input{
+  width: 446px;
+}
+// form label
+.ff_form_label{
+  font-size: 0.875rem;
+  color: $base-color;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: block;
+}
 
 code{
   padding: 5px 5px 5px 8px;

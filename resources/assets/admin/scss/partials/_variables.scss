@@ -186,6 +186,9 @@ $ff-card-box-shadow:                                   0px 2px 3px 0px rgba(129,
 $ff-card-border-radius:                                $border-radius;
 $ff-card-padding:                                       1.5rem;
 
+$ff-card-head-padding-y:                                1rem;
+$ff-card-head-border:                                   1px solid $border-color;
+
 // ff form card
 $ff-form-card-bg:                                      $white;
 $ff-form-card-border:                                  1px solid #EDEAE9;
@@ -304,3 +307,21 @@ $radio-group-box-shadow:                               0 1px 4px rgba(0, 0, 0, 0
 // select shadow
 $select-box-shadow:                               0 1px 4px rgba(0, 0, 0, 0.02);
 $select-border-color:                               $white;
+
+// setting 
+$setting-sidebar-bg:                                 $white;
+$setting-sidebar-width:                              280px;
+$setting-sidebar-padding-y:                          1.5rem;
+$setting-sidebar-padding-x:                          1.5rem;
+$setting-sidebar-box-shadow:                         0 1px 3px rgba($base-color, 0.05);
+
+$setting-container-padding:                          1.5rem;
+
+
+
+
+
+
+
+
+
