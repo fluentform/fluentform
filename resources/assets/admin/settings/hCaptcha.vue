@@ -1,105 +1,73 @@
 <template>
-  <div>
-    <el-row class="setting_header">
-      <el-col :md="24">
-        <h2>{{ $t('hCaptcha Settings') }}</h2>
+  <div class="ff_hcaptcha_wrap">
+    <el-form>
+      <div class="ff_card">
+        <div class="ff_card_head">
+          <h5 class="title">{{ $t('hCaptcha Settings') }}</h5>
+          <p class="text">
+              {{$t('Fluent Forms integrates with hCaptcha, a free service that protects your website from spam and abuse.Please note, these settings are required only if you decide to use the hCaptcha field.')}} 
+              <a href="https://www.hcaptcha.com/" target="_blank">
+                  {{ $t('Read more about hCaptcha.') }}
+              </a>
+          </p>
+          <p class="text"><b>{{ $t('Please generate API key and API secret using hCaptcha') }}</b></p>
+        </div><!-- .ff_card_head -->
+        <div class="ff_card_body">
+          <div class="ff_block_item">
+              <div class="ff_block_title_group mb-3">
+                  <h6 class="ff_block_title">{{ $t('Site Key') }}</h6>
+                  <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                      <div slot="content">
+                          <p>{{ $t('Enter your hCaptcha Site Key, if you do not have a key you can register for one at the provided link. hCaptcha is a free service.') }}</p>
+                      </div>
+                      <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                  </el-tooltip>
+              </div><!-- .ff_block_title_group -->
+              <div class="ff_block_item_body">
+                  <el-input v-model="hCaptcha.siteKey" @change="load"></el-input>
+              </div><!-- .ff_block_item_body -->
+          </div><!-- .ff_block_item -->
+          
+          <div class="ff_block_item">
+              <div class="ff_block_title_group mb-3">
+                  <h6 class="ff_block_title">{{ $t('Secret Key') }}</h6>
+                  <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                      <div slot="content">
+                          <p>{{ $t('Enter your hCaptcha Secret Key, if you do not have a key you can register for one at the provided link. hCaptcha is a free service.') }}</p>
+                      </div>
+                      <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                  </el-tooltip>
+              </div><!-- .ff_block_title_group -->
+              <div class="ff_block_item_body">
+                <el-input type="password" v-model="hCaptcha.secretKey" @change="load"></el-input>
+              </div><!-- .ff_block_item_body -->
+          </div><!-- .ff_block_item -->
+          
+          <div class="ff_block_item" v-if="siteKeyChanged">
+              <div class="ff_block_title_group mb-3">
+                  <h6 class="ff_block_title">{{ $t('Validate Keys') }}</h6>
+              </div><!-- .ff_block_title_group -->
+              <div class="ff_block_item_body">
+                <div class="h-captcha" id="hCaptcha" :data-sitekey="hCaptcha.siteKey"></div>
+              </div><!-- .ff_block_item_body -->
+          </div><!-- .ff_block_item -->
 
-        <p>
-            {{('Fluent Forms integrates with hCaptcha, a free service that protects your website from spam and abuse.Please note, these settings are required only if you decide to use the hCaptcha field.') }}
+        </div><!-- .ff_card_body -->
+      </div><!--.ff_card -->
 
-          <a href="https://www.hcaptcha.com/" target="_blank">
-              {{ $t('Read more about hCaptcha.') }}
-          </a>
-        </p>
-        <p><b>{{ $t('Please generate API key and API secret using hCaptcha') }}</b></p>
-      </el-col>
-    </el-row>
-
-
-    <div class="section-body">
-      <el-form label-width="205px" label-position="left">
-        <!--Site key-->
-        <el-form-item>
-          <template slot="label">
-              {{ $t('Site Key') }}
-            <el-tooltip class="item" placement="bottom-start" effect="light">
-              <div slot="content">
-                <h3>{{ $t('hCaptcha Site Key') }}</h3>
-                <p>
-                    {{ $t('Enter your hCaptcha Site Key, if you do not have ') }}<br />
-                    {{ $t('a key you can register for one at the provided link.') }}<br />
-                    {{ $t('hCaptcha is a free service.') }}
-                </p>
-              </div>
-
-              <i class="el-icon-info el-text-info"></i>
-            </el-tooltip>
-          </template>
-
-          <el-input v-model="hCaptcha.siteKey" @change="load"></el-input>
-        </el-form-item>
-
-        <!--Secret key-->
-        <el-form-item>
-          <template slot="label">
-              {{ $t('Secret Key') }}
-            <el-tooltip class="item" placement="bottom-start" effect="light">
-              <div slot="content">
-                <h3>{{ $t('hCaptcha Secret Key') }}</h3>
-
-                <p>
-                    {{ $t('Enter your hCaptcha Secret Key, if you do not have ') }}<br />
-                    {{ $t('a key you can register for one at the provided link.') }} <br />
-                    {{ $t('hCaptcha is a free service.') }}
-                </p>
-              </div>
-
-              <i class="el-icon-info el-text-info"></i>
-            </el-tooltip>
-          </template>
-
-          <el-input
-            type="password"
-            v-model="hCaptcha.secretKey"
-            @change="load"
-          ></el-input>
-        </el-form-item>
-
-        <!--Validate Keys-->
-        <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
-          <div
-            class="h-captcha"
-            id="hCaptcha"
-            :data-sitekey="hCaptcha.siteKey"
-          ></div>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="small"
-            @click="clearSettings"
-            :loading="clearing"
-            >{{ $t('Clear Settings') }}
+        <div class="mt-4">
+          <el-button type="danger" icon="el-icon-delete" @click="clearSettings" :loading="clearing">
+            {{ $t('Clear Settings') }}
           </el-button>
-
-          <el-button
-            type="primary"
-            icon="el-icon-success"
-            size="small"
-            @click="save"
-            :disabled="disabled"
-            :loading="saving"
-            >{{ $t('Save Settings') }}
+          <el-button type="primary" icon="el-icon-success" @click="save" :disabled="disabled" :loading="saving">
+            {{ $t('Save Settings') }}
           </el-button>
-        </el-form-item>
+        </div>
       </el-form>
 
       <div v-if="hCaptcha_status">
         <p>{{ $t('Your hCaptcha is valid') }}</p>
       </div>
-    </div>
   </div>
 </template>
 

@@ -467,6 +467,9 @@ span + .ff-icon{
   &-tag--mini{
     line-height: 17px;
   }
+  &-input-number__decrease{
+    left: 2px;
+  }
 }
 
 .el-pagination.is-background .btn-prev, 
@@ -699,7 +702,82 @@ span + .ff-icon{
     .wp-editor-tabs{
       float: none;
     }
+    .wp-switch-editor{
+      height: auto;
+      margin: 10px 0 0 11px;
+      background-color: transparent;
+      padding: 0.5rem 1.125rem;
+      font-size: 0.875rem;
+      border-top-left-radius: $border-radius;
+      border-top-right-radius: $border-radius;
+      line-height: inherit;
+      border-color: transparent;
+    }
+    .html-active .switch-html, 
+    .tmce-active .switch-tmce{
+      background-color: $white;
+      border-color: $--border-color-base;
+      color: $base-color;
+    }
+    .switch-html{
+      margin-left: 0;
+    }
+    .mce-top-part::before{
+      box-shadow: none;
+    }
+    div.mce-toolbar-grp{
+      border-bottom: 0;
+      background-color: #F1F1F0;
+    }
+    .mce-toolbar .mce-btn-group .mce-btn.mce-listbox{
+      border: 0;
+      box-shadow: none;
+      border-radius: 0.25rem;
+    }
   }
+  &_state_box{
+    background-color: $bg-dark;
+    border-radius: $border-radius;
+    padding: 2rem;
+    text-align: center;
+    &.success{
+      background-color: $--color-success-lighter;
+    }
+  }
+}
+
+// mce menu
+.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, 
+.mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, 
+.mce-menu .mce-menu-item.mce-selected, 
+.mce-menu .mce-menu-item:focus, 
+.mce-menu .mce-menu-item:hover{
+  background: $--color-primary !important;
+}
+.mce-panel.mce-menu{
+  border-radius: $border-radius;
+}
+.mce-floatpanel.mce-popover.mce-bottom, 
+.mce-menu{
+  margin-top: 10px !important;
+}
+
+.mce-toolbar .mce-btn-group .mce-btn:focus, 
+.mce-toolbar .mce-btn-group .mce-btn:hover, 
+.qt-dfw:focus, .qt-dfw:hover{
+  box-shadow: none !important;
+  border-color: #9A9FA5 !important;
+  color: $--color-text-regular !important;
+}
+.mce-toolbar .mce-ico{
+  color: $--color-text-regular !important;
+}
+.mce-toolbar .mce-btn-group .mce-btn, 
+.qt-dfw{
+  border-radius: 4px !important;
+}
+.ff_editor_textarea{
+  width: 100%;
 }
 
 .el-notification__content{
@@ -823,6 +901,14 @@ code{
       color: $white;
       &:hover{
         background-color: $--color-danger;
+        color: $white;
+      }
+    }
+    &.success{
+      background-color: $--color-success;
+      color: $white;
+      &:hover{
+        background-color: $--color-success;
         color: $white;
       }
     }
