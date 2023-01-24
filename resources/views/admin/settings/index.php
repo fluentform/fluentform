@@ -8,9 +8,9 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
 <div class="ff_form_wrap">
     <div class="ff_form_wrap_area">
-        <div class="ff_settings_wrapper">
+        <div class="ff_settings_wrapper ff_layout_section">
             <?php do_action('fluentform_before_global_settings_wrapper'); ?>
-            <div class="ff_settings_sidebar">
+            <div class="ff_settings_sidebar ff_layout_section_sidebar">
                 <ul class="ff_settings_list ff_data_item_group ff_data_item_group_s2">
                     <li class="ff_data_item">
                         <a class="ff_data_item_link" data-hash="settings"
@@ -49,7 +49,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <div class="ff_settings_container">
+            <div class="ff_settings_container ff_layout_section_container">
                 <?php do_action('fluentform_global_settings_component_' . $currentComponent); ?>
             </div>
             <?php do_action('fluentform_after_global_settings_wrapper'); ?>

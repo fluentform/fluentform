@@ -19,7 +19,7 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-select v-model="layout.labelPlacement" class="ff_setting_input">
+                            <el-select v-model="layout.labelPlacement" class="ff_input_width">
                                 <el-option v-for="(label, value) in labelPlacementOptions" :key="value" :label="label" :value="value"></el-option>
                             </el-select>
                         </div><!-- .ff_block_item_body -->
@@ -36,7 +36,7 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-select v-model="layout.helpMessagePlacement" class="ff_setting_input">
+                            <el-select v-model="layout.helpMessagePlacement" class="ff_input_width">
                                 <el-option
                                     v-for="(label, value) in {'with_label': 'Next to Label', 'under_input': 'Below Input Element'}"
                                     :key="value"
@@ -58,7 +58,7 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-select v-model="layout.errorMessagePlacement" class="ff_setting_input">
+                            <el-select v-model="layout.errorMessagePlacement" class="ff_input_width">
                                 <el-option
                                     v-for="(label, value) in {'stackToBottom': 'Stack to Bottom', 'inline': 'Below Input Element'}"
                                     :key="value"
@@ -114,7 +114,7 @@
                                     <el-input 
                                         :placeholder="$t('Recipient Email Address')"
                                         v-model="email_report.custom_recipients"
-                                        class="ff_setting_input"
+                                        class="ff_input_width"
                                     ></el-input>
                                     <p class="mt-1">{{ $t('For Multiple please use comma separated values') }}</p>
                                 </div>
@@ -132,7 +132,7 @@
                                 </el-tooltip>
                             </div><!-- .ff_block_title_group -->
                             <div class="ff_block_item_body">
-                                <el-select :placeholder="$t('Select Day')" v-model="email_report.sending_day" class="ff_setting_input">
+                                <el-select :placeholder="$t('Select Day')" v-model="email_report.sending_day" class="ff_input_width">
                                     <el-option v-for="(sendDay,dayKey) in sending_days" :key="dayKey" :value="dayKey" :label="sendDay"></el-option>
                                 </el-select>
                             </div><!-- .ff_block_item_body -->
@@ -152,7 +152,7 @@
                                  <el-input
                                     :placeholder="$t('Email Subject')"
                                     v-model="email_report.subject"
-                                    class="ff_setting_input"
+                                    class="ff_input_width"
                                 />
                             </div><!-- .ff_block_item_body -->
                         </div><!-- .ff_block_item -->
@@ -214,7 +214,7 @@
                                     <el-input 
                                         :placeholder="$t('Recipient Email Address')"
                                         v-model="integration_failure_notification.custom_recipients"
-                                        class="ff_setting_input"
+                                        class="ff_input_width"
                                     ></el-input>
                                     <p class="mt-1">{{ $t('For Multiple please use comma separated values') }}</p>
                                 </div>
@@ -417,7 +417,7 @@
                             </el-tooltip>
                         </div><!-- .ff_block_title_group -->
                         <div class="ff_block_item_body">
-                            <el-select :disabled="!hasPro" v-model="misc.file_upload_locations" class="ff_setting_input">
+                            <el-select :disabled="!hasPro" v-model="misc.file_upload_locations" class="ff_input_width">
                                 <el-option
                                     v-for="location in file_upload_optoins"
                                     :key="location.value" 

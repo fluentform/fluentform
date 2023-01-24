@@ -16,7 +16,8 @@ import {
     Notification,
     Tabs,
     TabPane,
-    Loading
+    Loading,
+    Tag
 } from 'element-ui';
 
 Vue.use(Button);
@@ -33,6 +34,7 @@ Vue.use(Pagination);
 Vue.use(Popover);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Tag);
 
 
 Vue.prototype.$notify = Notification;
@@ -101,5 +103,8 @@ new Vue({
                 that.setRoute(component);
             });
         });
+    },
+    mounted(){
+        jQuery('body').addClass('ff_footer_none');
     }
 });

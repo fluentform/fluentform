@@ -115,7 +115,7 @@ class AddOnModule
                 'category'     => 'wp_core',
             ],
             'PostFeeds' => [
-                'title'        => __('Advanced Post/CPT Creation', 'fluentform'),
+                'title'        => __('Advanced Post/CPT', 'fluentform'),
                 'description'  => __('Create post/any cpt on form submission. It will enable many new features including dedicated post fields.', 'fluentform'),
                 'logo'         => App::publicUrl('img/integrations/post-creation.png'),
                 'enabled'      => 'no',

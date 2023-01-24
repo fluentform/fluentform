@@ -387,6 +387,7 @@ add_action('fluentform_addons_page_render_fluentform_pdf', function () {
     }
 
     \FluentForm\View::render('admin.addons.pdf_promo', [
+        'public_url' => $this->app->publicUrl(),
         'install_url'  => $url,
         'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
     ]);

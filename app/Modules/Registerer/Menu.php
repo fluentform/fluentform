@@ -309,7 +309,7 @@ class Menu
             wp_enqueue_style('fluentform_style');
 
         } else if ($page == 'fluent_forms_transfer') {
-            wp_enqueue_style('fluentform_settings_global');
+            wp_enqueue_style('fluentform_style');
             wp_enqueue_script('fluentform-transfer-js');
         } elseif (
             'fluent_forms_settings' == $page ||

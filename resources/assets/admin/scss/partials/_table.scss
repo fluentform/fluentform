@@ -72,10 +72,22 @@
                 th:first-child{
                     border-top-left-radius: $border-radius;
                     border-bottom-left-radius: $border-radius;
+                    .cell{
+                        padding-left: $ff-table-s2-cell-padding-x;
+                    }
                 }
                 th:last-child{
                     border-top-right-radius: $border-radius;
                     border-bottom-right-radius: $border-radius;
+                }
+            }
+        }
+        tbody{
+            tr {
+                td:first-child{
+                    .cell{
+                        padding-left: $ff-table-s2-cell-padding-x;   
+                    }
                 }
             }
         }
@@ -85,8 +97,8 @@
         }
         th.el-table__cell > .cell,
         .cell {
-            padding-left: $ff-table-s2-cell-padding-x;
-            padding-right: $ff-table-s2-cell-padding-x;
+            //padding-left: $ff-table-s2-cell-padding-x;
+            //padding-right: $ff-table-s2-cell-padding-x;
         }
     }
 }

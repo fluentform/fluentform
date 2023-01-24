@@ -3,6 +3,10 @@
     box-shadow: $ff-card-box-shadow;
     border-radius: $ff-card-border-radius;
     padding: $ff-card-padding;
+    .text{
+        font-size: 15px;
+        line-height: 1.6;
+    }
     &_img{
         img{
             width: 100%;
@@ -29,6 +33,32 @@
             .ff-icon{
                 font-size: 15px;
             }
+        }
+    }
+    &_s2{
+        padding: 0;
+        border: 1px solid $border-color;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        transition: 0.3s;
+        .ff_card_body{
+            padding: 20px;
+        }
+        .ff_card_footer{
+            border-top: 1px solid $border-color;
+            padding: 14px 20px;
+        }
+        &:hover{
+            box-shadow: 0px 8px 10px 0px rgb(129, 129, 129, 0.1);
+        }
+    }
+    &_footer{
+        margin-top: auto;
+        &_group{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
     }
 }
