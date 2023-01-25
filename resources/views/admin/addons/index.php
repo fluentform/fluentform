@@ -1,6 +1,22 @@
 <?php do_action('fluentform_global_menu'); ?>
 <div class="ff_form_wrap ff_app">
     <div class="ff_form_wrap_area">
+        <?php
+            if(!$hasPro){
+                echo "<div class='ff_card ff_card_alert mb-4 el-row justify-between items-center'>
+                    <div class='el-col el-col-12'>
+                        <h5 class='title mb-2'>You are using Fluentform free version.</h5>
+                        <p class='text'>
+                            Free version has limited features, Please upgrade to pro to control the fluentform and get all the advanced features.
+                        </p>
+                    </div>
+                    <div class='el-col el-col-12 text-right'>
+                        <a target='_blank' href='https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree' class='el-button el-button--danger'>Upgrade to Pro</a>
+                    </div>
+                </div>";
+            }
+        ?>
+
         <div class="ff_card">
             <ul class="ff_tab mb-4">
                 <li class="ff_tab_item <?php echo ($current_menu_item == 'fluentform_add_ons') ? 'active' : ''; ?>">

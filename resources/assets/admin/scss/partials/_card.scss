@@ -3,6 +3,10 @@
     box-shadow: $ff-card-box-shadow;
     border-radius: $ff-card-border-radius;
     padding: $ff-card-padding;
+    &_alert{
+        border-left: 3px solid $--color-danger;
+        border-radius: 4px;
+    }
     .text{
         font-size: 15px;
         line-height: 1.6;

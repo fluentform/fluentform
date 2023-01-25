@@ -40,6 +40,8 @@ $--color-danger: #FF6154;
 /// color|1|Functional Color|1
 $--color-info: #606266;
 
+$--color-cyan: #0dcaf0;
+
 $--color-success-light: mix($--color-white, $--color-success, 80%);
 $--color-warning-light: mix($--color-white, $--color-warning, 80%);
 $--color-danger-light: mix($--color-white, $--color-danger, 80%);
@@ -49,6 +51,8 @@ $--color-success-lighter: mix($--color-white, $--color-success, 90%);
 $--color-warning-lighter: mix($--color-white, $--color-warning, 90%);
 $--color-danger-lighter: mix($--color-white, $--color-danger, 90%);
 $--color-info-lighter: mix($--color-white, $--color-info, 90%);
+$--color-cyan-lighter: mix($--color-white, $--color-cyan, 90%);
+
 /// color|1|Font Color|2
 $--color-text-primary: #303133;
 /// color|1|Font Color|2

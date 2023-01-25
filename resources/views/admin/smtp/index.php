@@ -1,7 +1,7 @@
 <?php do_action('fluentform_global_menu'); ?>
 <div class="ff_addon_wrapper ff_block">
     <div class="ff_addon_header text-center">
-        <img class="mb-3" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>
+        <img class="mb-6" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>
         <h1 class="mb-4">Making Email Deliverability Easy and Fast for Your WordPress</h1>
         <p>
             <a target="_blank" href="https://wordpress.org/plugins/fluent-smtp/" rel="nofollow">FluentSMTP</a> is the ultimate WP Mail Plugin that connects with your Email Service Provider natively and makes

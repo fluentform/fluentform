@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        width="390px"
+        :width="!hasPro ? '40%' : '30%'"
         v-loading="loading"
         @close="cancelSelection"
         :visible="visibility"
@@ -11,7 +11,12 @@
         <div slot="title">
             <h4>{{$t('Select Post Type')}}</h4>
         </div>
-        <div class="ff_post_type_action_wrap mt-4">
+        <div v-if="!hasPro" class="ff_alert danger-soft mt-4">
+            <h6 class="title mb-2">Post type form is a Pro features</h6>
+            <p class="text">Please upgrade to PRO to unlock the feature.</p>
+            <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">Upgrage to Pro</a>
+        </div>
+        <div v-else class="ff_post_type_action_wrap mt-4">
             <el-radio-group v-model="post_type" class="el-radio-group-column ff_post_type_radios">
                 <el-radio  v-for="(type, i) in post_types" :key="i" :label="type">{{type}}</el-radio>    
             </el-radio-group>
@@ -26,7 +31,8 @@
     export default {
         name: 'PostTypeSelectionModal',
         props: [
-            'postTypeSelectionDialogVisibility'
+            'postTypeSelectionDialogVisibility',
+            'hasPro'
         ],
         data() {
             return {

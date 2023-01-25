@@ -1,3 +1,4 @@
+@import "../assets/icons/fluentform-icon.css";
 @import "../scss/partials/variables";
 @import "../scss/partials/spacing";
 @import "../scss/partials/globals";
@@ -5,53 +6,14 @@
 @import "../scss/partials/navbar";
 @import "../scss/partials/card";
 
-.ff_doc_top_blocks {
-  display: block;
-  width: 100%;
-  position: relative;
-  margin-bottom: 20px;
-  overflow: hidden;
-
-  > * {
-    box-sizing: border-box;
-  }
-
-  .block_1_3 {
-    width: 33.33%;
-    float: left;
-    padding-right: 30px;
-    margin-bottom: 30px;
-    @media (max-width: 768px) {
-      width: 100%;
-      float: none;
-      padding-right: 0px;
-      margin-bottom: 30px;
-    }
-  }
-
-  .block_2_3 {
-    width: 66.67%;
-    float: left;
-    padding-right: 30px;
-    margin-bottom: 30px;
-    @media (max-width: 768px) {
-      width: 100%;
-      float: none;
-      padding-right: 0px;
-      margin-bottom: 30px;
-    }
-  }
+.ff_app{
+  padding: 30px;
 }
-
-.ff_block_half {
-  width: 50%;
-  padding-right: 30px;
-  margin-bottom: 30px;
-  @media (max-width: 768px) {
-    width: 100%;
-    float: none;
-    padding-right: 0px;
-    margin-bottom: 30px;
+.ff_documentaion_wrapper{
+  width: 970px;
+  margin: 0 auto;
+  .el-col{
+    margin-bottom: 24px;
   }
 }
 

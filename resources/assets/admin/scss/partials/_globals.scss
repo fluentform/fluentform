@@ -41,6 +41,7 @@ h2{
 }
 h3{
   font-size: 1.375rem;
+  line-height: 1.4;
 }
 h4{
   font-size: 1.25rem;
@@ -178,9 +179,16 @@ span + .ff-icon{
 .d-flex{
   display: flex;
 }
+.justify-between{
+  justify-content: space-between;
+}
+
 // fontsize
 .fs-15{
   font-size: 15px;
+}
+.fs-17{
+  font-size: 17px;
 }
 // text color
 .text{
@@ -213,17 +221,17 @@ span + .ff-icon{
 // align items
 .items{
   &-center{
-    align-items: center;
+    align-items: center !important;
   }
   &-start{
-    align-items: flex-start;
+    align-items: flex-start !important;
   }
   &-end{
-    align-items: flex-end;
+    align-items: flex-end !important;
   }
 }
 .justify-end{
-  justify-content: flex-end;
+  justify-content: flex-end !important;
 }
 
 .ff_backdrop {
@@ -335,6 +343,46 @@ span + .ff-icon{
             &:hover{
               background-color: $--color-danger;
               border-color: $--color-danger;
+              color: $--color-white;
+            }
+          }
+          &--success{
+            background-color: $--color-success-lighter;
+            border-color: $--color-success-lighter;
+            color: $--color-success;
+            &:hover{
+              background-color: $--color-success;
+              border-color: $--color-success;
+              color: $--color-white;
+            }
+          }
+          &--warning{
+            background-color: $--color-warning-lighter;
+            border-color: $--color-warning-lighter;
+            color: $--color-warning;
+            &:hover{
+              background-color: $--color-warning;
+              border-color: $--color-warning;
+              color: $--color-white;
+            }
+          }
+          &--info{
+            background-color: $--color-info-lighter;
+            border-color: $--color-info-lighter;
+            color: $--color-info;
+            &:hover{
+              background-color: $--color-info;
+              border-color: $--color-info;
+              color: $--color-white;
+            }
+          }
+          &--cyan{
+            background-color: $--color-cyan-lighter;
+            border-color: $--color-cyan-lighter;
+            color: $--color-cyan;
+            &:hover{
+              background-color: $--color-cyan;
+              border-color: $--color-cyan;
               color: $--color-white;
             }
           }
@@ -828,6 +876,61 @@ span + .ff-icon{
       margin-left: 16px;
     }
   }
+  &_video{
+    &_wrap{
+      position: relative;
+      &::after{
+        position: absolute;
+        content: "";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: $base-color;
+        opacity: 0.3;
+        border-radius: 8px;
+      }
+    }
+    &_img{
+      border-radius: 8px;
+      width: 100%;
+      display: block;
+    }
+    &_icon{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+  }
+  &_list{
+    li{
+      &:not(:last-child){
+        margin-bottom: 12px;
+      }
+      a{
+        font-size: 15px;
+        color: $base-color;
+        transition: 0.2s;
+        &:hover{
+          color: $--color-primary;
+        }
+      }
+    }
+  }
+  &_alert{
+    border-left: 3px solid transparent;
+    border-radius: 4px;
+    padding: 17px;
+    background-color: #fff;
+    &.danger{
+      &-soft{
+        background-color: $--color-danger-lighter;
+        border-left-color: $--color-danger;
+      }
+    }
+  }
 }
 
 // mce menu
@@ -969,15 +1072,25 @@ code{
     font-size:28px;
     width: 58px;
     height: 58px;
-    background-color: rgba($--color-primary, 0.1);
+    background-color: $--color-primary;
     border-radius: 50%;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $--color-primary;
+    color: $white;
+    &:hover,
+    &:focus{
+      color: $white;
+    }
     img{
       object-fit: contain;
+    }
+    &.primary{
+      &-soft{
+        background-color: $--color-primary-light-9;
+        color: $--color-primary;
+      }
     }
     &.dark{
       background-color: $base-color;
@@ -990,6 +1103,10 @@ code{
     &.danger{
       background-color: $--color-danger;
       color: $white;
+      &-soft{
+        background-color: $--color-danger-lighter;
+        color: $--color-danger;
+      }
       &:hover{
         background-color: $--color-danger;
         color: $white;
@@ -998,14 +1115,38 @@ code{
     &.success{
       background-color: $--color-success;
       color: $white;
+      &-soft{
+        background-color: $--color-success-lighter;
+        color: $--color-success;
+      }
       &:hover{
         background-color: $--color-success;
         color: $white;
       }
     }
-    &.warning-soft{
-      background-color: rgba($--color-warning, 0.1);
-      color: $--color-warning;
+    &.warning{
+      background-color: $--color-warning;
+      color: $white;
+      &-soft{
+        background-color: $--color-warning-lighter;
+        color: $--color-warning;
+      }
+    }
+    &.info{
+      background-color: $--color-info;
+      color: $white;
+      &-soft{
+        background-color: $--color-info-lighter;
+        color: $--color-info;
+      }
+    }
+    &.cyan{
+      background-color: $--color-cyan;
+      color: $white;
+      &-soft{
+        background-color: $--color-cyan-lighter;
+        color: $--color-cyan;
+      }
     }
     &.mini{
       font-size: 12px;
@@ -1029,6 +1170,9 @@ code{
       font-size: 36px;
       width: 72px;
       height: 72px;
+    }
+    &.square{
+      border-radius: 12px;
     }
     &_clickable{
       cursor: pointer;

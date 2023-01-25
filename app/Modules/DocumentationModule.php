@@ -10,7 +10,7 @@ class DocumentationModule
     public function render()
     {
         View::render('admin.docs.index', [
-            'icon_path_url' => App::publicUrl(),
+            'public_url' => App::publicUrl(),
             'user_guides'   => $this->getUserGuides(),
         ]);
     }

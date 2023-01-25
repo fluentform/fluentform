@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'fluentform-icon';
+  font-family: 'fluentform';
   src:  url('fonts/fluentform.eot');
   src:  url('fonts/fluentform.eot') format('embedded-opentype'),
     url('fonts/fluentform.ttf') format('truetype'),
@@ -12,7 +12,7 @@
 
 [class^="ff-icon-"], [class*=" ff-icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'fluentform-icon' !important;
+  font-family: 'fluentform' !important;
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -27,6 +27,24 @@
 
 .ff-icon-eye-off:before {
   content: "\e928";
+}
+.ff-icon-heart-clock:before {
+  content: "\e93e";
+}
+.ff-icon-star-line:before {
+  content: "\e93f";
+}
+.ff-icon-handshake:before {
+  content: "\e940";
+}
+.ff-icon-microphone:before {
+  content: "\e941";
+}
+.ff-icon-bug:before {
+  content: "\e942";
+}
+.ff-icon-play:before {
+  content: "\e943";
 }
 .ff-icon-warning:before {
   content: "\e900";

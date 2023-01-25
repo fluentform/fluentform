@@ -31,7 +31,7 @@
                         <div class="ff_card_body mb-4">
                             <div class="ff_media_group mb-3">
                                 <div class="ff_media_head">
-                                    <div class="ff_icon_btn dark-soft md">
+                                    <div class="ff_icon_btn dark-soft md square">
                                         <img v-if="addon.logo" :src="addon.logo" />
                                     </div>
                                 </div>

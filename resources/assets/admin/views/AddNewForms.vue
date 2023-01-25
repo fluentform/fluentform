@@ -107,6 +107,7 @@
         <PostTypeSelectionModal
             @on-post-type-selction-end="onPostTypeSelctionEnd"
             :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
+            :hasPro="has_pro"
         />
     </div>
 </template>
@@ -191,12 +192,12 @@
                     if (this.category == 'All') {
                         setTimeout(() => {
                             this.loading = false;
-                        }, 2000);
+                        }, 500);
                         return this.predefinedForms;
                     }else if(this.category){
                         setTimeout(() => {
                             this.loading = false;
-                        }, 2000);
+                        }, 500);
                         items[this.category] = this.predefinedForms[this.category];
                     } else {
                         return this.predefinedForms;
