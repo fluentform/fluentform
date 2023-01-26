@@ -1,13 +1,13 @@
 <template>
-    <div class="disabled-info">
+    <div class="disabled-info" v-if="modal">
         <el-dialog
             :visible.sync="isVisible"
             :before-close="close"
             :width="modal.video || modal.image ? '65%' : '50%'"
         >
-        <div slot="title">
-            <h4>{{!modal ? $t('Field disabled') : ''}}</h4>
-        </div>
+            <div slot="title">
+                <h4>{{!modal ? $t('Field disabled') : ''}}</h4>
+            </div>
             <template v-if="contentComponent">
                 <component :is="contentComponent"></component>
             </template>
@@ -76,7 +76,6 @@
                             {{ $t('Upgrade to Pro Now') }}
                         </a>
                     </div>
-
                 </div>
             </template>
         </el-dialog>

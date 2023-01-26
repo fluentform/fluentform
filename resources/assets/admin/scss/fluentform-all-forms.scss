@@ -167,6 +167,7 @@
     }
     span.trash a{
       color: $row-action-trash-link-color;
+      cursor: pointer;
       &:hover{
         color: $row-action-trash-link-hover-color;
       }

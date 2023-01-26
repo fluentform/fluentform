@@ -184,6 +184,9 @@ span + .ff-icon{
 }
 
 // fontsize
+.fs-14{
+  font-size: 14px;
+}
 .fs-15{
   font-size: 15px;
 }
@@ -242,6 +245,20 @@ span + .ff-icon{
   right: 0;
   top: 0;
   z-index: 99999;
+}
+
+// lead title
+.lead{
+  &-title{
+    font-size: 15px;
+    display: block;
+    color: $base-color;
+    transition: 0.2s;
+  }
+  &-text{
+    font-size: 13px;
+    color: $base-text;
+  }
 }
 
 // custom file input
@@ -574,6 +591,9 @@ span + .ff-icon{
   &-input-number__decrease{
     left: 2px;
   }
+  &-radio{
+    margin-right: 6px;
+  }
 }
 
 .el-pagination.is-background .btn-prev, 
@@ -672,8 +692,8 @@ span + .ff-icon{
       padding-right: 0;
       border: 0;
       position: absolute;
-      top: 4px;
-      right: 3px;
+      top: 5px;
+      right: 4px;
       height: 30px;
       width: 30px;
       display: grid;
@@ -681,7 +701,9 @@ span + .ff-icon{
       border-radius: 4px;
       color: $base-text;
       .el-more-button{
-        transform: rotate(90deg);
+        .el-icon-more{
+          transform: rotate(90deg);
+        }
       }
       &:hover{
         color: $base-color;
@@ -819,6 +841,17 @@ span + .ff-icon{
     border: 1px solid $--border-color-base;
     border-radius: $border-radius;
     overflow: hidden;
+    position: relative;
+    .popover-wrapper {
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 6px;
+      .el-button--small{
+        padding: 10px 12px;
+      }
+    }
     .wp-editor-container{
       border: 0;
     }
@@ -904,26 +937,11 @@ span + .ff-icon{
       z-index: 1;
     }
   }
-  &_list{
-    li{
-      &:not(:last-child){
-        margin-bottom: 12px;
-      }
-      a{
-        font-size: 15px;
-        color: $base-color;
-        transition: 0.2s;
-        &:hover{
-          color: $--color-primary;
-        }
-      }
-    }
-  }
   &_alert{
-    border-left: 3px solid transparent;
+    border-left: 3px solid $--color-primary;
     border-radius: 4px;
     padding: 17px;
-    background-color: #fff;
+    background-color: $--color-primary-light-9;
     &.danger{
       &-soft{
         background-color: $--color-danger-lighter;

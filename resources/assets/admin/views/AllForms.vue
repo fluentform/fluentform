@@ -50,8 +50,8 @@
                     </el-form>
                     <div class="ff_advanced_filter_wrap">
                         <el-button @click="advancedFilter = !advancedFilter">
-                            {{$t('Advanced Filter')}}
-                            <i class="el-icon-s-operation el-icon-right"></i>
+                            <span>{{$t('Advanced Filter')}}</span>
+                            <i class="ff-icon ff-icon-filter-alt"></i>
                         </el-button>
                         <div v-if="advancedFilter" class="ff_advanced_search">
                             <div class="ff_advanced_search_radios">

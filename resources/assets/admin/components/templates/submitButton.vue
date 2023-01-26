@@ -10,14 +10,13 @@
         </div>
         <!-- ADDED IN v1.2.6 -->
         <template v-if="submitButton.settings.button_ui">
-            <el-button 
-                type="primary"
-                :class="btnSize"
+            <button 
+                class="ff-btn"
+                :class="[btnSize, btnStyleClass]"
                 v-if="submitButton.settings.button_ui.type == 'default'"
                 v-html="submitButton.settings.button_ui.text"
-                :style="btnStyles"
-            >
-            </el-button>
+                :style="btnStyles">
+            </button>
             <img v-else :src="submitButton.settings.button_ui.img_url" alt="Submit Button" style="max-width: 200px;">
         </template>
 

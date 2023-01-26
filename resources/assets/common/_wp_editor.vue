@@ -1,11 +1,13 @@
 <template>
     <div class="ff_editor_wrapper">
-        <popover v-if="editorShortcodes.length" class="popover-wrapper" :class="{'popover-wrapper-plaintext': !hasWpEditor}" :data="editorShortcodes" @command="handleCommand" btnType="primary" :plain="true"></popover>
+        <popover v-if="editorShortcodes.length" class="popover-wrapper" :class="{'popover-wrapper-plaintext': !hasWpEditor}" :data="editorShortcodes" @command="handleCommand" btnType="info" :plain="true"></popover>
         <textarea v-if="hasWpEditor" class="ff_editor_textarea" :id="editor_id" v-model="value"></textarea>
-        <textarea v-else
-                  class="wp_vue_editor wp_vue_editor_plain"
-                  v-model="plain_content"
-                  @click="updateCursorPos">
+        <textarea 
+            v-else
+            class="wp_vue_editor wp_vue_editor_plain"
+            v-model="plain_content"
+            @click="updateCursorPos"
+        >
         </textarea>
 
         <button-designer v-if="showButtonDesigner" @close="() => {showButtonDesigner = false}" @insert="insertHtml" :visibility="showButtonDesigner"></button-designer>

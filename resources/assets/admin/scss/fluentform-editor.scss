@@ -581,8 +581,68 @@ body.ff_full_screen{
   }
 }
 
+// ff button
+.ff {
+  &-btn {
+    display: inline-block;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 12px 20px;
+    font-size: 15px;
+    line-height: 1;
+    border-radius: 8px;
+    transition: background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+    &:focus,
+    &:hover {
+      outline: 0;
+      text-decoration: none;
+      box-shadow: none;
+    }
 
-
-
+    &:disabled,
+    &.disabled {
+      opacity: .65;
+    }
+    &-sm {
+      padding: 9px 15px;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+    &-lg {
+      padding: 14px 20px;
+      font-size: 18px;
+    }
+    &-block {
+      display: block;
+      width: 100%;
+    }
+    &-primary {
+      background-color: #409EFF;
+      color: #fff;
+    }
+    &-green {
+      background-color: #67C23A;
+      color: #fff;
+    }
+    &-orange {
+      background-color: #E6A23C;
+      color: #fff;
+    }
+    &-red {
+      background-color: #F56C6C;
+      color: #fff;
+    }
+    &-gray {
+      background-color: #909399;
+      color: #fff;
+    }
+  }
+}
 
 

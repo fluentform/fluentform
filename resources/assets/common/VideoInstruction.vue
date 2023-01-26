@@ -1,23 +1,45 @@
 <template>
     <span class="fluent_form_doc_video" v-if="current_doc">
-        <el-button v-if="btn_text" :title="$t('Show Video')" @click="introVisible=true" :size="btn_size" icon="el-icon-help">{{btn_text}}</el-button>
-        <el-button v-else :title="$t('Show Video')" @click="introVisible=true" :size="btn_size" icon="el-icon-help"></el-button>
+        <el-button 
+            type="primary" 
+            class="el-button--soft-2" 
+            v-if="btn_text" 
+            :title="$t('Show Video')" 
+            @click="introVisible=true" 
+            :size="btn_size" 
+            icon="ff-icon ff-icon-play-circle-filled"
+        >
+            {{btn_text}}
+        </el-button>
+
+        <el-button 
+            v-else 
+            type="primary" 
+            class="el-button--soft-2"
+            :title="$t('Show Video')" 
+            @click="introVisible=true" 
+            :size="btn_size" 
+            icon="ff-icon ff-icon-play-circle-filled"
+        ></el-button>
+
         <el-dialog
-            :title="current_doc.title"
             :visible.sync="introVisible"
             :append-to-body="true"
-            width="60%">
-        <div v-if="introVisible" class="videoWrapper">
-            <iframe width="1237" height="696" :src="'https://www.youtube.com/embed/' + current_doc.video_id+'?autoplay=1'"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="introVisible = false">{{ $t('Close') }}</el-button>
-            <a v-if="current_doc.read_more" class="el-button el-button--primary" target="_blank" rel="noopener" :href="current_doc.read_more">{{ $t('Read More') }}</a>
-        </span>
-    </el-dialog>
+            width="60%"
+        >
+            <div slot="title">
+                <h4>{{current_doc.title}}</h4>
+            </div>
+            <div v-if="introVisible" class="videoWrapper mt-4">
+                <iframe class="w-100" style="height: 400px; border-radius: 8px;" :src="'https://www.youtube.com/embed/' + current_doc.video_id+'?autoplay=1'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="dialog-footer text-right mt-4">
+                <el-button @click="introVisible = false" type="text" class="el-button--text-light">{{ $t('Close') }}</el-button>
+                <a v-if="current_doc.read_more" class="el-button el-button--primary" target="_blank" rel="noopener" :href="current_doc.read_more">
+                    {{ $t('Read More') }}
+                </a>
+            </div>
+        </el-dialog>
     </span>
 </template>
 

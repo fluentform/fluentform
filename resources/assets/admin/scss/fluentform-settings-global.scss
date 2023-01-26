@@ -1,20 +1,15 @@
 @import "../assets/icons/fluentform-icon.css";
-@import "../styles/_var.scss";
 @import "./partials/variables";
 @import "./partials/spacing";
 @import "./partials/fonts";
 @import "./partials/globals";
 @import "./partials/navbar";
+@import "./partials/list";
+@import "./partials/card";
 //@import "./partials/el-customize";
 
 @import "../styles/entries";
 @import "../conversion_templates/browser_frame";
-
-.ff_form_application_container {
-    .ff_settings_wrapper {
-        padding-top: 20px;
-    }
-}
 
 .el-text-primary {
     color: #20A0FF;
@@ -83,78 +78,6 @@
     margin: 0;
     font-style: italic;
     font-size: 0.9em;
-}
-
-.ff_settings_wrapper, .ff_admin_menu_wrapper {
-    display: table;
-    width: 100%;
-    min-height: 550px;
-
-    .ff_settings_sidebar, .ff_admin_menu_sidebar {
-        display: table-cell;
-        background: rgb(84, 92, 100);
-        width: 220px;
-        padding: 0px;
-        vertical-align: top;
-        ul.ff_settings_list, ul.ff_admin_menu_list {
-            padding: 0px;
-            margin: 0px;
-            list-style: none;
-            li {
-                margin: 0px;
-                cursor: pointer;
-                border-top: 1px solid rgba(255, 255, 255, 0.07);
-                transition: border-color .3s,background-color .3s,color .3s;
-                a {
-                    padding: 20px 15px;
-                    display: block;
-                    text-decoration: none;
-                    color: rgb(255, 255, 255);
-                    &:focus, &:active {
-                        outline: none;
-                        border: none;
-                        box-shadow: none;
-                    }
-                }
-                &:hover {
-                    color: rgb(255, 208, 75);
-                    background-color: rgb(67, 74, 80);
-                }
-                &.active {
-                    background-color: rgb(67, 74, 80);
-                    a {
-                        color: rgb(255, 208, 75);
-                    }
-                }
-            }
-        }
-    }
-    .ff_settings_container, .ff_admin_menu_container {
-        display: table-cell;
-        background: white;
-        padding: 15px 35px;
-    }
-    .pull-right {
-        float: right;
-    }
-    .setting_header, .admin_menu_header {
-        border-bottom: 1px solid #e0dbdb;
-        margin-bottom: 15px;
-
-        h2 {
-            margin: 10px 0;
-        }
-    }
-    .form_item {
-        margin-bottom: 10px;
-        > label {
-            font-size: 15px;
-            line-height: 30px;
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-    }
 }
 
 // ff form name
@@ -823,3 +746,44 @@ ul.fcc_inline_social {
         margin: 0;
     }
 }
+
+.ff_screen_settings{
+    .ff_header_setting{
+        #saveFormData,
+        #switchScreen,
+        #moreMenu {
+            display: none;
+        }
+        .el-button{
+            margin-right: 0;
+        }
+    }
+}
+
+// el_pop_data_group
+.el_pop_data{
+    &_group{
+        display: flex;
+    }
+    &_headings{
+        width: 170px;
+        background-color: $bg-light;
+        border-radius: 8px;
+        padding: 16px;
+    }
+    &_body{
+        margin-left: 20px;
+        max-height: 388px;
+        overflow: auto;
+        width: 280px;
+    }
+}
+// settings form
+.ff_settings_form{
+    .ff_card{
+        margin-bottom: 24px;
+    }
+}
+
+
+

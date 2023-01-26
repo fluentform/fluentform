@@ -86,6 +86,8 @@
                 this.$copy();
             });
 
+            jQuery('body').addClass('ff_footer_none');
+
         }
     }
 </script>
