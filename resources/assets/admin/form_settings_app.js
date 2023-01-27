@@ -3,6 +3,7 @@ import './helpers';
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import Notice from './components/Notice';
 import Errors from '../common/Errors';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
@@ -45,7 +46,10 @@ import {
     ColorPicker,
     Tabs,
     TabPane,
+    Alert,
 } from 'element-ui';
+
+Vue.component('Notice', Notice);
 
 global.Errors = Errors;
 global.ffSettingsEvents = new Vue();
@@ -86,6 +90,7 @@ Vue.use(TableColumn);
 Vue.use(InputNumber);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Alert);
 
 Vue.use(Loading.directive);
 

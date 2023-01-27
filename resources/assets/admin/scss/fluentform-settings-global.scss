@@ -136,10 +136,8 @@
 }
 
 .conditional-items {
-    padding-left: 15px;
-    border-left: 1px dotted #dcdfe6;
-    overflow: hidden;
-    padding-right: 1px;
+    border-left: 2px solid $border-color;
+    padding: 5px 0 5px 20px;
 }
 
 //transition: slide
