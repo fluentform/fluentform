@@ -1,10 +1,11 @@
 <template>
-    <div class="ff_photo_card" :class="'ff_photo_' + design_mode_name">
-        <div v-if="app_ready" class="wpf_photo_holder">
-            <img style="max-width: 100%" v-if="image_url" :src="image_url"/>
-            <div @click="initUploader" class="photo_widget_btn"><span class="dashicons dashicons-cloud-upload"></span></div>
-            <div @click="image_url = ''" v-if="enable_clear_name == 'yes' && image_url" class="photo_widget_btn_clear"><span
-                    class="dashicons dashicons-trash"></span></div>
+    <div v-if="app_ready" class="ff_photo_upload" :class="'ff_photo_' + design_mode_name">
+        <img style="max-width: 100%" v-if="image_url" :src="image_url"/>
+        <div @click="initUploader" class="ff_photo_upload_btn">
+            <i class="el-icon el-icon-upload"></i>
+        </div>
+        <div @click="image_url = ''" v-if="enable_clear_name == 'yes' && image_url" class="ff_photo_upload_btn_clear ff_icon_btn ff_icon_btn_clickable mini danger">
+            <i class="el-icon el-icon-delete-solid"></i>
         </div>
     </div>
 </template>

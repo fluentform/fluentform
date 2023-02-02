@@ -1,0 +1,29 @@
+.ff_switch{
+    .el-switch{
+        &__core{
+            height: $el-switch-core-height;
+            &::after{
+                width: $el-switch-core-after-width;
+                height: $el-switch-core-after-height;
+            }
+        }
+        &__label{
+            font-size: 13px;
+            font-weight: 400;
+            span{
+                font-size: 13px;
+            }
+            &.is-active{
+                color: $el-switch-label-active-color;
+            }
+            &--right{
+                margin-left: $el-switch-label-right-gap;
+            }
+        }
+    }
+    &.is-checked .el-switch__core{
+        &::after{
+            margin-left: -$el-switch-core-after-checked;
+        }
+    }
+}

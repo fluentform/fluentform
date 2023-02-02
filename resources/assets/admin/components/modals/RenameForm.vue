@@ -1,76 +1,46 @@
 <template>
-    <div :class="{'ff_backdrop': visible}">
-        <el-dialog
-                :title="$t('Rename Form')"
-                :visible.sync="visible"
-                :before-close="close">
-
-            <span slot="title" class="el-dialog__title">
-                {{ $t('Rename Form') }}
-            </span>
-            <el-form :model="{}" style="margin: -20px 0;" label-position="top" @submit.native.prevent="rename">
-                <el-form-item :label="$t('Your Form Title')">
-                    <el-input class="renameForm" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
-                </el-form-item>
-            </el-form>
-
-            <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="close">{{ $t('Cancel') }}</el-button>
-                <el-button size="small" :loading="loading" type="primary" @click="rename">
-                    <span v-if="loading">{{ $t('Renaming Form...') }}</span>
-                    <span v-else>{{ $t('Rename') }}</span>
-                </el-button>
-            </span>
-        </el-dialog>
-    </div>
+    <el-dialog
+        width="40%"
+        :visible.sync="visible"
+        :before-close="close"
+        :append-to-body="true"
+    >
+        <div slot="title">
+            <h4> {{ $t('Rename Form') }}</h4>
+        </div>
+        <el-form class="mt-3" :model="{}" label-position="top" @submit.native.prevent="rename">
+            <el-form-item :label="$t('Your Form Title')">
+                <el-input class="rename_form" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
+            </el-form-item>
+        </el-form>
+        <div class="dialog-footer text-right">
+            <el-button @click="close" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+            <el-button :loading="loading" type="primary" @click="rename">
+                <span v-if="loading">{{ $t('Renaming Form...') }}</span>
+                <span v-else>{{ $t('Rename') }}</span>
+            </el-button>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
-    export default {
-        name: 'RenameModal',
-        props: ['visible', 'formTitle'],
-        data() {
-            return {
-                loading: false,
-                model: this.formTitle
-            }
-        },
-        watch: {
-            visible() {
-                if (this.visible) {
-                    this.model = this.formTitle;
-                    this.$nextTick(_ => jQuery('.renameForm input').focus());
-                }
-            }
-        },
-        methods: {
-            close() {
-                this.$emit('update:visible', false);
-            },
-
-            rename() {
-                this.loading = true;
-
-                let data = {
-                    title: this.model,
-                };
-
-                const url = FluentFormsGlobal.$rest.route('updateForm', window.FluentFormApp.form_id);
-
-                FluentFormsGlobal.$rest.post(url, data)
-                    .then((response) => {
-                        this.$success(response.message);
-                        this.close();
-                        this.$emit('rename-success', data.title);
-                    })
-                    .catch(error => {
-                        this.$fail(error.message);
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    });
+export default {
+    name: 'RenameModal',
+    props: ['visible', 'formTitle'],
+    data() {
+        return {
+            loading: false,
+            model: this.formTitle
+        }
+    },
+    watch: {
+        visible() {
+            if (this.visible) {
+                this.model = this.formTitle;
+                this.$nextTick( _ => jQuery('.rename_form input').focus());
             }
         }
 
     }
+}
 </script>

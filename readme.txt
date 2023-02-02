@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
 Requires at least: 4.5
-Tested up to: 6.0.1
+Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 4.3.21
+Stable tag: 4.3.22
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -373,6 +373,12 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.22 (Date: November 11, 2022) =
+- Adds Conversational form to Regular form converter
+- Fixes conditional field for EU number style
+- Fixes rating field for conditional
+- Fixes file upload preview
 
 = 4.3.21 (Date: October 27, 2022) =
 - Adds Ninja Forms entry migrator

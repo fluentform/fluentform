@@ -1,0 +1,104 @@
+.ff_table{
+    border-radius: $ff-table-border-radius;
+    box-shadow: $ff-table-box-shadow;
+    padding: $ff-table-gap-y $ff-table-gap-x;
+    tr,
+    th.el-table__cell,
+    .el-table__body tr.el-table__row--striped td.el-table__cell,
+    &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+        background-color: transparent;
+    }
+    .el-table--border::after, 
+    .el-table--group::after, 
+    .el-table::before{
+        display: none;
+    }
+    thead{
+        color: $ff-table-color;
+        th{
+            padding-top: 0;
+        }
+    }
+    th.el-table__cell>.cell,
+    .cell{
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .sort-caret{
+        border-width: 3px;
+    }
+    .sort-caret.ascending{
+        top: 9px;
+    }
+    .sort-caret.descending{
+        bottom: 11px;
+    }
+    .cell {
+        strong {
+            color: $ff-table-color;
+        }
+    }
+    td.el-table__cell, 
+    th.el-table__cell.is-leaf{
+        border-bottom-color: $ff-table-row-border-color;
+    }
+    tbody{
+        tr{
+            &:last-child{
+                td.el-table__cell, 
+                th.el-table__cell.is-leaf{
+                    border-bottom-width: 0;
+                }   
+            }
+        }
+        .cell{
+            font-weight: 500;
+        }
+    }
+    &_s2{
+        tr,
+        th.el-table__cell,
+        .el-table__body tr.el-table__row--striped td.el-table__cell,
+        &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+            background-color: transparent;
+        }
+        thead{
+            color: $ff-table-color;
+            th.el-table__cell{
+                background-color: $ff-table-s2-cell-bg;
+                border-bottom: 0 !important;
+            }
+            tr {
+                th:first-child{
+                    border-top-left-radius: $border-radius;
+                    border-bottom-left-radius: $border-radius;
+                    .cell{
+                        padding-left: $ff-table-s2-cell-padding-x;
+                    }
+                }
+                th:last-child{
+                    border-top-right-radius: $border-radius;
+                    border-bottom-right-radius: $border-radius;
+                }
+            }
+        }
+        tbody{
+            tr {
+                td:first-child{
+                    .cell{
+                        padding-left: $ff-table-s2-cell-padding-x;   
+                    }
+                }
+            }
+        }
+        td.el-table__cell, 
+        th.el-table__cell.is-leaf{
+            border-bottom-color: $ff-table-row-border-color;
+        }
+        th.el-table__cell > .cell,
+        .cell {
+            //padding-left: $ff-table-s2-cell-padding-x;
+            //padding-right: $ff-table-s2-cell-padding-x;
+        }
+    }
+}

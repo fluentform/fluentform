@@ -379,8 +379,10 @@ label.el-radio, label.el-checkbox {
     margin: 0px 0 15px;
   }
 }
+#wpcontent{
+  padding-left: 0;
+}
 #wpbody-content {
-  padding-right: 30px;
   box-sizing: border-box;
   * {
     box-sizing: border-box;

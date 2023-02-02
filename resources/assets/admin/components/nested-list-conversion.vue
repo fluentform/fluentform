@@ -1,6 +1,6 @@
 <template>
-    <div class="ff_conv_section">
-        <vddl-draggable class="panel__body--item js-editor-item"
+    <div class="ff_conv_section" v-if="supportedFields.includes(item.element)">
+        <vddl-draggable class="panel-body-item js-editor-item"
                         :class="{ 'selected': editItem.uniqElKey == item.uniqElKey }"
                         :draggable="item"
                         :index="index"
@@ -11,8 +11,8 @@
                         :moved="handleMoved"
                         :wrapper="wrapper">
 
-            <div @click="editSelected(index, item)" class="item-actions-wrapper"
-                 :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
+            <div @click="editSelected(index, item)" class="panel-body-item-actions"
+                 :class="item.element == 'container' ? 'panel-item-hover-action-top-right' : 'panel-item-hover-action'">
                 <div class="item-actions">
                     <i class="icon icon-arrows"></i>
                     <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
@@ -21,7 +21,9 @@
                 </div>
             </div>
 
-            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
+            <div class="popup-search-element" @click.stop="editorInserterPopup(index, wrapper)">
+                <i class="el-icon-plus"></i>
+            </div>
 
             <div class="ff_conv_section_wrapper" :class="'ff_conv_layout_'+item.style_pref.layout" v-if="hasRegistered(item)">
                 <div class="ff_conv_input">
@@ -52,6 +54,7 @@ export default {
         return {
             showRemoveElConfirm: false,
             removeElIndex: null,
+            supportedFields: window.FluentFormApp.conversational_form_fields
         }
     },
     methods: NestedHandler.methods

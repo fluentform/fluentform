@@ -1,5 +1,5 @@
 <template>
-    <div class="calculation_item">
+    <div class="calculation_item mt-3">
         <el-form-item>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.status_tips"></elLabel>
             <el-checkbox v-model="value.status">{{listItem.status_label}}</el-checkbox>
@@ -14,9 +14,12 @@
                 placement="bottom"
                 :attr-name="editItem.attributes.name">
             </inputPopover>
-            <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/calculate-numeric-entities-in-wp-fluent-forms/" rel="nofollow">{{
-                    $t('View Calculation Documentation')
-                }}</a></p>
+            <p>
+                <a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/field-types/calculate-numeric-entities-in-wp-fluent-forms/" rel="nofollow">{{
+                        $t('View Calculation Documentation')
+                    }}
+                </a>
+            </p>
         </el-form-item>
     </div>
 </template>

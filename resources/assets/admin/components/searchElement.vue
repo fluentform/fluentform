@@ -1,24 +1,31 @@
 <template>
     <div class="search-element">
-        <el-input v-model="searchElementStr" type="text" size="small" :placeholder="placeholder" />
+        <el-input 
+            class="el-input-transparent" 
+            v-model="searchElementStr" 
+            prefix-icon="el-icon-search"
+            type="text" 
+            :placeholder="placeholder" 
+        />
 
-        <div class="search-element-result" v-show="searchResult.length" style="margin-top: 10px;">
-            <div v-for="(itemMockList, i) in searchResult" :key="i" class="v-row mb15">
-                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+        <div class="search-element-result mt-3" v-if="searchResult.length">
+            <el-row :gutter="10" v-for="(itemMockList, i) in searchResult" :key="i">
+                <el-col :span="12" v-for="(itemMock, i) in itemMockList" :key="i">
                     <vddl-draggable
-                        class="btn-element"
+                        class="element-card"
                         :draggable="itemMock"
                         :selected="insertItemOnClick"
                         :index="i"
                         :wrapper="itemMockList"
                         :disable-if="isDisabled(itemMock)"
                         :moved="moved"
-                        effectAllowed="copy">
-                        <i :class="itemMock.editor_options.icon_class"></i>
+                        effectAllowed="copy"
+                    >
+                        <i class="ff-icon" :class="itemMock.editor_options.icon_class"></i>
                         {{ itemMock.editor_options.title }}
                     </vddl-draggable>
-                </div>
-            </div>
+                </el-col>
+            </el-row>
         </div>
     </div>
 </template>
@@ -71,7 +78,7 @@ export default {
             } else {
                 this.$emit('update:isSidebarSearch', false);
             }
-            this.searchResult = _ff.chunk( searchResult, 3 );
+            this.searchResult = _ff.chunk( searchResult, 2 );
         }
     }
 }

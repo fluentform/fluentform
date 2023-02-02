@@ -43,6 +43,8 @@ class Form
 
     protected $hasPayment = 0;
 
+    protected $model;
+
     /**
      * @var \FluentForm\Framework\Database\Query\Builder
      */
@@ -637,13 +639,25 @@ class Form
                 'message' => __('Form Not Found! Try Again.', 'fluentform'),
             ], 422);
         }
-        $formConverted['form_fields'] = \FluentForm\App\Services\FluentConversational\Classes\Converter\Converter::convertExistingForm($form);
 
-        $this->model->where('id', $formId)->update($formConverted);
+        $conversationalMeta = $this->getMeta($formId, 'is_conversion_form', false);
 
-        $this->updateMeta($formId, 'is_conversion_form', 'yes');
+        $shouldConvert = in_array($conversationalMeta, [false, 'no']);
+
+        if ($shouldConvert) {
+            $formConverted['form_fields'] = \FluentForm\App\Services\FluentConversational\Classes\Converter\Converter::convertExistingForm($form);
+
+            $this->model->where('id', $formId)->update($formConverted);
+
+            $conversationalMetaValue = 'yes';
+        } else {
+            $conversationalMetaValue = 'no';
+        }
+
+        $this->updateMeta($formId, 'is_conversion_form', $conversationalMetaValue);
+
         wp_send_json_success([
-            'message' => __('Form has been successfully converted to conversational form.', 'fluentform'),
+            'message' => __('Form has been successfully converted.', 'fluentform'),
         ], 200);
     }
 

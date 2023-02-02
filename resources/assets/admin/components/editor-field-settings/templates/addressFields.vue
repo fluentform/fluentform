@@ -1,19 +1,17 @@
 <template>
-    <div class="el-form--label-top">
-        <p><strong>{{ listItem.label }}</strong></p>
-    
-
+    <div class="ff_field_customization_option_wrap">
+        <h6 class="ff_field_customization_option_title">{{ listItem.label }}</h6>
         <vddl-list
             v-if="editItem.settings.field_order"
             :drop="handleDrop"
-            class="vddl-list__handle ff_advnced_options_wrap"
             :list="editItem.settings.field_order"
             :horizontal="false"
+            class="ff_dragable_field_handle_wrap"
         >
             <vddl-draggable
                 v-for="(field, index) in editItem.settings.field_order"
                 :moved="handleMoved"
-                class="dragable-address-fields"
+                class="ff_dragable_field_item"
                 :key="field.id"
                 :draggable="field"
                 :index="index"
@@ -27,26 +25,19 @@
                         class="handle">
                     </vddl-handle>
                     
-                    <div class="address-field-option">
-                        <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom el-icon-clickable pull-right"></i>
+                    <div class="ff_field_customization_option">
+                        <div class="ff_field_customization_option_title_group">
+                            <el-checkbox v-model="editItem.fields[field.value].settings.visible">
+                                {{ editItem.fields[field.value].settings.label }}
+                            </el-checkbox>
+                            <i @click="toggleAddressFieldInputs" class="el-icon-caret-bottom ff_toggle_icon"></i>
+                        </div>
     
-                        <el-checkbox v-model="editItem.fields[field.value].settings.visible">
-                            {{ editItem.fields[field.value].settings.label }}
-                        </el-checkbox>
-    
-                        <template
-                            v-if="!editItem.fields[field.value].settings.hasOwnProperty('country_list')"
-                        >
-                            <fieldOptionSettings
-                                class="address-field-option__settings"
-                                :field="editItem.fields[field.value]"
-                            />
+                        <template v-if="!editItem.fields[field.value].settings.hasOwnProperty('country_list')">
+                            <fieldOptionSettings class="ff_field_customization_option_settings" :field="editItem.fields[field.value]"/>
                         </template>
     
-                        <div
-                            v-if="editItem.fields[field.value].settings.hasOwnProperty('country_list')"
-                            class="address-field-option__settings"
-                        >
+                        <div v-if="editItem.fields[field.value].settings.hasOwnProperty('country_list')" class="ff_field_customization_option_settings">
                             <div class="form-group">
                                 <div class="el-form-item">
                                     <label class="el-form-item__label" for="">{{ $t('Label') }}</label>
@@ -82,8 +73,6 @@
                     </div>
                 </vddl-nodrag>
             </vddl-draggable>
-            
-
         </vddl-list>
        
 
@@ -148,16 +137,16 @@ export default {
     },
     methods: {
         toggleAddressFieldInputs(event) {
-            if (!jQuery(event.target).parent().find('.address-field-option__settings').hasClass('is-open')) {
+            if (!jQuery(event.target).parent().parent().find('.ff_field_customization_option_settings').hasClass('is-open')) {
                 jQuery(event.target).removeClass('el-icon-caret-bottom');
                 jQuery(event.target).addClass('el-icon-caret-top');
-                jQuery(event.target).parent().find('.address-field-option__settings').addClass('is-open');
-                jQuery(event.target).parent().find('.required-checkbox').addClass('is-open');
+                jQuery(event.target).parent().parent().find('.ff_field_customization_option_settings').addClass('is-open');
+                jQuery(event.target).parent().parent().find('.required-checkbox').addClass('is-open');
             } else {
                 jQuery(event.target).removeClass('el-icon-caret-top');
                 jQuery(event.target).addClass('el-icon-caret-bottom');
-                jQuery(event.target).parent().find('.address-field-option__settings').removeClass('is-open');
-                jQuery(event.target).parent().find('.required-checkbox').removeClass('is-open');
+                jQuery(event.target).parent().parent().find('.ff_field_customization_option_settings').removeClass('is-open');
+                jQuery(event.target).parent().parent().find('.required-checkbox').removeClass('is-open');
             }
         },
         handleMoved(item) {

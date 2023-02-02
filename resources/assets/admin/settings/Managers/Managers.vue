@@ -1,39 +1,32 @@
 <template>
-    <div>
-        <el-row class="ff_manager_settings_header">
-            <el-col :md="18">
-                <h2>{{ $t('Managers') }}</h2>
-            </el-col>
-
-            <el-col :md="6" class="action-buttons clearfix text-right">
-                <el-button
-                    type="primary"
-                    size="small"
-                    icon="el-icon-plus"
-                    @click="showForm()"
-                >
-                    {{ $t('Add Manager') }}
-                </el-button>
-            </el-col>
-        </el-row>
-
-        <p>
-            {{ $t('Administrators have full access to Fluent Forms.Add other managers giving specific permissions.') }}
-        </p>
-
-        <hr />
-
-        <div class="ff_managers_list">
-            <el-table stripe class="el-fluid" :data="managers">
-                <el-table-column :label="$t('ID')" prop="id" width="80" />
-
-                <el-table-column :label="$t('Name')" width="150">
+    <div class="ff_block_item">
+        <div class="ff_section_head sm">
+            <el-row>
+                <el-col :span="18">
+                    <h6 class="ff_block_title mb-1">{{ $t('Advanced') }}</h6>
+                    <p>{{$t('Administrators have full access to Fluent Forms . Add other managers giving specific permissions.') }}</p>
+                </el-col>
+                <el-col :span="6" class="text-right">
+                    <el-button
+                        type="primary"
+                        icon="el-icon-plus"
+                        @click="showForm()"
+                    >
+                        {{ $t('Add Manager') }}
+                    </el-button>
+                </el-col>
+            </el-row>
+        </div><!-- .ff_section_head -->
+        <div class="ff_table_wrap">
+            <el-table class="ff_table_s2" :data="managers">
+                <el-table-column :label="$t('ID')" prop="id" width="70"/>
+                <el-table-column :label="$t('Name')" width="180">
                     <template slot-scope="scope">
                         {{ scope.row.first_name }} {{ scope.row.last_name }}
                     </template>
                 </el-table-column>
 
-                <el-table-column :label="$t('Email')" prop="email" width="250" />
+                <el-table-column :label="$t('Email')" prop="email" width="260" />
 
                 <el-table-column :label="$t('Permissions')">
                     <template slot-scope="scope">
@@ -42,6 +35,7 @@
                             size="mini"
                             v-for="permission in scope.row.permissions"
                             :key="permission"
+                            class="mr-1"
                         >
                             {{ permissions[permission].title }}
                         </el-tag>
@@ -51,63 +45,57 @@
                 <el-table-column :label="$t('Action')" width="120">
                     <template slot-scope="scope">
                         <el-button
+                            class="el-button--soft-2 el-button--icon mr-1"
                             size="mini"
                             type="primary"
                             icon="el-icon-edit"
                             @click="edit(scope.row)"
                         />
-
                         <confirm @on-confirm="remove(scope.row)">
                             <el-button
+                                class="el-button--soft-2 el-button--icon"
                                 size="mini"
                                 type="danger"
-                                slot="reference"
                                 icon="el-icon-delete"
                             />
                         </confirm>
                     </template>
                 </el-table-column>
             </el-table>
-            <br/>
-    
-            <el-pagination
-                @current-change="goToPage"
-                background
-                :hide-on-single-page="true"
-                small
-                :page-size="pagination.per_page"
-                :current-page.sync="pagination.page_number"
-                layout="prev, pager, next"
-                :total="pagination.total">
-            </el-pagination>
+            <div class="ff_pagination_wrap text-right mt-4">
+                <el-pagination
+                    @current-change="goToPage"
+                    background
+                    :hide-on-single-page="true"
+                    :page-size="pagination.per_page"
+                    :current-page.sync="pagination.page_number"
+                    layout="prev, pager, next"
+                    :total="pagination.total"
+                ></el-pagination>
+            </div>
         </div>
 
         <el-dialog
-            :title="getModalTitle()"
             :visible.sync="modal"
             :append-to-body="true"
-            width="60%"
-            class="ff_managers_form"
+            width="45%"
         >
-            <el-form :data="manager" label-position="top">
-                <el-form-item :label="$t('User Email')">
-                    <el-input
-                        type="email"
-                        :placeholder="$t('User Email Address')"
-                        v-model="manager.email"
-                    />
+            <div slot="title">
+                <h4>{{getModalTitle()}}</h4>
+            </div>
 
+            <el-form :data="manager" label-position="top" class="mt-3">
+                <el-form-item :label="$t('User email')">
+                    <el-input type="email" :placeholder="$t('User Email Address')" v-model="manager.email"/>
                     <error-view field="email" :errors="errors" />
-
-                    <p v-show="!manager.id">
+                    <p v-show="!manager.id" class="mt-2 small">
                         {{ $t('Please provide email address of your existing user.') }}
                     </p>
                 </el-form-item>
 
                 <el-form-item :label="$t('Permissions')">
-                    <el-checkbox-group v-model="manager.permissions">
+                    <el-checkbox-group v-model="manager.permissions" class="ff_checkbox_group_col_2">
                         <el-checkbox
-                            style="min-width: 250px"
                             v-for="(permission, permissionKey) in permissions"
                             :label="permissionKey"
                             :key="permissionKey"
@@ -115,16 +103,16 @@
                             {{ permission.title }}
                         </el-checkbox>
                     </el-checkbox-group>
-
                     <error-view field="permissions" :errors="errors" />
                 </el-form-item>
             </el-form>
 
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="store" icon="el-icon-success">
+            <div class="dialog-footer mt-2 text-right">
+                <el-button @click="modal = false" type="text" class="el-button--text-light">Cancel</el-button>
+                <el-button type="primary" @click="store" icon="el-icon-success">
                     {{ $t('Save') }}
                 </el-button>
-            </span>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -135,12 +123,10 @@ import Confirm from "@/admin/components/confirmRemove.vue";
 
 export default {
     name: "Managers",
-
     components: {
         ErrorView,
         Confirm
     },
-
     data() {
         return {
             loading: false,
@@ -148,7 +134,7 @@ export default {
             pagination: {
                 total: 0,
                 current_page: 1,
-                per_page: 10
+                per_page: 5
             },
             permissions: {},
             modal: false,
@@ -166,15 +152,15 @@ export default {
                 per_page: this.pagination.per_page,
                 page: this.pagination.current_page
             })
-                .then(response => {
-                    this.permissions = response.permissions;
-                    this.managers = response.managers.data;
-                    this.pagination.total = response.managers.total;
-                })
-                .fail(e => {})
-                .always(() => {
-                    this.loading = false;
-                });
+            .then(response => {
+                this.permissions = response.permissions;
+                this.managers = response.managers.data;
+                this.pagination.total = response.managers.total;
+            })
+            .fail(e => {})
+            .always(() => {
+                this.loading = false;
+            });
         },
 
         showForm() {

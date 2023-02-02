@@ -41,37 +41,44 @@ export default {
             btnStyles: {
                 default: {
                     name: 'Default',
-                    backgroundColor: '#409EFF',
+                    backgroundColor: '#1A7EFB',
+                    borderColor: '#1A7EFB',
                     color: '#ffffff'
                 },
                 no_style: {
                     name: 'No Style',
-                    backgroundColor: '#409EFF',
-                    color: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    borderColor: '#dadbdd',
+                    color: '#606266'
                 },
                 red: {
                     name: 'Red',
-                    backgroundColor: '#F56C6C',
+                    backgroundColor: '#FF6154',
+                    borderColor: '#FF6154',
                     color: '#ffffff'
                 },
                 green: {
                     name: 'Green',
-                    backgroundColor: '#67C23A',
+                    backgroundColor: '#00b27f',
+                    borderColor: '#00b27f',
                     color: '#ffffff'
                 },
                 orange: {
                     name: 'Orange',
                     backgroundColor: '#E6A23C',
+                    borderColor: '#E6A23C',
                     color: '#ffffff'
                 },
                 gray: {
                     name: 'Gray',
                     backgroundColor: '#909399',
+                    borderColor: '#909399',
                     color: '#ffffff'
                 },
                 '': {
                     name: 'Custom',
                     backgroundColor: '',
+                    borderColor: '',
                     color: ''
                 }
             },
@@ -82,6 +89,7 @@ export default {
         model() {
             this.$emit('input', this.model);
             this.editItem.settings.background_color = this.btnStyles[this.model].backgroundColor;
+            this.editItem.settings.border_color = this.btnStyles[this.model].borderColor;
             this.editItem.settings.color = this.btnStyles[this.model].color;
         }
     },
@@ -93,8 +101,8 @@ export default {
     created() {
         if(!this.editItem.settings.normal_styles) {
             this.$set(this.editItem.settings, 'normal_styles', {
-                'backgroundColor' : '#409EFF',
-                'borderColor'     : '#409EFF',
+                'backgroundColor' : '#1A7EFB',
+                'borderColor'     : '#1A7EFB',
                 'color'           : '#ffffff',
                 'borderRadius'    : '',
                 'minWidth'        : ''

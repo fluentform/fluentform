@@ -1,13 +1,13 @@
 <template>
-    <div style="margin-bottom: 20px">
+    <el-form-item>
         <el-checkbox false-label="no" true-label="yes" v-model="model">
             {{listItem.label}}
-            <el-tooltip v-if="listItem.help_text" placement="bottom-start" effect="light">
+            <el-tooltip v-if="listItem.help_text" placement="bottom-start" effect="dark" popper-class="ff_tooltip_popper">
                 <p slot="content" v-html="listItem.help_text"></p>
                 <i class="el-icon-info el-text-info"></i>
             </el-tooltip>
         </el-checkbox>
-    </div>
+    </el-form-item>
 </template>
 
 <script type="text/babel">

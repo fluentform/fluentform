@@ -1,7 +1,8 @@
 <template>
     <el-form-item>
-        <div class="clearfix">
-            <div class="pull-right top-check-action">
+        <div class="ff_title_group">
+            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+            <div class="ff_check_group">
                 <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
                 <el-checkbox v-if="hasCalValue" v-model="editItem.settings.calc_value_status">{{ $t('Calc Values') }}</el-checkbox>
                 <template v-if="has_pro">
@@ -11,25 +12,29 @@
                     <el-checkbox v-model="pro_mock" @change="showProMessage()">{{ $t('Photo') }}</el-checkbox>
                 </template>
             </div>
-            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         </div>
 
-        <vddl-list :drop="handleDrop" v-if="optionsToRender.length" class="vddl-list__handle ff_advnced_options_wrap" :list="editItem.settings.advanced_options" :horizontal="false">
-            <vddl-draggable :moved="handleMoved" class="optionsToRender" v-for="(option, index) in editItem.settings.advanced_options" :key="option.id"
-                            :draggable="option"
-                            :index="index"
-                            :wrapper="editItem.settings.advanced_options"
-                            effect-allowed="move">
-                <vddl-nodrag class="nodrag">
-                    <div class="checkbox">
-                        <input ref="defaultOptions"
-                               class="form-control"
-                               :type="optionsType"
-                               name="fluentform__default-option"
-                               :value="option.value"
-                               :checked="isChecked(option.value)"
-                               @change="updateDefaultOption(option)"
-                            >
+        <vddl-list :drop="handleDrop" v-if="optionsToRender.length" class="ff_dragable_field_handle_wrap" :list="editItem.settings.advanced_options" :horizontal="false">
+            <vddl-draggable 
+                :moved="handleMoved" 
+                class="ff_options_to_render" 
+                v-for="(option, index) in editItem.settings.advanced_options" 
+                :key="option.id"
+                :draggable="option"
+                :index="index"
+                :wrapper="editItem.settings.advanced_options"
+                effect-allowed="move"
+            >
+                <vddl-nodrag class="items-center">
+                    <div class="ff_options_to_render_input">
+                        <input 
+                            ref="defaultOptions"
+                            :type="optionsType"
+                            name="fluentform__default-option"
+                            :value="option.value"
+                            :checked="isChecked(option.value)"
+                            @change="updateDefaultOption(option)"
+                        >
                     </div>
 
                     <vddl-handle
@@ -38,27 +43,21 @@
                         class="handle">
                     </vddl-handle>
 
-                    <div
-                        style="max-width: 64px; max-height: 32px; overflow: hidden;"
-                        v-if="editItem.settings.enable_image_input && hasImageSupport"
-                    >
+                    <div v-if="editItem.settings.enable_image_input && hasImageSupport">
                         <photo-widget enable_clear="yes" v-model="option.image" />
                     </div>
 
                     <div>
-                        <el-input
-                            :placeholder="$t('label')"
-                            v-model="option.label"
-                            @input="updateValue(option)"
-                        ></el-input>
+                        <el-input size="mini" :placeholder="$t('label')" v-model="option.label" @input="updateValue(option)"></el-input>
                     </div>
 
                     <div v-if="valuesVisible">
-                        <el-input :placeholder="$t('value')" v-model="option.value"></el-input>
+                        <el-input size="mini" :placeholder="$t('value')" v-model="option.value"></el-input>
                     </div>
 
                     <div v-if="editItem.settings.calc_value_status">
                         <el-input
+                            size="mini"
                             :placeholder="$t('calc value')"
                             type="number"
                             step="any"
@@ -66,10 +65,18 @@
                         ></el-input>
                     </div>
 
-                    <div class="action-btn">
-                        <i @click="increase(index)" class="icon icon-plus-circle"></i>
-                        <i @click="decrease(index)" class="icon icon-minus-circle"></i>
-                    </div>
+                    <ul class="ff_icon_group">
+                        <li>
+                            <div class="ff_icon_btn mini dark ff_icon_btn_clickable" @click="increase(index)">
+                                <i class="el-icon el-icon-plus"></i>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="ff_icon_btn mini dark ff_icon_btn_clickable" @click="decrease(index)">
+                                <i class="el-icon el-icon-minus"></i>
+                            </div>
+                        </li>
+                    </ul>
                 </vddl-nodrag>
             </vddl-draggable>
         </vddl-list>
@@ -89,28 +96,37 @@
 
         <el-dialog
             :append-to-body="true"
-            class="ff_backdrop"
-            :title="$t('Edit your options')"
             :visible.sync="bulkEditVisible"
         >
-            <div v-if="bulkEditVisible" class="bulk_editor_wrapper">
-                <h4>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</h4>
+            <div slot="title">
+                <h4 class="mb-2">{{$t('Edit your options')}}</h4>
+                <p>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</p>
+            </div>
+            <div v-if="bulkEditVisible" class="bulk_editor_wrapper mt-5">
                 <el-row :gutter="20">
-                    <el-col :span="12">
-                        <ul class="ff_bulk_option_groups">
-                            <li @click="setOptions(options)" v-for="(options, optionGroup) in editor_options" :key="optionGroup">{{optionGroup}}</li>
+                    <el-col :span="24">
+                        <ul class="ff_data_item_group mb-3">
+                            <li 
+                                class="ff_data_item" 
+                                @click="setOptions(options)" 
+                                v-for="(options, optionGroup) in editor_options" 
+                                :key="optionGroup"
+                                :class="{ 'active': options === activeClass}"
+                            >
+                            {{optionGroup}}
+                        </li>
                         </ul>
                     </el-col>
-                    <el-col :span="12">
-                        <el-input type="textarea" :rows="14" v-model="value_key_pair_text"></el-input>
-                        <p>{{ $t('You can simply give value only the system will convert the label as value') }}</p>
+                    <el-col :span="24">
+                        <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
+                        <p class="mt-2">{{ $t('You can simply give value only the system will convert the label as value') }}</p>
                     </el-col>
                 </el-row>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button size="mini" @click="bulkEditVisible = false">{{ $t('Cancel') }}</el-button>
-                <el-button size="mini" type="primary" @click="confirmBulkEdit()">{{ $t('Confirm') }}</el-button>
-            </span>
+            <div class="dialog-footer mt-2 text-right">
+                <el-button @click="bulkEditVisible = false" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+                <el-button type="primary" @click="confirmBulkEdit()">{{ $t('Yes, Confirm!') }}</el-button>
+            </div>
         </el-dialog>
 
     </el-form-item>
@@ -147,7 +163,8 @@
                 value_key_pair_text: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 pro_mock: false,
-                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json)
+                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json),
+                activeClass: null,
             }
         },
         computed: {
@@ -274,6 +291,7 @@
 
             setOptions(options) {
                 this.value_key_pair_text = options.join('\n');
+                this.activeClass = options;
             },
 
             clear() {

@@ -1,0 +1,135 @@
+$ff:         'ff_radio';
+
+
+.#{$ff}{
+    &_list{
+        display: flex;
+        flex-direction: column;
+        &_item{
+            width: 100%;
+            margin-bottom: 2px;
+            .el-radio-button__inner{
+                background-color: transparent;
+                border: 0 !important;
+                padding: 13px 16px;
+                border-radius: 0.375rem !important;
+                color: $base-text;
+                width: 100%;
+                text-align: left;
+                box-shadow: none !important;
+                transition: 0.2s;
+                font-weight: 600;
+                &:hover{
+                    background-color: rgba($--color-text-regular, 0.1);
+                    color: $base-color;
+                }
+            }
+            &.is-active{
+                &:focus{
+                    box-shadow: none !important;
+                }
+                .el-radio-button__inner{
+                    background-color: rgba($--color-text-regular, 0.1);
+                    color: $base-color;
+                }
+            }
+        }
+    }
+}
+
+// ff data item group
+.ff_data_item{
+    &_group{
+        overflow-x: auto;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        .ff_data_item {
+            &_link{
+                display: block;
+                padding: 11px 20px;
+                cursor: pointer;
+                transition: 0.2s;
+                background-color: mix($white, $base-color, 95%);
+                border-radius: 50px;
+                color: $base-color;
+                font-weight: 600;
+                font-size: 15px;
+                &:hover{
+                    background-color: mix($white, $base-color, 90%);
+                }
+            }
+            &:not(:last-child){
+                margin-right: 0.5rem;
+            }
+            &.active{
+                .ff_data_item_link{
+                    background-color: $--color-primary;
+                    color: $--color-white;
+                }
+            }
+        }
+        &_s2{
+            display: block;
+            overflow-x: inherit;
+            .ff_data_item{
+                margin-bottom: 0.25rem;
+                &:not(:last-child){
+                    margin-right: 0;
+                }
+                &_link{
+                    border-radius: 0.5rem;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    background-color: transparent;
+                }
+                &.active{
+                    .ff_data_item_link{
+                        background-color: $base-color;
+                    }
+                }
+            }
+        }
+        &.small{
+            .ff_data_item_link{
+                padding: 9px 14px;
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+.ff{
+    &_list{
+        li{
+            &:not(:last-child){
+                margin-bottom: 12px;
+            }
+            a{
+                font-size: 15px;
+                color: $base-color;
+                transition: 0.2s;
+                display: block;
+                &:hover{
+                    color: $--color-primary;
+                    .lead-title{
+                        color: $--color-primary;
+                    }
+                }
+            }
+        }
+        &_flush{
+            li{
+                &:not(:last-child){
+                    padding-bottom: 12px;
+                    border-bottom: 1px solid $border-color;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+

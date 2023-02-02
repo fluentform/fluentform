@@ -1,0 +1,332 @@
+/*======================================
+    INCLUDES ELEMENT UI VARIABLES 
+ ======================================*/
+@import "../partials/element-ui-variables";
+
+// colors
+$white:                      #ffffff;
+$base-color:                 #1E1F21;
+$base-text:                   #626261;
+
+// gray colors
+$gray-50:                  #ececec;
+$gray-100:                  #CED0D4;
+
+$body-bg:                   #F2F2F2;
+
+$bg-dark:                  #33383F;
+$bg-light:                  #F2F2F2;
+
+$border-color:              $gray-50;
+$border-radius:            0.5rem;
+
+
+// reboot
+$plugin-font-family:      'Manrope';
+$h-color:                  $base-color;
+
+// ff backgrop
+$ff-backgrop-bg:           #1E1F21;
+$ff-backgrop-opacity:        0.7;
+
+// form app
+$ff-app-gap:               2rem 1.5rem;
+
+// header
+$header-bg:                    $white;
+$header-border:                1px solid $border-color;
+$header-padding-y:             0.875rem;
+$header-padding-x:             1.5rem;
+
+// header logo
+$header-logo-height:            1.875rem;
+$header-logo-gap-x:            2rem;
+
+// header menu linnk
+$header-menu-link-gap-y:       0.5rem;
+$header-menu-link-gap-x:       1rem;
+$header-menu-link-font-size:       0.938rem;
+$header-menu-link-font-weight:       600;
+$header-menu-link-color:             $base-color;
+$header-menu-link-border-radius:      0.375rem;
+
+$header-menu-link-hover-color:       $--color-primary;
+$header-menu-link-active-bg:         #E8F2FF;
+$header-menu-link-active-color:       $--color-primary;
+
+$buy-pro-link-bg:                     $--color-danger;
+$buy-pro-link-color:                  $--color-white;
+
+// section title
+$ff-section-title-color:               $base-color;
+$ff-section-title-font-size:           1.375rem;
+$ff-section-title-font-weight:           700;
+
+// section desc
+$ff-section-desc-font-size:           1rem;
+
+// input
+$input-bg-gray:                 #E7E6E6;
+
+// el input prefix
+$el-input-prefix-gap:             2.25rem;
+$el-input-prefix-icon-gap:        10px;
+
+
+// button
+$button-border-radius:            $border-radius;
+$button-border-color:             $gray-100;
+$button-font-weight:               600;
+
+$button-primary-bg:                $--color-primary;
+$button-primary-border-color:      $button-primary-bg;
+$button-primary-hover-bg:          #2b87fa;
+$button-primary-hover-border-color:  $button-primary-hover-bg;
+
+$button-primary-plain-bg:            #E9F1FF;
+$button-primary-plain-border-color:    $button-primary-plain-bg;
+
+$button-danger-bg:                    $--color-danger;
+$button-danger-border-color:          $button-danger-bg;
+
+$button-info-bg:                    #909399;
+$button-info-border-color:            $button-info-bg;
+$button-info-plain-bg:                $bg-light;
+$button-info-plain-border-color:      $button-info-plain-bg;
+$button-info-plain-color:             $base-color;
+
+$button-text-light-color:                 $base-text;
+
+// ff filter select
+$ff-filter-form-select:                 250px;
+
+// modal 
+$el-dialog-border-radius:            0.625rem;
+$el-dialog-gap-y:                    1.5rem;
+$el-dialog-gap-x:                    1.875rem;
+
+$el-dialog-header-border:           1px solid #eeeeef;
+$el-dialog-header-btn-color:        $base-color;
+$el-dialog-header-btn-fontsize:      1.25rem;
+$el-dialog-header-btn-bg:            #fafafa;
+$el-dialog-header-btn-hover-bg:        $gray-50;
+$el-dialog-header-btn-width:           2rem;
+$el-dialog-header-btn-height:          $el-dialog-header-btn-width;
+$el-dialog-header-btn-border-radius:   50%;
+
+$el-dialog-button-gap-y:             0.625rem;
+
+// ff table
+$ff-table-gap-y:                     0.625rem;
+$ff-table-gap-x:                     1.5rem;
+$ff-table-color:                     $base-color;
+$ff-table-border-radius:             $border-radius;
+$ff-table-box-shadow:                0px 1px 3px rgba(30, 31, 33, 0.08);
+$ff-table-row-border-color:          $gray-50;
+
+$ff-table-s2-cell-bg:                #F8F8F8;
+$ff-table-s2-cell-padding-x:         1.25rem;
+
+
+
+// row actions
+$row-action-item-after-bg:       $gray-100;
+$row-action-item-after-top:       5px;
+$row-action-item-after-right:     3px;
+$row-action-item-after-width:     1px;
+$row-action-item-after-height:     10px;
+
+$row-action-trash-link-color:        $--color-danger;
+$row-action-trash-link-hover-color:        #fb4738;
+
+// el switch
+$el-switch-core-height:                              16px;
+$el-switch-core-after-width:                         12px;
+$el-switch-core-after-height:                        $el-switch-core-after-width;
+$el-switch-core-after-checked:                       13px;
+
+$el-switch-label-right-gap:                          6px;
+$el-switch-label-active-color:                       $--color-primary;
+
+// shorcode btn
+$shortcode-btn-padding:                             0.25rem;
+$shortcode-btn-font-size:                             0.75rem;
+$shortcode-btn-bg:                                  $bg-light;
+$shortcode-btn-border-radius:                        0.375rem;
+$shortcode-btn-color:                                $base-color;
+
+$shortcode-btn-md-padding-y:                        0.625rem;
+$shortcode-btn-md-padding-x:                        0.875rem;
+$shortcode-btn-md-font-size:                        0.913rem;
+$shortcode-btn-md-border-radius:                    0.5rem;
+
+// ff advanced search
+$ff-advanced-search-width:                              350px;
+$ff-advanced-search-gap-y:                              1.25rem;
+$ff-advanced-search-gap-x:                              1.25rem;
+$ff-advanced-search-bg:                               $white;
+$ff-advanced-search-border-radius:                    $border-radius;
+$ff-advanced-search-box-shadow:                       0px 40px 64px -12px rgba(0, 0, 0, 0.08), 0px 0px 14px -4px rgba(0, 0, 0, 0.05), 0px 32px 48px -8px rgba(0, 0, 0, 0.1);
+
+$ff-advanced-search-date-range-bg:                    $gray-50;
+$ff-advanced-search-date-range-padding:                0.875rem;
+$ff-advanced-search-date-range-border-radius:          $border-radius;
+
+$ff-advanced-search-date-range-input-width:           282px;
+
+// el pager
+$el-pager-li-active-color:                            $--color-primary;
+
+// el popover
+$el-popover-border-radius:                             $border-radius;
+
+// ff link btn
+$ff-link-btn-color:                                    $base-text;
+$ff-link-btn-font-size:                                0.875rem;
+$ff-link-btn-font-weight:                              500;
+
+// ff card
+$ff-card-bg:                                           $white;
+$ff-card-box-shadow:                                   0px 2px 3px 0px rgba(129, 129, 129, 0.1);
+$ff-card-border-radius:                                $border-radius;
+$ff-card-padding:                                       1.5rem;
+
+$ff-card-head-padding-y:                                1rem;
+$ff-card-head-border:                                   1px solid $border-color;
+
+// ff form card
+$ff-form-card-bg:                                      $white;
+$ff-form-card-border:                                  1px solid #EDEAE9;
+$ff-form-card-border-radius:                           $border-radius;
+
+$ff-form-card-overlap-bg:                                linear-gradient(180deg, rgba(10, 16, 26, 0.08) 0%, rgba(27, 29, 32, 0.851348) 69.85%, #1E1F21 85.67%);
+$ff-form-card-overlap-padding:                                 1.5rem;
+$ff-form-card-overlap-border-radius:                                 $border-radius;
+
+// ff form name
+$ff-form-name-padding-y:                                1.25rem;
+$ff-form-name-padding-x:                                1.25rem;
+$ff-form-name-max-width:                                160px;
+$ff-form-name-font-size:                                15px;
+$ff-form-name-font-weight:                              500;
+$ff-form-name-border:                                   1px solid $border-color;
+
+// full screen button
+$full-screen-button-font-size:                          2rem;
+$full-screen-button-color:                              $base-text;
+
+// form editor
+$ff-editor-main-bg:                                     $white;
+$ff-editor-main-padding-y:                              3.125rem;
+$ff-editor-main-padding-x:                              4rem;
+$ff-editor-main-width:                                  65%;
+
+$ff-editor-user-guide-gap:                              180px;
+$ff-editor-user-guide-padding:                          2rem;
+
+$ff-editor-sidebar-width:                               35%;
+
+
+// dropzone
+$empty-dropzone-height:                                80px;
+$empty-dropzone-border:                                1px dashed $gray-100;
+$empty-dropzone-border-radius:                         0.375rem;
+
+// popup search element
+$popup-search-element-width:                         1.75rem;
+$popup-search-element-height:                        $popup-search-element-width;
+$popup-search-element-bg:                            $--color-primary;
+$popup-search-element-bg-dark:                       $bg-dark;
+$popup-search-element-hover-bg:                       $--color-primary;
+
+// ff navtabs
+$ff-navtabs-padding-x:                               1.25rem;
+
+$ff-navtabs-item-gap-x:                              1.875rem;
+
+$ff-navtabs-link-padding-y:                          0.875rem;
+$ff-navtabs-link-font-size:                          0.875rem;
+$ff-navtabs-link-color:                              $base-color;
+$ff-navtabs-link-border:                             2px solid transparent;
+$ff-navtabs-link-active-color:                       $--color-primary;
+$ff-navtabs-link-active-border:                      $--color-primary;
+
+// search element
+$search-element-padding-y:                          0.875rem;
+$search-element-padding-x:                          1.25rem;
+
+// element card
+$element-card-bg:                                    $white;
+$element-card-padding-y:                               0.75rem;
+$element-card-padding-x:                               1.5rem;
+$element-card-border-radius:                         $border-radius;
+$element-card-font-size:                             0.875rem;
+$element-card-color:                                 $base-color;
+$element-card-box-shadow:                            0 1px 4px rgba($base-color, 0.04);
+
+// option fields section
+$option-fields-section-padding-y:                         0.375rem;
+$option-fields-section-padding-x:                         1.25rem;
+
+$option-fields-section-title-bg:                           $white;
+$option-fields-section-title-border-radius:                $border-radius;
+$option-fields-section-title-padding-y:                    0.875rem;
+$option-fields-section-title-padding-x:                    1.25rem;
+$option-fields-section-title-font-size:                    0.875rem;
+$option-fields-section-title-box-shadow:                   0 1px 3px rgba($base-color, 0.04);
+
+// ff editor inserter popup
+$ff-editor-inserter-popup-padding-y:                       1.25rem;
+$ff-editor-inserter-popup-bg:                              $white;
+$ff-editor-inserter-popup-border-radius:                   $border-radius;
+$ff-editor-inserter-popup-box-shadow:                      0px 40px 64px -12px rgba(0, 0, 0, 0.08), 0px 0px 14px -4px rgba(0, 0, 0, 0.05), 0px 32px 48px -8px rgba(0, 0, 0, 0.1);
+
+// ff editor inserter search
+$ff-editor-inserter-search-padding-y:                      1rem;
+$ff-editor-inserter-search-padding-x:                      1.25rem;
+
+// panel body
+$panel-body-item-padding-y:                               1rem;
+$panel-body-item-padding-x:                               1rem;
+
+$panel-item-hover-action-bg:                              rgba($base-color, 0.05);
+$panel-item-hover-action-border:                          4px solid $--color-primary;
+$panel-item-hover-action-border-radius:                   0.25rem;
+
+// column container
+$column-container-min-height:                            80px;
+$column-container-border:                                1px dashed $gray-100;
+$column-container-border-radius:                         0.375rem;
+
+// toggle icon
+$toggle-icon-width:                                     1.5rem;
+$toggle-icon-height:                                    1.5rem;
+$toggle-icon-font-size:                                 1rem;
+$toggle-icon-hover-color:                               $--color-primary;
+
+// radio group
+$radio-group-bg:                                       $white;
+$radio-group-border-radius:                            $border-radius;
+$radio-group-box-shadow:                               0 1px 4px rgba(0, 0, 0, 0.02);
+
+// select shadow
+$select-box-shadow:                               0 1px 4px rgba(0, 0, 0, 0.02);
+$select-border-color:                               $white;
+
+// setting 
+$setting-sidebar-bg:                                 $white;
+$setting-sidebar-width:                              280px;
+$setting-sidebar-padding-y:                          1.5rem;
+$setting-sidebar-padding-x:                          1.5rem;
+$setting-sidebar-box-shadow:                         0 1px 3px rgba($base-color, 0.05);
+
+$setting-container-padding:                          1.5rem;
+
+
+
+
+
+
+
+
+

@@ -1,14 +1,14 @@
 <template>
     <div class="fluentform-wrapper">
         <div class="entry_header">
-            <router-link class="pull-right" :to="{ name: 'form-entries' }">
+            <router-link :to="{ name: 'form-entries' }">
                 <el-button icon="el-icon-back" size="small">{{$t('Back to Entries')}}</el-button>
             </router-link>
 
-            <el-button class="pull-right" size="small" @click="changeEntry('+')" :disabled="!nextId">
+            <el-button size="small" @click="changeEntry('+')" :disabled="!nextId">
                 {{$t('Next')}} <i class="el-icon-arrow-right"/>
             </el-button>
-            <el-button class="pull-right" size="small" @click="changeEntry('-')" :disabled="!prevId">
+            <el-button size="small" @click="changeEntry('-')" :disabled="!prevId">
                 <i class="el-icon-arrow-left"/> {{$t('Previous')}}
             </el-button>
 
@@ -74,7 +74,7 @@
                     </div>
                 </div>
     
-                <div v-for="(card, cardKey) in extraCards" class="entry_info_box">
+                <div v-for="(card, cardKey) in extraCards" class="entry_info_box" :key="cardKey">
                     <div class="entry_info_header">
                         <b>{{card.title}}</b>
                     </div>

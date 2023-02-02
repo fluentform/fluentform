@@ -1,0 +1,22 @@
+.splitpanes__splitter{
+    position: relative;
+    width: 14px;
+    &:after, 
+    &:before {
+        background-color: #d5d5d5;
+        content: "";
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transition: background-color .3s;
+        height: 32px;
+        transform: translateY(-50%);
+        width: 2px;
+    }
+    &:before {
+        margin-left: -3px;
+    }
+    &:after {
+        margin-left: 2px;
+    }
+}

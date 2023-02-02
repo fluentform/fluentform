@@ -1,128 +1,99 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="24">
-                <h2>{{ $t('Google reCAPTCHA Settings') }}</h2>
+    <div class="ff_recaptcha_wrap">
+        <el-form>
+            <div class="ff_card">
+                <div class="ff_card_head">
+                    <h5 class="title">{{ $t('Google reCAPTCHA Settings') }}</h5>
+                    <p class="text">
+                        {{$t('Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.')}} 
+                        <a href="http://www.google.com/recaptcha/" target="_blank">
+                            {{ $t('Read more about reCAPTCHA.') }}
+                        </a>
+                    </p>
+                    <p class="text"><b>{{ $t('Please generate API key and API secret using reCAPTCHA') }}</b></p>
+                </div><!-- .ff_card_head  -->
+                <div class="ff_card_body">
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title"> {{ $t('reCAPTCHA Version') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                <div slot="content">
+                                    <p>{{ $t('Please select which reCAPTCHA version you would like to use') }}</p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                            </el-tooltip>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-radio-group @change="load" v-model="reCaptcha.api_version">
+                                <el-radio label="v2_visible">{{ $t('Version 2 (Visible reCAPTCHA)') }}</el-radio>
+                                <el-radio label="v3_invisible">{{ $t('Version 3 (Invisible reCAPTCHA)') }}</el-radio>
+                            </el-radio-group>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
+                    
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('Site Key') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                <div slot="content">
+                                    <p>{{ $t('Enter your reCAPTCHA Site Key, if you do not have a key you can register for one at the provided link. reCAPTCHA is a free service.') }}</p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                            </el-tooltip>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-input v-model="reCaptcha.siteKey" @change="load"></el-input>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
+                    
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title"> {{ $t('Secret Key') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                <div slot="content">
+                                    <p>{{ $t('Enter your reCAPTCHA Secret Key, if you do not have a key you can register for one at the provided link. reCAPTCHA is a free service.') }}</p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                            </el-tooltip>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-input type="password" v-model="reCaptcha.secretKey" @change="load"></el-input>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
+                    
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3" v-if="v2">
+                            <h6 class="ff_block_title">{{ $t('Validate Keys') }}</h6>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <div id="reCaptcha" :data-sitekey="reCaptcha.siteKey" :data-size="size"/>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
+                </div><!-- .ff_card_body -->
+            </div><!-- .ff_card -->
 
-                <p>
-                    {{
-                        $t('Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.')
-                    }}
+            <div class="mt-4">
+                <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="clearSettings"
+                    :loading="clearing"
+                >{{ $t('Clear Settings') }}
+                </el-button>
 
-                    <a href="http://www.google.com/recaptcha/" target="_blank">
-                        {{ $t('Read more about reCAPTCHA.') }}
-                    </a>
-                </p>
-                <p><b>{{ $t('Please generate API key and API secret using reCAPTCHA') }}</b></p>
-            </el-col>
-        </el-row>
-
-
-        <div class="section-body">
-            <el-form label-width="205px" label-position="left">
-
-                <!--Site key-->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('reCAPTCHA Version') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <p>
-                                    {{ $t('Please select which reCAPTCHA version you would like to use') }}
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio-group @change="load" v-model="reCaptcha.api_version">
-                        <el-radio label="v2_visible">{{ $t('Version 2 (Visible reCAPTCHA)') }}</el-radio>
-                        <el-radio label="v3_invisible">{{ $t('Version 3 (Invisible reCAPTCHA)') }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <!--Site key-->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Site Key') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('reCAPTCHA Site Key') }}</h3>
-                                <p>
-                                    {{ $t('Enter your reCAPTCHA Site Key, if you do not have') }}<br>
-                                    {{ $t('a key you can register for one at the provided link.') }}<br>
-                                    {{ $t('reCAPTCHA is a free service.') }}
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-input v-model="reCaptcha.siteKey" @change="load"></el-input>
-                </el-form-item>
-
-                <!--Secret key-->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Secret Key') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('reCAPTCHA Secret Key') }}</h3>
-
-                                <p>
-                                    {{ $t('Enter your reCAPTCHA Secret Key, if you do not have') }}<br>
-                                    {{ $t('a key you can register for one at the provided link.') }} <br>
-                                    {{ $t('reCAPTCHA is a free service.') }}
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-input type="password" v-model="reCaptcha.secretKey" @change="load"></el-input>
-                </el-form-item>
-
-                <!--Validate Keys-->
-                <el-form-item :class="hidden">
-                    <template slot="label" v-if="v2">
-                        {{ $t('Validate Keys') }}
-                    </template>
-
-                    <div
-                        id="reCaptcha" 
-                        :data-sitekey="reCaptcha.siteKey"
-                        :data-size="size"
-                    />
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button
-                        type="danger"
-                        icon="el-icon-delete"
-                        size="small"
-                        @click="clearSettings"
-                        :loading="clearing"
-                    >{{ $t('Clear Settings') }}
-                    </el-button>
-
-                    <el-button
-                        type="primary"
-                        icon="el-icon-success"
-                        size="small"
-                        @click="save"
-                        :disabled="disabled"
-                        :loading="saving"
-                    >{{ $t('Save Settings') }}
-                    </el-button>
-                </el-form-item>
-            </el-form>
-
-            <div v-if="reCaptcha_status && !disabled">
-                <p>{{ $t('Your reCAPTCHA is valid') }}</p>
+                <el-button
+                    type="primary"
+                    icon="el-icon-success"
+                    @click="save"
+                    :disabled="disabled"
+                    :loading="saving"
+                >{{ $t('Save Settings') }}
+                </el-button>
             </div>
+        </el-form>
+
+        <div v-if="reCaptcha_status && !disabled">
+            <p>{{ $t('Your reCAPTCHA is valid') }}</p>
         </div>
     </div>
 </template>
@@ -144,21 +115,14 @@ export default {
             clearing: false
         }
     },
-
     computed: {
         v2() {
             return this.reCaptcha.api_version === 'v2_visible';
         },
-
         size() {
             return this.v2 ? 'normal' : 'invisible';
-        },
-
-        hidden() {
-            return this.v2 ? '' : 'mb0';
         }
     },
-
     methods: {
         load() {
             if (!this.validate()) {

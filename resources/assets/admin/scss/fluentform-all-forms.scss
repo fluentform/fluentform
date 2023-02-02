@@ -1,0 +1,187 @@
+@import "../assets/icons/fluentform-icon.css";
+@import "./partials/variables";
+@import "./partials/spacing";
+@import "./partials/fonts";
+@import "./partials/navbar";
+@import "./partials/card";
+@import "./partials/table";
+@import "./partials/switch";
+@import "./partials/layouts";
+@import "./partials/list";
+
+// form app
+.ff{
+    &_row{
+      display: flex;
+      flex-wrap: wrap;
+    }
+    &_app{
+      padding: $ff-app-gap;
+    }
+    &_form_wrap {
+      margin: 0;
+    }
+    &_filter_form_select{
+      width: $ff-filter-form-select;
+    }
+    &_advanced_search {
+    //   display: flex;
+    //   align-items: center;
+    //   padding: $ff-advanced-search-gap-y $ff-advanced-search-gap-x;
+    //   background: $ff-advanced-search-bg;
+    //   border-radius: $ff-advanced-search-border-radius;
+      position: absolute;
+      width: $ff-advanced-search-width;
+      background: $ff-advanced-search-bg;
+      right: 0;
+      z-index: 1024;
+      box-shadow: $ff-advanced-search-box-shadow;
+      padding: $ff-advanced-search-gap-y $ff-advanced-search-gap-x;
+      border-radius: $ff-advanced-search-border-radius;
+      top: 100%;
+      margin-top: 10px;
+      &_date_range{
+          background-color: $ff-advanced-search-date-range-bg;
+          padding: $ff-advanced-search-date-range-padding;
+          border-radius: $ff-advanced-search-date-range-border-radius;
+          .el-date-editor--daterange.el-input__inner{
+              width: $ff-advanced-search-date-range-input-width;
+          }
+      }
+      &_date_range{
+        p{
+          margin-top: 0;
+        }
+      }
+    }
+    &_advanced_title{
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    &_label{
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    &_form_group{
+        margin-bottom: 2rem;
+    }
+    &_form_item{
+        &_group{
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+        }
+        &_col{
+            width: 25%;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+    }
+    &_form_card{
+        background-color: $ff-form-card-bg;
+        border-radius: $ff-form-card-border-radius;
+        border: $ff-form-card-border;
+        position: relative;
+        &:hover{
+            .ff_form_card_overlap{
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        img {
+            border-radius: inherit;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        &_overlap{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: $ff-form-card-overlap-bg;
+            border-radius: $ff-form-card-overlap-border-radius;
+            cursor: pointer;
+            padding: $ff-form-card-overlap-padding;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            p{
+                color: $white;
+                padding-top: 2rem;
+            }
+        }
+    }
+    &_advanced_filter_wrap{
+        position: relative;
+    }
+    &_link_btn{
+        color: $ff-link-btn-color;
+        font-size: $ff-link-btn-font-size;
+        font-weight: $ff-link-btn-font-weight;
+        display: inline-flex;
+        align-items: center;
+    }
+    &_post_type_action_wrap{
+        .el-select{
+            width: 100%;
+        }
+    }
+    &_post_type_radios{
+      .el-radio__label{
+        text-transform: capitalize;
+      }
+    }
+}
+  
+// row actions
+.row-actions{
+    padding-right: 36px;
+    &-pipe{
+      .row-actions-item{
+        position: relative;
+        padding-right: 0.625rem;
+        &::after{
+          width: 1px;
+          height: 10px;
+          background-color: $row-action-item-after-bg;
+          position: absolute;
+          content: "";
+          top: $row-action-item-after-top;
+          right: $row-action-item-after-right;
+        }
+        &.trash{
+          &::after{
+            display: none;
+          }
+        }
+      }
+    }
+    span.trash a{
+      color: $row-action-trash-link-color;
+      cursor: pointer;
+      &:hover{
+        color: $row-action-trash-link-hover-color;
+      }
+    }
+    &-item{
+      font-weight: 400;
+    }
+}
+.shortcode_btn{
+  width: 280px;
+}
+.tablenav{
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+

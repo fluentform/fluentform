@@ -1282,7 +1282,7 @@ $defaultElements = [
                 ['width' => '', 'left' => '', 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('One Column Container', 'fluentform'),
+                'title'      => __('One Column', 'fluentform'),
                 'icon_class' => 'dashicons dashicons-align-center',
             ],
         ],
@@ -1300,7 +1300,7 @@ $defaultElements = [
                 ['width' => 50, 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('Two Column Container', 'fluentform'),
+                'title'      => __('Two Column', 'fluentform'),
                 'icon_class' => 'ff-edit-column-2',
             ],
         ],
@@ -1319,7 +1319,7 @@ $defaultElements = [
                 ['width' => 33.33, 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('Three Column Container', 'fluentform'),
+                'title'      => __('Three Column', 'fluentform'),
                 'icon_class' => 'ff-edit-three-column',
             ],
         ],
@@ -1339,7 +1339,7 @@ $defaultElements = [
                 ['width' => 25, 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('Four Column Container', 'fluentform'),
+                'title'      => __('Four Column', 'fluentform'),
                 'icon_class' => 'ff-edit-three-column',
             ],
         ],
@@ -1360,7 +1360,7 @@ $defaultElements = [
                 ['width' => 20, 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('Five Column Container', 'fluentform'),
+                'title'      => __('Five Column', 'fluentform'),
                 'icon_class' => 'ff-edit-three-column',
             ],
         ],
@@ -1382,7 +1382,7 @@ $defaultElements = [
                 ['width' => 16.67, 'fields' => []],
             ],
             'editor_options' => [
-                'title'      => __('Six Column Container', 'fluentform'),
+                'title'      => __('Six Column', 'fluentform'),
                 'icon_class' => 'ff-edit-three-column',
             ],
         ],

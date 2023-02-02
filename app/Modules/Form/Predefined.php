@@ -17,12 +17,12 @@ class Predefined extends Form
         $forms = [
 
             'blank_form' => [
-                'screenshot' => fluentformMix('img/forms/new_blank.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Blank Form',
                 'tag'        => ['blank'],
                 'category'   => 'Basic',
-                'brief'      => '',
+                'brief'      => 'Create a blank form',
                 'json'       => '[{"id":"132","title":"Blank Form","form":{"fields":[],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit Form","img_url":""}},"editor_options":{"title":"Submit Button"}}},"formSettings":{"confirmation":{"redirectTo":"samePage","messageToShow":"Thank you for your message. We will get in touch with you shortly","customPage":null,"samePageFormBehavior":"hide_form","customUrl":null},"restrictions":{"limitNumberOfEntries":{"enabled":false,"numberOfEntries":null,"period":"total","limitReachedMsg":"Maximum number of entries exceeded."},"scheduleForm":{"enabled":false,"start":null,"end":null,"pendingMsg":"Form submission is not started yet.","expiredMsg":"Form submission is now closed."},"requireLogin":{"enabled":false,"requireLoginMsg":"You must be logged in to submit the form."},"denyEmptySubmission":{"enabled":false,"message":"Sorry, you cannot submit an empty form. Let\'s hear what you wanna say."}},"layout":{"labelPlacement":"top","helpMessagePlacement":"with_label","errorMessagePlacement":"inline","asteriskPlacement": "asterisk-right"}},"notifications":{"name":"Admin Notification Email","sendTo":{"type":"email","email":"{wp.admin_email}","field":"email","routing":[{"email":null,"field":null,"operator":"=","value":null}]},"fromName":"","fromEmail":"","replyTo":"","bcc":"","subject":"[{inputs.names}] New Form Submission","message":"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>","conditionals":{"status":false,"type":"all","conditions":[{"field":null,"operator":"=","value":null}]},"enabled":false,"email_template":""}}]',
             ],
 
@@ -38,7 +38,7 @@ class Predefined extends Form
             // ),
 
             'basic_contact_form' => [
-                'screenshot' => fluentformMix('img/forms/contact_form.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Contact Form',
                 'is_pro'     => false,
@@ -49,10 +49,10 @@ class Predefined extends Form
             ],
 
             'conversational' => [
-                'screenshot' => fluentformMix('img/forms/conversational.gif'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Conversational Form',
-                'brief'      => 'Create Smart form UI',
+                'brief'      => 'Create smart form user interface',
                 'category'   => 'Basic',
                 'tag'        => ['contact', 'typeform', 'conversational', 'form'],
                 'json'       => '[{"id":"8","title":"Conversational Form","status":"published","appearance_settings":null,"form_fields":{"fields":[{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text","value":"","class":"","placeholder":"eg: John Doe","maxlength":""},"settings":{"container_class":"","label":"Your Name","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":true,"message":"This field is required"}},"conditional_logics":[],"is_unique":"no","unique_validation_message":"This value need to be unique."},"editor_options":{"title":"Simple Text","icon_class":"ff-edit-text","template":"inputText"},"style_pref":{"layout":"default","media":"' . fluentFormGetRandomPhoto() . '","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264130200.4393750282723139"},{"index":1,"element":"input_email","attributes":{"type":"email","name":"email","value":"","id":"","class":"","placeholder":"Email Address"},"settings":{"container_class":"","label":"Email","label_placement":"","help_message":"Please Provide your Email Address","admin_field_label":"Email Address","validation_rules":{"required":{"value":true,"message":"This field is required"},"email":{"value":true,"message":"This field must contain a valid email"}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"is_unique":"no","unique_validation_message":"Email address need to be unique."},"editor_options":{"title":"Email Address","icon_class":"ff-edit-email","template":"inputText"},"style_pref":{"layout":"default","media":"' . fluentFormGetRandomPhoto() . '","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264372080.5731140635572141"},{"index":2,"element":"input_text","attributes":{"type":"text","name":"input_text_1","value":"","class":"","placeholder":"Query Subject","maxlength":""},"settings":{"container_class":"","label":"Subject","label_placement":"","admin_field_label":"","help_message":"","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":[],"is_unique":"no","unique_validation_message":"This value need to be unique."},"editor_options":{"title":"Simple Text","icon_class":"ff-edit-text","template":"inputText"},"style_pref":{"layout":"default","media":"' . fluentFormGetRandomPhoto() . '","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264620550.8688317001333026"},{"index":3,"element":"textarea","attributes":{"name":"description","value":"","id":"","class":"","placeholder":"Your Query","rows":3,"cols":2,"maxlength":""},"settings":{"container_class":"","label":"Your Query","admin_field_label":"Query","label_placement":"","help_message":"Please let us know details about your query","validation_rules":{"required":{"value":false,"message":"This field is required"}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]}},"editor_options":{"title":"Text Area","icon_class":"ff-edit-textarea","template":"inputTextarea"},"style_pref":{"layout":"default","media":"' . fluentFormGetRandomPhoto() . '","brightness":0,"alt_text":"","media_x_position":50,"media_y_position":50},"uniqElKey":"el_16225264839650.04799061605619115"}],"submitButton":{"uniqElKey":"el_1524065200616","element":"button","attributes":{"type":"submit","class":""},"settings":{"align":"left","button_style":"default","container_class":"","help_message":"","background_color":"#409EFF","button_size":"md","color":"#ffffff","button_ui":{"type":"default","text":"Submit","img_url":""},"normal_styles":{"backgroundColor":"#409EFF","borderColor":"#409EFF","color":"#ffffff","borderRadius":"","minWidth":""},"hover_styles":{"backgroundColor":"#ffffff","borderColor":"#409EFF","color":"#409EFF","borderRadius":"","minWidth":""},"current_state":"normal_styles"},"editor_options":{"title":"Submit Button"}}},"has_payment":"0","type":"form","conditions":null,"created_by":"1","created_at":"2021-06-01 05:25:54","updated_at":"2021-06-01 05:48:59","metas":[{"meta_key":"formSettings","value":"{\"confirmation\":{\"redirectTo\":\"samePage\",\"messageToShow\":\"<h2>Thank you for your message. We will get in touch with you shortly<\/h2>\",\"customPage\":null,\"samePageFormBehavior\":\"hide_form\",\"customUrl\":null},\"restrictions\":{\"limitNumberOfEntries\":{\"enabled\":false,\"numberOfEntries\":null,\"period\":\"total\",\"limitReachedMsg\":\"Maximum number of entries exceeded.\"},\"scheduleForm\":{\"enabled\":false,\"start\":null,\"end\":null,\"pendingMsg\":\"Form submission is not started yet.\",\"expiredMsg\":\"Form submission is now closed.\",\"selectedDays\":[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]},\"requireLogin\":{\"enabled\":false,\"requireLoginMsg\":\"You must be logged in to submit the form.\"},\"denyEmptySubmission\":{\"enabled\":false,\"message\":\"Sorry, you cannot submit an empty form. Let us hear what you wanna say.\"}},\"layout\":{\"labelPlacement\":\"top\",\"helpMessagePlacement\":\"with_label\",\"errorMessagePlacement\":\"inline\",\"asteriskPlacement\":\"asterisk-right\"},\"delete_entry_on_submission\":\"no\",\"appendSurveyResult\":{\"enabled\":false,\"showLabel\":false,\"showCount\":false}}"},{"meta_key":"notifications","value":"{\"name\":\"Admin Notification Email\",\"sendTo\":{\"type\":\"email\",\"email\":\"{wp.admin_email}\",\"field\":\"email\",\"routing\":[{\"email\":null,\"field\":null,\"operator\":\"=\",\"value\":null}]},\"fromName\":\"\",\"fromEmail\":\"\",\"replyTo\":\"\",\"bcc\":\"\",\"subject\":\"[{inputs.names}] New Form Submission\",\"message\":\"<p>{all_data}<\/p>\n<p>This form submitted at: {embed_post.permalink}<\/p>\",\"conditionals\":{\"status\":false,\"type\":\"all\",\"conditions\":[{\"field\":null,\"operator\":\"=\",\"value\":null}]},\"enabled\":false,\"email_template\":\"\"}"},{"meta_key":"is_conversion_form","value":"yes"},{"meta_key":"step_data_persistency_status","value":"no"},{"meta_key":"_primary_email_field","value":"email"}]}]',
@@ -60,7 +60,7 @@ class Predefined extends Form
 
             //form number : 84
             'newsletter_form' => [
-                'screenshot' => fluentformMix('img/forms/comment_rating.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Newsletter Form',
                 'is_pro'     => false,
@@ -71,7 +71,7 @@ class Predefined extends Form
             ],
 
             'support_form' => [
-                'screenshot' => fluentformMix('img/forms/support_form.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Support Form',
                 'brief'      => 'Using this support form users can ask questions.',
@@ -81,7 +81,7 @@ class Predefined extends Form
             ],
 
             'inline_subscription' => [
-                'screenshot' => fluentformMix('img/forms/inline_subscription.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Optin Form',
                 'brief'      => 'Create inline optin form.',
@@ -91,7 +91,7 @@ class Predefined extends Form
             ],
 
             'polling_form' => [
-                'screenshot' => fluentformMix('img/forms/polling_form.png'),
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Polling Form',
                 'brief'      => 'A sample polling form to get user opinion from your scheduled time.',
@@ -102,7 +102,7 @@ class Predefined extends Form
 
             //form number : 55
             'product_order_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Product Order Form',
                 'is_pro'     => true,
@@ -114,7 +114,7 @@ class Predefined extends Form
 
             //form number : 58
             'online_service_order_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Online Service Order Form',
                 'is_pro'     => false,
@@ -126,7 +126,7 @@ class Predefined extends Form
 
             //form number : 60
             'payment_donation_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Online Donation Form',
                 'is_pro'     => true,
@@ -138,7 +138,7 @@ class Predefined extends Form
 
             //form number : 61
             'order_bump_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Order Bump Example Form',
                 'is_pro'     => true,
@@ -150,7 +150,7 @@ class Predefined extends Form
 
             //form number : 62
             'student_survey_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Student Survey Form',
                 'is_pro'     => true,
@@ -162,7 +162,7 @@ class Predefined extends Form
 
             //form number : 63
             'classroom_observation_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Classroom Observation Form',
                 'is_pro'     => true,
@@ -174,7 +174,7 @@ class Predefined extends Form
 
             //form number : 64
             'client_satisfaction_survey_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Client Satisfaction Survey Form',
                 'is_pro'     => false,
@@ -186,7 +186,7 @@ class Predefined extends Form
 
             //form number : 67
             'customer_complaint_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Customer Complaint Form',
                 'is_pro'     => false,
@@ -199,7 +199,7 @@ class Predefined extends Form
 
             //form number : 68
             'course_evaluation_survey_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Course Evaluation Survey form',
                 'is_pro'     => true,
@@ -212,7 +212,7 @@ class Predefined extends Form
 
             //form number : 70
             'market_research_survey_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Market Research Survey Form',
                 'is_pro'     => true,
@@ -224,7 +224,7 @@ class Predefined extends Form
 
             //form number : 71
             'database_management_help request_from' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Database Management Help Request from',
                 'is_pro'     => true,
@@ -237,7 +237,7 @@ class Predefined extends Form
 
             //form number : 72
             'university_enrollment_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'University Enrollment Form',
                 'is_pro'     => true,
@@ -250,7 +250,7 @@ class Predefined extends Form
 
             //form number : 74
             'volunteer_signup_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Volunteer sign up form',
                 'is_pro'     => false,
@@ -262,7 +262,7 @@ class Predefined extends Form
 
             //form number : 76
             'donation_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Donation Form',
                 'is_pro'     => false,
@@ -274,7 +274,7 @@ class Predefined extends Form
 
             //form number : 78
             'graphic_designer_contact_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Graphic Designer Contact Form',
                 'is_pro'     => false,
@@ -286,7 +286,7 @@ class Predefined extends Form
 
             //form number : 79
             'multi_file_upload_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Multi file upload form',
                 'is_pro'     => true,
@@ -298,7 +298,7 @@ class Predefined extends Form
 
             //form number : 81
             'highschool_transcript_request_from' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'High School Transcript Request From',
                 'is_pro'     => true,
@@ -310,7 +310,7 @@ class Predefined extends Form
 
             //form number : 82
             'partnership_application_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Partnership application form',
                 'is_pro'     => true,
@@ -323,7 +323,7 @@ class Predefined extends Form
 
             //form number : 83
             'employee_evaluation_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Employee Evaluation Form',
                 'is_pro'     => true,
@@ -336,7 +336,7 @@ class Predefined extends Form
 
             //form number : 85
             'party_invite_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Party Invite Form',
                 'is_pro'     => true,
@@ -348,7 +348,7 @@ class Predefined extends Form
 
             //form number : 87
             'software_survey_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Software Survey Form',
                 'is_pro'     => true,
@@ -360,7 +360,7 @@ class Predefined extends Form
 
             //form number : 88
             'hardware_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Hardware Request Form',
                 'is_pro'     => false,
@@ -372,7 +372,7 @@ class Predefined extends Form
 
             //form number : 89
             'functional_behavioral_assessment_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Functional Behavioral Assessment Form',
                 'is_pro'     => true,
@@ -384,7 +384,7 @@ class Predefined extends Form
 
             //form number : 92
             'finance_application_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Finance Application Form',
                 'is_pro'     => true,
@@ -396,7 +396,7 @@ class Predefined extends Form
 
             //form number : 94
             'blood_donation_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Blood Donation Form',
                 'is_pro'     => false,
@@ -408,7 +408,7 @@ class Predefined extends Form
 
             //form number : 95
             'room_booking_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Room Booking Form',
                 'is_pro'     => true,
@@ -420,7 +420,7 @@ class Predefined extends Form
 
             //form number : 96
             'marriage_gift_registration' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Marriage Gift Registration',
                 'is_pro'     => true,
@@ -432,7 +432,7 @@ class Predefined extends Form
 
             //form number : 97
             'accident_report_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Accident Report Form',
                 'is_pro'     => false,
@@ -444,7 +444,7 @@ class Predefined extends Form
 
             //form number : 98
             'bug_report_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Bug Report From',
                 'is_pro'     => true,
@@ -456,7 +456,7 @@ class Predefined extends Form
 
             //form number : 100
             'check_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Check Request Form',
                 'is_pro'     => false,
@@ -468,7 +468,7 @@ class Predefined extends Form
 
             //form number : 120
             'quote_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Quote Request Form',
                 'is_pro'     => true,
@@ -479,7 +479,7 @@ class Predefined extends Form
             ],
 
             'pricing_survey' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Pricing Survey Form',
                 'is_pro'     => true,
@@ -491,7 +491,7 @@ class Predefined extends Form
 
             //form number : 117
             'business_loan_application_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Loan Application Form',
                 'is_pro'     => true,
@@ -505,7 +505,7 @@ class Predefined extends Form
 
             //form number : 116
             'birthday_invitation_party' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Birthday invitation Party Form',
                 'is_pro'     => true,
@@ -516,7 +516,7 @@ class Predefined extends Form
             ],
 
             'vehicle_inspection_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Vehicle Inspection Form',
                 'is_pro'     => true,
@@ -528,7 +528,7 @@ class Predefined extends Form
 
             //form number : 114
             'workshop_registration_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Workshop Registration Form',
                 'is_pro'     => true,
@@ -540,7 +540,7 @@ class Predefined extends Form
 
             //form number : 113
             'social_service_home_visit_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Social Service Home Visit Form',
                 'is_pro'     => true,
@@ -553,7 +553,7 @@ class Predefined extends Form
 
             //form number : 112
             'it_service_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'IT Service Request Form',
                 'is_pro'     => false,
@@ -565,7 +565,7 @@ class Predefined extends Form
 
             //form number : 111
             'handicap_parking_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Handicap Parking Request Form',
                 'is_pro'     => true,
@@ -578,7 +578,7 @@ class Predefined extends Form
 
             //form number : 109
             'sponsor_request_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Sponsor Request Form',
                 'is_pro'     => true,
@@ -590,7 +590,7 @@ class Predefined extends Form
 
             //form number : 107
             'annual_vehicles_inspection_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Annual Vehicles Inspection Form',
                 'is_pro'     => true,
@@ -602,7 +602,7 @@ class Predefined extends Form
 
             //form number : 106
             'finance_department_analysis_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Finance Department Analysis Form',
                 'is_pro'     => false,
@@ -614,7 +614,7 @@ class Predefined extends Form
 
             //form number : 104
             'swimming_competition_enrollment_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Swimming Competition Enrollment Form',
                 'is_pro'     => true,
@@ -626,7 +626,7 @@ class Predefined extends Form
 
             //form number : 103
             'confidential_morbidity_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Confidential Morbidity Form',
                 'is_pro'     => true,
@@ -640,7 +640,7 @@ class Predefined extends Form
 
             //form number : 102
             'complaint_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Complaint form',
                 'is_pro'     => false,
@@ -652,7 +652,7 @@ class Predefined extends Form
 
             //form number : 101
             'charity_dinner_party_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Charity Dinner Party Form',
                 'is_pro'     => false,
@@ -663,7 +663,7 @@ class Predefined extends Form
             ],
 
             'event_registration_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Event Registration Form',
                 'brief'      => 'Using this registration form you can enable your event to achieve it\'s goal.',
@@ -673,7 +673,7 @@ class Predefined extends Form
             ],
 
             'vendor_contact_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Vendor Contact Form',
                 'brief'      => 'Easily create a vendor contact form and get logged in user details easily.',
@@ -683,7 +683,7 @@ class Predefined extends Form
             ],
 
             'patient_intake_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Patient Intake Form',
                 'brief'      => 'Using this form you can get the patient information with the medical history.',
@@ -693,7 +693,7 @@ class Predefined extends Form
             ],
 
             'volunteer_application_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Volunteer Application Form',
                 'brief'      => 'Get volunteer applicants data according to their particular interests with working days.',
@@ -703,7 +703,7 @@ class Predefined extends Form
             ],
 
             'request_for_quote' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Request for Quote',
                 'brief'      => 'Get user request for quote using this simple form.',
@@ -713,7 +713,7 @@ class Predefined extends Form
             ],
 
             'conference_proposal' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Conference Proposal',
                 'brief'      => 'This sample form is to make a conference proposal efficient and effective.',
@@ -723,7 +723,7 @@ class Predefined extends Form
             ],
 
             'report_a_bug' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Report a bug',
                 'brief'      => 'You can get user feedback, bug report, and the issue details from user.',
@@ -733,7 +733,7 @@ class Predefined extends Form
             ],
 
             'tell_a_friend_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Tell A Friend Form',
                 'brief'      => 'Get text from you site users.',
@@ -743,7 +743,7 @@ class Predefined extends Form
             ],
 
             'directory_information_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Directory Information Form',
                 'brief'      => 'This form allows you to get the directory information.',
@@ -753,7 +753,7 @@ class Predefined extends Form
             ],
 
             'request_for_leave' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Request for Leave',
                 'category'   => 'HR',
@@ -763,7 +763,7 @@ class Predefined extends Form
             ],
 
             'admission_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'is_pro'     => true,
                 'title'      => 'Admissions Form',
@@ -774,7 +774,7 @@ class Predefined extends Form
             ],
 
             'loan_application_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Loan Application Form',
                 'is_pro'     => true,
@@ -785,7 +785,7 @@ class Predefined extends Form
             ],
 
             'job_listing_form' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Job Listing Form',
                 'is_pro'     => true,
@@ -796,7 +796,7 @@ class Predefined extends Form
             ],
 
             'website_feedback' => [
-                'screenshot' => '',
+                'screenshot' => App::publicUrl('img/forms/form-layout.png'),
                 'createable' => true,
                 'title'      => 'Website Feedback',
                 'is_pro'     => true,
@@ -813,7 +813,7 @@ class Predefined extends Form
     private function getBlankConversationalForm()
     {
         return [
-            'screenshot' => '',
+            'screenshot' => App::publicUrl('img/forms/form-layout.png'),
             'createable' => true,
             'title'      => 'Conversational Form',
             'brief'      => 'Create Smart form UI',

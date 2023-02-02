@@ -1,461 +1,530 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <h2>{{ $t('Email Notifications') }}</h2>
-            </el-col>
+    <div class="ff_notifications_wrapper">
+        <div class="ff_card">
+            <div class="ff_card_head">
+                <div class="ff_card_head_title_group justify-between">
+                    <h5 class="title">{{ $t('Email Notifications') }}</h5>
+                    <ul class="ff_btn_group">
+                        <template v-if="selected">
+                            <li>
+                                <el-button @click="discard" type="dark" size="medium" icon="el-icon-arrow-left">
+                                    {{ $t('Back') }}
+                                </el-button>
+                            </li>
+                            <li>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="conditionalEmailSettings"></video-doc>
+                            </li>
+                        </template>
+                        <template v-else>
+                            <li>
+                                <el-button @click="add" type="dark" size="medium" icon="el-icon-plus">
+                                    {{ $t('Add Notification') }}
+                                </el-button>
+                            </li>
+                            <li>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formEmailSettings"></video-doc>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div><!-- .ff_card_head -->
 
-            <!--Save settings-->
-            <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <template v-if="selected">
-                    <el-button @click="discard"
-                               icon="el-icon-arrow-left"
-                               size="small"
-                    >
-                        {{ $t('Back') }}
-                    </el-button>
-                    <video-doc route_id="conditionalEmailSettings"></video-doc>
+            <div class="ff_card_body">
+                <template v-if="!selected">
+                    <div class="ff_table_wrap">
+                        <el-table 
+                            v-loading="loading"
+                            :element-loading-text="$t('Fetching Notifications...')"
+                            :data="notifications"
+                            class="ff_table"
+                        >
+                            <el-table-column width="180" :label="$t('Status')">
+                                <template slot-scope="scope">
+                                    <span class="mr-3" v-if="scope.row.value.enabled">{{$t('Enabled')}}</span>
+                                    <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                    <el-switch
+                                        :width="44"
+                                        active-color="#1a7efb" 
+                                        @change="handleActive(scope.$index)" 
+                                        v-model="scope.row.value.enabled"
+                                    ></el-switch>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column prop="value.name" :label="$t('Name')"></el-table-column>
+
+                            <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
+
+                            <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <ul class="ff_btn_group sm">
+                                        <li>
+                                            <el-tooltip :content="$t('Duplicate notification settings')" placement="top">
+                                                <el-button 
+                                                    class="el-button--icon"
+                                                    @click="clone(scope.$index)" 
+                                                    type="primary" 
+                                                    icon="el-icon-plus" 
+                                                    size="mini"
+                                                ></el-button>
+                                            </el-tooltip>
+                                        </li>
+                                        <li>
+                                            <el-button 
+                                                class="el-button--icon"
+                                                @click="edit(scope.$index)" 
+                                                type="success" 
+                                                icon="el-icon-setting" 
+                                                size="mini"
+                                            ></el-button>
+                                        </li>
+                                        <li>
+                                            <remove @on-confirm="remove(scope.$index, scope.row.id)">
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </li>
+                                    </ul>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div><!-- .ff_table_wrap -->
+
+                    <Notice class="mt-6" v-if="!has_fluentsmtp && !smtp_closed">
+                        <p class="fs-15">{{ $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ') }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
+                        <ul class="ff_btn_group sm">
+                            <li>
+                                <a class="el-button el-button--danger el-button--small" :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>
+                            </li>
+                            <li>
+                                <a class="el-button el-button--info el-button--small" @click="closeSmtp()">
+                                    Close
+                                </a>
+                            </li>
+                        </ul>
+                    </Notice>
+
                 </template>
-                <template v-else>
-                    <el-button @click="add" type="primary"
-                               size="small" icon="el-icon-plus"
-                    >{{ $t('Add Notification') }}
-                    </el-button>
-                    <video-doc route_id="formEmailSettings"></video-doc>
-                </template>
-            </el-col>
-        </el-row>
 
-        <template v-if="!selected">
-            <!-- Notification Table: 1 -->
-            <el-table v-loading="loading"
-                      :element-loading-text="$t('Fetching Notifications...')"
-                      :data="notifications"
-                      stripe
-                      class="el-fluid">
+                <!-- Notification Editor -->
+                <el-form v-else-if="selected">
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title"> {{ $t('Name') }}</h6>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-input v-model="selected.value.name"></el-input>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
+                    
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3 is-required">
+                            <h6 class="ff_block_title">{{ $t('Send To') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Enter the email address you would like the notification email sent to.') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                            </el-tooltip>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-radio-group v-model="selected.value.sendTo.type">
+                                <el-radio label="email">{{ $t('Enter Email') }}</el-radio>
+                                <el-radio label="field">{{ $t('Select a Field') }}</el-radio>
+                                <el-radio v-if="!!has_pro" label="routing">
+                                    {{ $t('Configure Routing') }}
+                                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                                        <div slot="content">
+                                            <h3>{{ $t('Routing') }}</h3>
 
-                <el-table-column width="80">
-                    <template slot-scope="scope">
-                        <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                                   v-model="scope.row.value.enabled"
-                        ></el-switch>
-                    </template>
-                </el-table-column>
+                                            <p>
+                                                {{ $t('Allows notification to be sent to different email ') }}<br>
+                                                {{ $t('addresses depending on values selected in the form.') }}
+                                            </p>
+                                        </div>
 
-                <el-table-column width="100" :label="$t('Status')">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.value.enabled">Enabled</span>
-                        <span v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
-                    </template>
-                </el-table-column>
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                </el-radio>
+                            </el-radio-group>
+                            <error-view field="sendTo.type" :errors="errors"></error-view>
 
-                <el-table-column prop="value.name" :label="$t('Name')"></el-table-column>
-
-                <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
-
-                <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
-                    <template slot-scope="scope">
-                        <el-tooltip class="item" effect="light" :content="$t('Duplicate notification settings')" placement="top">
-                            <el-button @click="clone(scope.$index)" type="success"
-                                       icon="el-icon-plus" size="mini"
-                            ></el-button>
-                        </el-tooltip>
-
-                        <el-button @click="edit(scope.$index)" type="primary"
-                                   icon="el-icon-setting" size="mini"
-                        ></el-button>
-
-                        <remove @on-confirm="remove(scope.$index, scope.row.id)"></remove>
-                    </template>
-                </el-table-column>
-            </el-table>
-
-            <div style="margin-top: 50px;" v-if="!has_fluentsmtp && !smtp_closed" class="ff_smtp_suggest">
-                <span @click="closeSmtp()" class="ff_smtp_close">x</span>
-                <p>{{ $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ') }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
-                <a class="el-button el-button--info el-button--small" :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>
-            </div>
-
-        </template>
-
-
-        <!-- Notification Editor -->
-        <el-form v-else-if="selected" label-width="205px" label-position="left">
-
-            <!--Notification name-->
-            <el-form-item :label="$t('Name')">
-                <el-input v-model="selected.value.name"></el-input>
-            </el-form-item>
-
-            <!--send to-->
-            <el-form-item class="is-required" :class="errors.has('sendTo.type') ? 'is-error' : ''">
-                <template slot="label">
-                    {{ $t('Send To') }}
-
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Send To Email Address') }}</h3>
-
-                            <p>
-                                {{ $t('Enter the email address you would like') }} <br>
-                                {{ $t('the notification email sent to.') }}
-                            </p>
-                        </div>
-
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <el-radio-group v-model="selected.value.sendTo.type">
-                    <el-radio label="email">{{ $t('Enter Email') }}</el-radio>
-                    <el-radio label="field">{{ $t('Select a Field') }}</el-radio>
-                    <el-radio v-if="!!has_pro" label="routing">
-                        {{ $t('Configure Routing') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Routing') }}</h3>
-
-                                <p>
-                                    {{ $t('Allows notification to be sent to different email ') }}<br>
-                                    {{ $t('addresses depending on values selected in the form.') }}
-                                </p>
+                            <!--additional field based on the send to selection-->
+                            <div v-if="selected.value.sendTo.type === 'email'" class="conditional-items mt-4">
+                                <div class="ff_block_item" :class="errors.has('sendTo.email') ? 'is-error' : ''">
+                                    <div class="ff_block_title_group mb-3">
+                                        <h6 class="ff_block_title"> {{ $t('Send to Email') }}</h6>
+                                    </div><!-- .ff_block_title_group -->
+                                    <div class="ff_block_item_body">
+                                        <el-input v-model="selected.value.sendTo.email"></el-input>
+                                        <error-view field="sendTo.email" :errors="errors"></error-view>
+                                    </div><!-- .ff_block_item_body -->
+                                </div><!-- .ff_block_item -->
                             </div>
 
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </el-radio>
-                </el-radio-group>
+                            <div v-else-if="selected.value.sendTo.type ==='field'" class="conditional-items mt-4">
+                                <div class="ff_block_item" :class="errors.has('sendTo.field') ? 'is-error' : ''">
+                                    <div class="ff_block_title_group mb-3">
+                                        <h6 class="ff_block_title"> {{ $t('Send to Field') }}</h6>
+                                    </div><!-- .ff_block_title_group -->
+                                    <div class="ff_block_item_body">
+                                        <el-select class="w-100" v-model="selected.value.sendTo.field" :placeholder="$t('Select an email field')">
+                                            <el-option
+                                                v-for="(item, index) in emailFields"
+                                                :key="index"
+                                                :label="item.admin_label"
+                                                :value="item.attributes.name"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                        <error-view field="sendTo.field" :errors="errors"></error-view>
+                                    </div><!-- .ff_block_item_body -->
+                                </div><!-- .ff_block_item -->
+                            </div>
 
-                <error-view field="sendTo.type" :errors="errors"></error-view>
-            </el-form-item>
+                            <div class="conditional-items" v-else-if="selected.value.sendTo.type == 'routing'">
+                                <routing-filter-fields :fields="inputs" :routings="selected.value.sendTo.routing"></routing-filter-fields>
+                                <error-view field="sendTo.routing" :errors="errors"></error-view>
+                            </div>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-            <!--additional field based on the send to selection-->
-            <template v-if="selected.value.sendTo.type === 'email'">
-                <el-form-item :label="$t('Send to Email')" class="conditional-items"
-                              :class="errors.has('sendTo.email') ? 'is-error' : ''"
-                >
-                    <el-input v-model="selected.value.sendTo.email"></el-input>
 
-                    <error-view field="sendTo.email" :errors="errors"></error-view>
-                </el-form-item>
-            </template>
+                    <!--Subject-->
+                    <div class="ff_block_item is-required" :class="errors.has('subject') ? 'is-error' : ''">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title"> {{ $t('Subject') }}</h6>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <input-popover fieldType="text" v-model="selected.value.subject" :data="editorShortcodes"></input-popover>
+                            <error-view field="subject" :errors="errors"></error-view>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-            <template v-else-if="selected.value.sendTo.type ==='field'">
-                <el-form-item :label="('Send to Field')" class="conditional-items"
-                              :class="errors.has('sendTo.field') ? 'is-error' : ''"
-                >
-                    <el-select v-model="selected.value.sendTo.field" :placeholder="$t('Select an email field')">
-                        <el-option
-                            v-for="(item, index) in emailFields"
-                            :key="index"
-                            :label="item.admin_label"
-                            :value="item.attributes.name">
-                        </el-option>
-                    </el-select>
+                    <!--message-->
+                    <div class="ff_block_item is-required" :class="errors.has('message') ? 'is-error' : ''">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title"> {{ $t('Email Body') }}</h6>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <input-popover 
+                                :rows="10" 
+                                v-if="selected.value.asPlainText == 'yes'" fieldType="textarea"
+                                v-model="selected.value.message"
+                                :placeholder="$t('Email Body HTML')"
+                                :data="editorShortcodes"
+                            ></input-popover>
+                            <wp_editor
+                                v-else
+                                :editorShortcodes="emailBodyeditorShortcodes"
+                                :height="300"
+                                v-model="selected.value.message">
+                            </wp_editor>
+                            <error-view field="message" :errors="errors"></error-view>
 
-                    <error-view field="sendTo.field" :errors="errors"></error-view>
-                </el-form-item>
-            </template>
+                            <el-checkbox class="mt-3" true-label="yes" false-label="no" v-model="selected.value.asPlainText">
+                                {{ $t('Send Email as RAW HTML Format') }}
+                            </el-checkbox>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-            <div class="conditional-items" v-else-if="selected.value.sendTo.type == 'routing'">
-                <routing-filter-fields :fields="inputs"
-                                       :routings="selected.value.sendTo.routing"></routing-filter-fields>
-                <error-view field="sendTo.routing" :errors="errors"></error-view>
-            </div>
-
-            <!--Subject-->
-            <el-form-item :label="$t('Subject')" class="is-required" :class="errors.has('subject') ? 'is-error' : ''">
-
-                <input-popover fieldType="text"
-                               v-model="selected.value.subject"
-                               :data="editorShortcodes"
-                ></input-popover>
-
-                <error-view field="subject" :errors="errors"></error-view>
-            </el-form-item>
-
-            <!--message-->
-            <el-form-item :label="$t('Email Body')" class="is-required" :class="errors.has('message') ? 'is-error' : ''">
-                <input-popover :rows="10" v-if="selected.value.asPlainText == 'yes'" fieldType="textarea"
-                               v-model="selected.value.message"
-                               :placeholder="$t('Email Body HTML')"
-                               :data="editorShortcodes"
-                ></input-popover>
-                <wp_editor
-                    v-else
-                    :editorShortcodes="emailBodyeditorShortcodes"
-                    :height="300"
-                    v-model="selected.value.message">
-                </wp_editor>
-                <error-view field="message" :errors="errors"></error-view>
-                <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="selected.value.asPlainText">
-                    {{ $t('Send Email as RAW HTML Format') }}
-                </el-checkbox>
-            </el-form-item>
-
-            <!-- FilterFields -->
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Conditional Logics') }}
-
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Conditional Logics') }}</h3>
-                            <p>
-                                {{ $t('Allow this feed conditionally') }}
-                            </p>
-                        </div>
-
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-                <FilterFields :fields="inputs" :conditionals="selected.value.conditionals"
-                              :disabled="!has_pro"></FilterFields>
-            </el-form-item>
-            <el-form-item v-if="attachmentFields.length && selected.value.attachments">
-                <template slot="label">
-                    {{ $t('Email Attachments') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Email Attachments') }}</h3>
-                            <p>
-                                {{ $t('Select the field that you want to attach in the email') }}
-                            </p>
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <el-checkbox-group v-model="selected.value.attachments">
-                    <el-checkbox v-for="attachmentField in attachmentFields" :key="attachmentField.attributes.name"
-                                 :label="attachmentField.attributes.name">
-                        {{attachmentField.admin_label}}
-                    </el-checkbox>
-                </el-checkbox-group>
-            </el-form-item>
-            <!-- Media Attachments -->
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Media File Attachments') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            {{ $t('Add Additional Media File Attachments for the email') }}
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-                <el-button type="primary"
-                           :disabled="!has_pro"
-                           plain
-                           icon="el-icon-upload"
-                           size="small"
-                           @click="mediaAttachments()"
-                >
-                    {{$t('Upload')}} <span v-if="!has_pro">{{ $t('(Require Pro Version)') }}</span>
-                </el-button>
-
-                <li v-if="selected.value.media_attachments.length" v-for="(attachment,index) in selected.value.media_attachments" :key="index">
-                    {{attachment.name}}
-                    <span>
-                         <el-button type="danger"
-                                    plain
-                                    icon="el-icon-delete"
-                                    size="mini"
-                                    @click="removeMediaAttachments(index)"
-                         ></el-button>
-
-                    </span>
-                </li>
-
-            </el-form-item>
-
-            <el-form-item v-if="pdf_feeds.length">
-                <template slot="label">
-                    {{ $t('PDF Attachments') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('PDF Attachments') }}</h3>
-                            <p>
-                                {{ $t('You can select PDF attachments from your created PDF templates') }}
-                            </p>
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <el-checkbox-group v-model="selected.value.pdf_attachments">
-                    <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{ feed.label }}
-                    </el-checkbox>
-                </el-checkbox-group>
-
-            </el-form-item>
-            <p v-show="hasAttachment">{{ $t('You should use SMTP so send attachment via email otherwise, It may go to spam') }}</p>
-
-            <el-form-item v-if="hasPaymentField">
-                <template slot="label">
-                    {{ $t('Send Email') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Send Email') }}</h3>
-                            <p>{{ $t('Please Select when the email will be sent for Payment Forms') }}</p>
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                    <el-radio-group v-model="selected.value.feed_trigger_event">
-                        <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
-                        <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
-                    </el-radio-group>
-
-                <p>{{ $t('Please Note, for offline payment this settings will not work.Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.') }}</p>
-
-            </el-form-item>
-            <p><br/></p>
-            <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
-                <el-collapse-item :title="$t('Advanced')" name="advanced">
-                    <!--from name-->
-                    <el-form-item>
-                        <template slot="label">
-                            {{ $t('From Name') }}
-
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <!-- FilterFields -->
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('Conditional Logics') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
-                                    <h3>{{ $t('From Name') }}</h3>
-
                                     <p>
-                                        {{ $t('Enter the name you would like the notification email ') }}<br>
-                                        {{ $t('sent from, or select the name from available name fields.') }}
+                                        {{ $t('Allow this feed conditionally') }}
                                     </p>
                                 </div>
-
-                                <i class="el-icon-info el-text-info"></i>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                             </el-tooltip>
-                        </template>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <FilterFields 
+                                :fields="inputs" 
+                                :conditionals="selected.value.conditionals"
+                                v-if="has_pro">
+                            </FilterFields>
+                            <Notice type="danger-soft" v-else>
+                                <el-row class="justify-between items-center" :gutter="10">
+                                    <el-col :span="12">
+                                        <h6 class="title mb-1">{{$t('Conditional Logics is a Pro feature')}}</h6>
+                                        <p class="text fs-14">{{$t('Please upgrade to PRO to unlock the feature.')}}</p>
+                                    </el-col>
+                                    <el-col :span="12" class="text-right">
+                                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+                                            {{$t('Upgrage to Pro')}}
+                                        </a>
+                                    </el-col>
+                                </el-row>
+                            </Notice>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-                        <input-popover fieldType="text"
-                                       v-model="selected.value.fromName"
-                                       :data="editorShortcodes"
-                        ></input-popover>
-                        <p v-if="selected.value.fromName"> {{
-                                $t('It will only be visible in the email if \"From Email\" value is available')
-                            }}</p>
-                    </el-form-item>
-
-                    <!--from email-->
-                    <el-form-item>
-                        <template slot="label">
-                            {{ $t('From Email') }}
-
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <div class="ff_block_item" v-if="attachmentFields.length && selected.value.attachments">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('Email Attachments') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
-                                    <h3>{{ $t('From Email Address') }}</h3>
                                     <p>
-                                        {{ $t('Enter the email address you would like the ')}}<br>
-                                        {{ $t('notification email sent from, or select the ') }}<br>
-                                        {{ $t('email from available email form fields.') }}
+                                        {{ $t('Select the field that you want to attach in the email') }}
                                     </p>
                                 </div>
-                                <i class="el-icon-info el-text-info"></i>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                             </el-tooltip>
-                        </template>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-checkbox-group v-model="selected.value.attachments">
+                                <el-checkbox 
+                                    v-for="attachmentField in attachmentFields" 
+                                    :key="attachmentField.attributes.name"
+                                    :label="attachmentField.attributes.name"
+                                >
+                                    {{attachmentField.admin_label}}
+                                </el-checkbox>
+                            </el-checkbox-group>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-                        <input-popover fieldType="text"
-                                       v-model="selected.value.fromEmail"
-                                       :data="fromEmailShortcodes"
-                        ></input-popover>
-                        <p v-if="selected.value.fromEmail">{{
-                                ('It\'s not recommended to change from email. Please use your domain\'s email / SMTP main email. Otherwise email may failed to send.')
-                            }}</p>
-                    </el-form-item>
-
-                    <!--reply to-->
-                    <el-form-item>
-                        <template slot="label">
-                            {{ $t('Reply To') }}
-
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <!-- Media Attachments -->
+                    <div class="ff_block_item">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('Media File Attachments') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
-                                    <h3>{{ $t('Reply To') }}</h3>
-
                                     <p>
-                                        {{ $t('Enter the email address you would like to be ')}}<br>
-                                        {{ $t('used as the reply to address for the notification email.') }}
+                                        {{ $t('Add Additional Media File Attachments for the email') }}
                                     </p>
                                 </div>
-
-                                <i class="el-icon-info el-text-info"></i>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                             </el-tooltip>
-                        </template>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-button type="upload"
+                                icon="el-icon el-icon-upload"
+                                @click="mediaAttachments()"
+                            >
+                                {{$t('Upload Media')}}
+                            </el-button>
+                            <div class="mt-4" v-if="selected.value.media_attachments.length">
+                                <div
+                                    class="ff_file_upload_result" 
+                                    v-for="(attachment, index) in selected.value.media_attachments" 
+                                    :key="index"
+                                >
+                                    <div class="ff_file_upload_preview">
+                                        <img :src="attachment.url" :alt="attachment.name" />
+                                    </div>
+                                    <div class="ff_file_upload_data">
+                                        <el-button 
+                                            class="el-button--icon"
+                                            type="danger"
+                                            icon="el-icon-delete"
+                                            size="mini"
+                                            @click="removeMediaAttachments(index)"
+                                        ></el-button>
+                                        <div class="ff_file_upload_description">
+                                            {{attachment.name}}
+                                        </div>
+                                        <div class="ff_file_upload_size">
+                                            {{attachment.size}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-                        <input-popover fieldType="text"
-                                       v-model="selected.value.replyTo"
-                                       :data="emailShortcodes"
-                        ></input-popover>
-                    </el-form-item>
-
-                    <!--BCC-->
-                    <el-form-item>
-                        <template slot="label">
-                            BCC
-
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <div class="ff_block_item" v-if="pdf_feeds.length">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('PDF Attachments') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
-                                    <h3>{{ $t('Blind Carbon Copy Addresses') }}</h3>
-
                                     <p>
-                                        {{ $t('Enter a comma separated list of email addresses ') }}<br>
-                                        {{ $t('you would like to receive a BCC of the notification email.') }}
+                                        {{ $t('You can select PDF attachments from your created PDF templates') }}
                                     </p>
                                 </div>
-
-                                <i class="el-icon-info el-text-info"></i>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                             </el-tooltip>
-                        </template>
-                        <input-popover fieldType="text"
-                                       v-model="selected.value.bcc"
-                                       :data="emailShortcodes"
-                        ></input-popover>
-                    </el-form-item>
-                    <!--CC-->
-                    <el-form-item>
-                        <template slot="label">
-                            {{ $t('CC') }}
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-checkbox-group v-model="selected.value.pdf_attachments">
+                                <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{ feed.label }}
+                                </el-checkbox>
+                            </el-checkbox-group>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <p v-if="hasAttachment" class="text-warning">{{ $t('You should use SMTP so send attachment via email otherwise, It may go to spam') }}</p>
+
+                    <div class="ff_block_item" v-if="hasPaymentField">
+                        <div class="ff_block_title_group mb-3">
+                            <h6 class="ff_block_title">{{ $t('Send Email') }}</h6>
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                 <div slot="content">
-                                    <h3>{{ $t('Carbon Copy Addresses') }}</h3>
-
                                     <p>
-                                        {{ $t('Enter a comma separated list of email addresses ')}}<br>
-                                        {{ $t('you would like to receive a CC of the notification email.') }}
+                                        {{ $t('Please Select when the email will be sent for Payment Forms') }}
                                     </p>
                                 </div>
-
-                                <i class="el-icon-info el-text-info"></i>
+                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                             </el-tooltip>
-                        </template>
+                        </div><!-- .ff_block_title_group -->
+                        <div class="ff_block_item_body">
+                            <el-radio-group v-model="selected.value.feed_trigger_event">
+                                <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
+                                <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
+                            </el-radio-group>
+                            <el-alert
+                                class="mt-4"
+                                :title="$t('Please Note, for offline payment this settings will not work. Pending offline payment form notifications is sent instantly, we will remove this after our next major release, so this settings will also work for offline payments.')"
+                                type="warning"
+                                :closable="false"
+                            ></el-alert>
+                        </div><!-- .ff_block_item_body -->
+                    </div><!-- .ff_block_item -->
 
-                        <input-popover fieldType="text"
-                                       v-model="selected.value.cc"
-                                       :data="emailShortcodes"
-                        ></input-popover>
-                    </el-form-item>
-                </el-collapse-item>
+                    <el-collapse class="el-collapse-settings" v-model="activeNotificationCollapse">
+                        <el-collapse-item name="advanced">
+                            <template slot="title">
+                                {{$t('Advanced')}}<i class="header-icon el-icon-info"></i>
+                            </template>
+                            <!--from name-->
+                            <div class="ff_block_item">
+                                <div class="ff_block_title_group mb-3">
+                                    <h6 class="ff_block_title"> {{ $t('From Name') }}</h6>
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enter the name you would like the notification email ') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                                    </el-tooltip>
+                                </div><!-- .ff_block_title_group -->
+                                <div class="ff_block_item_body">
+                                    <input-popover fieldType="text"
+                                            v-model="selected.value.fromName"
+                                            :data="editorShortcodes"
+                                    ></input-popover>
+                                    <p v-if="selected.value.fromName"> 
+                                        {{$t('It will only be visible in the email if \"From Email\" value is available')}}
+                                    </p>
+                                </div><!-- .ff_block_item_body -->
+                            </div><!-- .ff_block_item -->
+                            
+                            <!--from email-->
+                            <div class="ff_block_item">
+                                <div class="ff_block_title_group mb-3">
+                                    <h6 class="ff_block_title"> {{ $t('From Email') }}</h6>
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enter the email address you would like the notification email sent from, or select the ') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                                    </el-tooltip>
+                                </div><!-- .ff_block_title_group -->
+                                <div class="ff_block_item_body">
+                                   <input-popover fieldType="text"
+                                        v-model="selected.value.fromEmail"
+                                        :data="fromEmailShortcodes"
+                                    ></input-popover>
+                                    <p v-if="selected.value.fromEmail">
+                                        {{ $t('It\'s not recommended to change from email. Please use your domain\'s email / SMTP main email. Otherwise email may failed to send.')
+                                        }}
+                                    </p>
+                                </div><!-- .ff_block_item_body -->
+                            </div><!-- .ff_block_item -->
 
-            </el-collapse>
+                            <!--reply to-->
+                            <div class="ff_block_item">
+                                <div class="ff_block_title_group mb-3">
+                                    <h6 class="ff_block_title">{{ $t('Reply To') }}</h6>
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enter the email address you would like to be used as the reply to address for the notification email.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                                    </el-tooltip>
+                                </div><!-- .ff_block_title_group -->
+                                <div class="ff_block_item_body">
+                                   <input-popover fieldType="text"
+                                        v-model="selected.value.replyTo"
+                                        :data="emailShortcodes"
+                                    ></input-popover>
+                                </div><!-- .ff_block_item_body -->
+                            </div><!-- .ff_block_item -->
 
-            <div class="text-right">
-                <el-button
-                    :loading="loading"
-                    @click="store"
-                    size="small"
-                    type="primary"
-                    icon="el-icon-success">
-                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
-                </el-button>
-            </div>
-        </el-form>
+                            <!--BCC-->
+                            <div class="ff_block_item">
+                                <div class="ff_block_title_group mb-3">
+                                    <h6 class="ff_block_title">{{$t('BCC')}}</h6>
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enter a comma separated list of email addresses you would like to receive a BCC of the notification email.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                                    </el-tooltip>
+                                </div><!-- .ff_block_title_group -->
+                                <div class="ff_block_item_body">
+                                   <input-popover fieldType="text"
+                                        v-model="selected.value.bcc"
+                                        :data="emailShortcodes"
+                                    ></input-popover>
+                                </div><!-- .ff_block_item_body -->
+                            </div><!-- .ff_block_item -->
+
+                            <!--CC-->
+                            <div class="ff_block_item">
+                                <div class="ff_block_title_group mb-3">
+                                    <h6 class="ff_block_title">{{$t('CC')}}</h6>
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enter a comma separated list of email addresses you would like to receive a CC of the notification email.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
+                                    </el-tooltip>
+                                </div><!-- .ff_block_title_group -->
+                                <div class="ff_block_item_body">
+                                   <input-popover fieldType="text"
+                                        v-model="selected.value.cc"
+                                        :data="emailShortcodes"
+                                    ></input-popover>
+                                </div><!-- .ff_block_item_body -->
+                            </div><!-- .ff_block_item -->
+
+                        </el-collapse-item>
+
+                    </el-collapse>
+
+                    <div>
+                        <el-button
+                            :loading="loading"
+                            @click="store"
+                            size="small"
+                            type="primary"
+                            icon="el-icon-success">
+                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
+                        </el-button>
+                    </div>
+                </el-form>
+            </div><!--.ff_card_body -->
+        </div><!--.ff_card -->
     </div>
 </template>
 
@@ -605,9 +674,11 @@ export default {
                     if(attachment.url){
                         this.selected.value.media_attachments.push({
                             name: attachment.filename,
-                            url:attachment.url
+                            url: attachment.url,
+                            size: attachment.filesizeHumanReadable
                         })
                     }
+                    console.log(attachment)
                 };
                 wp.media.editor.open();
                 return false;

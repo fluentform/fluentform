@@ -1,10 +1,9 @@
 <template>
     <div  :class="{'ff_backdrop': visibility}">
         <el-dialog
-            top="40px"
-            width="90%"
-             :element-loading-text="$t('Creating Form, Please wait...')"
-             element-loading-spinner="el-icon-loading"
+            top="50px"
+            :element-loading-text="$t('Creating Form, Please wait...')"
+            element-loading-spinner="el-icon-loading"
             :loading="creatingForm"
             :visible="visibility"
             :before-close="close"
@@ -17,18 +16,16 @@
             />
 
             <div slot="title">
-                <b>
-                    {{ $t('Choose a pre - made form template or') }}
-                    <a href="#" type="info" @click.prevent="createForm('blank_form')">
-                        {{ $t('create a blank form') }}
-                    </a>
-                </b>
+                <h2 class="ff_section_title mb-3">Choose a Template</h2>
+                <p>
+                    {{ $t('Here are some beautiful, fully customizable templates to get you started.') }}
+                </p>
             </div>
 
             <div class="form_action_navigations">
                 <div class="form_item_group">
-                    <label>{{ $t('Category') }}</label>
-                    <el-select size="mini" v-model="category" clearable placeholder="All Category">
+                    <label class="ff_label mr-4">{{ $t('Category') }}</label>
+                    <el-select v-model="category" clearable placeholder="All Category">
                         <el-option
                             v-for="item in categories"
                             :key="item"
@@ -40,12 +37,11 @@
 
                 <div class="form_item_group form_item_group_search">
                     <el-input
-                        size="mini"
                         v-model="search"
                         :placeholder="$t('Search Form')"
-                        class="input-with-select"
+                        class="input-with-select el-input-search"
+                        prefix-icon="el-icon-search"
                     >
-                        <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </div>
             </div>
@@ -54,44 +50,43 @@
                 :element-loading-text="$t('Working...')"
                 element-loading-spinner="el-icon-loading"
                 v-loading="fetching || creatingForm"
-                style="min-height: 200px"
-                class="ff-el-banner-group"
+                class="ff-el-banner-group mt-4"
             >
-                <div v-for="(forms, category) in filteredForms" class="ff_form_group">
-                    <h3>{{category}}</h3>
-                    <div v-for="(form, name) in forms" :class="form.class" class="ff-el-banner">
-                        <div class="ff-el-banner-inner-item">
-                            <p class="ff-el-banner-header">{{ form.title }}</p>
-                            <img :src="form.screenshot" alt="">
-                            <div
-                                :loading="creatingForm"
-                                @click="createForm(name, form)"
-                                class="ff-el-banner-text-inside ff-el-banner-text-inside-hoverable"
-                            >
-                                <p style="text-align:center;" v-html="form.brief"></p>
+                <div v-for="(forms, category) in filteredForms" class="ff_form_group" :key="category">
+                    <h4 class="mb-4">{{category}}</h4>
+                    <div class="ff-el-banner-item-group">
+                        <div v-for="(form, name) in forms" :class="form.class" class="ff-el-banner" :key="name">
+                            <div class="ff-el-banner-inner-item">
+                                <p class="ff-el-banner-header">{{ form.title }}</p>
+                                <img :src="form.screenshot" alt="">
+                                <div
+                                    :loading="creatingForm"
+                                    @click="createForm(name, form)"
+                                    class="ff-el-banner-text-inside ff-el-banner-text-inside-hoverable"
+                                >
+                                    <p style="text-align:center;" v-html="form.brief"></p>
 
-                                <div class="text-center mtb10">
-                                    <el-button size="small">
-                                        <template v-if="creatingForm">
-                                            <span>Creating Form...</span>
-                                        </template>
-                                        <template v-else>
-                                            <span v-if="form.is_pro && !has_pro">Unlock in Pro</span>
-                                            <span v-else>{{ $t('Create Form') }}</span>
-                                        </template>
-                                    </el-button>
+                                    <div class="text-center mtb10">
+                                        <el-button size="small">
+                                            <template v-if="creatingForm">
+                                                <span>Creating Form...</span>
+                                            </template>
+                                            <template v-else>
+                                                <span v-if="form.is_pro && !has_pro">Unlock in Pro</span>
+                                                <span v-else>{{ $t('Create Form') }}</span>
+                                            </template>
+                                        </el-button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <span slot="footer" class="dialog-footer">
                 <el-button
                     v-if="has_post_feature"
-                    size="mini"
                     type="info"
                     class="ff_create_post_form"
                     :loading="creatingForm"
@@ -101,10 +96,9 @@
                     <span v-else>{{ $t('Create a Post Form') }}</span>
                 </el-button>
 
-                <el-button size="mini" @click="close">Cancel</el-button>
+                <el-button @click="close">Cancel</el-button>
                 <el-button
-                    size="mini"
-                    type="danger"
+                    type="primary"
                     :loading="creatingForm"
                     @click="createForm('blank_form')"
                 >

@@ -1,14 +1,16 @@
 <template>
-    <div class="editor-inserter__content-items">
-        <div v-for="(item, i) in list"
-            @click="insertItemOnClick(item)"
+    <el-row :gutter="6">
+        <el-col 
+            :span="8" 
+            v-for="(item, i) in list"
             :key="i"
-            class="editor-inserter__content-item"
-            :title="item.editor_options.title">
-            <i class="icon" :class="item.editor_options.icon_class"></i>
-            <div>{{ item.editor_options.title }}</div>
-        </div>
-    </div>
+        >
+            <div class="element-card element-card-s1" @click="insertItemOnClick(item)">
+                <i class="ff-icon" :class="item.editor_options.icon_class"></i>
+                <span>{{ item.editor_options.title }}</span>
+            </div>
+        </el-col>
+    </el-row>
 </template>
 
 <script>

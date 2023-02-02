@@ -1,42 +1,40 @@
 <template>
-    <div v-show="visible"
+    <div v-if="visible"
         :style="editorInserterStyle"
-        class="editor-inserter__wrapper search-popup-wrapper" 
+        class="ff_editor_inserter_popup" 
         :class="inserterPos"
         @click.stop
-        id="js-editor-inserter--popup">
+        id="js_editor_inserter_popup"
+    >
 
-        <div style="margin: -1px;">
-            <label for="editor-inserter__search" class="sr-only">{{ $t('Search for a block') }}</label>
-            <input
+        <div class="ff_editor_inserter_search">
+            <el-input
+                prefix-icon="el-icon-search"
                 autocomplete="off"
-                type="text"
                 ref="editor-inserter__search"
                 v-model="inserterSearchStr"
                 :placeholder="$t('Search for a block')"
-                class="editor-inserter__search"
-                id="editor-inserter__search" />
+            ></el-input>
         </div>
-        
         <template v-if="! inserterSearchResult.length">
-            <ul class="nav-tab-list editor-inserter__tabs toggle-fields-options">
-                <li :class="editorInserterTab == 'recent' ? 'active' : ''">
-                    <a href="#" @click.prevent="changeEditorInserterTab('recent')">Recent</a>
+            <ul class="ff_navtabs_button">
+                <li class="ff_navtabs_button_item" :class="editorInserterTab == 'recent' ? 'active' : ''">
+                    <a class="ff_navtabs_button_link" href="#" @click.prevent="changeEditorInserterTab('recent')">Recent</a>
                 </li>
-                <li :class="editorInserterTab == 'general' ? 'active' : ''">
-                    <a href="#" @click.prevent="changeEditorInserterTab('general')">General</a>
+                <li class="ff_navtabs_button_item" :class="editorInserterTab == 'general' ? 'active' : ''">
+                    <a class="ff_navtabs_button_link" href="#" @click.prevent="changeEditorInserterTab('general')">General</a>
                 </li>
                 <template v-if="!is_conversion_form">
-                    <li :class="editorInserterTab == 'advanced' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeEditorInserterTab('advanced')">Advanced</a>
+                    <li class="ff_navtabs_button_item" :class="editorInserterTab == 'advanced' ? 'active' : ''">
+                        <a class="ff_navtabs_button_link" href="#" @click.prevent="changeEditorInserterTab('advanced')">Advanced</a>
                     </li>
-                    <li :class="editorInserterTab == 'container' ? 'active' : ''">
-                        <a href="#" @click.prevent="changeEditorInserterTab('container')">Container</a>
+                    <li class="ff_navtabs_button_item" :class="editorInserterTab == 'container' ? 'active' : ''">
+                        <a class="ff_navtabs_button_link" href="#" @click.prevent="changeEditorInserterTab('container')">Container</a>
                     </li>
                 </template>
             </ul>
 
-            <div class="editor-inserter__contents">
+            <div class="ff_editor_inserter_element_wrap">
                 <template v-if="editorInserterTab == 'recent'">
                     <listItems :list="recentElements" :insertItemOnClick="insertItemOnClick" />
                 </template>
@@ -56,7 +54,7 @@
         </template>
 
         <template v-else>
-            <div class="editor-inserter__contents">
+            <div class="ff_editor_inserter_element_wrap">
                 <listItems :list="inserterSearchResult" :insertItemOnClick="insertItemOnClick" />
             </div>
         </template>
@@ -112,9 +110,8 @@ export default {
     data() {
         return {
             editorInserterStyle: {
-                width: "350px",
-                height: "311px",
-                'z-index': 9999
+                width: "444px",
+                height: "374px"
             },
             inserterPos: 'is-bottom',
             topOffset: 0,

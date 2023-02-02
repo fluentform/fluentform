@@ -1,7 +1,7 @@
 <template>
-<el-form-item class="repeat-field" :class="{ 'is-required': !isMultiCol && required, ['ff-el-form-'+item.settings.label_placement]: item.settings.label_placement }">
+<el-form-item class="ff_repeat_field" :class="{ 'is-required': !isMultiCol && required, ['ff-el-form-'+item.settings.label_placement]: item.settings.label_placement }">
     <elLabel slot="label" :label="item.settings.label"></elLabel>
-    <div class="repeat-field--item">
+    <div class="ff_repeat_field_item">
         <el-form-item v-for="(field, key, i) in item.fields" :key="i" :class="{ 'is-required' : field.settings.validation_rules.required.value }">
             <elLabel v-if="isMultiCol" slot="label" :label="field.settings.label"></elLabel>
             <el-input v-if="field.element != 'select'" :value="field.attributes.value" :placeholder="field.attributes.placeholder"></el-input>
@@ -9,10 +9,18 @@
                 <el-select :placeholder="field.attributes.placeholder"></el-select>
             </div>
         </el-form-item>
-    </div>
-    <div :class="{'repeat-field-actions': isMultiCol }">
-        <i class="icon icon-plus-circle"></i>
-        <i class="icon icon-minus-circle"></i>
+        <ul class="ff_icon_group" :class="{'repeat-field-actions': isMultiCol }">
+            <li>
+                <div class="ff_icon_btn xs dark ff_icon_btn_clickable">
+                    <i class="el-icon el-icon-plus"></i>
+                </div>
+            </li>
+            <li>
+                <div class="ff_icon_btn xs dark ff_icon_btn_clickable">
+                    <i class="el-icon el-icon-minus"></i>
+                </div>
+            </li>
+        </ul>
     </div>
 </el-form-item>
 </template>

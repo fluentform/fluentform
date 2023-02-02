@@ -1,9 +1,11 @@
 <template>
-    <div class="panel__body--item"
+    <div class="panel-body-item"
         :class="['text-' + submitButton.settings.align, {'selected': !!editItem.uniqElKey && editItem.uniqElKey == submitButton.uniqElKey}]">
-        <div @click="editSelected(submitButton)" class="item-actions-wrapper hover-action-middle">
-            <div class="item-actions">
-                <i @click="editSelected(submitButton)" class="icon icon-pencil"></i>
+        <div @click="editSelected(submitButton)" class="panel-body-item-actions panel-item-hover-action">
+            <div class="icon-group">
+                <div class="icon-group-btn" @click="editSelected(submitButton)">
+                    <i class="el-icon el-icon-edit"></i>
+                </div>
             </div>
         </div>
         <!-- ADDED IN v1.2.6 -->
@@ -38,6 +40,7 @@ export default {
             if(this.submitButton.settings.button_style != '') {
                 return {
                     backgroundColor: this.submitButton.settings.background_color,
+                    borderColor: this.submitButton.settings.border_color,
                     color: this.submitButton.settings.color,
                 }
             }

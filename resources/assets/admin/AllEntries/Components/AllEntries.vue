@@ -1,114 +1,155 @@
 <template>
-    <div v-loading="loading" class="payments_wrapper">
-        <div class="payment_header">
-            <div class="payment_title">{{$t('All Form Entries')}}</div>
-            <div class="payment_actions">
-                <el-button @click="toggleChart()" type="info" size="mini">
-                    <span v-if="chart_status == 'yes'">{{$t('Hide Chart')}}</span>
-                    <span v-else>{{$t('Show Chart')}}</span>
-                </el-button>
-    
-                <el-button @click="advancedFilter = !advancedFilter" size="mini">{{$t('Advanced Filter')}}</el-button>
-
+    <div v-loading="loading" class="ff_entries_wrapper">
+        <div class="ff_section_head ff_section_head_between sm items-center">
+            <div class="ff_section_head_content">
+                <h1 class="ff_section_title">{{$t('All Form Entries')}}</h1>
             </div>
-        </div>
-        <div v-if="chart_status == 'yes'" class="entry_chart">
+            <div class="ff_section_head_content ff_section_head_content_group">
+                <el-button @click="toggleChart()" type="primary" class="el-button--soft mr-3">
+                    <template v-if="chart_status == 'yes'">
+                        <i class="ff-icon ff-icon-eye-off"></i>
+                        <span>{{$t('Hide Chart')}}</span>
+                    </template>
+                    <template v-else>
+                        <i class="ff-icon ff-icon-eye"></i>
+                        <span>{{$t('Show Chart')}}</span>
+                    </template>
+                </el-button>
+                <div class="ff_advanced_filter_wrap">
+                    <el-button @click="advancedFilter = !advancedFilter">
+                        <span>{{$t('Advanced Filter')}}</span>
+                        <i class="ff-icon ff-icon-filter-alt"></i>
+                    </el-button>
+                    <div v-if="advancedFilter" class="ff_advanced_search">
+                        <div class="ff_advanced_search_radios">
+                            <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                <el-radio label="today">Today</el-radio>
+                                <el-radio label="yesterday">Yesterday</el-radio>
+                                <el-radio label="last-week">Last Week</el-radio>
+                                <el-radio label="last-month">Last Month</el-radio>
+                            </el-radio-group>
+                        </div>
+                        <div class="ff_advanced_search_date_range">
+                            <p>{{$t('Filter By Date Range')}}</p>
+                            <el-date-picker
+                                v-model="filter_date_range"
+                                type="daterange"
+                                @change="fetchEntries()"
+                                :picker-options="pickerOptions"
+                                format="dd MMM, yyyy"
+                                value-format="yyyy-MM-dd"
+                                range-separator="-"
+                                :start-placeholder="$t('Start date')"
+                                :end-placeholder="$t('End date')">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .ff_section_head -->
+
+        <div v-if="chart_status == 'yes'" class="entry_chart mb-5">
             <entry-chart></entry-chart>
         </div>
         
-        <div class="payment_details">
-            <div style="margin-bottom: 20px" class="payment_header">
-    
-                <div class="ff_filter_wrapper">
-    
-                    <div class="ff_form_group ff_inline">
-                        {{$t('Form')}}
-                        <el-select @change="fetchEntries()"  style="max-height:10px;" size="mini" clearable filterable v-model="selectedFormId"
-                                   :placeholder="$t('Select Form')">
-                            <el-option
-                                v-for="item in available_forms"
-                                :key="item.id"
-                                :label="item.title"
-                                :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div>
-    
-                    <div class="ff_form_group ff_inline">
-                        <el-radio-group @change="fetchEntries('reset')" size="small" v-model="entry_status">
-                            <el-radio-button label="">{{ $t('All') }}</el-radio-button>
-                            <el-radio-button label="unread">{{ $t('Unread Only') }}</el-radio-button>
-                            <el-radio-button label="read">{{ $t('Read Only') }}</el-radio-button>
-                        </el-radio-group>
-                    </div>
-    
-                    <div class="payment_actions">
-                        <el-input @keyup.enter.native="fetchEntries()" size="small" :placeholder="$t('Search')" v-model="search">
-                            <el-button @click="fetchEntries()" slot="append" icon="el-icon-search"></el-button>
-                        </el-input>
-
-                    </div>
-                    
-                </div>
-                <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
-                    <div class="widget_title">
-                        {{$t('Filter By Date Range')}}
-                        <el-date-picker
-                            size="mini"
-                            v-model="filter_date_range"
-                            type="daterange"
-                            @change="fetchEntries()"
-                            :picker-options="pickerOptions"
-                            format="dd MMM, yyyy"
-                            value-format="yyyy-MM-dd"
-                            range-separator="-"
-                            :start-placeholder="$t('Start date')"
-                            :end-placeholder="$t('End date')">
-                        </el-date-picker>
-                        <el-button @click="fetchEntries" size="mini" type="success">{{ $t('Search') }}</el-button>
-                        <el-button @click="resetAdvancedFilter()" size="mini">{{ $t('Hide') }}</el-button>
-                    </div>
-                </div>
-
-
+        <div class="ff_entries_details">
+            <div class="ff_section_head sm">
+                <el-row :gutter="12" class="items-end">
+                    <el-col :span="18">
+                        <el-row :gutter="12" class="items-center">
+                            <el-col :span="24">
+                                <h6 class="mb-3">{{$t('Form')}}</h6>
+                            </el-col>
+                            <el-col :span="7">
+                                <div class="ff_form_group mb-0">
+                                    <el-select
+                                        class="ff_filter_form_select ff_select_shadow"
+                                        @change="fetchEntries()" 
+                                        clearable 
+                                        filterable 
+                                        v-model="selectedFormId"
+                                        :placeholder="$t('Select Form')"
+                                    >
+                                        <el-option
+                                            v-for="item in available_forms"
+                                            :key="item.id"
+                                            :label="item.title"
+                                            :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </el-col>
+                            <el-col :span="14">
+                                <div class="ff_radio_group_wrap">
+                                    <el-radio-group class="ff_radio_group" @change="fetchEntries('reset')" v-model="entry_status">
+                                        <el-radio-button label="">{{ $t('All') }}</el-radio-button>
+                                        <el-radio-button label="unread">{{ $t('Unread Only') }}</el-radio-button>
+                                        <el-radio-button label="read">{{ $t('Read Only') }}</el-radio-button>
+                                    </el-radio-group>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="6">
+                        <div class="payment_actions">
+                            <el-input
+                                @keyup.enter.native="fetchEntries()" 
+                                clearable
+                                v-model="search"
+                                :placeholder="$t('Search Forms')"
+                                prefix-icon="el-icon-search"
+                                class="el-input-gray"
+                            >
+                            </el-input>
+                        </div>
+                    </el-col>
+                </el-row>
             </div>
-
-            <el-table v-loading="loading" stripe :data="entries">
-                <el-table-column width="220" :label="$t('Submission ID')">
-                    <template slot-scope="scope">
-                        <a class="payment_sub_url" :href="scope.row.entry_url">
-                            #{{scope.row.id}}
-                        </a>
-                        <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('Form')" prop="title"></el-table-column>
-                <el-table-column width="160" :label="$t('Status')">
-                    <template slot-scope="scope">
-                      <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
-                      <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
-                      <span v-else>{{scope.row.status|ucFirst}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="160" :label="$t('Browser')" prop="browser"></el-table-column>
-                <el-table-column width="260" :label="$t('Date')">
-                    <template slot-scope="scope">
-                        {{scope.row.human_date}} {{$t('ago')}}
-                    </template>
-                </el-table-column>
-            </el-table>
-
-            <div class="pull-right ff_paginate">
-                <el-pagination
+            <div v-loading="loading" class="ff_table_wrap" element-loading-text="Loading entries...">
+                <el-table v-loading="loading" :data="entries" class="ff_table">
+                    <el-table-column width="200" :label="$t('Submission ID')">
+                        <template slot-scope="scope">
+                            <span>#{{scope.row.id}}</span>
+                            <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="$t('Form')" prop="title" width="400"></el-table-column>
+                    <el-table-column width="150" :label="$t('Status')">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
+                            <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
+                            <span v-else>{{scope.row.status|ucFirst}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
+                    <el-table-column width="150" :label="$t('Date')">
+                        <template slot-scope="scope">
+                            {{scope.row.human_date}} {{$t('ago')}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="150" :label="$t('Action')">
+                        <template slot-scope="scope">
+                            <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft-2 el-button--small">
+                                <i class="ff-icon ff-icon-eye"></i>
+                                <span>{{$t('View')}}</span>
+                            </a>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="ff_pagination_wrap text-right mt-4">
+                    <el-pagination
+                        class="ff_pagination"
+                        background
                         @size-change="handleSizeChange"
                         @current-change="goToPage"
                         hide-on-single-page
                         :current-page.sync="paginate.current_page"
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="parseInt(paginate.per_page)"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="paginate.total">
-                </el-pagination>
+                        layout="total, sizes, prev, pager, next"
+                        :total="paginate.total"
+                    ></el-pagination>
+                </div>
             </div>
         </div>
     </div>
@@ -178,7 +219,8 @@
                 },
                 chart_status: 'yes',
                 entry_status: '',
-                search: ''
+                search: '',
+                radioOption: ''
             }
         },
         methods: {

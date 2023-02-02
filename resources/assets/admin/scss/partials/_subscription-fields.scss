@@ -1,0 +1,45 @@
+.subscription-field-options {
+    display: block;
+    width: 100%;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    margin-bottom: 20px;
+
+    .plan_header {
+        padding: 10px 15px;
+        border-bottom: 1px solid #dcdfe6;
+        font-weight: bold;
+        display: block;
+        overflow: hidden;
+
+        .plan_label {
+            float: left;
+        }
+
+        .plan_actions {
+            float: right;
+        }
+    }
+
+    .plan_body {
+        overflow: hidden;
+        padding: 15px;
+        background: white;
+    }
+
+    .plan_footer {
+        border-top: 1px solid #dcdfe6;
+        padding: 10px 15px;
+    }
+
+    .plan_settings {
+        width: 50%;
+        display: block;
+        float: left;
+        padding-right: 50px;
+    }
+}
+
+.plan_msg {
+    margin-top: 5px;
+}

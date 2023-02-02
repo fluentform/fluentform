@@ -3,35 +3,49 @@
         <el-popover
             ref="input-popover1"
             placement="right-end"
-            offset="50"
+            offset="200"
             popper-class="el-dropdown-list-wrapper"
             v-model="visible"
             trigger="click">
             <div class="el_pop_data_group">
                 <div  class="el_pop_data_headings">
-                    <ul>
+                    <ul class="ff_data_item_group ff_data_item_group_s2 small">
                         <li
+                            class="ff_data_item"
                             v-for="(item,item_index) in data"
+                            :key="item_index"
                             :data-item_index="item_index"
-                            :class="(activeIndex == item_index) ? 'active_item_selected' : ''"
-                            @click="activeIndex = item_index">
-                            {{item.title}}
+                            :class="(activeIndex == item_index) ? 'active' : ''"
+                        >
+                            <a class="ff_data_item_link" href="#" @click.prevent="activeIndex = item_index">{{item.title}}</a>
                         </li>
                     </ul>
                 </div>
                 <div class="el_pop_data_body">
-                    <ul v-for="(item,current_index) in data" v-show="activeIndex == current_index" :class="'el_pop_body_item_'+current_index">
-                        <li @click="insertShortcode(code)" v-for="(label,code) in item.shortcodes">{{label}} <span>{{code}}</span></li>
+                    <ul 
+                        class="ff_list ff_list_flush"
+                        v-for="(item,current_index) in data" 
+                        v-show="activeIndex == current_index" 
+                        :class="'el_pop_body_item_'+current_index"
+                        :key="current_index"
+                    >
+                        <li v-for="(label, code, index) in item.shortcodes" :key="index">
+                            <a href="#" @click.prevent="insertShortcode(code)" >
+                                <span class="lead-title">{{label}}</span>
+                                <span class="lead-text">{{code}}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </el-popover>
-        <el-button class="editor-add-shortcode"
-                   size="mini"
-                   v-popover:input-popover1
-                   :type="btnType"
-                   v-html="buttonText"
-                   :plain="plain"
+        <el-button 
+            class="el-button--soft-2"
+            size="mini"
+            v-popover:input-popover1
+            :type="btnType"
+            v-html="buttonText"
+            :plain="plain"
         />
     </div>
 </template>
@@ -50,7 +64,7 @@
             buttonText: {
                 type: String,
                 default() {
-                    return 'Add Shortcodes <i class="el-icon-arrow-down el-icon--right"></i>';
+                    return '<span>Add Shortcodes</span> <i class="el-icon-arrow-down el-icon"></i>';
                 }
             },
             btnType: {

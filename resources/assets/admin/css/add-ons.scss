@@ -1,5 +1,14 @@
-@import "../styles/globals";
+@import "../scss/partials/variables";
+@import "../scss/partials/spacing";
+@import "../scss/partials/globals";
+@import "../scss/partials/fonts";
+@import "../scss/partials/navbar";
+@import "../scss/partials/card";
 
+
+.ff_app {
+    padding: 1.5rem;
+}
 .ff-add-ons {
     display: block;
     width: 100%;
@@ -123,42 +132,61 @@
     margin-bottom: 56px;
 }
 
-.ff_add_on_navigation {
-    display: block;
-    width: 100%;
-}
-
-.ff_add_on_navigation ul {
-    list-style: none;
-    padding: 0px;
-    margin: 0px;
-    background: white;
-}
-
-.ff_add_on_navigation ul li {
+.ff_add_on_navigation li {
     display: inline-block;
     margin-bottom: 0px;
 }
 
-.ff_add_on_navigation ul li a {
-    padding: 10px 15px 12px;
-    display: block;
-    text-decoration: none;
-    font-weight: bold;
-    border-right: 1px solid #f1f1f1;
-    border-top: 2px solid transparent;
+// ff tab
+.ff_tab{
+    display: flex;
+    border-bottom: 1px solid $border-color;
+    &_item{
+        margin-bottom: 0;
+        &:not(:last-child){
+            margin-right: 30px;
+        }
+        &.active{
+            .ff_tab_link{
+                color: $--color-primary;
+                &::after{
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+        }
+    }
+    &_link{
+        padding-bottom: 16px;
+        display: block;
+        font-weight: 700;
+        font-size: 16px;
+        color: $base-color;
+        position: relative;
+        &::after{
+            position: absolute;
+            content: "";
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: $--color-primary;
+            transition: 0.2s;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
 }
-.ff_add_on_navigation li.ff_add_on_item.ff_menu_item_active a {
-    border-top: 2px solid #333333;
-    color: #333;
-}
+
+
 .fluent_activation_wrapper {
-    background: #fbf8f8;
+    background-color: $--color-success-lighter;
     padding: 45px 20px;
     display: block;
     position: relative;
     margin-top: 20px;
     text-align: center;
+    border-radius: 8px;
 }
 .fluent_activate_now {
     display: none;
@@ -172,24 +200,20 @@ label.fluentform_label {
 label.fluentform_label span {
     display: block;
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    color: $base-color;
 }
 
 label.fluentform_label input {
-    height: 45px;
     font-size: 22px;
-    padding: 5px 15px;
-    border-radius: 5px;
 }
 p.contact_us_line {
     margin-top: 75px;
-    font-size: 13px;
-    color: #777575;
+    font-size: 14px;
 }
-.fluent_activation_wrapper .button-primary.button_activate {
-    font-size: 19px !important;
-    padding: 5px 25px !important;
-    height: auto !important;
+.fluent_activation_wrapper .el-button{
+    padding: 16px 30px;
+    font-size: 18px;
 }
 .license_activated_sucess {
     padding: 20px 0px;
@@ -200,103 +224,11 @@ p.contact_us_line {
     display: none !important;
 }
 
-
+// addon modules
 .add_on_modules {
-    border: 1px solid #dcdfe6;
-
-    .modules_header {
-        background: white;
-        margin: 0px 0px 20px;
-        padding: 20px;
-        width: 100%;
-        display: block;
+    .el-col{
+        margin-bottom: 22px;
     }
-    .module_title {
-        display: block;
-        margin-bottom: 10px;
-        font-size: 20px;
-        font-weight: 500;
-    }
-
-    .modules_body {
-        width: 100%;
-        clear: both;
-        overflow: hidden;
-        padding-bottom: 20px;
-        .add_on_card {
-            min-width: 300px;
-            background: white;
-            margin: 1% 1% 1% 1%;
-            float: left;
-            width: 31%;
-            border-radius: 5px;
-            box-shadow: -1px 0px 4px 2px #c7c7c7;
-            &.addon_enabled_no {
-                img {
-                    -webkit-filter: grayscale(100%);
-                    filter: grayscale(100%);
-                }
-            }
-        }
-        .addon_header {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #f1f1f1;
-            font-weight: bold;
-        }
-        .addon_body {
-            padding: 15px;
-            height: 130px;
-            overflow: hidden;
-            img {
-                max-width: 50%;
-                max-height: 30px;
-                text-align: center;
-                display: block;
-                margin: 0 auto;
-                margin-bottom: 20px;
-            }
-        }
-        .addon_footer {
-            border-top: 1px solid #e2dfdf;
-            padding: 10px 15px;
-        }
-        a.pro_update_btn {
-            display: inline-block;
-            margin: 0 auto;
-            text-align: center;
-            width: auto;
-            padding: 3px 10px;
-            border: 1px solid #356ae6;
-            font-weight: bold;
-            text-decoration: none;
-            color: #366be6;
-            border-radius: 4px;
-            &:hover {
-                color: white;
-                background:  #366be6;
-            }
-        }
-    }
-
-    .ff_module_navs {
-        width: 100%;
-        overflow: hidden;
-        margin-bottom: 10px;
-        padding: 0px 10px 10px 10px;
-    }
-
-    .ff_module_selectors, .ff_mdoules_search {
-        width: 50%;
-        float: left;
-        .input-with-select {
-            max-width: 300px;
-            text-align: right;
-            float: right;
-        }
-    }
-
 }
-
 
 @import "../styles/responsive";

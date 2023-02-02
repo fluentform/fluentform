@@ -9,7 +9,10 @@ import {
     Message,
     RadioButton,
     Radio,
-    RadioGroup
+    RadioGroup,
+    Row,
+    Col,
+    Notification
 } from 'element-ui';
 
 Vue.use(RadioButton);
@@ -19,11 +22,21 @@ Vue.use(Button);
 Vue.use(Select);
 Vue.use(Input);
 Vue.use(Switch);
+Vue.use(Row);
+Vue.use(Col);
 
 Vue.prototype.$message = Message;
+Vue.prototype.$notify = Notification
 
+import notifier from './notifier';
 
-var app = new Vue({
+Vue.mixin({
+    methods: {
+        ...notifier
+    }
+});
+
+new Vue({
     el: '#ff_add_ons_app',
     components: {
         'fluent-add-ons' : AddOnModules

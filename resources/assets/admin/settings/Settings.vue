@@ -1,47 +1,22 @@
 <template>
-    <div v-loading="loading">
-        <!--Save settings-->
-        <el-row class="setting_header">
-            <el-col :md="18">
-                <h2>
-                    {{ $t('Global Layout Settings') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Error Message Placement') }}</h3>
-                            <p>{{ $t('These Settings will be used as default settings of a new form.') }}<br/>{{  ('You can customize layout settings for each page from form\'s settings page') }}</p>
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </h2>
-            </el-col>
-            <el-col :md="6" class="action-buttons clearfix mb15">
-                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
-                >{{ $t('Save Settings') }}
-                </el-button>
-            </el-col>
-        </el-row>
+    <div 
+        v-loading="loading" 
+        :element-loading-text="$t('Loading Settings...')"
+        element-loading-spinner="el-icon-loading"
+    >
+        <div class="ff_global_setting_option_form_wrap" v-if="app_ready">
+            <layout 
+                :email_report="email_report" 
+                :integration_failure_notification="integration_failure_notification" 
+                :data="formSettings" 
+                :file_upload_optoins="file_upload_optoins"
+                :captcha_status="captcha_status"
+            />
+        </div>
 
-        <!--Different form settings section-->
-        <el-row style="margin-bottom: 50px;">
-            <el-col v-if="app_ready" :md="24">
-                <layout 
-                    :email_report="email_report" 
-                    :integration_failure_notification="integration_failure_notification" 
-                    :data="formSettings" 
-                    :file_upload_optoins="file_upload_optoins"
-                    :captcha_status="captcha_status"
-                />
-            </el-col>
-        </el-row>
-
-        <!--Save settings-->
-        <el-row>
-            <el-col class="action-buttons clearfix mb15">
-                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="save"
-                >{{ $t('Save Settings') }}
-                </el-button>
-            </el-col>
-        </el-row>
+        <div class="mt-4">
+            <el-button type="primary" icon="el-icon-success" @click="save">{{ $t('Save Settings') }}</el-button>
+        </div>
     </div>
 </template>
 
@@ -92,51 +67,50 @@
                         '_fluentform_turnstile_keys_status'
                     ]
                 })
-                    .then(response => {
-                        this.loading = false;
-                        let settings = response.data._fluentform_global_form_settings || {};
-                        if (!settings.layout) {
-                            settings.layout = {
-                                labelPlacement: 'top',
-                                helpMessagePlacement: 'with_label',
-                                errorMessagePlacement: 'inline'
-                            };
-                        }
-                        this.formSettings = Object.assign(this.formSettings, settings);
-                        let emailReport = response.data._fluentform_email_report_summary;
-                        if(!emailReport) {
-                            emailReport = {
-                                status: 'yes',
-                                send_to_type: 'admin_email',
-                                custom_recipients: '',
-                                sending_day: 'Mon'
-                            };
-                        }
-                        this.email_report = emailReport;
-                        let failedNotification = response.data._fluentform_failed_integration_notification;
-                        if (!failedNotification) {
-                            failedNotification = {
-                                status: 'no',
-                                send_to_type: 'admin_email',
-                                custom_recipients: '',
-                            };
-                        }
-                        this.integration_failure_notification = failedNotification;
-                        this.file_upload_optoins = response.data.file_upload_optoins;
-                        this.captcha_status = {
-                            hcaptcha: response.data._fluentform_hCaptcha_keys_status,
-                            recaptcha: response.data._fluentform_reCaptcha_keys_status,
-                            turnstile: response.data._fluentform_turnstile_keys_status
-                        }
-                    })
-                    .fail(e => {
-                        this.loading = false;
-                    })
-                    .always(() => {
-                        this.app_ready = true;
-                    });
+                .then(response => {
+                    this.loading = false;
+                    let settings = response.data._fluentform_global_form_settings || {};
+                    if (!settings.layout) {
+                        settings.layout = {
+                            labelPlacement: 'top',
+                            helpMessagePlacement: 'with_label',
+                            errorMessagePlacement: 'inline'
+                        };
+                    }
+                    this.formSettings = Object.assign(this.formSettings, settings);
+                    let emailReport = response.data._fluentform_email_report_summary;
+                    if(!emailReport) {
+                        emailReport = {
+                            status: 'yes',
+                            send_to_type: 'admin_email',
+                            custom_recipients: '',
+                            sending_day: 'Mon'
+                        };
+                    }
+                    this.email_report = emailReport;
+                    let failedNotification = response.data._fluentform_failed_integration_notification;
+                    if (!failedNotification) {
+                        failedNotification = {
+                            status: 'no',
+                            send_to_type: 'admin_email',
+                            custom_recipients: '',
+                        };
+                    }
+                    this.integration_failure_notification = failedNotification;
+                    this.file_upload_optoins = response.data.file_upload_optoins;
+                    this.captcha_status = {
+                        hcaptcha: response.data._fluentform_hCaptcha_keys_status,
+                        recaptcha: response.data._fluentform_reCaptcha_keys_status,
+                        turnstile: response.data._fluentform_turnstile_keys_status
+                    }
+                })
+                .fail(e => {
+                    this.loading = false;
+                })
+                .always(() => {
+                    this.app_ready = true;
+                });
             },
-
             save() {
                 this.loading = true;
                 let data = {
@@ -146,17 +120,17 @@
                 };
 
                 FluentFormsGlobal.$post(data)
-                    .done(response => {
-                        if (response) {
-                            this.loading = false;
-                            this.$success(response.data.message);
-                        }
-                    })
-                    .fail(e => {
+                .done(response => {
+                    if (response) {
                         this.loading = false;
+                        this.$success(response.data.message);
+                    }
+                })
+                .fail(e => {
+                    this.loading = false;
 
-                        this.formSettings.id = id;
-                    });
+                    this.formSettings.id = id;
+                });
 
                 this.saveEmailSummarySettings();
                 this.saveFailedIntegrationNotification();
@@ -168,9 +142,9 @@
                     action: 'fluentform-global-settings-store'
                 };
                 FluentFormsGlobal.$post(data)
-                    .done(response => {
+                .done(response => {
 
-                    });
+                });
             },
             saveFailedIntegrationNotification() {
                 let data = {
@@ -180,13 +154,14 @@
     
                 };
                 FluentFormsGlobal.$post(data)
-                    .done(response => {
-                
-                    });
+                .done(response => {
+            
+                });
             }
         },
         mounted() {
             this.fetch();
+            jQuery('body').addClass('ff_footer_none');
         }
     };
 </script>

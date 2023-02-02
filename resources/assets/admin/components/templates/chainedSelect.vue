@@ -1,9 +1,9 @@
 <template>
-    <div class="chained-Select-template">
+    <div class="ff_chained_select_template">
         <withLabel :item="item">
-            <select v-for="header in headers" class="header">
-                <option>{{ header }}</option>
-            </select>
+            <el-select v-for="(header, i) in headers" :key="i">
+                <option :value="header"></option>
+            </el-select>
         </withLabel>
     </div>
 </template>

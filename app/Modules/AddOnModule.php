@@ -38,7 +38,8 @@ class AddOnModule
             $current_menu_item = sanitize_key($subPage);
         }
 
-        wpFluentForm('view')->render('admin.addons.index', [
+        View::render('admin.addons.index', [
+            'hasPro'            => defined('FLUENTFORMPRO'),
             'menus'             => $extraMenus,
             'base_url'          => admin_url('admin.php?page=fluent_forms_add_ons'),
             'current_menu_item' => $current_menu_item,
@@ -115,7 +116,7 @@ class AddOnModule
                 'category'     => 'wp_core',
             ],
             'PostFeeds' => [
-                'title'        => __('Advanced Post/CPT Creation', 'fluentform'),
+                'title'        => __('Advanced Post/CPT', 'fluentform'),
                 'description'  => __('Create post/any cpt on form submission. It will enable many new features including dedicated post fields.', 'fluentform'),
                 'logo'         => fluentformMix('img/integrations/post-creation.png'),
                 'enabled'      => 'no',

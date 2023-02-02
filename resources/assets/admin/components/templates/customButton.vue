@@ -1,12 +1,12 @@
 <template>
     <div :style="wrapperStyle" class="ff_custom_button">
-        <button
-            class="ff-btn"
+        <el-button
+            type="primary"
             :class="[btnSize, btnStyleClass]"
             v-if="item.settings.button_ui.type == 'default'"
             v-html="item.settings.button_ui.text"
             :style="btnStyles">
-        </button>
+        </el-button>
         <img v-else :src="item.settings.button_ui.img_url" alt="Submit Button" style="max-width: 200px;">
         <div v-html="extraHtml"></div>
     </div>
@@ -22,6 +22,7 @@
                 if(this.item.settings.button_style != '') {
                     return {
                         backgroundColor: this.item.settings.background_color,
+                        borderColor: this.item.settings.border_color,
                         color: this.item.settings.color,
                     }
                 }
@@ -55,7 +56,7 @@
                 return this.item.settings.button_style;
             },
             btnSize() {
-                return 'ff-btn-' + this.item.settings.button_size
+                return 'el-button--' + this.item.settings.button_size
             },
             wrapperStyle() {
                 let styles = {};
@@ -64,7 +65,7 @@
             },
             extraHtml(){
                 if (this.item.element === 'custom_submit_button'){
-                    return  '<style>.ff_default_submit_button_wrapper {display: none !important;}</style>'
+                    return  '<style>.ff_editor_default_submit_button_wrapper {display: none !important;}</style>'
                 }
             }
         }
