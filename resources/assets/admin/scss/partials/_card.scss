@@ -3,6 +3,12 @@
     box-shadow: $ff-card-box-shadow;
     border-radius: $ff-card-border-radius;
     padding: $ff-card-padding;
+    .ff_table{
+        box-shadow: none;
+        background-color: transparent;
+        border-radius: 0;
+        padding: 0;
+    }
     &_alert{
         border-left: 3px solid $--color-danger;
         border-radius: 4px;

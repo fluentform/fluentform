@@ -18,7 +18,7 @@
         </el-popover>
 
         <span v-popover:popover>
-            <slot><i class="el-icon el-icon-delete"></i></slot>
+            <slot><i class="el-icon el-icon-delete" style="cursor: pointer"></i></slot>
         </span>
     </span>
 </template>

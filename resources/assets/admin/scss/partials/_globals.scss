@@ -307,10 +307,12 @@ $sizes: 80px, 100px, 120px;
     display: inline-flex;
     align-items: center;
     .ff-icon{
-      font-size: 1.125rem;
       &::before{
         color: inherit;
       }
+    }
+    .el-icon{
+      font-size: 1.125rem;
     }
     >span{
       display: inline-flex;
@@ -336,6 +338,17 @@ $sizes: 80px, 100px, 120px;
           color: $button-info-plain-color;
           background-color: $button-info-plain-bg;
           border-color: $button-info-plain-border-color;
+      }
+    }
+    &--dark{
+      background-color: $base-color;
+      border-color: $base-color;
+      color: $white;
+      &:hover,
+      &:focus{
+        background-color: #494a4e;
+        border-color: #494a4e;
+        color: $white;
       }
     }
     &--soft{
@@ -427,6 +440,12 @@ $sizes: 80px, 100px, 120px;
     }
     &--mini{
       border-radius: 4px;
+    }
+    &--upload{
+      border-style: dashed;
+      padding: 24px;
+      width: 350px;
+      justify-content: center;
     }
   }
   &-input__prefix{
@@ -970,6 +989,53 @@ $sizes: 80px, 100px, 120px;
         border-left-color: $--color-danger;
       }
     }
+  }
+  &_btn_group{
+    display: inline-flex;
+    align-items: center;
+    margin: -8px;
+    > *{
+      padding: 8px;
+      margin-bottom: 0;
+    }
+    &.sm{
+      margin: -3px;
+      >*{
+        padding: 3px;
+      }
+    }
+  }
+}
+.is-required{
+  .ff_block_title{
+    &::before {
+      content: '*';
+      color: $--color-danger;
+      margin-right: 4px;
+      font-size: 16px;
+    }
+  }
+}
+.is-no-required{
+  .ff_block_title::before{
+    display: none;
+  }
+}
+.is-error{
+  .el-input__inner,
+  .el-input__inner:focus, 
+  .el-textarea__inner,
+  .el-textarea__inner:focus {
+    border-color: $--color-danger
+  }
+}
+
+.ff_input_textarea_value {
+  position: relative;
+  .el-button {
+    position: absolute;
+    right: 0;
+    top: -40px;
   }
 }
 

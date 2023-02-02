@@ -20,19 +20,19 @@
                 </div><!--.ff_card_body -->
             </div><!-- .ff_card -->
 
-            <!--Double Opt-in settings v-if="double_optin"-->
-            <div  class="ff_card">
+            <!--Double Opt-in settings -->
+            <div v-if="double_optin" class="ff_card">
                 <div class="ff_card_head">
                     <h5 class="title">{{ $t('Double Optin Settings') }}</h5>
                 </div><!-- .ff_card_head -->
                 <div class="ff_card_body">
                     <div class="ff_block_item">
-                        <el-checkbox true-label="yes" false-label="no" model="double_optin.status">
+                        <el-checkbox true-label="yes" false-label="no" v-model="double_optin.status">
                             {{ $t('Enable Double Optin Confirmation before Form Data Processing')}}
                         </el-checkbox>
                     </div><!-- .ff_block_item -->
                     <div class="ff_block_item">
-                        <el-form if="double_optin.status == 'yes'" data="double_optin">
+                        <el-form v-if="double_optin.status == 'yes'" :data="double_optin">
                             <div class="ff_block_item">
                                 <div class="ff_block_title_group mb-3">
                                     <h6 class="ff_block_title"> {{ $t('Primary Email Field') }}</h6>
@@ -48,105 +48,114 @@
                                 <div class="ff_block_item_body">
                                      <el-select 
                                         class="ff_input_width" 
-                                        model="double_optin.email_field" 
+                                        v-model="double_optin.email_field" 
                                         :placeholder="$t('Select an email field')"
                                      >
-                                        <!-- <el-option
+                                        <el-option
                                             v-for="(item, index) in emailFields"
                                             :key="index"
                                             :label="item.admin_label"
                                             :value="item.attributes.name">
-                                        </el-option> -->
+                                        </el-option>
                                     </el-select>
                                 </div><!-- .ff_block_item_body -->
                             </div><!-- .ff_block_item -->
 
                             <template if="double_optin.email_field">
-                                <el-form-item>
-                                    <template slot="label">
-                                        {{ $t('Initial Success Message') }}
-                                        <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div class="ff_block_item">
+                                    <div class="ff_block_title_group mb-3">
+                                        <h6 class="ff_block_title">{{ $t('Initial Success Message') }}</h6>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                             <div slot="content">
-                                                <h3>{{ $t('Initial Success Message') }}</h3>
                                                 <p>
-                                                    {{ $t('Enter the text you would like the user to ')}}<br>
-                                                    {{ $t('see just after initial form submission.') }}
+                                                    {{ $t('Enter the text you would like the user to see just after initial form submission.') }}
                                                 </p>
                                             </div>
-
-                                            <i class="el-icon-info el-text-info"/>
+                                            <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                                         </el-tooltip>
-                                    </template>
-                                    <wp-editor :height="75" editor-shortcodes="editorShortcodes"
-                                            model="double_optin.confirmation_message"/>
-                                    <p>{{ $t('This message will be shown after the intial form submission') }}</p>
-                                </el-form-item>
-
-                                <el-form-item :label="$t('Email Type')">
-                                    <el-radio-group model="double_optin.email_body_type">
-                                        <el-radio label="global">{{ $t('As Per Global Settings') }}</el-radio>
-                                        <el-radio label="custom">{{ $t('Customized Double Optin Email') }}</el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
+                                    </div><!-- .ff_block_title_group -->
+                                    <div class="ff_block_item_body">
+                                        <wp-editor 
+                                            :height="75" 
+                                            :editor-shortcodes="editorShortcodes"
+                                            v-model="double_optin.confirmation_message"
+                                        />
+                                        <p class="mt-2">{{ $t('This message will be shown after the intial form submission') }}</p>
+                                    </div><!-- .ff_block_item_body -->
+                                </div><!-- .ff_block_item -->
+                                
+                                <div class="ff_block_item">
+                                    <div class="ff_block_title_group mb-3">
+                                        <h6 class="ff_block_title">{{ $t('Email Type') }}</h6>
+                                    </div><!-- .ff_block_title_group -->
+                                    <div class="ff_block_item_body">
+                                        <el-radio-group v-model="double_optin.email_body_type">
+                                            <el-radio label="global">{{ $t('As Per Global Settings') }}</el-radio>
+                                            <el-radio label="custom">{{ $t('Customized Double Optin Email') }}</el-radio>
+                                        </el-radio-group>
+                                    </div><!-- .ff_block_item_body -->
+                                </div><!-- .ff_block_item -->
 
                                 <template if="double_optin.email_body_type == 'custom'">
-                                    <el-form-item>
-                                        <template slot="label">
-                                            {{ $t('Optin Email Subject') }}
-                                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                    <div class="ff_block_item">
+                                        <div class="ff_block_title_group mb-3">
+                                            <h6 class="ff_block_title">{{ $t('Optin Email Subject') }}</h6>
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                                 <div slot="content">
                                                     <p>
-                                                        {{ $t('Email Subject for double optin email. ') }}<br/>{{ $t('You can use any smart code in the email subject') }}
+                                                        {{ $t('Email Subject for double optin email. You can use any smart code in the email subject') }}
                                                     </p>
                                                 </div>
-
-                                                <i class="el-icon-info el-text-info"/>
+                                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                                             </el-tooltip>
-                                        </template>
-                                        <el-input :placeholder="$t('Email Subject')"
-                                                model="double_optin.email_subject"/>
-                                    </el-form-item>
-                                    <el-form-item>
-                                        <template slot="label">
-                                            {{ $t('Optin Email Body') }}
-                                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                        </div><!-- .ff_block_title_group -->
+                                        <div class="ff_block_item_body">
+                                            <el-input :placeholder="$t('Email Subject')" v-model="double_optin.email_subject"/>
+                                        </div><!-- .ff_block_item_body -->
+                                    </div><!-- .ff_block_item -->
+                                    
+                                    <div class="ff_block_item">
+                                        <div class="ff_block_title_group mb-3">
+                                            <h6 class="ff_block_title">{{ $t('Optin Email Body') }}</h6>
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_popper">
                                                 <div slot="content">
-                                                    <h3>{{ $t('Optin Email Body') }}</h3>
                                                     <p>
-                                                        {{ $t('Enter the content you would like the user to ')}}<br>
-                                                        {{ $t('send via email for confirmation.') }}
+                                                        {{ $t('Enter the content you would like the user to send via email for confirmation.') }}
                                                     </p>
                                                 </div>
-
-                                                <i class="el-icon-info el-text-info"/>
+                                                <i class="ff-icon ff-icon-info-filled ml-1 text-primary"></i>
                                             </el-tooltip>
-                                        </template>
-                                        <input-popover :rows="10" if="double_optin.asPlainText == 'yes'" fieldType="textarea"
-                                                    model="double_optin.email_body"
-                                                    :placeholder="$t('Double Opt-in Email Body HTML')"
-                                                    data="editorShortcodes"
-                                        ></input-popover>
-                                        <wp-editor 
-                                            else :height="150" 
-                                            editor-shortcodes="editorShortcodes"
-                                            model="double_optin.email_body"
-                                        />
-                                        <el-checkbox true-label="yes" false-label="no" model="double_optin.asPlainText">
-                                            {{ $t('Send Email as RAW HTML Format') }}
-                                        </el-checkbox>
+                                        </div><!-- .ff_block_title_group -->
+                                        <div class="ff_block_item_body">
+                                            <input-popover 
+                                                :rows="10" 
+                                                v-if="double_optin.asPlainText == 'yes'" fieldType="textarea"
+                                                v-model="double_optin.email_body"
+                                                :placeholder="$t('Double Opt-in Email Body HTML')"
+                                                :data="editorShortcodes"
+                                            ></input-popover>
+                                            <wp-editor 
+                                                v-else :height="150" 
+                                                :editor-shortcodes="editorShortcodes"
+                                                v-model="double_optin.email_body"
+                                            />
+                                            <el-checkbox true-label="yes" false-label="no" v-model="double_optin.asPlainText">
+                                                {{ $t('Send Email as RAW HTML Format') }}
+                                            </el-checkbox>
 
-                                        <p>{{ $t('Use #confirmation_url# smartcode for double optin confirmation URL') }}</p>
-                                    </el-form-item>
+                                            <p class="mt-1">{{ $t('Use #confirmation_url# smartcode for double optin confirmation URL') }}</p>
+                                        </div><!-- .ff_block_item_body -->
+                                    </div><!-- .ff_block_item -->
                                 </template>
 
-                                <div class="form_item">
-                                    <el-checkbox true-label="yes" false-label="no" model="double_optin.skip_if_logged_in">
+                                <div class="ff_block_item">
+                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_logged_in">
                                         {{ $t('Disable Double Optin for Logged in users') }}
                                     </el-checkbox>
                                 </div>
 
-                                <div v-if="hasFluentCRM" class="form_item">
-                                    <el-checkbox true-label="yes" false-label="no" model="double_optin.skip_if_fc_subscribed">
+                                <div v-if="hasFluentCRM" class="ff_block_item">
+                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
                                         {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
                                     </el-checkbox>
                                 </div>

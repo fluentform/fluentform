@@ -25,7 +25,9 @@
         </el-popover>
 
         <div v-if="fieldType == 'textarea'" class="ff_input_textarea_value">
-            <i class="el-icon el-icon-tickets" v-popover:input-popover></i>
+            <div class="el-button el-button--info el-button--soft-2 el-button--mini el-button--icon" v-popover:input-popover>
+                <i class="el-icon el-icon-tickets"></i>
+            </div>
             <el-input :rows="rows" :placeholder="placeholder" type="textarea" v-model="model"></el-input>
         </div>
 

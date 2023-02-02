@@ -41,7 +41,7 @@
         </el-popover>
         <el-button 
             class="el-button--soft-2"
-            size="small"
+            size="mini"
             v-popover:input-popover1
             :type="btnType"
             v-html="buttonText"
