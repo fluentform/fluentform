@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\Integrations;
 
+use Exception;
 use FluentForm\Framework\Support\Arr;
 class GlobalIntegrationService
 {
@@ -44,5 +45,25 @@ class GlobalIntegrationService
     {
         $globalModules = get_option('fluentform_global_modules_status');
         return $globalModules && isset($globalModules[$integrationKey]) && 'yes' == $globalModules[$integrationKey];
+    }
+
+    /**
+     * @param $args - key value pair array
+     * @throws Exception
+     * @return void
+     */
+    public function updateModuleStatus($args) {
+        $moduleKey = sanitize_text_field(Arr::get($args, 'module_key'));
+        $moduleStatus = sanitize_text_field(Arr::get($args, 'module_status'));
+        if (!$moduleKey || !in_array($moduleStatus, ['yes', 'no'])) {
+            throw new Exception(__('Status updated failed. Not valid module or status', 'fluentform'));
+        }
+        try {
+            $modules = (array)get_option('fluentform_global_modules_status');
+            $modules[$moduleKey] = $moduleStatus;
+            update_option('fluentform_global_modules_status', $modules, 'no');
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }

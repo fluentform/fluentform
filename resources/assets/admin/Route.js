@@ -65,6 +65,7 @@ class Route {
     integrations = 'integrations';
     getGlobalIntegration = this.integrations;
     updateGlobalIntegration = this.integrations;
+    updateGlobalIntegrationStatus = this.integrations + '/update-status'
     findIntegration = this.integrations + "/{param}";
     getFormIntegrationSettings = this.findIntegration;
     updateFormIntegrationSettings = this.findIntegration;

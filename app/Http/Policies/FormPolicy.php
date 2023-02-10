@@ -28,4 +28,9 @@ class FormPolicy extends Policy
     {
         return Acl::hasAnyFormPermission();
     }
+
+    public function updateModuleStatus()
+    {
+        return Acl::hasPermission('fluentform_settings_manager');
+    }
 }

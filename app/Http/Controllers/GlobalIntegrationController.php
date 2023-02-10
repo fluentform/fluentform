@@ -50,5 +50,21 @@ class GlobalIntegrationController extends Controller
             ], 422);
         }
     }
+
+    public function updateModuleStatus(GlobalIntegrationService $globalIntegrationService)
+    {
+        try {
+            $globalIntegrationService->updateModuleStatus($this->request->get());
+            return $this->sendSuccess([
+                'message' => __('Status successfully updated', 'fluentform'),
+            ], 200);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+
     
 }

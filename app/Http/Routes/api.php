@@ -72,7 +72,8 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
     
     $router->get('/', 'GlobalIntegrationController@index');
     $router->post('/', 'GlobalIntegrationController@update');
-    
+    $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
+
     $router->prefix('{form_id}')->group(function ($router) {
         $router->get('/form-integrations', 'FormIntegrationController@index');
         $router->get('/', 'FormIntegrationController@find');

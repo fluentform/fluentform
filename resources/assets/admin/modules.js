@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import AddOnModules from './views/AddonModules';
+import notifier from './notifier';
 
 import {
     Button,
     Select,
     Input,
     Switch,
-    Message,
+    Notification,
     RadioButton,
     Radio,
     RadioGroup
@@ -20,7 +21,20 @@ Vue.use(Select);
 Vue.use(Input);
 Vue.use(Switch);
 
-Vue.prototype.$message = Message;
+Vue.prototype.$notify = Notification;
+
+Vue.mixin({
+    methods: {
+        $t(str) {
+            let transString = window.fluent_addon_modules.addOnModule_str[str];
+            if(transString) {
+                return transString;
+            }
+            return str;
+        },
+        ...notifier
+    }
+});
 
 
 var app = new Vue({

@@ -91,35 +91,18 @@
         },
         methods: {
             saveStatus(addonKey) {
-                let addonModules = {};
-                jQuery.each(this.addOns, (key, addon) => {
-                    addonModules[key] = addon.enabled;
-                });
-                FluentFormsGlobal.$post({
-                    action: 'fluentform_update_modules',
-                    addons: addonModules
-                })
+                const url = FluentFormsGlobal.$rest.route('updateGlobalIntegrationStatus');
+                FluentFormsGlobal.$rest.post(url, {
+                        module_key: addonKey,
+                        module_status: this.addOns[addonKey].enabled
+                    })
                     .then((response) => {
-                        this.$message({
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 32
-                        });
+                        this.$success(response.message)
                     })
-                    .fail(error => {
-
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
-
-                    });
-            },
-            $t(str) {
-                let transString = window.fluent_addon_modules.addOnModule_str[str];
-                if(transString) {
-                    return transString;
-                }
-                return str;
-            },
+            }
         }
     }
 </script>

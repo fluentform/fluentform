@@ -447,6 +447,7 @@ $app->addAction('wp_ajax_fluentform_get_form_integration_list', function () use 
 });
 
 $app->addAction('wp_ajax_fluentform_update_modules', function () {
+    vdd('rest-done, api endpoint "integrations/update-status"');
     Acl::verify('fluentform_settings_manager');
 
     return (new \FluentForm\App\Modules\AddOnModule())->updateAddOnsStatus();
