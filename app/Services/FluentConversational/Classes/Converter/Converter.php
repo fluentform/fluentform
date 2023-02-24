@@ -235,6 +235,24 @@ class Converter
                 }
 
                 $question['requiredPerRow'] = ArrayHelper::get($field, 'settings.validation_rules.required.per_row');
+            } elseif ('rangeslider' === $field['element']) {
+                if ($field['attributes']['value'] == '') {
+                    $question['answer'] = 0;
+                } else {
+                    $question['answer'] = +$field['attributes']['value'];
+                }
+
+                $question['min'] = +$field['attributes']['min'];
+                $question['max'] = +$field['attributes']['max'];
+
+                if ($step = ArrayHelper::get($field, 'settings.number_step')) {
+                    $question['step'] = +$step;
+                } else {
+                    $question['step'] = 1;
+                }
+
+                $question['is_calculable'] = true;
+                $question['type'] = 'FlowFormRangesliderType';
             } elseif ('multi_payment_component' === $field['element']) {
                 $type = $field['attributes']['type'];
 
@@ -498,6 +516,7 @@ class Converter
             $fieldTypes['subscription_payment_component'] = 'FlowFormSubscriptionType';
             $fieldTypes['payment_coupon'] = 'FlowFormCouponType';
             $fieldTypes['quiz_score'] = 'FlowFormHiddenType';
+            $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
         }
 
         return $fieldTypes;

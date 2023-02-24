@@ -348,6 +348,7 @@ class Form
             'recaptcha',
             'hcaptcha',
             'quiz_score',
+            'rangeslider'
         ];
 
         $elements = [];
