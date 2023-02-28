@@ -19,7 +19,7 @@ class FormMeta extends Model
      * @var bool
      */
     public $timestamps = false;
-    
+
     /**
      * A formMeta is owned by a form.
      *
@@ -52,6 +52,21 @@ class FormMeta extends Model
         }
 
         return $formMeta;
+    }
+
+    public static function retrieve($key, $formId = null)
+    {
+        $meta = static::when($formId, function ($q) use ($formId) {
+            return $q->where('form_id', $formId);
+        })
+            ->where('meta_key', $key)
+            ->first();
+
+        if ($meta) {
+            return json_decode($meta->value, true);
+        }
+
+        return null;
     }
 
     public static function store(Form $form, $formMeta)

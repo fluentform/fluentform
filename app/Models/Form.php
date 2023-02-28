@@ -112,20 +112,7 @@ class Form extends Model
 
     public static function getFormMeta($metaKey, $formId = null)
     {
-        $instance = new static;
-
-        $settingsMeta = $instance->formMeta()
-            ->when($formId, function ($q) use ($formId) {
-                return $q->where('form_id', $formId);
-            })
-            ->where('meta_key', $metaKey)
-            ->first();
-
-        if ($settingsMeta) {
-            return json_decode($settingsMeta->value, true);
-        }
-
-        return null;
+        return FormMeta::retrieve($metaKey, $formId);
     }
 
     public static function getFormsDefaultSettings($formId = false)
