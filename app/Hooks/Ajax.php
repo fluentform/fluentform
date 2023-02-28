@@ -20,11 +20,13 @@ $app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform-global-settings', function () use ($app) {
+    dd('wp_ajax_fluentform-global-settings');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Settings\Settings($app->request))->get();
 });
 
 $app->addAction('wp_ajax_fluentform-global-settings-store', function () use ($app) {
+    dd('wp_ajax_fluentform-global-settings-store');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Settings\Settings($app->request))->store();
 });
@@ -365,28 +367,33 @@ $app->addAction('wp_ajax_fluentform-predefined-create', function () use ($app) {
 
 // Permission settings
 $app->addAction('wp_ajax_fluentform_get_access_roles', function () {
+    dd('wp_ajax_fluentform_get_access_roles');
     Acl::verify('fluentform_full_access');
     $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
     $roleManager->getRoles();
 });
 
 $app->addAction('wp_ajax_fluentform_set_access_roles', function () {
+    dd('wp_ajax_fluentform_set_access_roles');
     Acl::verify('fluentform_full_access');
     $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
     $roleManager->setRoles();
 });
 
 $app->addAction('wp_ajax_fluentform_get_managers', function () {
+    dd('wp_ajax_fluentform_get_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->get();
 });
 
 $app->addAction('wp_ajax_fluentform_set_managers', function () {
+    dd('wp_ajax_fluentform_set_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->store();
 });
 
 $app->addAction('wp_ajax_fluentform_del_managers', function () {
+    dd('wp_ajax_fluentform_del_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->remove();
 });

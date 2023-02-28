@@ -1,103 +1,37 @@
 <?php
 
-namespace FluentForm\App\Modules\Settings;
+namespace FluentForm\App\Services\GlobalSettings;
 
-use FluentForm\Framework\Request\Request;
-use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
+use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimp;
+use FluentForm\Framework\Support\Arr;
 
-
-/**
- * Global Settings
- *
- * @package FluentForm\App\Modules\Settings
- */
-/**
- * @deprecated deprecated use FluentForm\App\Http\Controllers\GlobalSettingsController
- */
-class Settings
+class GlobalSettingsHelper
 {
-    /**
-     * Request Object
-     *
-     * @var \FluentForm\Framework\Request\Request
-     */
-    protected $request;
-
-    /**
-     * Settings constructor.
-     *
-     * @param \FluentForm\Framework\Request\Request $request
-     */
-    public function __construct(Request $request)
+    public function storeReCaptcha($attributes)
     {
-        $this->request = $request;
-    }
-
-    /**
-     * Get a global settings for an specified key.
-     */
-    public function get()
-    {
-        $values = [];
-        $key = $this->request->get('key');
-
-        if (is_array($key)) {
-            foreach ($key as $key_item) {
-                $values[$key_item] = get_option($key_item);
-            }
-        } else {
-            $values[$key] = get_option($key);
-        }
-        $values = apply_filters('fluentform_get_global_settings_values', $values, $key);
-        wp_send_json_success($values, 200);
-    }
-
-    public function store()
-    {
-        $key = $this->request->get('key');
-        $method = 'store' . ucwords($key);
-
-        $allowedMethods = [
-            'storeReCaptcha',
-            'storeHCaptcha',
-            'storeTurnstile',
-            'storeSaveGlobalLayoutSettings',
-            'storeMailChimpSettings',
-            'storeEmailSummarySettings',
-        ];
-        do_action('fluentform_saving_global_settings_with_key_method', $this->request);
-
-        if (in_array($method, $allowedMethods)) {
-            $this->{$method}();
-        }
-    }
-
-    public function storeReCaptcha()
-    {
-        $data = $this->request->get('reCaptcha');
+        $data = Arr::get($attributes, 'reCaptcha');
 
         if ('clear-settings' == $data) {
             delete_option('_fluentform_reCaptcha_details');
 
             update_option('_fluentform_reCaptcha_keys_status', false, 'no');
 
-            wp_send_json_success([
+            return([
                 'message' => __('Your reCAPTCHA settings are deleted.', 'fluentform'),
                 'status'  => false,
-            ], 200);
+            ]);
         }
 
-        $token = ArrayHelper::get($data, 'token');
-        $secretKey = ArrayHelper::get($data, 'secretKey');
+        $token = Arr::get($data, 'token');
+        $secretKey = Arr::get($data, 'secretKey');
 
         // If token is not empty meaning user verified their captcha.
         if ($token) {
             // Validate the reCaptcha response.
-            $version = ArrayHelper::get($data, 'api_version', 'v2_visible');
+            $version = Arr::get($data, 'api_version', 'v2_visible');
 
             $status = ReCaptcha::validate($token, $secretKey, $version);
 
@@ -105,9 +39,9 @@ class Settings
             if ($status) {
                 // Prepare captcha data.
                 $captchaData = [
-                    'siteKey'     => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
+                    'siteKey'     => sanitize_text_field(Arr::get($data, 'siteKey')),
                     'secretKey'   => sanitize_text_field($secretKey),
-                    'api_version' => ArrayHelper::get($data, 'api_version'),
+                    'api_version' => Arr::get($data, 'api_version'),
                 ];
 
                 // Update the reCaptcha details with siteKey & secretKey.
@@ -118,10 +52,10 @@ class Settings
 
                 // Send success response letting the user know that
                 // that the reCaptcha is valid and saved properly.
-                wp_send_json_success([
+                return ([
                     'message' => __('Your reCAPTCHA is valid and saved.', 'fluentform'),
                     'status'  => $status,
-                ], 200);
+                ]);
             } else { // reCaptcha is not valid.
                 $message = __('Sorry, Your reCAPTCHA is not valid. Please try again', 'fluentform');
             }
@@ -136,29 +70,29 @@ class Settings
             }
         }
 
-        wp_send_json_error([
+        return([
             'message' => $message,
             'status'  => $status,
-        ], 400);
+        ]);
     }
 
-    public function storeHCaptcha()
+    public function storeHCaptcha($attributes)
     {
-        $data = $this->request->get('hCaptcha');
+        $data = Arr::get($attributes, 'hCaptcha');
 
         if ('clear-settings' == $data) {
             delete_option('_fluentform_hCaptcha_details');
 
             update_option('_fluentform_hCaptcha_keys_status', false, 'no');
 
-            wp_send_json_success([
+            return([
                 'message' => __('Your hCaptcha settings are deleted.', 'fluentform'),
                 'status'  => false,
-            ], 200);
+            ]);
         }
 
-        $token = ArrayHelper::get($data, 'token');
-        $secretKey = ArrayHelper::get($data, 'secretKey');
+        $token = Arr::get($data, 'token');
+        $secretKey = Arr::get($data, 'secretKey');
 
         // If token is not empty meaning user verified their captcha.
         if ($token) {
@@ -169,7 +103,7 @@ class Settings
             if ($status) {
                 // Prepare captcha data.
                 $captchaData = [
-                    'siteKey'   => sanitize_text_field(ArrayHelper::get($data, 'siteKey')),
+                    'siteKey'   => sanitize_text_field(Arr::get($data, 'siteKey')),
                     'secretKey' => sanitize_text_field($secretKey),
                 ];
 
@@ -181,10 +115,10 @@ class Settings
 
                 // Send success response letting the user know that
                 // that the hCaptcha is valid and saved properly.
-                wp_send_json_success([
+                return([
                     'message' => __('Your hCaptcha is valid and saved.', 'fluentform'),
                     'status'  => $status,
-                ], 200);
+                ]);
             } else { // hCaptcha is not valid.
                 $message = __('Sorry, Your hCaptcha is not valid, Please try again', 'fluentform');
             }
@@ -199,36 +133,36 @@ class Settings
             }
         }
 
-        wp_send_json_error([
+        return([
             'message' => $message,
             'status'  => $status,
-        ], 400);
+        ]);
     }
 
-    public function storeTurnstile()
+    public function storeTurnstile($attributes)
     {
-        $data = $this->request->get('turnstile');
+        $data = Arr::get($attributes, 'turnstile');
 
         if ('clear-settings' == $data) {
             delete_option('_fluentform_turnstile_details');
 
             update_option('_fluentform_turnstile_keys_status', false, 'no');
 
-            wp_send_json_success([
+            return([
                 'message' => __('Your Turnstile settings are deleted.', 'fluentform'),
                 'status'  => false,
-            ], 200);
+            ]);
         }
 
-        $token = ArrayHelper::get($data, 'token');
-        $secretKey = sanitize_text_field(ArrayHelper::get($data, 'secretKey'));
+        $token = Arr::get($data, 'token');
+        $secretKey = sanitize_text_field(Arr::get($data, 'secretKey'));
 
         // Prepare captcha data.
         $captchaData = [
-            'siteKey'   => ArrayHelper::get($data, 'siteKey'),
+            'siteKey'   => Arr::get($data, 'siteKey'),
             'secretKey' => $secretKey,
-            'invisible' => ArrayHelper::get($data, 'invisible', 'no'),
-            'theme'     => ArrayHelper::get($data, 'theme', 'auto')
+            'invisible' => Arr::get($data, 'invisible', 'no'),
+            'theme'     => Arr::get($data, 'theme', 'auto')
         ];
 
         // If token is not empty meaning user verified their captcha.
@@ -246,10 +180,10 @@ class Settings
 
                 // Send success response letting the user know that
                 // that the turnstile is valid and saved properly.
-                wp_send_json_success([
+                return([
                     'message' => __('Your Turnstile Keys are valid.', 'fluentform'),
                     'status'  => $status,
-                ], 200);
+                ]);
             } else {
                 // turnstile is not valid.
                 $message = __('Sorry, Your Turnstile Keys are not valid. Please try again!', 'fluentform');
@@ -265,39 +199,39 @@ class Settings
                 update_option('_fluentform_turnstile_details', $captchaData, 'no');
                 $message = __('Your Turnstile settings is saved.', 'fluentform');
 
-                wp_send_json_success([
+                return([
                     'message' => $message,
                     'status'  => $status,
-                ], 200);
+                ]);
             }
         }
 
-        wp_send_json_error([
+        return([
             'message' => $message,
             'status'  => $status,
-        ], 400);
+        ]);
     }
 
-    public function storeSaveGlobalLayoutSettings()
+    public function storeSaveGlobalLayoutSettings($attributes)
     {
-        $settings = $this->request->get('value');
+        $settings = Arr::get($attributes, 'form_settings');
         $settings = json_decode($settings, true);
         $sanitizedSettings = fluentFormSanitizer($settings);
 
-        if (ArrayHelper::get($settings, 'misc.email_footer_text')) {
+        if (Arr::get($settings, 'misc.email_footer_text')) {
             $sanitizedSettings['misc']['email_footer_text'] = wp_unslash($settings['misc']['email_footer_text']);
         }
 
         update_option('_fluentform_global_form_settings', $sanitizedSettings, 'no');
 
-        wp_send_json_success([
-            'message' => __('Global layout settings has been saved'),
-        ], 200);
+        return ([
+            'message' => __('Global layout settings has been saved')
+        ]);
     }
 
-    public function storeMailChimpSettings()
+    public function storeMailChimpSettings($attributes)
     {
-        $mailChimp = $this->request->get('mailchimp');
+        $mailChimp = Arr::get($attributes, 'mailchimp');
 
         if (!$mailChimp['apiKey']) {
             $mailChimpSettings = [
@@ -308,10 +242,10 @@ class Settings
 
             update_option('_fluentform_mailchimp_details', $mailChimpSettings, 'no');
 
-            wp_send_json_success([
+            return([
                 'message' => __('Your settings has been updated', 'fluentform'),
                 'status'  => false,
-            ], 200);
+            ]);
         }
 
         // Verify API key now
@@ -322,9 +256,9 @@ class Settings
                 throw new \Exception($MailChimp->getLastError());
             }
         } catch (\Exception $exception) {
-            wp_send_json_error([
+            return([
                 'message' => $exception->getMessage(),
-            ], 400);
+            ]);
         }
 
         // Mailchimp key is verified now, Proceed now
@@ -337,22 +271,23 @@ class Settings
         // Update the reCaptcha details with siteKey & secretKey.
         update_option('_fluentform_mailchimp_details', $mailChimpSettings, 'no');
 
-        wp_send_json_success([
+        return([
             'message' => __('Your mailchimp api key has been verfied and successfully set', 'fluentform'),
             'status'  => true,
-        ], 200);
+        ]);
     }
 
-    public function storeEmailSummarySettings()
+    public function storeEmailSummarySettings($attributes)
     {
+        $settings = Arr::get($attributes, 'email_report');
+        $settings = json_decode($settings, true);
+
         $defaults = [
             'status'            => 'yes',
             'send_to_type'      => 'admin_email',
             'custom_recipients' => '',
             'sending_day'       => 'Mon',
         ];
-        $settings = $this->request->get('value');
-        $settings = json_decode($settings, true);
 
         $settings = wp_parse_args($settings, $defaults);
 
@@ -363,8 +298,8 @@ class Settings
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
 
-        wp_send_json_success([
+        return([
             'message' => __('Email Summary Settings has been updated'),
-        ], 200);
+        ]);
     }
 }

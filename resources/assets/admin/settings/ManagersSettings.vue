@@ -20,9 +20,11 @@
                 </ul>
             </div>
 
-            <privacy v-show="currentPage == 'roleBased'" />
+            <privacy @filteredCapability="filteredCapability" :roles="roles" :capability="capability"
+                     v-show="currentPage == 'roleBased'"/>
 
-            <managers v-show="currentPage == 'advanced'">
+            <managers @add-manager="addManager" @delete-manager="deleteManager" @current-page="setCurrentPage"
+                      :managers="managers" :pagination="pagination" v-show="currentPage == 'advanced'">
                 {{ $t('Advanced form') }}
             </managers>
         </div>
@@ -43,9 +45,66 @@ export default {
 
     data() {
         return {
-            loading: true,
+            loading: false,
             currentPage: "roleBased",
+            roles: [],
+            managers: [],
+            capability: ["administrator"],
+            pagination: {
+                total: 0,
+                current_page: 1,
+                per_page: 10
+            }
         };
+    },
+    methods: {
+        fetch() {
+            this.loading = true;
+
+            const url = FluentFormsGlobal.$rest.route('getRolesAndManagers');
+            let data = {
+                per_page: this.pagination.per_page,
+                page: this.pagination.current_page
+            }
+
+            FluentFormsGlobal.$rest.get(url, data)
+                .then(response => {
+                    this.roles = response.roles.roles;
+                    this.capability = response.roles.capability;
+                    this.managers = response.managers;
+                })
+                .catch(e => {
+
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        filteredCapability(value) {
+            this.capability = value;
+        },
+        addManager(value) {
+            const existedIndex = this.managers.managers.data.findIndex(m => m.id === value.id);
+
+            if (existedIndex >= 0) {
+                this.managers.managers.data.splice(existedIndex, 1, value);
+            } else {
+                this.managers.managers.data.push(value);
+            }
+        },
+        deleteManager(value) {
+            const existedIndex = this.managers.managers.data.findIndex(m => m.id === value.id);
+
+            if (existedIndex >= 0) {
+                this.managers.managers.data.splice(existedIndex, 1);
+            }
+        },
+        setCurrentPage(value) {
+            this.pagination.current_page = value;
+        }
+    },
+    mounted() {
+        this.fetch();
     }
 };
 </script>

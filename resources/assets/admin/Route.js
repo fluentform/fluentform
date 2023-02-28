@@ -61,7 +61,6 @@ class Route {
     getLogFilters = this.getLogs + '/filters';
     deleteLogs = this.getLogs;
 
-
     integrations = 'integrations';
     getGlobalIntegration = this.integrations;
     updateGlobalIntegration = this.integrations;
@@ -73,6 +72,14 @@ class Route {
     getIntegrations = this.findIntegration + "/form-integrations";
     getFormIntegrationList = this.findIntegration + '/integration-list-id';
 
+    getGlobalSettings = 'global-settings';
+    storeGlobalSettings = this.getGlobalSettings;
+
+    getRolesAndManagers = 'roles-and-manager';
+    storeRoles = this.getRolesAndManagers;
+
+    storeManager = this.getRolesAndManagers + "/manager";
+    deleteManager = this.storeManager;
 }
 
 export default new Route();

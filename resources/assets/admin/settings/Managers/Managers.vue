@@ -21,11 +21,11 @@
             {{ $t('Administrators have full access to Fluent Forms.Add other managers giving specific permissions.') }}
         </p>
 
-        <hr />
+        <hr/>
 
         <div class="ff_managers_list">
-            <el-table stripe class="el-fluid" :data="managers">
-                <el-table-column :label="$t('ID')" prop="id" width="80" />
+            <el-table stripe class="el-fluid" :data="managersData">
+                <el-table-column :label="$t('ID')" prop="id" width="80"/>
 
                 <el-table-column :label="$t('Name')" width="150">
                     <template slot-scope="scope">
@@ -33,7 +33,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column :label="$t('Email')" prop="email" width="250" />
+                <el-table-column :label="$t('Email')" prop="email" width="250"/>
 
                 <el-table-column :label="$t('Permissions')">
                     <template slot-scope="scope">
@@ -69,7 +69,7 @@
                 </el-table-column>
             </el-table>
             <br/>
-    
+
             <el-pagination
                 @current-change="goToPage"
                 background
@@ -97,7 +97,7 @@
                         v-model="manager.email"
                     />
 
-                    <error-view field="email" :errors="errors" />
+                    <error-view field="email" :errors="errors"/>
 
                     <p v-show="!manager.id">
                         {{ $t('Please provide email address of your existing user.') }}
@@ -116,7 +116,7 @@
                         </el-checkbox>
                     </el-checkbox-group>
 
-                    <error-view field="permissions" :errors="errors" />
+                    <error-view field="permissions" :errors="errors"/>
                 </el-form-item>
             </el-form>
 
@@ -136,6 +136,8 @@ import Confirm from "@/admin/components/confirmRemove.vue";
 export default {
     name: "Managers",
 
+    props: ['managers', 'pagination'],
+
     components: {
         ErrorView,
         Confirm
@@ -144,37 +146,19 @@ export default {
     data() {
         return {
             loading: false,
-            managers: [],
-            pagination: {
-                total: 0,
-                current_page: 1,
-                per_page: 10
-            },
             permissions: {},
             modal: false,
             manager: {},
-            errors: new Errors()
+            errors: new Errors(),
+            managersData: []
         };
     },
 
     methods: {
-        fetch() {
-            this.loading = true;
-
-            FluentFormsGlobal.$get({
-                action: "fluentform_get_managers",
-                per_page: this.pagination.per_page,
-                page: this.pagination.current_page
-            })
-                .then(response => {
-                    this.permissions = response.permissions;
-                    this.managers = response.managers.data;
-                    this.pagination.total = response.managers.total;
-                })
-                .fail(e => {})
-                .always(() => {
-                    this.loading = false;
-                });
+        handleFetchedData() {
+            this.managersData = this.managers.managers?.data;
+            this.permissions = this.managers.permissions;
+            this.pagination.total = this.managers.managers?.total;
         },
 
         showForm() {
@@ -193,21 +177,22 @@ export default {
         store() {
             this.loading = true;
 
-            FluentFormsGlobal.$post({
-                action: "fluentform_set_managers",
+            const url = FluentFormsGlobal.$rest.route('storeManager');
+            let data = {
                 manager: this.manager
-            })
+            }
+
+            FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.modal = false;
-
-                    this.fetch();
-
+                    this.$emit('add-manager', response.manager);
+                    this.handleFetchedData();
                     this.$success(response.message);
                 })
-                .fail(e => {
-                    this.errors.record(e.responseJSON.errors);
+                .catch(e => {
+                    this.errors.record(e.errors);
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
@@ -215,37 +200,38 @@ export default {
         edit(manager) {
             this.modal = true;
             this.manager = Object.assign({}, manager);
+            this.handleFetchedData();
             this.errors.clear();
         },
 
         remove(manager) {
-            FluentFormsGlobal.$post({
-                action: "fluentform_del_managers",
+            const url = FluentFormsGlobal.$rest.route('deleteManager');
+            let data = {
                 id: manager.id
-            })
+            }
+
+            FluentFormsGlobal.$rest.delete(url, data)
                 .then(response => {
                     this.modal = false;
-
-                    this.fetch();
-
+                    this.$emit('delete-manager', response.manager);
+                    this.handleFetchedData();
                     this.$success(response.message);
                 })
-                .fail(error => {
-                    this.$fail(error.responseJSON.message);
+                .catch(e => {
+                    this.errors.record(e.errors);
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
-    
+
         goToPage(value) {
-            this.pagination.current_page = value;
-            this.fetch();
+            this.$emit('current-page', value);
         }
     },
 
-    mounted() {
-        this.fetch();
+    updated() {
+        this.handleFetchedData();
     }
 };
 </script>

@@ -1,7 +1,9 @@
 <?php
 
 namespace FluentForm\App\Modules\Acl;
-
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\RoleManagerController
+ */
 class RoleManager
 {
     public function getRoles()

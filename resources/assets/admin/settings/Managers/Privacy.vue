@@ -6,10 +6,12 @@
         <div v-loading="loading" class="ninja_content">
             <div class="ninja_block">
                 <p>
-                    {{ $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.') }}
+                    {{
+                        $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.')
+                    }}
                 </p>
             </div>
-            <hr />
+            <hr/>
 
             <div style="margin-bottom: 20px;" class="form-group">
                 <el-checkbox
@@ -23,13 +25,14 @@
 
             <div style="margin-bottom: 20px;" class="form-group">
                 <el-checkbox-group
-                    v-model="capability"
+                    :value="capability"
                     @change="handleCheckedCapabilitiesChange"
                 >
                     <el-checkbox
                         v-for="role in roles"
                         :label="role.key"
                         :key="role.key"
+                        @change="handleChange"
                     >
                         {{ role.name }}
                     </el-checkbox>
@@ -45,66 +48,73 @@ export default {
     data() {
         return {
             loading: false,
-            roles: [],
             checkAll: false,
-            capability: ["administrator"],
             isIndeterminate: false
         };
     },
+    props: ['roles', 'capability'],
     methods: {
-        get() {
-            this.loading = true;
-            FluentFormsGlobal.$get({
-                action: "fluentform_get_access_roles"
-            })
-                .then(response => {
-                    let capability = response.data.capability;
-                    if (!capability || typeof capability != "object") {
-                        capability = ["administrator"];
-                    }
-                    this.capability = capability;
-                    this.roles = response.data.roles;
-                    this.handleCheckedCapabilitiesChange(this.capability, false);
-                })
-                .fail(e => {})
-                .always(() => {
-                    this.loading = false;
-                });
+        handleFetchedData() {
+            let capability = this.capability;
+            if (!capability || typeof capability != "object") {
+                capability = ["administrator"];
+            }
+            this.handleCheckedCapabilitiesChange(this.capability, false);
         },
         store() {
             if (!this.roles.length) {
                 return;
             }
+
+            const url = FluentFormsGlobal.$rest.route('storeRoles');
             let data = {
-                action: "fluentform_set_access_roles",
                 capability: this.capability
             };
-            FluentFormsGlobal.$post(data)
+
+            FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
-                    this.$success(response.data.message);
+                    this.$success(response.message);
                 })
-                .fail(e => {
-                    this.$fail(e.responseJSON.data.message);
+                .catch(e => {
+                    this.$fail(e.message);
+                })
+                .finally(() => {
+
                 });
         },
         handleCheckAllChange(val) {
-            this.capability = val ? this.roles.map(item => item.key) : [];
+            const filteredCapability = val ? this.roles.map(item => item.key) : [];
             this.isIndeterminate = false;
-            this.store();
+            this.$emit('filteredCapability', filteredCapability);
+            this.$nextTick(function () {
+                this.store();
+            });
         },
         handleCheckedCapabilitiesChange(value, store = true) {
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.roles.length;
-            this.isIndeterminate =
-                checkedCount > 0 && checkedCount < this.roles.length;
-            
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.roles.length;
             if (store) {
                 this.store();
             }
+        },
+        handleChange(value) {
+            let filteredCapability = this.capability;
+            const targetValue = event.target.value;
+
+            if (value) {
+                if (this.capability.indexOf(targetValue) === -1) {
+                    filteredCapability.push(targetValue);
+                }
+            } else {
+                filteredCapability = this.capability.filter(e => e !== targetValue);
+            }
+
+            this.$emit('filteredCapability', filteredCapability);
         }
     },
-    mounted() {
-        this.get();
-    }
+    updated() {
+        this.handleFetchedData();
+    },
 };
 </script>

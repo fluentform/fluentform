@@ -69,11 +69,10 @@ $router->prefix('logs')->withPolicy('SubmissionPolicy')->group(function ($router
 });
 
 $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($router) {
-    
     $router->get('/', 'GlobalIntegrationController@index');
     $router->post('/', 'GlobalIntegrationController@update');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
-
+    
     $router->prefix('{form_id}')->group(function ($router) {
         $router->get('/form-integrations', 'FormIntegrationController@index');
         $router->get('/', 'FormIntegrationController@find');
@@ -81,7 +80,17 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->delete('/', 'FormIntegrationController@delete');
         
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
-        
     });
-    
+});
+
+$router->prefix('global-settings')->withPolicy('GlobalSettingsPolicy')->group(function ($router) {
+    $router->get('/', 'GlobalSettingsController@index');
+    $router->post('/', 'GlobalSettingsController@store');
+});
+
+$router->prefix('roles-and-manager')->withPolicy('RoleManagerPolicy')->group(function ($router) {
+    $router->get('/', 'RoleManagerController@index');
+    $router->post('/', 'RoleManagerController@addCapability');
+    $router->post('/manager', 'RoleManagerController@addManager');
+    $router->delete('/manager', 'RoleManagerController@removeManager');
 });

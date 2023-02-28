@@ -6,7 +6,7 @@
 
                 <p>
                     {{
-                        $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
+                    $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
                     }}
 
                     <a href="https://www.cloudflare.com/en-gb/products/turnstile/" target="_blank">
@@ -197,57 +197,68 @@ export default {
             }
             this.saving = true;
 
-            FluentFormsGlobal.$post({
-                action: 'fluentform-global-settings-store',
+            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            let data = {
                 key: 'turnstile',
                 turnstile: this.turnstile
-            }).then(response => {
-                    this.turnstile_status = response.data.status;
-                    this.$success(response.data.message);
+            }
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.turnstile_status = response.status;
+                    this.$success(response.message);
                     this.siteKeyChanged = false;
                     this.turnstile.token = null;
                 })
-                .fail(error => {
-                    this.turnstile_status = parseInt(error.responseJSON.data.status, 10);
+                .catch(error => {
+                    this.turnstile_status = parseInt(error.status, 10);
                     let method = this.turnstile_status === 1 ? '$warning' : '$error';
-                    this[method](error.responseJSON.data.message);
-                }).always(r => {
-                this.saving = false;
-            });
+                    this[method](error.message);
+                })
+                .finally(r => {
+                    this.saving = false;
+                });
         },
         clearSettings() {
             this.clearing = true;
-            FluentFormsGlobal.$post({
-                action: 'fluentform-global-settings-store',
+
+            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            let data = {
                 key: 'turnstile',
                 turnstile: 'clear-settings'
-            }).then(response => {
-                    this.turnstile_status = response.data.status;
+            }
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.turnstile_status = response.status;
                     this.turnstile = {siteKey: '', secretKey: ''};
-                    this.$success(response.data.message);
+                    this.$success(response.message);
                 })
-                .fail(error => {
-                    this.turnstile_status = error.responseJSON.data.status;
+                .catch(error => {
+                    this.turnstile_status = error.status;
                     this.$fail(this.$t('Something went wrong.'));
-                }).always(r => {
-                this.clearing = false;
-            });
+                })
+                .finally(r => {
+                    this.clearing = false;
+                });
         },
         validate() {
             return !!(this.turnstile.siteKey && this.turnstile.secretKey);
         },
         getTurnstileSettings() {
-            FluentFormsGlobal.$get({
-                    action: 'fluentform-global-settings',
-                    key: [
-                        '_fluentform_turnstile_details',
-                        '_fluentform_turnstile_keys_status'
-                    ]
-                })
+            const url = FluentFormsGlobal.$rest.route('getGlobalSettings');
+            let data = {
+                key: [
+                    '_fluentform_turnstile_details',
+                    '_fluentform_turnstile_keys_status'
+                ]
+            }
+
+            FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    const turnstile = response.data._fluentform_turnstile_details;
+                    const turnstile = response._fluentform_turnstile_details;
                     this.turnstile = turnstile;
-                    this.turnstile_status = response.data._fluentform_turnstile_keys_status;
+                    this.turnstile_status = response._fluentform_turnstile_keys_status;
                 });
         }
     },

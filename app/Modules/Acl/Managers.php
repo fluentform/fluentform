@@ -3,7 +3,9 @@
 namespace FluentForm\App\Modules\Acl;
 
 use FluentForm\Framework\Helpers\ArrayHelper;
-
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\RoleManagerController
+ */
 class Managers
 {
     /**

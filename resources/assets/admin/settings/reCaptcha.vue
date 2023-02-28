@@ -92,7 +92,7 @@
                     </template>
 
                     <div
-                        id="reCaptcha" 
+                        id="reCaptcha"
                         :data-sitekey="reCaptcha.siteKey"
                         :data-size="size"
                     />
@@ -180,12 +180,12 @@ export default {
                 window.___grecaptcha_cfg.clients = {};
 
                 let widgetID = grecaptcha.render(id, {
-                        'sitekey': siteKey,
-                        'callback': (token) => {
-                            this.reCaptcha.token = token;
-                            this.disabled = false;
-                        }
-                    });
+                    'sitekey': siteKey,
+                    'callback': (token) => {
+                        this.reCaptcha.token = token;
+                        this.disabled = false;
+                    }
+                });
 
                 if (this.reCaptcha.api_version != 'v2_visible') {
                     grecaptcha.execute(widgetID, {action: 'submit'})
@@ -202,60 +202,67 @@ export default {
             }
             this.saving = true;
 
-            FluentFormsGlobal.$post({
-                action: 'fluentform-global-settings-store',
+            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            let data = {
                 key: 'reCaptcha',
                 reCaptcha: this.reCaptcha
-            }).then(response => {
-                this.reCaptcha_status = response.data.status;
-                this.$success(response.data.message);
-            })
-                .fail(error => {
-                    this.reCaptcha_status = parseInt(error.responseJSON.data.status, 10);
+            };
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.reCaptcha_status = response.status;
+                    this.$success(response.message);
+                })
+                .catch(error => {
+                    this.reCaptcha_status = parseInt(error.status, 10);
                     let method = this.reCaptcha_status === 1 ? '$warning' : '$fail';
-                    this[method](error.responseJSON.data.message);
-                }).always(r => {
-                this.saving = false;
-            });
+                    this[method](error.message);
+                })
+                .finally(r => {
+                    this.saving = false;
+                });
         },
         clearSettings() {
             this.clearing = true;
-            FluentFormsGlobal.$post({
-                action: 'fluentform-global-settings-store',
+            const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
+            let data = {
                 key: 'reCaptcha',
                 reCaptcha: 'clear-settings'
-            }).then(response => {
-                this.reCaptcha_status = response.data.status;
-                this.reCaptcha = {siteKey: '', secretKey: ''};
-                this.$success(response.data.message);
-            })
-                .fail(error => {
-                    this.reCaptcha_status = error.responseJSON.data.status;
+            };
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.reCaptcha_status = response.status;
+                    this.reCaptcha = {siteKey: '', secretKey: ''};
+                    this.$success(response.message);
+                })
+                .catch(error => {
+                    this.reCaptcha_status = error.status;
                     this.$fail(this.$t('Something went wrong.'));
-                }).always(r => {
-                this.clearing = false;
-            });
+                })
+                .finally(r => {
+                    this.clearing = false;
+                });
         },
         validate() {
             return !!(this.reCaptcha.siteKey && this.reCaptcha.secretKey);
         },
         getReCaptchaSettings() {
-            FluentFormsGlobal.$get({
-                action: 'fluentform-global-settings',
+            const url = FluentFormsGlobal.$rest.route('getGlobalSettings');
+            let data = {
                 key: [
                     '_fluentform_reCaptcha_details',
                     '_fluentform_reCaptcha_keys_status'
                 ]
-            })
+            };
+            FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    const recaptcha = response.data._fluentform_reCaptcha_details || {siteKey: '', secretKey: ''};
+                    const recaptcha = response._fluentform_reCaptcha_details || {siteKey: '', secretKey: ''};
                     if (!recaptcha.api_version) {
                         recaptcha.api_version = 'v2_visible';
                     }
                     this.reCaptcha = recaptcha;
-                    this.reCaptcha_status = response.data._fluentform_reCaptcha_keys_status;
-
-                });
+                    this.reCaptcha_status = response._fluentform_reCaptcha_keys_status;
+                })
         }
     },
     mounted() {
