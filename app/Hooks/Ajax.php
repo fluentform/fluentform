@@ -211,6 +211,7 @@ $app->addAction('wp_ajax_fluentform-get-entry-notes', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-add-entry-note', function () {
+    dd('wp_ajax_fluentform-add-entry-note');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->addNote();
 });
@@ -224,11 +225,13 @@ $app->addAction('wp_ajax_fluentform-get-entry-logs', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform_get_activity_log_filters', function () use ($app) {
+    dd('wp_ajax_fluentform_get_activity_log_filters');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getLogFilters();
 });
 
 $app->addAction('wp_ajax_fluentform_get_activity_api_log_filters', function () use ($app) {
+    dd('wp_ajax_fluentform_get_activity_api_log_filters');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getApiLogFilters();
 });
@@ -263,6 +266,7 @@ $app->addAction('wp_ajax_fluentform_delete_api_logs_by_ids', function () use ($a
 });
 
 $app->addAction('wp_ajax_fluentform-reset-analytics', function () use ($app) {
+    dd('wp_ajax_fluentform-reset-analytics');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Form\Analytics($app))->resetFormAnalytics();
 });

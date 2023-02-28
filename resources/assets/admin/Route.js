@@ -80,6 +80,9 @@ class Route {
 
     storeManager = this.getRolesAndManagers + "/manager";
     deleteManager = this.storeManager;
+    analytics = 'analytics';
+    getFormAnalytics = this.analytics + '/{param}'
+    resetFormAnalytics = this.analytics + '/{param}/reset/'
 }
 
 export default new Route();

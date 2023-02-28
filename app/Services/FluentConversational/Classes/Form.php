@@ -558,7 +558,8 @@ class Form
 
         if (! apply_filters('fluentform-disabled_analytics', false)) {
             if (! Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
+                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
+    
             }
         }
 
@@ -695,10 +696,9 @@ class Form
 
         if (! apply_filters('fluentform-disabled_analytics', false)) {
             if (! Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Modules\Form\Analytics(wpFluentForm()))->record($form->id);
+                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
             }
         }
-
         wpFluentForm('view')->render('public.conversational-form', [
             'generated_css' => $this->getGeneratedCss($formId),
             'design'        => $designSettings,

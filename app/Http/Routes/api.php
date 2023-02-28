@@ -94,3 +94,9 @@ $router->prefix('roles-and-manager')->withPolicy('RoleManagerPolicy')->group(fun
     $router->post('/manager', 'RoleManagerController@addManager');
     $router->delete('/manager', 'RoleManagerController@removeManager');
 });
+
+$router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router) {
+    $router->post('/{form_id}/reset', 'AnalyticsController@reset');
+});
+
+

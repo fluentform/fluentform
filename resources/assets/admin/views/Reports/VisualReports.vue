@@ -176,13 +176,17 @@ export default {
         },
         resetAnalytics() {
             if (window.confirm('All the views recorded to this form will be deleted. Are you sure?')) {
-                FluentFormsGlobal.$post({
+
+                const url = FluentFormsGlobal.$rest.route('resetFormAnalytics', this.form_id);
+                FluentFormsGlobal.$rest.post(url, {
                     form_id: this.form_id,
-                    action: 'fluentform-reset-analytics'
+                }).then(response => {
+                    this.$success(response.message);
+                }).catch(error => {
+                    const message = error.message || this.$t('Something went wrong, please try again.');
+                    this.$fail(message);
                 })
-                    .then(response => {
-                        this.$message.success(response.data.message);
-                    });
+
             }
         },
         gotoRegularEntries() {

@@ -749,7 +749,7 @@ class Component
 
         if (!apply_filters('fluentform-disabled_analytics', false)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Modules\Form\Analytics($this->app))->record($form->id);
+                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
             }
         }
 
