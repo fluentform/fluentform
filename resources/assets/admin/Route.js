@@ -25,7 +25,7 @@ class Route {
     updateForm = this.findForm;
     deleteForm = this.findForm;
     duplicateForm = this.findForm + "/duplicate";
-    convertForm = this.findForm + "/convert/{param}";
+    convertForm = this.findForm + "/convert";
     getFormResources = this.findForm + "/resources";
     getFormPages = this.findForm + "/pages";
     getFormFields = this.findForm + "/fields";
