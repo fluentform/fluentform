@@ -298,8 +298,6 @@ class GlobalSettingsHelper
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
 
-        return([
-            'message' => __('Email Summary Settings has been updated'),
-        ]);
+        return true;
     }
 }

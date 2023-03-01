@@ -159,12 +159,15 @@ export default {
                     if (response) {
                         this.loading = false;
                         response.map(res => {
-                            setTimeout(() => this.$success(res.message), 50);
+                            if (res?.message){
+                                this.$success(res.message)
+                                return;
+                            }
                         });
                     }
                 })
                 .catch(e => {
-                    e.map(err => this.$fail(err.message));
+                    this.$fail(this.$t('Something Went Wrong Please Try Again!'))
                 })
                 .finally(() => {
                     this.loading = false;
@@ -181,10 +184,9 @@ export default {
 
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
-                    this.$success(response.data.message);
                 })
                 .catch(e => {
-                    this.$fail(e.data.message);
+                    this.$fail(e?.data?.message);
                 });
         }
     },
