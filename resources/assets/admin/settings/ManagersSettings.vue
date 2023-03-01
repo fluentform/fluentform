@@ -101,6 +101,7 @@ export default {
         },
         setCurrentPage(value) {
             this.pagination.current_page = value;
+            this.fetch();
         }
     },
     mounted() {
