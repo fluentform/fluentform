@@ -336,17 +336,20 @@ $app->addAction('wp_ajax_fluentform_install_fluentsmtp', function () {
 
 // Export forms
 $app->addAction('wp_ajax_fluentform-export-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-export-forms');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Form\Transfer($app))->export();
 });
 
 // Import forms
 $app->addAction('wp_ajax_fluentform-import-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-import-forms');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Form\Transfer($app))->import();
 });
 
 $app->addAction('wp_ajax_fluentform-get-all-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-get-all-forms'); //Need to check this, could not find any use
     Acl::verify(['fluentform_settings_manager', 'fluentform_forms_manager']);
     (new \FluentForm\App\Modules\Form\Form($app))->getAllForms();
 });
@@ -360,6 +363,7 @@ $app->addAction('wp_ajax_fluentform-predefined-forms', function () use ($app) {
 
 // Create a form by predefined data
 $app->addAction('wp_ajax_fluentform-predefined-create', function () use ($app) {
+    dd('wp_ajax_fluentform-predefined-create');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Predefined($app))->create();
 });

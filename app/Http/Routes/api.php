@@ -99,4 +99,8 @@ $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router)
     $router->post('/{form_id}/reset', 'AnalyticsController@reset');
 });
 
+$router->prefix('transfer')->withPolicy('FormPolicy')->group(function ($router) {
+    $router->post('/import', 'TransferController@import');
+    $router->get('/export', 'TransferController@export');
+});
 

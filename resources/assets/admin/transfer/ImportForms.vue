@@ -78,7 +78,6 @@
         methods: {
             importForms() {
                 this.importing = true;
-
                 var file = jQuery('#fileUpload')[0].files[0];
 
                 if (!file) {
@@ -86,31 +85,38 @@
                     return;
                 }
 
-
                 var data = new FormData();
                 data.append('format', 'json');
                 data.append('file', file);
                 data.append('action', 'fluentform-import-forms');
-                data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
+                data.query_timestamp = Date.now();
 
-                jQuery.ajax({
-                    url: ajaxurl,
-                    data: data,
-                    type: 'POST',
-                    contentType: false,
-                    processData: false,
-                    success: (response) => {
-                        this.importing = false;
-                        this.importedForms = response.inserted_forms;
-                        this.$success(response.message);
-                        this.clear();
-                    },
-                    error: (error) => {
-                        this.importing = false;
-                        this.$fail(error.responseJSON.message);
-                        this.clear();
-                    }
+                const headers = {"X-WP-Nonce": window.fluent_forms_global_var.rest.nonce};
+
+                const route = FluentFormsGlobal.$rest.route('importForms');
+                const url = `${window.fluent_forms_global_var.rest.url}/${route}`;
+
+                return new Promise((resolve, reject) => {
+                    window.jQuery
+                        .ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data,
+                            headers: headers,
+                            contentType: false,
+                            processData: false,
+                        })
+                        .then(response => {
+                            this.importing = false;
+                            this.importedForms = response.inserted_forms;
+                            this.$success(response.message);
+                            this.clear();
+                        })
+                        .fail(errors => {
+                            console.log(errors)
+                        });
                 });
+
             },
             clear() {
                 jQuery('#fileUpload').val('');

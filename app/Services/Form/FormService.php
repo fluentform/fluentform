@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Form;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
@@ -136,7 +137,8 @@ class FormService
 
         $this->duplicator->duplicateFormMeta($form, $existingForm);
 
-        do_action('flentform_form_duplicated', $form->id);
+        do_action('fluentform_form_duplicated', $form->id); //*Todo Remove from Next major Release
+        do_action('fluentform_form_duplicated', $form->id);
 
         return $form;
     }
@@ -512,5 +514,104 @@ class FormService
                 __("The form couldn't be found.", 'fluentform')
             );
         }
+    }
+    
+    public function export($formIds)
+    {
+        $result = Form::with(['formMeta'])
+            ->whereIn('id', $formIds)
+            ->get();
+        
+        $forms = [];
+        foreach ($result as $item) {
+            $form = json_decode($item);
+            $form->metas = $form->form_meta;
+            $form->form_fields = json_decode($form->form_fields);
+            $forms[] = $form;
+        }
+        
+        $fileName = 'fluentform-export-forms-' . count($forms) . '-' . date('d-m-Y') . '.json';
+        
+        header('Content-disposition: attachment; filename=' . $fileName);
+        
+        header('Content-type: application/json');
+        
+        echo json_encode(array_values($forms)); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $forms is escaped before being passed in.
+        
+        die();
+    }
+    
+    public function import($file)
+    {
+        if ($file instanceof File) {
+            $forms = \json_decode($file->getContents(), true);
+            $insertedForms = [];
+            if ($forms && is_array($forms)) {
+                foreach ($forms as $formItem) {
+                    $formFields = json_encode([]);
+                    if ($fields = Arr::get($formItem, 'form', '')) {
+                        $formFields = json_encode($fields);
+                    } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
+                        $formFields = json_encode($fields);
+                    } else {
+                        return ([
+                            'message' => __('You have a faulty JSON file, please export the Fluent Forms again.',
+                                'fluentform'),
+                        ]);
+                    }
+                    
+                    $form = [
+                        'title'       => Arr::get($formItem, 'title'),
+                        'form_fields' => $formFields,
+                        'status'      => Arr::get($formItem, 'status', 'published'),
+                        'has_payment' => Arr::get($formItem, 'has_payment', 0),
+                        'type'        => Arr::get($formItem, 'type', 'form'),
+                        'created_by'  => get_current_user_id(),
+                    ];
+                    
+                    if (Arr::get($formItem, 'conditions')) {
+                        $form['conditions'] = Arr::get($formItem, 'conditions');
+                    }
+                    
+                    if (isset($formItem['appearance_settings'])) {
+                        $form['appearance_settings'] = Arr::get($formItem, 'appearance_settings');
+                    }
+                    
+                    $formId = Form::insertGetId($form);
+                    $insertedForms[$formId] = [
+                        'title'    => $form['title'],
+                        'edit_url' => admin_url('admin.php?page=fluent_forms&route=editor&form_id=' . $formId),
+                    ];
+                    
+                    if (isset($formItem['metas'])) {
+                        foreach ($formItem['metas'] as $metaData) {
+                            FormMeta::persist($formId, Arr::get($metaData, 'meta_key'), Arr::get($metaData, 'value'));
+                        }
+                    } else {
+                        $oldKeys = [
+                            'formSettings',
+                            'notifications',
+                            'mailchimp_feeds',
+                            'slack',
+                        ];
+                        foreach ($oldKeys as $key) {
+                            if (isset($formItem[$key])) {
+                                FormMeta::persist($formId, $key, json_encode(Arr::get($formItem, $key)));
+                            }
+                        }
+                    }
+                    do_action('fluentform_form_imported', $formId);
+                }
+                
+                return ([
+                    'message'        => __('You form has been successfully imported.', 'fluentform'),
+                    'inserted_forms' => $insertedForms,
+                ]);
+            }
+        }
+        
+        return ([
+            'message' => __('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'),
+        ]);
     }
 }

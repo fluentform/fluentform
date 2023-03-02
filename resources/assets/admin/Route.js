@@ -83,6 +83,10 @@ class Route {
     analytics = 'analytics';
     getFormAnalytics = this.analytics + '/{param}'
     resetFormAnalytics = this.analytics + '/{param}/reset/'
+
+    transferForms = 'transfer';
+    importForms = this.transferForms +'/import';
+    exportForms = this.transferForms +'/export';
 }
 
 export default new Route();

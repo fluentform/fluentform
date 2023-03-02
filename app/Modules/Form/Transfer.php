@@ -7,6 +7,8 @@ use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\Framework\Request\File;
 
+/* @deprecated Current File FluentForm\App\Http\Controllers\TransferController */
+
 class Transfer
 {
     /**
