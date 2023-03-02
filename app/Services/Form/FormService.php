@@ -81,7 +81,7 @@ class FormService
     public function store($attributes = [])
     {
         try {
-            $predefinedForm = Form::resolvePredefiendForm($attributes);
+            $predefinedForm = Form::resolvePredefinedForm($attributes);
 
             $data = Form::prepare($predefinedForm);
 

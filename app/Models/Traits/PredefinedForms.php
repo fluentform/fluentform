@@ -7,7 +7,7 @@ use FluentForm\Framework\Support\Arr;
 
 trait PredefinedForms
 {
-    public static function resolvePredefiendForm($attributes = [])
+    public static function resolvePredefinedForm($attributes = [])
     {
         $predefinedForm = static::findPredefinedForm($attributes);
 
