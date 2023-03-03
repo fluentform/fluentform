@@ -277,21 +277,25 @@ $app->addAction('wp_ajax_fluentform-change-entry-status', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-delete-entry', function () {
+    dd('wp_ajax_fluentform-delete-entry');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Entries\Entries())->deleteEntry();
 });
 
 $app->addAction('wp_ajax_fluentform-change-entry-favorites', function () {
+    dd('wp_ajax_fluentform-change-entry-favorites');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->favoriteChange();
 });
 
 $app->addAction('wp_ajax_fluentform-do_entry_bulk_actions', function () {
+    dd('wp_ajax_fluentform-change-entry-favorites');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Entries\Entries())->handleBulkAction();
 });
 
 $app->addAction('wp_ajax_fluentform-get-extra-form-settings', function () use ($app) {
+    dd('fluentform-get-extra-form-settings'); // ajax call from resources/assets/admin/views/Settings.vue, that is never used
     Acl::verify('fluentform_forms_manager');
     (new FluentForm\App\Modules\Form\Settings\ExtraSettings($app))->getExtraSettingNavs();
 });

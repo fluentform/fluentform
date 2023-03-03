@@ -92,6 +92,7 @@
             }
         },
         mounted() {
+            console.log("This component never used.// Need to confirm");
             this.fetchInputs();
             jQuery('head title').text('Confirmation Settings - Fluent Forms');
         },
