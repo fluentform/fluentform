@@ -44,6 +44,7 @@ $app->addAction('wp_ajax_fluentform-form-store', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform-form-find', function () use ($app) {
+    //No usage found
     Acl::verify('fluentform_dashboard_access');
     (new \FluentForm\App\Modules\Form\Form($app))->find();
 });
@@ -190,6 +191,7 @@ $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app)
 });
 
 $app->addAction('wp_ajax_fluentform-get-entry', function () {
+    //No usage found
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntry();
 });
@@ -249,6 +251,7 @@ $app->addAction('wp_ajax_fluentform_get_api_logs', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform_retry_api_action', function () use ($app) {
+    // No usage found
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->retryApiAction();
 });
