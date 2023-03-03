@@ -431,4 +431,56 @@ class SubmissionService
             'insert_id' => $submissionMeta->id,
         ];
     }
+    
+    public function updateSubmissionUser($userId, $submissionId)
+    {
+        if (!$userId || !$submissionId) {
+            throw new Exception(__('Submission ID and User ID is required', 'fluentform'));
+        }
+    
+        $submission = Submission::find($submissionId);
+        $user = get_user_by('ID', $userId);
+    
+        if (!$submission || $submission->user_id == $userId || !$user) {
+            throw new Exception(__('Invalid Request', 'fluentform'));
+        }
+    
+        Submission::where('id', $submission->id)
+            ->update([
+                'user_id'    => $userId,
+                'updated_at' => current_time('mysql'),
+            ]);
+    
+        if (defined('FLUENTFORMPRO')) {
+            // let's update the corresponding user IDs for transactions and
+            wpFluent()->table('fluentform_transactions')
+                ->where('submission_id', $submission->id)
+                ->update([
+                    'user_id'    => $userId,
+                    'updated_at' => current_time('mysql'),
+                ]);
+        }
+    
+        do_action('ff_log_data', [
+            'parent_source_id' => $submission->form_id,
+            'source_type'      => 'submission_item',
+            'source_id'        => $submission->id,
+            'component'        => 'General',
+            'status'           => 'info',
+            'title'            => 'Associate user has been changed from ' . $submission->user_id . ' to ' . $userId,
+        ]);
+    
+        do_action('fluentform_submission_user_changed', $submission, $user);
+    
+        return([
+            'message' => __('Selected user has been successfully assigned to this submission', 'fluentform'),
+            'user'    => [
+                'name'      => $user->display_name,
+                'email'     => $user->user_email,
+                'ID'        => $user->ID,
+                'permalink' => get_edit_user_link($user->ID),
+            ],
+            'user_id' => $userId,
+        ]);
+    }
 }

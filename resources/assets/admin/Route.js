@@ -56,7 +56,10 @@ class Route {
 
     getSubmissionNotes = this.findSubmission + '/notes';
     storeSubmissionNote = this.findSubmission + '/notes';
-    
+
+    getSubmissionUsers = this.findSubmission + '/submission-users'
+    updateSubmissionUser = this.findSubmission + '/update-submission-user'
+
     getLogs = 'logs';
     getLogFilters = this.getLogs + '/filters';
     deleteLogs = this.getLogs;

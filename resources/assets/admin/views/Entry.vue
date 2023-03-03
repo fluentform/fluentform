@@ -134,7 +134,8 @@
 
                                     <user-change 
                                         v-if="hasPermission('fluentform_manage_entries')" 
-                                        :submission="entry" 
+                                        :submission="entry"
+                                        :entry_id="entry_id"
                                     />
                                 </p>
                             </div>

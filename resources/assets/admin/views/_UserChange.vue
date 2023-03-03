@@ -38,7 +38,7 @@
 <script type="text/babel">
 export default {
     name: 'ChangeSubmissionUser',
-    props: ['submission'],
+    props: ['submission','entry_id'],
     data() {
         return {
             saving: false,
@@ -53,52 +53,45 @@ export default {
             if (!query) {
                 return;
             }
-
             this.searching = true;
-            const data = {
-                action: 'fluentform-get-users',
-                search: query
-            };
-            FluentFormsGlobal.$get(data)
+            const route = FluentFormsGlobal.$rest.route('getSubmissionUsers', this.entry_id);
+            FluentFormsGlobal.$rest.get(route, {search: query})
                 .then(response => {
-                    this.users = response.data.users;
+                    this.users = response.users;
                 })
-                .catch((errors) => {
-                    this.$notify.error(errors.responseJSON.data.message);
-                 })
-                .always(() => {
+                .catch(error => {
+                    this.$fail(errors.message);
+                })
+                .finally(() => {
                     this.searching = false;
                 });
-          },
+        },
         showModal() {
             this.showing_modal = true;
         },
         saveUser() {
-            if(!this.selected_id) {
+            if (!this.selected_id) {
                 this.$notify.error('Please select a user first');
                 return;
             }
-
             this.saving = true;
-            let data = {
-                action: 'fluentform-update-entry-user',
+            const route = FluentFormsGlobal.$rest.route('updateSubmissionUser', this.entry_id);
+            FluentFormsGlobal.$rest.post(route, {
                 user_id: this.selected_id,
                 submission_id: this.submission.id
-            };
-            FluentFormsGlobal.$post(data)
+            })
                 .then(response => {
-                    this.$notify.success(response.data.message);
-                    this.submission.user = response.data.user;
-                    this.submission.user_id = response.data.user_id;
+                    this.$success(response.message);
+                    this.submission.user = response.user;
+                    this.submission.user_id = response.user_id;
                     this.showing_modal = false;
                 })
                 .catch((errors) => {
-                    this.$notify.error(errors.responseJSON.data.message);
+                    this.$fail(errors.message);
                 })
-                .always(() => {
+                .finally(() => {
                     this.saving = false;
                 });
-
         }
     }
 }

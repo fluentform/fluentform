@@ -59,6 +59,9 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
 
         $router->get('notes', 'SubmissionNoteController@get');
         $router->post('notes', 'SubmissionNoteController@store');
+        
+        $router->get('submission-users','SubmissionController@submissionUsers');
+        $router->post('update-submission-user','SubmissionController@updateSubmissionUser');
     });
 });
 

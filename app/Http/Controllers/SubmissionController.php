@@ -108,4 +108,50 @@ class SubmissionController extends Controller
             ]);
         }
     }
+    
+    /**
+     * Get user list for submission page
+     * @return \WP_REST_Response
+     */
+    public function submissionUsers()
+    {
+        $search = sanitize_text_field($this->request->get('search'));
+        $users = get_users([
+            'search' => "*{$search}*",
+            'number' => 50,
+        ]);
+    
+        $formattedUsers = [];
+        foreach ($users as $user) {
+            $formattedUsers[] = [
+                'ID'    => $user->ID,
+                'label' => $user->display_name . ' - ' . $user->user_email,
+            ];
+        }
+    
+        return $this->sendSuccess([
+            'users' => $formattedUsers,
+        ]);
+    }
+    
+    /**
+     * Update User of a submission
+     * @param SubmissionService $submissionService
+     * @return \WP_REST_Response
+     */
+    public function updateSubmissionUser(SubmissionService $submissionService)
+    {
+        try {
+            $userId = intval($this->request->get('user_id'));
+            $submissionId = intval($this->request->get('submission_id'));
+            $response = $submissionService->updateSubmissionUser($userId, $submissionId);
+            return $this->sendSuccess($response);
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    
+    
 }
