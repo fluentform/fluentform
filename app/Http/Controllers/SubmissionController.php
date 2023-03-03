@@ -158,7 +158,7 @@ class SubmissionController extends Controller
      * @param SubmissionService $submissionService
      * @return \WP_REST_Response
      */
-    public function getAllSubmissions(SubmissionService $submissionService)
+    public function all(SubmissionService $submissionService)
     {
         try {
             return $this->sendSuccess(
@@ -166,7 +166,7 @@ class SubmissionController extends Controller
             );
         } catch (Exception $e) {
             return $this->sendError([
-                'message' => __('Something Went Wrong. Please Try Again!', 'fluentform')
+                'message' => $e->getMessage()
             ]);
         }
     }
@@ -176,7 +176,7 @@ class SubmissionController extends Controller
      * @param SubmissionService $submissionService
      * @return \WP_REST_Response
      */
-    public function getSubmissionReport(SubmissionService $submissionService)
+    public function report(SubmissionService $submissionService)
     {
         try {
             return $this->sendSuccess(
@@ -184,7 +184,7 @@ class SubmissionController extends Controller
             );
         } catch (Exception $e) {
             return $this->sendError([
-                'message' => __('Something Went Wrong. Please Try Again!', 'fluentform')
+                'message' =>  $e->getMessage()
             ]);
         }
     }

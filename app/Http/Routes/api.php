@@ -45,8 +45,8 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
     $router->get('/', 'SubmissionController@index');
     $router->get('resources', 'SubmissionController@resources');
     $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
-    $router->get('all-submissions', 'SubmissionController@getAllSubmissions');
-    $router->get('reports', 'SubmissionController@getSubmissionReport');
+    $router->get('all', 'SubmissionController@all');
+    $router->get('report', 'SubmissionController@report');
 
     $router->delete('/{entry_id}', 'SubmissionController@remove');
 

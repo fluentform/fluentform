@@ -17,7 +17,7 @@
             </div>
         </div>
         <div v-if="chart_status == 'yes'" class="entry_chart">
-            <entry-chart></entry-chart>
+            <entry-chart :form_id="selectedFormId" :date_range="filter_date_range"></entry-chart>
         </div>
 
         <div class="payment_details">
@@ -200,7 +200,7 @@ export default {
                 total: 0,
                 current_page: 1,
                 last_page: 1,
-                per_page: 10
+                per_page: localStorage.getItem('entriesPerPage') || 10
             },
             chart_status: 'yes',
             entry_status: '',
@@ -219,17 +219,16 @@ export default {
                 page: this.paginate.current_page,
                 per_page: this.paginate.per_page,
                 search: this.search,
-                entry_status: this.entry_status
+                entry_type: this.entry_status
             }
             if (this.advancedFilter) {
                 data.date_range = this.filter_date_range;
             }
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    this.entries = response.entries;
-                    this.paginate.total = response.total;
-                    this.paginate.last_page = response.last_page;
-                    this.available_forms = response.available_forms
+                    this.entries = response.data;
+                    this.setPaginate(response);
+                    this.available_forms = response.available_forms;
                 })
                 .catch(error => {
                     this.$fail(error.message);
@@ -237,6 +236,14 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 })
+        },
+        setPaginate(data = {}) {
+            this.paginate = {
+                total: data.total || 0,
+                current_page: data.current_page || 1,
+                last_page: data.last_page || 1,
+                per_page: data.per_page || localStorage.getItem('entriesPerPage') || 20
+            }
         },
         goToPage(value) {
             this.paginate.current_page = value;

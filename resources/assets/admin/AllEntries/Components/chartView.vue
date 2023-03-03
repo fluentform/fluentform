@@ -30,6 +30,9 @@ export default {
     watch: {
         date_range() {
             this.fetchData();
+        },
+        form_id() {
+            this.fetchData();
         }
     },
     methods: {
@@ -38,12 +41,12 @@ export default {
             const url = FluentFormsGlobal.$rest.route('getReports');
             const data = {
                 form_id: this.form_id,
-                date_ranges: this.date_range
+                date_range: this.date_range
             };
 
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
-                    this.stats = response.stats;
+                    this.stats = response;
                     this.setupChartItems();
                 })
                 .catch(error => {

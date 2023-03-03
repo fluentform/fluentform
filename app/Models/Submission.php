@@ -271,84 +271,53 @@ class Submission extends Model
         }
     }
 
-    public function getAllSubmissions($attributes = []) {
-        $formId = Arr::get($attributes, 'form_id');
-        $limit = Arr::get($attributes, 'per_page', 10);
-        $page = Arr::get($attributes, 'page', 1);
-        $offset = ($page - 1) * $limit;
+    public function allSubmissions($attributes = []) {
+        $customQuery = $this->customQuery($attributes);
         $search = Arr::get($attributes, 'search');
-        $status = Arr::get($attributes, 'entry_status');
-        $dateRange = Arr::get($attributes, 'date_range');
-        $startDate = Arr::get($dateRange, 0);
-        $endDate = Arr::get($dateRange, 1);
 
-        $query = $this
-                ->with([
-                    'form' => function ($q) {
-                        $q->select(['id', 'title']);
-                    }
-                ])
-                ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
-                ->orderBy('id', 'DESC')
-                ->limit($limit)
-                ->offset($offset)
-                ->when($formId, function ($q) use ($formId) {
-                    return $q->where('form_id', $formId);
-                })
-                ->where(function ($q) use ($status) {
-                    $operator = '=';
+        $result = $customQuery
+            ->with([
+                'form' => function ($q) {
+                    $q->select(['id', 'title']);
+                }
+            ])
+            ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
+            ->orWhereHas('form', function ($q) use ($search) {
+                $q->orWhere('title', 'LIKE', "%{$search}%");
+            })
+            ->paginate()
+            ->toArray();
 
-                    if (!$status) {
-                        $operator = '!=';
-                        $status = 'trashed';
-                    }
-
-                    return $q->where('status', $operator, $status);
-                })
-                ->when($startDate && $endDate, function ($q) use ($startDate, $endDate) {
-                    $endDate .= ' 23:59:59';
-                    return $q->where('created_at', '>=', $startDate)
-                        ->where('created_at', '<=', $endDate);
-                })
-                ->when($search, function ($q) use ($search) {
-                return $q->where(function ($q) use ($search) {
-                    return $q->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('response', 'LIKE', "%{$search}%")
-                        ->orWhereHas('form', function ($qu) use ($search) {
-                            $qu->orWhere('title', 'LIKE', "%{$search}%");
-                        })
-                        ->orWhere('created_at', 'LIKE', "%{$search}%");
-                });
-            });
-
-        $entries = $query->get();
-        $entries->limit = $limit;
-
-        foreach ($entries as $entry) {
-            $entry->entry_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
-            $entry->human_date = human_time_diff(strtotime($entry->created_at), strtotime(current_time('mysql')));
+        foreach ($result['data'] as &$entry) {
+            $entry['entry_url'] = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry['form_id'] . '#/entries/' . $entry['id']);
+            $entry['human_date'] = human_time_diff(strtotime($entry['created_at']), strtotime(current_time('mysql')));
         }
 
-        return $entries;
+        $result['available_forms'] = $this->availableForms();
+
+        return $result;
     }
 
-    public function getAvailableForms()
+    public function availableForms()
     {
         $form = new Form();
         return $form->select('id', 'title')->get();
     }
 
-    public function getSubmissionReport($attributes)
+    public function report($attributes)
     {
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
 
-        if ($ranges = Arr::get($attributes, 'date_range', [])) {
-            $from = Arr::get($ranges, 0);
-            $lastRange = Arr::get($ranges, 1);
-            $time = strtotime($lastRange) + 24 * 60 * 60;
-            $to = date('Y-m-d H:i:s', $time);
+        if ($start = Arr::get($attributes, 'date_range.0', [])) {
+            $startTime = strtotime($start) + 24 * 60 * 60;
+            $from = date('Y-m-d H:i:s', $startTime);
+        }
+
+        if ($end = Arr::get($attributes, 'date_range.1', [])) {
+            $endTime = strtotime($end) + 24 * 60 * 60;
+            $to = date('Y-m-d H:i:s', $endTime);
         }
 
         $period = new \DatePeriod(new \DateTime($from), new \DateInterval('P1D'), new \DateTime($to));
@@ -359,17 +328,16 @@ class Submission extends Model
             $range[$date->format('Y-m-d')] = 0;
         }
 
-        $itemsQuery = $this
+        $items = $this
             ->selectRaw('DATE(created_at) AS date')
             ->selectRaw('COUNT(id) AS count')
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
             ->when($formId, function ($q) use ($formId) {
-                $q->where('form_id', $formId);
-            });
-
-        $items = $itemsQuery->get();
+                return $q->where('form_id', $formId);
+            })
+            ->get();
 
         foreach ($items as $item) {
             $range[$item->date] = $item->count;

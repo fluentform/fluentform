@@ -13,6 +13,7 @@ use FluentForm\Framework\Support\Collection;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\Framework\Validator\ValidationException;
 
 class SubmissionService
 {
@@ -486,24 +487,19 @@ class SubmissionService
 
     public function getAllSubmissions($attributes = [])
     {
-        $entries = $this->model->getAllSubmissions($attributes);
-        $availableForms = $this->model->getAvailableForms();
-        $total = $entries->count();
-
-        return ([
-            'entries' => $entries,
-            'total' => $total,
-            'last_page' => ceil($total / $entries->limit),
-            'available_forms' => $availableForms,
-        ]);
+        try {
+            return $this->model->allSubmissions($attributes);
+        } catch (Exception $e) {
+            throw new Exception(__('Something Went Wrong. Please Try Again!', 'fluentform'));
+        }
     }
 
     public function getSubmissionReport($attributes)
     {
-        $reports = $this->model->getSubmissionReport($attributes);
-
-        return ([
-            'stats' => $reports
-        ]);
+        try {
+            return $this->model->report($attributes);
+        } catch (Exception $e) {
+            throw new Exception(__('Something Went Wrong. Please Try Again!', 'fluentform'));
+        }
     }
 }
