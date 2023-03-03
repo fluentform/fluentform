@@ -109,9 +109,3 @@ $router->prefix('transfer')->withPolicy('FormPolicy')->group(function ($router) 
     $router->get('/export', 'TransferController@export');
 });
 
-//$router->prefix('all-submissions')->withPolicy('SubmissionPolicy')->group(function ($router) {
-//
-//});
-
-//$router->prefix('reports')->withPolicy('SubmissionPolicy')->group(function ($router) {
-//});
