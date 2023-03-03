@@ -74,11 +74,13 @@ $app->addAction('wp_ajax_fluentform-convert-to-conversational', function () use 
 });
 
 $app->addAction('wp_ajax_fluentform_get_all_entries', function () {
+    dd('wp_ajax_fluentform_get_all_entries');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getAllFormEntries();
 });
 
 $app->addAction('wp_ajax_fluentform_get_all_entries_report', function () {
+    dd('wp_ajax_fluentform_get_all_entries_report');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntriesReport();
 });

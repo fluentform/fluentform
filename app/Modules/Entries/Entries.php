@@ -8,6 +8,9 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Modules\Registerer\TranslationString;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\SubmissionController
+ */
 class Entries extends EntryQuery
 {
     /**

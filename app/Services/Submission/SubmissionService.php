@@ -483,4 +483,27 @@ class SubmissionService
             'user_id' => $userId,
         ]);
     }
+
+    public function getAllSubmissions($attributes = [])
+    {
+        $entries = $this->model->getAllSubmissions($attributes);
+        $availableForms = $this->model->getAvailableForms();
+        $total = $entries->count();
+
+        return ([
+            'entries' => $entries,
+            'total' => $total,
+            'last_page' => ceil($total / $entries->limit),
+            'available_forms' => $availableForms,
+        ]);
+    }
+
+    public function getSubmissionReport($attributes)
+    {
+        $reports = $this->model->getSubmissionReport($attributes);
+
+        return ([
+            'stats' => $reports
+        ]);
+    }
 }

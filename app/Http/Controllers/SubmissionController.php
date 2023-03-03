@@ -152,6 +152,40 @@ class SubmissionController extends Controller
             ]);
         }
     }
-    
-    
+
+    /**
+     * Get All Submissions
+     * @param SubmissionService $submissionService
+     * @return \WP_REST_Response
+     */
+    public function getAllSubmissions(SubmissionService $submissionService)
+    {
+        try {
+            return $this->sendSuccess(
+                $submissionService->getAllSubmissions($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => __('Something Went Wrong. Please Try Again!', 'fluentform')
+            ]);
+        }
+    }
+
+    /**
+     * Get Submission Reports
+     * @param SubmissionService $submissionService
+     * @return \WP_REST_Response
+     */
+    public function getSubmissionReport(SubmissionService $submissionService)
+    {
+        try {
+            return $this->sendSuccess(
+                $submissionService->getSubmissionReport($this->request->all())
+            );
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => __('Something Went Wrong. Please Try Again!', 'fluentform')
+            ]);
+        }
+    }
 }

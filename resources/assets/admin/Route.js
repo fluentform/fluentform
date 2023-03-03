@@ -45,6 +45,8 @@ class Route {
     getSubmissions = "submissions";
     getSubmissionsResources = this.getSubmissions + '/resources';
     handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';
+    getAllSubmissions = this.getSubmissions + '/all-submissions';
+    getReports = this.getSubmissions + '/reports';
 
     findSubmission = this.getSubmissions + '/{param}'; // not implemented
     deleteSubmission = this.findSubmission;
