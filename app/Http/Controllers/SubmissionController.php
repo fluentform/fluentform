@@ -133,7 +133,18 @@ class SubmissionController extends Controller
             'users' => $formattedUsers,
         ]);
     }
-    
+
+    public function exportSubmission(SubmissionService $submissionService)
+    {
+        try {
+            $submissionService->exportSubmission($this->request->all());
+        } catch (Exception $e) {
+            return $this->sendError([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
     /**
      * Update User of a submission
      * @param SubmissionService $submissionService

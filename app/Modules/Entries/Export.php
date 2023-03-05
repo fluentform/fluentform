@@ -44,7 +44,7 @@ class Export
     }
 
     /**
-     * Exports form entries as CSV.
+     * Only used exports form partial entries
      *
      * @todo:: refactor.
      */

@@ -48,6 +48,7 @@ class Route {
     getAllSubmissions = this.getSubmissions + '/all';
     getReports = this.getSubmissions + '/report';
 
+    handleSubmissionsExport = this.getSubmissions + '/export/{param}';
     findSubmission = this.getSubmissions + '/{param}'; // not implemented
     deleteSubmission = this.findSubmission;
     updateSubmissionStatus = this.findSubmission + '/status';

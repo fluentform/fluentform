@@ -43,6 +43,7 @@ $router->prefix('settings')->withPolicy('FormPolicy')->group(function ($router) 
 
 $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function ($router) {
     $router->get('/', 'SubmissionController@index');
+    $router->get('export/{form_id}', 'SubmissionController@exportSubmission');
     $router->get('resources', 'SubmissionController@resources');
     $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
     $router->get('all', 'SubmissionController@all');

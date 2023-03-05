@@ -188,6 +188,7 @@ $app->addAction('wp_ajax_fluentform-form-report', function () use ($app) {
 });
 
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
+    dd('wp_ajax_fluentform-form-entries-export');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Export($app))->index();
 });
@@ -306,6 +307,7 @@ $app->addAction('wp_ajax_fluentform-get-extra-form-settings', function () use ($
 });
 
 $app->addAction('wp_ajax_fluentform-get-form-settings-extra-component', function () use ($app) {
+    dd('wp_ajax_fluentform-get-form-settings-extra-component');
     Acl::verify('fluentform_forms_manager');
     (new FluentForm\App\Modules\Form\Settings\ExtraSettings($app))->getExtraSettingsComponent();
 });

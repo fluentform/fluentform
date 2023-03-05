@@ -840,22 +840,20 @@
                 });
 
                 let data = {
-                    action: 'fluentform-form-entries-export',
-                    form_id: this.form_id,
                     format: format,
                     entry_type: this.entry_type,
                     entries: selectedEntries,
                     sort_by: this.sort_by,
                     search: this.search_string,
                     payment_statuses: this.selectedPaymentStatuses,
-                    fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+                    _wpnonce: window.fluent_forms_global_var.rest.nonce
                 };
                 if (this.advancedFilter) {
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
-                let url = ajaxurl + '?' + jQuery.param(data);
-                location.href = url;
+                const route = FluentFormsGlobal.$rest.route('handleSubmissionsExport', this.form_id);
+                location.href = `${window.fluent_forms_global_var.rest.url}/${route}?${jQuery.param(data)}`;
             },
             dateFormat(date, format) {
                 if (!format) {
