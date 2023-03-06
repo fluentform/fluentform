@@ -11,6 +11,8 @@ $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'FormController@index');
     $router->post('/', 'FormController@store');
     $router->get('templates', 'FormController@templates');
+    $router->post('import', 'TransferController@import');
+    $router->get('export', 'TransferController@export');
 
     $router->prefix('{form_id}')->group(function ($router) {
         $router->get('/', 'FormController@find');
@@ -103,10 +105,5 @@ $router->prefix('roles-and-manager')->withPolicy('RoleManagerPolicy')->group(fun
 
 $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router) {
     $router->post('/{form_id}/reset', 'AnalyticsController@reset');
-});
-
-$router->prefix('transfer')->withPolicy('FormPolicy')->group(function ($router) {
-    $router->post('/import', 'TransferController@import');
-    $router->get('/export', 'TransferController@export');
 });
 
