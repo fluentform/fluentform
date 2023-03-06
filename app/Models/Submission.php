@@ -304,11 +304,12 @@ class Submission extends Model
         return $form->select('id', 'title')->get();
     }
 
-    public function report($attributes)
+    public static function report($attributes)
     {
         $from = date('Y-m-d H:i:s', strtotime('-30 days'));
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
+        $status = Arr::get($attributes, 'entry_status');
 
         if ($start = Arr::get($attributes, 'date_range.0', [])) {
             $startTime = strtotime($start) + 24 * 60 * 60;
@@ -328,8 +329,7 @@ class Submission extends Model
             $range[$date->format('Y-m-d')] = 0;
         }
 
-        $items = $this
-            ->selectRaw('DATE(created_at) AS date')
+        $items = self::selectRaw('DATE(created_at) AS date')
             ->selectRaw('COUNT(id) AS count')
             ->whereBetween('created_at', [$from, $to])
             ->groupBy('date')
@@ -337,7 +337,11 @@ class Submission extends Model
             ->when($formId, function ($q) use ($formId) {
                 return $q->where('form_id', $formId);
             })
+            ->when($status, function ($q2) use ($status) {
+                return $q2->where('status', $status);
+            })
             ->get();
+        
 
         foreach ($items as $item) {
             $range[$item->date] = $item->count;

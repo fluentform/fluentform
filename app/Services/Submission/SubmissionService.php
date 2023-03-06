@@ -491,22 +491,4 @@ class SubmissionService
             'user_id' => $userId,
         ]);
     }
-
-    public function getAllSubmissions($attributes = [])
-    {
-        try {
-            return $this->model->allSubmissions($attributes);
-        } catch (Exception $e) {
-            throw new Exception(__('Something Went Wrong. Please Try Again!', 'fluentform'));
-        }
-    }
-
-    public function getSubmissionReport($attributes)
-    {
-        try {
-            return $this->model->report($attributes);
-        } catch (Exception $e) {
-            throw new Exception(__('Something Went Wrong. Please Try Again!', 'fluentform'));
-        }
-    }
 }

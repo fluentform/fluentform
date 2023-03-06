@@ -17,7 +17,7 @@ export default {
     components: {
         SubscriberChart
     },
-    props: ['form_id', 'date_range'],
+    props: ['form_id', 'date_range','entry_status'],
     data() {
         return {
             loading: true,
@@ -33,15 +33,19 @@ export default {
         },
         form_id() {
             this.fetchData();
+        },
+        entry_status() {
+            this.fetchData();
         }
     },
     methods: {
         fetchData() {
             this.loading = true;
-            const url = FluentFormsGlobal.$rest.route('getReports');
+            const url = FluentFormsGlobal.$rest.route('getReport');
             const data = {
                 form_id: this.form_id,
-                date_range: this.date_range
+                date_range: this.date_range,
+                entry_status : this.entry_status
             };
 
             FluentFormsGlobal.$rest.get(url, data)

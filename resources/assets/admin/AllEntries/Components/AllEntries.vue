@@ -17,7 +17,7 @@
             </div>
         </div>
         <div v-if="chart_status == 'yes'" class="entry_chart">
-            <entry-chart :form_id="selectedFormId" :date_range="filter_date_range"></entry-chart>
+            <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status"></entry-chart>
         </div>
 
         <div class="payment_details">

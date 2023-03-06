@@ -163,17 +163,17 @@ class SubmissionController extends Controller
             ]);
         }
     }
-
+    
     /**
      * Get All Submissions
-     * @param SubmissionService $submissionService
+     * @param Submission $submission
      * @return \WP_REST_Response
      */
-    public function all(SubmissionService $submissionService)
+    public function all(Submission $submission)
     {
         try {
             return $this->sendSuccess(
-                $submissionService->getAllSubmissions($this->request->all())
+                $submission->allSubmissions($this->request->all())
             );
         } catch (Exception $e) {
             return $this->sendError([
@@ -183,15 +183,14 @@ class SubmissionController extends Controller
     }
 
     /**
-     * Get Submission Reports
-     * @param SubmissionService $submissionService
+     * Get Submission Report
      * @return \WP_REST_Response
      */
-    public function report(SubmissionService $submissionService)
+    public function report()
     {
         try {
             return $this->sendSuccess(
-                $submissionService->getSubmissionReport($this->request->all())
+                Submission::report(($this->request->all()))
             );
         } catch (Exception $e) {
             return $this->sendError([
