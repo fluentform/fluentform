@@ -112,9 +112,10 @@ import formSlider from "./Pro/slider";
                     inputGroup.fadeIn();
 
                     //Show Email Input
+                    const emailPlaceholderStr = window.form_state_save_vars.email_placeholder_str || 'Your Email Here';
                     const emailIcon = window.form_state_save_vars.email_button || 'Email';
                     if ($(this).hasClass('ff_resume_email_enabled')) {
-                        let emailDiv = `<div class="ff-el-input--content"><div class="ff_input-group"><input type="email" class="ff-el-form-control" placeholder="Your Email Here" class="ff-el-form-control">
+                        let emailDiv = `<div class="ff-el-input--content"><div class="ff_input-group"><input type="email" class="ff-el-form-control" placeholder="${emailPlaceholderStr}" class="ff-el-form-control">
                         <div class="ff_input-group-append">
                         <button class="ff-btn ff-btn-md ff_btn_style ff_btn_is_email ff_input-group-text">
                              ${emailIcon}
