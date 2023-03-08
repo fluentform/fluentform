@@ -107,3 +107,7 @@ $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router)
     $router->post('/{form_id}/reset', 'AnalyticsController@reset');
 });
 
+$router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
+    $router->get('/forms/{form_id}', 'ReportController@formReport');
+});
+

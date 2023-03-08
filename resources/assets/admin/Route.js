@@ -93,6 +93,10 @@ class Route {
     analytics = 'analytics';
     getFormAnalytics = this.analytics + '/{param}'
     resetFormAnalytics = this.analytics + '/{param}/reset/'
+
+    report = 'report';
+    formsReport = this.report + '/forms'
+    formReport = this.formsReport + '/{param}'
 }
 
 export default new Route();

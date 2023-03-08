@@ -7,6 +7,10 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
+/**
+ *
+ * @deprecated  use FluentForm\App\Services\Report\ReportHelper
+ */
 class Report
 {
     private $app;

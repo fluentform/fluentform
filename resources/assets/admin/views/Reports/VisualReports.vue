@@ -159,18 +159,20 @@ export default {
     methods: {
         fetchReport() {
             this.loading = true;
-            FluentFormsGlobal.$get({
-                form_id: this.form_id,
-                action: 'fluentform-form-report',
-                statuses: this.filter_statuses
-            })
-                .then(reponse => {
-                    this.report_items = reponse.data.report_items;
-                    this.total_entries = parseInt(reponse.data.total_entries);
-                    this.browsers = reponse.data.browsers;
-                    this.devices = reponse.data.devices;
+            const url = FluentFormsGlobal.$rest.route('formReport', this.form_id);
+            FluentFormsGlobal.$rest.get(url, {
+                    statuses: this.filter_statuses
                 })
-                .always(() => {
+                .then(response => {
+                    this.report_items = response.report_items;
+                    this.total_entries = parseInt(response.total_entries);
+                    this.browsers = response.browsers;
+                    this.devices = response.devices;
+                })
+                .catch(error => {
+                    console.log(`${error}`)
+                })
+                .finally(() => {
                     this.loading = false;
                 });
         },

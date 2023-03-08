@@ -27,4 +27,14 @@ class EntryDetails extends Model
     {
         return $this->belongsTo(Form::class, 'form_id', 'id');
     }
+
+    /**
+     * A submission detail is owned by a submission.
+     *
+     * @return \FluentForm\Framework\Database\Orm\Relations\BelongsTo
+     */
+    public function submission()
+    {
+        return $this->belongsTo(Submission::class, 'submission_id', 'id' );
+    }
 }
