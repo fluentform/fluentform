@@ -20,8 +20,13 @@ class ReportPolicy extends Policy
         return Acl::hasPermission('fluentform_dashboard_access');
     }
 
-    public function formReport(Request $request)
+    public function form(Request $request)
     {
         return Acl::hasPermission('fluentform_entries_viewer', intval($request->get('form_id')));
+    }
+
+    public function submissions()
+    {
+        return Acl::hasPermission('fluentform_entries_viewer');
     }
 }
