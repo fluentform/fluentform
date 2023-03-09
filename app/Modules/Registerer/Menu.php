@@ -791,12 +791,8 @@ class Menu
             'form'              => $form,
             'hasPro'            => defined('FLUENTFORMPRO'),
             'countries'         => getFluentFormCountryList(),
-            'element_customization_settings' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ElementCustomization.php')
-            ),
-            'validation_rule_settings' => $this->app->load(
-                $this->app->appPath('Services/FormBuilder/ValidationRuleSettings.php')
-            ),
+            'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
+            'validation_rule_settings' => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
             'conversational_form_fields' => array_keys(Converter::fieldTypes()),
             'form_editor_str'            => TranslationString::getEditorI18n(),
             'element_search_tags'        => $searchTags,

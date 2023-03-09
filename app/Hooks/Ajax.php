@@ -12,10 +12,12 @@ use FluentForm\App\Modules\Acl\Acl;
  * @var $app \FluentForm\Framework\Foundation\Application
  */
 $app->addAction('wp_ajax_nopriv_fluentform_submit', function () use ($app) {
+    dd('wp_ajax_nopriv_fluentform_submit')
     (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
 });
 
 $app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
+    dd('wp_ajax_nopriv_fluentform_submit')
     (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
 });
 
