@@ -144,11 +144,18 @@
                                              <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
                                         </span>
 
+
                                         <template v-if="hasPermission('fluentform_forms_manager')">
                                             <span class="ff_duplicate">
                                                 <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
                                                         $t('Duplicate')
                                                     }}</a> |
+                                            </span>
+                                            <span class="ff_entries">
+                                              <a href="#" @click.stop.prevent="findFormLocations(scope.row.id)">
+                                                  {{ $t('Find') }}
+                                                  <i class="el-icon-loading"  v-if="loadingLocations"></i>
+                                              </a> |
                                             </span>
                                             <span class="trash">
                                                 <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
@@ -166,7 +173,23 @@
                                             />
 
                                         </template>
+                                        <div class="form-locations" v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
+                                            {{$t('Found in')}}
+                                            <ul class="ff_inline_list">
+                                                <li v-for="location in formLocations[scope.row.id] " >
+                                                    <a target="_blank" :href="location.edit_link">
+                                                        <code class="item ">{{location.title}}</code>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length == 0 ">
+                                            {{$t('Could not find anywhere')}}
+                                        </div>
                                     </div>
+
+
+
                                 </template>
                             </el-table-column>
 
@@ -365,7 +388,9 @@ export default {
             postTypeSelectionDialogVisibility: false,
             isDisabledAnalytics: !!window.FluentFormApp.isDisableAnalytics,
             sort_column: 'id',
-            sort_by: 'DESC'
+            sort_by: 'DESC',
+            formLocations: {},
+            loadingLocations: false,
         }
     },
     methods: {
@@ -544,7 +569,30 @@ export default {
         },
         tableRowClass({row}) {
             return row.status == 'unpublished' ? 'inactive_form' : '';
-        }
+        },
+        findFormLocations(formId){
+
+            this.loadingLocations = true;
+            let data = {
+                action: 'fluentform-form-find-shortcode-locations',
+                form_id: formId
+            }
+            FluentFormsGlobal.$get(data)
+                .then(res => {
+                    if (res.status === true){
+                        this.$set(this.formLocations, formId, res.locations);
+                    }else{
+                        this.$set(this.formLocations, formId, []);
+                    }
+                })
+                .fail(error => {
+                    this.$fail(this.$t('Something went wrong, please try again.'));
+                })
+                .always(()=>{
+                    this.loadingLocations = false;
+                })
+            ;
+        },
     },
     mounted() {
         this.fetchItems();

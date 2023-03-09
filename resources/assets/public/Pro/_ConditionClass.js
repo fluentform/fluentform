@@ -66,11 +66,7 @@ class ConditionApp {
     getItemEvaluateValue(item, val) {
         val = val || null;
         
-        const isNumericField = jQuery(`[name='${item.field}']`).attr('inputmode') === 'numeric';
-
-        if (isNumericField && val) {
-            val = val.replace(/[^0-9.-]/g, '');
-        }
+        const $el = jQuery(`[name='${item.field}']`);
 
         if (item.operator == '=') {
 
@@ -82,20 +78,30 @@ class ConditionApp {
             if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) != -1;
             }
+
+            if ($el.hasClass('ff_numeric') ) {
+                return this.parseFormattedNumericValue($el, val) == this.parseFormattedNumericValue($el, item.value);
+            }
+
             return val == item.value;
         } else if (item.operator == '!=') {
             if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) == -1;
             }
+            
+            if ($el.hasClass('ff_numeric') ) {
+                return this.parseFormattedNumericValue($el, val) != this.parseFormattedNumericValue($el, item.value);
+            }
+
             return val != item.value;
         } else if (item.operator == '>') {
-            return val && val > Number(item.value);
+            return val && this.parseFormattedNumericValue($el, val) > this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '<') {
-            return val && val < Number(item.value);
+            return val && this.parseFormattedNumericValue($el, val) < this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '>=') {
-            return val && val >= Number(item.value);
+            return val && this.parseFormattedNumericValue($el, val) >= this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == '<=') {
-            return val && val <= Number(item.value);
+            return val && this.parseFormattedNumericValue($el, val) <= this.parseFormattedNumericValue($el, item.value);
         } else if (item.operator == 'startsWith') {
             return val && val.startsWith(item.value);
         } else if (item.operator == 'endsWith') {
@@ -124,6 +130,16 @@ class ConditionApp {
             return RegExp(body, flags);
         }
         return new RegExp(regex, 'g');
+    }
+
+    parseFormattedNumericValue($el, val) {
+        if ($el.hasClass('ff_numeric') ) {
+            let formatConfig = JSON.parse($el.attr('data-formatter'));
+            
+            return currency(val, formatConfig).value;
+        }
+
+        return Number(val) || 0;
     }
 }
 

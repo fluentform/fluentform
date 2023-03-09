@@ -1,10 +1,10 @@
 === Contact Form Plugin - Fastest Contact Form Builder Plugin for WordPress by Fluent Forms ===
 Contributors: techjewel,adreastrian,heera,wpmanageninja
-Tags: contact form, contact forms, wp forms, forms, form builder, contact form builder, fluent forms
+Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.0.1
+Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 4.3.21
+Stable tag: 4.3.24
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,7 +53,7 @@ What a good contact form builder plugin is if the users can’t use it with ease
 
 And not only that, this form builder is so easy to use, even a complete beginner will be able to create and publish forms in less than 5 minutes! You can easily replace Contact Form 7 with Fluent Forms, since you'll get more advanced features in an easy interface.
 
-As responsiveness is a must for any online tool these days, Fluent Forms is developed as a 100% mobile responsive contact form builder, so that your forms look great on all kinds of devices (mobiles, tablets, laptops, and desktops).
+As responsiveness is a must for any online tool these days, Fluent Forms is developed as a 100% mobile responsive contact form builder, so that your forms look great on all kinds of devices (mobiles, tablets, laptops, and desktops). Moreover, this form builder is also fit with accessiblity, which is a great option for people with disability.
 
 Here goes a list of all the Premium features you will be enjoying in Fluent Forms:
 
@@ -78,7 +78,7 @@ Fluent Forms is an extremely feature-rich plugin that delivers a beautiful and b
 Fluent Forms can be used for your regular contact forms, event forms, online forms and any data collection form. You can connect the form data with many 3rd party CRM without writing a single line of code. And the Best thing is this is entirely free, and it always is free and opensource.
 
 == DRAG & DROP CONTACT FORM BUILDER ==
-Our powerful drag & drop form builder allows you to easily create WordPress contact forms and other online forms in just a few minutes without writing any code. Building forms is now easier for you than writing and drawing it on a piece of paper!
+Our powerful drag & drop form builder allows you to easily create WordPress contact forms and other online forms in just a few minutes without writing any code. Building forms is now easier for you than writing and drawing it on a piece of paper! Not only that, you can easily migrate from other from builder using our migrator that supports Gravity Forms, WPForms, and Ninja Forms.
 
 == MULTI-COLUMN FORM LAYOUT ==
 We have all faced the hassle of long forms, filling out which seems like meeting a Dementor from the Harry Potter series that might suck the soul out of you and leave you dead. These “long” forms are often nothing more than just mismanagement of space. Say, you are showing your potential lead a form that has ten input fields in it. Now stacking these 10 fields one after one makes it a long, tedious, and scary form. But if you cleverly stack them 2 or 3 columns, the whole thing looks compact, smart, and not that much scary at all!
@@ -147,17 +147,22 @@ With Fluent Forms, you can organize your submitted entries according to their va
 - Shortcode Field
 - Action Hook Field
 - Form Step to build multi-step form
+- Google Maps & Address autocomplete
+- Quiz Module
 - Ratings Form Field
 - Checkable Grid
 - Range Slider
 - Color Picker
 - Net Promoter Score
 - Repeat Field
+- Save and Resume
 - Post/CPT selection field
+- Post Update
 - Chained Select
 - Post Creation Fields
 - Payment Field
 - Custom Payment
+- Inventory Module
 - Item Quantity
 - PayPal Payments
 - Credit Card Payments Via Stripe
@@ -167,6 +172,9 @@ With Fluent Forms, you can organize your submitted entries according to their va
 **Advanced Form Styler (Pro)**
 Advanced form styler is our most amazing feature of 2019 and we are so much excited about it and I am sure our users will love it. Using this styler, you can easily style every element of a form.
 We also added four pre-defined styles template that you can just select and pre-defined css will be added applied realtime. If you choose custom design then the styler will show the style elements based on your form's available styles and you and you can design the form elements fro the style controls.
+
+**Build Quizzes Easily (Pro)**
+Fluent Forms Pro comes with a brilliant option for making quizzes. Now you can engage more users with enticing quizzes built with Fluent Forms inside yor WordPress dashboard. The quiz builder alllows you to create a survey quiz, fun quiz, personality quiz, trivia quiz, and more. You can assign scores to each question and let people know how they perform via instant or email notifications.
 
 **Create PDF from Form Submission**
 Now, You can generate PDF from your templates and download or attach the PDF via email. This feature is completely free.
@@ -257,7 +265,7 @@ Fluent Forms Documentation comes with a detailed step-by-step instruction of how
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/how-to-use-wp-fluent-form/email-notification/" target="_blank">Setting up Email Notifications in Fluent Forms Plugin</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/how-to-use-wp-fluent-form/send-users-email-notification-wp-fluent-form/" target="_blank">Send Email Notifications on Form Submission</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/how-to-use-wp-fluent-form/managing-submitted-entries/" target="_blank">Managing the Submitted Entries in Fluent Forms</a></li>
-	<li><a href="https://wpmanageninja.com/docs/fluent-form/field-types/" target="_blank">Available Field Tyles in WordPress Forms</a></li>
+	<li><a href="https://wpmanageninja.com/docs/fluent-form/field-types/" target="_blank">Available Field Types in WordPress Forms</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/conditional-logic-fluent-form/" target="_blank">Set up Forms with Conditional Logic</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/form-restrictions/" target="_blank">WordPress Form Scheduling and Restriction Feature</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/integrations-availabel-in-wp-fluent-form/" target="_blank">All Available CRM and Marketing Tools Integration Modules</a></li>
@@ -299,13 +307,16 @@ Fluent Forms Documentation comes with a detailed step-by-step instruction of how
 Already using a form plugin? If you are looking forward to switching to Fluent Forms, but already using Caldera Forms, Ninja Forms or Gravity Forms; we will make the switch easy for you. Now Fluent Forms comes packed with a one-click migrator. With this migrator, you can import all of your forms made with Caldera along with the customizations, configuration, and form entries! For Ninja Forms, and Gravity Forms the migrator will only import your forms and form settings, but not the form entries.
 
 == Migrating From Gravity Forms ==
-If you have forms in Gravity Forms then you can migrate Forms build with Gravity Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Gravity Forms. You can see all the Gravity Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Please note that, Entries of your Gravity Forms will not be migrated.
+If you have forms in Gravity Forms then you can migrate forms built with Gravity Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Gravity Forms. You can see all the Gravity Forms and then click the Import Form button to migrate the form. To import the entries as well click the Import Entries button.
 
 == Migrating From Ninja Forms ==
-If you have forms in Ninja Forms then you can migrate Forms build with Ninja Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Ninja Forms. You can see all the Ninja Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Please note that, Entries of your Ninja Forms will not be migrated.
+If you have forms in Ninja Forms then you can migrate forms built with Ninja Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Ninja Forms. You can see all the Ninja Forms and then click the Import Form button to migrate the form. To import the entries as well click the Import Entries button.
 
 == Migrating From Caldera Forms ==
-If you have forms in Caldera Forms then you can migrate Forms build with Caldera Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Caldera Forms. You can see all the Caldera Forms and then click the Migrate button to migrate the form as well as the entries will be migrated. Your Entries from Caldera Forms will be also migrated.
+If you have forms in Caldera Forms then you can migrate forms built with Caldera Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for Caldera Forms. You can see all the Caldera Forms and then click the Import Form button to migrate the form. To import the entries as well click the Import Entries button.
+
+== Migrating From WPForms ==
+If you have forms in WPForms then you can migrate forms built with WP Forms easily. In this case just go to the Fluent Forms -> Tools -> Migrator and you will find a section for WPForms. You can see all the WPForms and then click the Import Form button to migrate the form. To import the entries as well click the Import Entries button.
 
 
 == Other Plugins By WPManageNinja Team ==
@@ -373,6 +384,35 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 4.3.24 (Date: February 03, 2023) =
+- Fixes Accessibility CSS issue
+
+= 4.3.23 (Date: February 02, 2023) =
+ - Adds WPForms Form & Entry Migrator
+ - Adds Form shortcode page finder
+ - Improves Form Accessibility
+ - Fixes Mp3 File issue in Conversational Form
+ - Fixes Oxygen Builder Popup Form
+ - Fixes Elementor v3.9.1 popup issue
+ - Fixes Migration Issue of Gravity Form
+ - Fixes Numeric Field US format Negative value
+ - Fixes URL validation for Conversational Form
+ - Fixes Asterisk Position for Conversational Forms
+ - Fixes Conditional Shortcode contains ‘&’ character
+ - Fixes Conversational Form Duplicated Form’s Design Issue
+ - Fixes Conditional Logic Empty Ruleset for Conversational Form
+ - Fixes Text Input field’s Max Text Length for Conversational Form
+ - Fixes Conditional Logic with Calculation for Conversational Form
+ - Fixes Conditional Logic Enabled Icon on Conversational Form Fields
+ - Fixes Payment Quantity Field issue on Conversational Form Editor
+ - Fixes Error Message instant Trigger For Numeric Field on Conversational Form
+
+= 4.3.22 (Date: November 11, 2022) =
+- Adds Conversational form to Regular form converter
+- Fixes conditional field for EU number style
+- Fixes rating field for conditional
+- Fixes file upload preview
 
 = 4.3.21 (Date: October 27, 2022) =
 - Adds Ninja Forms entry migrator

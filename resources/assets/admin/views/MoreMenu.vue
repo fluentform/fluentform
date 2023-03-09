@@ -9,7 +9,7 @@
             </span>
 
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
+                <el-dropdown-item command="conversational">
                     {{ convertBtnText }}
                 </el-dropdown-item>
             </el-dropdown-menu>
@@ -44,7 +44,8 @@
             </template>
 
             <span slot="footer" class="text-center dialog-footer">
-                <el-button size="small" @click="visible = false">
+
+                <el-button @click="visible = false" size="small">
                     {{ $t('Cancel') }}
                 </el-button>
 
@@ -102,7 +103,6 @@ export default {
             FluentFormsGlobal.$rest.post(url)
                 .then(response => {
                     this.$success(response.message);
-
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);

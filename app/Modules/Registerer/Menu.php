@@ -7,6 +7,7 @@ use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
+use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -380,7 +381,7 @@ class Menu
                     ->count();
 
                 if ($entriesCount) {
-                    $entriesTitle .= ' <span class="ff_unread_count" style="background: #ca4a20;color: white;border-radius: 8px;padding: 1px 8px;">' . $entriesCount . '</span>';
+                    $entriesTitle .= ' <span class="ff_unread_count" style="background: #3f9eff;color: white;border-radius: 8px;padding: 1px 8px;">' . $entriesCount . '</span>';
                 }
             }
 
@@ -790,8 +791,13 @@ class Menu
             'form'              => $form,
             'hasPro'            => defined('FLUENTFORMPRO'),
             'countries'         => getFluentFormCountryList(),
-            'element_customization_settings' => fluentformLoadFile('Services/FormBuilder/ElementCustomization.php'),
-            'validation_rule_settings' => fluentformLoadFile('Services/FormBuilder/ValidationRuleSettings.php'),
+            'element_customization_settings' => $this->app->load(
+                $this->app->appPath('Services/FormBuilder/ElementCustomization.php')
+            ),
+            'validation_rule_settings' => $this->app->load(
+                $this->app->appPath('Services/FormBuilder/ValidationRuleSettings.php')
+            ),
+            'conversational_form_fields' => array_keys(Converter::fieldTypes()),
             'form_editor_str'            => TranslationString::getEditorI18n(),
             'element_search_tags'        => $searchTags,
             'element_settings_placement' => $elementPlacements,

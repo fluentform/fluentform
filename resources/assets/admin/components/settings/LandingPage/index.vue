@@ -1,16 +1,23 @@
 <template>
-    <div v-loading="loading" :element-loading-text="$t('Loading Settings...')" style="min-height: 100px;">
+    <div v-loading="loading" :element-loading-text="$t('Loading Settings...')" class="landing-page-settings">
 
-        <el-row class="setting_header">
-            <el-col :md="16">
+        <el-row class="setting_header" type="flex" justify="space-between" align="middle">
+            <el-col :sm="12">
                 <h2>{{ $t('Landing Page') }}</h2>
                 <p v-if="settings.status != 'yes'">{{ ('Create completely custom "distraction-free" form landing pages to boost conversions') }}</p>
-                <el-checkbox style="margin-bottom: 15px;" v-model="settings.status" true-label="yes" false-label="no">
+                <el-checkbox style="margin-bottom: 15px;" v-model="settings.status" true-label="yes" @change="offFullScreen" false-label="no">
                     {{ $t('Enable Form Landing Page Mode') }}
                 </el-checkbox>
             </el-col>
             <!--Save settings-->
-            <el-col v-if="!error_text" :md="8" class="action-buttons clearfix mb15">
+            <el-col v-if="!error_text" :sm="12" class="action-buttons clearfix ">
+                <a v-show="share_url && settings.status == 'yes'" 
+                    class="ff_landing_full_screen el-button pull-right el-button--mini"
+                    @click="fullScreen"
+                >
+                    <i class="el-icon-full-screen"></i>
+                </a>
+
                 <el-button
                         :loading="saving"
                         class="pull-right"
@@ -45,7 +52,7 @@
                     </ul>
                 </div>
                 <div v-if="settings && active_tab == 'design'" class="ff_landing_settings_wrapper ffc_sidebar_body">
-                    <el-form ref="form" :model="settings" label-position="left" label-width="140px">
+                    <el-form ref="form" :model="settings" label-position="top" label-width="140px">
                         <el-form-item>
                             <template slot="label">
                                 {{ $t('Page Design Style') }}
@@ -54,6 +61,9 @@
                                 <el-radio v-for="(layoutName, layoutCode) in layouts" :key="layoutCode" :label="layoutCode">{{layoutName}}</el-radio>
                             </el-radio-group>
                         </el-form-item>
+                        <div>
+                            <LayoutPref :pref="settings"></LayoutPref>
+                        </div>
 
                         <el-form-item>
                             <template slot="label">
@@ -70,6 +80,14 @@
                             </template>
                             <el-color-picker @active-change="(color) => { settings.custom_color = color; }" v-model="settings.custom_color"></el-color-picker>
                         </el-form-item>
+
+
+                        <div v-for="(item,i) in settings.form_shadow">
+
+                            <ff_boxshadow :valueItem="item"/>
+
+                        </div>
+
 
                         <el-form-item>
                             <template slot="label">
@@ -190,7 +208,7 @@
             </div>
             <div class="ff_landing_preview ffc_design_container">
                 <template v-if="active_tab == 'design'">
-                    <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" />
+                    <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" @change-device-type="changeDeviceType"/>
                 </template>
                 <share v-else-if="final_share_url" :share_url="final_share_url" :form_id="form_id"  />
             </div>
@@ -201,16 +219,20 @@
 <script type="text/babel">
     import WpEditor from '../../../../common/_wp_editor';
     import PhotoUploader from '../../../../common/PhotoUploader';
+    import ConversionStylePref from "../../../conversion_templates/ConversionStylePref";
     import Browser from './_Browser';
     import Share from './_Sharing';
+    import Ff_boxshadow from './BoxShadow';
 
     export default {
         name: 'landing_pages',
         components: {
+            Ff_boxshadow,
             WpEditor,
             PhotoUploader,
             Browser,
-            Share
+            Share,
+            LayoutPref : ConversionStylePref
         },
         data() {
             return {
@@ -254,6 +276,12 @@
             'settings.design_style': function (){
                 this.setup && this.saveSettings(true);
             },
+            'settings.layout': function (){
+                this.saveSettings(true);
+            },
+            'settings.media': function (){
+                this.saveSettings(true);
+            },
             'settings.background_image': function (){
                 this.setup && this.saveSettings(true);
             }
@@ -272,7 +300,6 @@
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.share_url = response.data.share_url;
-                        console.log('silence', silence)
                         if(!silence) {
                             this.$success(response.data.message);
                         }
@@ -303,8 +330,35 @@
                             settings.custom_color = settings.color_schema;
                             settings.color_schema = 'custom';
                         }
+                        settings.remember_device_type = settings.remember_device_type || 'desktop';
 
+                        if (!settings.form_shadow || !settings.form_shadow.length) {
+                            settings.form_shadow = [
+                                {
+                                    label : this.$t('Outer Shadow'),
+                                    position: "",
+                                    horizontal: "0",
+                                    vertical: "30",
+                                    blur: "40",
+                                    spread: "0",
+                                    color :"rgb(0 0 0 / 25%)"
+                                },
+                                {
+                                    label : this.$t('Inner Shadow'),
+                                    position: "inset",
+                                    horizontal: "0",
+                                    vertical: "4",
+                                    blur: "0",
+                                    spread: "0",
+                                    color : "#a1c5e5",
+                                },
+                            ];
+                        }
                         this.settings = settings;
+                        this.settings.brightness = parseInt(this.settings.brightness);
+                        this.settings.media_x_position = parseInt(this.settings.media_x_position);
+                        this.settings.media_y_position = parseInt(this.settings.media_y_position);
+
                     })
                     .fail(error => {
                         if (!error.responseJSON) {
@@ -325,11 +379,42 @@
                     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
                     .replace(/\-\-+/g, '-');        // Replace multiple - with single -
 
+            },
+            fullScreen() {
+                const $body = jQuery('body');
+                let wasFullScreen = $body.hasClass('ff_full_screen');
+                if (window.localStorage) {
+                    if (wasFullScreen) {
+                        window.localStorage.setItem('ff_landing_is_full_screen', 'no');
+                    } else {
+                        window.localStorage.setItem('ff_landing_is_full_screen', 'yes');
+                    }
+                }
+                $body.toggleClass('ff_full_screen');
+            },
+            offFullScreen(status) {
+                if (status !== 'yes') {
+                    jQuery('body').removeClass('ff_full_screen');
+                    if (window.localStorage) {
+                        window.localStorage.setItem('ff_landing_is_full_screen', 'no');
+                    }
+                }
+            },
+            changeDeviceType (type) {
+                this.settings.remember_device_type = type;
             }
         },
         mounted() {
             this.fetchSettings();
             jQuery('head title').text('Landing Page Settings - Fluent Forms');
+            
+            if (window.localStorage) {
+                if (window.localStorage.getItem('ff_landing_is_full_screen') == 'yes') {
+                    jQuery('body').addClass('ff_full_screen').addClass('folded');
+                }
+            } else {
+                jQuery('body').addClass('ff_full_screen').addClass('folded');
+            }
         }
     };
 </script>

@@ -1,7 +1,11 @@
 /.idea
 .DS_Store
 /node_modules
+/storage/logs/error.log
+/vendor
 /.phpintel
+fluentform
+fluentform.zip
 svn
 svn.php
 /public/*
@@ -9,6 +13,7 @@ svn.php
 /public/js/*
 !/public/js/fluent_gutenblock.js
 package-lock.json
+public_build
 /assets/*
 !/assets/js
 /assets/js/*

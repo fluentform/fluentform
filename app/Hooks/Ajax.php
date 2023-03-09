@@ -66,6 +66,10 @@ $app->addAction('wp_ajax_fluentform-form-duplicate', function () use ($app) {
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->duplicate();
 });
+$app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Form($app))->findFormLocations();
+});
 
 $app->addAction('wp_ajax_fluentform-convert-to-conversational', function () use ($app) {
     dd('wp_ajax_fluentform-convert-to-conversational');
