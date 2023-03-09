@@ -69,6 +69,7 @@ $app->addAction(
 // From Backend.php
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
+    (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -663,6 +664,7 @@ $elements = [
     'select_country',
     'gdpr_agreement',
     'terms_and_condition',
+    'multi_payment_component'
 ];
 
 foreach ($elements as $element) {
@@ -703,8 +705,8 @@ foreach ($elements as $element) {
                 return $field['options'][$response];
             }
         }
-
-        if (in_array($element, ['select', 'input_checkbox']) && is_array($response)) {
+    
+        if (in_array($element, ['select', 'input_checkbox', 'multi_payment_component']) && is_array($response)) {
             return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
         }
 

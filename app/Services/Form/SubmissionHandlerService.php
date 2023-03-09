@@ -284,6 +284,9 @@ class SubmissionHandlerService
         }
         
         $insertId = Submission::insertGetId($insertData);
+    
+        do_action('fluentform/notify_on_form_submit', $insertId, $this->formData, $this->form);
+        
         $uidHash = md5(wp_generate_uuid4() . $insertId);
         Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
         
