@@ -640,6 +640,7 @@ add_action('wp', function () use ($app) {
             wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
                 'ajaxurl'                  => admin_url('admin-ajax.php'),
+                'rest'                     => Helper::getRestInfo()
             ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));

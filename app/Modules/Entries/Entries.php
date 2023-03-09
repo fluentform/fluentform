@@ -711,7 +711,14 @@ class Entries extends EntryQuery
             'message' => $message,
         ], 200);
     }
-
+    
+    /**
+     * @deprecated Use \FluentForm\App\Services\Submission\SubmissionService::recordEntryDetails
+     * @param $entryId
+     * @param $formId
+     * @param $data
+     * @return bool
+     */
     public function recordEntryDetails($entryId, $formId, $data)
     {
         $formData = ArrayHelper::except($data, [

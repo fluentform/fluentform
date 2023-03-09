@@ -145,7 +145,7 @@ class Component
 
     /**
      * Get all the available components
-     *
+     * @deprecated Use \FluentForm\App\Http\Controllers\FormController::resources
      * @return void
      *
      * @throws \Exception
@@ -394,6 +394,7 @@ class Component
     }
 
     /**
+     * @deprecated Use \FluentForm\App\Services\Form\FormService::shortcodes
      * Get all available shortcodes for editor
      *
      * @return void
@@ -693,6 +694,8 @@ class Component
             'input_mask_vars' => [
                 'clearIfNotMatch' => false,
             ],
+            'rest'                     => Helper::getRestInfo()
+
         ]);
 
         wp_localize_script('fluent-form-submission', 'fluentFormVars', $vars);

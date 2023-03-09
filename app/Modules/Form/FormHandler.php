@@ -15,6 +15,8 @@ use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
+/* @deprecated Use class \FluentForm\App\Http\Controllers\SubmissionHandlerController */
+
 class FormHandler
 {
     /**

@@ -5,12 +5,13 @@
  */
 
 /*
-* /forms resource
+* Forms resource
 */
 $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'FormController@index');
     $router->post('/', 'FormController@store');
     $router->get('templates', 'FormController@templates');
+    
     $router->post('import', 'TransferController@import');
     $router->get('export', 'TransferController@export');
 
@@ -27,6 +28,9 @@ $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
     });
 });
 
+/*
+* Form Settings
+*/
 $router->prefix('settings')->withPolicy('FormPolicy')->group(function ($router) {
     $router->prefix('{form_id}')->group(function ($router) {
         $router->get('/', 'FormSettingsController@index');
@@ -42,7 +46,9 @@ $router->prefix('settings')->withPolicy('FormPolicy')->group(function ($router) 
         $router->post('entry-columns', 'FormSettingsController@storeEntryColumns');
     });
 });
-
+/*
+* Form Submissions
+*/
 $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function ($router) {
     $router->get('/', 'SubmissionController@index');
     $router->get('export/{form_id}', 'SubmissionController@exportSubmission');
@@ -70,17 +76,25 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
     });
 });
 
+/*
+* Logs
+*/
 $router->prefix('logs')->withPolicy('SubmissionPolicy')->group(function ($router) {
     $router->get('/', 'LogController@get');
     $router->delete('/', 'LogController@remove');
     $router->get('/filters', 'LogController@getFilters');
 });
-
+/*
+* Global Integrations
+*/
 $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($router) {
     $router->get('/', 'GlobalIntegrationController@index');
     $router->post('/', 'GlobalIntegrationController@update');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
     
+    /*
+    * Form Integrations
+    */
     $router->prefix('{form_id}')->group(function ($router) {
         $router->get('/form-integrations', 'FormIntegrationController@index');
         $router->get('/', 'FormIntegrationController@find');
@@ -90,20 +104,30 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
     });
 });
-
+/*
+* Global Settings
+*/
 $router->prefix('global-settings')->withPolicy('GlobalSettingsPolicy')->group(function ($router) {
     $router->get('/', 'GlobalSettingsController@index');
     $router->post('/', 'GlobalSettingsController@store');
 });
-
+/*
+* Permission role & manager
+*/
 $router->prefix('roles-and-manager')->withPolicy('RoleManagerPolicy')->group(function ($router) {
     $router->get('/', 'RoleManagerController@index');
     $router->post('/', 'RoleManagerController@addCapability');
     $router->post('/manager', 'RoleManagerController@addManager');
     $router->delete('/manager', 'RoleManagerController@removeManager');
 });
-
+/*
+* Form Analytics
+*/
 $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router) {
     $router->post('/{form_id}/reset', 'AnalyticsController@reset');
 });
+/*
+* Form Submission Handler
+*/
+$router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('PublicPolicy');
 

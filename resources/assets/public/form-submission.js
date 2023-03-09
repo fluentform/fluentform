@@ -148,7 +148,7 @@ jQuery(document).ready(function () {
 
                         var formData = {
                             data: $inputs.serialize(),
-                            action: 'fluentform_submit',
+                            // action: 'fluentform_submit',
                             form_id: $theForm.data('form_id')
                         };
 
@@ -244,41 +244,48 @@ jQuery(document).ready(function () {
 
                 var sendData = function ($theForm, formData) {
                     function addParameterToURL(param) {
-                        let _url = fluentFormVars.ajaxUrl;
+                        const route = 'form-submit';
+                        let _url = `${window.fluentFormVars.rest.url}/${route}`;
                         _url += (_url.split('?')[1] ? '&' : '?') + param;
                         return _url;
                     }
 
-                    const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
+                    var ajaxRequestUrl = addParameterToURL('t=' + Date.now()+'&_wpnonce=' + window.fluentFormVars.rest.nonce);
 
                     if (this.isSending) {
                         return;
                     }
 
                     var that = this;
+                    var oldResponse;    //For Payment Handling Using Old System
 
                     this.isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
-                            if (!res || !res.data || !res.data.result) {
+                            if (res?.data){
+
+                                oldResponse = res;
+                                res = res?.data
+                            }
+                            if (!res || !res || !res.result) {
                                 // This is an error
                                 $theForm.trigger('fluentform_submission_failed', {
                                     form: $theForm,
-                                    response: res
+                                    response: oldResponse
                                 });
                                 showErrorMessages(res);
                                 return;
                             }
 
-                            if (res.data.append_data) {
-                                addHiddenData(res.data.append_data);
+                            if (res.append_data) {
+                                addHiddenData(res.append_data);
                             }
 
-                            if (res.data.nextAction) {
-                                $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
+                            if (res.nextAction) {
+                                $theForm.trigger('fluentform_next_action_' + res.nextAction, {
                                     form: $theForm,
-                                    response: res
+                                    response: oldResponse
                                 });
                                 return;
                             }
@@ -286,27 +293,27 @@ jQuery(document).ready(function () {
                             $theForm.triggerHandler('fluentform_submission_success', {
                                 form: $theForm,
                                 config: form,
-                                response: res
+                                response: oldResponse
                             });
 
                             jQuery(document.body).trigger('fluentform_submission_success', {
                                 form: $theForm,
                                 config: form,
-                                response: res
+                                response: oldResponse
                             });
 
-                            if ('redirectUrl' in res.data.result) {
-                                if (res.data.result.message) {
+                            if ('redirectUrl' in res.result) {
+                                if (res.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
                                         'class': 'ff-message-success'
                                     })
-                                        .html(res.data.result.message)
+                                        .html(res.result.message)
                                         .insertAfter($theForm);
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
-                                location.href = res.data.result.redirectUrl;
+                                location.href = res.result.redirectUrl;
                                 return;
                             } else {
                                 const successMsgId = formId + '_success';
@@ -318,12 +325,12 @@ jQuery(document).ready(function () {
                                     'id': successMsgId,
                                     'class': 'ff-message-success'
                                 })
-                                    .html(res.data.result.message)
+                                    .html(res.result.message)
                                     .insertAfter($theForm);
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
-                                if (res.data.result.action == 'hide_form') {
+                                if (res.result.action == 'hide_form') {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
                                 } else {

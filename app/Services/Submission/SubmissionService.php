@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Submission;
 
 use Exception;
+use FluentForm\App\Models\EntryDetails;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\FormMeta;
@@ -13,7 +14,6 @@ use FluentForm\Framework\Support\Collection;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
-use FluentForm\Framework\Validator\ValidationException;
 
 class SubmissionService
 {
@@ -22,7 +22,6 @@ class SubmissionService
      */
     protected $model;
     protected $exporter;
-
     protected $formService;
 
     public function __construct(Submission $submission, FormService $formService, Export $exporter)
@@ -491,4 +490,56 @@ class SubmissionService
             'user_id' => $userId,
         ]);
     }
+    
+    public function recordEntryDetails($entryId, $formId, $data)
+    {
+        $formData = Arr::except($data, [
+            '__fluent_form_embded_post_id',
+            '_fluentform_' . $formId . '_fluentformnonce',
+            '_wp_http_referer',
+            'g-recaptcha-response',
+            'h-captcha-response',
+            'cf-turnstile-response',
+            '__stripe_payment_method_id',
+            '__ff_all_applied_coupons',
+            '__entry_intermediate_hash',
+        ]);
+        
+        $entryItems = [];
+        foreach ($formData as $dataKey => $dataValue) {
+            if (empty($dataValue)) {
+                continue;
+            }
+            
+            if (is_array($dataValue) || is_object($dataValue)) {
+                foreach ($dataValue as $subKey => $subValue) {
+                    if (empty($subValue)) {
+                        continue;
+                    }
+                    $entryItems[] = [
+                        'form_id'        => $formId,
+                        'submission_id'  => $entryId,
+                        'field_name'     => trim($dataKey),
+                        'sub_field_name' => $subKey,
+                        'field_value'    => maybe_serialize($subValue),
+                    ];
+                }
+            } else {
+                $entryItems[] = [
+                    'form_id'        => $formId,
+                    'submission_id'  => $entryId,
+                    'field_name'     => trim($dataKey),
+                    'sub_field_name' => '',
+                    'field_value'    => $dataValue,
+                ];
+            }
+        }
+        
+        foreach ($entryItems as $entryItem) {
+            EntryDetails::insert($entryItem);
+        }
+        
+        return true;
+    }
+    
 }
