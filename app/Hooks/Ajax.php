@@ -308,7 +308,7 @@ $app->addAction('wp_ajax_fluentform-do_entry_bulk_actions', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-get-extra-form-settings', function () use ($app) {
-    dd('fluentform-get-extra-form-settings'); // ajax call from resources/assets/admin/views/Settings.vue, that is never used
+    dd('fluentform-get-extra-form-settings'); // ajax call from resources/assets/admin/views/GlobalSettings.vue, that is never used
     Acl::verify('fluentform_forms_manager');
     (new FluentForm\App\Modules\Form\Settings\ExtraSettings($app))->getExtraSettingNavs();
 });

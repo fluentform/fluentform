@@ -2,7 +2,7 @@ import Vue from 'vue';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
-import Settings from './Settings.vue';
+import GlobalSettings from './GlobalSettings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import turnstile from './turnstile.vue';
@@ -89,7 +89,7 @@ Vue.mixin({
 new Vue({
     el: '#ff_global_settings_option_app',
     components: {
-        settings: Settings,
+        settings: GlobalSettings,
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,
         turnstile: turnstile,

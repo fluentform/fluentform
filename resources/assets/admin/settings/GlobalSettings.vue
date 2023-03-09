@@ -69,6 +69,7 @@ export default {
                 },
                 misc: {
                     isIpLogingDisabled: false,
+                    admin_top_nav_status:'yes',
                     file_upload_locations: '',
                 },
             },
