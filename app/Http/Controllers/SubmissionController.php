@@ -181,21 +181,4 @@ class SubmissionController extends Controller
             ]);
         }
     }
-
-    /**
-     * Get Submission Report
-     * @return \WP_REST_Response
-     */
-    public function report()
-    {
-        try {
-            return $this->sendSuccess(
-                Submission::report(($this->request->all()))
-            );
-        } catch (Exception $e) {
-            return $this->sendError([
-                'message' =>  $e->getMessage()
-            ]);
-        }
-    }
 }

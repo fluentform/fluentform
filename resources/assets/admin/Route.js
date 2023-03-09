@@ -50,7 +50,6 @@ class Route {
     getSubmissionsResources = this.getSubmissions + '/resources';
     handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';
     getAllSubmissions = this.getSubmissions + '/all';
-    getReport = this.getSubmissions + '/report';
 
     handleSubmissionsExport = this.getSubmissions + '/export/{param}';
     findSubmission = this.getSubmissions + '/{param}'; // not implemented
@@ -93,6 +92,11 @@ class Route {
     analytics = 'analytics';
     getFormAnalytics = this.analytics + '/{param}'
     resetFormAnalytics = this.analytics + '/{param}/reset/'
+
+    report = 'report';
+    formsReport = this.report + '/forms'
+    formReport = this.formsReport + '/{param}'
+    submissionsReport = this.report + '/submissions';
 }
 
 export default new Route();

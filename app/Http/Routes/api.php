@@ -55,8 +55,6 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
     $router->get('resources', 'SubmissionController@resources');
     $router->post('bulk-actions', 'SubmissionController@handleBulkActions');
     $router->get('all', 'SubmissionController@all');
-    $router->get('report', 'SubmissionController@report');
-
     $router->delete('/{entry_id}', 'SubmissionController@remove');
 
     $router->prefix('{entry_id}')->group(function ($router) {
@@ -130,4 +128,9 @@ $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router)
 * Form Submission Handler
 */
 $router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('PublicPolicy');
+
+$router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
+    $router->get('/submissions', 'ReportController@submissions');
+    $router->get('/forms/{form_id}', 'ReportController@form');
+});
 

@@ -41,7 +41,7 @@ export default {
     methods: {
         fetchData() {
             this.loading = true;
-            const url = FluentFormsGlobal.$rest.route('getReport');
+            const url = FluentFormsGlobal.$rest.route('submissionsReport');
             const data = {
                 form_id: this.form_id,
                 date_range: this.date_range,

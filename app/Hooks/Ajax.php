@@ -182,6 +182,7 @@ $app->addAction('wp_ajax_fluentform-form-entries', function () {
 });
 
 $app->addAction('wp_ajax_fluentform-form-report', function () use ($app) {
+    dd('wp_ajax_fluentform-form-report');
     $formId = intval($app->request->get('form_id'));
     Acl::verify('fluentform_entries_viewer', $formId);
     (new \FluentForm\App\Modules\Entries\Report($app))->getReport($formId);

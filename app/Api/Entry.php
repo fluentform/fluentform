@@ -2,9 +2,9 @@
 
 namespace FluentForm\App\Api;
 
-use FluentForm\App\Modules\Entries\Report;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Report\ReportHelper;
 
 class Entry
 {
@@ -130,7 +130,6 @@ class Entry
 
     public function report($statuses = [])
     {
-        $reportClass = new Report(wpFluentForm());
-        return $reportClass->generateReport($this->form, $statuses);
+        return ReportHelper::generateReport($this->form, $statuses);
     }
 }
