@@ -33,21 +33,28 @@ class FormMeta extends Model
     public static function prepare($attributes, $predefinedForm)
     {
         $formMeta = [];
-
+    
         $formMeta[] = [
             'meta_key' => 'formSettings',
             'value'    => json_encode(Form::getFormsDefaultSettings()),
         ];
-
+    
         $formMeta[] = [
             'meta_key' => 'template_name',
             'value'    => Arr::get($attributes, 'predefined'),
         ];
-
+    
         if (isset($predefinedForm['notifications'])) {
             $formMeta[] = [
                 'meta_key' => 'notifications',
                 'value'    => json_encode($predefinedForm['notifications']),
+            ];
+        }
+    
+        if (Arr::get($attributes, 'predefined') == 'conversational') {
+            $formMeta[] = [
+                'meta_key' => 'is_conversion_form',
+                'value'    => 'yes',
             ];
         }
 
