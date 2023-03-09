@@ -115,7 +115,7 @@ class ReportHelper
                     });
                 })
             ->groupBy(['field_name', 'field_value', 'sub_field_name'])
-            ->get();
+            ->get()->toArray();
         return static::getFormattedReportsForSubInputs($reports, $formId, $statuses);
     }
 
@@ -130,7 +130,7 @@ class ReportHelper
         }
         foreach ($formattedReports as $fieldName => $val) {
             $formattedReports[$fieldName]['total_entry'] = static::getEntryTotal(
-                $report->field_name,
+                Arr::get($report,'field_name'),
                 $formId,
                 $statuses
             );
@@ -143,7 +143,7 @@ class ReportHelper
 
     protected static function setReportForSubInput($report, &$formattedReports)
     {
-        $filedValue = maybe_unserialize($report['field_value']);
+        $filedValue = maybe_unserialize(Arr::get($report,'field_value'));
 
         if (is_array($filedValue)) {
             foreach ($filedValue as $fVal) {
@@ -153,9 +153,9 @@ class ReportHelper
                 );
             }
         } else {
-            $value = $report['sub_field_name'] . ' : ' . $filedValue;
-            $count = ArrayHelper::get($formattedReports, $report['field_name'] . '.reports.' . $value . '.count');
-            $count = $count ? $count + $report['total_count'] : $report['total_count'];
+            $value = Arr::get($report,'sub_field_name') . ' : ' . $filedValue;
+            $count = Arr::get($formattedReports, $report['field_name'] . '.reports.' . $value . '.count');
+            $count = $count ? $count + Arr::get($report,'total_count') : Arr::get($report,'total_count');
 
             $formattedReports[$report['field_name']]['reports'][$value] = [
                 'value'     => $value,
