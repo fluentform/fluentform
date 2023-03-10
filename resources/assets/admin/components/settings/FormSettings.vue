@@ -678,7 +678,7 @@
 
                 FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        this.pages = response.pages;
+                        this.pages = response;
                     })
                     .catch(e => {
                         this.loading = false;
