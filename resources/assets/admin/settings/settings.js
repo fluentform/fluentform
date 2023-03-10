@@ -131,9 +131,6 @@ new Vue({
                 'width': '70%',
                 'position': 'fixed'
             });
-        },
-        disableBodyScrolling(){
-            jQuery('html, body').css('overflow', 'hidden');
         }
     },
     created() {
@@ -161,7 +158,6 @@ new Vue({
     },
     mounted(){
         this.setSticky();
-        this.disableBodyScrolling();
     }
 });
 
