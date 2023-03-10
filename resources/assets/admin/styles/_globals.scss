@@ -909,10 +909,10 @@ label.el-radio, label.el-checkbox {
     width: $section-layout-sidebar-width;
     padding: 24px;
     vertical-align: top;
-    .ff_settings_list{
-      height: 500px;
-      overflow-y: scroll;
-    }
+    // .ff_settings_list{
+    //   height: 500px;
+    //   overflow-y: scroll;
+    // }
   }
   &_container {
     display: table-cell;

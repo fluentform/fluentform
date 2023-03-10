@@ -44,7 +44,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                     </li>
                     
                     <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
-                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item">
+                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_menu_item_setting ff_list_button_item">
                             <a 
                                 class="ff_list_button_link"
                                 data-hash="payment_settings"
