@@ -176,7 +176,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('Entries')">
+                    <el-table-column :label="$t('Entries')" width="120">
                         <template slot-scope="scope">
                             <a :href="scope.row.entries_url"><span
                                 v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
