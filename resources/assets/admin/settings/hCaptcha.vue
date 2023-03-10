@@ -82,6 +82,7 @@
         <div v-if="hCaptcha_status">
             <p>{{ $t('Your hCaptcha is valid') }}</p>
         </div>
+    </div>
 </template>
 
 <script>

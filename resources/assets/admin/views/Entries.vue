@@ -3,20 +3,20 @@
         <el-row class="mb-4 items-center">
             <el-col :span="12">
                 <el-dropdown
-                    @command="handleSwitchForm"
-                    class="current_form_name"
-                    trigger="click"
-                    placement="top-start"
+                        @command="handleSwitchForm"
+                        class="current_form_name"
+                        trigger="click"
+                        placement="top-start"
                 >
                     <span class="el-dropdown-link el-dropdown-link-lg">
                         {{ current_form_title }} <i class="el-icon el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
                         <el-dropdown-item
-                            v-for="form in forms"
-                            :key="'form_switch_'+form.id"
-                            :command="form.id"
-                            :disabled="form.id == form_id"
+                                v-for="form in forms"
+                                :key="'form_switch_'+form.id"
+                                :command="form.id"
+                                :disabled="form.id == form_id"
                         >{{ form.title }}
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -27,7 +27,7 @@
                     <btn-group>
                         <btn-group-item as="div">
                             <el-button @click="gotoVisualReport()" type="primary">
-                                <i class="ff-icon ff-icon-donut-chart"></i> 
+                                <i class="ff-icon ff-icon-donut-chart"></i>
                                 <span>{{ $t('View Visual Report') }}</span>
                             </el-button>
                         </btn-group-item>
@@ -47,23 +47,23 @@
                                 {{ $t('Select bulk action') }}
                             </label>
                             <el-select
-                                clearable
-                                placeholder="Bulk Actions"
-                                id="bulk-action-selector-top"
-                                name="action"
-                                popper-class="el-big-items"
-                                v-model="bulkAction"
+                                    clearable
+                                    placeholder="Bulk Actions"
+                                    id="bulk-action-selector-top"
+                                    name="action"
+                                    popper-class="el-big-items"
+                                    v-model="bulkAction"
                             >
                                 <el-option-group
-                                    v-for="(group,groupKey) in bulkActions"
-                                    :key="groupKey"
-                                    :label="groupKey"
+                                        v-for="(group,groupKey) in bulkActions"
+                                        :key="groupKey"
+                                        :label="groupKey"
                                 >
                                     <el-option
-                                        v-for="item in group"
-                                        :key="item.action"
-                                        :label="item.label"
-                                        :value="item.action"
+                                            v-for="item in group"
+                                            :key="item.action"
+                                            :label="item.label"
+                                            :value="item.action"
                                     >
                                     </el-option>
                                 </el-option-group>
@@ -75,37 +75,37 @@
                     </template>
                     <btn-group-item as="div">
                         <el-select
-                            clearable
-                            v-model="entry_type"
-                            :placeholder="$t('All Types')"
-                            @change="filterEntryType()"
+                                clearable
+                                v-model="entry_type"
+                                :placeholder="$t('All Types')"
+                                @change="filterEntryType()"
                         >
                             <el-option
-                                v-for="(status, status_key) in entry_statuses"
-                                :key="status_key"
-                                :value="status_key"
-                                :label="status"
+                                    v-for="(status, status_key) in entry_statuses"
+                                    :key="status_key"
+                                    :value="status_key"
+                                    :label="status"
                             >
-                                {{status}} 
-                                <span v-show="counts[status_key]">({{counts[status_key]}})</span>
+                                {{ status }}
+                                <span v-show="counts[status_key]">({{ counts[status_key] }})</span>
                             </el-option>
                         </el-select>
                     </btn-group-item>
                     <btn-group-item v-if="has_payment" as="div">
                         <el-select
-                            clearable
-                            multiple
-                            v-model="selectedPaymentStatuses"
-                            :placeholder="$t('All Payments')"
-                            @change="filterPaymentStatuses()"
+                                clearable
+                                multiple
+                                v-model="selectedPaymentStatuses"
+                                :placeholder="$t('All Payments')"
+                                @change="filterPaymentStatuses()"
                         >
                             <el-option
-                                v-for="(status, status_key) in payment_statuses"
-                                :key="status_key"
-                                :value="status_key"
-                                :label="status"
+                                    v-for="(status, status_key) in payment_statuses"
+                                    :key="status_key"
+                                    :value="status_key"
+                                    :label="status"
                             >
-                                {{status}}
+                                {{ status }}
                             </el-option>
                         </el-select>
                     </btn-group-item>
@@ -118,18 +118,18 @@
                             {{ $t('Search Entry') }}
                         </label>
                         <el-input
-                            v-on:keyup.enter.native="handleSearch"
-                            :placeholder="$t('Search')"
-                            v-model="search_string"
-                            prefix-icon="el-icon-search"
-                            class="el-input-gray"
+                                v-on:keyup.enter.native="handleSearch"
+                                :placeholder="$t('Search')"
+                                v-model="search_string"
+                                prefix-icon="el-icon-search"
+                                class="el-input-gray"
                         >
                         </el-input>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-dropdown @command="exportEntries" trigger="click">
                             <el-button>
-                                {{$t('Export')}} 
+                                {{ $t('Export') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
@@ -143,11 +143,13 @@
                     <btn-group-item as="div">
                         <el-dropdown split-button type="default" class="current_form_name" :hide-on-click="false">
                             <span class="el-dropdown-link">
-                                {{$t('Columns')}}
+                                {{ $t('Columns') }}
                             </span>
-                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown" style="max-height:300px; overflow-y:scroll;" >
+                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown"
+                                              style="max-height:300px; overflow-y:scroll;">
                                 <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
-                                    <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"  v-model="visibleColumns" >
+                                    <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"
+                                                 v-model="visibleColumns">
                                         {{ column }}
                                     </el-checkbox>
                                 </el-dropdown-item>
@@ -162,7 +164,7 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap text-left">
                             <el-button @click="advancedFilter = !advancedFilter; ">
-                                <span>{{$t('Advanced Filter')}}</span>
+                                <span>{{ $t('Advanced Filter') }}</span>
                                 <i class="ff-icon ff-icon-filter" style="font-size: 14px;"></i>
                             </el-button>
                             <div v-if="advancedFilter" class="ff_advanced_search">
@@ -177,15 +179,15 @@
                                 <div class="ff_advanced_search_date_range">
                                     <p>Select a Timeframe</p>
                                     <el-date-picker
-                                        v-model="filter_date_range"
-                                        type="daterange"
-                                        @change="getData()"
-                                        :picker-options="pickerOptions"
-                                        format="dd MMM, yyyy"
-                                        value-format="yyyy-MM-dd"
-                                        range-separator="-"
-                                        :start-placeholder="$t('Start date')"
-                                        :end-placeholder="$t('End date')">
+                                            v-model="filter_date_range"
+                                            type="daterange"
+                                            @change="getData()"
+                                            :picker-options="pickerOptions"
+                                            format="dd MMM, yyyy"
+                                            value-format="yyyy-MM-dd"
+                                            range-separator="-"
+                                            :start-placeholder="$t('Start date')"
+                                            :end-placeholder="$t('End date')">
                                     </el-date-picker>
                                 </div>
                             </div>
@@ -195,58 +197,51 @@
             </el-col>
         </el-row>
 
-                    <el-dropdown @command="exportEntries">
-                        <el-button type="info" size="mini">
-                            {{$t('Export')}} <i class="el-icon-arrow-down el-icon--right"></i>
-                        </el-button>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                            <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsx)</el-dropdown-item>
-                            <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                            <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                    <el-button @click="advancedFilter = true" size="mini">{{$t('Advanced Filter')}}</el-button>
-                </div>
+        <el-dropdown @command="exportEntries">
+            <el-button type="info" size="mini">
+                {{ $t('Export') }} <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
+                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsx)</el-dropdown-item>
+                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
+                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+        <el-button @click="advancedFilter = true" size="mini">{{ $t('Advanced Filter') }}</el-button>
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
-                <h4>{{$t('Change Column Display Order')}}</h4>
+                <h4>{{ $t('Change Column Display Order') }}</h4>
             </template>
             <div class="mt-4">
                 <ColumnDragAndDrop
-                    :columns="columns"
-                    :columns_order ="columnsOrder"
-                    :form_id="form_id"
-                    :visible_columns="visibleColumns" 
-                    @save="refreshColumnsOrder"        
+                        :columns="columns"
+                        :columns_order="columnsOrder"
+                        :form_id="form_id"
+                        :visible_columns="visibleColumns"
+                        @save="refreshColumnsOrder"
                 />
             </div>
         </el-dialog>
 
-        <el-alert
-            v-if="autoDeleteStatus"
-            :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
-            :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
-            type="error">
-        </el-alert>
-        <div 
-            v-loading="loading"
-            :element-loading-text="$t('Loading Entries...')"
-            style="min-height: 60px;"
-            class="entries_table"
+        <div
+                v-loading="loading"
+                :element-loading-text="$t('Loading Entries...')"
+                style="min-height: 60px;"
+                class="entries_table"
         >
 
             <div class="ff-table-container">
                 <el-table
-                    :data="entries"
-                    :stripe="true"
-                    :class="{'compact': isCompact}"
-                    @sort-change="handleTableSort"
-                    @selection-change="handleSelectionChange"
+                        :data="entries"
+                        :stripe="true"
+                        :class="{'compact': isCompact}"
+                        @sort-change="handleTableSort"
+                        @selection-change="handleSelectionChange"
                 >
 
                     <el-table-column type="selection" width="30"></el-table-column>
-                    <el-table-column  label="#" sortable="custom" prop="id" width="100px">
+                    <el-table-column label="#" sortable="custom" prop="id" width="100px">
                         <template slot-scope="scope">
                             <div class="has_hover_item">
                                 <router-link :to="{
@@ -266,31 +261,31 @@
                                 </router-link>
                                 <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
                                     <span v-if="scope.row.is_favourite != '0'"
-                                        @click="changeFavorite(scope.row.id, scope.$index, 0)"
-                                        :title="$t('Remove from Favorites')" 
-                                        class="icon-favorite el-icon-star-on action_button"
+                                          @click="changeFavorite(scope.row.id, scope.$index, 0)"
+                                          :title="$t('Remove from Favorites')"
+                                          class="icon-favorite el-icon-star-on action_button"
                                     />
-                                    <span v-else 
-                                        @click="changeFavorite(scope.row.id, scope.$index, 1)"
-                                        :title="$t('Mark as Favorites')"
-                                        class="icon-favorite el-icon-star-off action_button"
+                                    <span v-else
+                                          @click="changeFavorite(scope.row.id, scope.$index, 1)"
+                                          :title="$t('Mark as Favorites')"
+                                          class="icon-favorite el-icon-star-off action_button"
                                     />
 
-                                    <span v-if="scope.row.status == 'read'" 
-                                        @click="changeStatus(scope.row.id, scope.$index, 'unread')"
-                                        :title="$t('Mark as Unread')"
-                                        class="icon-status el-icon-circle-check action_button"
+                                    <span v-if="scope.row.status == 'read'"
+                                          @click="changeStatus(scope.row.id, scope.$index, 'unread')"
+                                          :title="$t('Mark as Unread')"
+                                          class="icon-status el-icon-circle-check action_button"
                                     />
-                                    <span v-else 
-                                        @click="changeStatus(scope.row.id, scope.$index, 'read')" 
-                                        :title="$t('Mark as Read')"
-                                        class="icon-status el-icon-finished action_button"
+                                    <span v-else
+                                          @click="changeStatus(scope.row.id, scope.$index, 'read')"
+                                          :title="$t('Mark as Read')"
+                                          class="icon-status el-icon-finished action_button"
                                     />
                                 </div>
 
                                 <div class="inline_actions inline_item" v-else>
                                         <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                            class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                              class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
                                 </div>
                             </div>
                         </template>
@@ -327,9 +322,9 @@
                                 :label="$t('Payment Status')"
                                 min-width="120px">
                             <template slot-scope="scope">
-                                <span class="ff_badge" 
-                                    :class="'ff_badge_'+scope.row.payment_status"
-                                    v-if="scope.row.payment_status"
+                                <span class="ff_badge"
+                                      :class="'ff_badge_'+scope.row.payment_status"
+                                      v-if="scope.row.payment_status"
                                 >
                                     {{ scope.row.payment_status }}
                                 </span>
@@ -340,9 +335,9 @@
                                 min-width="120px">
                             <template slot-scope="scope">
                                 <span class="ff_badge" v-if="scope.row.payment_method"
-                                :class="`ff_badge_${
+                                      :class="`ff_badge_${
                                     scope.row.payment_method == 'stripe' ? 'stripe' :
-                                    scope.row.payment_method == 'paypal' ? 'paypal' : 
+                                    scope.row.payment_method == 'paypal' ? 'paypal' :
                                     scope.row.payment_method == 'mollie' ? 'mollie' :
                                     scope.row.payment_method == 'razorpay' ? 'razorpay' :
                                     scope.row.payment_method == 'paystack' ? 'paystack' : 'default' }`">
@@ -383,22 +378,22 @@
                                         }
                                     }">
                                         <span class="el-button el-button--soft el-button--primary el-button--mini el-button--icon"
-                                            size="mini"
-                                            type="primary"
+                                              size="mini"
+                                              type="primary"
                                         >
                                             <i class="ff-icon ff-icon-eye-filled"></i>
                                         </span>
                                     </router-link>
                                 </btn-group-item>
                                 <btn-group-item>
-                                    <confirm 
-                                        v-if="hasPermission('fluentform_manage_entries')"
-                                        @on-confirm="removeEntry(scope.row.id, scope.$index)">
+                                    <confirm
+                                            v-if="hasPermission('fluentform_manage_entries')"
+                                            @on-confirm="removeEntry(scope.row.id, scope.$index)">
                                         <el-button
-                                            class="el-button--soft el-button--icon"
-                                            size="mini"
-                                            type="danger"
-                                            icon="ff-icon ff-icon-trash"
+                                                class="el-button--soft el-button--icon"
+                                                size="mini"
+                                                type="danger"
+                                                icon="ff-icon ff-icon-trash"
                                         />
                                     </confirm>
                                 </btn-group-item>
@@ -411,11 +406,11 @@
             <el-row class="mt-4 items-center">
                 <el-col :span="12">
                     <div class="bulkactions">
-                        <email-resend 
-                            v-if="entrySelections.length" 
-                            :btn_text="$t('Bulk Resend Notifications')" 
-                            :entry_ids="selection_ids" 
-                            :form_id="form_id">
+                        <email-resend
+                                v-if="entrySelections.length"
+                                :btn_text="$t('Bulk Resend Notifications')"
+                                :entry_ids="selection_ids"
+                                :form_id="form_id">
                         </email-resend>
                         <el-checkbox class="compact_input" v-model="isCompact">{{ $t('Compact View') }}</el-checkbox>
                     </div>
@@ -423,19 +418,20 @@
                 <el-col :span="12">
                     <div class="ff_pagination_wrap text-right">
                         <el-pagination
-                            class="ff_pagination"
-                            background
-                            @size-change="handleSizeChange"
-                            @current-change="goToPage"
-                            :current-page.sync="paginate.current_page"
-                            :page-sizes="[5, 10, 20, 50, 100]"
-                            :page-size="parseInt(paginate.per_page)"
-                            layout="total, sizes, prev, pager, next"
-                            :total="paginate.total">
+                                class="ff_pagination"
+                                background
+                                @size-change="handleSizeChange"
+                                @current-change="goToPage"
+                                :current-page.sync="paginate.current_page"
+                                :page-sizes="[5, 10, 20, 50, 100]"
+                                :page-size="parseInt(paginate.per_page)"
+                                layout="total, sizes, prev, pager, next"
+                                :total="paginate.total">
                         </el-pagination>
                     </div>
                 </el-col>
             </el-row>
+
         </div>
     </div>
 </template>
@@ -645,7 +641,7 @@
                     visibleColumns: true,
                     columnsOrder: true,
                 };
-                
+
                 const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
 
                 FluentFormsGlobal.$rest.get(url, data)
@@ -653,8 +649,8 @@
                         this.counts = response.counts;
                         this.columns = response.labels;
 
-                        this.visibleColumns = response.visibleColumns ;
-                        this.columnsOrder = response.columnsOrder ;
+                        this.visibleColumns = response.visibleColumns;
+                        this.columnsOrder = response.columnsOrder;
                     })
                     .catch((error) => {
 
@@ -680,7 +676,7 @@
                 }
 
                 this.loading = true;
-                
+
                 const url = FluentFormsGlobal.$rest.route('getSubmissions');
 
                 FluentFormsGlobal.$rest.get(url, data)
@@ -800,9 +796,9 @@
                         page: this.paginate.current_page
                     }
                 })
-                .catch(failure => {
+                    .catch(failure => {
 
-                });
+                    });
             },
             changeFavorite(entryId, index, is_favourite) {
                 let data = {
@@ -814,7 +810,7 @@
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.entries[index].is_favourite = response.is_favourite;
-                        
+
                         const amount = is_favourite ? 1 : -1;
                         this.counts.favorites += amount;
 
@@ -838,7 +834,7 @@
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.counts[status] += 1;
-                        
+
                         const statusToBeDecreased = this.entries[index].status;
                         this.counts[statusToBeDecreased] -= 1;
 
@@ -912,19 +908,19 @@
                 });
             },
             getPaymentMethodName(status) {
-                if(status == 'test') {
+                if (status == 'test') {
                     return 'Offline';
                 }
                 return status;
             },
-            handleColumnChange(){
+            handleColumnChange() {
                 const data = {
                     meta_key: '_visible_columns',
                     settings: JSON.stringify(this.visibleColumns)
                 };
 
                 const url = FluentFormsGlobal.$rest.route('storeEntryColumns', this.form_id);
-                
+
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                     })
@@ -933,7 +929,7 @@
                     });
             },
             getVisibleColumns() {
-                if (this.visibleColumns === null){
+                if (this.visibleColumns === null) {
                     //visibleColumns is not set initially so set all columns to visible
                     this.visibleColumns = Object.keys(this.columns);
                 }

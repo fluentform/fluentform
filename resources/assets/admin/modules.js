@@ -12,8 +12,7 @@ import {
     Radio,
     RadioGroup,
     Row,
-    Col,
-    Notification
+    Col
 } from 'element-ui';
 
 Vue.use(RadioButton);
