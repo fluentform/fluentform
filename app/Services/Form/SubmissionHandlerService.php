@@ -232,7 +232,7 @@ class SubmissionHandlerService
             }
             
             $message = ShortCodeParser::parse(
-                ArrayHelper::get($confirmation, 'redirectMessage', ''),
+                Arr::get($confirmation, 'redirectMessage', ''),
                 $insertId,
                 $formData,
                 $form,
