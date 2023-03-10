@@ -144,7 +144,6 @@
                     'Government',
                     'Healthcare'
                 ],
-                search: '',
                 creatingForm: false,
                 predefinedForms: {},
                 isNewForm: false,
@@ -262,15 +261,19 @@
                 this.postTypeSelectionDialogVisibility = true;
             },
             doCreateForm(data) {
-                FluentFormsGlobal.$get(data)
-                    .done((response) => {
-                        this.$success(response.data.message);
-                        window.location.href = response.data.redirect_url;
+                const url = FluentFormsGlobal.$rest.route('getForms');
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then((response) => {
+                        this.$success(response.message);
+
+                        if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        }
                     })
-                    .fail(error => {
-                        this.$fail(error.responseJSON.data.message);
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.creatingForm = false;
                     });
             },
