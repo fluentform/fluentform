@@ -288,7 +288,7 @@
                 let stickyElem = jQuery('#sticky-menu');
                 let stickyTop = stickyElem.offset().top;
 
-                jQuery(window).scroll(function() {
+                jQuery(window).on('scroll', function() {
                     let windowTop = jQuery(window).scrollTop();
                     if (stickyTop < windowTop) {
                         stickyElem.addClass('is-sticky');

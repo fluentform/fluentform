@@ -42,31 +42,71 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php echo __('Double Optin Settings', 'fluentform'); ?>
                         </a>
                     </li>
+                    
+                    <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
+                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item">
+                            <a 
+                                class="ff_list_button_link"
+                                data-hash="payment_settings"
+                                href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', ArrayHelper::get($components, 'payment_settings'))); ?>">
+                                <?php echo __('Payment Settings', 'fluentform'); ?>
+                            </a>
+                        </li>
+                    <?php endif ?>
+
                     <li class="ff_list_button_item has_sub_menu">
-                        <a 
-                            class="ff_list_button_link"
-                            href="#">
+                        <a class="ff_list_button_link" href="#">
                             <?php echo __('Security', 'fluentform'); ?>
                         </a>
                         <ul class="ff_list_submenu">
-                            <li>Test 1</li>
-                            <li>Test 2</li>
+                            <?php foreach ($components as $componentName => $component): ?>
+                                <?php if (ArrayHelper::get($component, 'hash') == 're_captcha'
+                                    || ArrayHelper::get($component, 'hash') == 'h_captcha'
+                                    || ArrayHelper::get($component, 'hash') == 'turnstile'
+                                ) : ?>
+                                
+                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'], $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
+                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component, 'settings_key')); ?>"
+                                        data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component', '')); ?>"
+                                        data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $component)); ?>"
+                                        >
+                                            <?php echo esc_attr($component['title']); ?>
+                                        </a>
+                                    </li>
+                                <?php endif ?>
+                            <?php endforeach; ?>
                         </ul>
                     </li>
-                    <?php foreach ($components as $componentName => $component): ?>
-                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'], $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?> ff_list_button_item">
-                            <a class="ff_list_button_link" data-settings_key="<?php echo esc_attr(ArrayHelper::get($component, 'settings_key')); ?>"
-                               data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component', '')); ?>"
-                               data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
-                               href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $component)); ?>"
-                            >
-                                <?php echo esc_attr($component['title']); ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
+
+                    <li class="ff_list_button_item has_sub_menu">
+                        <a class="ff_list_button_link" href="#">
+                            <?php echo __('All Integration Settings', 'fluentform'); ?>
+                        </a>
+                        <ul class="ff_list_submenu">
+                            <?php foreach ($components as $componentName => $component): ?>
+                                <?php if (ArrayHelper::get($component, 'hash') != 're_captcha'
+                                    && ArrayHelper::get($component, 'hash') != 'h_captcha'
+                                    && ArrayHelper::get($component, 'hash') != 'turnstile'
+                                    && ArrayHelper::get($component, 'query.component') != 'payment_settings'
+                                ) : ?>
+                            
+                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'], $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
+                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component, 'settings_key')); ?>"
+                                        data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component', '')); ?>"
+                                        data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $component)); ?>"
+                                        >
+                                            <?php echo esc_attr($component['title']); ?>
+                                        </a>
+                                    </li>
+                                <?php endif ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
                 </ul>
             </div>
-            <div class="ff_settings_container ff_layout_section_container">
+            <div class="ff_settings_container ff_layout_section_container" id="ff_settings_container">
                 <?php do_action('fluentform_global_settings_component_' . $currentComponent); ?>
             </div>
             <?php do_action('fluentform_after_global_settings_wrapper'); ?>

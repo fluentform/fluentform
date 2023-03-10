@@ -72,8 +72,14 @@
 
 
             jQuery('.ff_settings_list a').on('click', function () {
+                let subMenu = jQuery(this).parent().find('.ff_list_submenu');
+
                 jQuery('.ff_settings_list li').removeClass('active');
-                jQuery(this).parent().addClass('active');
+                jQuery(this).parent().addClass('active').siblings().removeClass('active');
+
+                subMenu.parent().toggleClass('is-submenu');
+                subMenu.slideToggle().siblings().find('.ff_list_submenu').slideUp();
+
             });
 
             jQuery('head title').text('Settings & Integrations - Fluent Forms');

@@ -43,6 +43,7 @@ import {
     Popover,
     Pagination
 } from 'element-ui';
+import e from 'jquery-datetimepicker';
 
 locale.use(lang);
 Vue.use(Button);
@@ -118,6 +119,21 @@ new Vue({
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
             }
+        },
+        setSticky(){
+            let stickyElem = jQuery('#ff_settings_container');
+            let stickyTop = stickyElem.offset().top;
+            let stickyLeft = stickyElem.offset().left;
+
+            stickyElem.css({
+                'top': stickyTop,
+                'left': stickyLeft,
+                'width': '70%',
+                'position': 'fixed'
+            });
+        },
+        disableBodyScrolling(){
+            jQuery('html, body').css('overflow', 'hidden');
         }
     },
     created() {
@@ -125,13 +141,27 @@ new Vue({
         this.setRoute(hash);
 
         const that = this;
-        jQuery('.ff_settings_list li a').on('click', function () {
+        jQuery('.ff_settings_list li a').on('click', function (e) {
+
+            if(jQuery(this).attr('href') == '#'){
+                e.preventDefault();
+            }
+
             let hash = jQuery(this).attr('data-hash');
+            let subMenu = jQuery(this).parent().find('.ff_list_submenu');
+
             if (hash) {
                 that.setRoute(hash);
             }
             jQuery(this).parent().addClass('active').siblings().removeClass('active');
+
+            subMenu.parent().toggleClass('is-submenu').siblings().removeClass('is-submenu');
+            subMenu.slideToggle().parent().siblings().find('.ff_list_submenu').slideUp();
         });
+    },
+    mounted(){
+        this.setSticky();
+        this.disableBodyScrolling();
     }
 });
 
