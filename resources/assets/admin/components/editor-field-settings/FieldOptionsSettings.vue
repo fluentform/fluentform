@@ -17,7 +17,8 @@
                         :editItem="editItem"
                         :prop="key"
                         :form_items="form_items"
-                        :listItem="listItem">
+                        :listItem="listItem"
+                        :key="i">
                     </component>
                 </template>
             </div>
@@ -41,7 +42,8 @@
                             v-model="vModelFinder(key)[key]"
                             :form_items="form_items"
                             :editItem="editItem"
-                            :listItem="listItem">
+                            :listItem="listItem"
+                            :key="i">
                         </component>
                     </template>
                     <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">

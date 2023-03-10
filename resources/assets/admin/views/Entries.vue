@@ -1,193 +1,199 @@
 <template>
-    <div>
-        <div class="ff_nav_top">
-            <div class="ff_nav_title">
-                <h3>{{$t('Entries')}}</h3>
-                <div class="ff_nav_sub_actions">
-                    <el-select
-                            clearable
-                            size="mini"
-                            v-model="entry_type"
-                            :placeholder="$t('All Types')"
-                            @change="filterEntryType()"
-                    >
-                        <el-option
-                                v-for="(status, status_key) in entry_statuses"
-                                :key="status_key"
-                                :value="status_key"
-                                :label="status"
-                        >
-                            {{status}} <span v-show="counts[status_key]">({{counts[status_key]}})</span>
-                        </el-option>
-                    </el-select>
-                    <el-select
-                            v-if="has_payment"
-                            style="min-width: 300px"
-                            clearable
-                            size="mini"
-                            multiple
-                            v-model="selectedPaymentStatuses"
-                            :placeholder="$t('All Payments')"
-                            @change="filterPaymentStatuses()"
-                    >
-                        <el-option
-                                v-for="(status, status_key) in payment_statuses"
-                                :key="status_key"
-                                :value="status_key"
-                                :label="status"
-                        >
-                            {{status}}
-                        </el-option>
-                    </el-select>
-                </div>
-            </div>
-            <div class="ff_nav_action">
-
-                <el-button @click="gotoVisualReport()" type="primary" size="mini">
-                    <span
-                            style="line-height: 10px;width: auto;height: auto;font-size: 14px;"
-                            class="dashicons dashicons-chart-pie"
-                    ></span> {{ $t('View Visual Report') }}
-                </el-button>
-
+    <div class="ff_entries_wrap">
+        <el-row class="mb-4 items-center">
+            <el-col :span="12">
                 <el-dropdown
-                        size="mini"
-                        @command="handleSwitchForm"
-                        split-button type="default"
-                        class="current_form_name"
+                    @command="handleSwitchForm"
+                    class="current_form_name"
+                    trigger="click"
+                    placement="top-start"
                 >
-                  <span class="el-dropdown-link">
-                    {{ current_form_title }}
-                  </span>
+                    <span class="el-dropdown-link el-dropdown-link-lg">
+                        {{ current_form_title }} <i class="el-icon el-icon-arrow-down el-icon--right"></i>
+                    </span>
                     <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
                         <el-dropdown-item
-                                v-for="form in forms"
-                                :key="'form_switch_'+form.id"
-                                :command="form.id"
-                                :disabled="form.id == form_id"
+                            v-for="form in forms"
+                            :key="'form_switch_'+form.id"
+                            :command="form.id"
+                            :disabled="form.id == form_id"
                         >{{ form.title }}
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-
-
-                <el-dropdown
-
-                        size="mini"
-                        split-button type="default"
-                        class="current_form_name"
-                        :hide-on-click="false"
-                >
-
-                  <span class="el-dropdown-link">
-                        {{$t('Columns')}}
-                  </span>
-                    <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;" >
-
-                        <el-dropdown-item
-                                v-for="(column, column_name) in columns"
-                                :key="column_name"
-
-                        >
-                            <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"  v-model="visibleColumns" >
-                                {{ column }}
-                            </el-checkbox>
-
-                        </el-dropdown-item>
-
-                        <el-dropdown-item
-                                key="column_order"
-                                command="column_order"
-                        >
-                            <el-button @click="visibleColReorderModal =true" style="width:100%;"  type="primary" size="mini">
-                                 {{ $t('Reorder Column') }}
+            </el-col>
+            <el-col :span="12">
+                <div class="text-right">
+                    <btn-group>
+                        <btn-group-item as="div">
+                            <el-button @click="gotoVisualReport()" type="primary">
+                                <i class="ff-icon ff-icon-donut-chart"></i> 
+                                <span>{{ $t('View Visual Report') }}</span>
                             </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </div>
+            </el-col>
+        </el-row>
 
-                        </el-dropdown-item>
+        <div class="separator mb-4"></div>
 
-                    </el-dropdown-menu>
-                </el-dropdown>
-
-            </div>
-        </div>
-
-        <el-dialog   :visible.sync="visibleColReorderModal" :title=" $t('Change Column Display Order') " >
-            <ColumnDragAndDrop
-                    :columns="columns"
-                    :columns_order ="columnsOrder"
-                    :form_id="form_id"
-                    :visible_columns="visibleColumns" 
-                    @save="refreshColumnsOrder"        
-            />
-        </el-dialog>
-
-        <el-alert
-                v-if="autoDeleteStatus"
-                :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
-                :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
-                type="error">
-        </el-alert>
-
-        <hr>
-        <div v-loading="loading"
-             :element-loading-text="$t('Loading Entries...')"
-             style="min-height: 60px;"
-             class="entries_table">
-
-            <div class="ff_nav_top">
-                <div class="ff_nav_title">
+        <el-row class="mb-4">
+            <el-col :span="10">
+                <btn-group class="ff_entries_select_wrap" as="div">
                     <template v-if="entrySelections.length">
-                        <label for="bulk-action-selector-top" class="screen-reader-text">
-                            {{ $t('Select bulk action') }}
-                        </label>
-                        <el-select
+                        <btn-group-item as="div">
+                            <label for="bulk-action-selector-top" class="screen-reader-text">
+                                {{ $t('Select bulk action') }}
+                            </label>
+                            <el-select
                                 clearable
                                 placeholder="Bulk Actions"
                                 id="bulk-action-selector-top"
                                 name="action"
                                 popper-class="el-big-items"
                                 v-model="bulkAction"
-                                size="small"
-                        >
-                            <el-option-group
+                            >
+                                <el-option-group
                                     v-for="(group,groupKey) in bulkActions"
                                     :key="groupKey"
-                                    :label="groupKey">
-                                <el-option
+                                    :label="groupKey"
+                                >
+                                    <el-option
                                         v-for="item in group"
                                         :key="item.action"
                                         :label="item.label"
-                                        :value="item.action">
-                                </el-option>
-                            </el-option-group>
-                        </el-select>
-                        <el-button
-                                type="primary"
-                                size="small"
-                                @click.prevent="handleBulkAction"
-                        >{{ $t('Apply') }}
-                        </el-button>
+                                        :value="item.action"
+                                    >
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                        </btn-group-item>
+                        <btn-group-item as="div">
+                            <el-button type="primary" @click.prevent="handleBulkAction">{{ $t('Apply') }}</el-button>
+                        </btn-group-item>
                     </template>
-                </div>
-
-                <div class="ff_nav_action pull-right">
-                    <div class="ff_search_inline">
+                    <btn-group-item as="div">
+                        <el-select
+                            clearable
+                            v-model="entry_type"
+                            :placeholder="$t('All Types')"
+                            @change="filterEntryType()"
+                        >
+                            <el-option
+                                v-for="(status, status_key) in entry_statuses"
+                                :key="status_key"
+                                :value="status_key"
+                                :label="status"
+                            >
+                                {{status}} 
+                                <span v-show="counts[status_key]">({{counts[status_key]}})</span>
+                            </el-option>
+                        </el-select>
+                    </btn-group-item>
+                    <btn-group-item v-if="has_payment" as="div">
+                        <el-select
+                            clearable
+                            multiple
+                            v-model="selectedPaymentStatuses"
+                            :placeholder="$t('All Payments')"
+                            @change="filterPaymentStatuses()"
+                        >
+                            <el-option
+                                v-for="(status, status_key) in payment_statuses"
+                                :key="status_key"
+                                :value="status_key"
+                                :label="status"
+                            >
+                                {{status}}
+                            </el-option>
+                        </el-select>
+                    </btn-group-item>
+                </btn-group>
+            </el-col>
+            <el-col :span="14" class="text-right">
+                <btn-group class="ff_entries_report_wrap" as="div">
+                    <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
                             {{ $t('Search Entry') }}
                         </label>
                         <el-input
-                                v-on:keyup.enter.native="handleSearch"
-                                size="mini"
-                                :placeholder="$t('Search')"
-                                v-model="search_string"
+                            v-on:keyup.enter.native="handleSearch"
+                            :placeholder="$t('Search')"
+                            v-model="search_string"
+                            prefix-icon="el-icon-search"
+                            class="el-input-gray"
                         >
-                            <el-button
-                                    slot="append"
-                                    icon="el-icon-search"
-                                    v-on:click.prevent="handleSearch"
-                            />
                         </el-input>
-                    </div>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown @command="exportEntries" trigger="click">
+                            <el-button>
+                                {{$t('Export')}} 
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown split-button type="default" class="current_form_name" :hide-on-click="false">
+                            <span class="el-dropdown-link">
+                                {{$t('Columns')}}
+                            </span>
+                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown" style="max-height:300px; overflow-y:scroll;" >
+                                <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
+                                    <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"  v-model="visibleColumns" >
+                                        {{ column }}
+                                    </el-checkbox>
+                                </el-dropdown-item>
+                                <el-dropdown-item key="column_order" command="column_order">
+                                    <el-button @click="visibleColReorderModal =true" type="primary" size="small">
+                                        {{ $t('Reorder Column') }}
+                                    </el-button>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <div class="ff_advanced_filter_wrap text-left">
+                            <el-button @click="advancedFilter = !advancedFilter; ">
+                                <span>{{$t('Advanced Filter')}}</span>
+                                <i class="ff-icon ff-icon-filter" style="font-size: 14px;"></i>
+                            </el-button>
+                            <div v-if="advancedFilter" class="ff_advanced_search">
+                                <div class="ff_advanced_search_radios">
+                                    <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                        <el-radio label="today">Today</el-radio>
+                                        <el-radio label="yesterday">Yesterday</el-radio>
+                                        <el-radio label="last-week">Last Week</el-radio>
+                                        <el-radio label="last-month">Last Month</el-radio>
+                                    </el-radio-group>
+                                </div>
+                                <div class="ff_advanced_search_date_range">
+                                    <p>Select a Timeframe</p>
+                                    <el-date-picker
+                                        v-model="filter_date_range"
+                                        type="daterange"
+                                        @change="getData()"
+                                        :picker-options="pickerOptions"
+                                        format="dd MMM, yyyy"
+                                        value-format="yyyy-MM-dd"
+                                        range-separator="-"
+                                        :start-placeholder="$t('Start date')"
+                                        :end-placeholder="$t('End date')">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                        </div><!-- .ff_advanced_filter_wrap -->
+                    </btn-group-item>
+                </btn-group>
+            </el-col>
+        </el-row>
 
                     <el-dropdown @command="exportEntries">
                         <el-button type="info" size="mini">
@@ -202,224 +208,256 @@
                     </el-dropdown>
                     <el-button @click="advancedFilter = true" size="mini">{{$t('Advanced Filter')}}</el-button>
                 </div>
+        <el-dialog :visible.sync="visibleColReorderModal">
+            <template slot="title">
+                <h4>{{$t('Change Column Display Order')}}</h4>
+            </template>
+            <div class="mt-4">
+                <ColumnDragAndDrop
+                    :columns="columns"
+                    :columns_order ="columnsOrder"
+                    :form_id="form_id"
+                    :visible_columns="visibleColumns" 
+                    @save="refreshColumnsOrder"        
+                />
             </div>
+        </el-dialog>
 
-            <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
-                <div class="widget_title">
-                    {{$t('Filter By Date Range')}}
-                    <el-date-picker
-                            size="mini"
-                            v-model="filter_date_range"
-                            type="daterange"
-                            @change="getData()"
-                            :picker-options="pickerOptions"
-                            format="dd MMM, yyyy"
-                            value-format="yyyy-MM-dd"
-                            range-separator="-"
-                            :start-placeholder="$t('Start date')"
-                            :end-placeholder="$t('End date')">
-                    </el-date-picker>
-                    <el-button @click="getData" size="mini" type="primary">{{ $t('Search') }}</el-button>
-                    <el-button @click="resetAdvancedFilter()" size="mini">{{ $t('Hide') }}</el-button>
-                </div>
-            </div>
+        <el-alert
+            v-if="autoDeleteStatus"
+            :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
+            :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
+            type="error">
+        </el-alert>
+        <div 
+            v-loading="loading"
+            :element-loading-text="$t('Loading Entries...')"
+            style="min-height: 60px;"
+            class="entries_table"
+        >
 
-            <el-table
+            <div class="ff-table-container">
+                <el-table
                     :data="entries"
                     :stripe="true"
                     :class="{'compact': isCompact}"
                     @sort-change="handleTableSort"
-                    @selection-change="handleSelectionChange">
-
-                <el-table-column
-                        type="selection"
-                        fixed
-                        width="40">
-                </el-table-column>
-
-                <el-table-column
-                        label="#"
-                        sortable="custom"
-                        prop="id"
-                        width="100px"
+                    @selection-change="handleSelectionChange"
                 >
-                    <template slot-scope="scope">
-                        <div class="has_hover_item">
-                            <router-link :to="{
-                                    name: 'form-entry',
-                                    params: {
-                                        form_id: scope.row.form_id,
-                                        entry_id: scope.row.id
-                                    },
-                                    query: {
-                                        sort_by: sort_by,
-                                        current_page: paginate.current_page,
-                                        pos: scope.$index,
-                                        type: entry_type
-                                    }
-                                }">
-                                {{ scope.row.serial_number }}
-                            </router-link>
-                            <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
-                                <span v-if="scope.row.is_favourite != '0'"
-                                    @click="changeFavorite(scope.row.id, scope.$index, 0)"
-                                    :title="$t('Remove from Favorites')" 
-                                    class="el-icon-star-on action_button"
-                                />
-                                <span v-else 
-                                    @click="changeFavorite(scope.row.id, scope.$index, 1)"
-                                    :title="$t('Mark as Favorites')"
-                                    class="el-icon-star-off action_button"
-                                />
 
-                                <span v-if="scope.row.status == 'read'" 
-                                    @click="changeStatus(scope.row.id, scope.$index, 'unread')"
-                                    :title="$t('Mark as Unread')"
-                                    class="el-icon-circle-check action_button"
-                                />
-                                <span v-else 
-                                    @click="changeStatus(scope.row.id, scope.$index, 'read')" 
-                                    :title="$t('Mark as Read')"
-                                    class="el-icon-finished action_button"
-                                />
+                    <el-table-column type="selection" width="30"></el-table-column>
+                    <el-table-column  label="#" sortable="custom" prop="id" width="100px">
+                        <template slot-scope="scope">
+                            <div class="has_hover_item">
+                                <router-link :to="{
+                                        name: 'form-entry',
+                                        params: {
+                                            form_id: scope.row.form_id,
+                                            entry_id: scope.row.id
+                                        },
+                                        query: {
+                                            sort_by: sort_by,
+                                            current_page: paginate.current_page,
+                                            pos: scope.$index,
+                                            type: entry_type
+                                        }
+                                    }">
+                                    {{ scope.row.serial_number }}
+                                </router-link>
+                                <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
+                                    <span v-if="scope.row.is_favourite != '0'"
+                                        @click="changeFavorite(scope.row.id, scope.$index, 0)"
+                                        :title="$t('Remove from Favorites')" 
+                                        class="icon-favorite el-icon-star-on action_button"
+                                    />
+                                    <span v-else 
+                                        @click="changeFavorite(scope.row.id, scope.$index, 1)"
+                                        :title="$t('Mark as Favorites')"
+                                        class="icon-favorite el-icon-star-off action_button"
+                                    />
+
+                                    <span v-if="scope.row.status == 'read'" 
+                                        @click="changeStatus(scope.row.id, scope.$index, 'unread')"
+                                        :title="$t('Mark as Unread')"
+                                        class="icon-status el-icon-circle-check action_button"
+                                    />
+                                    <span v-else 
+                                        @click="changeStatus(scope.row.id, scope.$index, 'read')" 
+                                        :title="$t('Mark as Read')"
+                                        class="icon-status el-icon-finished action_button"
+                                    />
+                                </div>
+
+                                <div class="inline_actions inline_item" v-else>
+                                        <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
+                                            class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                </div>
                             </div>
-
-                            <div class="inline_actions inline_item" v-else>
-                                    <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                          class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
-                            </div>
-                        </div>
-                    </template>
-                </el-table-column>
-
-                <el-table-column
-                        v-for="(column, index) in formattedColumn"
-
-                        :label="column.label"
-                        :show-overflow-tooltip="isCompact"
-                        min-width="200"
-                        :key="index">
-                    <template slot-scope="scope">
-                        <span v-html="scope.row.user_inputs[column.field]"></span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column
-                        label="Entry Status"
-                        width="120px">
-                    <template slot-scope="scope">
-                        {{ getStatusName(scope.row.status) }}
-                    </template>
-                </el-table-column>
-
-                <template v-if="has_payment">
-                    <el-table-column
-                            :label="$t('Amount')"
-                            min-width="120px">
-                        <template slot-scope="scope">
-                            <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                         </template>
                     </el-table-column>
+
                     <el-table-column
-                            :label="$t('Payment Status')"
-                            min-width="120px">
+                            v-for="(column, index) in formattedColumn"
+                            :label="column.label"
+                            :show-overflow-tooltip="isCompact"
+                            min-width="200"
+                            :key="index">
                         <template slot-scope="scope">
-                            <span class="ff_pay_status_badge" 
-                                  :class="'ff_pay_status_'+scope.row.payment_status"
-                                  v-if="scope.row.payment_status"
-                            >
-                                {{ scope.row.payment_status }}
-                            </span>
+                            <span v-html="scope.row.user_inputs[column.field]"></span>
                         </template>
                     </el-table-column>
+
                     <el-table-column
-                            :label="$t('Payment Method')"
-                            min-width="120px">
+                            label="Entry Status"
+                            width="120px">
                         <template slot-scope="scope">
-                            <span class="ff_card_badge" v-if="scope.row.payment_method">
-                                {{ getPaymentMethodName(scope.row.payment_method) }}
-                            </span>
+                            {{ getStatusName(scope.row.status) }}
                         </template>
                     </el-table-column>
-                </template>
 
-                <el-table-column
-                        :label="$t('Submitted at')"
-                        width="120px">
-                    <template slot-scope="scope">
-                        {{ dateFormat(scope.row.created_at) }}
+                    <template v-if="has_payment">
+                        <el-table-column
+                                :label="$t('Amount')"
+                                min-width="120px">
+                            <template slot-scope="scope">
+                                <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                :label="$t('Payment Status')"
+                                min-width="120px">
+                            <template slot-scope="scope">
+                                <span class="ff_badge" 
+                                    :class="'ff_badge_'+scope.row.payment_status"
+                                    v-if="scope.row.payment_status"
+                                >
+                                    {{ scope.row.payment_status }}
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                :label="$t('Payment Method')"
+                                min-width="120px">
+                            <template slot-scope="scope">
+                                <span class="ff_badge" v-if="scope.row.payment_method"
+                                :class="`ff_badge_${
+                                    scope.row.payment_method == 'stripe' ? 'stripe' :
+                                    scope.row.payment_method == 'paypal' ? 'paypal' : 
+                                    scope.row.payment_method == 'mollie' ? 'mollie' :
+                                    scope.row.payment_method == 'razorpay' ? 'razorpay' :
+                                    scope.row.payment_method == 'paystack' ? 'paystack' : 'default' }`">
+                                    {{ getPaymentMethodName(scope.row.payment_method) }}
+                                </span>
+                            </template>
+                        </el-table-column>
                     </template>
-                </el-table-column>
 
-                <el-table-column
-                        fixed="right"
-                        :label="$t('Actions')"
-                        :width="115"
-                        align="center"
-                >
-                    <template slot-scope="scope">
-                        <el-button-group>
-                            <router-link :to="{
-                                    name: 'form-entry',
-                                    params: {
-                                        form_id: scope.row.form_id,
-                                        entry_id: scope.row.id
-                                    },
-                                    query: {
-                                        sort_by: sort_by,
-                                        current_page: paginate.current_page,
-                                        pos: scope.$index,
-                                        type: entry_type
-                                    }
-                                }">
-                                <el-button type="primary" icon="el-icon-view" size="mini"></el-button>
-                            </router-link>
-                            
-                            <remove 
-                                v-if="hasPermission('fluentform_manage_entries')"
-                                icon="el-icon-delete" 
-                                @on-confirm="removeEntry(scope.row.id, scope.$index)"
-                            />
-                        </el-button-group>
-                    </template>
-                </el-table-column>
-            </el-table>
+                    <el-table-column
+                            :label="$t('Submitted at')"
+                            width="120px">
+                        <template slot-scope="scope">
+                            {{ dateFormat(scope.row.created_at) }}
+                        </template>
+                    </el-table-column>
 
-            <div class="tablenav bottom">
-                <div class="alignleft actions bulkactions">
-                    <email-resend v-if="entrySelections.length" :btn_text="$t('Bulk Resend Notifications')" :entry_ids="selection_ids" :form_id="form_id"></email-resend>
-                    <el-checkbox class="compact_input" v-model="isCompact">{{ $t('Compact View') }}</el-checkbox>
-                </div>
-                <div class="pull-right">
-                    <el-pagination
+                    <el-table-column
+                            fixed="right"
+                            :label="$t('Actions')"
+                            :width="115"
+                            align="center"
+                    >
+                        <template slot-scope="scope">
+                            <btn-group size="sm">
+                                <btn-group-item>
+                                    <router-link :to="{
+                                        name: 'form-entry',
+                                        params: {
+                                            form_id: scope.row.form_id,
+                                            entry_id: scope.row.id
+                                        },
+                                        query: {
+                                            sort_by: sort_by,
+                                            current_page: paginate.current_page,
+                                            pos: scope.$index,
+                                            type: entry_type
+                                        }
+                                    }">
+                                        <span class="el-button el-button--soft el-button--primary el-button--mini el-button--icon"
+                                            size="mini"
+                                            type="primary"
+                                        >
+                                            <i class="ff-icon ff-icon-eye-filled"></i>
+                                        </span>
+                                    </router-link>
+                                </btn-group-item>
+                                <btn-group-item>
+                                    <confirm 
+                                        v-if="hasPermission('fluentform_manage_entries')"
+                                        @on-confirm="removeEntry(scope.row.id, scope.$index)">
+                                        <el-button
+                                            class="el-button--soft el-button--icon"
+                                            size="mini"
+                                            type="danger"
+                                            icon="ff-icon ff-icon-trash"
+                                        />
+                                    </confirm>
+                                </btn-group-item>
+                            </btn-group>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div><!-- .ff-table-container -->
+
+            <el-row class="mt-4 items-center">
+                <el-col :span="12">
+                    <div class="bulkactions">
+                        <email-resend 
+                            v-if="entrySelections.length" 
+                            :btn_text="$t('Bulk Resend Notifications')" 
+                            :entry_ids="selection_ids" 
+                            :form_id="form_id">
+                        </email-resend>
+                        <el-checkbox class="compact_input" v-model="isCompact">{{ $t('Compact View') }}</el-checkbox>
+                    </div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="ff_pagination_wrap text-right">
+                        <el-pagination
+                            class="ff_pagination"
+                            background
                             @size-change="handleSizeChange"
                             @current-change="goToPage"
                             :current-page.sync="paginate.current_page"
                             :page-sizes="[5, 10, 20, 50, 100]"
                             :page-size="parseInt(paginate.per_page)"
-                            layout="total, sizes, prev, pager, next, jumper"
+                            layout="total, sizes, prev, pager, next"
                             :total="paginate.total">
-                    </el-pagination>
-                </div>
-            </div>
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
         </div>
     </div>
 </template>
 
 <script type="text/babel">
-    import remove from '../components/confirmRemove'
+    import Confirm from "@/admin/components/confirmRemove.vue";
     import moment from 'moment';
     import each from 'lodash/each';
     import EmailResend from './Helpers/_ResentEmailNotification'
     import ColumnDragAndDrop from "./ColumnDragAndDrop";
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 
     export default {
         name: 'FormEntries',
         props: ['form_id', 'has_pdf'],
         components: {
-            remove,
+            Confirm,
             EmailResend,
-            ColumnDragAndDrop
+            ColumnDragAndDrop,
+            BtnGroup,
+            BtnGroupItem
         },
         watch: {
             search_string() {
@@ -442,7 +480,7 @@
                     total: 0,
                     current_page: parseInt(this.$route.query.page) || 1,
                     last_page: 1,
-                    per_page: localStorage.getItem('entriesPerPage') || 20
+                    per_page: localStorage.getItem('entriesPerPage') || 10
                 },
                 search_string: '',
                 forms: window.fluent_form_entries_vars.forms,
@@ -501,6 +539,7 @@
                 visibleColReorderModal: false,
                 visibleColumns: null,
                 columnsOrder: null,
+                radioOption: ''
             }
         },
         computed: {
@@ -913,7 +952,7 @@
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
-        }
+        },
     };
 </script>
 

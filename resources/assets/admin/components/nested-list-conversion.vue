@@ -15,14 +15,14 @@
             <div @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
                 <div class="item-actions">
-                    <i class="icon icon-arrows"></i>
-                    <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
-                    <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
-                    <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
+                    <i class="el-icon el-icon-rank"></i>
+                    <i @click="editSelected(index, item)" class="el-icon el-icon-edit"></i>
+                    <i @click="duplicateSelected(index, item)" class="el-icon el-icon-document-copy"></i>
+                    <i @click="askRemoveConfirm(index)" class="el-icon el-icon-delete"></i>
                 </div>
             </div>
 
-            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
+            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
 
             <div class="ff_conv_section_wrapper" :class="'ff_conv_layout_'+item.style_pref.layout" v-if="hasRegistered(item)">
                 <div class="ff_conv_input">

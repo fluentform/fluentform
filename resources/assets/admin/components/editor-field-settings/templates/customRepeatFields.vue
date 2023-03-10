@@ -11,7 +11,7 @@
     </template>
 
     <template v-if="editItem.settings.multi_column">
-        <div class="address-field-option" ref="highlight" v-for="(field, i) in editItem.fields">
+        <div class="address-field-option" ref="highlight" v-for="(field, i) in editItem.fields" :key="i">
             <div class="field-options-settings">
                 <div class="action-btn pull-right">
                     <i @click="toggleAddressFieldInputs" class="icon el-icon-caret-bottom"></i>

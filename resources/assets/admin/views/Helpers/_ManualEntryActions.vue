@@ -1,18 +1,24 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="small">{{ $t(btn_text) }}
+        <el-button v-if="element_type == 'button'" @click="openModal()" type="dark" size="medium">
+            {{ $t(btn_text) }}
         </el-button>
         <el-dialog
-            :title="$t('Choose an Action/Integration Feed and Replay')"
-            top="42px"
+            top="60px"
             @before-close="resetData()"
             :append-to-body="true"
             :visible.sync="dialogVisible"
-            width="60%">
-            <template v-if="has_pro">
+            width="70%"
+        >
+            <template slot="title">
+                <h4>{{$t('Choose an Action/Integration Feed and Replay')}}</h4>
+            </template>
+
+            <div v-if="has_pro" class="mt-4">
                 <div v-loading="loading" :element-loading-text="$t('Loading Feeds...')" class="ff_notification_feeds">
-                    <el-checkbox style="margin-bottom: 10px;" true-label="yes" false-label="no" v-model="verify_condition">
-                        {{ $t('Check Conditional Logic when replaying a feed action') }}</el-checkbox>
+                    <el-checkbox class="mb-3" true-label="yes" false-label="no" v-model="verify_condition">
+                        {{ $t('Check Conditional Logic when replaying a feed action') }}
+                    </el-checkbox>
 
                     <el-table border stripe :data="feeds">
                         <el-table-column
@@ -41,28 +47,43 @@
                         <el-table-column
                             label="Actions">
                             <template slot-scope="scope">
-                                <el-button v-loading="sending" @click="replayFeed(scope.row.id)" type="info" size="mini">
-                                    {{ $t('Replay') }}</el-button>
+                                <el-button @click="replayFeed(scope.row.id)" type="info" size="mini">
+                                    {{ sending ? $t('Loading...') : $t('Replay') }}
+                                </el-button>
                             </template>
                         </el-table-column>
                     </el-table>
                 </div>
-                <div v-if="error_message" v-html="error_message" class="ff-error"></div>
-                <div v-if="success_message" v-html="success_message" class="ff-success"></div>
-            </template>
-            <div style="text-align: center" v-else>
-                <h3>{{ $t('This feature is available on pro version of Fluent Forms.') }}</h3>
-                <a target="_blank"
-                   :href="upgrade_url"
-                   rel="nofollow"
-                   class="el-button el-button--danger">
-                    {{ $t('Buy Pro Now') }}
-                </a>
+
+                <div class="mt-4">
+                    <div role="alert" class="el-alert el-alert--error is-dark"  v-if="error_message">
+                        <div class="el-alert__content">
+                            <span class="el-alert__title" v-html="error_message"></span>
+                        </div>
+                    </div>
+                    <div role="alert" class="el-alert el-alert--success is-dark"  v-if="success_message">
+                        <div class="el-alert__content">
+                            <span class="el-alert__title" v-html="success_message"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <notice class="ff_alert_between mt-4" type="danger-soft" v-else>
+                <div>
+                    <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
+                    <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                </div>
+                <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
+                    {{$t('Upgrage to Pro')}}
+                </a>
+            </notice>
         </el-dialog>
     </div>
 </template>
 <script type="text/babel">
+    import Notice from '@/admin/components/Notice/Notice.vue';
+    
     export default {
         name: 'ManualEntryActions',
         props: {
@@ -89,6 +110,9 @@
                     return 'Entry Actions'
                 }
             }
+        },
+        components: {
+            Notice
         },
         data() {
             return {

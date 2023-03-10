@@ -1,0 +1,70 @@
+.ff_card {
+    background-color: #ffffff;
+    box-shadow: 0px 2px 3px 0px rgba(129, 129, 129, 0.1);
+    border-radius: $border-radius;
+    padding: 24px;
+    .text {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+    &_alert {
+        border-left: 3px solid $--color-danger;
+        border-radius: 4px;
+    }
+    &_head {
+        border-bottom: 1px solid $border-color;
+        margin-bottom: 26px;
+        padding-bottom: 16px;
+        .text{
+            margin-top: 10px;
+        }
+        &_group{
+            display: flex;
+            align-items: center;
+            .el-tooltip{
+                font-size: 15px;
+            }
+        }
+    }
+    &_form_action {
+        cursor: pointer;
+    }
+    &_img {
+        img {
+            width: 100%;
+            height: 204px;
+            object-fit: unset;
+        }
+    }
+    &_s2 {
+        padding: 0;
+        border: 1px solid #ececec;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        transition: 0.3s;
+        .ff_card_body {
+            padding: 20px;
+        }
+        .ff_card_footer {
+            border-top: 1px solid #ececec;
+            padding: 14px 20px;
+            margin-top: auto;
+        }
+    }
+    &_footer_group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .ff-table-container {
+        box-shadow: none;
+        background-color: transparent;
+        border-radius: 0;
+        padding: 0;
+    }
+    &_border{
+        box-shadow: none;
+        border: 1px solid $border-color;
+    }
+}

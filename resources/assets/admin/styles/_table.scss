@@ -1,0 +1,228 @@
+.ff_table{
+    border-radius: $border-radius;
+    box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+    padding: 0.625rem 1.5rem;
+    table,
+    .el-table__empty-block {
+        width: 100% !important;
+    }
+    tr,
+    th.el-table__cell,
+    .el-table__body tr.el-table__row--striped td.el-table__cell,
+    &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+        background-color: transparent;
+    }
+    .el-table--border::after, 
+    .el-table--group::after, 
+    .el-table::before{
+        display: none;
+    }
+    thead{
+        color: $base-color;
+        .el-table__cell,
+        th{
+            padding-top: 0;
+            padding-bottom: 8px;
+        }
+    }
+    th.el-table__cell>.cell,
+    .cell{
+        padding-left: 0;
+        padding-right: 0;
+        font-weight: 600;
+    }
+    .sort-caret{
+        border-width: 3px;
+    }
+    .sort-caret.ascending{
+        top: 9px;
+    }
+    .sort-caret.descending{
+        bottom: 11px;
+    }
+    .cell {
+        strong {
+            color: $base-color;
+            font-weight: 500;
+        }
+    }
+    td.el-table__cell, 
+    th.el-table__cell.is-leaf{
+        border-bottom-color: $border-color;
+    }
+    tbody{
+        tr{
+            &:last-child{
+                td.el-table__cell, 
+                th.el-table__cell.is-leaf{
+                    border-bottom-width: 0;
+                }   
+            }
+        }
+        .cell{
+            font-weight: 400;
+        }
+    }
+    &_s2{
+        tr,
+        th.el-table__cell,
+        .el-table__body tr.el-table__row--striped td.el-table__cell,
+        &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+            background-color: transparent;
+        }
+        thead{
+            color: $base-color;
+            th.el-table__cell{
+                background-color: #F8F8F8;
+                border-bottom: 0 !important;
+                .cell{
+                    font-weight: 500;
+                }
+            }
+            tr {
+                th:first-child{
+                    border-top-left-radius: $border-radius;
+                    border-bottom-left-radius: $border-radius;
+                    .cell{
+                        padding-left: 20px;
+                    }
+                }
+                th:last-child{
+                    border-top-right-radius: $border-radius;
+                    border-bottom-right-radius: $border-radius;
+                }
+            }
+        }
+        tbody{
+            tr {
+                td:first-child{
+                    .cell{
+                        padding-left: 20px;   
+                    }
+                }
+            }
+        }
+        td.el-table__cell, 
+        th.el-table__cell.is-leaf{
+            border-bottom-color: $border-color;
+        }
+    }
+}
+
+// ff table wrap
+.ff-table-container {
+    border-radius: $border-radius;
+    box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+    padding: 0.625rem 1.5rem;
+    background-color: $white;
+    .el-table{
+        background-color: transparent;
+    }
+    table,
+    .el-table__empty-block {
+        width: 100% !important;
+    }
+    tr,
+    th.el-table__cell,
+    .el-table__body tr.el-table__row--striped td.el-table__cell,
+    .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell,
+    .el-table__body tr:hover td.el-table__cell,
+    .el-table__body tr.hover-row > td.el-table__cell {
+        background-color: transparent;
+    }
+    .el-table--border::after, 
+    .el-table--group::after, 
+    .el-table::before{
+        display: none;
+    }
+    thead{
+        color: $base-color;
+        .el-table__cell,
+        th{
+            padding-top: 0;
+            padding-bottom: 8px;
+        }
+    }
+    th.el-table__cell>.cell,
+    .cell{
+        padding-left: 0;
+        padding-right: 0;
+        font-weight: 600;
+    }
+    .sort-caret{
+        border-width: 3px;
+    }
+    .sort-caret.ascending{
+        top: 9px;
+    }
+    .sort-caret.descending{
+        bottom: 11px;
+    }
+    .cell {
+        strong {
+            color: $base-color;
+            font-weight: 500;
+        }
+    }
+    td.el-table__cell, 
+    th.el-table__cell.is-leaf{
+        border-bottom-color: $border-color;
+    }
+    tbody{
+        tr{
+            &:last-child{
+                td.el-table__cell, 
+                th.el-table__cell.is-leaf{
+                    border-bottom-width: 0;
+                }   
+            }
+        }
+        .cell{
+            font-weight: 400;
+        }
+    }
+    &_s2{
+        tr,
+        th.el-table__cell,
+        .el-table__body tr.el-table__row--striped td.el-table__cell,
+        &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+            background-color: transparent;
+        }
+        thead{
+            color: $base-color;
+            th.el-table__cell{
+                background-color: #F8F8F8;
+                border-bottom: 0 !important;
+                .cell{
+                    font-weight: 500;
+                }
+            }
+            tr {
+                th:first-child{
+                    border-top-left-radius: $border-radius;
+                    border-bottom-left-radius: $border-radius;
+                    .cell{
+                        padding-left: 20px;
+                    }
+                }
+                th:last-child{
+                    border-top-right-radius: $border-radius;
+                    border-bottom-right-radius: $border-radius;
+                }
+            }
+        }
+        tbody{
+            tr {
+                td:first-child{
+                    .cell{
+                        padding-left: 20px;   
+                    }
+                }
+            }
+        }
+        td.el-table__cell, 
+        th.el-table__cell.is-leaf{
+            border-bottom-color: $border-color;
+        }
+    }
+}

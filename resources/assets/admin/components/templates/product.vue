@@ -23,8 +23,8 @@
 			</p>
 		</template>
 
-		<template v-else-if="fieldType == 'radio'"  v-for="(text, value) in radioOptions">
-			<p>
+		<template v-else-if="fieldType == 'radio'"  v-for="(text, value, i) in radioOptions">
+			<p :key="i">
 	            <el-radio
 	            v-model="defaultSelectedOption"
 	            :label="text"

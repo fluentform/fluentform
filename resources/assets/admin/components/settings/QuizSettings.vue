@@ -1,190 +1,189 @@
 <template>
     <div class="ff-quiz-settings">
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <h2>{{ $t('Quiz Settings') }}</h2>
-            </el-col>
-            <el-col :md="12" class="action-buttons clearfix mb15">
-                <el-button
-                    :loading="saving"
-                    class="pull-right"
-                    size="small"
-                    type="primary"
-                    icon="el-icon-success"
-                    @click="saveSettings">
-                    {{ saving ? $t('Saving') : $t('Save') }} {{ $t('Settings') }}
-                </el-button>
-            </el-col>
-        </el-row>
-        <div v-loading="loading" class="ff-quiz-settings-wrapper">
-            <el-form v-if="settings" label-width="160px" label-position="left">
-    
-             
-                <field-mapper
-                    :field="{ component: 'checkbox-single', label: $t('Enabled'), checkbox_label:  $t('Enable Quiz Module') }"
-                    :editorShortcodes="editorShortcodes"
-                    :errors="errors"
-                    v-model="settings.enabled"
-                >
-                </field-mapper>
-                <div  v-if="settings.enabled">
-                    <field-mapper
-                        v-for="field in settingsFields"
-                        :key="field.key"
-                        :field="field"
-                        :errors="errors"
-                        :editorShortcodes="editorShortcodes"
-                        v-model="settings[field.key]"
-                    />
-                    <el-form-item >
-                        <template slot="label">
-                            {{ $t('Grade System') }}
-                            <el-tooltip
-                                class="item"
-                                effect="light"
-                                placement="bottom-start"
-                            >
-                                <div slot="content">
-                                    <p>{{ $t('Result will be showed in grade when the score type is set as grade in the score input field') }}</p>
-                                </div>
-                                <i class="el-icon-info el-text-info"></i>
-                            </el-tooltip>
-                        </template>
-                        <table>
-                            <tr>
-                                <td><b>{{ $t('Grade Label') }}</b></td>
-                                <td><b>{{ $t('Minimum Range') }}</b></td>
-                                <td><b>{{ $t('Max Range') }}</b></td>
-                            </tr>
-                            <tr v-for="(item, itemIdex) in settings.grades" :key="itemIdex">
-                                <td>
-                                    <el-input size="small" v-model="settings.grades[itemIdex].label"/>
-                                </td>
-                                <td>
-                                    <el-input size="small" type="number" v-model="settings.grades[itemIdex].min"/>
-                                </td>
-                                <td>
-                                    <el-input size="small" type="number" v-model="settings.grades[itemIdex].max"/>
-                                </td>
-                                <td>
-                                    <el-button-group>
-                                        <el-button size="mini" type="success" @click="addItem(itemIdex)">+</el-button>
-                                        <el-button size="mini" type="danger" :disabled="settings.grades.length == 1"
-                                                   @click="removeItem(itemIdex)">-
-                                        </el-button>
-                                    </el-button-group>
-                                </td>
-                            </tr>
-        
-                        </table>
-                    </el-form-item>
-                    <el-form-item :label="$t('Quiz Questions')"  class="quiz-questions">
-                        <div v-if="quizFields" v-for="(input, key) in quizFields" :key="key">
-                            <quiz-input :input="getInput(key)" :original_input="quizFields[key]"></quiz-input>
+        <card>
+            <card-head>
+                <h5 class="title">{{ $t('Quiz Settings') }}</h5>
+            </card-head>
+            <card-body>
+                <div v-loading="loading" class="ff-quiz-settings-wrapper">
+                    <el-form v-if="settings" label-position="top">
+                        <field-mapper
+                            :field="{ component: 'checkbox-single', label: $t('Enabled'), checkbox_label:  $t('Enable Quiz Module') }"
+                            :editorShortcodes="editorShortcodes"
+                            :errors="errors"
+                            v-model="settings.enabled"
+                        >
+                        </field-mapper>
+                        <div  v-if="settings.enabled">
+                            <field-mapper
+                                v-for="field in settingsFields"
+                                :key="field.key"
+                                :field="field"
+                                :errors="errors"
+                                :editorShortcodes="editorShortcodes"
+                                v-model="settings[field.key]"
+                            />
+                            <el-form-item class="ff-form-item">
+                                <template slot="label">
+                                    {{ $t('Grade System') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>{{ $t('Result will be showed in grade when the score type is set as grade in the score input field') }}</p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
+                                <table>
+                                    <tr>
+                                        <td><span class="lead-title mb-2">{{ $t('Grade Label') }}</span></td>
+                                        <td><span class="lead-title mb-2">{{ $t('Minimum Range') }}</span></td>
+                                        <td><span class="lead-title mb-2">{{ $t('Max Range') }}</span></td>
+                                    </tr>
+                                    <tr v-for="(item, itemIdex) in settings.grades" :key="itemIdex">
+                                        <td>
+                                            <el-input size="small" v-model="settings.grades[itemIdex].label"/>
+                                        </td>
+                                        <td>
+                                            <el-input size="small" type="number" v-model="settings.grades[itemIdex].min"/>
+                                        </td>
+                                        <td>
+                                            <el-input size="small" type="number" v-model="settings.grades[itemIdex].max"/>
+                                        </td>
+                                        <td>
+                                            <div class="action-btns ml-2 mb-1">
+                                                <i 
+                                                    class="ff_icon_btn small dark el-icon-plus" 
+                                                    @click="addItem(itemIdex)"></i>
+                                                <i 
+                                                    class="ff_icon_btn small dark el-icon-minus" 
+                                                    :disabled="settings.grades.length == 1"
+                                                    @click="removeItem(itemIdex)"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </el-form-item>
+                            <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
+                                <template v-if="quizFields">
+                                    <div v-for="(input, key) in quizFields" :key="key">
+                                        <quiz-input :input="getInput(key)" :original_input="quizFields[key]"></quiz-input>
+                                    </div>
+                                </template>
+                            </el-form-item>
                         </div>
-                    </el-form-item>
+                        <div v-if="settings && settings.enabled" class="mt-4">
+                            <el-button
+                                :loading="saving"
+                                type="primary"
+                                icon="el-icon-success"
+                                @click="saveSettings">
+                                {{Saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                            </el-button>
+                        </div>
+                    </el-form>
                 </div>
-                <div v-if="settings && settings.enabled" style="margin-top: 30px" class="action_right">
-                    <el-button
-                        :loading="saving"
-                        class="pull-right"
-                        size="small"
-                        type="primary"
-                        icon="el-icon-success"
-                        @click="saveSettings">
-                        {{Saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
-                    </el-button>
-                </div>
-            </el-form>
-        </div>
+            </card-body>
+        </card>
     </div>
 </template>
 
 <script type="text/babel">
-import DropdownLabelRepeater from './GeneralIntegration/_DropdownLabelRepeater';
-import FieldGeneral from './GeneralIntegration/_FieldGeneral';
-import inputPopover from '../input-popover.vue';
-import FieldMapper from "./GeneralIntegration/FieldMapper";
-import QuizInput from "./QuizInput";
+    import DropdownLabelRepeater from './GeneralIntegration/_DropdownLabelRepeater';
+    import FieldGeneral from './GeneralIntegration/_FieldGeneral';
+    import inputPopover from '../input-popover.vue';
+    import FieldMapper from "./GeneralIntegration/FieldMapper";
+    import QuizInput from "./QuizInput";
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
 
 
-export default {
-    name: 'QuizSettings',
-    props: ['form', 'editorShortcodes', 'inputs'],
-    components: {
-        DropdownLabelRepeater,
-        FieldGeneral,
-        inputPopover,
-        FieldMapper,
-        QuizInput
-    },
-    data() {
-        return {
-            saving: false,
-            settings: false,
-            loading: false,
-            settingsFields: [],
-            quizFields: {},
-            errors: new Errors()
-        }
-    },
-    computed: {},
-    methods: {
-        getInput(key) {
-            if (this.settings.saved_quiz_fields[key]) {
-                return this.settings.saved_quiz_fields[key];
+    export default {
+        name: 'QuizSettings',
+        props: ['form', 'editorShortcodes', 'inputs'],
+        components: {
+            DropdownLabelRepeater,
+            FieldGeneral,
+            inputPopover,
+            FieldMapper,
+            QuizInput,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
+        },
+        data() {
+            return {
+                saving: false,
+                settings: false,
+                loading: false,
+                settingsFields: [],
+                quizFields: {},
+                errors: new Errors()
             }
-            this.$set(this.settings.saved_quiz_fields, key, this.quizFields[key]);
-            return this.settings.saved_quiz_fields[key];
         },
-        getSettings() {
-            this.loading = true;
-            FluentFormsGlobal.$get({
-                action: 'ff_get_quiz_module_settings',
-                form_id: this.form.id,
-            })
-                .then(response => {
-                    this.settings = response.data.settings;
-                    this.quizFields = response.data.quiz_fields;
-                    this.settingsFields = response.data.settings_fields;
+        computed: {},
+        methods: {
+            getInput(key) {
+                if (this.settings.saved_quiz_fields[key]) {
+                    return this.settings.saved_quiz_fields[key];
+                }
+                this.$set(this.settings.saved_quiz_fields, key, this.quizFields[key]);
+                return this.settings.saved_quiz_fields[key];
+            },
+            getSettings() {
+                this.loading = true;
+                FluentFormsGlobal.$get({
+                    action: 'ff_get_quiz_module_settings',
+                    form_id: this.form.id,
                 })
-                .fail(error => {
+                    .then(response => {
+                        this.settings = response.data.settings;
+                        this.quizFields = response.data.quiz_fields;
+                        this.settingsFields = response.data.settings_fields;
+                    })
+                    .fail(error => {
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    });
+            },
+            saveSettings() {
+                this.saving = true;
+                FluentFormsGlobal.$post({
+                    action: 'ff_store_quiz_module_settings',
+                    form_id: this.form.id,
+                    settings: JSON.stringify(this.settings)
                 })
-                .always(() => {
-                    this.loading = false;
+                    .then(response => {
+                        this.$success(response.data.message);
+                    })
+                    .fail(error => {
+                        this.errors.record(e.responseJSON.errors);
+                    })
+                    .always(() => {
+                        this.saving = false;
+                    });
+            },
+            addItem(index) {
+                this.settings.grades.splice(index + 1, 0, {
+                    label: 'Grade',
+                    min: 70,
+                    max: 89
                 });
+            },
+            removeItem(index) {
+                this.settings.grades.splice(index, 1);
+            }
         },
-        saveSettings() {
-            this.saving = true;
-            FluentFormsGlobal.$post({
-                action: 'ff_store_quiz_module_settings',
-                form_id: this.form.id,
-                settings: JSON.stringify(this.settings)
-            })
-                .then(response => {
-                    this.$success(response.data.message);
-                })
-                .fail(error => {
-                    this.errors.record(e.responseJSON.errors);
-                })
-                .always(() => {
-                    this.saving = false;
-                });
-        },
-        addItem(index) {
-            this.settings.grades.splice(index + 1, 0, {
-                label: 'Grade',
-                min: 70,
-                max: 89
-            });
-        },
-        removeItem(index) {
-            this.settings.grades.splice(index, 1);
+        mounted() {
+            this.getSettings();
+            jQuery('head title').text('Quiz Settings - Fluent Forms');
         }
-    },
-    mounted() {
-        this.getSettings();
-        jQuery('head title').text('Quiz Settings - Fluent Forms');
     }
-}
 </script>

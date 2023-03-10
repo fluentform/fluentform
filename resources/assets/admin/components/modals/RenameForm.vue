@@ -1,22 +1,23 @@
 <template>
     <div :class="{'ff_backdrop': visible}">
         <el-dialog
-                :title="$t('Rename Form')"
-                :visible.sync="visible"
-                :before-close="close">
+            :title="$t('Rename Form')"
+            :visible.sync="visible"
+            :before-close="close"
+        >
 
-            <span slot="title" class="el-dialog__title">
+            <h5 slot="title" class="el-dialog__title">
                 {{ $t('Rename Form') }}
-            </span>
-            <el-form :model="{}" style="margin: -20px 0;" label-position="top" @submit.native.prevent="rename">
-                <el-form-item :label="$t('Your Form Title')">
+            </h5>
+            <el-form class="mt-4" :model="{}" label-position="top" @submit.native.prevent="rename">
+                <el-form-item class="ff-form-item" :label="$t('Your Form Title')">
                     <el-input class="renameForm" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
                 </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="close">{{ $t('Cancel') }}</el-button>
-                <el-button size="small" :loading="loading" type="primary" @click="rename">
+                <el-button @click="close" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+                <el-button :loading="loading" type="primary" @click="rename">
                     <span v-if="loading">{{ $t('Renaming Form...') }}</span>
                     <span v-else>{{ $t('Rename') }}</span>
                 </el-button>

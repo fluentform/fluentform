@@ -3,14 +3,14 @@
         <b>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
         </b>
-        <div style="margin-top:10px;" class="address-field-option" v-for="(field, i) in editItem.fields">
+        <div style="margin-top:10px;" class="address-field-option" v-for="(field, i) in editItem.fields" :key="i">
             <div class="field-options-settings">
                 <div class="action-btn pull-right">
                     <i @click="toggleAddressFieldInputs" class="icon el-icon-caret-bottom"></i>
                     <i @click="increase(i)" class="icon icon-plus-circle"></i>
                     <i @click="decrease(i)" class="icon icon-minus-circle"></i>
                 </div>
-                <b style="color: #409EFF;" @click="toggleAddressFieldInputs">{{ field.settings.label }}</b>
+                <b style="color: #1a7efb;" @click="toggleAddressFieldInputs">{{ field.settings.label }}</b>
             </div>
             <div class="address-field-option__settings">
                 <div class="el-form--label-left">

@@ -43,14 +43,14 @@ class WelcomeScreen extends BaseFieldManager
                 'color'              => 'rgb(255, 255, 255)',
                 'hover_styles'       => (object) [
                     'backgroundColor' => '#ffffff',
-                    'borderColor'     => '#409EFF',
-                    'color'           => '#409EFF',
+                    'borderColor'     => '#1a7efb',
+                    'color'           => '#1a7efb',
                     'borderRadius'    => '',
                     'minWidth'        => '',
                 ],
                 'normal_styles' => (object) [
-                    'backgroundColor' => '#409EFF',
-                    'borderColor'     => '#409EFF',
+                    'backgroundColor' => '#1a7efb',
+                    'borderColor'     => '#1a7efb',
                     'color'           => '#ffffff',
                     'borderRadius'    => '',
                     'minWidth'        => '',

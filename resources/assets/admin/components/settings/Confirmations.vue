@@ -1,127 +1,153 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <h2>{{ $t('Other Confirmations') }}</h2>
-            </el-col>
-
-            <!--Save settings-->
-            <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <video-doc btn_text="Learn" route_id="otherConfirmationSettings" style="margin-right: 5px" />
-                
-                <el-button v-if="selected" @click="discard"
-                           class="pull-right" icon="el-icon-arrow-left" size="small"
-                >{{ $t('Back') }}
-                </el-button>
-
-                <template v-else>
-                    <el-button v-if='has_pro' @click="add" type="primary"
-                           size="small" icon="el-icon-plus"
-                    >{{ $t('Add Confirmation') }}
-                    </el-button>
-
-                    <el-button v-else @click="comingSoonVisibility = true" type="primary"
-                           size="small" icon="el-icon-plus"
-                    >{{ $t('Add Confirmation') }}
-                    </el-button>
-                </template>
-            </el-col>
-        </el-row>
-
-        <!-- Confirmation Items Table -->
-        <el-table v-loading="confLoading" v-if="! selected" :data="confirmations" stripe class="el-fluid">
-            <el-table-column width="100">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                               v-model="scope.row.active"
-                    ></el-switch>
-                </template>
-            </el-table-column>
-
-            <el-table-column prop="name" label="Name" width="200" class-name="content-ellipsis"></el-table-column>
-
-            <el-table-column :label="$t('Content')" class-name="content-ellipsis">
-                <template slot-scope="scope">
-                    <template v-if="scope.row.redirectTo === 'samePage'">
-                        <span v-html="scope.row.messageToShow"></span>
-                    </template>
-
-                    <template v-else-if="scope.row.redirectTo === 'customUrl'">
-                        <span v-html="scope.row.customUrl"></span>
-                    </template>
-
-                    <template v-else>
-                        <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
-                    </template>
-                </template>
-            </el-table-column>
-
-            <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-tooltip class="item" effect="light" :content="$t('Duplicate notification settings')" placement="top">
-                        <el-button @click="clone(scope.$index)" type="success"
-                                   icon="el-icon-plus" size="mini"
-                        ></el-button>
-                    </el-tooltip>
-
-                    <el-button @click="edit(scope.$index)" type="primary"
-                               icon="el-icon-setting" size="mini"
-                    ></el-button>
-
-                    <remove @on-confirm="remove(scope.$index, scope.row.id)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
-        
+    <div class="ff_other_confirmation">
         <!-- Confirmation Item Editor -->
-        <el-form v-if="selected" label-width="205px" label-position="left">
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Confirmation Name') }}
+        <el-form label-position="top">
+            <card>
+                <card-head>
+                    <card-head-group class="justify-between">
+                        <h5 class="title">{{ $t('Other Confirmations') }}</h5>
+                        <btn-group>
+                            <btn-group-item>
+                                <el-button class="el-button--soft" v-if="selected" type="info" size="medium" @click="discard" icon="ff-icon ff-icon-arrow-left">
+                                    {{ $t('Back') }}
+                                </el-button>
+                                <template v-else>
+                                    <el-button v-if='has_pro' @click="add" type="dark" size="medium" icon="ff-icon ff-icon-plus">
+                                        {{ $t('Add Confirmation') }}
+                                    </el-button>
+                                    <el-button v-else @click="comingSoonVisibility = true" type="dark" size="medium" icon="ff-icon ff-icon-plus">
+                                        {{ $t('Add Confirmation') }}
+                                    </el-button>
+                                </template>
+                            </btn-group-item>
+                            <btn-group-item>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
+                            </btn-group-item>
+                        </btn-group>
+                    </card-head-group>
+                </card-head>
+                <card-body>
+                    <!-- Confirmation Items Table -->
+                    <div class="ff-table-container" v-if="!selected">
+                        <el-table v-loading="confLoading" :data="confirmations">
+                            <el-table-column width="180" :label="$t('Status')">
+                                <template slot-scope="scope">
+                                    <span class="mr-3" v-if="scope.row.active">{{$t('Enabled')}}</span>
+                                    <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                    <el-switch
+                                        :width="40"
+                                        active-color="#00b27f" 
+                                        @change="handleActive(scope.$index)" 
+                                        v-model="scope.row.active"
+                                    ></el-switch>
+                                </template>
+                            </el-table-column>
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Confirmation Name') }}</h3>
+                            <el-table-column prop="name" label="Name" width="180" class-name="content-ellipsis"></el-table-column>
 
-                            <p>{{ $t('The name to identify each confirmation.') }}</p>
-                        </div>
+                            <el-table-column :label="$t('Content')" class-name="content-ellipsis">
+                                <template slot-scope="scope">
+                                    <template v-if="scope.row.redirectTo === 'samePage'">
+                                        <span v-html="scope.row.messageToShow"></span>
+                                    </template>
 
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
+                                    <template v-else-if="scope.row.redirectTo === 'customUrl'">
+                                        <span v-html="scope.row.customUrl"></span>
+                                    </template>
 
-                <el-input v-model="selected.name"></el-input>
-            </el-form-item>
+                                    <template v-else>
+                                        <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
+                                    </template>
+                                </template>
+                            </el-table-column>
 
-            <add-confirmation 
-                :errors="errors"
-                :pages="pages"
-                :editorShortcodes="editorShortcodes"
-                :confirmation="selected">
-            </add-confirmation>
+                            <el-table-column width="120" :label="$t('Actions')" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <ul class="ff_btn_group sm">
+                                        <li>
+                                            <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
+                                                <el-button 
+                                                    class="el-button--icon"
+                                                    @click="clone(scope.$index)" 
+                                                    type="success"
+                                                    icon="el-icon-plus" 
+                                                    size="mini"
+                                                ></el-button>
+                                            </el-tooltip>
+                                        </li>
+                                        <li>
+                                            <el-button 
+                                                class="el-button--icon"
+                                                @click="edit(scope.$index)" 
+                                                type="primary"
+                                                icon="el-icon-setting" 
+                                                size="mini"
+                                            ></el-button>
+                                        </li>
+                                        <li>
+                                            <remove @on-confirm="remove(scope.$index, scope.row.id)">
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </li>
+                                    </ul>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div><!-- .ff-table-container -->
+                    
+                    <template v-if="selected">
+                        <el-form-item class="ff-form-item">
+                            <template slot="label">
+                                {{ $t('Confirmation Name') }}
 
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Conditional Logic') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>{{ $t('The name to identify each confirmation.') }}</p>
+                                    </div>
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Conditional Logic') }}</h3>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
 
-                            <p>
-                                {{ $t('Enable this feed conditionally') }}
-                            </p>
-                        </div>
+                            <el-input v-model="selected.name"></el-input>
+                        </el-form-item>
 
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
+                        <add-confirmation 
+                            class="mb-4"
+                            :errors="errors"
+                            :pages="pages"
+                            :editorShortcodes="editorShortcodes"
+                            :confirmation="selected">
+                        </add-confirmation>
 
-                <FilterFields :fields="inputs" :conditionals="selected.conditionals" :disabled="!has_pro"></FilterFields>
-            </el-form-item>
+                        <el-form-item class="ff-form-item">
+                            <template slot="label">
+                                {{ $t('Conditional Logic') }}
 
-            <div class="text-right">
-                <el-button @click="store" size="small" type="primary" icon="el-icon-success">Save Notification</el-button>
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t('Enable this feed conditionally') }}
+                                        </p>
+                                    </div>
+
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
+
+                            <FilterFields :fields="inputs" :conditionals="selected.conditionals" :hasPro="has_pro"></FilterFields>
+                        </el-form-item>
+                    </template>
+                </card-body>
+            </card>
+
+            <div v-if="selected">
+                <el-button @click="store" type="primary" icon="el-icon-success">{{$t('Save Notification')}}</el-button>
             </div>
         </el-form>
 
@@ -133,11 +159,16 @@
     import Remove from '../confirmRemove.vue'
     import InputPopover from '../input-popover.vue'
     import FilterFields from './Includes/FilterFields'
-    import ErrorView from '../../../common/errorView'
+    import ErrorView from '@/common/errorView'
     import AddConfirmation from './Includes/AddConfirmation.vue'
     import ComingSoon from '../modals/ItemDisabled.vue'
     import VideoDoc from '@/common/VideoInstruction.vue';
-
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue'
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue'
 
     export default {
         name: 'Confirmations',
@@ -161,7 +192,13 @@
             ErrorView,
             AddConfirmation,
             ComingSoon,
-            VideoDoc
+            VideoDoc,
+            Card,
+            CardHead,
+            CardHeadGroup,
+            CardBody,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {

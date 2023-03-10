@@ -1,16 +1,22 @@
 <template>
     <div class="ff_report_card">
         <div class="report_header">
-            {{report.label}}
-            <div class="ff_chart_switcher">
-                <span @click="chartType = 'pie-chart'" :class="(chartType == 'pie-chart') ? 'active_chart' : ''"
+            <div class="title">{{report.label}}</div>
+            <btn-group as="div" class="ff_chart_switcher" size="sm">
+                <btn-group-item as="div">
+                    <span @click="chartType = 'pie-chart'" :class="(chartType == 'pie-chart') ? 'active_chart' : ''"
                       class="dashicons dashicons-chart-pie"></span>
-                <span @click="chartType = 'bar-chart'" :class="(chartType == 'bar-chart') ? 'active_chart' : ''"
+                </btn-group-item>
+                <btn-group-item as="div">
+                       <span @click="chartType = 'bar-chart'" :class="(chartType == 'bar-chart') ? 'active_chart' : ''"
                       class="dashicons dashicons-chart-bar"></span>
-                <span @click="chartType = 'horizontal-bar'"
+                </btn-group-item>
+                <btn-group-item as="div">
+                     <span @click="chartType = 'horizontal-bar'"
                       :class="(chartType == 'horizontal-bar') ? 'active_chart' : ''"
                       class="dashicons ff_rotate_90 dashicons-chart-bar"></span>
-            </div>
+                </btn-group-item>
+            </btn-group>
         </div>
         <div class="report_body">
             <div class="ff_chart_view">
@@ -48,13 +54,17 @@
     import chroma from 'chroma-js'
     import each from 'lodash/each';
     import truncate from 'lodash/truncate';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 
     export default {
         name: 'report_card',
         components: {
             PieChart,
             BarChart,
-            HorizontalBar
+            HorizontalBar,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {
@@ -150,7 +160,7 @@
             getColors(times, type) {
 
                 let colorScheams = [
-                    ['#409eff', '#673AB7'],
+                    ['#1a7efb', '#673AB7'],
                     ['#a32f80', '#ff5858'],
                     ['#595F36', '#C7D482'],
                     ['#B6583B', '#EDAE9B'],

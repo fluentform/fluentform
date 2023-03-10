@@ -1,53 +1,77 @@
 <template>
-<div>
-    <div class="entry_info_box entry_submission_activity">
-        <div class="entry_info_header">
-            <div class="info_box_header">
-                {{$t('Submission Notes')}}
-            </div>
-            <div class="info_box_header_actions">
-                <el-button @click="add_note_box = !add_note_box" size="mini" type="primary" icon="el-icon-plus">
-                    {{ $t('Add Note') }}
-                </el-button>
-            </div>
-        </div>
-        <div v-loading="loading" class="entry_info_body">
-            <div class="wpf_entry_details">
-                <div v-if="add_note_box" class="wpf_add_note_box">
-                    <el-input
-                        type="textarea"
-                        :autosize="{ minRows: 3}"
-                        :placeholder="$t('Please Provide Note Content')"
-                        v-model="new_note.content">
-                    </el-input>
-                    <el-button :loading="isAddingNote" @click="addNewNote()" size="mini" type="primary" plain>{{ $t('Submit Note') }}</el-button>
+    <card class="entry_info_box entry_submission_activity">
+        <card-head>
+            <card-head-group class="justify-between">
+                <div class="entry_info_box_title">
+                    {{$t('Submission Notes')}}
                 </div>
-                <template v-if="notes && notes.length">
-                    <div v-for="activity in showingNotes" :key="activity.id"
-                         class="wpf_each_entry">
-                        <div class="wpf_entry_label">
-                            {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
-                        </div>
-                        <div class="wpf_entry_value" v-html="activity.value"></div>
+                <div class="entry_info_box_actions">
+                    <el-button @click="add_note_box = !add_note_box" size="medium" type="primary" icon="el-icon-plus" class="el-button--soft">
+                        {{ $t('Add Note') }}
+                    </el-button>
+                </div>
+            </card-head-group>
+        </card-head>
+        <card-body>
+            <div v-loading="loading" class="entry_info_body">
+                <div class="wpf_entry_details">
+                    <div v-if="add_note_box" class="wpf_add_note_box">
+                        <el-input
+                            type="textarea"
+                            :autosize="{ minRows: 3}"
+                            :placeholder="$t('Please Provide Note Content')"
+                            v-model="new_note.content">
+                        </el-input>
+                        <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="dark">
+                            {{ $t('Submit Note') }}
+                        </el-button>
                     </div>
+                    <template v-if="notes && notes.length">
+                        <div 
+                            v-for="activity in showingNotes" 
+                            :key="activity.id"
+                            class="wpf_each_entry"
+                        >
+                            <div class="wpf_entry_label">
+                                {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
+                            </div>
+                            <div class="wpf_entry_value" v-html="activity.value"></div>
+                        </div>
 
-                    <el-button size="mini" v-if="notes.length > 5" type="info" @click="initial_limit =  !initial_limit"><span v-if="initial_limit">{{ $t('Load More') }}</span><span v-else>{{ $t('Show Less') }}</span></el-button>
+                        <el-button 
+                            class="mt-3 el-button--text-light"
+                            v-if="notes.length > 5" 
+                            type="text" 
+                            @click="initial_limit =  !initial_limit"
+                        >
+                            <span v-if="initial_limit">{{ $t('Show More') }} <i class="el-icon-arrow-down"></i></span>
+                            <span v-else>{{ $t('Show Less')}} <i class="el-icon-arrow-up"></i></span>
+                        </el-button>
 
-                </template>
-                <template v-else>
-                    <h3> {{$t('No Notes found')}}</h3>
-                </template>
+                    </template>
+                    <p v-else class="fs-17"> {{$t('Sorry, No Notes found!')}}</p>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-
+        </card-body>
+    </card>
 </template>
+
 <script type="text/babel">
     import chunk from 'lodash/chunk';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+
     export default {
         name: 'response_notes',
         props: ['entry_id', 'form_id'],
+        components: {
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup
+        },
         data() {
             return {
                 doingAjax: false,

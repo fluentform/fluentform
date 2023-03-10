@@ -1,58 +1,49 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="18">
-                <h2>{{ $t('Global PDF Settings') }}</h2>
-                <p>{{
-                        $t('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed')
-                    }}</p>
-            </el-col>
-            <el-col class="action-buttons clearfix mb15 text-right" :md="6">
-                <el-button
-                        class="pull-right"
-                        size="small"
-                        type="primary"
-                        icon="el-icon-success"
-                        @click="save"
-                >{{ $t('Save Settings') }}
-                </el-button>
-            </el-col>
-        </el-row>
-        <div v-loading="loading" class="section-body">
-            <el-form label-position="left" label-width="205px">
-                <field-mapper
+    <div class="ff_pdf_wrap">
+        <card>
+            <card-head>
+                <h5 class="title">{{ $t('Global PDF Settings') }}</h5>
+                <p class="text">{{$t('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed')}}</p>
+            </card-head>
+            <card-body v-loading="loading">
+                <el-form class="ff_pdf_form_wrap" label-position="top">
+                    <field-mapper
                         v-for="field in fields"
                         :key="field.key"
                         :field="field"
                         :errors="errors"
                         v-model="settings[field.key]"
-                />
-            </el-form>
-            <!--Save settings-->
-            <el-row>
-                <el-col class="action-buttons clearfix mb15">
-                    <el-button
-                            size="small"
-                            class="pull-right"
-                            type="primary"
-                            icon="el-icon-success"
-                            @click="save"
-                    >{{ $t('Save Settings') }}
-                    </el-button>
-                </el-col>
-            </el-row>
+                    />
+                </el-form>
+            </card-body>
+        </card>
+        <div>
+            <el-button
+                type="primary"
+                icon="el-icon-success"
+                @click="save"
+            >
+                {{ $t('Save Settings') }}
+            </el-button>
         </div>
     </div>
 </template>
 
 <script type="text/babel">
-    import FieldMapper from "./../components/settings/GeneralIntegration/FieldMapper";
-    import Errors from '../../common/Errors';
+    import FieldMapper from "@/admin/components/settings/GeneralIntegration/FieldMapper";
+    import Errors from '@/common/Errors';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+
     export default {
         name: "fluentorm_pdf",
         props: ["app"],
         components: {
-            FieldMapper
+            FieldMapper,
+            Card, 
+            CardHead, 
+            CardBody 
         },
         data() {
             return {

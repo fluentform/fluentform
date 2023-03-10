@@ -16,7 +16,8 @@ import {
     Notification,
     Tabs,
     TabPane,
-    Loading
+    Loading,
+    Tag
 } from 'element-ui';
 
 Vue.use(Button);
@@ -33,6 +34,7 @@ Vue.use(Pagination);
 Vue.use(Popover);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Tag);
 
 
 Vue.prototype.$notify = Notification;
@@ -88,7 +90,7 @@ new Vue({
         }
     },
     created() {
-        let currentRoute = location.hash.substr(1);
+        let currentRoute = location.hash.substring(1);
 
         if (currentRoute) {
             this.setRoute(currentRoute);

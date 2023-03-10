@@ -39,6 +39,7 @@ class AddOnModule
         }
 
         wpFluentForm('view')->render('admin.addons.index', [
+            'hasPro'            => defined('FLUENTFORMPRO'),
             'menus'             => $extraMenus,
             'base_url'          => admin_url('admin.php?page=fluent_forms_add_ons'),
             'current_menu_item' => $current_menu_item,

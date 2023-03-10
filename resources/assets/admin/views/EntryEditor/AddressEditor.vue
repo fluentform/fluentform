@@ -1,6 +1,6 @@
 <template>
     <div class="addresss_editor">
-        <div v-for="(eachField,fieldKey) in field.raw.fields" class="each_address_field">
+        <div v-for="(eachField, fieldKey) in field.raw.fields" class="each_address_field" :key="fieldKey">
             <label>{{getLaebel(eachField)}}</label>
             <el-input type="text" size="mini" v-model="value[fieldKey]"></el-input>
         </div>

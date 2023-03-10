@@ -21,8 +21,8 @@
                 </td>
                 <td>
                     <el-button-group>
-                        <el-button size="mini" type="success" @click="addItemAfter(itemIndex)">+</el-button>
-                        <el-button size="mini" type="danger" :disabled="settings[field.key].length == 1" @click="removeItem(itemIndex)">-</el-button>
+                        <el-button size="small" class="el-button--icon" type="success" @click="addItemAfter(itemIndex)">+</el-button>
+                        <el-button size="small" class="el-button--icon" type="danger" :disabled="settings[field.key].length == 1" @click="removeItem(itemIndex)">-</el-button>
                     </el-button-group>
                 </td>
             </tr>

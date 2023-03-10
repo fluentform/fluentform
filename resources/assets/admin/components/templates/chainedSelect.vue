@@ -1,7 +1,7 @@
 <template>
     <div class="chained-Select-template">
         <withLabel :item="item">
-            <select v-for="header in headers" class="header">
+            <select v-for="(header, i) in headers" class="header" :key="i">
                 <option>{{ header }}</option>
             </select>
         </withLabel>

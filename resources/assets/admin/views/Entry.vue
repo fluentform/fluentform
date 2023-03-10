@@ -1,87 +1,113 @@
 <template>
     <div class="fluentform-wrapper">
-        <div class="entry_header">
-            <router-link class="pull-right" :to="{ name: 'form-entries' }">
-                <el-button icon="el-icon-back" size="small">{{$t('Back to Entries')}}</el-button>
-            </router-link>
-
-            <el-button class="pull-right" size="small" @click="changeEntry('+')" :disabled="!nextId">
-                {{$t('Next')}} <i class="el-icon-arrow-right"/>
-            </el-button>
-            <el-button class="pull-right" size="small" @click="changeEntry('-')" :disabled="!prevId">
-                <i class="el-icon-arrow-left"/> {{$t('Previous')}}
-            </el-button>
-
-            <h3>{{$t('Entry Details')}} #{{entry.serial_number}}</h3>
-        </div>
+        <div class="ff_section_heading mb-4">
+            <el-row>
+                <el-col :span="12">
+                    <h3>{{$t('Entry Details')}} #{{entry.serial_number}}</h3>
+                </el-col>
+                <el-col :span="12" class="text-right">
+                    <btn-group>
+                        <btn-group-item>
+                            <el-button size="medium" @click="changeEntry('-')" :disabled="!prevId">
+                                <i class="ff-icon ff-icon-arrow-left"/> <span>{{$t('Previous')}}</span>
+                            </el-button>
+                        </btn-group-item>
+                        <btn-group-item>
+                            <el-button size="medium" @click="changeEntry('+')" :disabled="!nextId">
+                                <span>{{$t('Next')}} </span> <i class="ff-icon ff-icon-arrow-right"/>
+                            </el-button>
+                        </btn-group-item>
+                        <btn-group-item>
+                            <router-link :to="{ name: 'form-entries' }">
+                                <span class="el-button el-button--default el-button--medium">
+                                    <i class="ff-icon ff-icon-eye fs-15"></i>
+                                    <span>{{$t('View All')}}</span>
+                                </span>
+                            </router-link>
+                        </btn-group-item>
+                    </btn-group>
+                </el-col>
+            </el-row>
+        </div><!-- .ff_section_heading -->
 
         <el-row v-loading="loading" :gutter="20" style="min-height: 260px;">
-            <el-col :xs="24" :sm="18" :md="18" :lg="18">
-                <div class="entry_info_box entry_input_data">
-                    <div class="entry_info_header">
-                        <div class="info_box_header">
-                            <span @click="view_as_json = !view_as_json"
-                                  class="dashicons dashicons-editor-code json_action"></span>
-                            {{$t('Form Entry Data')}}
-                        </div>
-                        <div class="info_box_header_actions">
-                            <span @click="changeFavorite()"
-                                  :title="$t('Remove from Favorites')" v-if="entry.is_favourite != '0' || entry.is_favourite == '1'"
-                                  class="el-icon-star-on star_big action_button"></span>
-                            <span @click="changeFavorite()"
-                                  :title="$t('Mark as Favorite')" v-else
-                                  class="el-icon-star-off star_big action_button"></span>
+            <el-col :xs="24" :sm="18" :md="18" :lg="16">
+                <card class="entry_info_box entry_input_data">
+                    <card-head>
+                        <card-head-group class="justify-between">
+                            <div class="entry_info_box_title">
+                                <span title="json code" @click="view_as_json = !view_as_json" class="dashicons dashicons-editor-code json_action"></span>
+                                {{$t('Form Entry Data')}}
+                            </div>
+                            <div class="entry_info_box_actions">
+                                <span 
+                                    @click="changeFavorite()"
+                                    :title="$t('Remove from Favorites')" 
+                                    v-if="entry.is_favourite != '0' || entry.is_favourite == '1'"
+                                    class="el-icon-star-on star_big action_button text-warning"></span>
+                                <span 
+                                    @click="changeFavorite()"
+                                    :title="$t('Mark as Favorite')" 
+                                    v-else
+                                    class="el-icon-star-off star_big action_button text-warning"></span>
 
-                            <el-checkbox true-label="yes" false-label="no" v-model="show_empty">{{$t('Show empty fields')}}</el-checkbox>
-                        </div>
-                    </div>
-                    <div v-if="entry.serial_number" class="entry_info_body">
-                        <div v-show="!view_as_json" class="wpf_entry_details">
-                            <div v-for="(label, label_index) in labels"
-                                 :key="label_index"
-                                 v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
-                                 class="wpf_each_entry">
+                                <el-checkbox true-label="yes" false-label="no" v-model="show_empty">{{$t('Show empty fields')}}</el-checkbox>
+                            </div>
+                        </card-head-group>
+                    </card-head>
+                    <card-body>
+                        <div v-if="entry.serial_number">
+                            <div v-show="!view_as_json" class="wpf_entry_details">
+                                <div 
+                                    v-for="(label, label_index) in labels"
+                                    :key="label_index"
+                                    v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
+                                    class="wpf_each_entry"
+                                >
 
-                                <div class="wpf_entry_label">
-                                    {{label}}
-                                </div>
-
-                                <template v-if="formFields[label_index]['element'] == 'input_email'">
-                                    <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
-                                        <a :href="'mailto:'+entry.user_inputs[label_index]">{{
-                                            entry.user_inputs[label_index] }}</a>
+                                    <div class="wpf_entry_label">
+                                        {{label}}
                                     </div>
-                                </template>
-                                <template v-else-if="formFields[label_index]['element'] == 'input_file'">
-                                    <entry-file-list :itemKey="label_index" :dataItems="original_data"></entry-file-list>
-                                </template>
-                                <template
-                                    v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) != -1">
-                                    <entry-image-list :itemKey="label_index" :dataItems="original_data"></entry-image-list>
-                                </template>
-                                <template
-                                    v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
-                                </template>
-                                <template v-else>
-                                    <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
-                                </template>
+
+                                    <template v-if="formFields[label_index]['element'] == 'input_email'">
+                                        <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
+                                            <a :href="'mailto:'+entry.user_inputs[label_index]">{{
+                                                entry.user_inputs[label_index] }}</a>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="formFields[label_index]['element'] == 'input_file'">
+                                        <entry-file-list :itemKey="label_index" :dataItems="original_data"></entry-file-list>
+                                    </template>
+                                    <template
+                                        v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) != -1">
+                                        <entry-image-list :itemKey="label_index" :dataItems="original_data"></entry-image-list>
+                                    </template>
+                                    <template
+                                        v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
+                                        <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                    </template>
+                                    <template v-else>
+                                        <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
+                                    </template>
+                                </div>
+                            </div>
+                            <div v-show="view_as_json">
+                                <textarea class="show_code" readonly :value="prettifyJson(entry)"></textarea>
                             </div>
                         </div>
-                        <div v-show="view_as_json">
-                            <textarea class="show_code" readonly>{{ prettifyJson(entry) }}</textarea>
-                        </div>
-                    </div>
-                </div>
+                    </card-body>
+                </card>
     
-                <div v-for="(card, cardKey) in extraCards" class="entry_info_box">
-                    <div class="entry_info_header">
-                        <b>{{card.title}}</b>
-                    </div>
-                    <div class="entry_info_body narrow_items">
-                        <div v-html="card.content"></div>
-                    </div>
-                </div>
+                <card v-for="(card, cardKey) in extraCards" class="entry_info_box" :key="cardKey">
+                    <card-head>
+                        <h6>{{card.title}}</h6>
+                    </card-head>
+                    <card-body>
+                        <div class="narrow_items">
+                            <div v-html="card.content"></div>
+                        </div>
+                    </card-body>
+                </card>
     
     
                 <payment-summary 
@@ -95,112 +121,153 @@
                     <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 
                     <submission_logs  :entry_id="entry_id" />
-
-                    <email-resend :form_id="form_id" :entry_id="entry_id" />
-
-                    <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
+                    <btn-group as="div">
+                        <btn-group-item as="div">
+                            <email-resend :form_id="form_id" :entry_id="entry_id" />
+                        </btn-group-item>
+                        <btn-group-item as="div">
+                            <manual-entry-actions :form_id="form_id" :entry_id="entry_id" />
+                        </btn-group-item>
+                    </btn-group>
                 </template>
             </el-col>
-            <el-col :xs="24" :sm="6" :md="6" :lg="6">
-                <div class="entry_info_box postbox">
-                    <div class="entry_info_header">
-                        <b>{{$t('Submission Info')}}</b>
-                    </div>
-                    <div class="entry_info_body narrow_items">
-                        <div class="wpf_entry_details">
-                            <div class="wpf_each_entry">
-                                <p>{{$t('Entity ID')}}: #{{entry.id}}</p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>{{$t('User IP')}} : <a target="_blank" rel="noopener" :href="'https://ipinfo.io/'+entry.ip">{{
-                                    entry.ip }}</a></p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p style="word-break: break-all;">{{$t('Source URL')}} : <a target="_blank" :href="entry.source_url">{{ entry.source_url }}</a>
-                                </p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>{{$t('Browser')}} : {{ entry.browser }}</p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>{{$t('Device')}} : {{ entry.device }}</p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>
-                                    <span v-if="entry.user">
-                                        {{$t('User')}} : <a target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
-                                    </span>
-                                    <span v-else>{{$t('User')}} : {{$t('Guest')}}</span>
 
-                                    <user-change 
-                                        v-if="hasPermission('fluentform_manage_entries')" 
-                                        :submission="entry"
-                                        :entry_id="entry_id"
-                                    />
-                                </p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>{{$t('Status')}} : {{ entry_statuses[entry.status] || entry.status }}</p>
-                            </div>
-                            <div class="wpf_each_entry">
-                                <p>{{$t('Submitted On')}} : {{ entry.created_at }}</p>
-                            </div>
+            <el-col :xs="24" :sm="6" :md="6" :lg="8">
+                <card class="entry_info_box">
+                    <card-head>
+                        <div class="entry_info_box_title">
+                            {{$t('Submission Info')}}
                         </div>
-                    </div>
+                    </card-head>
+                    <card-body>
+                        <ul class="ff_submission_info_list ff_list_border_bottom">
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('Entity ID')}}:</div>
+                                <div class="lead-text fs-14" style="display: inline-block;">#{{ entry.id }}</div>
+                            </li>
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 80px;"> {{$t('User IP')}}:</div>
+                                <a class="lead-text fs-14" style="display: inline-block;" target="_blank" rel="noopener" :href="'https://ipinfo.io/' + entry.ip">
+                                    {{ entry.ip }}
+                                </a>
+                            </li>
+                            <li>
+                                <div class="lead-title mb-1" style="display: inline-block; width: 100px;">{{$t('Source URL')}}:</div>
+                                <a class="lead-text fs-14 text-primary" style="display: inline-block;"  target="_blank" :href="entry.source_url">
+                                    {{ entry.source_url }}
+                                </a>
+                            </li>
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('Browser')}}:</div>
+                                <div class="lead-text fs-14" style="display: inline-block;">{{ entry.browser }}</div>
+                            </li>
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('Device')}}:</div>
+                                <div class="lead-text fs-14" style="display: inline-block;"> {{ entry.device }}</div>
+                            </li>
+                            <li>
+                                <template  v-if="entry.user">
+                                    <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('User')}}:</div>
+                                    <a class="lead-text fs-14 text-primary" style="display: inline-block;" target="_blank" rel="noopener" :href="entry.user.permalink">{{ entry.user.name }}</a>
+                                </template>
 
-                    <div 
-                        class="entry-footer" 
-                        v-if="hasPermission('fluentform_manage_entries')"
-                    >
-                        <el-button @click="editTable = true" size="mini" type="primary" icon="el-icon-edit"> {{$t('Edit')}}
-                        </el-button>
+                                <template v-else>
+                                    <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('User')}}:</div>
+                                    <div class="lead-text fs-14" style="display: inline-block;">{{$t('Guest')}}</div>
+                                </template>
 
-                        <el-dropdown @command="handleStatusChange" type="info">
-                            <el-button size="mini" type="info">
-                                {{$t('Change status to')}} <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="(statusName, statusKey) in entry_statuses" :command="statusKey" :key="statusKey">{{statusName}}</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </div>
-                </div>
-                <div v-for="(widget, widgetKey) in widgets" class="entry_info_box postbox">
-                    <div class="entry_info_header">
-                        <b>{{widget.title}}</b>
-                    </div>
-                    <div class="entry_info_body narrow_items">
+                                <user-change v-if="hasPermission('fluentform_manage_entries')" :submission="entry" />
+                            </li>
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 80px;">{{$t('Status')}}:</div>
+                                <div class="lead-text fs-14" style="display: inline-block;">{{ entry_statuses[entry.status] || entry.status }}</div>
+                            </li>
+                            <li>
+                                <div class="lead-title" style="display: inline-block; width: 120px;">{{$t('Submitted On')}}:</div>
+                                <div class="lead-text fs-14" style="display: inline-block;"> {{ entry.created_at }}</div>
+                            </li>
+                        </ul>
+
+                        <btn-group class="entry-footer" v-if="hasPermission('fluentform_manage_entries')">
+                            <btn-group-item>
+                                <el-button @click="editTable = true" size="small" type="primary" icon="el-icon-edit"> 
+                                    {{$t('Edit')}}
+                                </el-button>
+                            </btn-group-item>
+                            <btn-group-item>
+                                <el-dropdown trigger="click" @command="handleStatusChange">
+                                    <el-button size="small" type="primary" class="el-button--soft">
+                                        {{$t('Change status to')}} <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item 
+                                            v-for="(statusName, statusKey) in entry_statuses" 
+                                            :command="statusKey" 
+                                            :key="statusKey"
+                                        >
+                                            {{statusName}}
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </btn-group-item>
+                        </btn-group>
+                    </card-body>
+                </card>
+
+                <card v-for="(widget, widgetKey) in widgets" class="entry_info_box" :key="widgetKey">
+                    <card-head>
+                        <div class="entry_info_box_title">
+                            {{widget.title}}
+                        </div>
+                    </card-head>
+                    <card-body>
                         <div v-html="widget.content"></div>
-                    </div>
-                </div>
+                    </card-body>
+                </card>
             </el-col>
         </el-row>
 
         <el-dialog
-            :title="$t('Edit Entry Data')"
             top="42px"
             :append-to-body="true"
             :visible.sync="editTable"
-            width="60%">
-            <edit-entry @reloadData="getEntry()" :form_id="form_id" :entry_id="entry_id" @close="editTable = false"
-                        v-if="editTable" :labels="labels" :submission="entry"
-                        :fields="formFields"></edit-entry>
+            width="60%"
+        >
+            <template slot="title">
+                <h4>{{$t('Edit Entry Data')}}</h4>
+            </template>
+            <edit-entry 
+                @reloadData="getEntry()" 
+                :form_id="form_id" 
+                :entry_id="entry_id" 
+                @close="editTable = false"
+                v-if="editTable" 
+                :labels="labels" 
+                :submission="entry"
+                :fields="formFields"
+            ></edit-entry>
         </el-dialog>
     </div>
 </template>
 
 <script type="text/babel">
-    import remove from '../components/confirmRemove'
-    import entry_notes from './EntryNotes'
-    import submission_logs from './SubmissionLogs'
-    import editEntry from './EditEntry'
+    import remove from '../components/confirmRemove';
+    import entry_notes from './EntryNotes';
+    import submission_logs from './SubmissionLogs';
+    import editEntry from './EditEntry';
     import each from 'lodash/each';
     import EntryFileList from './Helpers/FilesList.vue';
     import EntryImageList from './Helpers/ImageList.vue';
-    import EmailResend from './Helpers/_ResentEmailNotification'
-    import ManualEntryActions from './Helpers/_ManualEntryActions'
-    import PaymentSummary from './Payments/PaymentSummary'
-    import UserChange from './_UserChange'
+    import EmailResend from './Helpers/_ResentEmailNotification';
+    import ManualEntryActions from './Helpers/_ManualEntryActions';
+    import PaymentSummary from './Payments/PaymentSummary';
+    import UserChange from './_UserChange';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
 
     export default {
         name: 'Entry',
@@ -215,7 +282,13 @@
             EmailResend,
             PaymentSummary,
             ManualEntryActions,
-            UserChange
+            UserChange,
+            BtnGroup,
+            BtnGroupItem,
+            Card,
+            CardHead,
+            CardHeadGroup,
+            CardBody
         },
         data() {
             return {
@@ -420,6 +493,9 @@
         },
         mounted() {
             this.getEntry();
+            (new ClipboardJS('.copy')).on('success', (e) => {
+                this.$copy();
+            });
         }
     };
 </script>

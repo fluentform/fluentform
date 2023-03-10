@@ -3,15 +3,18 @@
         <table v-if="appReady" class="editor_table">
             <thead>
             <tr>
-                <th v-for="fieldItem in field.raw.fields">{{fieldItem.settings.label}}</th>
+                <th v-for="(fieldItem, fieldKey) in field.raw.fields" :key="fieldKey">{{fieldItem.settings.label}}</th>
                 <th>{{ $t('Action') }}</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(rowValue,rowIndex) in formFields">
-                <td v-for="(fieldItem,fieldIndex) in field.raw.fields">
-                    <el-input v-model="model[fieldIndex][rowIndex]" size="mini"
-                              :placeholder="fieldItem.settings.label" :type="fieldItem.attributes.type"/>
+            <tr v-for="(rowValue, rowIndex) in formFields" :key="rowIndex">
+                <td v-for="(fieldItem, fieldIndex) in field.raw.fields" :key="fieldIndex">
+                    <el-input 
+                        v-model="model[fieldIndex][rowIndex]" 
+                        size="mini"
+                        :placeholder="fieldItem.settings.label" 
+                        :type="fieldItem.attributes.type"/>
                 </td>
                 <td>
                     <el-button @click="removeRow(rowIndex)" size="mini" icon="el-icon-minus"></el-button>

@@ -21,17 +21,19 @@
                         v-model="condition.field"
                         @change="condition.value = ''"
                         :placeholder="$t('Select')"
-                        class="condition-field"
+                        class="condition-field ff-select ff-select-small"
                 >
-                    <option value="" disabled>- Select -</option>
-                    <option v-for="(dep, meta, i) in dependencies"
+                    <option value="" disabled>Select</option>
+                    <template v-for="(dep, meta, i) in dependencies">
+                        <option 
                             v-if="meta != editItem.attributes.name"
                             :key="i"
                             :value="meta">{{ dep.field_label || meta }}
-                    </option>
+                        </option>
+                    </template>
                 </select>
-                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator">
-                    <option value="" disabled>- {{ $t('Select') }} -</option>
+                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator ff-select ff-select-small">
+                    <option value="" disabled>{{ $t('Select') }}</option>
                     <option value="=">{{ $t('equal') }}</option>
                     <option value="!=">{{ $t('not equal') }}</option>
 
@@ -57,8 +59,8 @@
                             v-model="condition.value"
                     >
                     <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
-                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value">
-                        <option value="" selected >- {{ $t('Select') }} -</option>
+                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value ff-select ff-select-small">
+                        <option value="" selected >{{ $t('Select') }}</option>
                         <option v-for="(option, i) in dependencies[condition.field].options"
                                 :key="i"
                                 :value="option.value">{{ option.label }}
@@ -67,14 +69,14 @@
                 </template>
 
                 <!-- JUST A PLACEHOLDER -->
-                <select v-else class="condition-value">
-                    <option value="" disabled selected>- {{ $t('Select') }} -</option>
+                <select v-else class="condition-value ff-select ff-select-small">
+                    <option value="" disabled selected>{{ $t('Select') }}</option>
                 </select>
 
-                <div class="action-btn">
+                <div class="action-btn ml-1">
                     <i @click.prevent="conditional_logics.conditions.pushAfter(i, emptyRules)"
-                       class="icon icon-plus-circle"></i>
-                    <i @click.prevent="decreaseLogic(i)" class="icon icon-minus-circle"></i>
+                       class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
+                    <i @click.prevent="decreaseLogic(i)" class="ff_icon_btn mini dark el-icon-minus"></i>
                 </div>
             </div>
         </template>

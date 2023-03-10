@@ -1,17 +1,17 @@
 .subscription-field-options {
     display: block;
     width: 100%;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
+    background-color: $white;
+    border-radius: 6px;
     margin-bottom: 20px;
 
     .plan_header {
         padding: 10px 15px;
-        border-bottom: 1px solid #dcdfe6;
-        font-weight: bold;
+        border-bottom: 1px solid $border-color;
+        font-weight: 600;
         display: block;
         overflow: hidden;
-
+        color: $base-color;
         .plan_label {
             float: left;
         }
@@ -24,12 +24,12 @@
     .plan_body {
         overflow: hidden;
         padding: 15px;
-        background: white;
     }
 
     .plan_footer {
-        border-top: 1px solid #dcdfe6;
-        padding: 10px 15px;
+        border-top: 1px solid $border-color;
+        padding: 10px 40px;
+        text-align: center;
     }
 
     .plan_settings {
@@ -40,6 +40,13 @@
     }
 }
 
+.el-input + .plan_msg{
+    margin-top: 5px;
+}
 .plan_msg {
     margin-top: 5px;
+}
+
+.ff_payment_item_wrapper{
+    margin-bottom: 24px;
 }

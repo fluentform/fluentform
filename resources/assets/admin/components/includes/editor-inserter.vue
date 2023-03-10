@@ -6,16 +6,18 @@
         @click.stop
         id="js-editor-inserter--popup">
 
-        <div style="margin: -1px;">
-            <label for="editor-inserter__search" class="sr-only">{{ $t('Search for a block') }}</label>
-            <input
-                autocomplete="off"
-                type="text"
-                ref="editor-inserter__search"
-                v-model="inserterSearchStr"
-                :placeholder="$t('Search for a block')"
-                class="editor-inserter__search"
-                id="editor-inserter__search" />
+        <div style="padding: 20px;">
+            <div class="ff-input-wrap">
+                <span class="el-icon el-icon-search"></span>
+                <input
+                    autocomplete="off"
+                    type="text"
+                    ref="editor-inserter__search"
+                    v-model="inserterSearchStr"
+                    :placeholder="$t('Search for a block')"
+                    class="editor-inserter__search"
+                    id="editor-inserter__search" />
+            </div>
         </div>
         
         <template v-if="! inserterSearchResult.length">
@@ -112,8 +114,8 @@ export default {
     data() {
         return {
             editorInserterStyle: {
-                width: "350px",
-                height: "311px",
+                width: "444px",
+                height: "370px",
                 'z-index': 9999
             },
             inserterPos: 'is-bottom',

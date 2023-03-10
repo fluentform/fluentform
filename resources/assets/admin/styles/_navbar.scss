@@ -1,0 +1,38 @@
+.ff_menu {
+    display: flex;
+    align-items: center;
+    &_link{
+        padding: 7px 16px;
+        display: inline-block;
+        text-decoration: none;
+        color: $base-color;
+        font-size: 15px;
+        font-weight: 500;
+        background-color: transparent;
+        border-radius: 6px;
+        line-height: 1.6;
+        transition: 0.2s;
+        &:focus{
+            box-shadow: none;
+            border: 0;
+            outline: none;
+        }
+        &:hover{
+            color: $primary;
+        }
+        &_buy{
+            background-color: $danger;
+            color: $white;
+            margin-left: 12px;
+            &:hover{
+                color: $white;
+            }
+        }
+    }
+    .active{
+        .ff_menu_link{
+            background-color: $primary-soft;
+            color: $primary;
+        }
+    }
+}

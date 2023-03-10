@@ -1,75 +1,88 @@
 <template>
     <div v-loading="loading">
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <template v-if="!selectedId">
-                    <h2>{{ $t('PDF Feeds') }}</h2>
-                    <p>{{ $t('Create PDF template feed and you can download the PDFs from each submission') }}</p>
-                </template>
-                <template v-else>
-                    <h2>{{ $t('Edit PDF Feed ') }} - {{selectedId}}</h2>
-                </template>
-            </el-col>
-            <!--Save selected.value-->
-            <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <el-button
-                        v-if="selectedId"
-                        @click="discard()"
-                        class="pull-right"
-                        icon="el-icon-arrow-left"
-                        size="small"
-                >Back
-                </el-button>
-                <el-button v-else @click="addVisible = true" type="primary" size="small" icon="el-icon-plus">{{     $t('Add PDF Feed') }}
-                </el-button>
-            </el-col>
-        </el-row>
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <div>
+                        <template v-if="!selectedId">
+                            <h5 class="title">{{ $t('PDF Feeds') }}</h5>
+                            <p class="text">{{ $t('Create PDF template feed and you can download the PDFs from each submission') }}</p>
+                        </template>
+                        <template v-else>
+                            <h5 class="title">{{ $t('Edit PDF Feed ') }} - {{selectedId}}</h5>
+                        </template>
+                    </div>
+                    <btn-group class="action-buttons">
+                        <btn-group-item v-if="selectedId">
+                            <el-button @click="discard()" type="info" size="medium" icon="el-icon-arrow-left">
+                                {{$t('Back')}}
+                            </el-button>
+                        </btn-group-item>
+                        <btn-group-item v-else>
+                            <el-button @click="addVisible = true" type="info" size="medium" icon="el-icon-plus">
+                                {{ $t('Add PDF Feed') }}
+                            </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <!-- Notification Table: 1 -->
+                <div class="ff-table-container" v-if="!selectedId">
+                    <el-table
+                        :element-loading-text="$t('Fetching Notifications...')"
+                        :data="pdf_feeds"
+                        stripe
+                    >
+                        <el-table-column prop="name" :label="$t('Name')"></el-table-column>
 
-        <!-- Notification Table: 1 -->
-        <el-table
-                :element-loading-text="$t('Fetching Notifications...')"
-                v-if="!selectedId"
-                :data="pdf_feeds"
-                stripe
-                class="el-fluid"
-        >
-            <el-table-column prop="name" :label="$t('Name')"></el-table-column>
+                        <el-table-column prop="template_key" :label="$t('Template')"></el-table-column>
 
-            <el-table-column prop="template_key" :label="$t('Template')"></el-table-column>
+                        <el-table-column width="160" label="Actions" class-name="action-buttons">
+                            <template slot-scope="scope">
+                                <el-button
+                                    @click="edit(scope.row.id)"
+                                    type="primary"
+                                    icon="el-icon-setting"
+                                    class="el-button--soft el-button--icon"
+                                    size="mini"
+                                ></el-button>
+                                <remove @on-confirm="remove(scope.row.id)">
+                                    <el-button
+                                        class="el-button--soft el-button--icon"
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                    />
+                                </remove>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
 
-            <el-table-column width="160" label="Actions" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-button
-                            @click="edit(scope.row.id)"
-                            type="primary"
-                            icon="el-icon-setting"
-                            size="mini"
-                    ></el-button>
-                    <remove @on-confirm="remove(scope.row.id)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <feed-editor
-                v-else
-                :edit_id="selectedId"
-                :editorShortcodes="editorShortcodes"
-                :form_id="form_id"
-        >
-        </feed-editor>
-
+                <feed-editor
+                    v-else
+                    :edit_id="selectedId"
+                    :editorShortcodes="editorShortcodes"
+                    :form_id="form_id"
+                >
+                </feed-editor>
+            </card-body>
+        </card>
 
         <el-dialog
-                v-loading="creating"
-                :element-loading-text="$t('Creating Feed. Please wait...')"
-                :title="$t('Create new PDF Feed')"
-                :visible.sync="addVisible"
-                width="60%">
-            <div class="ff_modal_container">
-                <h3>{{ $t('Please Select a Template') }}</h3>
+            v-loading="creating"
+            :element-loading-text="$t('Creating Feed. Please wait...')"
+            :visible.sync="addVisible"
+            width="60%"
+        >
+            <template slot="title">
+                <h4>{{$t('Create new PDF Feed')}}</h4>
+            </template>
+            <div class="ff_modal_container mt-4">
+                <h6 class="mb-3">{{ $t('Please Select a Template') }}</h6>
                 <el-row :gutter="20">
-                    <el-col class="ff_each_template" v-for="(template, templateIndex) in templates" :key="templateIndex"
-                            :span="6">
+                    <el-col class="ff_each_template" v-for="(template, templateIndex) in templates" :key="templateIndex" :span="6">
                         <div @click="createFeed(templateIndex)" class="ff_card">
                             <img :src="template.preview"/>
                             <div class="ff_template_label">{{template.name}}</div>
@@ -78,7 +91,7 @@
                 </el-row>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button plain size="small" @click="addVisible = false">{{ $t('Cancel') }}</el-button>
+                <el-button plain size="medium" @click="addVisible = false">{{ $t('Cancel') }}</el-button>
             </span>
         </el-dialog>
 
@@ -86,7 +99,13 @@
 </template>
 
 <script>
-    import remove from "../confirmRemove.vue";
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import remove from "@/admin/components/confirmRemove.vue";
     import FeedEditor from './PdfFeed';
 
     export default {
@@ -94,7 +113,13 @@
         props: ["form_id", "inputs", "has_pro", "has_pdf", "editorShortcodes"],
         components: {
             remove,
-            FeedEditor
+            FeedEditor,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {

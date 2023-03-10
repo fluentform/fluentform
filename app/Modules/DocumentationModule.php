@@ -7,6 +7,7 @@ class DocumentationModule
     public function render()
     {
         wpFluentForm('view')->render('admin.docs.index', [
+            'public_url' => fluentformMix(),
             'icon_path_url' => fluentformMix(''),
             'user_guides'   => $this->getUserGuides(),
         ]);

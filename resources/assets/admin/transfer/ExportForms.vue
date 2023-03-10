@@ -1,54 +1,61 @@
 <template>
-    <div>
-        <el-row class="admin_menu_header">
-            <el-col :md="24">
-                <h3>{{ $t('Export Forms') }}</h3>
-                <p>
+    <div class="ff_export_forms">
+        <card>
+            <card-head>
+                <h5 class="title">{{ $t('Export Forms') }}</h5>
+                <p class="text" style="max-width: 700px;">
                     {{
-                        $t('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer.Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.')
+                        $t('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer. Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.')
                     }}
                 </p>
-            </el-col>
-        </el-row>
+            </card-head>
+            <card-body>
+                <el-form label-position="top">
+                    <!--Select Forms-->
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Select Forms') }}
 
-        <el-form label-width="205px" label-position="left">
-            <!--Select Forms-->
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Select Forms') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Select the forms you would like to export.') }}
+                                    </p>
+                                </div>
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Export Selected Forms') }}</h3>
-                            <p>
-                                {{ $t('Select the forms you would like to export.') }}
-                            </p>
-                        </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
+                        <el-select class="ff_input_width" v-model="selected" multiple filterable>
+                            <el-option v-for="(form, index) in forms" :key="index"
+                                    :label="'#'+ form.id +' - ' +form.title" :value="form.id"
+                            ></el-option>
+                        </el-select>
+                    </el-form-item>
 
-                <el-select v-model="selected" multiple filterable style="width: 100%">
-                    <el-option v-for="(form, index) in forms" :key="index"
-                               :label="'#'+ form.id +' - ' +form.title" :value="form.id"
-                    ></el-option>
-                </el-select>
-            </el-form-item>
-
-            <el-form-item>
-                <el-button size="small" class="pull-right" type="primary" icon="el-icon-success" @click="exportForms">
-                    {{ $t('Export') }}
-                </el-button>
-            </el-form-item>
-        </el-form>
+                    <el-button type="primary" icon="el-icon-success" @click="exportForms">
+                        {{ $t('Export Forms') }}
+                    </el-button>
+                </el-form>
+            </card-body>
+        </card>
     </div>
 </template>
 
 <script>
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+
     export default {
         name: "ExportForms",
         props: ['app'],
+        components: {
+            Card, 
+            CardHead, 
+            CardBody 
+        },
         data() {
             return {
                 forms: this.app.forms,

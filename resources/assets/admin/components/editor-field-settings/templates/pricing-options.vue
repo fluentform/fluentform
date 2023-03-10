@@ -108,8 +108,8 @@
                         </div>
 
                         <div class="action-btn">
-                            <i @click="increase(index)" class="icon icon-plus-circle"></i>
-                            <i @click="decrease(index)" class="icon icon-minus-circle"></i>
+                            <i @click="increase(index)" class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
+                            <i @click="decrease(index)" class="ff_icon_btn mini dark el-icon-minus"></i>
                         </div>
                     </vddl-nodrag>
                     <div v-if="editItem.settings.enable_desc_input" class="item_desc">

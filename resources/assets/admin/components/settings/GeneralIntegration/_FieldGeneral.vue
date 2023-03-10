@@ -1,10 +1,11 @@
 <template>
     <div class="field_general">
-        <input-popover :fieldType="field_type"
-                       :placeholder="$t('Select a Field or Type Custom value')"
-                       v-model="fieldValue"
-                       icon="el-icon-arrow-down"
-                       :data="editorShortcodes"
+        <input-popover 
+            :fieldType="field_type"
+            :placeholder="$t('Select a Field or Type Custom value')"
+            v-model="fieldValue"
+            icon="el-icon-arrow-down"
+            :data="editorShortcodes"
         ></input-popover>
     </div>
 </template>

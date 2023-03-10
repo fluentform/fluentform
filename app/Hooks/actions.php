@@ -142,6 +142,7 @@ add_action('admin_init', function () {
         'fluent_forms_docs',
         'fluent_forms_all_entries',
         'msformentries',
+        'fluent_forms_add_new_form',
     ];
 
     $page = wpFluentForm('request')->get('page');
@@ -460,6 +461,7 @@ add_action('fluentform_addons_page_render_fluentform_pdf', function () use ($app
     }
 
     $app->view->render('admin.addons.pdf_promo', [
+        'public_url' => fluentFormMix(),
         'install_url'  => $url,
         'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
     ]);

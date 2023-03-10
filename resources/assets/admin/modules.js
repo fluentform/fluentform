@@ -10,7 +10,10 @@ import {
     Notification,
     RadioButton,
     Radio,
-    RadioGroup
+    RadioGroup,
+    Row,
+    Col,
+    Notification
 } from 'element-ui';
 
 Vue.use(RadioButton);
@@ -20,6 +23,8 @@ Vue.use(Button);
 Vue.use(Select);
 Vue.use(Input);
 Vue.use(Switch);
+Vue.use(Row);
+Vue.use(Col);
 
 Vue.prototype.$notify = Notification;
 
@@ -27,7 +32,7 @@ Vue.mixin({
     methods: {
         $t(str) {
             let transString = window.fluent_addon_modules.addOnModule_str[str];
-            if(transString) {
+            if (transString) {
                 return transString;
             }
             return str;
@@ -36,10 +41,9 @@ Vue.mixin({
     }
 });
 
-
 var app = new Vue({
     el: '#ff_add_ons_app',
     components: {
-        'fluent-add-ons' : AddOnModules
+        'fluent-add-ons': AddOnModules
     }
 });

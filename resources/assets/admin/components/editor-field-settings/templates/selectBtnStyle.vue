@@ -11,7 +11,7 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        <div v-if="model == '' && editItem.settings.normal_styles" style="margin-bottom: 20px" class="button_styler_customizer">
+        <div v-if="model == '' && editItem.settings.normal_styles" style="margin-bottom: 20px; margin-top: -10px;" class="button_styler_customizer">
             <el-tabs  @tab-click="handleClick" type="border-card" v-model="activeName">
                 <el-tab-pane :label="$t('Normal State')" name="normal_styles">
                     <button-styler v-model="editItem.settings.normal_styles"></button-styler>
@@ -41,12 +41,12 @@ export default {
             btnStyles: {
                 default: {
                     name: 'Default',
-                    backgroundColor: '#409EFF',
+                    backgroundColor: '#1a7efb',
                     color: '#ffffff'
                 },
                 no_style: {
                     name: 'No Style',
-                    backgroundColor: '#409EFF',
+                    backgroundColor: '##1a7efb',
                     color: '#ffffff'
                 },
                 red: {
@@ -93,8 +93,8 @@ export default {
     created() {
         if(!this.editItem.settings.normal_styles) {
             this.$set(this.editItem.settings, 'normal_styles', {
-                'backgroundColor' : '#409EFF',
-                'borderColor'     : '#409EFF',
+                'backgroundColor' : '#1a7efb',
+                'borderColor'     : '#1a7efb',
                 'color'           : '#ffffff',
                 'borderRadius'    : '',
                 'minWidth'        : ''
@@ -103,8 +103,8 @@ export default {
         if(!this.editItem.settings.hover_styles) {
             this.$set(this.editItem.settings, 'hover_styles', {
                 'backgroundColor' : '#ffffff',
-                'borderColor'     : '#409EFF',
-                'color'           : '#409EFF',
+                'borderColor'     : '#1a7efb',
+                'color'           : '#1a7efb',
                 'borderRadius'    : '',
                 'minWidth'        : ''
             });

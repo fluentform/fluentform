@@ -1,45 +1,21 @@
 <template>
-    <el-row v-if="roles.length">
-        <div class="ninja_header">
-            <h2>{{ $t('Managers') }}</h2>
-        </div>
-        <div v-loading="loading" class="ninja_content">
-            <div class="ninja_block">
-                <p>
-                    {{
-                        $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.')
-                    }}
-                </p>
-            </div>
-            <hr/>
 
-            <div style="margin-bottom: 20px;" class="form-group">
-                <el-checkbox
-                    :indeterminate="isIndeterminate"
-                    v-model="checkAll"
-                    @change="handleCheckAllChange"
-                >
+    <div class="ff_block_item" v-if="roles.length">
+        <h6 class="ff_block_title mb-1">{{ $t('Role Based') }}</h6>
+        <p class="ff_block_text">{{ $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.') }}</p>
+        <div class="ff_block_item_body mt-3">
+            <div class="mb-3">
+                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
                     {{ $t('Check all') }}
                 </el-checkbox>
             </div>
-
-            <div style="margin-bottom: 20px;" class="form-group">
-                <el-checkbox-group
-                    :value="capability"
-                    @change="handleCheckedCapabilitiesChange"
-                >
-                    <el-checkbox
-                        v-for="role in roles"
-                        :label="role.key"
-                        :key="role.key"
-                        @change="handleChange"
-                    >
-                        {{ role.name }}
-                    </el-checkbox>
-                </el-checkbox-group>
-            </div>
+            <el-checkbox-group v-model="capability" @change="handleCheckedCapabilitiesChange">
+                <el-checkbox v-for="role in roles" :label="role.key" :key="role.key">
+                    {{ role.name }}
+                </el-checkbox>
+            </el-checkbox-group>
         </div>
-    </el-row>
+    </div><!-- .ff_block_item -->
 </template>
 
 <script>

@@ -1,0 +1,336 @@
+@font-face {
+  font-family: 'fluentform';
+  src:  url('fonts/fluentform.eot');
+  src:  url('fonts/fluentform.eot') format('embedded-opentype'),
+    url('fonts/fluentform.ttf') format('truetype'),
+    url('fonts/fluentform.woff') format('woff'),
+    url('fonts/fluentform.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ff-icon-"], [class*=" ff-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'fluentform' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ff-icon-user-filled:before {
+  content: "\e902";
+}
+.ff-icon-payment:before {
+  content: "\e900";
+}
+.ff-icon-play-circle-filled:before {
+  content: "\e901";
+}
+.ff-icon-promotion:before {
+  content: "\e903";
+}
+.ff-icon-share-filled:before {
+  content: "\e904";
+}
+.ff-icon-warning-filled:before {
+  content: "\e905";
+}
+.ff-icon-filled:before {
+  content: "\e906";
+}
+.ff-icon-gift:before {
+  content: "\e907";
+}
+.ff-icon-cursor:before {
+  content: "\e908";
+}
+.ff-icon-hash:before {
+  content: "\e909";
+}
+.ff-icon-photo:before {
+  content: "\e90a";
+}
+.ff-icon-italic-light:before {
+  content: "\e90b";
+}
+.ff-icon-keyboard:before {
+  content: "\e90c";
+}
+.ff-icon-layers:before {
+  content: "\e90d";
+}
+.ff-icon-left-align:before {
+  content: "\e90e";
+}
+.ff-icon-light-10:before {
+  content: "\e90f";
+}
+.ff-icon-map-pin:before {
+  content: "\e910";
+}
+.ff-icon-lock:before {
+  content: "\e911";
+}
+.ff-icon-email:before {
+  content: "\e912";
+}
+.ff-icon-paragraph:before {
+  content: "\e913";
+}
+.ff-icon-user:before {
+  content: "\e914";
+}
+.ff-icon-phone-outgoing:before {
+  content: "\e915";
+}
+.ff-icon-play-circle:before {
+  content: "\e916";
+}
+.ff-icon-puzzle:before {
+  content: "\e917";
+}
+.ff-icon-redo:before {
+  content: "\e918";
+}
+.ff-icon-repeat:before {
+  content: "\e91a";
+}
+.ff-icon-right-align:before {
+  content: "\e91b";
+}
+.ff-icon-rocket-filled:before {
+  content: "\e91c";
+}
+.ff-icon-setting:before {
+  content: "\e91d";
+}
+.ff-icon-light-26:before {
+  content: "\e91f";
+}
+.ff-icon-trash:before {
+  content: "\e920";
+}
+.ff-icon-underline-alt:before {
+  content: "\e921";
+}
+.ff-icon-undo:before {
+  content: "\e922";
+}
+.ff-icon-upload-alt:before {
+  content: "\e923";
+}
+.ff-icon-web-development:before {
+  content: "\e924";
+}
+.ff-icon-underline:before {
+  content: "\e926";
+}
+.ff-icon-italic:before {
+  content: "\e927";
+}
+.ff-icon-filter-alt:before {
+  content: "\e928";
+}
+.ff-icon-files:before {
+  content: "\e929";
+}
+.ff-icon-file-add:before {
+  content: "\e92a";
+}
+.ff-icon-fullscreen:before {
+  content: "\e92b";
+}
+.ff-icon-donut-chart:before {
+  content: "\e92c";
+}
+.ff-icon-dollar:before {
+  content: "\e92d";
+}
+.ff-icon-document-light:before {
+  content: "\e92e";
+}
+.ff-icon-document:before {
+  content: "\e92f";
+}
+.ff-icon-document-alt:before {
+  content: "\e930";
+}
+.ff-icon-design:before {
+  content: "\e931";
+}
+.ff-icon-copy-filled:before {
+  content: "\e932";
+}
+.ff-icon-copy:before {
+  content: "\e933";
+}
+.ff-icon-code-alt:before {
+  content: "\e934";
+}
+.ff-icon-code:before {
+  content: "\e935";
+}
+.ff-icon-close-circle-filled:before {
+  content: "\e936";
+}
+.ff-icon-chevron-double-left:before {
+  content: "\e937";
+}
+.ff-icon-check:before {
+  content: "\e938";
+}
+.ff-icon-center-align:before {
+  content: "\e939";
+}
+.ff-icon-calendar:before {
+  content: "\e93a";
+}
+.ff-icon-bookmark:before {
+  content: "\e93b";
+}
+.ff-icon-bold:before {
+  content: "\e93c";
+}
+.ff-icon-bold-light:before {
+  content: "\e93d";
+}
+.ff-icon-bank:before {
+  content: "\e93e";
+}
+.ff-icon-arrow-right:before {
+  content: "\e93f";
+}
+.ff-icon-arrow-left:before {
+  content: "\e919";
+}
+.ff-icon-plus-filled:before {
+  content: "\e940";
+}
+.ff-icon-plus:before {
+  content: "\e941";
+}
+.ff-icon-checkmark-square:before {
+  content: "\e942";
+}
+.ff-icon-download:before {
+  content: "\e943";
+}
+.ff-icon-sort-circle-down:before {
+  content: "\e944";
+}
+.ff-icon-eye-off:before {
+  content: "\e945";
+}
+.ff-icon-eye:before {
+  content: "\e946";
+}
+.ff-icon-flag:before {
+  content: "\e947";
+}
+.ff-icon-link:before {
+  content: "\e948";
+}
+.ff-icon-list:before {
+  content: "\e949";
+}
+.ff-icon-move:before {
+  content: "\e94a";
+}
+.ff-icon-plus-alt:before {
+  content: "\e94b";
+}
+.ff-icon-radio-button-on:before {
+  content: "\e94c";
+}
+.ff-icon-search:before {
+  content: "\e94d";
+}
+.ff-icon-star:before {
+  content: "\e94f";
+}
+.ff-icon-sort-down-alt:before {
+  content: "\e950";
+}
+.ff-icon-close:before {
+  content: "\e951";
+}
+.ff-icon-expand:before {
+  content: "\e952";
+}
+.ff-icon-eye-filled:before {
+  content: "\e953";
+}
+.ff-icon-info-filled:before {
+  content: "\e954";
+}
+.ff-icon-keypad:before {
+  content: "\e955";
+}
+.ff-icon-more-horizontal:before {
+  content: "\e956";
+}
+.ff-icon-more-vertical:before {
+  content: "\e906";
+}
+.ff-icon-setting-filled:before {
+  content: "\e957";
+}
+.ff-icon-strikethrough:before {
+  content: "\e958";
+}
+.ff-icon-text:before {
+  content: "\e959";
+}
+.ff-icon-decrease-edit:before {
+  content: "\e95a";
+}
+.ff-icon-sort-down:before {
+  content: "\e95b";
+}
+.ff-icon-increase-edit:before {
+  content: "\e95c";
+}
+.ff-icon-list-ordered:before {
+  content: "\e95d";
+}
+.ff-icon-quote-left:before {
+  content: "\e95e";
+}
+.ff-icon-slider-horizontal:before {
+  content: "\e95f";
+}
+.ff-icon-text-alt:before {
+  content: "\e960";
+}
+.ff-icon-upload:before {
+  content: "\e961";
+}
+.ff-icon-edit:before {
+  content: "\e962";
+}
+.ff-icon-filter:before {
+  content: "\e963";
+}
+.ff-icon-refresh:before {
+  content: "\e964";
+}
+.ff-icon-task:before {
+  content: "\e965";
+}
+.ff-icon-sort:before {
+  content: "\e96c";
+}
+.ff-icon-captcha:before {
+  content: "\e96d";
+}
+.ff-icon-clear:before {
+  content: "\e96e";
+}

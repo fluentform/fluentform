@@ -3,7 +3,7 @@
         <el-form-item>
             <div slot="label">
                 {{ listItem.label }}
-                <el-tooltip effect="dark" :content="listItem.help_text" placement="top">
+                <el-tooltip class="ff_tooltip_wrap" :content="listItem.help_text" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>
@@ -12,7 +12,7 @@
               <el-radio label="url">{{ $t('Remote URL') }}</el-radio>
             </el-radio-group>
 
-            <div style="margin-bottom: 10px;" class="uploader" v-if="dataSourceType === 'file'">
+            <div class="uploader" v-if="dataSourceType === 'file'">
                 <el-upload
                     drag
                     :data="dataSourceInfo"

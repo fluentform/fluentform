@@ -1,27 +1,35 @@
 <template>
     <div class="fcc_conversational_design">
         <template v-if="!loading">
-            <div class="ffc_design_sidebar">
+            <card class="ffc_design_sidebar">
                 <div class="ffc_sidebar_header">
-                    <ul>
-                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">{{ $t('Design') }}</li>
-                        <li :class="{ffc_active : active_tab == 'meta'}" @click="active_tab = 'meta'">{{ $t('Meta') }}</li>
-                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">{{ $t('Share') }}</li>
-                    </ul>
+                    <tab class="ff_tab_center">
+                        <tab-item :class="{active : active_tab == 'design'}" @click="active_tab = 'design'">
+                            <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Design') }}</a>
+                        </tab-item>
+                        <tab-item :class="{active : active_tab == 'meta'}" @click="active_tab = 'meta'">
+                            <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Meta') }}</a>
+                        </tab-item>
+                        <tab-item :class="{active : active_tab == 'share'}" @click="active_tab = 'share'">
+                            <a href="#" class="ff_tab_link" @click.prevent>{{ $t('Share') }}</a>
+                        </tab-item>
+                    </tab>
                 </div>
                 <div v-loading="saving" class="ffc_sidebar_body">
                     <design-elements :has_pro="has_pro" :fonts="fonts" v-if="active_tab == 'design'" :design_settings="design_settings"/>
-                    <div style="padding-top: 20px;" v-else-if="active_tab == 'meta'">
+                    <div v-else-if="active_tab == 'meta'">
                         <p>{{ $t('Set your social sharing meta texts and form messages here') }}</p>
                     </div>
-                    <div style="padding-top: 20px;" v-else-if="active_tab == 'share'">
+                    <div v-else-if="active_tab == 'share'">
                         <p>{{ $t('Share your form by unique URL or copy and paste the ') }}<em>shorcode</em>{{ $t(' to embed in your page and post') }}</p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
-                        <el-button icon="el-icon-success" size="small" type="primary" @click="saveDesignSettings()">{{ $t('Save Settings') }}</el-button>
+                        <el-button icon="el-icon-success" size="medium" type="primary" @click="saveDesignSettings()">
+                            {{ $t('Save Settings') }}
+                        </el-button>
                     </div>
                 </div>
-            </div>
+            </card>
             <div class="ffc_design_container">
                 <design-preview :meta_settings="meta_settings" :has_pro="has_pro" v-if="active_tab == 'design'" :fonts="fonts" @css_generated="(css) => { generated_css = css; }"
                                 :design_settings="design_settings"
@@ -39,6 +47,10 @@ import DesignPreview from './DesignPreview';
 import DesignElements from './DesignElements';
 import MetaSettingView from './MetaSettings';
 import SharingView from './SharingView';
+import Tab from '@/admin/components/Tab/Tab.vue';
+import TabItem from '@/admin/components/Tab/TabItem.vue';
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
 
 export default {
     name: 'ConversationalDesign',
@@ -46,7 +58,11 @@ export default {
         DesignPreview,
         DesignElements,
         MetaSettingView,
-        SharingView
+        SharingView,
+        Tab,
+        TabItem,
+        Card,
+        CardBody
     },
     data() {
         return {

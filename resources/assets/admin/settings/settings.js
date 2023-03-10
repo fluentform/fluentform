@@ -130,7 +130,7 @@ new Vue({
             if (hash) {
                 that.setRoute(hash);
             }
-            jQuery(this).parent().addClass('active');
+            jQuery(this).parent().addClass('active').siblings().removeClass('active');
         });
     }
 });

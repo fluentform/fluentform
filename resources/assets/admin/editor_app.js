@@ -35,7 +35,8 @@ import {
     Upload,
     Switch,
     InputNumber,
-    Card
+    Card,
+    Alert
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -76,6 +77,7 @@ Vue.use(Tooltip);
 Vue.use(Upload);
 Vue.use(Switch);
 Vue.use(InputNumber);
+Vue.use(Alert);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -160,16 +162,16 @@ new Vue({
                 },
                 conditional_logics: [],
                 normal_styles: {
-                    'backgroundColor' : '#409EFF',
-                    'borderColor'     : '#409EFF',
+                    'backgroundColor' : '#1a7efb',
+                    'borderColor'     : '#1a7efb',
                     'color'           : '#ffffff',
                     'borderRadius'    : '',
                     'minWidth'        : ''
                 },
                 hover_styles: {
                     'backgroundColor' : '#ffffff',
-                    'borderColor'     : '#409EFF',
-                    'color'           : '#409EFF',
+                    'borderColor'     : '#1a7efb',
+                    'color'           : '#1a7efb',
                     'borderRadius'    : '',
                     'minWidth'        : ''
                 }

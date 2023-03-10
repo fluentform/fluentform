@@ -1,262 +1,241 @@
 <template>
-    <div class="post_feed">
-        <div class="setting_header el-row">
-            <div class="el-col el-col-24 el-col-md-12">
-                <h2 v-if="!feed.id">{{ $t('Create New Feed') }}</h2>
-                <h2
-                        v-else
-                        v-html="feedTitleForEdit"
-                ></h2>
-            </div>
-
-            <div class="action-buttons clearfix mb15 text-right el-col el-col-24 el-col-md-12">
-                <el-button
-                        plain
-                        size="small"
-                        type="primary"
-                        icon="el-icon-arrow-left"
-                        style="margin-right:10px;"
-                        @click="$emit('show-post-feeds')"
-                >{{ $t('Back') }}
-                </el-button>
-
-                <el-button
-                        size="small"
-                        type="primary"
-                        @click="saveFeed"
-                        icon="el-icon-success"
-                >{{ $t('Save Feed') }}
-                </el-button>
-
-            </div>
-        </div>
-
-        <div class="post_feed">
-            <el-form label-width="160px" label-position="right">
-
-                <el-form-item :label="$t('Feed Name')">
-                    <el-input size="small" v-model="feed.value.feed_name"/>
-                </el-form-item>
-
-                <el-form-item :label="$t('Post Type')">
-                    <el-input
-                            disabled
-                            size="small"
-                            v-model="post_settings.post_info.value.post_type"
-                    />
-                </el-form-item>
-                <el-form-item :label="$t('Submission Type')">
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Create or Update Post') }}</h3>
-                            <p>{{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
-                            </p>
-                        </div>
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                    <el-radio-group v-model="feed.value.post_form_type">
-                        <el-radio label="new">{{ $t('New Post') }}</el-radio>
-                        <el-radio label="update">{{ $t('Update Post') }}</el-radio>
-                        
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item :label="$t('Post Status')">
-                    <el-select v-model="feed.value.post_status" style="width:100%;">
-                        <el-option
-                                v-for="status in postStatuses"
-                                :key="status"
-                                :value="status"
-                                :label="status | ucFirst"
-                        />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item :label="$t('Comment Status')">
-                    <el-select v-model="feed.value.comment_status" style="width:100%;">
-                        <el-option
-                                v-for="status in commentStatuses"
-                                :key="status"
-                                :value="status"
-                                :label="status | ucFirst"
-                        />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item v-if="postFormats.length" :label="$t('Post Format')">
-                    <el-select v-model="feed.value.post_format" style="width:100%;">
-                        <el-option
-                                v-for="format in postFormats"
-                                :key="format"
-                                :value="format"
-                                :label="format | ucFirst"
-                        />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
-                    <el-select clearable v-model="feed.value.default_category" style="width:100%;">
-                        <el-option
-                                v-for="item in categories"
-                                :key="item.category_id"
-                                :value="item.category_id"
-                                :label="item.category_name"
-                        />
-                    </el-select>
-                </el-form-item>
-
-                <!-- Post Fields Mapping -->
-                <div class="post_fields_mapping">
-                    <strong style="font-size: 18px;">{{ $t('Post Fields Mapping') }}</strong>
-
-                    <hr style="clear:both;margin:20px 0;">
-
-                    <el-table :data="feed.value.post_fields_mapping" size="medium" style="width: 100%">
-                        <el-table-column label="#" type="index"/>
-
-                        <el-table-column :label="$t('Post Fields')">
-                            <template slot-scope="scope">
-                                {{ scope.row.post_field.replace(/_/, ' ').ucWords() }}
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column :label="$t('Form Fields')">
-                            <template slot-scope="scope">
-                                <inputPopover
-                                        fieldType="text"
-                                        :data="editorShortcodes"
-                                        v-model="scope.row.form_field"
-                                />
-                            </template>
-                        </el-table-column>
-                    </el-table>
-
-                    <br />
-                    <div class="ff_card_block">
-                        <p>{{ ('Note: All your taxonomies and featured image will be mapped automatically from your form fields') }}</p>
+    <div class="ff_post_feed_wrap">
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <div>
+                        <h5 class="title" v-if="!feed.id">{{ $t('Create New Feed') }}</h5>
+                        <h5 class="title" v-else v-html="feedTitleForEdit"></h5>
                     </div>
-                </div>
-
-                <!-- Meta Fields Mapping -->
-                <div class="meta_fields_mapping">
-                    <strong style="font-size: 18px;">{{ $t('Meta Fields Mapping') }}</strong>
-
-                    <el-button
-                            type="primary"
-                            size="mini"
-                            icon="el-icon-plus"
-                            class="pull-right"
-                            @click="addMetaFieldMapping"
-                    >{{ $t('Add Meta Field') }}
-                    </el-button>
-
-                    <hr style="clear:both;margin:20px 0;">
-
-                    <div v-if="!feed.value.meta_fields_mapping.length" class="no-mapping-alert">
-                        {{ $t('There is no mapping of meta fields.') }}
-                    </div>
-
-                    <el-row
-                            v-else
-                            :gutter="20"
-                            :key="'meta'+key"
-                            v-for="(mapping, key) in feed.value.meta_fields_mapping"
-                    >
-                        <!-- Meta Key -->
-                        <el-col :span="11">
-                            <el-form-item :label="$t('Meta Key')">
-                                <el-input
-                                        size="small"
-                                        v-model="mapping.meta_key"
-                                        :placeholder="$t('Enter Meta Key...')"
-                                        @input="validateMetaKey(mapping)"
-                                />
-                            </el-form-item>
-                        </el-col>
-
-                        <!-- Meta Value -->
-                        <el-col :span="11">
-                            <el-form-item :label="$t('Meta Value')">
-                                <inputPopover
-                                        fieldType="text"
-                                        :data="editorShortcodes"
-                                        v-model="mapping.meta_value"
-                                />
-                            </el-form-item>
-                        </el-col>
-
-                        <!-- Delete Meta Mapping -->
-                        <el-col :span="2">
+                    <btn-group>
+                        <btn-group-item>
                             <el-button
-                                    type="danger"
-                                    size="mini"
-                                    icon="el-icon-close"
-                                    style="margin-top:4px;"
-                                    @click="deleteMapping(feed.value.meta_fields_mapping, key)"
-                            />
-                        </el-col>
-                    </el-row>
+                                size="medium"
+                                type="info"
+                                icon="el-icon-arrow-left"
+                                @click="$emit('show-post-feeds')"
+                            >
+                                {{ $t('Back') }}
+                            </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <div class="post_feed">
+                    <el-form label-position="top">
+                        <el-form-item class="ff-form-item" :label="$t('Feed Name')">
+                            <el-input class="ff_input_width" v-model="feed.value.feed_name"/>
+                        </el-form-item>
+
+                        <el-form-item class="ff-form-item" :label="$t('Post Type')">
+                            <el-input class="ff_input_width" disabled v-model="post_settings.post_info.value.post_type"/>
+                        </el-form-item>
+                        <el-form-item class="ff-form-item">
+                            <template slot="label">
+                                {{ $t('Submission Type') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-radio-group v-model="feed.value.post_form_type">
+                                <el-radio label="new">{{ $t('New Post') }}</el-radio>
+                                <el-radio label="update">{{ $t('Update Post') }}</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+
+                        <el-form-item class="ff-form-item" :label="$t('Post Status')">
+                            <el-select v-model="feed.value.post_status" class="ff_input_width">
+                                <el-option
+                                    v-for="status in postStatuses"
+                                    :key="status"
+                                    :value="status"
+                                    :label="status | ucFirst"
+                                />
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item class="ff-form-item" :label="$t('Comment Status')">
+                            <el-select v-model="feed.value.comment_status" class="ff_input_width">
+                                <el-option
+                                    v-for="status in commentStatuses"
+                                    :key="status"
+                                    :value="status"
+                                    :label="status | ucFirst"
+                                />
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item class="ff-form-item" v-if="postFormats.length" :label="$t('Post Format')">
+                            <el-select v-model="feed.value.post_format" class="ff_input_width">
+                                <el-option
+                                    v-for="format in postFormats"
+                                    :key="format"
+                                    :value="format"
+                                    :label="format | ucFirst"
+                                />
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item class="ff-form-item" v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
+                            <el-select clearable v-model="feed.value.default_category" class="ff_input_width">
+                                <el-option
+                                    v-for="item in categories"
+                                    :key="item.category_id"
+                                    :value="item.category_id"
+                                    :label="item.category_name"
+                                />
+                            </el-select>
+                        </el-form-item>
+
+                        <!-- Post Fields Mapping -->
+                        <div class="post_fields_mapping">
+                            <div class="post_fields_mapping_head">
+                                <h6>{{ $t('Post Fields Mapping') }}</h6>
+                            </div>
+                            <div class="ff-table-container">
+                                <el-table :data="feed.value.post_fields_mapping" size="medium">
+                                    <el-table-column label="#" type="index"/>
+                                    <el-table-column :label="$t('Post Fields')">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.post_field.replace(/_/, ' ').ucWords() }}
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="$t('Form Fields')">
+                                        <template slot-scope="scope">
+                                            <inputPopover
+                                                fieldType="text"
+                                                :data="editorShortcodes"
+                                                v-model="scope.row.form_field"
+                                            />
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                            <div class="ff_card_block mt-4">
+                                <p>
+                                    {{ ('Note: All your taxonomies and featured image will be mapped automatically from your form fields') }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Meta Fields Mapping -->
+                        <div class="meta_fields_mapping">
+                            <div class="meta_fields_mapping_head">
+                                <h6>{{ $t('Meta Fields Mapping') }}</h6>
+                                <el-button
+                                    size="small"
+                                    icon="el-icon-plus"
+                                    @click="addMetaFieldMapping"
+                                >
+                                    {{ $t('Add Meta Field') }}
+                                </el-button>
+                            </div>
+
+                            <template v-if="feed.value.meta_fields_mapping">
+                                <el-row
+                                    class="mb-3"
+                                    :gutter="20"
+                                    :key="'meta' + key"
+                                    v-for="(mapping, key) in feed.value.meta_fields_mapping"
+                                >
+                                    <!-- Meta Key -->
+                                    <el-col :span="11">
+                                        <el-form-item class="ff-form-item" :label="$t('Meta Key')">
+                                            <el-input
+                                                v-model="mapping.meta_key"
+                                                :placeholder="$t('Enter Meta Key...')"
+                                                @input="validateMetaKey(mapping)"
+                                            />
+                                        </el-form-item>
+                                    </el-col>
+
+                                    <!-- Meta Value -->
+                                    <el-col :span="11">
+                                        <el-form-item class="ff-form-item" :label="$t('Meta Value')">
+                                            <inputPopover
+                                                fieldType="text"
+                                                :data="editorShortcodes"
+                                                v-model="mapping.meta_value"
+                                            />
+                                        </el-form-item>
+                                    </el-col>
+
+                                    <!-- Delete Meta Mapping -->
+                                    <el-col :span="2">
+                                        <el-button
+                                            style="margin-top: 34px;"
+                                            class="el-button--soft el-button--icon"
+                                            type="danger"
+                                            size="small"
+                                            icon="el-icon-close"
+                                            @click="deleteMapping(feed.value.meta_fields_mapping, key)"
+                                        />
+                                    </el-col>
+                                </el-row>
+                            </template>
+
+                            <div v-if="!feed.value.meta_fields_mapping.length" class="no-mapping-alert">
+                                {{ $t('There is no mapping of meta fields. please click on the above add meta field button to add.') }}
+                            </div>
+                        </div>
+                        <!-- end Meta Fields Mapping -->
+
+                        <template v-if="post_settings.has_acf">
+                            <post-meta-plugin-mapping
+                                :general_settings="feed.value.acf_mappings"
+                                :advanced_settings="feed.value.advanced_acf_mappings"
+                                :labels="{
+                                section_title: 'ACF Plugin Mapping',
+                                remote_label: 'ACF Field',
+                                local_label: 'Form Field (Value)'
+                            }"
+                                :general_fields="post_settings.acf_fields"
+                                :advanced_fields="post_settings.acf_fields_advanced"
+                                :form_fields="form_fields"
+                                :editorShortcodes="editorShortcodes" />
+                                <hr class="mt-4 mb-4">
+                        </template>
+
+                        <template v-if="post_settings.has_metabox">
+                            <post-meta-plugin-mapping
+                                :general_settings="feed.value.metabox_mappings"
+                                :advanced_settings="feed.value.advanced_metabox_mappings"
+                                :labels="{
+                                section_title: 'MetaBox (MB) Plugin Mapping',
+                                remote_label: 'MetaBox (MB) Field',
+                                local_label: 'Form Field (Value)'
+                            }"
+                                :general_fields="post_settings.metabox_fields"
+                                :advanced_fields="post_settings.metabox_fields_advanced"
+                                :form_fields="form_fields"
+                                :editorShortcodes="editorShortcodes" />
+                            <hr class="mt-4 mb-4">
+                        </template>
+
+                        <filter-fields :fields="form_fields"
+                            :conditionals="feed.value.conditionals"
+                            :hasPro="false"
+                        />
+
+                        <div class="mt-4">
+                            <el-button
+                                type="primary"
+                                @click="saveFeed"
+                                icon="el-icon-success"
+                            >
+                                {{ $t('Save Feed') }}
+                            </el-button>
+                        </div>
+                    </el-form>
                 </div>
-
-                <template v-if="post_settings.has_acf">
-                    <post-meta-plugin-mapping
-                        :general_settings="feed.value.acf_mappings"
-                        :advanced_settings="feed.value.advanced_acf_mappings"
-                        :labels="{
-                        section_title: 'ACF Plugin Mapping',
-                        remote_label: 'ACF Field',
-                        local_label: 'Form Field (Value)'
-                    }"
-                        :general_fields="post_settings.acf_fields"
-                        :advanced_fields="post_settings.acf_fields_advanced"
-                        :form_fields="form_fields"
-                        :editorShortcodes="editorShortcodes" />
-                    <hr style="margin: 20px">
-                </template>
-
-                <template v-if="post_settings.has_metabox">
-                    <post-meta-plugin-mapping
-                        :general_settings="feed.value.metabox_mappings"
-                        :advanced_settings="feed.value.advanced_metabox_mappings"
-                        :labels="{
-                        section_title: 'MetaBox (MB) Plugin Mapping',
-                        remote_label: 'MetaBox (MB) Field',
-                        local_label: 'Form Field (Value)'
-                    }"
-                        :general_fields="post_settings.metabox_fields"
-                        :advanced_fields="post_settings.metabox_fields_advanced"
-                        :form_fields="form_fields"
-                        :editorShortcodes="editorShortcodes" />
-                    <hr style="margin: 20px">
-                </template>
-
-                <filter-fields :fields="form_fields"
-                               :conditionals="feed.value.conditionals"
-                               :disabled="false"
-                />
-
-                <p style="height: 20px"></p>
-
-                <el-form-item class="pull-right">
-                    <el-button
-                            plain
-                            size="small"
-                            type="primary"
-                            icon="el-icon-arrow-left"
-                            @click="$emit('show-post-feeds')"
-                    >{{ $t('Back') }}
-                    </el-button>
-                    
-                    <el-button
-                            size="small"
-                            type="primary"
-                            @click="saveFeed"
-                            icon="el-icon-success"
-                    >{{ $t('Save Feed') }}
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+            </card-body>
+        </card>
     </div>
 </template>
 
@@ -265,13 +244,25 @@
     import FilterFields from './Includes/FilterFields.vue';
     import PostMetaPluginMapping from './_PostMetaPluginsMapping';
     import each from 'lodash/each';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
 
     export default {
         name: 'PostFeed',
         components: {
             inputPopover,
             FilterFields,
-            PostMetaPluginMapping
+            PostMetaPluginMapping,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
         },
         props: [
             'feed',

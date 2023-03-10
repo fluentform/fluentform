@@ -13,9 +13,12 @@
             </template>
         </div>
         <div :class="wrapperClass" class="ff_checkable_images" v-else>
-            <div v-for="option in item.settings.advanced_options" class="ff_check_photo_item">
+            <div v-for="(option, i) in item.settings.advanced_options" class="ff_check_photo_item" :key="i">
                 <div class="ff_photo_holder" :style="{ backgroundImage: 'url('+option.image+')' }"></div>
-                <label><input :name="item.attributes.name" :value="option.value" v-model="item.attributes.value" :type="inputType"></input> <span v-html="option.label"></span></label>
+                <label>
+                    <input :name="item.attributes.name" :value="option.value" v-model="item.attributes.value" :type="inputType"> 
+                    <span v-html="option.label"></span>
+                </label>
             </div>
         </div>
     </withLabel>

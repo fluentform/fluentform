@@ -105,6 +105,14 @@ class Menu
             true
         );
 
+        wp_register_script(
+            'add_new_forms',
+            fluentFormMix('js/add_new_forms.js'),
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
         wp_register_style(
             'fluent_all_forms',
             $allFormsStyle,
@@ -285,6 +293,11 @@ class Menu
         } elseif ('fluent_forms' == $page) {
             wp_enqueue_script('fluent_all_forms');
             wp_enqueue_style('fluent_all_forms');
+        }elseif ('fluent_forms_add_new_form' == $page) {
+
+            wp_enqueue_script('add_new_forms');
+            wp_enqueue_style('fluent_all_forms');
+
         } elseif ('fluent_forms_transfer' == $page) {
             wp_enqueue_style('fluentform_settings_global');
             wp_enqueue_script('fluentform-transfer-js');
@@ -369,8 +382,8 @@ class Menu
                 __('New Form', 'fluentform'),
                 __('New Form', 'fluentform'),
                 $fromRole ? $settingsCapability : 'fluentform_forms_manager',
-                'fluent_forms#add=1',
-                [$this, 'renderFormAdminRoute']
+                'fluent_forms_add_new_form',
+                [$this, 'renderAddNewFormRoute']
             );
 
             $entriesTitle = __('Entries', 'fluentform');
@@ -504,6 +517,17 @@ class Menu
     {
         wp_enqueue_script('fluentform_all_entries');
         $this->app->view->render('admin.all_entries', []);
+    }
+
+    // add new forms page render
+    public function renderAddNewFormRoute() {
+        wp_localize_script('add_new_forms', 'FluentFormApp', [
+            'hasPro'               => defined('FLUENTFORMPRO'),
+            'adminUrl'             => admin_url('admin.php'),
+            'plugin_public_url'    => fluentformMix(),
+        ]);
+
+        $this->app->view->render('admin.add_new_forms', []);
     }
 
     public function renderFormInnerPages()
@@ -681,6 +705,7 @@ class Menu
             'hasPro'             => defined('FLUENTFORMPRO'),
             'upgrade_url'        => fluentform_upgrade_url(),
             'adminUrl'           => admin_url('admin.php?page=fluent_forms'),
+            'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics' => apply_filters('fluentform-disabled_analytics', false),
         ]));
 
@@ -875,13 +900,10 @@ class Menu
 
     public function addPreviewButton($formId)
     {
-        $previewText = __('Preview & Design', 'fluentform');
+        $previewText = __('Preview', 'fluentform');
         $previewUrl = Helper::getPreviewUrl($formId);
-        if ($isConversational = Helper::isConversionForm($formId)) {
-            $previewText = __('Preview', 'fluentform');
-        }
 
-        echo '<a target="_blank" class="el-button el-button--small" href="' . esc_url($previewUrl) . '">' . '<i class="el-icon-view"></i> ' . esc_attr($previewText) . '</a>';
+        echo '<a target="_blank" class="el-button el-button--info is-plain" href="' . esc_url($previewUrl) . '">' . '<i class="ff-icon ff-icon-eye-filled fs-15"></i> ' . '<span>' . esc_attr($previewText) . '</span>' . '</a>';
     }
 
     public function addCopyShortcodeButton($formId)
@@ -891,7 +913,7 @@ class Menu
         if (Helper::isConversionForm($formId)) {
             $shortcode = '[fluentform type="conversational" id="' . $formId . '"]';
         }
-        echo '<button style="background:#dedede;color:#545454;padding:5px;max-width: 200px;overflow: hidden;" title="Click to Copy" class="btn copy" data-clipboard-text=\'' . $shortcode . '\'><i class="dashicons dashicons-admin-page" style="color:#eee;text-shadow:#000 -1px 1px 1px;"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
+        echo '<button title="Click to Copy" class="shortcode_btn shortcode_btn_md copy truncate" data-clipboard-text=\'' . $shortcode . '\'><i class="el-icon el-icon-document-copy mr-1"></i> ' . $shortcode . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $shortcode is escaped before being passed in.
         return;
     }
 
@@ -931,6 +953,7 @@ class Menu
             }
         }
         $this->app->view->render('admin.global_menu', [
+            'logo' => fluentformMix('img/fluentform-logo.svg'),
             'show_payment'         => $showPayment,
             'show_payment_entries' => apply_filters('fluentform_show_payment_entries', false),
         ]);

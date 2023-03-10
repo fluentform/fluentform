@@ -3,6 +3,8 @@ import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
 import {
+    Row,
+    Col,
     Button,
     ButtonGroup,
     RadioGroup,
@@ -27,7 +29,8 @@ Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 
-
+Vue.use(Row);
+Vue.use(Col);
 Vue.use(Button);
 Vue.use(ButtonGroup);
 Vue.use(Input);

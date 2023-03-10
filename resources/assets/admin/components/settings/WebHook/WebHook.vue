@@ -1,67 +1,103 @@
 <template>
-    <div  v-loading="loading">
-        <el-row class="setting_header">
-            <el-col :md="12"><h2>{{ $t('WebHooks Integration') }}</h2></el-col>
+    <div v-loading="loading" class="ff_webhook_wrap">
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <h5 class="title">{{ $t('WebHooks Integration') }}</h5>
+                    <btn-group>
+                        <btn-group-item>
+                            <el-button 
+                                v-if="show_edit" 
+                                @click="backToHome()"
+                                size="medium" 
+                                icon="ff-icon ff-icon-arrow-left"
+                                type="dark"
+                                class="el-button--soft"
+                            >
+                                {{ $t('Back') }}
+                            </el-button>
+                            <el-button 
+                                v-else
+                                @click="add" 
+                                type="dark"
+                                size="medium" 
+                                icon="ff-icon ff-icon-plus"
+                            >
+                            {{ $t('Add New') }}
+                           </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <!-- WebHook Feeds Table: 1 -->
+                <div class="ff-table-wrap" v-if="!show_edit">
+                    <el-table class="ff_table_s2" :data="tableData">
+                    <template slot="empty">
+                        {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
+                        <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
+                    </template>
 
-            <!--Add Feed-->
-            <el-col :md="12" class="action-buttons mb15 clearfix">
-                <el-button v-if="!show_edit" @click="add" type="primary" class="pull-right"
-                           size="small" icon="el-icon-plus">{{ $t('Add New') }}</el-button>
+                    <el-table-column width="100">
+                        <template slot-scope="scope">
+                            <el-switch active-color="#13ce66" @change="handleActive(scope.row)" v-model="scope.row.formattedValue.enabled"></el-switch>
+                        </template>
+                    </el-table-column>
 
-                <el-button v-if="show_edit" @click="backToHome()" type="primary" class="pull-right"
-                           size="small" icon="el-icon-arrow-left">{{ $t('Back') }}</el-button>
-            </el-col>
-        </el-row>
+                    <el-table-column
+                        prop="formattedValue.name"
+                        :label="$t('Name')">
+                    </el-table-column>
 
-        <!-- WebHook Feeds Table: 1 -->
-        <el-table v-if="!show_edit" :data="tableData" stripe class="el-fluid">
-            <template slot="empty">
-                {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
-                <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
-            </template>
+                    <el-table-column
+                        prop="formattedValue.request_url"
+                        :label="('WebHook URL')">
+                    </el-table-column>
 
-            <el-table-column width="100">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.row)" v-model="scope.row.formattedValue.enabled"></el-switch>
-                </template>
-            </el-table-column>
-
-            <el-table-column
-                prop="formattedValue.name"
-                :label="$t('Name')">
-            </el-table-column>
-
-            <el-table-column
-                prop="formattedValue.request_url"
-                :label="('WebHook URL')">
-            </el-table-column>
-
-            <el-table-column width="160" label="Actions" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-button
-                    @click="edit(scope.$index)"
-                    type="primary"
-                    icon="el-icon-setting"
-                    size="mini"></el-button>
-                    <remove @on-confirm="remove(scope.row.id)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <!-- WebHook Feed Editor -->
-        <editor
-        v-if="show_edit"
-        :fields="inputs"
-        :form_id="form.id"
-        :has_pro="has_pro"
-        :edit_item="editing_item"
-        :selected_id="selected_id"
-        :ajax_actions="ajaxActions"
-        :setSelectedId="setSelectedId"
-        :selected_index="selectedIndex"
-        :request_headers="request_headers"
-        :editor_Shortcodes="editorShortcodes"
-        ></editor>
+                    <el-table-column width="160" label="Actions" class-name="action-buttons">
+                        <template slot-scope="scope">
+                            <btn-group>
+                                <btn-group-item>
+                                    <el-button
+                                        class="el-button--icon"
+                                        @click="edit(scope.$index)"
+                                        type="primary"
+                                        icon="el-icon-setting"
+                                        size="mini"
+                                    >
+                                    </el-button>
+                                </btn-group-item>
+                                <btn-group-item>
+                                    <remove @on-confirm="remove(scope.row.id)">
+                                        <el-button
+                                            class="el-button--icon"
+                                            size="mini"
+                                            type="danger"
+                                            icon="el-icon-delete"
+                                        />
+                                    </remove>
+                                </btn-group-item>
+                            </btn-group>
+                        </template>
+                    </el-table-column>
+                    </el-table>
+                </div>
+                <!-- WebHook Feed Editor -->
+                <editor
+                    v-if="show_edit"
+                    :fields="inputs"
+                    :form_id="form.id"
+                    :has_pro="has_pro"
+                    :edit_item="editing_item"
+                    :selected_id="selected_id"
+                    :ajax_actions="ajaxActions"
+                    :setSelectedId="setSelectedId"
+                    :selected_index="selectedIndex"
+                    :request_headers="request_headers"
+                    :editor_Shortcodes="editorShortcodes"
+                ></editor>
+            </card-body>
+        </card>
     </div>
 </template>
 
@@ -69,6 +105,12 @@
     import remove from '../../confirmRemove.vue';
     import inputPopover from '../../input-popover.vue';
     import Editor from './Editor.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     
     export default {
         name: 'WebHook',
@@ -76,7 +118,13 @@
         components: {
             remove,
             Editor,
-            inputPopover
+            inputPopover,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {

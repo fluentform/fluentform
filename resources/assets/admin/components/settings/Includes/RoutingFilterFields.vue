@@ -56,9 +56,9 @@
                             <el-input size="small" v-else placeholder="Enter a value" v-model="routing.value"></el-input>
                         </td>
                         <td>
-                            <div style="line-height: 100%;" class="action-btns ">
-                                <i class="el-icon-plus" @click="add(key)"></i>
-                                <i class="el-icon-minus" @click="remove(key)" v-if="routings.length > 1"></i>
+                            <div class="action-btns">
+                                <i class="ff_icon_btn mini dark el-icon-plus" @click="add(key)"></i>
+                                <i class="ff_icon_btn mini dark el-icon-minus" @click="remove(key)" v-if="routings.length > 1"></i>
                             </div>
                         </td>
                     </tr>
@@ -83,12 +83,16 @@
             routings: {
                 type: Array,
                 required: true,
-                default: []
+                default() {
+                    return []
+                }
             },
             fields: {
                 type: Object,
                 required: true,
-                default: {}
+                default() {
+                    return {}
+                }
             },
             disabled: {
                 type: Boolean,
@@ -108,7 +112,9 @@
             input_options: {
                 type: Object,
                 required: false,
-                default: {}
+                default() {
+                    return {}
+                }
             }
         },
         data() {

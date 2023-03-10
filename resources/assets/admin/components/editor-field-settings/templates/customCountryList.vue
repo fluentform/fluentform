@@ -7,7 +7,7 @@
                        :placeholder="$t('None')"
                        class="el-fluid">
                 <el-option value="" :selected="!editItem.attributes.value">{{ $t('None') }}</el-option>
-                <el-option v-for="(name, key, i) in countries" :value="key" :label="name" :key="key"></el-option>
+                <el-option v-for="(name, key) in countries" :value="key" :label="name" :key="key"></el-option>
             </el-select>
             <el-select v-else filterable clearable
                        id="settings_country_list"
@@ -15,7 +15,7 @@
                        :placeholder="$t('None')"
                        class="el-fluid">
                 <el-option value="" :selected="!editItem.settings.default_country">{{ $t('None') }}</el-option>
-                <el-option v-for="(name, key, i) in countries" :value="key" :label="name" :key="key"></el-option>
+                <el-option v-for="(name, key) in countries" :value="key" :label="name" :key="key"></el-option>
             </el-select>
         </el-form-item>
 
@@ -35,7 +35,7 @@
                 multiple :placeholder="$t('Select')"
                 class="el-fluid">
                 <el-option
-                    v-for="(name, key, i) in countries"
+                    v-for="(name, key) in countries"
                     :key="key"
                     :label="name"
                     :value="key">

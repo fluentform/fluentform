@@ -15,8 +15,7 @@
             &--label {
               text-align: left;
               float: none;
-              display: inline-block;
-              margin-bottom: 5px;
+              display: block;
             }
 
             &--content {
@@ -52,9 +51,8 @@
     &-input {
       &--label {
         display: inline-block;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         position: relative;
-
         &#{$el-prefix}-is-required {
           &.asterisk-left label:before {
             content: "* ";
@@ -72,8 +70,9 @@
         label {
           margin-bottom: 0;
           display: inline-block;
-          font-weight: 600;
+          font-weight: 500;
           line-height: inherit;
+          font-size: 15px;
         }
       }
     }
@@ -242,7 +241,7 @@
         color: $font-color;
       }
       svg {
-        fill: lighten($font-color, 35%);
+        fill: $primary;
       }
     }
 
@@ -267,7 +266,7 @@
       line-height: 1.2rem;
 
       &-bar {
-        background-color: #007bff;
+        background-color: $primary;
         height: inherit;
         width: 0;
         transition: width 0.3s;
@@ -671,12 +670,22 @@
 }
 
 #{$prefix}-message-success {
-  padding: 15px;
-  margin-top: 10px;
+  padding: 15px 15px 15px 42px;
   position: relative;
-  border: solid #ced4da 1px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  background-color: #f0f9eb;
+  color: #4a8c29;
+  border-radius: 6px;
   overflow-wrap: break-word;
+  margin-top: 10px;
+  &::after{
+    position: absolute;
+    top: 13px;
+    left: 15px;
+    content: "\e79c";
+    font-family: "element-icons" !important;
+    font-size: 20px;
+    width: 20px;
+  }
 }
 
 #{$prefix}-errors-in-stack {

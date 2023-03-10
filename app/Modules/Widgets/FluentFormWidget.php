@@ -2135,7 +2135,7 @@ class FluentFormWidget extends Widget_Base
             [
                 'label'     => __('Background Color', 'fluentform'),
                 'type'      => Controls_Manager::COLOR,
-                'default'   => '#409EFF',
+                'default'   => '#1a7efb',
                 'selectors' => [
                     '{{WRAPPER}} .fluentform-widget-wrapper .ff-el-group .ff-btn-submit' => 'background-color: {{VALUE}} !important;',
                 ],

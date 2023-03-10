@@ -1,150 +1,141 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="24">
-                <h2>{{ $t('Cloudflare Turnstile Settings') }}</h2>
+    <div class="ff_turnstile_wrap">
+        <el-form label-position="top">
+            <card>
+                <card-head>
+                    <h5 class="title">{{ $t('Cloudflare Turnstile Settings') }}</h5>
+                        <p class="text">
+                        {{
+                            $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
+                        }}
+                        <a href="https://www.cloudflare.com/en-gb/products/turnstile/" target="_blank">
+                            {{ $t('Read more about Cloudflare Turnstile.') }}
+                        </a>
+                    </p>
+                    <p class="text"><b>{{ $t('Please generate API key and API secret using Cloudflare Turnstile') }}</b></p>
+                </card-head>
+                <card-body>
+                    <!--Site key-->
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Site Key') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Enter your Turnstile Site Key, if you do not have a key you can register for one at the provided link Turnstile is a free service.') }}
+                                    </p>
+                                </div>
 
-                <p>
-                    {{
-                    $t('Fluent Forms integrates with Cloudflare Turnstile, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the Turnstile field.')
-                    }}
 
-                    <a href="https://www.cloudflare.com/en-gb/products/turnstile/" target="_blank">
-                        {{ $t('Read more about Cloudflare Turnstile.') }}
-                    </a>
-                </p>
-                <p><b>{{ $t('Please generate API key and API secret using Cloudflare Turnstile') }}</b></p>
-            </el-col>
-        </el-row>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
+                        <el-input v-model="turnstile.siteKey" @change="load"></el-input>
+                    </el-form-item>
 
-        <div class="section-body">
-            <el-form label-width="205px" label-position="left">
+                    <!--Secret key-->
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Secret Key') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Enter your Turnstile Secret Key, if you do not have a key you can register for one at the provided link, Turnstile is a free service.') }}
+                                    </p>
+                                </div>
 
-                <!--Site key-->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Site Key') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Turnstile Site Key') }}</h3>
-                                <p>
-                                    {{ $t('Enter your Turnstile Site Key, if you do not have ') }}<br />
-                                    {{ $t('a key you can register for one at the provided link.') }}<br />
-                                    {{ $t('Turnstile is a free service.') }}
-                                </p>
-                            </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
+                        <el-input type="password" v-model="turnstile.secretKey" @change="load"></el-input>
+                    </el-form-item>
 
-                    <el-input v-model="turnstile.siteKey" @change="load"></el-input>
-                </el-form-item>
+                    <el-form-item class="ff-form-item-flex ff-form-item reverse">
+                        <template slot="label">
+                            {{ $t('Enable Invisible Option') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('If you enable this then the field will be invisible but works in the background') }}
+                                    </p>
+                                </div>
 
-                <!--Secret key-->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Secret Key') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Turnstile Secret Key') }}</h3>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
-                                <p>
-                                    {{ $t('Enter your Turnstile Secret Key, if you do not have') }}<br>
-                                    {{ $t('a key you can register for one at the provided link.') }} <br>
-                                    {{ $t('Turnstile is a free service.') }}
-                                </p>
-                            </div>
+                        <el-checkbox class="mr-3" v-model="turnstile.invisible" true-label="yes" false-label="no"></el-checkbox>
+                    </el-form-item>
 
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Theme') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Choose a theme for the field') }}
+                                    </p>
+                                </div>
 
-                    <el-input type="password" v-model="turnstile.secretKey" @change="load"></el-input>
-                </el-form-item>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Enable Invisible Option') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Enable Invisible Option') }}</h3>
+                        <el-radio v-model="turnstile.theme" label="auto">Auto</el-radio>
+                        <el-radio v-model="turnstile.theme" label="light">Light</el-radio>
+                        <el-radio v-model="turnstile.theme" label="dark">Dark</el-radio>
+                    </el-form-item>
 
-                                <p>
-                                    {{ $t('If you enable this then the field will be invisible but works in the background') }}<br>
-                                </p>
-                            </div>
+                    <!--Validate Keys-->
+                    <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
+                        <div
+                            class="cf-turnstile"
+                            id="turnstile"
+                            :data-sitekey="turnstile.siteKey"
+                            data-callback="turnstileCallback"
+                        ></div>
+                    </el-form-item>
+                </card-body>
+            </card>
 
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
+            <div class="mt-4">
+                <el-button
+                    type="primary"
+                    icon="el-icon-success"
+                    @click="save"
+                    :disabled="disabled"
+                    :loading="saving"
+                >{{ $t('Save Settings') }}
+                </el-button>
 
-                    <el-checkbox v-model="turnstile.invisible" true-label="yes" false-label="no"></el-checkbox>
-                </el-form-item>
-
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Theme') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Choose Theme') }}</h3>
-
-                                <p>
-                                    {{ $t('Choose a theme for the field') }}<br>
-                                </p>
-                            </div>
-
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-
-                    <el-radio v-model="turnstile.theme" label="auto">Auto</el-radio>
-                    <el-radio v-model="turnstile.theme" label="light">Light</el-radio>
-                    <el-radio v-model="turnstile.theme" label="dark">Dark</el-radio>
-                </el-form-item>
-
-                <!--Validate Keys-->
-                <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
-                    <div
-                        class="cf-turnstile"
-                        id="turnstile"
-                        :data-sitekey="turnstile.siteKey"
-                        data-callback="turnstileCallback"
-                    ></div>
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button
-                        type="danger"
-                        icon="el-icon-delete"
-                        size="small"
-                        @click="clearSettings"
-                        :loading="clearing"
-                    >{{ $t('Clear Settings') }}
-                    </el-button>
-
-                    <el-button
-                        type="primary"
-                        icon="el-icon-success"
-                        size="small"
-                        @click="save"
-                        :disabled="disabled"
-                        :loading="saving"
-                    >{{ $t('Save Settings') }}
-                    </el-button>
-                </el-form-item>
-            </el-form>
-
-            <div v-if="turnstile_status && !disabled">
-                <p>{{ $t('Your Cloudflare Turnstile is valid') }}</p>
+                <el-button
+                    type="danger"
+                    icon="ff-icon ff-icon-trash"
+                    @click="clearSettings"
+                    :loading="clearing"
+                >{{ $t('Clear Settings') }}
+                </el-button>
             </div>
+        </el-form>
+        <div v-if="turnstile_status && !disabled">
+            <p>{{ $t('Your Cloudflare Turnstile is valid') }}</p>
         </div>
     </div>
 </template>
 
 <script>
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
+import CardHead from '@/admin/components/Card/CardHead.vue';
+
 export default {
+    components: { 
+        Card, 
+        CardHead, 
+        CardBody 
+    },
     name: "turnstile",
     props: ["app"],
     data() {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form labelWidth="130px" labelPosition="left" class="el-form-nested">
+        <el-form labelPosition="top" class="el-form-nested">
             <inputText v-if="childFields.indexOf('label') != -1" :listItem="{type: 'text', label: 'Label'}" v-model="field.settings.label"></inputText>
 
             <inputDefaultValue v-if="childFields.indexOf('value') != -1" v-model="field.attributes.value" :listItem="{label: 'Default'}" :editItem="field"></inputDefaultValue>
@@ -28,7 +28,7 @@
 
         </el-form>
 
-        <validationRules labelPosition="left" :editItem="field"></validationRules>
+        <validationRules :editItem="field"></validationRules>
     </div>
 </template>
 

@@ -67,8 +67,8 @@
                     </div>
 
                     <div class="action-btn">
-                        <i @click="increase(index)" class="icon icon-plus-circle"></i>
-                        <i @click="decrease(index)" class="icon icon-minus-circle"></i>
+                        <i @click="increase(index)" class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
+                        <i @click="decrease(index)" class="ff_icon_btn mini dark el-icon-minus"></i>
                     </div>
                 </vddl-nodrag>
             </vddl-draggable>
@@ -90,27 +90,35 @@
         <el-dialog
             :append-to-body="true"
             class="ff_backdrop"
-            :title="$t('Edit your options')"
             :visible.sync="bulkEditVisible"
+            width="60%"
         >
-            <div v-if="bulkEditVisible" class="bulk_editor_wrapper">
-                <h4>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</h4>
+        <div slot="title">
+            <h4 class="mb-2">{{$t('Edit your options')}}</h4>
+            <p>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</p>
+        </div>
+            <div v-if="bulkEditVisible" class="bulk_editor_wrapper mt-4">
                 <el-row :gutter="20">
-                    <el-col :span="12">
-                        <ul class="ff_bulk_option_groups">
-                            <li @click="setOptions(options)" v-for="(options, optionGroup) in editor_options" :key="optionGroup">{{optionGroup}}</li>
+                    <el-col :span="24">
+                        <ul class="ff_bulk_option_groups mb-3">
+                            <li 
+                            @click="setOptions(options)" 
+                            v-for="(options, optionGroup) in editor_options" 
+                            :key="optionGroup"
+                            :class="{ 'active': options === activeClass}"
+                            >{{optionGroup}}</li>
                         </ul>
                     </el-col>
-                    <el-col :span="12">
-                        <el-input type="textarea" :rows="14" v-model="value_key_pair_text"></el-input>
-                        <p>{{ $t('You can simply give value only the system will convert the label as value') }}</p>
+                    <el-col :span="24">
+                        <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
+                        <p class="mt-2">{{ $t('You can simply give value only the system will convert the label as value') }}</p>
                     </el-col>
                 </el-row>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button size="mini" @click="bulkEditVisible = false">{{ $t('Cancel') }}</el-button>
-                <el-button size="mini" type="primary" @click="confirmBulkEdit()">{{ $t('Confirm') }}</el-button>
-            </span>
+            <div slot="footer" class="dialog-footer text-left mt-4">
+                <el-button type="primary" @click="confirmBulkEdit()">{{ $t('Yes, Confirm!') }}</el-button>
+                <el-button @click="bulkEditVisible = false" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+            </div>
         </el-dialog>
 
     </el-form-item>
@@ -147,7 +155,8 @@
                 value_key_pair_text: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 pro_mock: false,
-                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json)
+                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json),
+                activeClass: null,
             }
         },
         computed: {
@@ -274,6 +283,7 @@
 
             setOptions(options) {
                 this.value_key_pair_text = options.join('\n');
+                this.activeClass = options;
             },
 
             clear() {

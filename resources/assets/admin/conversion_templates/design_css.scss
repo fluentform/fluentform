@@ -1,90 +1,105 @@
-@import "~element-ui/lib/theme-chalk/form.css";
-@import "~element-ui/lib/theme-chalk/form-item.css";
-@import "~element-ui/lib/theme-chalk/color-picker.css";
-@import "~element-ui/lib/theme-chalk/slider.css";
-@import "~element-ui/lib/theme-chalk/button.css";
-@import "~element-ui/lib/theme-chalk/input.css";
-@import "~element-ui/lib/theme-chalk/row.css";
-@import "~element-ui/lib/theme-chalk/col.css";
-@import "~element-ui/lib/theme-chalk/switch.css";
-@import "~element-ui/lib/theme-chalk/select.css";
-@import "~element-ui/lib/theme-chalk/option-group.css";
-@import "~element-ui/lib/theme-chalk/option.css";
 @import "./browser_frame";
+@import "../styles/element_ui_var";
+@import "../styles/variables";
+@import "../styles/tab";
 
-.fcc_conversational_design {
-  margin-top: 30px;
+.fcc_conversational_design{
+  padding: 30px;
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   min-height: 80vh;
-  background: rgb(250, 250, 250);
-  .ffc_design_sidebar {
-    width: 300px;
-    background-color: white;
-    border: 1px solid #e2e4e7;
-    .ffc_sidebar_header {
-      width: 300px;
+}
+
+// design setting
+.ffc {
+  &_design{
+    &_sidebar {
+      width: 350px;
+      background-color: $--color-white;
+      border-radius: $border-radius;
+      flex-shrink: 0;
     }
-    .ffc_sidebar_body {
-      padding: 10px 15px 10px 15px;
-      .el-form-item__content {
-        text-align: right;
-      }
+    &_container {
+      width: 100%;
+      padding: 0 24px 24px 24px;
+    }
+    &_elements {
       .el-form-item {
-        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        &::before,
+        &::after{
+          display: none;
+        }
+        &__label{
+          float: none;
+          padding-right: 0;
+          line-height: inherit;
+        }
+        &__content{
+          line-height: inherit;
+          &::before,
+          &::after{
+            display: none;
+          }
+        }
+        &.fcc_label_top {
+          flex-direction: column;
+          .el-form-item{
+            &__label {
+              width: 100%;
+              padding-bottom: 15px;
+            }
+            &__content{
+              width: 100%;
+            }
+          }
+        }
+      }
+      .el-select{
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .ff_file_upload_wrap{
+        margin-bottom: 15px;
+      }
+    }
+  }
+  &_sidebar{
+    &_header{
+      padding-bottom: 24px;
+    }
+    &_body {
+      .el-form-item {
+        margin-bottom: 10px;
       }
       .ffc_design_submit {
-        margin-top: 30px;
+        margin-top: 35px;
         text-align: center;
       }
     }
   }
-  .ffc_design_container {
-    width: 100%;
-    padding: 10px 20px;
-  }
-
-  .ffc_sidebar_header ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: space-evenly;
-    align-items: center;
-    border-bottom: 1px solid #e2e4e7;
-    li {
-      padding: 10px 5px;
-      cursor: pointer;
-      &.ffc_active {
-        color: #409eff;
-        font-weight: bold;
+  &_meta_settings {
+    max-width: 900px;
+    &_form{
+      h5 {
+        margin-top: 40px;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        border-bottom: 1px solid $border-color;
       }
     }
   }
-
-  .ffc_design_elements {
-    .fcc_eq_line .el-form-item__label {
-      line-height: 120%;
-    }
-    .el-form-item.fcc_label_top .el-form-item__label {
-      width: 100% !important;
-      display: block;
-      line-height: 100%;
-      float: none;
-    }
-
-    .el-form-item.fcc_label_top .el-form-item__content {
-      width: 100%;
-      margin-left: 0 !important;
-      display: block;
+  &_sharing_settings{
+    .ff_card{
+      margin-bottom: 24px;
     }
   }
-
 }
+
 
 div#ff_conversation_form_design_app {
   display: block;
@@ -97,28 +112,6 @@ div#ff_conversation_form_design_app {
   box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.06) 0px 2px 12px;
   iframe {
     border-radius: 8px;
-  }
-}
-
-.ffc_meta_settings {
-  max-width: 900px;
-  padding: 0px 20px 20px;
-  background: white;
-  margin: 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.06) 0px 2px 12px;
-  .el-form-item .el-form-item__label {
-    font-weight: bold;
-    margin-bottom: 0;
-    line-height: 100%;
-  }
-  .el-form-item .ffc_help {
-    font-size: 80%;
-  }
-  h3 {
-    margin-top: 20px;
-    margin-bottom: 20px;
   }
 }
 

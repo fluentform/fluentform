@@ -1,16 +1,16 @@
-<div class="wrap ff_form_wrap ff_screen_<?php echo esc_attr($route); ?>">
+<div class="ff_form_wrap ff_screen_<?php echo esc_attr($route); ?>">
 	<?php do_action('fluentform_before_form_screen_wrapper', $form_id, $route); ?>
 	
 	<div class="form_internal_menu">
 
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
-			<span><?php echo esc_html($form->title); ?></span>
+			<span class="ml-1"><?php echo esc_html($form->title); ?></span>
 		</div>
 
-		<ul class="ff_setting_menu">
+		<ul class="ff_menu">
 			<?php foreach ($menu_items as $menu_index => $menu_item): ?>
 				<li class="<?php if ($route == $menu_item['slug']) echo "active"; ?>">
-                    <a href="<?php echo esc_url($menu_item['url']); ?><?php if (isset($menu_item['hash'])) echo "#". esc_attr($menu_item['hash']); ?>">
+                    <a class="ff_menu_link" href="<?php echo esc_url($menu_item['url']); ?><?php if (isset($menu_item['hash'])) echo "#". esc_attr($menu_item['hash']); ?>">
                         <?php echo esc_html($menu_item['title']); ?>
                     </a>
                 </li>
@@ -21,7 +21,7 @@
 			<?php do_action('fluentform_after_form_navigation', $form_id, $route); ?>
 			<?php do_action('fluentform_after_form_navigation_' . $route, $form_id); ?>
 
-			<div id="more-menu" class="pull-right">
+			<div id="more-menu">
 				<more-menu />
 			</div>
 		</div>

@@ -33,8 +33,9 @@
                         :route="{ name: 'google-api-settings' }"
                     >API Settings</el-menu-item>
                     
-                    <template v-for="extra_nav in extra_navs">
+                    <template v-for="(extra_nav, extra_nav_key) in extra_navs">
                         <el-menu-item
+                            :key="extra_nav_key"
                             :index="extra_nav.name"
                             :route="{ name: 'extra', query: { module: extra_nav.name } }"
                         >{{ extra_nav.label }}</el-menu-item>

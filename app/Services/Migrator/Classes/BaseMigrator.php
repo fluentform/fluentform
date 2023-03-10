@@ -1414,7 +1414,7 @@ abstract class BaseMigrator
                 'button_style'     => 'default',
                 'button_size'      => 'md',
                 'color'            => '#ffffff',
-                'background_color' => '#409EFF',
+                'background_color' => '#1a7efb',
                 'button_ui'        => [
                     'type'    => ArrayHelper::get($args, 'type', 'default'),
                     'text'    => $args['label'],

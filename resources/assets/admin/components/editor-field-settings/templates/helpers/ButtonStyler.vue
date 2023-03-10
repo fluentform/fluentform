@@ -1,6 +1,6 @@
 <template>
     <div class="button_styler_wrapper">
-        <div class="styler_row styler_row_3">
+        <div class="styler_row">
             <el-form-item>
                 <elLabel slot="label" :label="$t('Background Color')" :helpText="$t('Button Background Color')"></elLabel>
                 <ninja-color-picker v-model="model.backgroundColor"></ninja-color-picker>
@@ -17,11 +17,11 @@
         <div class="styler_row">
             <el-form-item>
                 <elLabel slot="label" :label="$t('Border Radius (px)')" :helpText="$t('Button Border Radius')"></elLabel>
-                <input type="number" v-model="model.borderRadius" />
+                <input class="w-100" :placeholder="$t('ex: 4')" type="number" v-model="model.borderRadius" />
             </el-form-item>
             <el-form-item>
                 <elLabel slot="label" :label="$t('Min-Width')" :helpText="$t('Button Min-Width (Keep blank/0 for auto)')"></elLabel>
-                <input :placeholder="$t('ex: 100%')" type="text" v-model="model.minWidth" />
+                <input class="w-100" :placeholder="$t('ex: 100%')" type="text" v-model="model.minWidth" />
             </el-form-item>
         </div>
     </div>

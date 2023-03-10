@@ -143,19 +143,15 @@ $editorBg: #fafafa;
   background-color: transparent;
   margin-bottom: 20px;
   cursor: pointer;
-
   .hover-action-middle {
     align-items: flex-start;
     justify-content: flex-end;
   }
-
   .panel__body--item {
-    border-radius: 10px;
+    border-radius: 8px;
   }
-
   .panel__body--item.selected {
-    background: white;
-    box-shadow: 0 0 5px 1px #409eff;
+    background: #ffffff;
   }
 }
 

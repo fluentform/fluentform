@@ -19,24 +19,40 @@
 </div>
 <div id="ff_preview_top">
     <div id="ff_preview_header">
-        <div class="ff_preview_title">
-            <ul>
-                <li class="ff_form_name">
-                    <?php echo intval($form->id) .' - '. esc_attr($form->title);  ?>
-                </li>
-                <li>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms&form_id=' . intval($form_id) . '&route=editor')) ?>">Edit Fields</a>
-                </li>
-            </ul>
+        <div class="ff_form_name">
+            <?php echo intval($form->id) .' - '. esc_attr($form->title);  ?>
         </div>
-        <label for="ff_preview_only"><input id="ff_preview_only" type="checkbox" /> Preview Only</label>
-        <div class="ff_preview_action">
-           [fluentform id="<?php echo intval($form_id); ?>"]
+        <ul class="ff_preview_menu">
+            <li>
+                <a class="ff_preview_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms&form_id=' . intval($form_id) . '&route=editor')) ?>">Edit Fields</a>
+            </li>
+            <li>
+                <a class="ff_preview_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms&form_id=' . intval($form_id) . '&route=settings&sub_route=form_settings#/basic_settings' )) ?>">Settings & Integrations</a>
+            </li>
+            <li>
+                <a class="ff_preview_menu_link" href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms&form_id=' . intval($form_id) . '&route=entries#/' )) ?>">Entries</a>
+            </li>
+        </ul>
+        <div class="ff_preview_only_label_wrap">
+            <label for="ff_preview_only"><input id="ff_preview_only" type="checkbox" /> Preview Only</label>
+        </div>
+        <div class="ff_preview_action" id="copy-toggle">
+            <i class="el-icon el-icon-document-copy mr-1"></i>
+            <span id="copy">
+                [fluentform id="<?php echo intval($form_id); ?>"]
+            </span>
         </div>
     </div>
     <div class="ff_preview_body">
         <div class="ff_form_preview_wrapper">
-            <?php echo do_shortcode('[fluentform id="' . intval($form_id) . '"]'); ?>
+            <div class="ff_form_preview_header">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-success"></span>
+            </div>
+            <div class="ff_form_preview">
+                <?php echo do_shortcode('[fluentform id="' . intval($form_id) . '"]'); ?>
+            </div>
         </div>
         <div class="ff_form_styler_wrapper">
             <?php if(defined('FLUENTFORMPRO')): ?>
@@ -49,48 +65,48 @@
                     <div class="ff_promo_body">
                         <p><a target="_blank" href="https://wpmanageninja.com/docs/fluent-form/fluent-forms-styles/">Advanced Form styler</a> is available in Pro version of Fluent Forms.
                             You can style every element of the forms including input fields, form container, success / error messages and many more.</p>
-                        <h4>Other Features</h4>
-                        <ul>
-                            <li>Stripe & PayPal Integration</li>
-                            <li>Advanced Form Styler</li>
-                            <li>Advanced Form Fields</li>
-                            <li>Payment Processing</li>
-                            <li>20+ CRM integrations</li>
-                            <li>Calculated Fields for quotation form</li>
-                            <li>Multi-Step Forms</li>
-                            <li>Conditional Logics</li>
-                            <li>File Upload Feature</li>
-                            <li>SMS Notifications</li>
-                            <li>Visual Data Reporting</li>
+                        <h5>Other Features</h5>
+                        <ul class="ff_feature_list">
+                            <li><i class="el-icon el-icon-check"></i> Stripe & PayPal Integration</li>
+                            <li><i class="el-icon el-icon-check"></i> Advanced Form Styler</li>
+                            <li><i class="el-icon el-icon-check"></i> Advanced Form Fields</li>
+                            <li><i class="el-icon el-icon-check"></i> Payment Processing</li>
+                            <li><i class="el-icon el-icon-check"></i> 20+ CRM integrations</li>
+                            <li><i class="el-icon el-icon-check"></i> Calculated Fields for quotation form</li>
+                            <li><i class="el-icon el-icon-check"></i> Multi-Step Forms</li>
+                            <li><i class="el-icon el-icon-check"></i> Conditional Logics</li>
+                            <li><i class="el-icon el-icon-check"></i> File Upload Feature</li>
+                            <li><i class="el-icon el-icon-check"></i> SMS Notifications</li>
+                            <li><i class="el-icon el-icon-check"></i> Visual Data Reporting</li>
                         </ul>
-                        <p style="text-align: center">
+                        <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
                             <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
-                        </p>
+                        </div>
+                        <?php $addOns = (new \FluentForm\App\Modules\AddOnModule())->getPremiumAddOns(); ?>
 
-
-                        <?php
-                        $addOns = (new \FluentForm\App\Modules\AddOnModule())->getPremiumAddOns();
-                        ?>
-
-                        <h4>Integrations available in Fluent Forms Pro</h4>
+                        <h5>Integrations available in Fluent Forms Pro</h5>
                         <ul class="ff_addons">
                             <?php foreach ($addOns as $addOn): ?>
                                 <li><img title="<?php echo esc_attr($addOn['title']); ?>" src="<?php echo esc_attr($addOn['logo']); ?>" /></li>
                             <?php endforeach; ?>
                         </ul>
 
-                        <p style="text-align: center">
+                        <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
                             <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
-                        </p>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
         </div>
     </div>
-    <div class="ff_preview_footer">
+</div>
+<div class="ff_notice">
+    <div class="ff_notice_inner">
+        <i class="el-icon el-icon-warning"></i>
         <p>You are seeing preview version of Fluent Forms. This form is only accessible for Admin users. Other users
-            may not access this page. To use this for in a page please use the following shortcode: [fluentform
-            id='<?php echo intval($form_id) ?>']</p>
+        may not access this page. To use this for in a page please use the following shortcode: 
+        <strong>[fluentform id='<?php echo intval($form_id) ?>']</strong>
+        </p>
     </div>
 </div>
 <?php
@@ -109,6 +125,31 @@ wp_footer();
                 $('.ff_preview_text').html('Design Mode');
             }
         });
+
+        // copy to clipboard
+        let copyToggle = $("#copy-toggle");
+        let copy = $('#copy');
+        let body = $("body");
+
+        copyToggle.on('click', function(){
+            let copyText = copy.text();
+            let temp = $("<input>");
+
+            body.append(temp);
+            temp.val(copyText).select();
+            document.execCommand("copy");
+            temp.remove();
+
+            let alertElem = $('<div role="alert" class="el-notification right" style="bottom: 16px; z-index: 999999;"><i class="el-notification__icon el-icon-success"></i><div class="el-notification__group is-with-icon"><h2 class="el-notification__title">Success</h2><div class="el-notification__content"><p>Copied to Clipboard.</p></div></div></div>');
+
+            body.append(alertElem);
+
+            setTimeout(function(){
+                alertElem.remove();
+            }, 2000);
+            
+        });
+
     });
 </script>
 
