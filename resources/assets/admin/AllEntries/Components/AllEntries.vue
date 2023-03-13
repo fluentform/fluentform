@@ -47,7 +47,7 @@
             </section-head-content>
         </section-head>
 
-        <div v-if="chart_status == 'yes'" class="entry_chart mb-5">
+        <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mb-5">
             <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status" ></entry-chart>
         </div>
         
@@ -270,8 +270,11 @@ export default {
             }
         },
         goToPage(value) {
-            this.paginate.current_page = value;
-            this.fetchEntries();
+            let scrollTop = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
+            jQuery('html, body').animate({scrollTop}, 300).promise().then(elements => {
+                this.paginate.current_page = value;
+                this.fetchEntries();
+            });
         },
         handleSizeChange(val) {
             this.paginate.per_page = val;
