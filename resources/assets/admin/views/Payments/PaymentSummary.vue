@@ -1,15 +1,13 @@
 <template>
     <div v-if="order_data" class="ff-payment_details">
-        <div
-                v-if="order_data.order_items.length"
-                class="entry_info_box entry_submission_order_data"
-        >
-            <div class="entry_info_header">
-                <div class="info_box_header">
+        <div  v-if="order_data.order_items.length" class="ff_card">
+
+            <card-head>
+                <h6>
                     {{$t('Order Details')}}
-                </div>
-            </div>
-            <div class="entry_info_body">
+                </h6>
+            </card-head>
+            <card-body>
                 <div class="wpff_order_items_wrapper">
                     <table class="ff-table ff-payment-table">
                         <thead>
@@ -46,7 +44,7 @@
                         </tfoot>
                     </table>
                 </div>
-            </div>
+            </card-body>
         </div>
 
         <subscriptions
@@ -59,16 +57,10 @@
 
         <div
                 v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
-                class="entry_info_box entry_submission_order_data"
+                class="ff_card mt-4 mb-4"
         >
-            <div class="entry_info_header">
-                <div class="info_box_header">
-                    {{$t('Payment Details')}}
-                </div>
-                <div class="info_box_header_actions">
-                </div>
-            </div>
-            <div class="entry_info_body">
+            <card-head> {{$t('Payment Details')}} </card-head>
+            <card-body class="entry_info_body">
                 <div class="payment_header subscripton_item">
                     <div class="payment_head_top">
                         <div class="payment_header_left">
@@ -185,7 +177,7 @@
                         {{$t('Edit Transaction')}}
                     </el-button>
                 </div>
-            </div>
+            </card-body>
         </div>
 
         <div v-if="order_data.refunds && order_data.refunds.length" class="entry_info_box entry_submission_order_data">
@@ -276,12 +268,15 @@
 </template>
 <script type="text/babel">
     import Subscriptions from "./Subscriptions";
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
 
     export default {
         name: 'PaymentSummary',
         props: ['order_data', 'submission'],
         components: {
-            Subscriptions
+            Subscriptions, Card, CardHead, CardBody
         },
         data() {
             return {

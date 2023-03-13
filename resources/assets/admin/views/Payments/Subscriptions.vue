@@ -1,14 +1,10 @@
 <template>
-    <div class="entry_info_box entry_submission_order_data">
-        <div class="entry_info_header">
-            <div class="info_box_header">
-                {{ $t('Subscriptions (Recurring Payments)') }}
-            </div>
-            <div class="info_box_header_actions">
-            </div>
-        </div>
+    <div class="entry_info_box entry_submission_order_data ">
+        <card-head>
+            <h6> {{ $t('Subscriptions (Recurring Payments)') }} </h6>
+        </card-head>
 
-        <div class="entry_info_body">
+        <card-body>
             <div
                 :key="subscriptionIndex"
                 class="payment_header subscripton_item"
@@ -143,7 +139,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </card-body>
 
         <el-dialog
             title="Conform subscription cancelation"
@@ -169,9 +165,13 @@
 
 <script type="text/babel">
 import each from "lodash/each";
+import Card from '@/admin/components/Card/Card.vue';
+import CardHead from '@/admin/components/Card/CardHead.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
 
 export default {
     name: "Subscriptions",
+    components: {Card, CardHead, CardBody},
     props: ['subscriptions', 'discounts', 'payment_method'],
     data() {
         return {
