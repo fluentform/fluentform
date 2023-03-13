@@ -51,9 +51,10 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', ArrayHelper::get($components, 'payment_settings'))); ?>">
                                 <?php echo __('Payment Settings', 'fluentform'); ?>
                             </a>
-                            <?php if (ArrayHelper::exists($components, 'payment_settings.sub_menu')) : ?>
+                            <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
                             <ul>
                                 <?php
+
                                 $subMenus =  ArrayHelper::get($components, 'payment_settings.sub_menu');
                                 foreach ($subMenus as $subMenu):
                                     $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
