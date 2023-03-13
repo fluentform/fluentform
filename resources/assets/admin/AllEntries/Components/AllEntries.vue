@@ -112,7 +112,7 @@
                             <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column :label="$t('Form')" prop="title" width="400"></el-table-column>
+                    <el-table-column :label="$t('Form')" prop="form.title" width="400"></el-table-column>
                     <el-table-column width="150" :label="$t('Status')">
                         <template slot-scope="scope">
                             <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
@@ -294,6 +294,30 @@ export default {
         },
         resetAdvancedFilter() {
             this.advancedFilter = false;
+            this.fetchEntries();
+        }
+    },
+    watch: {
+        radioOption() {
+            const start = new Date();
+            const end = new Date();
+            let number = 1;
+            switch (this.radioOption) {
+                case 'yesterday':
+                    break;
+                case 'last-week':
+                    number = 7;
+                    break;
+                case 'last-month':
+                    number = 30;
+                    break;
+                default:
+                    number = 0;
+            }
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+            const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
+            const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
+            this.filter_date_range = [startDate, endDate];
             this.fetchEntries();
         }
     },
