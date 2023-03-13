@@ -109,13 +109,15 @@
 
                     <div class="ff_pagination_wrap text-right mt-4">
                         <el-pagination
+                            class="ff_pagination"
                             background
-                            @current-change="getLogs"
-                            :hide-on-single-page="true"
-                            :page-size="per_page"
-                            :current-page.sync="page_number"
-                            layout="prev, pager, next"
-                            :total="total">
+                            @size-change="handleSizeChange"
+                            @current-change="goToPage"
+                            :current-page.sync="paginate.current_page"
+                            :page-sizes="[5, 10, 20, 50, 100]"
+                            :page-size="paginate.per_page"
+                            layout="total, sizes, prev, pager, next"
+                            :total="paginate.total">
                         </el-pagination>
                     </div>
                 </div>
@@ -139,16 +141,19 @@
             return {
                 logs: [],
                 loading: false,
-                page_number: 1,
-                per_page: 4,
-                total: 0,
                 available_statuses: [],
                 available_components: [],
                 available_forms: [],
                 selected_form: '',
                 selected_status: '',
                 selected_component: '',
-                multipleSelection: []
+                multipleSelection: [],
+                paginate: {
+                    total: 0,
+                    current_page: 1,
+                    last_page: 1,
+                    per_page: 10
+                },
             }
         },
         methods: {
@@ -158,8 +163,8 @@
                 const url = FluentFormsGlobal.$rest.route('getLogs');
 
                 FluentFormsGlobal.$rest.get(url, {
-                    page: this.page_number,
-                    per_page: this.per_page,
+                    page: this.paginate.current_page,
+                    per_page: this.paginate.per_page,
                     form_id: this.selected_form,
                     status: this.selected_status,
                     component: this.selected_component,
@@ -168,6 +173,7 @@
                     .then(response => {
                         this.logs = response.data;
                         this.total = response.total;
+                        this.setPaginate(response);
                     })
                     .catch(error => {
                         console.log(error);
@@ -227,6 +233,22 @@
                     .replace('_notification_feed', '')
                     .replace('_', ' ');
                 return newName;
+            },
+            goToPage(value) {
+                this.paginate.current_page = value;
+                this.getLogs();
+            },
+            handleSizeChange(value) {
+                this.paginate.per_page = value;
+                this.getLogs();
+            },
+            setPaginate(data = {}) {
+                this.paginate = {
+                    total: data.total || 0,
+                    current_page: data.current_page || 1,
+                    last_page: data.last_page || 1,
+                    per_page: data.per_page || 10,
+                }
             },
         },
         mounted() {
