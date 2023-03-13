@@ -282,8 +282,10 @@ class Submission extends Model
                 }
             ])
             ->select(['id', 'form_id', 'status', 'created_at', 'browser', 'currency', 'total_paid'])
-            ->orWhereHas('form', function ($q) use ($search) {
-                $q->orWhere('title', 'LIKE', "%{$search}%");
+            ->when($search, function ($q) use ($search){
+                return $q->orWhereHas('form', function ($q) use ($search) {
+                    return $q->orWhere('title', 'LIKE', "%{$search}%");
+                });
             })
             ->paginate()
             ->toArray();

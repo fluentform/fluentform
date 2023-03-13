@@ -591,6 +591,28 @@ export default {
                 this.paginate.current_page = 1;
                 this.fetchItems();
             }
+        },
+        radioOption() {
+            const start = new Date();
+            const end = new Date();
+            let number = 1;
+            switch (this.radioOption) {
+                case 'yesterday':
+                    break;
+                case 'last-week':
+                    number = 7;
+                    break;
+                case 'last-month':
+                    number = 30;
+                    break;
+                default:
+                    number = 0;
+            }
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+            const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
+            const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
+            this.filter_date_range = [startDate, endDate];
+            this.fetchItems();
         }
     }
 };

@@ -197,33 +197,6 @@
             </el-col>
         </el-row>
 
-        <el-dropdown @command="exportEntries">
-            <el-button type="info" size="mini">
-                {{ $t('Export') }} <i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsx)</el-dropdown-item>
-                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
-            </el-dropdown-menu>
-        </el-dropdown>
-        <el-button @click="advancedFilter = true" size="mini">{{ $t('Advanced Filter') }}</el-button>
-        <el-dialog :visible.sync="visibleColReorderModal">
-            <template slot="title">
-                <h4>{{ $t('Change Column Display Order') }}</h4>
-            </template>
-            <div class="mt-4">
-                <ColumnDragAndDrop
-                        :columns="columns"
-                        :columns_order="columnsOrder"
-                        :form_id="form_id"
-                        :visible_columns="visibleColumns"
-                        @save="refreshColumnsOrder"
-                />
-            </div>
-        </el-dialog>
-
         <div
                 v-loading="loading"
                 :element-loading-text="$t('Loading Entries...')"
@@ -460,6 +433,28 @@
                 if (!this.search_string.length) {
                     this.getData();
                 }
+            },
+            radioOption() {
+                const start = new Date();
+                const end = new Date();
+                let number = 1;
+                switch (this.radioOption) {
+                    case 'yesterday':
+                        break;
+                    case 'last-week':
+                        number = 7;
+                        break;
+                    case 'last-month':
+                        number = 30;
+                        break;
+                    default:
+                        number = 0;
+                }
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+                const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
+                const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
+                this.filter_date_range = [startDate, endDate];
+                this.getData();
             }
         },
         data() {
