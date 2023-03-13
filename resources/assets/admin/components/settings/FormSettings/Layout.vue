@@ -461,7 +461,7 @@
                             </template>
                         </el-col>
                         <el-col :span="24">
-                            <p class="text-note" style="margin-top: -14px;">{{geo_providers[misc.geo_provider].token_instruction}}</p>
+                            <p v-if="misc.geo_provider && geo_providers[misc.geo_provider].token_instruction" class="text-note" style="margin-top: -14px;">{{geo_providers[misc.geo_provider].token_instruction}}</p>
                         </el-col>
                     </el-row>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
@@ -541,6 +541,30 @@
                         <el-radio :disabled="!captcha_status.turnstile"  label="turnstile">{{ $t('Turnstile') }}</el-radio>
                     </el-radio-group>
                 </div>
+                <!-- Toggle Admin Top Navigation -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item-flex ff-form-item mb-3">
+                        <template slot="label">
+                            <span style="width: 390px;">
+                                <span>
+                                   {{ $t('Admin Top Navigation') }}
+                                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                                        <div slot="content">
+                                            <h3>{{ $t('Admin Top Navigation') }}</h3>
+                                            <p>
+                                                {{$t('Toggle Admin Top Navigation on or off. Please reload the page after changing this option.') }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </span>
+                                <p class="text-note mt-1">For using captcha, you have to enable captcha first.</p>
+                            </span>
+                        </template>
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg" :disabled="!hasCaptcha" active-color="#00b27f"
+                                v-model="misc.admin_top_nav_status"></el-switch>
+                    </el-form-item>
+                </div>
                 
                 <el-form-item class="ff-form-item">
                     <template slot="label">
@@ -563,22 +587,6 @@
                         :placeholder="$t('Email Footer Text')"
                         v-model="misc.email_footer_text">
                     </el-input>
-                </el-form-item>
-                <!-- Toggle Admin Top Navigation -->
-                <el-form-item>
-                    <template slot="label">
-                        {{ $t('Admin Top Navigation') }}
-                        <el-tooltip class="item" placement="bottom-start" effect="light">
-                            <div slot="content">
-                                <h3>{{ $t('Admin Top Navigation') }}</h3>
-                                <p>
-                                    {{$t('Toggle Admin Top Navigation on or off') }}
-                                </p>
-                            </div>
-                            <i class="el-icon-info el-text-info"></i>
-                        </el-tooltip>
-                    </template>
-                    <el-switch active-color="#13ce66" active-value="yes" inactive-value="no" v-model="misc.admin_top_nav_status"></el-switch>
                 </el-form-item>
             </card-body>
         </card>
