@@ -97,7 +97,7 @@ class SubmissionService
 
         $formId = Arr::get($attributes, 'form_id');
         $submissionId = Arr::get($attributes, 'entry_id');
-
+    
         if (Arr::get($attributes, 'counts')) {
             $resources['counts'] = $this->model->countByGroup($formId);
         }
@@ -132,8 +132,7 @@ class SubmissionService
             $attributes['direction'] = 'previous';
             $resources['previous'] = $this->model->findAdjacentSubmission($attributes);
         }
-
-        if (in_array(['orderData', 'widgets', 'cards'], $attributes)) {
+        if (count(array_intersect(['orderData', 'widgets', 'cards'], array_keys($attributes))) > 0) {
             try {
                 $submission = $this->model->with('form')->findOrFail($submissionId);
             } catch (Exception $e) {
