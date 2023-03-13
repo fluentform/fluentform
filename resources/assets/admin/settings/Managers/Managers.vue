@@ -68,14 +68,16 @@
     
             <div class="ff_pagination_wrap text-right mt-4">
                 <el-pagination
-                    @current-change="goToPage"
+                    class="ff_pagination"
                     background
-                    :hide-on-single-page="true"
-                    :page-size="pagination.per_page"
-                    :current-page.sync="pagination.page_number"
-                    layout="prev, pager, next"
-                    :total="pagination.total"
-                ></el-pagination>
+                    @size-change="handleSizeChange"
+                    @current-change="goToPage"
+                    :current-page.sync="pagination.current_page"
+                    :page-sizes="[5, 10, 20, 50, 100]"
+                    :page-size="parseInt(pagination.per_page)"
+                    layout="total, sizes, prev, pager, next"
+                    :total="pagination.total">
+                </el-pagination>
             </div>
         </div>
 
@@ -165,12 +167,6 @@ export default {
     data() {
         return {
             loading: false,
-            // managers: [],
-            // pagination: {
-            //     total: 0,
-            //     current_page: 1,
-            //     per_page: 3
-            // },
             permissions: {},
             modal: false,
             manager: {},
@@ -183,7 +179,6 @@ export default {
         handleFetchedData() {
             this.managersData = this.managers.managers?.data;
             this.permissions = this.managers.permissions;
-            this.pagination.total = this.managers.managers?.total;
         },
 
         showForm() {
@@ -252,6 +247,10 @@ export default {
 
         goToPage(value) {
             this.$emit('current-page', value);
+        },
+
+        handleSizeChange(value) {
+            this.$emit('per-page', value);
         }
     },
 

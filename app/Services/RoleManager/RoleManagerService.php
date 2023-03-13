@@ -50,13 +50,14 @@ class RoleManagerService
     {
         $limit = Arr::get($attributes, 'per_page', 10);
         $page = Arr::get($attributes, 'page', 1);
-        
+        $offset = $page == 1 ? 0 : ($page - 1) * $limit;
+
         $query = new \WP_User_Query([
             'meta_key'     => '_fluent_forms_has_role',
             'meta_value'   => 1,
             'meta_compare' => '=',
             'number'       => $limit,
-            'paged'        => $page,
+            'offset'       => $offset,
         ]);
         
         $managers = [];
@@ -70,11 +71,13 @@ class RoleManagerService
                 'permissions' => Acl::getUserPermissions($user),
             ];
         }
+
+        $total = $query->get_total();
         
         return ([
             'managers'    => [
                 'data'  => $managers,
-                'total' => $query->get_total(),
+                'total' => $total
             ],
             'permissions' => Acl::getReadablePermissions(),
         ]);

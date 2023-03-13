@@ -12,7 +12,7 @@
             <hr class="mt-5 mb-4">
 
             <managers @add-manager="addManager" @delete-manager="deleteManager" @current-page="setCurrentPage"
-                      :managers="managers" :pagination="pagination">
+                      @per-page="setPerPage" :managers="managers" :pagination="pagination">
                 {{ $t('Advanced form') }}
             </managers>
 
@@ -59,7 +59,7 @@ export default {
             const url = FluentFormsGlobal.$rest.route('getRolesAndManagers');
             let data = {
                 per_page: this.pagination.per_page,
-                page: this.pagination.current_page
+                page: this.pagination.current_page,
             }
 
             FluentFormsGlobal.$rest.get(url, data)
@@ -67,6 +67,7 @@ export default {
                     this.roles = response.roles.roles;
                     this.capability = response.roles.capability;
                     this.managers = response.managers;
+                    this.pagination.total = this.managers.managers?.total;
                 })
                 .catch(e => {
 
@@ -96,6 +97,10 @@ export default {
         },
         setCurrentPage(value) {
             this.pagination.current_page = value;
+            this.fetch();
+        },
+        setPerPage(value) {
+            this.pagination.per_page = value;
             this.fetch();
         }
     },
