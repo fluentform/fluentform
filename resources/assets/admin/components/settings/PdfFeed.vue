@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" class="ff_feed_editor">
+    <div v-loading="loading" class="ff_feed_editor ff_full_width_feed">
         <el-tabs type="border-card">
             <el-tab-pane :label="$t('PDF Contents')">
                 <el-form v-if="feed.settings" label-position="top">
