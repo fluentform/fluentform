@@ -12,7 +12,7 @@
             <hr class="mt-5 mb-4">
 
             <managers @add-manager="addManager" @delete-manager="deleteManager" @current-page="setCurrentPage"
-                      :managers="managers" :pagination="pagination" v-show="currentPage == 'advanced'">
+                      :managers="managers" :pagination="pagination">
                 {{ $t('Advanced form') }}
             </managers>
 

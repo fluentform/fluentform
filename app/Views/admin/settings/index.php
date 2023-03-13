@@ -42,7 +42,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php echo __('Double Optin Settings', 'fluentform'); ?>
                         </a>
                     </li>
-                    
+
                     <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_menu_item_setting ff_list_button_item">
                             <a 
@@ -52,28 +52,28 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 <?php echo __('Payment Settings', 'fluentform'); ?>
                             </a>
                             <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
-                            <ul>
-                                <?php
-
-                                $subMenus =  ArrayHelper::get($components, 'payment_settings.sub_menu');
-                                foreach ($subMenus as $subMenu):
-                                    $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
-                                    $baseUrl .= ArrayHelper::get($subMenu,'path');
-                                    ?>
-                                    <li class=" ff_item_">
-                                            <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path')); ?>"
-                                               data-component="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path', '')); ?>"
-                                               data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path', '')); ?>"
+                                <ul>
+                                    <?php
+                                    $subMenus = ArrayHelper::get($components, 'payment_settings.sub_menu');
+                                    foreach ($subMenus as $subMenu):
+                                        $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
+                                        $baseUrl .= ArrayHelper::get($subMenu, 'path');
+                                        ?>
+                                        <li class="ff_item_">
+                                            <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($subMenu,
+                                                'path')); ?>"
+                                               data-component="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
+                                                   '')); ?>"
+                                               data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
+                                                   '')); ?>"
                                                href="<?php echo esc_url($baseUrl); ?>"
                                             >
                                                 <?php echo esc_attr($subMenu['name']); ?>
                                             </a>
                                         </li>
-                                <?php endforeach; ?>
-                                
-                            </ul>
+                                    <?php endforeach; ?>
+                                </ul>
                             <?php endif ?>
-
                         </li>
                     <?php endif ?>
 
@@ -87,12 +87,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     || ArrayHelper::get($component, 'hash') == 'h_captcha'
                                     || ArrayHelper::get($component, 'hash') == 'turnstile'
                                 ) : ?>
-                                
-                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'], $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
-                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component, 'settings_key')); ?>"
-                                        data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component', '')); ?>"
-                                        data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
-                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $component)); ?>"
+
+                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
+                                        $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
+                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component,
+                                            'settings_key')); ?>"
+                                           data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component',
+                                               '')); ?>"
+                                           data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                           href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings',
+                                               $component)); ?>"
                                         >
                                             <?php echo esc_attr($component['title']); ?>
                                         </a>
@@ -113,12 +117,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     && ArrayHelper::get($component, 'hash') != 'turnstile'
                                     && ArrayHelper::get($component, 'query.component') != 'payment_settings'
                                 ) : ?>
-                            
-                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'], $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
-                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component, 'settings_key')); ?>"
-                                        data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component', '')); ?>"
-                                        data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
-                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $component)); ?>"
+
+                                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
+                                        $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
+                                        <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component,
+                                            'settings_key')); ?>"
+                                           data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component',
+                                               '')); ?>"
+                                           data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                           href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings',
+                                               $component)); ?>"
                                         >
                                             <?php echo esc_attr($component['title']); ?>
                                         </a>
