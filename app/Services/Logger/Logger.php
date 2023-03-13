@@ -177,7 +177,6 @@ class Logger
             $logs = Scheduler::select($columns)
                 ->where('origin_id', $submissionId)
                 ->orderBy('id', 'DESC')
-                ->paginate()
                 ->get();
 
             $logs = apply_filters('fluentform_entry_api_logs', $logs, $submissionId);
