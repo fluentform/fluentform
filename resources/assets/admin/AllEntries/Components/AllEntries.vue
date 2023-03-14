@@ -277,8 +277,12 @@ export default {
             });
         },
         handleSizeChange(val) {
-            this.paginate.per_page = val;
-            this.fetchEntries();
+            let scrollTop = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
+            jQuery('html, body').animate({scrollTop}, 300).promise().then(elements => {
+                localStorage.setItem('entriesPerPage', val)
+                this.paginate.per_page = val;
+                this.fetchEntries();
+            });
         },
         formatMoney(row) {
             let amount = row.total_paid / 100;
