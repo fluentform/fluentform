@@ -19,7 +19,7 @@
 
         <div class="ff_managers_list mt-4">
             <div class="ff_table_wrap">
-                <el-table class="ff_table_s2" :data="managersData">
+                <el-table class="ff_table_s2" :data="managers">
                     <el-table-column :label="$t('ID')" prop="id" width="70"/>
                     <el-table-column :label="$t('Name')" width="180">
                         <template slot-scope="scope">
@@ -74,7 +74,7 @@
                     @current-change="goToPage"
                     :current-page.sync="pagination.current_page"
                     :page-sizes="[5, 10, 20, 50, 100]"
-                    :page-size="parseInt(pagination.per_page)"
+                    :page-size="pagination.per_page"
                     layout="total, sizes, prev, pager, next"
                     :total="pagination.total">
                 </el-pagination>
@@ -155,8 +155,6 @@ import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 export default {
     name: "Managers",
 
-    props: ['managers', 'pagination'],
-
     components: {
         ErrorView,
         Confirm,
@@ -167,18 +165,41 @@ export default {
     data() {
         return {
             loading: false,
-            permissions: {},
             modal: false,
+            managers: [],
+            permissions: [],
             manager: {},
-            errors: new Errors(),
-            managersData: []
+            pagination: {
+                total: 0,
+                current_page: 1,
+                per_page: 10
+            },
+            errors: new Errors()
         };
     },
 
     methods: {
-        handleFetchedData() {
-            this.managersData = this.managers.managers?.data;
-            this.permissions = this.managers.permissions;
+        fetchManagers() {
+            this.loading = true;
+
+            const url = FluentFormsGlobal.$rest.route('getManagers');
+            let data = {
+                per_page: this.pagination.per_page,
+                page: this.pagination.current_page,
+            }
+
+            FluentFormsGlobal.$rest.get(url, data)
+                .then(response => {
+                    this.managers = response.managers;
+                    this.permissions = response.permissions;
+                    this.pagination.total = response.total;
+                })
+                .catch(e => {
+
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
         },
 
         showForm() {
@@ -205,9 +226,8 @@ export default {
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.modal = false;
-                    this.$emit('add-manager', response.manager);
-                    this.handleFetchedData();
                     this.$success(response.message);
+                    this.fetchManagers();
                 })
                 .catch(e => {
                     this.errors.record(e.errors);
@@ -220,7 +240,7 @@ export default {
         edit(manager) {
             this.modal = true;
             this.manager = Object.assign({}, manager);
-            this.handleFetchedData();
+            this.fetchManagers();
             this.errors.clear();
         },
 
@@ -233,9 +253,8 @@ export default {
             FluentFormsGlobal.$rest.delete(url, data)
                 .then(response => {
                     this.modal = false;
-                    this.$emit('delete-manager', response.manager);
-                    this.handleFetchedData();
                     this.$success(response.message);
+                    this.fetchManagers();
                 })
                 .catch(e => {
                     this.errors.record(e.errors);
@@ -246,16 +265,17 @@ export default {
         },
 
         goToPage(value) {
-            this.$emit('current-page', value);
+            this.pagination.current_page = value;
+            this.fetchManagers();
         },
 
         handleSizeChange(value) {
-            this.$emit('per-page', value);
+            this.pagination.per_page = value;
+            this.fetchManagers();
         }
     },
-
-    updated() {
-        this.handleFetchedData();
+    mounted() {
+        this.fetchManagers();
     }
 };
 </script>

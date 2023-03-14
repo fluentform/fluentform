@@ -110,13 +110,19 @@ $router->prefix('global-settings')->withPolicy('GlobalSettingsPolicy')->group(fu
     $router->post('/', 'GlobalSettingsController@store');
 });
 /*
-* Permission role & manager
+* Permission Roles
 */
-$router->prefix('roles-and-manager')->withPolicy('RoleManagerPolicy')->group(function ($router) {
-    $router->get('/', 'RoleManagerController@index');
-    $router->post('/', 'RoleManagerController@addCapability');
-    $router->post('/manager', 'RoleManagerController@addManager');
-    $router->delete('/manager', 'RoleManagerController@removeManager');
+$router->prefix('roles')->withPolicy('RoleManagerPolicy')->group(function ($router) {
+    $router->get('/', 'RolesController@index');
+    $router->post('/', 'RolesController@addCapability');
+});
+/*
+* Permission Managers
+*/
+$router->prefix('managers')->withPolicy('RoleManagerPolicy')->group(function ($router) {
+    $router->get('/', 'ManagersController@index');
+    $router->post('/', 'ManagersController@addManager');
+    $router->delete('/', 'ManagersController@removeManager');
 });
 /*
 * Form Analytics

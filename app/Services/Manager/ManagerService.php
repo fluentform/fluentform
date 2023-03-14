@@ -1,23 +1,47 @@
 <?php
 
-namespace FluentForm\App\Services\RoleManager;
+namespace FluentForm\App\Services\Manager;
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Validator\ValidationException;
 use FluentForm\Framework\Validator\Validator;
 
-class RoleManagerService
+class ManagerService
 {
-    public function getRolesAndManager($attributes = [])
+    public function getManagers($attributes = [])
     {
-        $roles = $this->getRoles();
-        $managers = $this->getManagers($attributes);
-        
-        return [
-            'roles'    => $roles,
-            'managers' => $managers
-        ];
+        $limit = Arr::get($attributes, 'per_page', 10);
+        $page = Arr::get($attributes, 'page', 1);
+        $offset = $page == 1 ? 0 : ($page - 1) * $limit;
+
+        $query = new \WP_User_Query([
+            'meta_key'     => '_fluent_forms_has_role',
+            'meta_value'   => 1,
+            'meta_compare' => '=',
+            'number'       => $limit,
+            'offset'       => $offset,
+        ]);
+
+        $managers = [];
+
+        foreach ($query->get_results() as $user) {
+            $managers[] = [
+                'id'          => $user->ID,
+                'first_name'  => $user->first_name,
+                'last_name'   => $user->last_name,
+                'email'       => $user->user_email,
+                'permissions' => Acl::getUserPermissions($user),
+            ];
+        }
+
+        $total = $query->get_total();
+
+        return ([
+            'managers'  => $managers,
+            'total' => $total,
+            'permissions' => Acl::getReadablePermissions(),
+        ]);
     }
     
     public function setCapability($attributes = [])
@@ -44,43 +68,6 @@ class RoleManagerService
                     'fluentform')
             ]);
         }
-    }
-    
-    private function getManagers($attributes = [])
-    {
-        $limit = Arr::get($attributes, 'per_page', 10);
-        $page = Arr::get($attributes, 'page', 1);
-        $offset = $page == 1 ? 0 : ($page - 1) * $limit;
-
-        $query = new \WP_User_Query([
-            'meta_key'     => '_fluent_forms_has_role',
-            'meta_value'   => 1,
-            'meta_compare' => '=',
-            'number'       => $limit,
-            'offset'       => $offset,
-        ]);
-        
-        $managers = [];
-        
-        foreach ($query->get_results() as $user) {
-            $managers[] = [
-                'id'          => $user->ID,
-                'first_name'  => $user->first_name,
-                'last_name'   => $user->last_name,
-                'email'       => $user->user_email,
-                'permissions' => Acl::getUserPermissions($user),
-            ];
-        }
-
-        $total = $query->get_total();
-        
-        return ([
-            'managers'    => [
-                'data'  => $managers,
-                'total' => $total
-            ],
-            'permissions' => Acl::getReadablePermissions(),
-        ]);
     }
     
     public function addManager($attributes = [])
@@ -205,51 +192,5 @@ class RoleManagerService
                 return $message;
             }
         }
-    }
-    
-    private function getFormattedRoles()
-    {
-        if (!function_exists('get_editable_roles')) {
-            require_once ABSPATH . 'wp-admin/includes/user.php';
-        }
-        
-        $formatted = [];
-        $roles = \get_editable_roles();
-        
-        foreach ($roles as $key => $role) {
-            if ('administrator' == $key) {
-                continue;
-            }
-            if ('subscriber' != $key) {
-                $formatted[] = [
-                    'name' => $role['name'],
-                    'key'  => $key,
-                ];
-            }
-        }
-        return $formatted;
-    }
-    
-    private function getRoles()
-    {
-        if (!current_user_can('manage_options')) {
-            return ([
-                'capability' => [],
-                'roles'      => [],
-            ]);
-        }
-        
-        $formatted = $this->getFormattedRoles();
-        
-        $capability = get_option('_fluentform_form_permission');
-        
-        if (is_string($capability)) {
-            $capability = [];
-        }
-        
-        return ([
-            'capability' => $capability,
-            'roles'      => $formatted,
-        ]);
     }
 }

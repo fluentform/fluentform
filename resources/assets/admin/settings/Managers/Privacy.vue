@@ -25,11 +25,29 @@ export default {
         return {
             loading: false,
             checkAll: false,
-            isIndeterminate: false
+            isIndeterminate: false,
+            capability: ["administrator"],
+            roles: [],
         };
     },
-    props: ['roles', 'capability'],
     methods: {
+        fetchRoles() {
+            this.loading = true;
+
+            const url = FluentFormsGlobal.$rest.route('getRoles');
+
+            FluentFormsGlobal.$rest.get(url)
+                .then(response => {
+                    this.roles = response.roles;
+                    this.capability = response.capability;
+                })
+                .catch(e => {
+
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
         handleFetchedData() {
             let capability = this.capability;
             if (!capability || typeof capability != "object") {
@@ -61,14 +79,14 @@ export default {
         handleCheckAllChange(val) {
             const filteredCapability = val ? this.roles.map(item => item.key) : [];
             this.isIndeterminate = false;
-            this.$emit('filteredCapability', filteredCapability);
+            this.capability = filteredCapability;
             this.$nextTick(function () {
                 this.store();
             });
         },
         handleCheckedCapabilitiesChange(value, store = true) {
             let checkedCount = value.length;
-            this.checkAll = checkedCount === this.roles.length;
+            this.checkAll = checkedCount === this.roles?.length;
             this.isIndeterminate = checkedCount > 0 && checkedCount < this.roles.length;
             if (store) {
                 this.store();
@@ -86,11 +104,14 @@ export default {
                 filteredCapability = this.capability.filter(e => e !== targetValue);
             }
 
-            this.$emit('filteredCapability', filteredCapability);
+            this.capability = filteredCapability;
         }
+    },
+    mounted() {
+        this.fetchRoles();
     },
     updated() {
         this.handleFetchedData();
-    },
+    }
 };
 </script>

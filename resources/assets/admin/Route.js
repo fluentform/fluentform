@@ -84,11 +84,13 @@ class Route {
     getGlobalSettings = 'global-settings';
     storeGlobalSettings = this.getGlobalSettings;
 
-    getRolesAndManagers = 'roles-and-manager';
-    storeRoles = this.getRolesAndManagers;
+    getRoles = 'roles';
+    storeRoles = this.getRoles;
 
-    storeManager = this.getRolesAndManagers + "/manager";
+    getManagers = 'managers';
+    storeManager = this.getManagers;
     deleteManager = this.storeManager;
+
     analytics = 'analytics';
     getFormAnalytics = this.analytics + '/{param}'
     resetFormAnalytics = this.analytics + '/{param}/reset/'
