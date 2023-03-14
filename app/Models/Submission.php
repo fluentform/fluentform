@@ -312,14 +312,17 @@ class Submission extends Model
         $to = date('Y-m-d H:i:s', strtotime('+1 days'));
         $formId = Arr::get($attributes, 'form_id');
         $status = Arr::get($attributes, 'entry_status');
+        $start = Arr::get($attributes, 'date_range.0', '');
+        $end = Arr::get($attributes, 'date_range.1', '');
 
-        if ($start = Arr::get($attributes, 'date_range.0', [])) {
-            $startTime = strtotime($start) + 24 * 60 * 60;
+        if ($start && $startTime = (strtotime($start) + 24 * 60 * 60)) {
+            if ($start === $end) {
+                $startTime = strtotime($start);
+            }
             $from = date('Y-m-d H:i:s', $startTime);
         }
 
-        if ($end = Arr::get($attributes, 'date_range.1', [])) {
-            $endTime = strtotime($end) + 24 * 60 * 60;
+        if ($end  && $endTime = (strtotime($end) + 24 * 60 * 60)) {
             $to = date('Y-m-d H:i:s', $endTime);
         }
 

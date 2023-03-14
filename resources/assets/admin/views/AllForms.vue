@@ -598,6 +598,7 @@ export default {
             let number = 1;
             switch (this.radioOption) {
                 case 'yesterday':
+                    end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
                     break;
                 case 'last-week':
                     number = 7;
