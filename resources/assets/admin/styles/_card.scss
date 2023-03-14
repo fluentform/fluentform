@@ -3,6 +3,9 @@
     box-shadow: 0px 2px 3px 0px rgba(129, 129, 129, 0.1);
     border-radius: $border-radius;
     padding: 24px;
+    &_shadow_lg{
+        box-shadow: 0px 3px 20px rgba(129, 129, 129, 0.1);
+    }
     .text {
         font-size: 15px;
         line-height: 1.6;
@@ -28,12 +31,11 @@
     }
     &_form_action {
         cursor: pointer;
+        height: 100%;
     }
     &_img {
         img {
             width: 100%;
-            height: 204px;
-            object-fit: unset;
         }
     }
     &_s2 {

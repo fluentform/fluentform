@@ -379,10 +379,18 @@ class Menu
         if ($settingsCapability) {
             add_submenu_page(
                 'fluent_forms',
+                __('Add New Form', 'fluentform'),
+                __('Add New Form', 'fluentform'),
+                $fromRole ? $settingsCapability : 'fluentform_forms_manager',
+                'fluent_forms_add_new_form',
+                [$this, 'renderAddNewFormRoute']
+            );
+            add_submenu_page(
+                'fluent_forms',
                 __('New Form', 'fluentform'),
                 __('New Form', 'fluentform'),
                 $fromRole ? $settingsCapability : 'fluentform_forms_manager',
-                'fluent_forms_add_new_form',
+                'fluent_forms#add=1',
                 [$this, 'renderAddNewFormRoute']
             );
 
@@ -707,6 +715,7 @@ class Menu
             'adminUrl'           => admin_url('admin.php?page=fluent_forms'),
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics' => apply_filters('fluentform-disabled_analytics', false),
+            'plugin_public_url'    => fluentformMix(),
         ]));
 
         $this->app->view->render('admin.all_forms', []);

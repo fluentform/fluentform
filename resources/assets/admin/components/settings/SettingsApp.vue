@@ -71,14 +71,18 @@
             }
 
 
-            jQuery('.ff_settings_list a').on('click', function () {
+            jQuery('.ff_settings_list a').on('click', function (e) {
+                if(jQuery(this).attr('href') == '#'){
+                    e.preventDefault();
+                }
+
                 let subMenu = jQuery(this).parent().find('.ff_list_submenu');
 
                 jQuery('.ff_settings_list li').removeClass('active');
                 jQuery(this).parent().addClass('active').siblings().removeClass('active');
 
-                subMenu.parent().toggleClass('is-submenu');
-                subMenu.slideToggle().siblings().find('.ff_list_submenu').slideUp();
+                subMenu.parent().toggleClass('is-submenu').siblings().removeClass('is-submenu');
+                subMenu.slideToggle().parent().siblings().find('.ff_list_submenu').slideUp();
 
             });
 

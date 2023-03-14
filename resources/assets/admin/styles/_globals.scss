@@ -1546,6 +1546,21 @@ label.el-radio, label.el-checkbox {
   display: block;
 }
 
+.line-clamp {
+  white-space: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  max-width: inherit;
+}
+
+.hover-y{
+  transition: 0.3s;
+  &:hover{
+    transform: translateY(-2px);
+  }
+}
+
 // ff badge
 .ff_badge {
   background-color: mix($--color-info, $--color-white, 10%);
@@ -1594,4 +1609,28 @@ label.el-radio, label.el-checkbox {
 .separator{
   height: 1px;
   background-color: rgba($--color-text-regular, 0.1);
+}
+
+// choose template modal
+.ff_choose_template_wrap{
+  .el-dialog{
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    padding-top: 50px;
+    box-shadow: none;
+    max-width: 1280px;
+    &__header{
+      border-bottom: 0;
+    }
+    &__headerbtn {
+      top: 22px;
+      right: 30px;
+    }
+    &__wrapper{
+      background-color: $--color-white;
+      transform: none !important;
+      z-index: 999999999 !important;
+    }
+  }
 }

@@ -1,0 +1,215 @@
+<template>
+    <div class="ff_choose_template_wrap">
+        <el-dialog
+            :visible.sync="visibility"
+            width="100%"
+            top= "0"
+            :before-close="close"
+        >
+            <template slot="title">
+                <h3 class="title">{{$t('Choose a Template')}}</h3>
+                <p class="text">Here are some beautiful, fully customizable templates to get you started. start with a <a href="#">blank form</a> or <a href="#">Import form</a>.
+                </p>
+            </template>
+
+            <div class="ff_predefined_options">
+                <div class="ff_predefined_sidebar">
+                    <h5 class="ff_predefined_title mb-3">{{$t('Categoires')}}</h5>
+                    <ul class="ff_list_button">
+                        <li 
+                            class="ff_list_button_item" 
+                            v-for="item in categories" 
+                            :key="item"
+                        >
+                            <a 
+                                @click.prevent="scollTo" 
+                                :href="'#' + item.toLocaleLowerCase()" 
+                                class="ff_list_button_link"
+                            >
+                                {{item}}
+                            </a>
+                        </li>
+                    </ul>
+                </div><!-- .ff_predefined_sidebar -->
+                <div class="ff_predefined_main">
+                    <div class="form_item_group form_item_group_search mb-5">
+                        <el-input
+                            v-model="search"
+                            :placeholder="$t('Search Forms')"
+                            class="input-with-select el-input-search el-input-border"
+                            prefix-icon="el-icon-search"
+                        >
+                        </el-input>
+                    </div>
+                    <div
+                        :element-loading-text="$t('Loading Forms...')"
+                        element-loading-spinner="el-icon-loading"
+                        v-loading="creatingForm"
+                        class="ff_predefined_form_wrap"
+                    >
+                        <div 
+                            v-for="(forms, category) in filteredForms" 
+                            :id="category.toLocaleLowerCase()" 
+                            class="ff_form_group" 
+                            :key="category"
+                        >
+                            <h5 class="ff_form_group_title mb-3">{{category}}</h5>
+                            <div class="ff_form_item_group">
+                                <div v-for="(form, name, i) in forms" :class="form.class" class="ff_form_item_col" :key="i">
+                                    <div class="ff_form_card">
+                                        <img :src="form.screenshot" alt="" class="ff_form_card_img">
+                                        <div
+                                            :loading="creatingForm"
+                                            @click="createForm(name, form)"
+                                            class="ff_form_card_overlap"
+                                        >
+                                            <div class="ff_form_card_overlap_inner">
+                                                <el-button>
+                                                    <template v-if="creatingForm">
+                                                        <span>{{$t('Creating Form...')}}</span>
+                                                    </template>
+                                                    <template v-else>
+                                                        <span v-if="form.is_pro && !has_pro">{{$t('Unlock in Pro')}}</span>
+                                                        <span v-else>{{ $t('Create Form') }}</span>
+                                                    </template>
+                                                </el-button>
+                                                <p v-html="form.brief"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .ff_form_item_group -->
+
+                        </div>
+                    </div>
+
+                </div><!-- .ff_predefined_main -->
+            </div><!-- .ff_predefined_options -->
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+    import each from 'lodash/each';
+
+    export default {
+        name: 'ChooseTemplateModal',
+        props: {
+            categories: Array,
+            visibility: Boolean,
+            predefinedForms: Object
+        },
+        data() {
+            return {
+                creatingForm: false,
+                // predefinedForms: {},
+                form_title: '',
+                category: '',
+                // categories: [],
+                search: '',
+                has_pro: !!window.FluentFormApp.hasPro,
+                currentIndex: null,
+            }
+        },
+        computed: {
+            filteredForms() {
+                let items = {};
+
+                if (this.search) {
+                    let search = this.search.toLocaleLowerCase();
+                    let allForms = {
+                        'Search Result': {}
+                    };
+
+                    each(this.predefinedForms, (forms, formCategory) => {
+                        each(forms, (form, formName) => {
+                            let formStrung = JSON.stringify([
+                                form.title,
+                                form.category,
+                                form.tags
+                            ]).toLowerCase();
+
+                            if (formStrung.indexOf(search) != -1) {
+                                allForms['Search Result'][formName] = form;
+                            }
+                        });
+                    });
+
+                    this.category = '';
+                    
+                    return allForms;
+                } else {
+                    if (this.category) {
+                        items[this.category] = this.predefinedForms[this.category];
+                    } else {
+                        return this.predefinedForms;
+                    }
+                }
+
+                return items;
+            }
+        },
+        methods: {
+            close() {
+                this.$emit('update:visibility', false);
+            },
+            createForm(formType, form) {
+                let selectedFormType = 'form';
+                if (form) {
+                    if (form.is_pro && !window.FluentFormApp.hasPro) {
+                        return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
+                    }
+                    selectedFormType = form.type;
+                }
+
+                this.creatingForm = true;
+
+                let data = {
+                    type: selectedFormType,
+                    predefined: formType,
+                    action: 'fluentform-predefined-create'
+                };
+
+                return this.doCreateForm(data)
+            },
+            doCreateForm(data) {
+                const url = FluentFormsGlobal.$rest.route('getForms');
+                
+                FluentFormsGlobal.$rest.post(url, data)
+                .then((response) => {
+                    this.$success(response.message);
+
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    }
+                })
+                .catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                    this.creatingForm = false;
+                });
+            },
+            scollTo(e) {
+                let targetHash = e.target.hash;
+                console.log(e)
+                
+                //e.target.parentElement.classList.add('active');
+                
+    
+                jQuery('.ff_predefined_form_wrap').animate({
+                    scrollTop: jQuery(targetHash).offset().top - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
+
+                }, 'slow');
+            }
+
+        },
+        mounted() {
+            // this.createForm();
+            // this.fetchPredefinedForms();
+            // this.forms = this.predefinedForms;
+            // this.categories = this.categories;
+            
+        }
+    };
+</script>

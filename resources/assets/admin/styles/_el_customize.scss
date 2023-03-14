@@ -349,8 +349,6 @@
 }
 
 .el-dialog__wrapper {
-    left: 160px;
-
     .data-lost-msg {
         margin-top: 10px;
     }
@@ -595,5 +593,19 @@
     }
     .el-input-number__increase {
         border-radius: 0 4px 4px 0;
+    }
+}
+
+// el dialog header
+.el-dialog__header{
+    .title + .text{
+        margin-top: 6px;
+    }
+    .text{
+        margin-bottom: 0;
+    }
+    &_group{
+        display: flex;
+        align-items: center;
     }
 }

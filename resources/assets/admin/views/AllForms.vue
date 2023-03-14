@@ -242,19 +242,12 @@
             </div>
         </div>
 
-        <predefinedFormsModal
+        <CreateNewFormModal
             v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
-            v-show="showAddFormModal"
             :categories="categories"
             :predefinedForms="predefinedForms"
             :visibility.sync="showAddFormModal"
-        />
-
-        <PostTypeSelectionModal
-            v-if="has_post_feature && hasPermission('fluentform_forms_manager')"
-            @on-post-type-selction-end="onPostTypeSelctionEnd"
-            :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
         />
     </div>
 </template>
@@ -262,8 +255,7 @@
 <script type="text/babel">
 import Clipboard from 'clipboard';
 import remove from '@/admin/components/confirmRemove'
-import predefinedFormsModal from '@/admin/components/modals/predefinedFormsModal';
-import PostTypeSelectionModal from '@/admin/components/modals/PostTypeSelectionModal';
+import CreateNewFormModal from '@/admin/components/modals/CreateNewFormModal';
 import moment from "moment";
 import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
@@ -272,9 +264,8 @@ import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 export default {
     name: 'AllForms',
     components: {
-        predefinedFormsModal,
+        CreateNewFormModal,
         remove,
-        PostTypeSelectionModal,
         BtnGroup,
         BtnGroupItem,
         SectionHead
@@ -563,6 +554,8 @@ export default {
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
+
+        
     },
     created() {
         let hash = window.location.hash;
@@ -584,6 +577,8 @@ export default {
             this.showAddFormModal = false;
             this.showSelectFormModal = true;
         });
+
+        
     },
     watch: {
         searchFormsKeyWord: function (newVal, oldVal) {

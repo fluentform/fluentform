@@ -1,0 +1,176 @@
+<template>
+    <div>
+        <div :class="{'ff_backdrop': visibility}">
+            <el-dialog
+                top="50px"
+                width="63%"
+                :element-loading-text="$t('Creating Form, Please wait...')"
+                element-loading-spinner="el-icon-loading"
+                :loading="creatingForm"
+                :visible="visibility"
+                :before-close="close"
+                class="ff-create-new-form-modal"
+            >
+                <template slot="title">
+                    <div class="el-dialog__header_group">
+                        <h4 class="mr-3">{{$t('Create A New Form')}}</h4>
+                        <el-button size="medium" type="primary" class="el-button--soft">{{$t('Import Form')}}</el-button>
+                    </div>
+                </template>
+
+                <div class="ff_card_wrap mt-5 mb-4">
+                    <el-row :gutter="32">
+                        <el-col :sm="8">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
+                                <card-body>
+                                    <h6 class="mb-2 ff_card_title">{{$t('New Blank Form')}}</h6>
+                                    <p class="ff_card_text">{{$t('Create a New Blank form from scratch.')}}</p>
+                                </card-body>
+                            </card>
+                        </el-col>
+                        <el-col :sm="8">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="showChooseTemplate" :img="chooseTemplateImg" imgClass="mb-3">
+                                <card-body>
+                                    <h6 class="mb-2 ff_card_title">{{$t('Choose a Template')}}</h6>
+                                    <p class="ff_card_text">{{$t('Choose a pre-made form template and customize it.')}}</p>
+                                </card-body>
+                            </card>
+                        </el-col>
+                        <el-col :sm="8">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" :img="conversationalFormImg" imgClass="mb-3">
+                                <card-body>
+                                    <h6 class="mb-2 ff_card_title">{{$t('Create Conversational Form')}}</h6>
+                                    <p class="ff_card_text">{{$t('Turn your content, surveys into conversations.')}}</p>
+                                </card-body>
+                            </card>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-dialog>
+        </div>
+
+        <ChooseTemplateModal
+            :categories="categories"
+            :predefinedForms="predefinedForms"
+            :visibility.sync="ShowChooseTemplateModal"
+        >
+
+        </ChooseTemplateModal>
+    </div>
+</template>
+
+<script type="text/babel">
+    import Card from '../Card/Card.vue';
+    import CardBody from '../Card/CardBody.vue';
+    import ChooseTemplateModal from './ChooseTemplateModal.vue';
+
+    export default {
+        name: 'CreateNewFormModal',
+        components: { 
+            Card,
+            CardBody,
+            ChooseTemplateModal
+        },
+        props: {
+            visibility: Boolean
+        },
+        data() {
+            return {
+                has_post_feature: !!window.FluentFormApp.has_post_feature,
+                creatingForm: false,
+                predefinedForms: {},
+                selectedPredefinedForm: '',
+                form_title: '',
+                categories: [],
+                search: '',
+                has_pro: !!window.FluentFormApp.hasPro,
+                blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
+                chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
+                conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
+                ShowChooseTemplateModal: false
+
+            }
+        },
+        methods: {
+            getPredefinedForms() {
+                this.loading = true;
+
+                const url = FluentFormsGlobal.$rest.route('getTemplates');
+
+                FluentFormsGlobal.$rest.get(url)
+                .then(response => {
+                    this.predefinedForms = response.forms;
+                    this.categories = response.categories;
+
+                    // let categoryLength = response.categories.length;
+
+                    // for (let i = 0; i < categoryLength; i++) {
+                    //    let catData = response.categories[i];
+                    //    this.categories.push(catData);
+                    // }
+
+
+                }).catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+            },
+            close() {
+                this.$emit('update:visibility', false);
+            },
+            showChooseTemplate(){
+                this.ShowChooseTemplateModal = true;
+                this.$emit('update:visibility', false);
+            },
+            createForm(formType, form) {
+                let selectedFormType = 'form';
+                if (form) {
+                    if (form.is_pro && !window.FluentFormApp.hasPro) {
+                        return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
+                    }
+                    selectedFormType = form.type;
+                }
+
+                this.creatingForm = true;
+
+                let data = {
+                    type: selectedFormType,
+                    predefined: formType,
+                    action: 'fluentform-predefined-create'
+                };
+
+                if (selectedFormType === 'post') {
+                    return this.createPostForm(data);
+                }
+
+                return this.doCreateForm(data)
+            },
+            doCreateForm(data) {
+                const url = FluentFormsGlobal.$rest.route('getForms');
+                
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then((response) => {
+                        this.$success(response.message);
+
+                        if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        }
+                    })
+                    .catch(error => {
+                        this.$fail(error.message);
+                    })
+                    .finally(() => {
+                        this.creatingForm = false;
+                    });
+            },
+            gotoPage(url) {
+                location.href = url;
+            }
+        },
+        mounted() {
+            this.getPredefinedForms();
+        }
+    };
+</script>
