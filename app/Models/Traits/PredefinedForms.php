@@ -27,6 +27,9 @@ trait PredefinedForms
             }
         }
 
+        if ($type = Arr::get($attributes, 'type', '')) {
+            $predefinedForm['type'] = $type;
+        }
         return $predefinedForm;
     }
 
