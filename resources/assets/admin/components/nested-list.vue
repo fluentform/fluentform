@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <i v-if="item.element !== 'container'" @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
+            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
 
             <div v-if="item.element == 'container'" class="item-container">
                 <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
