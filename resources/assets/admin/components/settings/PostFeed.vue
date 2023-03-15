@@ -49,6 +49,21 @@
                             </el-radio-group>
                         </el-form-item>
 
+                        <el-form-item class="ff-form-item">
+                            <template slot="label">
+                                {{ $t('Allow Guest') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{ $t(`Permission guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} from logout session.`)}}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
+                            <el-checkbox v-model="feed.value.allowed_guest_user">{{ feed.value.allowed_guest_user ? 'Allowed' : 'Not Allowed' }}</el-checkbox>
+                        </el-form-item>
+
                         <el-form-item class="ff-form-item" :label="$t('Post Status')">
                             <el-select v-model="feed.value.post_status" class="ff_input_full_width">
                                 <el-option
@@ -378,6 +393,9 @@
             },
             categories() {
                 return this.post_settings.categories;
+            },
+            isUpdate() {
+                return this.feed.value.post_form_type === 'update';
             }
         },
         mounted() {
