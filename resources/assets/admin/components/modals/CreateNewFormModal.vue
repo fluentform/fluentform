@@ -37,7 +37,7 @@
                             </card>
                         </el-col>
                         <el-col :sm="8">
-                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" :img="conversationalFormImg" imgClass="mb-3">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="createForm('conversational')" :img="conversationalFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create Conversational Form')}}</h6>
                                     <p class="ff_card_text">{{$t('Turn your content, surveys into conversations.')}}</p>

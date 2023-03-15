@@ -15,16 +15,17 @@
             <div class="ff_predefined_options">
                 <div class="ff_predefined_sidebar">
                     <h5 class="ff_predefined_title mb-3">{{$t('Categoires')}}</h5>
-                    <ul class="ff_list_button">
+                    <ul class="ff_list_button is-active-soft">
                         <li 
                             class="ff_list_button_item" 
-                            v-for="item in categories" 
-                            :key="item"
+                            v-for="(item, index) in categories" 
+                            :key="index"
                         >
                             <a 
                                 @click.prevent="scollTo" 
                                 :href="'#' + item.toLocaleLowerCase()" 
                                 class="ff_list_button_link"
+                                v-bind:class="{'selected': current === index}"
                             >
                                 {{item}}
                             </a>
@@ -108,7 +109,7 @@
                 // categories: [],
                 search: '',
                 has_pro: !!window.FluentFormApp.hasPro,
-                currentIndex: null,
+                current: null,
             }
         },
         computed: {
@@ -190,12 +191,20 @@
                     this.creatingForm = false;
                 });
             },
+            setCurrent(id) {
+                this.current = id;
+            },
             scollTo(e) {
                 let targetHash = e.target.hash;
-                console.log(e)
+                let listItem = jQuery('.ff_list_button_item');
                 
-                //e.target.parentElement.classList.add('active');
-                
+                for (let i = 0; i<listItem.length; i++) {
+                    jQuery(listItem[i]).addClass('active');
+
+                    if (e.target.parentElement != listItem[i]) {
+                        jQuery(listItem[i]).removeClass('active');
+                    }
+                }
     
                 jQuery('.ff_predefined_form_wrap').animate({
                     scrollTop: jQuery(targetHash).offset().top - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()

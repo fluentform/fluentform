@@ -51,6 +51,16 @@
             border-radius: 6px;
         }
     }
+    &.is-active-soft{
+        .ff_list_button_item {
+            &.active{
+                .ff_list_button_link{
+                    background-color: #F2F2F2;
+                    color: $base-color;
+                }
+            }
+        }
+    }
 }
 
 // ff list
