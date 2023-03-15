@@ -120,7 +120,7 @@
                             @current-change="goToPage"
                             :current-page.sync="paginate.current_page"
                             :page-sizes="[5, 10, 20, 50, 100]"
-                            :page-size="paginate.per_page"
+                            :page-size="parseInt(paginate.per_page)"
                             layout="total, sizes, prev, pager, next"
                             :total="paginate.total">
                         </el-pagination>
@@ -137,6 +137,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
+    import { scrollTop } from '@/admin/helpers';
 
     export default {
         name: 'ActivityLogs',
@@ -161,7 +162,7 @@
                     total: 0,
                     current_page: 1,
                     last_page: 1,
-                    per_page: 10
+                    per_page: localStorage.getItem('activityLogsPerPage') || 10
                 },
             }
         },
@@ -233,19 +234,24 @@
                     })
             },
             goToPage(value) {
-                this.paginate.current_page = value;
-                this.getLogs();
+                scrollTop().then(() => {
+                    this.paginate.current_page = value;
+                    this.getLogs();
+                })
             },
             handleSizeChange(value) {
-                this.paginate.per_page = value;
-                this.getLogs();
+                scrollTop().then((res) => {
+                    localStorage.setItem('activityLogsPerPage', value)
+                    this.paginate.per_page = value;
+                    this.getLogs();
+                })
             },
             setPaginate(data = {}) {
                 this.paginate = {
                     total: data.total || 0,
                     current_page: data.current_page || 1,
                     last_page: data.last_page || 1,
-                    per_page: data.per_page || 10,
+                    per_page: data.per_page || localStorage.getItem('activityLogsPerPage') || 10,
                 }
             },
         },

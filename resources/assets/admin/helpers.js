@@ -38,3 +38,7 @@ window._ff = {
     isEmpty: require('lodash/isEmpty'),
     unique: (value, index, self) => self.indexOf(value) === index
 };
+
+export const scrollTop = (scrollTop = 0, milliSecond = 300, selector = 'html, body') => (
+    jQuery(selector).animate({ scrollTop }, milliSecond).promise()
+);

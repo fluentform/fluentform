@@ -115,7 +115,7 @@
                             @current-change="goToPage"
                             :current-page.sync="paginate.current_page"
                             :page-sizes="[5, 10, 20, 50, 100]"
-                            :page-size="paginate.per_page"
+                            :page-size="parseInt(paginate.per_page)"
                             layout="total, sizes, prev, pager, next"
                             :total="paginate.total">
                         </el-pagination>
@@ -131,6 +131,7 @@
 <script type="text/babel">
   import each from 'lodash/each';
   import remove from "../components/confirmRemove";
+  import { scrollTop } from '@/admin/helpers';
 
   export default {
         name: 'ApiLogs',
@@ -152,7 +153,7 @@
                     total: 0,
                     current_page: 1,
                     last_page: 1,
-                    per_page: 10
+                    per_page: localStorage.getItem('apiLogsPerPage') || 10
                 },
             }
         },
@@ -235,19 +236,24 @@
                 return newName;
             },
             goToPage(value) {
-                this.paginate.current_page = value;
-                this.getLogs();
+                scrollTop().then(_ => {
+                    this.paginate.current_page = value;
+                    this.getLogs();
+                })
             },
             handleSizeChange(value) {
-                this.paginate.per_page = value;
-                this.getLogs();
+                scrollTop().then(_ => {
+                    localStorage.setItem('apiLogsPerPage', value);
+                    this.paginate.per_page = value;
+                    this.getLogs();
+                })
             },
             setPaginate(data = {}) {
                 this.paginate = {
                     total: data.total || 0,
                     current_page: data.current_page || 1,
                     last_page: data.last_page || 1,
-                    per_page: data.per_page || 10,
+                    per_page: data.per_page || localStorage.getItem('apiLogsPerPage') || 10,
                 }
             },
         },

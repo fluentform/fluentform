@@ -260,6 +260,7 @@ import moment from "moment";
 import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+import {scrollTop} from '@/admin/helpers';
 
 export default {
     name: 'AllForms',
@@ -368,16 +369,17 @@ export default {
                 });
         },
         goToPage(val) {
-            jQuery('html, body').animate({scrollTop: 0}, 300).promise().then(elements => {
-                this.fetchItems(
-                    this.paginate.current_page = val
-                );
+            scrollTop().then(_ => {
+                this.paginate.current_page = val
+                this.fetchItems();
             });
         },
         handleSizeChange(val) {
-            localStorage.setItem('formItemsPerPage', val);
-            this.paginate.per_page = val;
-            this.fetchItems();
+            scrollTop().then(_ => {
+                localStorage.setItem('formItemsPerPage', val);
+                this.paginate.per_page = val;
+                this.fetchItems();
+            })
         },
         fetchItems() {
             this.loading = true;

@@ -160,6 +160,7 @@ import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+import {scrollTop} from '@/admin/helpers'
 
 export default {
     name: 'AllEntries',
@@ -270,19 +271,19 @@ export default {
             }
         },
         goToPage(value) {
-            let scrollTop = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
-            jQuery('html, body').animate({scrollTop}, 300).promise().then(elements => {
+            let top = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
+            scrollTop(top).then((_) => {
                 this.paginate.current_page = value;
                 this.fetchEntries();
-            });
+            })
         },
         handleSizeChange(val) {
-            let scrollTop = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
-            jQuery('html, body').animate({scrollTop}, 300).promise().then(elements => {
+            let top = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
+            scrollTop(top).then((_) => {
                 localStorage.setItem('entriesPerPage', val)
                 this.paginate.per_page = val;
                 this.fetchEntries();
-            });
+            })
         },
         formatMoney(row) {
             let amount = row.total_paid / 100;
