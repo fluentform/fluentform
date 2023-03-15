@@ -27,8 +27,9 @@
                         </template>
                     </el-table-column>
 
-
                     <el-table-column :label="$t('Email')" prop="email" width="240" />
+
+                    <el-table-column :label="$t('Roles')" prop="roles" width="120" />
 
                     <el-table-column :label="$t('Permissions')">
                         <template slot-scope="scope">

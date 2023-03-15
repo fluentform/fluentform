@@ -32,6 +32,7 @@ class ManagerService
                 'last_name'   => $user->last_name,
                 'email'       => $user->user_email,
                 'permissions' => Acl::getUserPermissions($user),
+                'roles'       => $this->getUserRoles($user->roles)
             ];
         }
 
@@ -42,32 +43,6 @@ class ManagerService
             'total' => $total,
             'permissions' => Acl::getReadablePermissions(),
         ]);
-    }
-    
-    public function setCapability($attributes = [])
-    {
-        if (current_user_can('manage_options')) {
-            $capability = wp_unslash(Arr::get($attributes, 'capability', []));
-            
-            foreach ($capability as $item) {
-                if ('subscriber' == strtolower($item)) {
-                    return ([
-                        'message' => __('Sorry, you can not give access to the Subscriber role.', 'fluentform'),
-                    ]);
-                }
-            }
-            
-            update_option('_fluentform_form_permission', $capability, 'no');
-            
-            return ([
-                'message' => __('Successfully saved the role(s).', 'fluentform'),
-            ]);
-        } else {
-            return ([
-                'message' => __('Sorry, You can not update permissions. Only administrators can update permissions',
-                    'fluentform')
-            ]);
-        }
     }
     
     public function addManager($attributes = [])
@@ -192,5 +167,19 @@ class ManagerService
                 return $message;
             }
         }
+    }
+
+    private function getUserRoles($roles)
+    {
+        $roleStr = '';
+        if (count($roles) > 1) {
+            foreach ($roles as $role) {
+                $roleStr .= $role . ', ';
+            }
+        } else {
+            $roleStr = Arr::get($roles, '0');
+        }
+
+        return $roleStr;
     }
 }
