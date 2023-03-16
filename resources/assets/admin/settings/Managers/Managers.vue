@@ -48,7 +48,7 @@
                     <el-table-column :label="$t('Action')" width="90">
                         <template slot-scope="scope">
                             <el-button
-                                class="el-button--soft el-button--icon"
+                                class="el-button--icon"
                                 size="mini"
                                 type="primary"
                                 icon="ff-icon ff-icon-edit"
@@ -56,7 +56,7 @@
                             />
                             <confirm @on-confirm="remove(scope.row)">
                                 <el-button
-                                    class="el-button--soft el-button--icon"
+                                    class="el-button--icon"
                                     size="mini"
                                     type="danger"
                                     icon="ff-icon ff-icon-trash"

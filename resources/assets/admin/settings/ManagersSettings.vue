@@ -1,13 +1,11 @@
 <template>
-    <!-- <div v-loading="loading"> -->
-
     <card class="ff_managers_settings">
         <card-head>
             <h5 class="title">{{ $t('Managers') }}</h5>
         </card-head>
         <card-body>
 
-            <privacy v-show="currentPage == 'roleBased'"/>
+            <privacy/>
 
             <hr class="mt-5 mb-4">
 
@@ -26,20 +24,12 @@ import CardBody from '@/admin/components/Card/CardBody.vue';
 
 export default {
     name: "ManagersSettings",
-
     components: {
         Privacy,
         Managers,
         Card,
         CardHead,
         CardBody
-    },
-
-    data() {
-        return {
-            loading: false,
-            currentPage: "roleBased",
-        };
     }
 };
 </script>
