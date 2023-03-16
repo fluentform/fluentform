@@ -5,7 +5,6 @@
             width="100%"
             top= "0"
             :before-close="close"
-            @opened="clicked"
         >
             <template slot="title">
                 <h3 class="title">{{$t('Choose a Template')}}</h3>
@@ -21,8 +20,9 @@
                             class="ff_list_button_item" 
                             v-for="(item, index) in categories" 
                             :key="index"
+                            :class="{'active': index === 0}"
                         >
-                            <a 
+                            <a
                                 @click.prevent="scollTo" 
                                 :href="'#' + item.toLocaleLowerCase()" 
                                 class="ff_list_button_link"
@@ -208,30 +208,7 @@
 
                 }, 'slow');
                 
-            },
-            clicked(){
-                var sectionIds = jQuery('.ff_list_button_link');
-
-                jQuery('.ff_predefined_form_wrap').scroll(function(){
-                    sectionIds.each(function(){
-
-                        var container = jQuery(this).attr('href');
-                        var containerOffset = jQuery(container).offset().top;
-                        var containerHeight = jQuery(container).outerHeight();
-                        var containerBottom = containerOffset + containerHeight;
-                        var scrollPosition = jQuery('.ff_predefined_form_wrap').scrollTop();
-                
-                        if(scrollPosition < containerBottom - 20 && scrollPosition >= containerOffset - 20){
-                            jQuery(this).addClass('active');
-                        } else{
-                            jQuery(this).removeClass('active');
-                        }
-                
-                
-                    });
-                });
-            }
-            
+            },           
             // stickyMenu(){
             //     let stickyElem = jQuery('#sticky-menu');
             //     let stickyTop = stickyElem.offset().top;

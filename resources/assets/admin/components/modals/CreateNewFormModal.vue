@@ -3,7 +3,7 @@
         <div :class="{'ff_backdrop': visibility}">
             <el-dialog
                 top="50px"
-                width="63%"
+                :width="has_pro ? '84%' : '63%'"
                 :element-loading-text="$t('Creating Form, Please wait...')"
                 element-loading-spinner="el-icon-loading"
                 :loading="creatingForm"
@@ -20,7 +20,7 @@
 
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
-                        <el-col :sm="8">
+                        <el-col :sm="has_pro ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('New Blank Form')}}</h6>
@@ -28,7 +28,7 @@
                                 </card-body>
                             </card>
                         </el-col>
-                        <el-col :sm="8">
+                        <el-col :sm="has_pro ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showChooseTemplate" :img="chooseTemplateImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Choose a Template')}}</h6>
@@ -36,7 +36,15 @@
                                 </card-body>
                             </card>
                         </el-col>
-                        <el-col :sm="8">
+                        <el-col :sm="has_pro ? 6 : 8" v-if="has_pro">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="chooseTemplateImg" imgClass="mb-3">
+                                <card-body>
+                                    <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
+                                    <p class="ff_card_text">{{$t('Create a Post type form from scratch.')}}</p>
+                                </card-body>
+                            </card>
+                        </el-col>
+                        <el-col :sm="has_pro ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('conversational')" :img="conversationalFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create Conversational Form')}}</h6>
@@ -52,10 +60,16 @@
         <ChooseTemplateModal
             :categories="categories"
             :predefinedForms="predefinedForms"
-            :visibility.sync="ShowChooseTemplateModal"
+            :visibility.sync="showChooseTemplateModal"
         >
-
         </ChooseTemplateModal>
+
+        <PostTypeSelectionModal
+            @on-post-type-selction-end="onPostTypeSelctionEnd"
+            :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
+            :hasPro="has_pro"
+        />
+
     </div>
 </template>
 
@@ -63,13 +77,16 @@
     import Card from '../Card/Card.vue';
     import CardBody from '../Card/CardBody.vue';
     import ChooseTemplateModal from './ChooseTemplateModal.vue';
+    import PostTypeSelectionModal from './PostTypeSelectionModal.vue';
 
     export default {
         name: 'CreateNewFormModal',
         components: { 
             Card,
             CardBody,
-            ChooseTemplateModal
+            ChooseTemplateModal,
+            PostTypeSelectionModal,
+                PostTypeSelectionModal
         },
         props: {
             visibility: Boolean
@@ -77,6 +94,11 @@
         data() {
             return {
                 has_post_feature: !!window.FluentFormApp.has_post_feature,
+                postFormData: {
+                    type: 'post',
+                    predefined: 'blank_form',
+                    action: 'fluentform-predefined-create'
+                },
                 creatingForm: false,
                 predefinedForms: {},
                 selectedPredefinedForm: '',
@@ -87,7 +109,8 @@
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
-                ShowChooseTemplateModal: false
+                showChooseTemplateModal: false,
+                postTypeSelectionDialogVisibility: false,
 
             }
         },
@@ -121,7 +144,11 @@
                 this.$emit('update:visibility', false);
             },
             showChooseTemplate(){
-                this.ShowChooseTemplateModal = true;
+                this.showChooseTemplateModal = true;
+                this.$emit('update:visibility', false);
+            },
+            showPostType(){
+                this.postTypeSelectionDialogVisibility = true;
                 this.$emit('update:visibility', false);
             },
             createForm(formType, form) {
@@ -147,6 +174,10 @@
 
                 return this.doCreateForm(data)
             },
+            createPostForm(data) {
+                this.postFormData = data;
+                this.postTypeSelectionDialogVisibility = true;
+            },
             doCreateForm(data) {
                 const url = FluentFormsGlobal.$rest.route('getForms');
                 
@@ -164,6 +195,13 @@
                     .finally(() => {
                         this.creatingForm = false;
                     });
+            },
+            onPostTypeSelctionEnd(post_type) {
+                this.creatingForm = false;
+                this.postTypeSelectionDialogVisibility = false;
+                if (post_type) {
+                    this.doCreateForm({post_type, ...this.postFormData});
+                }
             },
             gotoPage(url) {
                 location.href = url;
