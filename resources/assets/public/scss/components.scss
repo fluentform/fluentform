@@ -676,22 +676,13 @@
 }
 
 #{$prefix}-message-success {
-  padding: 15px 15px 15px 42px;
+  padding: 15px;
   position: relative;
   background-color: #f0f9eb;
   color: #4a8c29;
   border-radius: 6px;
   overflow-wrap: break-word;
   margin-top: 10px;
-  &::after{
-    position: absolute;
-    top: 13px;
-    left: 15px;
-    content: "\e79c";
-    font-family: "element-icons" !important;
-    font-size: 20px;
-    width: 20px;
-  }
 }
 
 #{$prefix}-errors-in-stack {
