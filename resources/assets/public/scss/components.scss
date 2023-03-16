@@ -677,12 +677,10 @@
 
 #{$prefix}-message-success {
   padding: 15px;
-  position: relative;
-  background-color: #f0f9eb;
-  color: #4a8c29;
-  border-radius: 6px;
-  overflow-wrap: break-word;
   margin-top: 10px;
+  position: relative;
+  border: 1px solid #ced4da;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 #{$prefix}-errors-in-stack {
