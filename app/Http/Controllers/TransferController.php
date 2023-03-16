@@ -29,11 +29,11 @@ class TransferController extends Controller
     {
         try {
             $file = $this->request->file('file');
-            return $formService->import($file);
+            return $this->sendSuccess($formService->import($file), 200);
         } catch (Exception $exception) {
             return $this->sendError([
                 'message' => $exception->getMessage(),
-            ]);
+            ], 403);
         }
     }
 }

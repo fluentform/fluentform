@@ -109,18 +109,21 @@
                             processData: false,
                         })
                         .then(response => {
-                            this.importing = false;
                             this.importedForms = response.inserted_forms;
                             this.$success(response.message);
                             this.clear();
+                            this.$emit('forms-imported', true)
                         })
-                        .fail(errors => {
-                            console.log(errors)
+                        .fail(error => {
+                            error?.responseJSON?.message && this.$fail(error.responseJSON.message);
+                            this.clear();
+                            this.$emit('forms-imported', false)
                         });
                 });
 
             },
             clear() {
+                this.importing = false;
                 jQuery('#fileUpload').val('');
             }
         }

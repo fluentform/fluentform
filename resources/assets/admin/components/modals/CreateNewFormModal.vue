@@ -13,9 +13,16 @@
             >
                 <template slot="title">
                     <div class="el-dialog__header_group">
-                        <h4 class="mr-3">{{$t('Create A New Form')}}</h4>
-                        <el-button size="medium" type="primary" class="el-button--soft">{{$t('Import Form')}}</el-button>
+                        <h4 class="mr-3">{{ $t('Create A New Form') }}</h4>
+                        <el-button size="medium" @click="showFormsImport = !showFormsImport" type="primary"
+                                   :icon="showFormsImport ? 'el-icon-close' : ''" class="el-button--soft">
+                            {{ $t('Import Form') }}
+                        </el-button>
                     </div>
+                    <transition name="slide-down">
+                        <import-forms v-if="showFormsImport" @forms-imported="updateFormsImported" :app="{forms:[]}"/>
+                        <
+                    </transition>
                 </template>
 
                 <div class="ff_card_wrap mt-5 mb-4">
@@ -78,15 +85,16 @@
     import CardBody from '../Card/CardBody.vue';
     import ChooseTemplateModal from './ChooseTemplateModal.vue';
     import PostTypeSelectionModal from './PostTypeSelectionModal.vue';
+    import ImportForms from '@/admin/transfer/ImportForms';
 
     export default {
         name: 'CreateNewFormModal',
-        components: { 
+        components: {
             Card,
             CardBody,
             ChooseTemplateModal,
             PostTypeSelectionModal,
-                PostTypeSelectionModal
+            ImportForms
         },
         props: {
             visibility: Boolean
@@ -111,7 +119,8 @@
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 showChooseTemplateModal: false,
                 postTypeSelectionDialogVisibility: false,
-
+                showFormsImport : false,
+                formsImported : false,
             }
         },
         methods: {
@@ -141,6 +150,7 @@
                 });
             },
             close() {
+                this.formsImported && location.reload();
                 this.$emit('update:visibility', false);
             },
             showChooseTemplate(){
@@ -205,6 +215,9 @@
             },
             gotoPage(url) {
                 location.href = url;
+            },
+            updateFormsImported(value) {
+                this.formsImported = value;
             }
         },
         mounted() {

@@ -540,7 +540,10 @@ class FormService
         
         die();
     }
-    
+
+    /**
+     * @throws Exception
+     */
     public function import($file)
     {
         if ($file instanceof File) {
@@ -554,10 +557,7 @@ class FormService
                     } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
                         $formFields = json_encode($fields);
                     } else {
-                        return ([
-                            'message' => __('You have a faulty JSON file, please export the Fluent Forms again.',
-                                'fluentform'),
-                        ]);
+                        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
                     }
                     
                     $form = [
@@ -609,9 +609,6 @@ class FormService
                 ]);
             }
         }
-        
-        return ([
-            'message' => __('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'),
-        ]);
+        throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
     }
 }
