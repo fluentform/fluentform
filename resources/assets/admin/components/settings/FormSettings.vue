@@ -6,7 +6,22 @@
                 <card-head>
                     <card-head-group class="justify-between">
                         <h5 class="title">{{ $t('Confirmation Settings') }}</h5>
-                        <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formConfirmation"/>
+                        <btn-group>
+                            <btn-group-item>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formConfirmation"/>
+                            </btn-group-item>
+                            <btn-group-item>
+                                <el-button
+                                    :loading="loading"
+                                    type="primary"
+                                    icon="el-icon-success"
+                                    @click="saveSettings"
+                                    size="medium"
+                                >
+                                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                </el-button>
+                            </btn-group-item>
+                        </btn-group>
                     </card-head-group>
                 </card-head>
                 <card-body>
@@ -493,6 +508,8 @@
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 
     export default {
         name: 'FormSettings',
@@ -518,7 +535,9 @@
             CardHead,
             CardHeadGroup,
             CardBody,
-            Notice
+            Notice,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {
