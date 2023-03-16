@@ -22,7 +22,7 @@ The Fastest Contact Form Builder Plugin for WordPress. Drag and drop contact for
 
 Fluent Forms helps you create hassle-free contact forms, subscription forms, or any kind of WP Forms you need for your website in minutes.
 
-[youtube https://www.youtube.com/watch?v=uysITMu7Ml8]
+[youtube https://www.youtube.com/watch?v=2ezEPLsIk-4]
 
 ==Amazing Features==
 
