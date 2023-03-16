@@ -1,9 +1,15 @@
 .fluentform {
   #{$prefix} {
+    /*
+    |----------------------------------------------------------------------------
+    | BUTTON
+    |----------------------------------------------------------------------------
+    */
     // should be on top of all btn style
     &_submitting {
       pointer-events: none;
     }
+
     &_btn_style {
       cursor: pointer;
       display: inline-block;
@@ -28,6 +34,7 @@
         opacity: 0.8;
       }
     }
+
     &-btn {
       display: inline-block;
       font-weight: 500;
@@ -40,42 +47,50 @@
       font-size: 14px;
       line-height: 1;
       border-radius: 7px;
-      color: #606266;
+      color: #1a7efb;
       cursor: pointer;
-      background-color: #fff;
-      &:focus,
-      &:hover {
-        outline: 0;
-        color: #1a7efb;
-        border-color: #bad8fe;
-        background-color: #e8f2ff;
-      }
+      background: #ecf5ff;
+      border-color: #b3d8ff;
       &.disabled {
         opacity: .65;
       }
       // button types
       &-primary {
         color: #fff;
-        background-color: #1a7efb;
-        border-color: #1a7efb;
-        &:hover,
-        &:focus  {
+        background-color: #007bff;
+        border-color: #007bff;
+
+        &:hover {
+          color: #fff;
+          background-color: #0069d9;
+          border-color: #0062cc;
+        }
+
+        &:focus {
           color: #fff;
           background-color: #0069d9;
           border-color: #0062cc;
         }
       }
+
       &-secondary {
         color: #fff;
         background-color: #606266;
         border-color: #606266;
-        &:hover,
+
+        &:hover {
+          color: #fff;
+          background-color: #727b84;
+          border-color: #6c757d;
+        }
+
         &:focus {
           color: #fff;
-          background-color: #808185;
-          border-color: #808185;
+          background-color: #727b84;
+          border-color: #6c757d;
         }
       }
+
       // button sizes
       &-lg {
         padding: 8px 16px;
@@ -99,9 +114,6 @@
         + #{$el-prefix}-btn-block {
           margin-top: 8px;
         }
-      }
-      &-next{
-        margin-left: auto;
       }
 
       &.ff-working {
@@ -134,6 +146,11 @@
         text-align: right;
       }
     }
+
+    &-float-right {
+      float: right;
+    }
+
     &-inline-block {
       display: inline-block;
 
@@ -222,27 +239,13 @@
   }
 
   .mce-tinymce.mce-container.mce-panel {
-    border: 1px solid #dadbdd;
-    border-radius: 7px;
-    overflow: hidden;
+    border: 1px solid #ced4da;
   }
   textarea{
     min-height: 90px;
   }
-  .ff_step_nav_last{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
 }
 
-.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, 
-.mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, 
-.mce-menu .mce-menu-item.mce-selected, 
-.mce-menu .mce-menu-item:focus, 
-.mce-menu .mce-menu-item:hover {
-  background: #1a7efb !important;
-}
 /*
 |----------------------------------------------------------------------------
 | INPUT ELEMENT
