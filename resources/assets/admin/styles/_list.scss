@@ -5,8 +5,8 @@
         }
         &.active{
             .ff_list_button_link{
-                background-color: $base-color;
-                color: $white;
+                background-color: $list-button-link-active-bg;
+                color: $list-button-link-active-color;
             }
         }
         &.has_sub_menu{
