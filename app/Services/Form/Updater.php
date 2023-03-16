@@ -40,14 +40,13 @@ class Updater
             $formFields = $this->sanitizeFields($formFields);
             $data['form_fields'] = $formFields;
             
-            $form->fill($data)->save();
+            $form->fill($data);
 
             if (FormFieldsParser::hasPaymentFields($form)) {
                 $data['has_payment'] = 1;
             } elseif ($form->has_payment) {
                 $data['has_payment'] = 0;
             }
-            Form::where('id', $formId)->update($data);
 
             $this->updatePrimaryEmail($form);
         }
