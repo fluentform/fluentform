@@ -135,11 +135,13 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php endforeach; ?>
                         </ul>
                     </li>
-                    <li class="ff_list_button_item">
+                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('license', $currentComponent)); ?> ff_list_button_item">
                         <a 
                             class="ff_list_button_link"
                             data-hash="license"
-                            href="<?php echo admin_url('admin.php?page=fluent_forms_add_ons&sub_page=fluentform-pro-add-on')?>">
+                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                'hash' => 'license'
+                            ])); ?>">
                             <?php echo __('License'); ?>
                         </a>
                     </li>

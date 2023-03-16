@@ -10,6 +10,7 @@ import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
+import License from './License.vue';
 
 import Errors from '@/common/Errors';
 global.Errors = Errors;
@@ -97,7 +98,9 @@ new Vue({
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
         'double_optin_settings': DoubleOptinSettings,
-        managers: ManagersSettings
+        managers: ManagersSettings,
+        license: License
+
     },
     data: {
         component: 'settings',

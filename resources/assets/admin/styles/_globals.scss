@@ -236,6 +236,9 @@ span + .ff-icon,
   &-warning{
     color: $--color-warning !important;
   }
+  &-dark{
+    color: $base-color !important;
+  }
 }
 // flex
 .flex-grow-1{

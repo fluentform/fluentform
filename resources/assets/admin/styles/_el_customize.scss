@@ -223,6 +223,10 @@
             font-size: 14px;
         }
     }
+    &--large{
+        padding: 15px 20px;
+        font-size: 16px;
+    }
     &--soft {
         &.el-button{
             &--primary {
@@ -592,26 +596,37 @@
         border-radius: 0 4px 4px 0;
     }
 }
-.el-input--mini{
-    .el-input__inner{
-        border-radius: 4px;
-    }
-}
-.el-input-number--mini{
-    line-height: 28px;
-}
 
-.el-input-number__increase, 
-.el-input-number__decrease {
-    background-color: #F2F2F2;
-}
-.el-input-number--mini{
-    .el-input-number__decrease {
-        left: 1px;
-        border-radius: 4px 0 0 4px;
+// input sizes
+.el-input{
+    &--mini{
+        .el-input__inner{
+            border-radius: 4px;
+        }
     }
-    .el-input-number__increase {
-        border-radius: 0 4px 4px 0;
+    &--large{
+        .el-input__inner{
+            height: 48px;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 16px;
+        }
+    }
+    &-number{
+        &--mini{
+            line-height: 28px;
+            .el-input-number__decrease {
+                left: 1px;
+                border-radius: 4px 0 0 4px;
+            }
+            .el-input-number__increase {
+                border-radius: 0 4px 4px 0;
+            }
+        }
+        &__increase, 
+        &__decrease {
+            background-color: #F2F2F2;
+        }
     }
 }
 
