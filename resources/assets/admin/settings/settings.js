@@ -119,19 +119,7 @@ new Vue({
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
             }
-        },
-        // setSticky(){
-        //     let stickyElem = jQuery('#ff_settings_container');
-        //     let stickyTop = stickyElem.offset().top;
-        //     let stickyLeft = stickyElem.offset().left;
-
-        //     stickyElem.css({
-        //         'top': stickyTop,
-        //         'left': stickyLeft,
-        //         'width': '70%',
-        //         'position': 'fixed'
-        //     });
-        // }
+        }
     },
     created() {
         let hash = location.hash.substr(1) || 'settings';
@@ -155,9 +143,6 @@ new Vue({
             subMenu.parent().toggleClass('is-submenu').siblings().removeClass('is-submenu');
             subMenu.slideToggle().parent().siblings().find('.ff_list_submenu').slideUp();
         });
-    },
-    // mounted(){
-    //     this.setSticky();
-    // }
+    }
 });
 

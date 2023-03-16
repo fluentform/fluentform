@@ -301,18 +301,23 @@
   }
 }
 
-.ff_global_settings_option {
-  .ff_card_head {
-    p {
-      max-width: 750px;
+// global setitng 
+.ff_global_settings{
+  &_option {
+    .el-row {
+      margin-bottom: -24px;
+  
+      .el-col {
+        margin-bottom: 24px;
+      }
     }
   }
-
-  .el-row {
-    margin-bottom: -24px;
-
-    .el-col {
-      margin-bottom: 24px;
+}
+.ff_global_setting{
+  &_wrap{
+    .ff_settings_list{
+      height: 500px;
+      overflow-y: auto;
     }
   }
 }
@@ -677,26 +682,12 @@ table.ff_routing_table tr {
   }
 
   .ff_landing_sidebar {
-    width: 350px;
-    height: 650px;
-    background-color: white;
-    border: 1px solid #e2e4e7;
-
-    .ffc_sidebar_header {
-      width: 350px;
-    }
-
+    width: 310px;
     .ffc_sidebar_body {
       overflow: hidden scroll;
       height: 600px;
-      padding: 0px 15px 10px 15px;
-
-      .el-form-item {
-        margin-bottom: 5px;
-      }
-
-      width: 330px;
-
+      padding-top: 30px;
+      padding-right: 10px;
       .ffc_sidebar_body {
         .ffc_design_submit {
           margin-top: 30px;
@@ -707,8 +698,9 @@ table.ff_routing_table tr {
   }
 
   .ffc_design_container {
-    width: calc(100% - 370px);
+    width: calc(100% - 340px);
     margin-left: auto;
+    margin-top: -44px;
   }
 
   .ffc_design_elements {
@@ -732,31 +724,29 @@ table.ff_routing_table tr {
 
 }
 
+// ff type settings
 .ff_type_settings {
   width: 100%;
-
   .ff-type-control {
     margin-bottom: 10px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    display: block;
-
-    .ff-control-title, .ff-type-value {
-      display: inline-block;
-      color: #808184;
-      font-size: 12px;
-    }
-
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .ff-control-title, 
     .ff-type-value {
-      float: right;
+      display: inline-block;
+      color: $base-color;
+      font-size: 13px;
+      font-weight: 500;
     }
-
     &.ff-type-full {
-      width: 100%;
-
+      flex-direction: column;
+      .ff-control-title{
+        margin-bottom: 8px;
+      }
+      .ff-control-title,
       .ff-type-value {
         width: 100%;
-        float: none;
       }
     }
   }
@@ -933,31 +923,27 @@ ul.fcc_inline_social {
 
 .ff_iconed_radios {
   > label {
-    border: 1px solid rgb(115, 115, 115);
-    padding: 5px 10px;
-    color: rgb(115, 115, 115);
-    margin-right: 20px;
-
+    border: 1px solid $border-color;
+    padding: 6px;
+    color: $base-text;
+    margin-right: 12px;
+    border-radius: 4px;
     span.el-radio__input {
       display: none;
     }
-
     .el-radio__label {
       padding-left: 0;
     }
-
     i {
-      font-size: 30px;
-      width: 30px;
-      height: 30px;
+      font-size: 26px;
+      width: auto;
+      height: auto;
     }
-
     &.is-checked {
-      border: 1px solid rgb(64, 158, 255);
-      background: rgb(64, 158, 255);
-
+      border-color: $--color-primary;
+      background: $--color-primary;
       i {
-        color: white;
+        color: $white;
         display: block;
       }
     }
@@ -971,11 +957,6 @@ ul.fcc_inline_social {
     > label {
       margin-right: 10px;
     }
-  }
-
-  .ff_landing_full_screen {
-    margin-left: 10px;
-    font-size: 20px;
   }
 }
 
@@ -1009,26 +990,12 @@ body.ff_full_screen {
     min-width: 0;
     cursor: default;
     margin: 0 !important;
-
-    .ff_landing_sidebar {
-      border-width: 0;
-      margin-right: 2px;
+    .ff-landing-page-settings{
+      .ff_card{
+        box-shadow: none;
+        padding: 0;
+      }
     }
-
-    .ffc_sidebar_header {
-      border: 1px solid #e2e4e7;
-      border-bottom-width: 0;
-      border-radius: 5px 5px 0 0;
-    }
-
-    .ffc_sidebar_body {
-      overflow: hidden scroll;
-      max-height: 605px;
-      border: 1px solid #e2e4e7;
-      border-top-width: 0;
-      border-radius: 0 0 5px 5px;
-    }
-
     .ff_landing {
       overflow: hidden scroll;
       max-height: calc(95vh - 120px);
@@ -1141,6 +1108,16 @@ body.ff_full_screen {
   justify-content: space-between;
 }
 
+.ff-quiz-settings-wrapper{
+  .ff_field_manager{
+    width: auto;
+    padding-left: 0;
+    padding-right: 0;
+    &:last-child{
+      margin-bottom: 0;
+    }
+  }
+}
 
 
 

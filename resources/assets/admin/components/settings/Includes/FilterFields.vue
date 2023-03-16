@@ -76,13 +76,10 @@
                 </el-col>
 
                 <el-col :md="3">
-                    <div class="action-btns mb-2">
-                        <i class="ff_icon_btn small dark el-icon-plus" @click="add(key)"></i>
-                        <i class="ff_icon_btn small dark el-icon-minus" 
-                            @click="remove(key)"
-                            v-if="items.length > 1"
-                        ></i>
-                    </div>
+                    <action-btn class="mb-2">
+                        <action-btn-add @click="add(key)"></action-btn-add>
+                        <action-btn-remove @click="remove(key)" v-if="items.length > 1"></action-btn-remove>
+                    </action-btn>
                 </el-col>
             </el-row>
         </div>
@@ -95,63 +92,69 @@
 </template>
 
 <script>
-import ComingSoon from '../../modals/ItemDisabled';
+    import ComingSoon from '../../modals/ItemDisabled';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
-export default {
-    name: 'FilterFields',
-    components: {
-        ComingSoon
-    },
-    props: {
-        conditionals: {
-            type: Object,
-            required: true,
-            default: {}
+    export default {
+        name: 'FilterFields',
+        components: {
+            ComingSoon,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
-        fields: {
-            type: Object,
-            required: true,
-            default: {}
-        },
-        hasPro: {
-            type: Boolean,
-            required: true
-        },
-        labels: {
-            default: () => ({
-                status_label: 'Enable conditional logic',
-                notification_if_start: 'Send this notification if',
-                notification_if_end: 'of the following match:'
-            })
-        }
-    },
-    data() {
-        return {
-            defaultRules: {
-                field: null,
-                operator: '=',
-                value: null
+        props: {
+            conditionals: {
+                type: Object,
+                required: true,
+                default: {}
             },
-            comingSoon: false,
-        }
-    },
-    computed: {
-        items() {
-            return this.conditionals.conditions;
-        }
-    },
-    methods: {
-        add(index) {
-            this.items.splice(index + 1, 0, {...this.defaultRules});
+            fields: {
+                type: Object,
+                required: true,
+                default: {}
+            },
+            hasPro: {
+                type: Boolean,
+                required: true
+            },
+            labels: {
+                default: () => ({
+                    status_label: 'Enable conditional logic',
+                    notification_if_start: 'Send this notification if',
+                    notification_if_end: 'of the following match:'
+                })
+            }
         },
-        remove(index) {
-            this.items.splice(index, 1);
+        data() {
+            return {
+                defaultRules: {
+                    field: null,
+                    operator: '=',
+                    value: null
+                },
+                comingSoon: false,
+            }
+        },
+        computed: {
+            items() {
+                return this.conditionals.conditions;
+            }
+        },
+        methods: {
+            add(index) {
+                this.items.splice(index + 1, 0, {...this.defaultRules});
+            },
+            remove(index) {
+                this.items.splice(index, 1);
+            }
+        },
+        mounted() {
+            if (!this.conditionals.conditions.length) {
+                this.conditionals.conditions.push({...this.defaultRules});
+            }
         }
-    },
-    mounted() {
-        if (!this.conditionals.conditions.length) {
-            this.conditionals.conditions.push({...this.defaultRules});
-        }
-    }
-};
+    };
 </script>

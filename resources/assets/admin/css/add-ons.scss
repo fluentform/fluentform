@@ -130,16 +130,9 @@
 }
 
 .fluent_activation_wrapper {
-    background-color: #e6f7f2;
-    padding: 45px 20px;
-    display: block;
-    position: relative;
-    margin-top: 20px;
-    text-align: center;
-    border-radius: 8px;
+    border: 1px solid #F2F2F2;
     .el-button {
-        padding: 16px 30px;
-        font-size: 18px;
+        height: 44px;
     }
 }
 .fluent_activate_now {
@@ -147,22 +140,18 @@
 }
 
 label.fluentform_label {
-    display: block;
-    padding: 10px;
-    margin-top: 30px;
-    span {
-        display: block;
-        font-size: 20px;
-        margin-bottom: 20px;
-        color: #606266;
-    }
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: -2px;
+    width: 470px;
     input{
-        font-size: 22px;
+        width: 100%;
+        height: 44px;
+        background-color: #F2F2F2;
     }
 }
 p.contact_us_line {
-    margin-top: 75px;
-    font-size: 14px;
+    margin-top: 12px;
 }
 
 .license_activated_sucess {

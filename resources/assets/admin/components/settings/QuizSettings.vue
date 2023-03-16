@@ -50,15 +50,10 @@
                                             <el-input size="small" type="number" v-model="settings.grades[itemIdex].max"/>
                                         </td>
                                         <td>
-                                            <div class="action-btns ml-2 mb-1">
-                                                <i 
-                                                    class="ff_icon_btn small dark el-icon-plus" 
-                                                    @click="addItem(itemIdex)"></i>
-                                                <i 
-                                                    class="ff_icon_btn small dark el-icon-minus" 
-                                                    :disabled="settings.grades.length == 1"
-                                                    @click="removeItem(itemIdex)"></i>
-                                            </div>
+                                            <action-btn class="ml-2 mb-1">
+                                                <action-btn-add @click="addItem(itemIdex)"></action-btn-add>
+                                                <action-btn-remove v-if="settings.grades.length > 1" @click="removeItem(itemIdex)"></action-btn-remove>
+                                            </action-btn>
                                         </td>
                                     </tr>
                                 </table>
@@ -77,7 +72,7 @@
                                 type="primary"
                                 icon="el-icon-success"
                                 @click="saveSettings">
-                                {{Saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                             </el-button>
                         </div>
                     </el-form>
@@ -99,7 +94,9 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
-
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'QuizSettings',
@@ -115,7 +112,10 @@
             CardBody,
             CardHeadGroup,
             BtnGroup,
-            BtnGroupItem
+            BtnGroupItem,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {

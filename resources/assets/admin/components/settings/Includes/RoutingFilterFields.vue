@@ -56,10 +56,10 @@
                             <el-input size="small" v-else placeholder="Enter a value" v-model="routing.value"></el-input>
                         </td>
                         <td>
-                            <div class="action-btns">
-                                <i class="ff_icon_btn mini dark el-icon-plus" @click="add(key)"></i>
-                                <i class="ff_icon_btn mini dark el-icon-minus" @click="remove(key)" v-if="routings.length > 1"></i>
-                            </div>
+                            <action-btn>
+                                <action-btn-add @click="add(key)" size="mini"></action-btn-add>
+                                <action-btn-remove @click="remove(key)" size="mini" v-if="routings.length > 1"></action-btn-remove>
+                            </action-btn>
                         </td>
                     </tr>
                 </tbody>
@@ -73,11 +73,17 @@
 
 <script type="text/babel">
     import ComingSoon from '../../modals/ItemDisabled';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'RoutingFilterFields',
         components: {
-            ComingSoon
+            ComingSoon,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         props: {
             routings: {

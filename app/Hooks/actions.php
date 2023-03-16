@@ -141,8 +141,7 @@ add_action('admin_init', function () {
         'fluent_forms_add_ons',
         'fluent_forms_docs',
         'fluent_forms_all_entries',
-        'msformentries',
-        'fluent_forms_add_new_form',
+        'msformentries'
     ];
 
     $page = wpFluentForm('request')->get('page');

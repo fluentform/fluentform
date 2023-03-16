@@ -9,8 +9,7 @@
                             <el-button 
                                 v-if="selected" 
                                 @click="discard"
-                                icon="ff-icon ff-icon-arrow-left" 
-                                size="medium"
+                                icon="ff-icon ff-icon-arrow-left"
                                 type="info"
                                 class="el-button--soft"
                             >
@@ -19,8 +18,7 @@
                             <el-button 
                                 v-else 
                                 @click="add" 
-                                type="dark"
-                                size="medium" 
+                                type="dark" 
                                 icon="ff-icon ff-icon-plus"
                             >
                                 {{ $t('Add Webhook') }}
@@ -112,7 +110,7 @@
 
                         <FilterFields
                         :fields="inputs"
-                        :disabled="!has_pro"
+                        :hasPro="has_pro"
                         :conditionals="selected.value.conditionals"></FilterFields>
 
                     </el-form-item>
@@ -123,7 +121,6 @@
                             @click="store"
                             type="primary"
                             icon="el-icon-success"
-                            size="medium"
                         >
                             {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Feed') }}
                         </el-button>
@@ -132,7 +129,6 @@
                             :loading="verifying"
                             @click="verifyEndpoint"
                             type="default"
-                            size="medium"
                         >
                             {{ ('Send Data Sample') }}
                         </el-button>

@@ -197,6 +197,16 @@
 .el-button {
     display: inline-flex;
     align-items: center;
+    .el-loading-mask{
+        border-radius: 7px;
+        .el-loading-spinner {
+            margin-top: -12px;
+            .circular{
+                width: 24px;
+                height: 24px;
+            }
+        }
+    }
     span{
         display: inline-flex;
         align-items: center;
@@ -304,11 +314,17 @@
     &--icon.el-button{
         &--mini {
             padding: 7px;
-            border-radius: 5px;
+            border-radius: 4px;
         }
         &--small{
             padding: 8px;
             font-size: 14px;
+            border-radius: 5px;
+        }
+        &--medium{
+            padding: 11px;
+            font-size: 16px;
+            border-radius: 6px;
         }
     }
     &--text-light{
@@ -580,6 +596,9 @@
     .el-input__inner{
         border-radius: 4px;
     }
+}
+.el-input-number--mini{
+    line-height: 28px;
 }
 
 .el-input-number__increase, 

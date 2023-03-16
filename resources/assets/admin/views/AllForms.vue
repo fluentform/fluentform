@@ -30,7 +30,8 @@
                             class="el-button el-button--primary"
                             v-if="hasPermission('fluentform_forms_manager')"
                             type="primary"
-                            :href="addNewFormURL"
+                            href="#"
+                            @click.prevent="showAddFormModal = true"
                         >
                             <i class="el-icon-plus el-icon-left el-icon"></i>
                             <span>{{ $t('Add New Form') }}</span>
@@ -64,14 +65,14 @@
                                 <div v-if="advancedFilter" class="ff_advanced_search">
                                     <div class="ff_advanced_search_radios">
                                         <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                            <el-radio label="today">Today</el-radio>
-                                            <el-radio label="yesterday">Yesterday</el-radio>
-                                            <el-radio label="last-week">Last Week</el-radio>
-                                            <el-radio label="last-month">Last Month</el-radio>
+                                            <el-radio label="today">{{$t('Today')}}</el-radio>
+                                            <el-radio label="yesterday">{{$t('Yesterday')}}</el-radio>
+                                            <el-radio label="last-week">{{$t('Last Week')}}</el-radio>
+                                            <el-radio label="last-month">{{$t('Last Month')}}</el-radio>
                                         </el-radio-group>
                                     </div>
                                     <div class="ff_advanced_search_date_range">
-                                        <p>Select a Timeframe</p>
+                                        <p>{{$t('Select a Timeframe')}}</p>
                                         <el-date-picker
                                             v-model="filter_date_range"
                                             type="daterange"
@@ -342,8 +343,7 @@ export default {
             sort_by: 'DESC',
             formLocations: {},
             loadingLocations: false,
-            radioOption: '',
-            addNewFormURL: FluentFormApp.adminUrlWithoutPageHash + '?page=fluent_forms_add_new_form'
+            radioOption: ''
         }
     },
     methods: {

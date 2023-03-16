@@ -21,7 +21,7 @@
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
                         <el-col :sm="8">
-                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('New Blank Form')}}</h6>
                                     <p class="ff_card_text">{{$t('Create a New Blank form from scratch.')}}</p>
@@ -29,7 +29,7 @@
                             </card>
                         </el-col>
                         <el-col :sm="8">
-                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="showChooseTemplate" :img="chooseTemplateImg" imgClass="mb-3">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showChooseTemplate" :img="chooseTemplateImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Choose a Template')}}</h6>
                                     <p class="ff_card_text">{{$t('Choose a pre-made form template and customize it.')}}</p>
@@ -37,7 +37,7 @@
                             </card>
                         </el-col>
                         <el-col :sm="8">
-                            <card class="ff_card_form_action ff_card_shadow_lg hover-y" @click="createForm('conversational')" :img="conversationalFormImg" imgClass="mb-3">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('conversational')" :img="conversationalFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create Conversational Form')}}</h6>
                                     <p class="ff_card_text">{{$t('Turn your content, surveys into conversations.')}}</p>

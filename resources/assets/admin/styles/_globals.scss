@@ -437,6 +437,10 @@ span + .ff-icon,
   }
   &__footer{
     padding: 0;
+    .has-separator{
+      padding-top: 20px;
+      border-top: 1px solid $border-color;
+    }
   }
 }
 
@@ -968,6 +972,14 @@ label.el-radio, label.el-checkbox {
   }
   .el-form-item__content{
     line-height: 1;
+  }
+  .ff-icon-info-filled,
+  .el-icon-info {
+    font-size: 13px;
+  }
+  .el-icon-info{
+    transform: rotate(-14deg);
+    color: $--color-primary;
   }
 }
 
@@ -1558,6 +1570,12 @@ label.el-radio, label.el-checkbox {
   transition: 0.3s;
   &:hover{
     transform: translateY(-2px);
+  }
+}
+.hover-zoom{
+  transition: 0.3s;
+  &:hover{
+    transform: scale(1.03);
   }
 }
 

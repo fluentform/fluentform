@@ -25,6 +25,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ff-icon-bug:before {
+  content: "\e925";
+}
+.ff-icon-star-line:before {
+  content: "\e94e";
+}
+.ff-icon-heart-clock:before {
+  content: "\e966";
+}
+.ff-icon-microphone:before {
+  content: "\e967";
+}
+.ff-icon-handshake:before {
+  content: "\e968";
+}
+.ff-icon-ink-pen:before {
+  content: "\e91e";
+}
+.ff-icon-arrow-left:before {
+  content: "\e919";
+}
 .ff-icon-user-filled:before {
   content: "\e902";
 }
@@ -43,7 +64,7 @@
 .ff-icon-warning-filled:before {
   content: "\e905";
 }
-.ff-icon-filled:before {
+.ff-icon-more-vertical:before {
   content: "\e906";
 }
 .ff-icon-gift:before {
@@ -208,9 +229,6 @@
 .ff-icon-arrow-right:before {
   content: "\e93f";
 }
-.ff-icon-arrow-left:before {
-  content: "\e919";
-}
 .ff-icon-plus-filled:before {
   content: "\e940";
 }
@@ -277,9 +295,6 @@
 .ff-icon-more-horizontal:before {
   content: "\e956";
 }
-.ff-icon-more-vertical:before {
-  content: "\e906";
-}
 .ff-icon-setting-filled:before {
   content: "\e957";
 }
@@ -333,7 +348,4 @@
 }
 .ff-icon-clear:before {
   content: "\e96e";
-}
-.ff-icon-ink-pen:before {
-  content: "\e91e";
 }

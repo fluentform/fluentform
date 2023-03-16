@@ -72,6 +72,7 @@
 
 
             jQuery('.ff_settings_list a').on('click', function (e) {
+                
                 if(jQuery(this).attr('href') == '#'){
                     e.preventDefault();
                 }

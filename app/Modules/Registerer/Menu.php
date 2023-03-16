@@ -105,14 +105,6 @@ class Menu
             true
         );
 
-        wp_register_script(
-            'add_new_forms',
-            fluentFormMix('js/add_new_forms.js'),
-            ['jquery'],
-            FLUENTFORM_VERSION,
-            true
-        );
-
         wp_register_style(
             'fluent_all_forms',
             $allFormsStyle,
@@ -293,12 +285,7 @@ class Menu
         } elseif ('fluent_forms' == $page) {
             wp_enqueue_script('fluent_all_forms');
             wp_enqueue_style('fluent_all_forms');
-        }elseif ('fluent_forms_add_new_form' == $page) {
-
-            wp_enqueue_script('add_new_forms');
-            wp_enqueue_style('fluent_all_forms');
-
-        } elseif ('fluent_forms_transfer' == $page) {
+        }elseif ('fluent_forms_transfer' == $page) {
             wp_enqueue_style('fluentform_settings_global');
             wp_enqueue_script('fluentform-transfer-js');
         } elseif (
@@ -379,16 +366,8 @@ class Menu
         if ($settingsCapability) {
             add_submenu_page(
                 'fluent_forms',
-                __('Add New Form', 'fluentform'),
-                __('Add New Form', 'fluentform'),
-                $fromRole ? $settingsCapability : 'fluentform_forms_manager',
-                'fluent_forms_add_new_form',
-                [$this, 'renderAddNewFormRoute']
-            );
-            add_submenu_page(
-                'fluent_forms',
-                __('New Form', 'fluentform'),
-                __('New Form', 'fluentform'),
+                __('Create New Form', 'fluentform'),
+                __('Create New Form', 'fluentform'),
                 $fromRole ? $settingsCapability : 'fluentform_forms_manager',
                 'fluent_forms#add=1',
                 [$this, 'renderAddNewFormRoute']
@@ -525,17 +504,6 @@ class Menu
     {
         wp_enqueue_script('fluentform_all_entries');
         $this->app->view->render('admin.all_entries', []);
-    }
-
-    // add new forms page render
-    public function renderAddNewFormRoute() {
-        wp_localize_script('add_new_forms', 'FluentFormApp', [
-            'hasPro'               => defined('FLUENTFORMPRO'),
-            'adminUrl'             => admin_url('admin.php'),
-            'plugin_public_url'    => fluentformMix(),
-        ]);
-
-        $this->app->view->render('admin.add_new_forms', []);
     }
 
     public function renderFormInnerPages()

@@ -546,19 +546,15 @@
                     <el-form-item class="ff-form-item-flex ff-form-item mb-3">
                         <template slot="label">
                             <span style="width: 390px;">
-                                <span>
-                                   {{ $t('Admin Top Navigation') }}
-                                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                                        <div slot="content">
-                                            <h3>{{ $t('Admin Top Navigation') }}</h3>
-                                            <p>
-                                                {{$t('Toggle Admin Top Navigation on or off. Please reload the page after changing this option.') }}
-                                            </p>
-                                        </div>
-                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                    </el-tooltip>
-                                </span>
-                                <p class="text-note mt-1">For using captcha, you have to enable captcha first.</p>
+                                {{ $t('Admin Top Navigation') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{$t('Toggle Admin Top Navigation on or off. Please reload the page after changing this option.') }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
                             </span>
                         </template>
                         <el-switch active-value="yes" inactive-value="no" class="el-switch-lg" :disabled="!hasCaptcha" active-color="#00b27f"

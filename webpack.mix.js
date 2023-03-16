@@ -37,8 +37,6 @@ mix
     .js('resources/assets/admin/form_entries_app.js', `assets/js/form_entries.js`)
     .js('resources/assets/admin/all_forms_app.js', `assets/js/fluent-all-forms-admin.js`)
 
-    .js('resources/assets/admin/add_new_forms.js', `assets/js/add_new_forms.js`)
-
     .js('resources/assets/public/fluentform-advanced.js', `assets/js/fluentform-advanced.js`)
     .js('resources/assets/public/form-submission.js', `assets/js/form-submission.js`)
     .js('resources/assets/public/form-save-progress.js', `assets/js/form-save-progress.js`)

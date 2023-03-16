@@ -73,14 +73,14 @@
                                             @click="edit(scope.row)"
                                             type="success"
                                             icon="ff-icon-setting"
-                                            size="mini">
+                                            size="small">
                                         </el-button>
                                     </btn-group-item>
                                     <btn-group-item>
                                         <remove @on-confirm="remove(scope.row.id, scope)">
                                             <el-button
                                                 class="el-button--soft el-button--icon"
-                                                size="mini"
+                                                size="small"
                                                 type="danger"
                                                 icon="ff-icon-trash"
                                             />

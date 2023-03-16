@@ -45,7 +45,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('Action')" width="120">
+                    <el-table-column :label="$t('Action')" width="90">
                         <template slot-scope="scope">
                             <el-button
                                 class="el-button--soft el-button--icon"

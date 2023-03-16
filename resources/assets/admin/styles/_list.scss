@@ -33,14 +33,14 @@
     }
     &_link{
         display: block;
-        border-radius: $border-radius;
+        border-radius: 5px;
         background-color: transparent;
         padding: 12px 18px;
         font-size: 16px;
         color: $base-color;
         transition: 0.2s;
         &:hover{
-            background-color: #F2F2F2;
+            background-color: mix($base-color, $white, 6%);
             color: $base-color;
         }
     }
@@ -51,13 +51,18 @@
             border-radius: 6px;
         }
     }
-    &.is-active-soft{
-        .ff_list_button_item {
-            &.active{
+    &_s1{
+        .ff_list_button{
+            &_item.active {
                 .ff_list_button_link{
-                    background-color: #F2F2F2;
+                    background-color: mix($base-color, $white, 6%);
                     color: $base-color;
+                    font-weight: 600;
                 }
+            }
+            &_link{
+                font-size: 15px;
+                color: $base-text;
             }
         }
     }

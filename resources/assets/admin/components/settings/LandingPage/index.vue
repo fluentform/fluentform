@@ -1,218 +1,226 @@
 <template>
-    <div v-loading="loading" :element-loading-text="$t('Loading Settings...')" class="landing-page-settings">
-
-        <el-row class="setting_header" type="flex" justify="space-between" align="middle">
-            <el-col :sm="12">
-                <h2>{{ $t('Landing Page') }}</h2>
-                <p v-if="settings.status != 'yes'">{{ ('Create completely custom "distraction-free" form landing pages to boost conversions') }}</p>
-                <el-checkbox style="margin-bottom: 15px;" v-model="settings.status" true-label="yes" @change="offFullScreen" false-label="no">
+    <div v-loading="loading" :element-loading-text="$t('Loading Settings...')" class="ff-landing-page-settings">
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <div>
+                        <h5 class="title">{{ $t('Landing Page') }}</h5>
+                        <p class="text" v-if="settings.status != 'yes'">{{ ('Create completely custom "distraction-free" form landing pages to boost conversions.') }}</p>
+                    </div>
+                    <btn-group v-if="!error_text" size="sm">
+                        <btn-group-item>
+                            <a 
+                                v-show="share_url && settings.status == 'yes'"
+                                target="_blank" 
+                                rel="noopener" 
+                                :href="final_share_url" 
+                                class="el-button el-button--info el-button--icon el-button--medium el-button--soft"
+                                title="Share"
+                            >
+                                <i class="el-icon-share"></i>
+                            </a>
+                        </btn-group-item>
+                        <btn-group-item>
+                            <a 
+                                v-show="share_url && settings.status == 'yes'" 
+                                class="el-button el-button--primary el-button--icon el-button--medium el-button--soft"
+                                @click="fullScreen"
+                                title="Toggle Fullscreen"
+                            >
+                                <i class="el-icon-full-screen"></i>
+                            </a>
+                        </btn-group-item>
+                        <btn-group-item>
+                            <el-button
+                                :loading="saving"
+                                type="primary"
+                                icon="el-icon-success"
+                                @click="saveSettings()">
+                                {{loading ? $t('Saving ') : $t('Save ') }}
+                            </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <el-checkbox 
+                    v-model="settings.status" 
+                    true-label="yes" 
+                    @change="offFullScreen" 
+                    false-label="no"
+                >
                     {{ $t('Enable Form Landing Page Mode') }}
                 </el-checkbox>
-            </el-col>
-            <!--Save settings-->
-            <el-col v-if="!error_text" :sm="12" class="action-buttons clearfix ">
-                <a v-show="share_url && settings.status == 'yes'" 
-                    class="ff_landing_full_screen el-button pull-right el-button--mini"
-                    @click="fullScreen"
-                >
-                    <i class="el-icon-full-screen"></i>
-                </a>
 
-                <el-button
-                        :loading="saving"
-                        class="pull-right"
-                        size="small"
-                        type="primary"
-                        icon="el-icon-success"
-                        @click="saveSettings()">
-                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
-                </el-button>
-                <a 
-                    v-show="share_url && settings.status == 'yes'" 
-                    style="margin-right: 10px" 
-                    target="_blank" 
-                    rel="noopener" 
-                    :href="final_share_url" 
-                    class="el-button el-button--primary el-button--small is-plain pull-right"
-                >
-                    <i class="el-icon-share"></i>
-                </a>
-            </el-col>
-        </el-row>
+                <p>{{error_text}}</p>
 
-
-        <p>{{error_text}}</p>
-
-        <div v-if="settings.status == 'yes'" class="ff_landing">
-            <div class="ff_landing_sidebar">
-                <div class="ffc_sidebar_header">
-                    <ul>
-                        <li :class="{ffc_active : active_tab == 'design'}" @click="active_tab = 'design'">{{ $t('Design') }}</li>
-                        <li :class="{ffc_active : active_tab == 'share'}" @click="active_tab = 'share'">{{ $t('Share') }}</li>
-                    </ul>
-                </div>
-                <div v-if="settings && active_tab == 'design'" class="ff_landing_settings_wrapper ffc_sidebar_body">
-                    <el-form ref="form" :model="settings" label-position="top" label-width="140px">
-                        <el-form-item>
-                            <template slot="label">
-                                {{ $t('Page Design Style') }}
-                            </template>
-                            <el-radio-group v-model="settings.design_style">
-                                <el-radio v-for="(layoutName, layoutCode) in layouts" :key="layoutCode" :label="layoutCode">{{layoutName}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <div>
-                            <LayoutPref :pref="settings"></LayoutPref>
+                <div v-if="settings.status == 'yes'" class="ff_landing">
+                    <div class="ff_landing_sidebar">
+                        <div class="ffc_sidebar_header">
+                            <tab>
+                                <tab-item :class="{active : active_tab == 'design'}" @click="active_tab = 'design'">
+                                    <tab-link>
+                                        {{ $t('Design') }}
+                                    </tab-link>
+                                </tab-item>
+                                <tab-item :class="{active : active_tab == 'share'}" @click="active_tab = 'share'">
+                                    <tab-link>
+                                        {{ $t('Share') }}
+                                    </tab-link>
+                                </tab-item>
+                            </tab>
                         </div>
+                        <div v-if="settings && active_tab == 'design'" class="ff_landing_settings_wrapper ffc_sidebar_body">
+                            <el-form ref="form" :model="settings" label-position="top">
+                                <el-form-item class="ff-form-item">
+                                    <el-radio-group v-model="settings.design_style">
+                                        <el-radio v-for="(layoutName, layoutCode) in layouts" :key="layoutCode" :label="layoutCode">{{layoutName}}</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
 
-                        <el-form-item>
-                            <template slot="label">
-                                {{ $t('BG Color') }}
-                                <el-tooltip class="item" placement="bottom-start" effect="light">
-                                    <div slot="content">
-                                        <h3>{{ $t('Background Color') }}</h3>
-                                        <p>
-                                            {{ $t('Choose Custom Color for your form page') }}
-                                        </p>
-                                    </div>
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </template>
-                            <el-color-picker @active-change="(color) => { settings.custom_color = color; }" v-model="settings.custom_color"></el-color-picker>
-                        </el-form-item>
+                                <div class="el-form-item">
+                                    <LayoutPref :pref="settings"></LayoutPref>
+                                </div>
 
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('BG Color') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Choose Custom Color for your form page') }}
+                                                </p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <el-color-picker @active-change="(color) => { settings.custom_color = color; }" v-model="settings.custom_color"></el-color-picker>
+                                </el-form-item>
 
-                        <div v-for="(item,i) in settings.form_shadow">
+                                <template v-for="(item, i) in settings.form_shadow">
+                                    <ff_boxshadow :valueItem="item" :key="i"/>
+                                </template>
 
-                            <ff_boxshadow :valueItem="item"/>
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('BG Image') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Page Background Image') }}
+                                                </p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.background_image" />
+                                </el-form-item>
 
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Form Logo') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('You may upload your logo and it will show on the top of the page') }}
+                                                </p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.logo" />
+                                </el-form-item>
+
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Featured Image') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Featured Image will be shown in social media share preview') }}
+                                                </p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.featured_image" />
+                                </el-form-item>
+
+                            </el-form>
+                            <el-form ref="form" :model="settings" label-position="top">
+                                <div class="ff_landing_page_items">
+
+                                    <el-form-item class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('Page Heading') }}
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    <p>
+                                                        {{ $t('This will show at the top of your page') }}
+                                                    </p>
+                                                </div>
+                                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                            </el-tooltip>
+                                        </template>
+                                        <el-input :placeholder="$t('eg: My Awesome Form')" v-model="settings.title"/>
+                                    </el-form-item>
+
+                                    <el-form-item class="ff-form-item">
+                                        <template slot="label">
+                                            {{ $t('Description') }}
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    <p>
+                                                        {{ $t('This will show at the top of your page after form title') }}
+                                                    </p>
+                                                </div>
+                                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                            </el-tooltip>
+                                        </template>
+                                        <wp-editor :height="100" v-model="settings.description" />
+                                    </el-form-item>
+
+                                    <el-form-item v-if="share_url">
+                                        <template slot="label">
+                                            {{ $t('Security Code') }}
+                                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+                                                    <p>
+                                                        {{ $t('A Salt to secure your share url so nobody can guess by form ID.') }}
+                                                    </p>
+                                                </div>
+                                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                            </el-tooltip>
+                                        </template>
+                                        <el-input v-model="settings.share_url_salt" />
+                                    </el-form-item>
+
+                                    <el-form-item>
+                                        <el-button
+                                            :loading="saving"
+                                            type="primary"
+                                            icon="el-icon-success"
+                                            @click="saveSettings()">
+                                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                        </el-button>
+                                    </el-form-item>
+                                </div>
+                            </el-form>
                         </div>
-
-
-                        <el-form-item>
-                            <template slot="label">
-                                {{ $t('BG Image') }}
-                                <el-tooltip class="item" placement="bottom-start" effect="light">
-                                    <div slot="content">
-                                        <h3>{{ $t('Background Image') }}</h3>
-                                        <p>
-                                            {{ $t('Page Background Image') }}
-                                        </p>
-                                    </div>
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </template>
-                            <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.background_image" />
-                        </el-form-item>
-
-                        <el-form-item>
-                            <template slot="label">
-                                {{ $t('Form Logo') }}
-                                <el-tooltip class="item" placement="bottom-start" effect="light">
-                                    <div slot="content">
-                                        <h3>{{ $t('Logo') }}</h3>
-                                        <p>
-                                            {{ $t('You may upload your logo and it will show on the top of the page') }}
-                                        </p>
-                                    </div>
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </template>
-                            <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.logo" />
-                        </el-form-item>
-
-                        <el-form-item>
-                            <template slot="label">
-                                {{ $t('Featured Image') }}
-                                <el-tooltip class="item" placement="bottom-start" effect="light">
-                                    <div slot="content">
-                                        <h3>{{ $t('Featured Image') }}</h3>
-                                        <p>
-                                            {{ $t('Featured Image will be shown in social media share preview') }}
-                                        </p>
-                                    </div>
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </template>
-                            <photo-uploader enable_clear="yes" design_mode="horizontal" v-model="settings.featured_image" />
-                        </el-form-item>
-
-                    </el-form>
-                    <el-form ref="form" :model="settings" label-position="top">
-                        <div class="ff_landing_page_items">
-
-                            <el-form-item>
-                                <template slot="label">
-                                    {{ $t('Page Heading') }}
-                                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                                        <div slot="content">
-                                            <h3>{{ $t('Form Title') }}</h3>
-                                            <p>
-                                                {{ $t('This will show at the top of your page') }}
-                                            </p>
-                                        </div>
-                                        <i class="el-icon-info el-text-info"></i>
-                                    </el-tooltip>
-                                </template>
-                                <el-input :placeholder="$t('eg: My Awesome Form')" v-model="settings.title"/>
-                            </el-form-item>
-
-                            <el-form-item>
-                                <template slot="label">
-                                    {{ $t('Description') }}
-                                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                                        <div slot="content">
-                                            <h3>{{ $t('Description') }}</h3>
-                                            <p>
-                                                {{ $t('This will show at the top of your page after form title') }}
-                                            </p>
-                                        </div>
-                                        <i class="el-icon-info el-text-info"></i>
-                                    </el-tooltip>
-                                </template>
-                                <wp-editor :height="100" v-model="settings.description" />
-                            </el-form-item>
-
-                            <el-form-item v-if="share_url">
-                                <template slot="label">
-                                    {{ $t('Security Code') }}
-                                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                                        <div slot="content">
-                                            <p>
-                                                {{ $t('A Salt to secure your share url so nobody can guess by form ID.') }}
-                                            </p>
-                                        </div>
-                                        <i class="el-icon-info el-text-info"></i>
-                                    </el-tooltip>
-                                </template>
-                                <el-input v-model="settings.share_url_salt" />
-                            </el-form-item>
-
-                            <el-form-item style="margin-top: 20px">
-                                <el-button
-                                    :loading="saving"
-                                    class="pull-right"
-                                    size="small"
-                                    type="primary"
-                                    icon="el-icon-success"
-                                    @click="saveSettings()">
-                                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
-                                </el-button>
-                            </el-form-item>
+                        <div class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'share'">
+                            <p>{{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}</p>
                         </div>
-                    </el-form>
+                    </div>
+                    <div class="ff_landing_preview ffc_design_container">
+                        <template v-if="active_tab == 'design'">
+                            <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" @change-device-type="changeDeviceType"/>
+                        </template>
+                        <share v-else-if="final_share_url" :share_url="final_share_url" :form_id="form_id"  />
+                    </div>
                 </div>
-                <div style="padding-top: 20px;" class="ff_landing_settings_wrapper ffc_sidebar_body" v-else-if="active_tab == 'share'">
-                    <p>{{ $t('Share your form by unique URL or copy and paste the shortcode to embed in your page and post') }}</p>
-                </div>
-            </div>
-            <div class="ff_landing_preview ffc_design_container">
-                <template v-if="active_tab == 'design'">
-                    <browser :settings="settings" v-if="final_share_url && show_frame" :preview_url="final_share_url" @change-device-type="changeDeviceType"/>
-                </template>
-                <share v-else-if="final_share_url" :share_url="final_share_url" :form_id="form_id"  />
-            </div>
-        </div>
+
+            </card-body>
+        </card>
     </div>
 </template>
 
@@ -223,6 +231,15 @@
     import Browser from './_Browser';
     import Share from './_Sharing';
     import Ff_boxshadow from './BoxShadow';
+    import Card from '../../Card/Card.vue';
+    import CardHead from '../../Card/CardHead.vue';
+    import CardBody from '../../Card/CardBody.vue';
+    import CardHeadGroup from '../../Card/CardHeadGroup.vue';
+    import BtnGroup from '../../BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '../../BtnGroup/BtnGroupItem.vue';
+    import Tab from '../../Tab/Tab.vue';
+    import TabItem from '../../Tab/TabItem.vue';
+    import TabLink from '../../Tab/TabLink.vue';
 
     export default {
         name: 'landing_pages',
@@ -232,7 +249,16 @@
             PhotoUploader,
             Browser,
             Share,
-            LayoutPref : ConversionStylePref
+            LayoutPref : ConversionStylePref,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem,
+            Tab,
+            TabItem,
+            TabLink
         },
         data() {
             return {

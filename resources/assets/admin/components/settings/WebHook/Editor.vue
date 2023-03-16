@@ -284,15 +284,10 @@
                                     </el-option-group>
                                 </el-select>
 
-                                <div class="action-btns ml-2 mb-1">
-                                    <i 
-                                        class="ff_icon_btn small dark el-icon-plus" 
-                                        @click="addFieldRow(mappedKey)"></i>
-                                    <i 
-                                        class="ff_icon_btn small dark el-icon-minus" 
-                                        v-if="editing_item.fields.length > 1"
-                                        @click="removeFieldRow(mappedKey)" ></i>
-                                </div>
+                                <action-btn class="ml-2 mb-1">
+                                    <action-btn-add @click="addFieldRow(mappedKey)"></action-btn-add>
+                                    <action-btn-remove v-if="editing_item.fields.length > 1" @click="removeFieldRow(mappedKey)"></action-btn-remove>
+                                </action-btn>
                             </div>
                         </td>
                     </tr>
@@ -318,7 +313,7 @@
 
             <FilterFields
             :fields="fields"
-            :hasPro="!has_pro"
+            :hasPro="has_pro"
             :conditionals="editing_item.conditionals"/>
 
         </el-form-item>
@@ -336,13 +331,19 @@
     import inputPopover from '../../input-popover.vue';
     import ErrorView from '../../../../common/errorView';
     import FilterFields from '../Includes/FilterFields.vue';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'Editor',
         components: {
             ErrorView,
             inputPopover,
-            FilterFields
+            FilterFields,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         props: {
             ajax_actions: {
