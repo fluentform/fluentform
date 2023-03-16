@@ -608,10 +608,12 @@
   }
   .ff-saved-state-input {
     .ff_input-group-text {
-      background-color: rgb(64, 158, 255);
-
+      background-color: #1a7efb;
+      border-color: #1a7efb;
+      margin-left: -1px;
       &:hover {
-        background-color: #66b3ff;
+        background-color: #4898fc;
+        border-color: #4898fc;
         opacity: 1;
       }
 
@@ -656,6 +658,10 @@
   padding: 3px;
   &.active {
     height: auto;
+  }
+  .ff_summary_container{
+    margin-top: 10px;
+    font-size: 14px;
   }
 }
 
