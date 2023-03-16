@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ff-icon-play:before {
+  content: "\e969";
+}
 .ff-icon-bug:before {
   content: "\e925";
 }
