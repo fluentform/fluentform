@@ -22,33 +22,12 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php echo __('Settings'); ?>
                         </a>
                     </li>
-                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('managers', $currentComponent)); ?> ff_list_button_item">
-                        <a 
-                            class="ff_list_button_link"
-                            data-hash="managers"
-                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                'hash' => 'managers'
-                            ])); ?>">
-                            <?php echo __('Managers'); ?>
-                        </a>
-                    </li>
-                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('double_optin_settings', $currentComponent)); ?> ff_list_button_item">
-                        <a 
-                            class="ff_list_button_link"
-                            data-hash="double_optin_settings"
-                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                'hash' => 'double_optin_settings'
-                            ])); ?>">
-                            <?php echo __('Double Optin Settings', 'fluentform'); ?>
-                        </a>
-                    </li>
-
                     <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">
-                            <a 
-                                class="ff_list_button_link"
-                                data-hash="payment_settings"
-                                href="#">
+                            <a
+                                    class="ff_list_button_link"
+                                    data-hash="payment_settings"
+                                    href="#">
                                 <?php echo __('Payment Settings', 'fluentform'); ?>
                             </a>
                             <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
@@ -105,7 +84,29 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php endforeach; ?>
                         </ul>
                     </li>
-
+                    
+                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('managers', $currentComponent)); ?> ff_list_button_item">
+                        <a
+                            class="ff_list_button_link"
+                            data-hash="managers"
+                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                'hash' => 'managers'
+                            ])); ?>">
+                            <?php echo __('Managers'); ?>
+                        </a>
+                    </li>
+                    
+                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('double_optin_settings', $currentComponent)); ?> ff_list_button_item">
+                        <a
+                            class="ff_list_button_link"
+                            data-hash="double_optin_settings"
+                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                'hash' => 'double_optin_settings'
+                            ])); ?>">
+                            <?php echo __('Double Optin Settings', 'fluentform'); ?>
+                        </a>
+                    </li>
+                    
                     <li class="ff_list_button_item has_sub_menu">
                         <a class="ff_list_button_link" href="#">
                             <?php echo __('All Integration Settings', 'fluentform'); ?>
