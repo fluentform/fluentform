@@ -1,5 +1,5 @@
 <template>
-    <div class="entry_info_box entry_submission_order_data ">
+    <div class="ff_card mt-4 entry_submission_order_data ">
         <card-head>
             <h6> {{ $t('Subscriptions (Recurring Payments)') }} </h6>
         </card-head>
@@ -7,7 +7,7 @@
         <card-body>
             <div
                 :key="subscriptionIndex"
-                class="payment_header subscripton_item"
+                class=""
                 v-for="(subscription, subscriptionIndex) in subscriptions"
             >
                 <div class="payment_head_top">

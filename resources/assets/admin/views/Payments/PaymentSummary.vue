@@ -59,7 +59,7 @@
                 v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
                 class="ff_card mt-4 mb-4"
         >
-            <card-head> {{$t('Payment Details')}} </card-head>
+            <card-head> <h6>{{$t('Payment Details')}}</h6> </card-head>
             <card-body class="entry_info_body">
                 <div class="payment_header subscripton_item">
                     <div class="payment_head_top">
