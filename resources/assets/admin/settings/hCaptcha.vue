@@ -57,6 +57,10 @@
                     <el-form-item :label="$t('Validate Keys')" v-if="siteKeyChanged">
                         <div class="h-captcha" id="hCaptcha" :data-sitekey="hCaptcha.siteKey"></div>
                     </el-form-item>
+
+                    <notice v-if="hCaptcha_status" size="sm" type="success-soft">
+                        <p>{{ $t('Your hCaptcha is valid') }}</p>
+                    </notice>
                 </card-body>
             </card>
 
@@ -79,9 +83,6 @@
                 </el-button>
             </div>
         </el-form>
-        <div v-if="hCaptcha_status">
-            <p>{{ $t('Your hCaptcha is valid') }}</p>
-        </div>
     </div>
 </template>
 
@@ -89,13 +90,14 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
+    import Notice from '@/admin/components/Notice/Notice.vue';
 
     export default {
-
         components: {
             Card,
             CardHead,
-            CardBody
+            CardBody,
+            Notice
         },
         name: "hCaptcha",
         props: ["app"],
