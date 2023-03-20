@@ -16,11 +16,11 @@
                         <h4 class="mr-3">{{ $t('Create A New Form') }}</h4>
                         <el-button size="medium" @click="showFormsImport = !showFormsImport" type="primary"
                                    :icon="showFormsImport ? 'el-icon-close' : ''" class="el-button--soft">
-                            {{ $t('Import Form') }}
+                        {{ $t('Import Form') }}
                         </el-button>
                     </div>
                     <transition name="slide-down">
-                        <import-forms v-if="showFormsImport" @forms-imported="updateFormsImported" :app="{forms:[]}"/>
+                        <import-forms class="import-forms-section mt-2" v-if="showFormsImport" @forms-imported="updateFormsImported" :app="{forms:[]}"/>
                         <
                     </transition>
                 </template>
