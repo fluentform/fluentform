@@ -244,7 +244,7 @@
                                 @click="saveFeed"
                                 icon="el-icon-success"
                             >
-                                {{ $t('Save Feed') }}
+                                {{ saving ? $t('Saving') : 'Save' }} {{'Feed'}}
                             </el-button>
                         </div>
                     </el-form>

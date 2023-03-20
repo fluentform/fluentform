@@ -44,7 +44,7 @@
                                     <btn-group-item>
                                         <el-button
                                             class="el-button--soft el-button--icon"
-                                            size="mini"
+                                            size="small"
                                             type="primary"
                                             icon="el-icon-setting"
                                             @click="editPostFeed(scope.row)"
@@ -54,7 +54,7 @@
                                         <remove @on-confirm="deletePostFeed(scope.$index, scope.row)">
                                             <el-button
                                                 class="el-button--soft el-button--icon"
-                                                size="mini"
+                                                size="small"
                                                 type="danger"
                                                 icon="el-icon-delete"
                                             />
