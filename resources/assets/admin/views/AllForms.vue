@@ -139,6 +139,11 @@
                                                 $t('Duplicate')
                                         }}</a>
                                     </span>
+                                    <span class="row-actions-item ff_export">
+                                        <a href="#" @click.prevent="exportForm(scope.row.id)"> {{
+                                                $t('Export')
+                                            }}</a>
+                                    </span>
                                     <span class="row-actions-item trash">
                                         <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
                                             <a href="#" @click.prevent>{{ $t('Delete') }}</a>
@@ -547,6 +552,16 @@ export default {
                 })
             ;
         },
+        exportForm(id) {
+            const data = {
+                forms: [id],
+                format: 'json',
+                _wpnonce: window.fluent_forms_global_var.rest.nonce
+            };
+            const route = FluentFormsGlobal.$rest.route('exportForms');
+            const url = `${window.fluent_forms_global_var.rest.url}/${route}`;
+            location.href = url + '?' + jQuery.param(data);
+        }
     },
     mounted() {
         this.fetchItems();
