@@ -1052,7 +1052,7 @@ class TranslationString
             'Min-Width' => __('Min-Width', 'fluentform'),
             'Button Min-Width (Keep blank/0 for auto)'  => __('Button Min-Width (Keep blank/0 for auto)', 'fluentform'),
             'ex: 100%' => __('ex: 100%', 'fluentform'),
-            'An option for developers to add dynamic elements they want.It provides the chance to add whatever input type you want to add in this form.This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.' => __('An option for developers to add dynamic elements they want.It provides the chance to add whatever input type you want to add in this form.This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.', 'fluentform'),
+            'An option for developers to add dynamic elements they want. It provides the chance to add whatever input type you want to add in this form. This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.' => __('An option for developers to add dynamic elements they want. It provides the chance to add whatever input type you want to add in this form. This way, you can bind your own functions to render the form to this action hook.You\'ll be given 1 parameter to play with: $form.', 'fluentform'),
             'Error Message' => __('Error Message', 'fluentform'),
             'This message will be shown if validation fails for' => __('This message will be shown if validation fails for', 'fluentform'),
             'Step' => __('Step', 'fluentform'),
