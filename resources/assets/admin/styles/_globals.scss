@@ -796,20 +796,6 @@ label.el-radio, label.el-checkbox {
   }
 }
 
-// alert
-.ff_alert {
-  border-left: 3px solid $--color-primary;
-  border-radius: 4px;
-  padding: 17px;
-  background-color: $--color-primary-light-9;
-  &.danger{
-    &-soft{
-      background-color: $--color-danger-lighter;
-      border-left-color: $--color-danger;
-    }
-  }
-}
-
 // section block
 .ff_section{
   &_block{
@@ -1001,6 +987,20 @@ label.el-radio, label.el-checkbox {
   border-radius: 4px;
   padding: 17px;
   background-color: $--color-primary-light-9;
+  &.success{
+    &-soft{
+      background-color: $--color-success-lighter;
+      border-left-color: $--color-success;
+    }
+  }
+  &.danger{
+    background-color: $--color-danger-lighter;
+    border-left-color: $--color-danger;
+    &-soft{
+      background-color: $--color-danger-lighter;
+      border-left-color: $--color-danger;
+    }
+  }
   .text{
     margin-top: 6px;
     margin-bottom: 12px;
@@ -1014,9 +1014,11 @@ label.el-radio, label.el-checkbox {
       margin-bottom: 0;
     }
   }
-  &.danger{
-    background-color: $--color-danger-lighter;
-    border-left-color: $--color-danger;
+  &_s2{
+    text-align: center;
+    border-left: 0;
+    border-radius: 8px;
+    padding: 40px;
   }
 }
 

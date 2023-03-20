@@ -1,6 +1,6 @@
 <?php do_action('fluentform_global_menu'); ?>
 <div class="ff_addon_wrapper ff_block">
-    <div class="ff_addon_header text-center">
+    <div class="ff_card text-center mb-4">
         <img class="mb-6" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>
         <h1 class="mb-4">Making Email Deliverability Easy and Fast for Your WordPress</h1>
         <p>
@@ -16,13 +16,15 @@
                 <p style="display: none;" class="ff_addon_installing">Installing FluentSMTP Plugin. Please wait...</p>
             </div>
         <?php else: ?>
-        <h3 class="mb-3">FluentSMTP plugin has been activated and running</h3>
-        <a href="<?php echo esc_url($setup_url); ?>" class="ff_addon_btn">View FluentSMTP Settings</a>
+            <div class="ff_alert ff_alert_s2 success-soft mt-5">
+                <h3 class="mb-4">FluentSMTP plugin has been activated and running.</h3>
+                <a href="<?php echo esc_url($setup_url); ?>" class="el-button el-button--large el-button--success">View FluentSMTP Settings</a>
+            </div>
         <?php endif; ?>
     </div>
 
     <?php if (!$is_installed): ?>
-        <div class="ff_addon_body ff_card">
+        <div class="ff_card">
             <img class="ff_addon_banner mb-5" src="<?php echo esc_url($banner_image); ?>"/>
             <div class="ff_card_head">
                 <h4 class="title">FluentSMTP - The ultimate SMTP & Email Service Connection Plugin for WordPress</h4>
