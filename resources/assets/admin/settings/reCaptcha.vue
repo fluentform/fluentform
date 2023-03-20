@@ -82,6 +82,9 @@
                             :data-size="size"
                         />
                     </el-form-item>
+                    <notice v-if="reCaptcha_status && !disabled" size="sm" type="success-soft">
+                        <p>{{ $t('Your reCAPTCHA is valid') }}</p>
+                    </notice>
                 </card-body>
             </card>
 
@@ -105,10 +108,6 @@
                 </el-button>
             </div>
         </el-form>
-
-        <div v-if="reCaptcha_status && !disabled">
-            <p>{{ $t('Your reCAPTCHA is valid') }}</p>
-        </div>
     </div>
 </template>
 
@@ -116,12 +115,14 @@
 import Card from '@/admin/components/Card/Card.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
+import Notice from '../components/Notice/Notice.vue';
 
 export default {
     components: { 
         Card, 
         CardHead, 
-        CardBody 
+        CardBody,
+        Notice
     },
     name: "reCaptcha",
     props: ['app'],
@@ -149,7 +150,7 @@ export default {
         },
 
         hidden() {
-            return this.v2 ? '' : 'mb0';
+            return this.v2 ? '' : 'mb-0';
         }
     },
 

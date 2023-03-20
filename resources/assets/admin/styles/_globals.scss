@@ -990,6 +990,9 @@ label.el-radio, label.el-checkbox {
   border-radius: 4px;
   padding: 17px;
   background-color: $--color-primary-light-9;
+  &_sm{
+    padding: 10px;
+  }
   &.success{
     &-soft{
       background-color: $--color-success-lighter;
