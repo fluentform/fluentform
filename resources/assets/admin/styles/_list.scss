@@ -161,9 +161,24 @@
             color: $base-color;
             transition: 0.2s;
             display: block;
+            &.lead-text{
+                color: $--color-primary;
+            }
         }
     }
 }
 
-
+// ff_submission_info_list
+.ff_submission_info_list{
+    li{
+        display: flex;
+    }
+    .lead-title{
+        width: 120px;
+        flex-shrink: 0;
+    }
+    .truncate{
+        max-width: 228px;
+    }
+}
 

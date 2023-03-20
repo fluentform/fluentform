@@ -224,6 +224,7 @@ table.editor_table, .ff_entry_table_field, .ff-table {
       padding: 6px 10px;
     }
     &-footer {
+      margin-top: 12px;
       padding-top: 20px;
       border-top: 1px solid $border-color;
     }
@@ -753,17 +754,6 @@ span.ff_tag {
 
   .log_status_success {
     background: #348938;
-  }
-}
-
-// submission info list
-.ff_submission_info_list{
-  li{
-    padding-bottom: 15px !important;
-    margin-bottom: 15px !important;
-    &:last-child{
-      margin-bottom: 0 !important;
-    }
   }
 }
 
