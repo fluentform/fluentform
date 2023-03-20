@@ -8,7 +8,7 @@
         >
             <template slot="title">
                 <h3 class="title">{{$t('Choose a Template')}}</h3>
-                <p class="text">{{$t('Here are some beautiful, fully customizable templates to get you started. start with a')}} <a href="#" @click.prevent="createForm('blank_form')">{{$t('blank form')}}</a> or <a href="#">{{$t('Import form')}}</a>.
+                <p class="text">{{$t('Here are some beautiful, fully customizable templates to get you started. start with a')}} <a href="#" @click.prevent="createForm('blank_form')">{{$t('blank form')}}</a> or <a href="#" @click.prevent="goToImportPage()">{{$t('Import form')}}</a>.
                 </p>
             </template>
 
@@ -208,7 +208,14 @@
 
                 }, 'slow');
                 
-            },           
+            },
+            goToImportPage() {
+                let path = window.location.href;
+                const index = path.lastIndexOf('fluent_forms#add=1');
+                path = path.substring(0, index);
+                path += 'fluent_forms_transfer#importforms';
+                window.location.href = path;
+            }
             // stickyMenu(){
             //     let stickyElem = jQuery('#sticky-menu');
             //     let stickyTop = stickyElem.offset().top;
