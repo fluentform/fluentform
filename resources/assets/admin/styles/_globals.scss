@@ -990,18 +990,33 @@ label.el-radio, label.el-checkbox {
   border-radius: 4px;
   padding: 17px;
   background-color: $--color-primary-light-9;
+  &_icon{
+    font-size: 16px;
+    display: inline-block;
+    margin-top: 3px;
+    + .ff_alert_content{
+      padding-left: 10px;
+    }
+  }
+  &_group{
+    display: flex;
+  }
   &_sm{
     padding: 10px;
   }
   &.success{
+    background-color: $--color-success;
+    border-left-color: $--color-success;
+    color: $--color-white;
     &-soft{
       background-color: $--color-success-lighter;
       border-left-color: $--color-success;
     }
   }
   &.danger{
-    background-color: $--color-danger-lighter;
+    background-color: $--color-danger;
     border-left-color: $--color-danger;
+    color: $--color-white;
     &-soft{
       background-color: $--color-danger-lighter;
       border-left-color: $--color-danger;
