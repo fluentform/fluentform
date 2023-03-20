@@ -322,6 +322,9 @@ span + .ff-icon,
     color: $base-text;
   }
 }
+a.lead-text{
+  color: $--color-primary;
+}
 
 /* BUTTONS */
 .btn {
