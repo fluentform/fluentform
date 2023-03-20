@@ -20,8 +20,7 @@
                         </el-button>
                     </div>
                     <transition name="slide-down">
-                        <import-forms class="import-forms-section mt-2" v-if="showFormsImport" @forms-imported="updateFormsImported" :app="{forms:[]}"/>
-                        <
+                        <import-forms class="import-forms-section mt-4" v-if="showFormsImport" @forms-imported="updateFormsImported" :app="{forms:[]}"/>
                     </transition>
                 </template>
 
