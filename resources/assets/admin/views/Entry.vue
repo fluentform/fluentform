@@ -269,8 +269,8 @@
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
-import SectionHead from '../components/SectionHead/SectionHead.vue';
-import SectionHeadContent from '../components/SectionHead/SectionHeadContent.vue';
+    import SectionHead from '../components/SectionHead/SectionHead.vue';
+    import SectionHeadContent from '../components/SectionHead/SectionHeadContent.vue';
 
     export default {
         name: 'Entry',
@@ -292,8 +292,8 @@ import SectionHeadContent from '../components/SectionHead/SectionHeadContent.vue
             CardHead,
             CardHeadGroup,
             CardBody,
-                SectionHead,
-                SectionHeadContent
+            SectionHead,
+            SectionHeadContent
         },
         data() {
             return {
