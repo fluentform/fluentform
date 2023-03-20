@@ -39,7 +39,7 @@ class FormValidationService
      * @return bool
      * @throws ValidationException
      */
-    public function validateSubmission(&$fields)
+    public function validateSubmission(&$fields, &$formData)
     {
         $this->preventMaliciousAttacks();
     
@@ -52,16 +52,16 @@ class FormValidationService
         $this->validateTurnstile();
         
         foreach ($fields as $fieldName => $field) {
-            if (isset($this->formData[$fieldName])) {
+            if (isset($formData[$fieldName])) {
                 $element = $field['element'];
-                $this->formData[$fieldName] = apply_filters('fluentform_input_data_' . $element, $this->formData[$fieldName], $field, $this->formData, $this->form);
+                $formData[$fieldName] = apply_filters('fluentform_input_data_' . $element, $formData[$fieldName], $field, $formData, $this->form);
             }
         }
         
-        $originalValidations = FormFieldsParser::getValidations($this->form, $this->formData, $fields);
+        $originalValidations = FormFieldsParser::getValidations($this->form, $formData, $fields);
         
         // Fire an event so that one can hook into it to work with the rules & messages.
-        $validations = apply_filters('fluentform_validations', $originalValidations, $this->form, $this->formData);
+        $validations = apply_filters('fluentform_validations', $originalValidations, $this->form, $formData);
     
         /*
          * Clean talk fix for now
@@ -72,7 +72,7 @@ class FormValidationService
             $validations = $originalValidations;
         }
         
-        $validator = wpFluentForm('validator')->make($this->formData, $validations[0], $validations[1]);
+        $validator = wpFluentForm('validator')->make($formData, $validations[0], $validations[1]);
         
         $errors = [];
         if ($validator->validate()->fails()) {
@@ -86,14 +86,14 @@ class FormValidationService
                 $errors[$attribute] = $rules;
             }
             // Fire an event so that one can hook into it to work with the errors.
-            $errors = $this->app->applyFilters('fluentform_validation_error', $errors, $this->form, $fields, $this->formData);
+            $errors = $this->app->applyFilters('fluentform_validation_error', $errors, $this->form, $fields, $formData);
         }
         
         foreach ($fields as $fieldKey => $field) {
             $field['data_key'] = $fieldKey;
             $inputName = Arr::get($field, 'raw.attributes.name');
             $field['name'] = $inputName;
-            $error = apply_filters('fluentform_validate_input_item_' . $field['element'], '', $field, $this->formData, $fields, $this->form, $errors);
+            $error = apply_filters('fluentform_validate_input_item_' . $field['element'], '', $field, $formData, $fields, $this->form, $errors);
             if ($error) {
                 if (empty($errors[$inputName])) {
                     $errors[$inputName] = [];
@@ -106,14 +106,14 @@ class FormValidationService
         }
     
     
-        $errors = apply_filters('fluentform_validation_errors', $errors, $this->formData, $this->form, $fields);
+        $errors = apply_filters('fluentform_validation_errors', $errors, $formData, $this->form, $fields);
     
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_registration') && !get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_registration_errors', $errors, $this->formData, $this->form, $fields);
+            $errors = apply_filters('fluentform_validation_user_registration_errors', $errors, $formData, $this->form, $fields);
         }
     
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_update') && get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_update_errors', $errors, $this->formData, $this->form, $fields);
+            $errors = apply_filters('fluentform_validation_user_update_errors', $errors, $formData, $this->form, $fields);
         }
         
         if ($errors) {

@@ -263,8 +263,8 @@ class SubmissionHandlerService
         /* Now validate the data using the previous validations. */
         $this->validationService->setForm($this->form);
         $this->validationService->setFormData($this->formData);
-    
-        $this->validationService->validateSubmission($this->fields);
+
+        $this->validationService->validateSubmission($this->fields, $this->formData);
     
         $insertData = $this->prepareInsertData();
         
