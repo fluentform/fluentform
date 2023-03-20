@@ -182,7 +182,9 @@
       margin-bottom: 0;
       max-width: 100%;
       font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-
+      -webkit-appearance: none;
+      background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 12px top 55%;
+      background-size: 16px 16px;
       &:focus {
         color: $text-color;
         background-color: #fff;
@@ -254,7 +256,7 @@
 select#{$el-prefix}-form-control {
   &:not([size]) {
     &:not([multiple]) {
-      height: 38px;
+      height: 42px;
     }
   }
 }

@@ -500,6 +500,15 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 .ff-input-customization-wrap{
   .option-fields-section--content{
     margin-top: 20px;
+    .wp_vue_editor_wrapper {
+      .wp-media-buttons{
+        right: 10px;
+      }
+      .wp-switch-editor{
+        padding: 4px 12px;
+      }
+    }
+    
   }
 }
 .pull-right.top-check-action {
@@ -766,7 +775,8 @@ mark {
   max-width: 100%;
   border-radius: 7px;
   border-color: $--border-color-base;
-  background-position: top 55% right 14px;
+  background-position: top 55% right 12px;
+  padding-left: 15px;
 }
 
 .ff {
