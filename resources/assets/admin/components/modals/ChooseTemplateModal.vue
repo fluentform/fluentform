@@ -37,7 +37,7 @@
                         <el-input
                             v-model="search"
                             :placeholder="$t('Search Forms')"
-                            class="input-with-select el-input-search el-input-border"
+                            class="el-input-search el-input-border"
                             prefix-icon="el-icon-search"
                         >
                         </el-input>

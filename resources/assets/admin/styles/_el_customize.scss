@@ -522,7 +522,7 @@
         height: 30px;
         display: grid;
         border: 0;
-        border-radius: 5px !important;
+        border-radius: 5px;
         &:hover{
             background-color: #e0e0e0;
         }
@@ -553,6 +553,58 @@
 .el-radio-button__orig-radio:checked + .el-radio-button__inner {
     box-shadow: none;
 }
+
+// input with select
+.input-with-select{
+    display: flex;
+    align-items: center;
+    &.el-input-group--append{
+        .el-input__inner{
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+    .el-select{
+        background-color: #fff;
+        margin: 0;
+        border: 1px solid $--border-color-base;
+        height: 40px;
+        .el-input__inner{
+            border: 0;
+        }
+    }
+    .el-input-group__prepend,
+    .el-input-group__append {
+      width: auto;
+      height: auto;
+      top: 0;
+      left: 0;
+      border-radius: 0;
+      position: inherit;
+      flex: 1;
+      &:hover{
+        background-color: transparent;
+      }
+    }
+    .el-input-group{
+        &__prepend{
+            .el-select{
+                border-top-left-radius: $border-radius;
+                border-bottom-left-radius: $border-radius;
+                border-right: 0;
+            }
+        }
+        &__append{
+            .el-select{
+                border-top-right-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+                border-left: 0;
+            }
+        }
+    }
+    
+}
+
 // dark radio
 .el-radio-group-dark{
     .el-radio-button__orig-radio:checked + .el-radio-button__inner {
