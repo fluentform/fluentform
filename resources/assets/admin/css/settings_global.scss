@@ -1134,5 +1134,15 @@ body.ff_full_screen {
   }
 }
 
-
-
+.ff_payment_badge{
+  border: 1px solid $payment-badge-border-color;
+  border-radius: 30px;
+  display: inline-block;
+  padding: 4px 8px;
+  line-height: 1;
+  font-size: 12px;
+  font-weight: 500;
+}
+span + .ff_payment_badge{
+  margin-left: 4px;
+}
