@@ -2,6 +2,11 @@
 
 namespace FluentForm\App\Helpers;
 
+use FluentForm\App\Models\EntryDetails;
+use FluentForm\App\Models\Form;
+use FluentForm\App\Models\FormMeta;
+use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Helper
@@ -125,140 +130,44 @@ class Helper
 
     public static function getFormMeta($formId, $metaKey, $default = '')
     {
-        $meta = wpFluent()->table('fluentform_form_meta')
-            ->where('meta_key', $metaKey)
-            ->where('form_id', $formId)
-            ->first();
-
-        if (!$meta || !$meta->value) {
-            return $default;
-        }
-
-        $metaValue = $meta->value;
-        // decode the JSON data
-        $result = json_decode($metaValue, true);
-
-        if (JSON_ERROR_NONE == json_last_error()) {
-            return $result;
-        }
-
-        return $metaValue;
+        return FormMeta::retrieve($metaKey, $formId, $default);
     }
 
     public static function setFormMeta($formId, $metaKey, $value)
     {
-        $meta = wpFluent()->table('fluentform_form_meta')
-            ->where('meta_key', $metaKey)
-            ->where('form_id', $formId)
-            ->first();
-
-        if (is_array($value) || is_object($value)) {
-            $value = json_encode($value);
-        }
-
-        if (!$meta) {
-            $insetid = wpFluent()->table('fluentform_form_meta')
-                ->insertGetId([
-                    'meta_key' => $metaKey,
-                    'form_id'  => $formId,
-                    'value'    => $value,
-                ]);
-
-            return $insetid;
-        } else {
-            wpFluent()->table('fluentform_form_meta')
-                ->where('id', $meta->id)
-                ->update([
-                    'value' => $value,
-                ]);
-        }
-
-        return $meta->id;
+       if ($meta = FormMeta::persist($formId, $metaKey, $value)) {
+           return $meta->id;
+       }
+       return null;
     }
 
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
     {
-        $meta = wpFluent()->table('fluentform_submission_meta')
-            ->where('response_id', $submissionId)
-            ->where('meta_key', $metaKey)
-            ->first();
-
-        if ($meta && $meta->value) {
-            return maybe_unserialize($meta->value);
-        }
-
-        return $default;
+        return SubmissionMeta::retrieve($metaKey, $submissionId, $default);
     }
 
     public static function setSubmissionMeta($submissionId, $metaKey, $value, $formId = false)
     {
-        $value = maybe_serialize($value);
-
-        // check if submission exist
-        $meta = wpFluent()->table('fluentform_submission_meta')
-            ->where('response_id', $submissionId)
-            ->where('meta_key', $metaKey)
-            ->first();
-
-        if ($meta) {
-            wpFluent()->table('fluentform_submission_meta')
-                ->where('id', $meta->id)
-                ->insert([
-                    'value'      => $value,
-                    'updated_at' => current_time('mysql'),
-                ]);
-
-            return $meta->id;
-        }
-
-        if (!$formId) {
-            $submission = wpFluent()->table('fluentform_submissions')
-                ->find($submissionId);
-            if ($submission) {
-                $formId = $submission->form_id;
-            }
-        }
-
-        return wpFluent()->table('fluentform_submission_meta')
-            ->insertGetId([
-                'response_id' => $submissionId,
-                'form_id'     => $formId,
-                'meta_key'    => $metaKey,
-                'value'       => $value,
-                'created_at'  => current_time('mysql'),
-                'updated_at'  => current_time('mysql'),
-            ]);
+      if ($meta = SubmissionMeta::persist($submissionId, $metaKey, $value, $formId)) {
+          return $meta->id;
+      }
+      return null;
     }
 
     public static function isEntryAutoDeleteEnabled($formId)
     {
-        $settings = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', $formId)
-            ->where('meta_key', 'formSettings')
-            ->first();
-
-        if (!$settings) {
-            return false;
-        }
-
-        $formSettings = json_decode($settings->value, true);
-
-        if ($formSettings && 'yes' == ArrayHelper::get($formSettings, 'delete_entry_on_submission')) {
+        if (
+            'yes' == ArrayHelper::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission', '')
+        ) {
             return true;
         }
-
         return false;
     }
 
     public static function formExtraCssClass($form)
     {
         if (!$form->settings) {
-            $settings = wpFluent()->table('fluentform_form_meta')
-                ->where('form_id', $form->id)
-                ->where('meta_key', 'formSettings')
-                ->first();
-
-            $formSettings = json_decode($settings->value, true);
+            $formSettings = static::getFormMeta($form->id, 'formSettings');
         } else {
             $formSettings = $form->settings;
         }
@@ -267,7 +176,7 @@ class Helper
             return '';
         }
 
-        if ($formSettings && $extraClass = ArrayHelper::get($formSettings, 'form_extra_css_class')) {
+        if ($extraClass = ArrayHelper::get($formSettings, 'form_extra_css_class')) {
             return esc_attr($extraClass);
         }
 
@@ -385,11 +294,10 @@ class Helper
         if ('yes' == ArrayHelper::get($field, 'raw.settings.is_unique')) {
             $fieldName = ArrayHelper::get($field, 'name');
             if ($inputValue = ArrayHelper::get($formData, $fieldName)) {
-                $exist = wpFluent()->table('fluentform_entry_details')
-                    ->where('form_id', $form->id)
+                $exist = EntryDetails::where('form_id', $form->id)
                     ->where('field_name', $fieldName)
                     ->where('field_value', $inputValue)
-                    ->first();
+                    ->exists();
                 if ($exist) {
                     return [
                         'unique' => ArrayHelper::get($field, 'raw.settings.unique_validation_message'),
@@ -586,19 +494,14 @@ class Helper
 
     private function unreadCount($formId)
     {
-        return wpFluent()->table('fluentform_submissions')
-            ->where('status', 'unread')
+        return Submission::where('status', 'unread')
             ->where('form_id', $formId)
             ->count();
     }
 
     public static function getForms()
     {
-        $ff_list = wpFluent()->table('fluentform_forms')
-            ->select(['id', 'title'])
-            ->orderBy('id', 'DESC')
-            ->get();
-
+        $ff_list = Form::select(['id', 'title'])->orderBy('id', 'DESC')->get();
         $forms = [];
 
         if ($ff_list) {
