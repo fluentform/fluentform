@@ -117,6 +117,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     && ArrayHelper::get($component, 'hash') != 'h_captcha'
                                     && ArrayHelper::get($component, 'hash') != 'turnstile'
                                     && ArrayHelper::get($component, 'query.component') != 'payment_settings'
+                                    && ArrayHelper::get($component, 'query.component') != 'license_page'
                                 ) : ?>
 
                                     <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
@@ -136,16 +137,19 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <?php endforeach; ?>
                         </ul>
                     </li>
-                    <li class="<?php echo esc_attr(Helper::getHtmlElementClass('license', $currentComponent)); ?> ff_list_button_item">
-                        <a 
-                            class="ff_list_button_link"
-                            data-hash="license"
-                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                'hash' => 'license'
-                            ])); ?>">
-                            <?php echo __('License'); ?>
-                        </a>
-                    </li>
+
+                    <?php if ($licensePage = ArrayHelper::get($components, 'license_page', '')) : ?>
+                        <li class="<?php echo esc_attr(Helper::getHtmlElementClass('license_page', $currentComponent)); ?> ff_list_button_item">
+                            <a
+                                class="ff_list_button_link"
+                                data-component="<?php echo esc_attr(ArrayHelper::get($licensePage, 'query.component', '')); ?>"
+                                href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $licensePage)); ?>"
+                            >
+                                <?php echo esc_attr($licensePage['title']); ?>
+                            </a>
+                        </li>
+                    <?php endif ?>
+
                 </ul>
             </div>
             <div class="ff_settings_container ff_layout_section_container" id="ff_settings_container">
