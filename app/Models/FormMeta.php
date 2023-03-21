@@ -61,7 +61,7 @@ class FormMeta extends Model
         return $formMeta;
     }
 
-    public static function retrieve($key, $formId = null)
+    public static function retrieve($key, $formId = null, $default  = null)
     {
         $meta = static::when($formId, function ($q) use ($formId) {
             return $q->where('form_id', $formId);
@@ -69,11 +69,15 @@ class FormMeta extends Model
             ->where('meta_key', $key)
             ->first();
 
-        if ($meta) {
-            return json_decode($meta->value, true);
+        if ($meta && isset($meta->value)) {
+            $value = json_decode($meta->value, true);
+            if (JSON_ERROR_NONE == json_last_error()) {
+                return $value;
+            }
+            return $meta->value;
         }
 
-        return null;
+        return $default;
     }
 
     public static function store(Form $form, $formMeta)
