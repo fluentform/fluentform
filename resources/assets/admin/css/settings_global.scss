@@ -322,7 +322,7 @@
 .ff_global_setting{
   &_wrap{
     .ff_settings_list{
-      height: 500px;
+      height: 660px;
       overflow-y: auto;
     }
   }
@@ -1145,4 +1145,31 @@ body.ff_full_screen {
 }
 span + .ff_payment_badge{
   margin-left: 4px;
+}
+
+// license
+.fluent_activate_now {
+  display: none;
+}
+
+.fluent_activation_wrapper{
+  .fluentform_label {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: -4px;
+    width: 470px;
+    input{
+        width: 100%;
+        background-color: #F2F2F2;
+        &::-webkit-input-placeholder{
+          color: #908f8f;
+        }
+    }
+  }
+  .contact_us_line {
+    margin-top: 12px;
+  }
+  .fluent_plugin_activated_hide {
+    display: none;
+  }
 }
