@@ -34,6 +34,7 @@ class Route {
     getFormPages = this.findForm + "/pages";
     getFormFields = this.findForm + "/fields";
     getFormShortcodes = this.findForm + "/shortcodes";
+    findFormShortCodePage = this.findForm + "/findShortCodePage";
 
     getFormSettings = "settings/{param}";
     storeFormSettings = this.getFormSettings;

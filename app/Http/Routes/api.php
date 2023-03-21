@@ -25,6 +25,7 @@ $router->prefix('forms')->withPolicy('FormPolicy')->group(function ($router) {
         $router->get('pages', 'FormController@pages');
         $router->get('fields', 'FormController@fields');
         $router->get('shortcodes', 'FormController@shortcodes');
+        $router->get('findShortCodePage', 'FormController@findShortCodePage');
     });
 });
 

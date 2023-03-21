@@ -144,6 +144,12 @@
                                                 $t('Export')
                                             }}</a>
                                     </span>
+                                    <span class="row-actions-item ">
+                                        <a href="#" @click.prevent="findShortCodeLocation(scope.row.id)"> {{
+                                                $t('Find')
+                                            }}
+                                         <i class="el-icon-loading" v-if="loadingLocations"></i></a>
+                                    </span>
                                     <span class="row-actions-item trash">
                                         <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
                                             <a href="#" @click.prevent>{{ $t('Delete') }}</a>
@@ -161,6 +167,20 @@
                                     />
 
                                 </template>
+                                <div class="form-locations" v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
+                                    {{$t('Found in')}}
+                                    <ul class="ff_inline_list">
+                                        <li v-for="location in formLocations[scope.row.id] " >
+                                            <a target="_blank" :href="location.edit_link">
+                                                <code class="item ">{{location.title}}</code>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length == 0 ">
+                                    {{$t('Could not find anywhere')}}
+                                </div>
+
                             </div>
                         </template>
                     </el-table-column>
@@ -529,25 +549,23 @@ export default {
         tableRowClass({row}) {
             return row.status == 'unpublished' ? 'inactive_form' : '';
         },
-        findFormLocations(formId){
+        findShortCodeLocation(formId){
 
             this.loadingLocations = true;
-            let data = {
-                action: 'fluentform-form-find-shortcode-locations',
-                form_id: formId
-            }
-            FluentFormsGlobal.$get(data)
+            const url = FluentFormsGlobal.$rest.route('findFormShortCodePage',formId);
+            FluentFormsGlobal.$rest.get(url)
                 .then(res => {
+                    console.log(res)
                     if (res.status === true){
                         this.$set(this.formLocations, formId, res.locations);
                     }else{
                         this.$set(this.formLocations, formId, []);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     this.$fail(this.$t('Something went wrong, please try again.'));
                 })
-                .always(()=>{
+                .finally(()=>{
                     this.loadingLocations = false;
                 })
             ;

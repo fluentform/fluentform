@@ -162,4 +162,8 @@ class FormController extends Controller
     {
         return $this->sendSuccess($formService->pages());
     }
+    public function findShortCodePage(FormService $formService, $formId)
+    {
+        return $this->sendSuccess($formService->findShortCodePage($formId));
+    }
 }

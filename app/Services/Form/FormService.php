@@ -611,4 +611,85 @@ class FormService
         }
         throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
     }
+    
+    public function findShortCodePage($formId)
+    {
+        $excluded = ['attachment'];
+        $post_types = get_post_types(['show_in_menu' => true], 'objects', 'or');
+        $postTypes = [];
+        foreach($post_types as $post_type) {
+            $postTypeName = $post_type->name;
+            if (in_array($postTypeName, $excluded)) {
+                continue;
+            }
+            $postTypes[] = $postTypeName;
+        }
+    
+        $params = array(
+            'post_type'      => $postTypes,
+            'posts_per_page' => -1
+        );
+    
+        $params = apply_filters('fluentform_find_shortcode_params', $params);
+        $formLocations = [];
+        $posts = get_posts($params);
+        foreach($posts as $post) {
+        
+            $formIds = self::getShortCodeId($post->post_content);
+            if(!empty($formIds) && in_array($formId,$formIds)) {
+            
+                $postType = get_post_type_object($post->post_type);
+                $formLocations[] = [
+                    'id'        => $post->ID,
+                    'name'      => $postType->labels->singular_name,
+                    'title'     => (empty($post->post_title) ? $post->ID : $post->post_title),
+                    'edit_link' => sprintf("%spost.php?post=%s&action=edit", admin_url(), $post->ID),
+                ];
+            }
+        }
+        return [
+            'locations' => $formLocations,
+            'status'    => !empty($formLocations),
+        ];
+    }
+    
+    public static function getShortCodeId($content, $shortcodeTag = 'fluentform')
+    {
+        $ids = [];
+        $selector = 'id';
+        if (!function_exists('parse_blocks')) {
+            return $ids;
+        }
+        $parsedBlocks = parse_blocks($content);
+        foreach ($parsedBlocks as $block) {
+            if (!array_key_exists('blockName', $block) || !array_key_exists('attrs', $block) || !array_key_exists('formId', $block['attrs'])) {
+                continue;
+            }
+            $hasBlock = strpos($block['blockName'], 'fluentfom/guten-block') === 0;
+            if (!$hasBlock) {
+                continue;
+            }
+            $ids[] = (int) $block['attrs']['formId'];
+        }
+        if (!has_shortcode($content, $shortcodeTag)) {
+            return $ids;
+        }
+        preg_match_all('/' . get_shortcode_regex() . '/', $content, $matches, PREG_SET_ORDER);
+        if (empty($matches)) {
+            return $ids;
+        }
+        foreach ($matches as $shortcode) {
+            if (count($shortcode) >= 2 && $shortcodeTag === $shortcode[2]) {
+                $parsedCode = str_replace(['[', ']', '&#91;', '&#93;'], '', $shortcode[0]);
+                
+                $result = shortcode_parse_atts($parsedCode);
+                
+                if (!empty($result[$selector])) {
+                    $ids[] = $result[$selector];
+                }
+            }
+        }
+        return $ids;
+    }
+    
 }
