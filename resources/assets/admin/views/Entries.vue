@@ -3,13 +3,13 @@
         <el-row class="mb-4 items-center">
             <el-col :span="12">
                 <el-dropdown
-                        @command="handleSwitchForm"
-                        class="current_form_name"
-                        trigger="click"
-                        placement="top-start"
+                    @command="handleSwitchForm"
+                    class="current_form_name"
+                    placement="top-start"
+                    split-button
                 >
-                    <span class="el-dropdown-link el-dropdown-link-lg">
-                        {{ current_form_title }} <i class="el-icon el-icon-arrow-down el-icon--right"></i>
+                    <span>
+                        {{ current_form_title }}
                     </span>
                     <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
                         <el-dropdown-item
