@@ -26,7 +26,7 @@
 
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
-                        <el-col :sm="has_pro ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('blank_form')" :img="blankFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('New Blank Form')}}</h6>
@@ -34,7 +34,7 @@
                                 </card-body>
                             </card>
                         </el-col>
-                        <el-col :sm="has_pro ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showChooseTemplate" :img="chooseTemplateImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Choose a Template')}}</h6>
@@ -42,7 +42,7 @@
                                 </card-body>
                             </card>
                         </el-col>
-                        <el-col :sm="has_pro ? 6 : 8" v-if="has_pro">
+                        <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="chooseTemplateImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
@@ -50,7 +50,7 @@
                                 </card-body>
                             </card>
                         </el-col>
-                        <el-col :sm="has_pro ? 6 : 8">
+                        <el-col :sm="has_post_feature ? 6 : 8">
                             <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="createForm('conversational')" :img="conversationalFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create Conversational Form')}}</h6>
