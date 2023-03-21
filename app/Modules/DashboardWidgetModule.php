@@ -2,13 +2,15 @@
 
 namespace FluentForm\App\Modules;
 
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Submission;
+
 class DashboardWidgetModule
 {
     public function showStat()
     {
         global $wpdb;
-        $stats = wpFluent()->table('fluentform_submissions')
-            ->select([
+        $stats = Submission::select([
                 'fluentform_forms.title',
                 'fluentform_submissions.form_id',
                 wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_submissions.id) as total'),
@@ -115,9 +117,6 @@ class DashboardWidgetModule
 
     private function getUnreadCount($formId)
     {
-        return wpFluent()->table('fluentform_submissions')
-            ->where('status', 'unread')
-            ->where('form_id', $formId)
-            ->count();
+        return Helper::unreadCount($formId);
     }
 }

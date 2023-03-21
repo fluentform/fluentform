@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules;
 
+use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\Acl\Acl;
 
 class ProcessExteriorModule
@@ -24,7 +25,7 @@ class ProcessExteriorModule
                 return $renderable;
             });
 
-            $form = wpFluent()->table('fluentform_forms')->find($form_id);
+            $form = Form::find($form_id);
             if ($form) {
                 wpFluentForm('view')->render('frameless.show_preview', [
                     'form_id' => $form_id,

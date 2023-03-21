@@ -19,9 +19,8 @@ class Submission
         ]);
 
         $offset = $args['per_page'] * ($args['page'] - 1);
-
-        $entryQuery = wpFluent()->table('fluentform_submissions')
-            ->orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($args['sort_type']))
+    
+        $entryQuery = \FluentForm\App\Models\Submission::orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($args['sort_type']))
             ->limit($args['per_page'])
             ->offset($offset);
 
@@ -76,7 +75,7 @@ class Submission
 
     public function find($submissionId)
     {
-        $submission = wpFluent()->table('fluentform_submissions')->find($submissionId);
+        $submission = \FluentForm\App\Models\Submission::find($submissionId);
         $submission->response = json_decode($submission->response);
         return $submission;
     }
@@ -238,8 +237,7 @@ class Submission
             'form_title' => false,
         ]);
 
-        $submissions = wpFluent()->table('fluentform_submissions')
-            ->select(['id', 'currency'])
+        $submissions = \FluentForm\App\Models\Submission::select(['id', 'currency'])
             ->where('user_id', $userId)
             ->where('payment_type', 'subscription')
             ->get();

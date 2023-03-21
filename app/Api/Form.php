@@ -32,8 +32,7 @@ class Form
         $shortColumn = sanitize_sql_orderby(ArrayHelper::get($atts, 'sort_column', 'id'));
         $sortBy = Helper::sanitizeOrderValue(ArrayHelper::get($atts, 'sort_by', 'DESC'));
 
-        $query = wpFluent()->table('fluentform_forms')
-            ->orderBy($shortColumn, $sortBy);
+        $query = \FluentForm\App\Models\Form::orderBy($shortColumn, $sortBy)->getQuery();
 
         if ($status && 'all' != $status) {
             $query->where('status', $status);
@@ -138,7 +137,7 @@ class Form
 
     public function find($formId)
     {
-        return wpFluent()->table('fluentform_forms')->where('id', $formId)->first();
+        return \FluentForm\App\Models\Form::where('id', $formId)->first();
     }
 
     /**

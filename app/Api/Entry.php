@@ -32,12 +32,11 @@ class Entry
         ]);
 
         $offset = $atts['per_page'] * ($atts['page'] - 1);
-
-        $entryQuery = wpFluent()->table('fluentform_submissions')
-                        ->where('form_id', $this->form->id)
-                        ->orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($atts['sort_type']))
-                        ->limit($atts['per_page'])
-                        ->offset($offset);
+    
+        $entryQuery = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
+            ->orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($atts['sort_type']))
+            ->limit($atts['per_page'])
+            ->offset($offset);
 
         $type = $atts['entry_type'];
 
@@ -86,8 +85,7 @@ class Entry
 
     public function entry($entryId, $includeFormats = false)
     {
-        $submission = wpFluent()->table('fluentform_submissions')
-                    ->where('form_id', $this->form->id)
+        $submission = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
                     ->where('id', $entryId)
                     ->first();
 

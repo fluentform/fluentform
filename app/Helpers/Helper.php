@@ -271,7 +271,7 @@ class Helper
 
     public static function isMultiStepForm($formId)
     {
-        $form = wpFluent()->table('fluentform_forms')->find($formId);
+        $form = Form::find($formId);
         $fields = json_decode($form->form_fields, true);
 
         if (ArrayHelper::get($fields, 'stepsWrapper')) {
@@ -283,7 +283,7 @@ class Helper
 
     public static function hasFormElement($formId, $elementName)
     {
-        $form = wpFluent()->table('fluentform_forms')->find($formId);
+        $form = Form::find($formId);
         $fieldsJson = $form->form_fields;
 
         return false != strpos($fieldsJson, '"element":"' . $elementName . '"');
@@ -556,7 +556,7 @@ class Helper
 
     public static function getForm($id)
     {
-        return wpFluent()->table('fluentform_forms')->where('id', $id)->first();
+        return Form::where('id', $id)->first();
     }
 
     public static function shouldHidePassword($formId)

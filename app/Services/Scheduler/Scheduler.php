@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Services\Scheduler;
 
+use FluentForm\App\Models\FormAnalytics;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Services\Emogrifier\Emogrifier;
 
 class Scheduler
@@ -66,8 +68,7 @@ class Scheduler
         }
 
         $reportDateFrom = date('Y-m-d', time() - $days * 86400); // 7 days
-        $submissionCounts = wpFluent()->table('fluentform_submissions')
-            ->select([
+        $submissionCounts = Submission::select([
                 wpFluent()->raw("COUNT({$wpdb->prefix}fluentform_submissions.id) as total"),
                 'fluentform_submissions.form_id',
                 'fluentform_forms.title'
@@ -165,13 +166,11 @@ class Scheduler
         $seconds = $deleteDaysCount * 86400;
         $deleteTo = date('Y-m-d H:i:s', time() - $seconds);
         // delete 60 days old analytics data
-        wpFluent()->table('fluentform_form_analytics')
-            ->where('created_at', '<', $deleteTo)
+        FormAnalytics::where('created_at', '<', $deleteTo)
             ->delete();
 
         // delete 60 days old scheduled_actions data
-        wpFluent()->table('ff_scheduled_actions')
-            ->where('created_at', '<', $deleteTo)
+        \FluentForm\App\Models\Scheduler::where('created_at', '<', $deleteTo)
             ->delete();
 
     }

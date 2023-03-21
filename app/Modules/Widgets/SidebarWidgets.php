@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Modules\Widgets;
 
+use FluentForm\App\Models\Form;
+
 class SidebarWidgets extends \WP_Widget
 {
     public function __construct()
@@ -55,8 +57,7 @@ class SidebarWidgets extends \WP_Widget
                 type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <?php
-        $forms = wpFluent()->table('fluentform_forms')
-            ->select(['id', 'title'])
+        $forms = Form::select(['id', 'title'])
             ->orderBy('id', 'DESC')
             ->get();
         ?>

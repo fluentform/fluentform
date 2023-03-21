@@ -28,7 +28,7 @@ class FormFieldsParser
     public static function maybeResetForm($form, $with)
     {
         if (!is_object($form) && is_numeric($form)) {
-            $form = wpFluent()->table('fluentform_forms')->find($form);
+            $form = \FluentForm\App\Models\Form::find($form);
         }
 
         if (isset(static::$formsWith[$form->id]) && array_diff(static::$formsWith[$form->id], $with)) {
