@@ -154,7 +154,7 @@
                                     </el-checkbox>
                                 </el-dropdown-item>
                                 <el-dropdown-item key="column_order" command="column_order">
-                                    <el-button @click="visibleColReorderModal =true" type="primary" size="small">
+                                    <el-button @click="visibleColReorderModal = true" type="primary" size="small">
                                         {{ $t('Reorder Column') }}
                                     </el-button>
                                 </el-dropdown-item>
@@ -196,6 +196,27 @@
                 </btn-group>
             </el-col>
         </el-row>
+
+        <el-dialog :visible.sync="visibleColReorderModal">
+            <template slot="title">
+                <h4>{{$t('Change Column Display Order')}}</h4>
+            </template>
+            <div class="mt-4">
+                <ColumnDragAndDrop
+                    :columns="columns"
+                    :columns_order ="columnsOrder"
+                    :form_id="form_id"
+                    :visible_columns="visibleColumns" >
+                </ColumnDragAndDrop>
+            </div>
+        </el-dialog>
+
+        <el-alert
+            v-if="autoDeleteStatus"
+            :title="$t('Auto delete entry on form submission is enabled! No new entry data will be saved for this form.')"
+            :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
+            type="error">
+        </el-alert>
 
         <div
                 v-loading="loading"
