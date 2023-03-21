@@ -2,7 +2,13 @@
 	<?php do_action('fluentform_before_form_screen_wrapper', $form_id, $route); ?>
 	
 	<div class="form_internal_menu">
-
+        <?php if (isset($_SERVER['HTTP_REFERER'])): ?>
+            <div class="ff_menu_back">
+                <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
+                    <span class="ml-1">←</span>
+                </a>
+            </div>
+        <?php endif; ?>
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
 			<span class="ml-1"><?php echo esc_html($form->title); ?></span>
 		</div>

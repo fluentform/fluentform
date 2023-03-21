@@ -1031,6 +1031,14 @@ body.ff_full_screen {
     padding-left: 20px;
     padding-right: 20px;
   }
+  .ff_menu_back{
+    display: flex;
+    align-items: center;
+    .ff_menu_link{
+      padding: 0;
+      padding-right: 15px;
+    }
+  }
 }
 
 .ff-navigation-right {
