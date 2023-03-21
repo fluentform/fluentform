@@ -42,9 +42,6 @@ class Form
     protected $formType = 'form';
 
     protected $hasPayment = 0;
-
-    protected $model;
-
     /**
      * @var \FluentForm\Framework\Database\Query\Builder
      */
