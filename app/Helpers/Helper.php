@@ -492,7 +492,7 @@ class Helper
         return apply_filters('fluentform_file_upload_options', $locations);
     }
 
-    private function unreadCount($formId)
+    public static function unreadCount($formId)
     {
         return Submission::where('status', 'unread')
             ->where('form_id', $formId)

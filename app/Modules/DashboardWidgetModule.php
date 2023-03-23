@@ -28,7 +28,7 @@ class DashboardWidgetModule
         }
 
         foreach ($stats as $stat) {
-            $stat->unreadCount = $this->getUnreadCount($stat->form_id);
+            $stat->unreadCount = Helper::unreadCount($stat->form_id);
         }
 
         $this->printStats($stats);
@@ -113,10 +113,5 @@ class DashboardWidgetModule
             self_admin_url('update.php?action=install-plugin&plugin=' . $plugin),
             'install-plugin_' . $plugin
         );
-    }
-
-    private function getUnreadCount($formId)
-    {
-        return Helper::unreadCount($formId);
     }
 }
