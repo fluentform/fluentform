@@ -118,6 +118,8 @@ new Vue({
             
             if (this.$options.components[component]) {
                 jQuery('.ff_settings_list li').removeClass('active');
+                $el.closest('.ff_list_button_item.has_sub_menu').addClass('active is-submenu');
+                $el.closest('.ff_list_button_item.has_sub_menu .ff_list_submenu').slideDown();
                 $el.parent().addClass('active');
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
@@ -131,7 +133,7 @@ new Vue({
         const that = this;
         jQuery('.ff_settings_list li a').on('click', function (e) {
 
-            if(jQuery(this).attr('href') == '#'){
+            if(jQuery(this).attr('href') === '#'){
                 e.preventDefault();
             }
 
@@ -141,7 +143,8 @@ new Vue({
             if (hash) {
                 that.setRoute(hash);
             }
-            jQuery(this).parent().addClass('active').siblings().removeClass('active');
+            jQuery(this).parent().addClass('active').siblings().removeClass('active is-submenu');
+            jQuery(this).parent().siblings().find('.ff_list_submenu').slideUp();
 
             subMenu.parent().toggleClass('is-submenu').siblings().removeClass('is-submenu');
             subMenu.slideToggle().parent().siblings().find('.ff_list_submenu').slideUp();
