@@ -695,3 +695,13 @@
         align-items: center;
     }
 }
+
+.el-checkbox-horizontal {
+    .el-checkbox{
+        display: flex;
+        &__input{
+            padding-top: 3px;
+            align-self: flex-start;
+        }
+    }
+}
