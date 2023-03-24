@@ -1,6 +1,6 @@
 <template>
     <el-form ref="form-layout" label-position="top">
-        <card>
+        <card id="settings">
             <card-head>
                 <h5 class="title">{{ $t('Global Layout Settings') }}</h5>
             </card-head>
@@ -84,7 +84,7 @@
             </card-body>
         </card>
 
-        <card>
+        <card id="email-summaries">
             <card-head>
                 <h5 class="title">{{ $t('Email Summaries') }}</h5>
                 <p class="text" style="max-width: 650px;">
@@ -186,11 +186,11 @@
         </card>
 
         <!-- Integration Failure Notification-->
-        <card>
+        <card id="integration-failure-notification">
             <card-head>
                 <h5 class="title">{{ $t('Integration Failure Email Notification') }}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{$t('Receive an instant email notification when any of your integraion is not running.Enable Integration Failure Notification option and you will get an email when any of your integration fails to run')}}
+                    {{$t('Receive an instant email notification when any of your integraion is not running. Enable Integration Failure Notification option and you will get an email when any of your integration fails to run')}}
                 </p>
             </card-head>
             <card-body>
@@ -249,7 +249,7 @@
             </card-body>
         </card>        
 
-        <card>
+        <card id="miscellaneous">
             <card-head>
                 <card-head-group>
                     <h5 class="title">{{ $t('Miscellaneous') }}</h5>
@@ -664,7 +664,30 @@
                 return !!this.captcha_status.hcaptcha || !!this.captcha_status.recaptcha || !!this.captcha_status.turnstile;
             }
         },
+        methods:{
+            scollTo() {
+                let pageScollLink = jQuery('.ff-page-scroll a');
+                let hash = window.location.hash;
+                if(hash.indexOf('fluent_forms_settings')){
+                    pageScollLink.each(function(){
+                        jQuery(this).on("click", function(e){
+                            let targetHash = e.target.hash;
+                            e.preventDefault();
+        
+                            jQuery('.ff_global_settings_option').animate({
+                                scrollTop: jQuery(targetHash).offset().top - 34 - jQuery('.ff_global_settings_option').position().top + jQuery('.ff_global_settings_option').scrollTop()
+        
+                            }, 'slow');
+                    
+                        });
+                    });
+                }
+            }
+        },
         mounted() {
+            // init page scroll
+            this.scollTo();
+             
             this.layout = this.data.layout;
 
             if (!this.data.misc.akismet_validation) {

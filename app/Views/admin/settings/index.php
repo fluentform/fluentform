@@ -12,15 +12,41 @@ use FluentForm\Framework\Helpers\ArrayHelper;
             <?php do_action('fluentform_before_global_settings_wrapper'); ?>
             <div class="ff_settings_sidebar ff_layout_section_sidebar">
                 <ul class="ff_settings_list ff_list_button">
-                    <li class="ff_list_button_item">
+                    <li class="ff_list_button_item has_sub_menu">
                         <a 
                             class="ff_list_button_link"
-                            data-hash="settings"
-                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                               'hash' => 'settings'
-                            ])); ?>">
+                            href="#">
                             <?php echo __('Settings'); ?>
                         </a>
+                        <ul class="ff_list_submenu ff-page-scroll">
+                            <li>
+                                <a
+                                    data-hash="settings"
+                                    href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                    'hash' => 'settings'
+                                    ])); ?>">
+                                    <?php echo __('Global Layout Settings'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#email-summaries">
+                                    <?php echo __('Email Summaries'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#integration-failure-notification">
+                                    <?php echo __('Integration Failure'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#miscellaneous">
+                                    <?php echo __('Miscellaneous'); ?>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">

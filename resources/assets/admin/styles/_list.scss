@@ -133,13 +133,13 @@
                 transition: 0.2s;
                 margin-left: 15px;
                 &:hover{
-                    background-color: #F2F2F2;
+                    background-color: $submenu-link-active-hover-bg;
                 }
             }
             &.active{
                 a{
-                    background-color: $base-color;
-                    color: $white;
+                    background-color: $submenu-link-active-bg;
+                    color: $submenu-link-active-color;
                 }
             }
         }
@@ -182,3 +182,10 @@
     }
 }
 
+.ff_global_settings_option{
+    overflow-y: scroll;
+    height: 100vh;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
