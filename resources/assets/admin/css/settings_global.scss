@@ -1174,3 +1174,43 @@ span + .ff_payment_badge{
     display: none;
   }
 }
+
+// ff-repeater-setting
+.ff-repeater{
+  &-setting{
+    .field-options-settings{
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 8px;
+    }
+    .address-field-option{
+      padding-bottom: 0;
+    }
+    &-label{
+      font-size: 14px;
+      color: $base-color;
+    }
+  }
+  &-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &-title{
+    font-size: 14px;
+    font-weight: 500;
+    color: $--color-primary;
+  }
+  &-action{
+    display: inline-flex;
+    align-items: center;
+    .repeater-toggle{
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+}

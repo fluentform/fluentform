@@ -1,25 +1,27 @@
 <template>
-    <div class="el-form--label-top">
-        <b>
-            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        </b>
-        <div style="margin-top:10px;" class="address-field-option" v-for="(field, i) in editItem.fields" :key="i">
+    <div class="el-form-item ff-repeater-setting">
+        <elLabel class="ff-repeater-setting-label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+        <div class="address-field-option" v-for="(field, i) in editItem.fields" :key="i">
             <div class="field-options-settings">
-                <div class="action-btn pull-right">
-                    <i @click="toggleAddressFieldInputs" class="icon el-icon-caret-bottom"></i>
-                    <i @click="increase(i)" class="icon icon-plus-circle"></i>
-                    <i @click="decrease(i)" class="icon icon-minus-circle"></i>
+                <div class="ff-repeater-header">
+                    <div class="ff-repeater-title" @click="toggleAddressFieldInputs">{{ field.settings.label }}</div>
+                    <div class="ff-repeater-action">
+                        <i @click="toggleAddressFieldInputs" class="repeater-toggle mr-2 icon el-icon-caret-bottom"></i>
+                        <action-btn>
+                            <action-btn-add @click="increase(i)" size="mini"></action-btn-add>
+                            <action-btn-remove @click="decrease(i)" size="mini"></action-btn-remove>
+                        </action-btn>
+                    </div>
                 </div>
-                <b style="color: #1a7efb;" @click="toggleAddressFieldInputs">{{ field.settings.label }}</b>
             </div>
             <div class="address-field-option__settings">
-                <div class="el-form--label-left">
+                <div class="el-form--label-top">
                     <div class="el-form-item">
-                        <label class="el-form-item__label" style="width: 130px; float: left;">
+                        <label class="el-form-item__label">
                             <span>{{ $t('Field Type') }}</span>
                         </label>
-                        <div class="el-form-item__content" style="margin-left: 130px;">
-                            <el-select @change="changeFieldType(field, i)" v-model="field.element">
+                        <div class="el-form-item__content">
+                            <el-select class="w-100" @change="changeFieldType(field, i)" v-model="field.element">
                                 <el-option v-for="(element,elementName) in available_elements" :key="elementName"
                                            :value="elementName" :label="element"></el-option>
                             </el-select>
@@ -42,10 +44,12 @@
 </template>
 
 <script type="text/babel">
-    import elLabel from '../../includes/el-label.vue'
-
-    import fieldOptionSettings from './fieldOptionSettings.vue'
-    import validationRules from './validationRules.vue'
+    import elLabel from '../../includes/el-label.vue';
+    import fieldOptionSettings from './fieldOptionSettings.vue';
+    import validationRules from './validationRules.vue';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'customRepeaterFields',
@@ -53,7 +57,10 @@
         components: {
             fieldOptionSettings,
             validationRules,
-            elLabel
+            elLabel,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
