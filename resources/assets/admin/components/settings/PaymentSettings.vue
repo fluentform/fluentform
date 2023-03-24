@@ -193,7 +193,7 @@
                             </el-form-item>
                         </div>
 
-                        <div class="ff_card_block" v-if="payment_methods.paypal">
+                        <div class="ff_card_block mt-4" v-if="payment_methods.paypal">
                             <div class="ff_card_block_head">
                                 <h5>{{ $t('PayPal Settings') }}</h5>
                             </div>
