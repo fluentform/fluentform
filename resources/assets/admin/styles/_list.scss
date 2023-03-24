@@ -181,11 +181,3 @@
         max-width: 228px;
     }
 }
-
-.ff_global_settings_option{
-    overflow-y: scroll;
-    height: 100vh;
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}

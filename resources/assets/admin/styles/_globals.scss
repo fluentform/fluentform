@@ -915,6 +915,11 @@ label.el-radio, label.el-checkbox {
 }
 // global setting
 .ff_global_settings_option{
+  overflow-y: scroll;
+  height: 100vh;
+  &::-webkit-scrollbar {
+      display: none;
+  }
   .el-form-item,
   .el-form-item-wrap {
     margin-bottom: 24px;

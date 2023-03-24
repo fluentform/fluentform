@@ -170,7 +170,7 @@
                                 <div class="form-locations" v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
                                     {{$t('Found in')}}
                                     <ul class="ff_inline_list">
-                                        <li v-for="location in formLocations[scope.row.id] " >
+                                        <li v-for="(location, index) in formLocations[scope.row.id] " :key="index">
                                             <a target="_blank" :href="location.edit_link">
                                                 <code class="item ">{{location.title}}</code>
                                             </a>
