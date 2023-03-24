@@ -10,7 +10,7 @@
         <?php endif; ?>
         
         <h3><?php echo esc_html($notice['title']); ?></h3>
-        <p><?php echo esc_html($notice['message']); ?></p>
+        <p><?php echo wp_kses_post($notice['message']); ?></p>
         <div class="ff_notice_buttons">
             <?php foreach ($notice['links'] as $link): ?>
                 <a <?php echo wp_kses_post($link['btn_atts']); ?> href="<?php echo esc_url($link['href']); ?>"><?php echo esc_html($link['btn_text']); ?></a>

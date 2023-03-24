@@ -2,7 +2,9 @@
 
 namespace FluentForm\App\Modules\Track;
 
-use FluentForm\App\Services\AdminNotices;
+use FluentForm\App\Http\Controllers\AdminNoticeController;
+
+//Could not Find any Usage any where
 
 class TrackModule
 {
@@ -10,14 +12,12 @@ class TrackModule
     private $initialConsentKey = '_fluentform_notice_pref';
     private $newsletterDelayTimeStamp = 172800; // 7 days
     
-    /**
-     * @var \FluentForm\App\Services\AdminNotices
-     */
+
     private $adminNotice;
 
     public function __construct()
     {
-        $this->adminNotice = new AdminNotices(wpFluentForm());
+        $this->adminNotice = new AdminNoticeController();
     }
 
     public function initTrack()

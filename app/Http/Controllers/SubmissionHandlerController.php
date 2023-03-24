@@ -15,7 +15,7 @@ class SubmissionHandlerController extends Controller
     {
         try {
             parse_str($this->request->get('data'), $data);     // Parse the url encoded data from the request object.
-            $data['_wp_http_referer'] = urldecode($data['_wp_http_referer']);
+            $data['_wp_http_referer'] = isset($data['_wp_http_referer'])? sanitize_url(urldecode($data['_wp_http_referer'])) : '';
             $this->request->merge(['data' => $data]);           // Merge it back again to the request object.
             
             $formId = intval($this->request->get('form_id'));

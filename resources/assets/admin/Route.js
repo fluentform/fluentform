@@ -100,6 +100,9 @@ class Route {
     formsReport = this.report + '/forms'
     formReport = this.formsReport + '/{param}'
     submissionsReport = this.report + '/submissions';
+
+    noticeAction = 'notice';
+
 }
 
 export default new Route();

@@ -135,9 +135,15 @@ $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router)
 * Form Submission Handler
 */
 $router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('PublicPolicy');
-
+/*
+* Form Report
+*/
 $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
     $router->get('/submissions', 'ReportController@submissions');
     $router->get('/forms/{form_id}', 'ReportController@form');
 });
+/*
+* Review Query
+*/
+$router->post('notice', 'AdminNoticeController@noticeActions')->withPolicy('FormPolicy');
 
