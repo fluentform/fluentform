@@ -688,18 +688,19 @@ label.el-radio, label.el-checkbox {
 
 // row actions
 .row-actions{
-  padding-right: 60px;
   .row-actions-item{
     position: relative;
     padding-right: 10px;
-    font-size: 12px;
+    font-size: 13px;
+    display: inline-block;
+    line-height: 1;
     &::after{
       width: 1px;
       height: 10px;
       background-color: #ddd;
       position: absolute;
       content: "";
-      top: 3px;
+      top: 2px;
       right: 3px;
     }
     &.trash{
@@ -712,9 +713,6 @@ label.el-radio, label.el-checkbox {
     a{
       color: $--color-danger;
     }
-  }
-  &-item{
-    font-weight: 400;
   }
 }
 
