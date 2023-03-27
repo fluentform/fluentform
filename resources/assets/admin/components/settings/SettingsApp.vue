@@ -62,8 +62,7 @@
             this.fetchInputs();
             this.fetchAllEditorShortcodes();
 
-            let currentActive = jQuery('.ff_settings_list a[href="#' + this.$route.fullPath + '"]');
-
+            let currentActive = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
             if(currentActive.length) {
                 currentActive.parent().addClass('active');
             } else {
