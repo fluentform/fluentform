@@ -1035,9 +1035,15 @@ body.ff_full_screen {
   .ff_menu_back{
     display: flex;
     align-items: center;
+    border-right: 1px solid $border-color;
+    padding-right: 16px;
+    margin-right: 16px;
+    .el-icon{
+      font-weight: 700;
+    }
     .ff_menu_link{
       padding: 0;
-      padding-right: 15px;
+      color: $--color-text-regular;
     }
   }
 }

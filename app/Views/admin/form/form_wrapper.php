@@ -5,7 +5,7 @@
         <?php if (isset($_SERVER['HTTP_REFERER'])): ?>
             <div class="ff_menu_back">
                 <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
-                    <span class="ml-1">←</span>
+                    <i class="el-icon el-icon-back"></i> Back
                 </a>
             </div>
         <?php endif; ?>
