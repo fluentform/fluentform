@@ -665,8 +665,8 @@
             }
         },
         methods:{
-            scollTo() {
-                let pageScollLink = jQuery('.ff-page-scroll a');
+            scrollTo() {
+                let pageScollLink = jQuery('.ff-page-scroll');
                 let hash = window.location.hash;
                 if(hash.indexOf('fluent_forms_settings')){
                     pageScollLink.each(function(){
@@ -686,7 +686,7 @@
         },
         mounted() {
             // init page scroll
-            this.scollTo();
+            this.scrollTo();
              
             this.layout = this.data.layout;
 

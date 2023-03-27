@@ -169,6 +169,11 @@
 
 // settings_app
 .settings_app {
+  height: 100vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .el-form-item,
   .el-form-item-wrap {
     margin-bottom: 24px;

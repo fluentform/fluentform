@@ -2,7 +2,7 @@
     <div class="ff_settings_form" v-loading="!formSettings">
         <template v-if="formSettings">
             <!-- Confirmation Settings -->
-            <card>
+            <card id="confirmation-settings">
                 <card-head>
                     <card-head-group class="justify-between">
                         <h5 class="title">{{ $t('Confirmation Settings') }}</h5>
@@ -38,7 +38,7 @@
             </card>
 
             <!--Double Opt-in settings-->
-            <card v-if="double_optin">
+            <card v-if="double_optin" id="double-optin-confirmation">
                 <card-head>
                     <h5 class="title">{{ $t('Double Optin Confirmation') }}</h5>
                 </card-head>
@@ -166,7 +166,7 @@
             </card>
 
             <!-- Appearance Settings -->
-            <card>
+            <card id="form-layout">
                 <card-head>
                     <card-head-group class="justify-between">
                         <h5 class="title">{{ $t('Form Layout') }}</h5>
@@ -269,7 +269,7 @@
             </card>
 
             <!-- Form Restrictions -->
-            <card>
+            <card id="scheduling-and-restrictions">
                 <card-head>
                     <card-head-group class="justify-between">
                         <h5 class="title">{{ $t('Scheduling & Restrictions') }}</h5>
@@ -287,7 +287,7 @@
             </card>
 
             <!-- Advanced form validation -->
-            <card>
+            <card id="advanced-form-validation">
                 <card-head>
                     <h5 class="title">{{ $t('Advanced Form Validation') }}</h5>
                     <p class="text">
@@ -314,7 +314,7 @@
             </card>
 
             <!-- Survey Result -->
-            <card>
+            <card id="survey-result">
                 <card-head>
                     <h5 class="title">{{ $t('Survey Result') }}</h5>
                 </card-head>
@@ -334,7 +334,7 @@
             </card>
             
             <!-- Compliance Settings -->
-            <card>
+            <card id="compliance-settings">
                 <card-head>
                     <card-head-group>
                         <h5 class="title">{{ $t('Compliance Settings') }}</h5>
@@ -401,7 +401,7 @@
             </card>
 
             <!-- Other -->
-            <card>
+            <card id="other">
                 <card-head>
                     <card-head-group>
                         <h5 class="title">{{ $t('Other') }}</h5>

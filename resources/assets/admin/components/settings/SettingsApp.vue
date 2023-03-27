@@ -57,6 +57,21 @@
                     .catch(e => {
                     });
             },
+            scrollTo() {
+                let pageScollLink = jQuery('.ff-page-scroll');
+                pageScollLink.each(function(){
+                    jQuery(this).on("click", function(e){
+                        let targetHash = e.target.hash;
+                        e.preventDefault();
+    
+                        jQuery('.settings_app').animate({
+                            scrollTop: jQuery(targetHash).offset().top - 34 - jQuery('.settings_app').position().top + jQuery('.settings_app').scrollTop()
+    
+                        }, 'slow');
+                
+                    });
+                });
+            }
         },
         mounted() {
             this.fetchInputs();
@@ -90,6 +105,9 @@
             (new ClipboardJS('.copy')).on('success', (e) => {
                 this.$copy();
             });
+
+            // init scrolling page
+            this.scrollTo();
 
         }
     }

@@ -18,9 +18,9 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             href="#">
                             <?php echo __('Settings'); ?>
                         </a>
-                        <ul class="ff_list_submenu ff-page-scroll">
+                        <ul class="ff_list_submenu">
                             <li>
-                                <a
+                                <a class="ff-page-scroll"
                                     data-hash="settings"
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                     'hash' => 'settings'
@@ -29,19 +29,19 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 </a>
                             </li>
                             <li>
-                                <a
+                                <a class="ff-page-scroll"
                                     href="#email-summaries">
                                     <?php echo __('Email Summaries'); ?>
                                 </a>
                             </li>
                             <li>
-                                <a
+                                <a class="ff-page-scroll"
                                     href="#integration-failure-notification">
                                     <?php echo __('Integration Failure'); ?>
                                 </a>
                             </li>
                             <li>
-                                <a
+                                <a class="ff-page-scroll"
                                     href="#miscellaneous">
                                     <?php echo __('Miscellaneous'); ?>
                                 </a>
