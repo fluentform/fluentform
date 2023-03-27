@@ -119,18 +119,14 @@ footer {
   }
 }
 
-.sidebar_elements_wrapper{
-  .option-fields-section {
-    background: $white;
-    border-radius: $border-radius;
-    margin-bottom: 12px;
-    border: 1px solid transparent;
-    &_active {
-      border-color: $--color-primary;
-    }
-  }
-}
 .option-fields-section {
+  background: $white;
+  border-radius: $border-radius;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+  &_active {
+    border-color: $--color-primary;
+  }
   &--title {
     margin: 0;
     font-size: 14px;
