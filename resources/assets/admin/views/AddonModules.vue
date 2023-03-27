@@ -54,7 +54,7 @@
                                         v-model="addon.enabled" 
                                     />
                                     <span class="ml-2 fs-15">
-                                        {{ $t('Currently') }} {{addon.enabled == 'yes' ? $t('Enabled') : $t('Disabled')}}
+                                        {{addon.enabled == 'yes' ? $t('Enabled') : $t('Disabled')}}
                                     </span>
                                 </div>
                                 <a style="font-size: 22px;" class="text-secondary" v-if="addon.config_url && addon.enabled == 'yes'" :href="addon.config_url">

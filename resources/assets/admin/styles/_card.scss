@@ -46,7 +46,7 @@
     }
     &_s2 {
         padding: 0;
-        border: 1px solid #ececec;
+        border: 1px solid #e4e4e4;
         box-shadow: none;
         display: flex;
         flex-direction: column;
@@ -55,9 +55,12 @@
             padding: 20px;
         }
         .ff_card_footer {
-            border-top: 1px solid #ececec;
+            border-top: 1px solid #e4e4e4;
             padding: 14px 20px;
             margin-top: auto;
+        }
+        &:hover{
+            box-shadow: 0px 22px 16px rgba(129, 129, 129, 0.12);
         }
     }
     &_footer_group {
