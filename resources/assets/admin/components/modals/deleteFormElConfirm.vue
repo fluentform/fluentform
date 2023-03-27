@@ -4,7 +4,7 @@
         class="el-dialog-no-header"
         :visible.sync="visibility"
         :before-close="close"
-        width="30%"
+        width="24%"
         :show-close="false"
     >
 
@@ -20,16 +20,26 @@
             </p>
         </div>
 
-        <div slot="footer" class="text-center dialog-footer">
-            <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>
-            <el-button @click="close" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+        <div slot="footer" class="dialog-footer">
+            <btn-group class="ff_btn_group_half">
+                <btn-group-item>
+                    <el-button @click="close" type="dark" class="el-button--soft">{{ $t('Cancel') }}</el-button>
+                </btn-group-item>
+                <btn-group-item>
+                    <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>
+                </btn-group-item>
+            </btn-group>
         </div>
     </el-dialog>
 </div>
 </template>
 
 <script>
+import BtnGroup from '../BtnGroup/BtnGroup.vue';
+import BtnGroupItem from '../BtnGroup/BtnGroupItem.vue';
+
 export default {
+  components: { BtnGroup, BtnGroupItem },
     name: 'deleteFormElConfirm',
     props: {
         visibility: Boolean,
