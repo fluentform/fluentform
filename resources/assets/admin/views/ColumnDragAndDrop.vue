@@ -64,7 +64,7 @@
             },
             createOptionsToRender() {
                 //if column display order is not set initially, set default column order by formatting the original columns
-                if (this.columns_order == null) {
+                if (this.columns_order == null || this.columns_order === "") {
                     let optionToRender = [];
                     let i = 0;
                     for (let key in this.columns) {

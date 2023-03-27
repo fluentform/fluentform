@@ -205,6 +205,7 @@
                 <ColumnDragAndDrop
                     :columns="columns"
                     :columns_order ="columnsOrder"
+                    @save="refreshColumnsOrder"
                     :form_id="form_id"
                     :visible_columns="visibleColumns" >
                 </ColumnDragAndDrop>
