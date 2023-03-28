@@ -61,13 +61,15 @@
                 let pageScollLink = jQuery('.ff-page-scroll');
                 pageScollLink.each(function(){
                     jQuery(this).on("click", function(e){
-                        let targetHash = e.target.hash;
+                        let targetHash = jQuery(this).attr("data-section-id");
                         e.preventDefault();
     
-                        jQuery('.settings_app').animate({
-                            scrollTop: jQuery(targetHash).offset().top - 34 - jQuery('.settings_app').position().top + jQuery('.settings_app').scrollTop()
-    
-                        }, 'slow');
+                        if(jQuery('.ff_settings_form').length){
+                            jQuery('.ff_settings_form').animate({
+                                scrollTop: jQuery(targetHash).offset().top - 34 - jQuery('.ff_settings_form').position().top + jQuery('.ff_settings_form').scrollTop()
+        
+                            }, 'slow');
+                        }
                 
                     });
                 });

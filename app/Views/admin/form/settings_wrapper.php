@@ -22,43 +22,43 @@
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#double-optin-confirmation">
+							data-section-id="#double-optin-confirmation">
 							<?php echo __('Double Optin Confirmation'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#form-layout">
+							data-section-id="#form-layout">
 							<?php echo __('Form Layout'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#scheduling-and-restrictions">
+							data-section-id="#scheduling-and-restrictions">
 							<?php echo __('Scheduling & Restrictions'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#advanced-form-validation">
+							data-section-id="#advanced-form-validation">
 							<?php echo __('Advanced Form Validation'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#survey-result">
+							data-section-id="#survey-result">
 							<?php echo __('Survey Result'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#compliance-settings">
+							data-section-id="#compliance-settings">
 							<?php echo __('Compliance Settings'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
-							href="#other">
+							data-section-id="#other">
 							<?php echo __('Other'); ?>
 						</a>
 					</li>
