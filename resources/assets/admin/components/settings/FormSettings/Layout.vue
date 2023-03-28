@@ -671,11 +671,11 @@
                 if(hash.indexOf('fluent_forms_settings')){
                     pageScollLink.each(function(){
                         jQuery(this).on("click", function(e){
-                            let targetHash = e.target.hash;
+                            let targetId = jQuery(this).attr("data-section-id");
                             e.preventDefault();
         
                             jQuery('.ff_global_settings_option').animate({
-                                scrollTop: jQuery(targetHash).offset().top - 34 - jQuery('.ff_global_settings_option').position().top + jQuery('.ff_global_settings_option').scrollTop()
+                                scrollTop: jQuery(targetId).offset().top - 34 - jQuery('.ff_global_settings_option').position().top + jQuery('.ff_global_settings_option').scrollTop()
         
                             }, 'slow');
                     

@@ -18,9 +18,10 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             href="#">
                             <?php echo __('General'); ?>
                         </a>
-                        <ul class="ff_list_submenu general-settings">
+                        <ul class="ff_list_submenu">
                             <li>
                                 <a class="ff-page-scroll"
+                                    data-section-id="#settings"
                                     data-hash="settings"
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                     'hash' => 'settings'
@@ -30,21 +31,20 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             </li>
                             <li>
                                 <a class="ff-page-scroll"
-                                   data-section="#email-summaries"
+                                   data-section-id="#email-summaries"
                                    data-hash="settings"
                                    href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                        'hash' => 'settings'
+                                        'hash' => 'setting'
                                     ])); ?>">
                                     <?php echo __('Email Summaries'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a class="ff-page-scroll"
+                                   data-section-id="#integration-failure-notification"
                                    data-hash="settings"
-
-                                   data-section="#integration-failure-notification"
                                    href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                       'hash' => 'settings'
+                                       'hash' => 'setting'
                                    ])); ?>">
                                     
                                     <?php echo __('Integration Failure'); ?>
@@ -52,10 +52,10 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             </li>
                             <li>
                                 <a class="ff-page-scroll"
-                                   data-section="#miscellaneous"
+                                   data-section-id="#miscellaneous"
                                    data-hash="settings"
                                    href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                        'hash' => 'settings'
+                                        'hash' => 'setting'
                                     ])); ?>">
                                     <?php echo __('Miscellaneous'); ?>
                                 </a>

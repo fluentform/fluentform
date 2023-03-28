@@ -120,10 +120,11 @@ new Vue({
                 jQuery('.ff_settings_list li').removeClass('active');
                 $el.closest('.ff_list_button_item.has_sub_menu').addClass('active is-submenu');
                 $el.closest('.ff_list_button_item.has_sub_menu .ff_list_submenu').slideDown();
-                $el.parent().addClass('active');
+                //$el.parent().addClass('active');
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
             }
+            console.log($el)
         }
     },
     created() {
