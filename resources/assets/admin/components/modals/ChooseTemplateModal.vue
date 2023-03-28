@@ -8,7 +8,7 @@
         >
             <template slot="title">
                 <h3 class="title">{{$t('Choose a Template')}}</h3>
-                <p class="text">{{$t('Here are some beautiful, fully customizable templates to get you started. start with a')}} <a href="#" @click.prevent="createForm('blank_form')">{{$t('blank form')}}</a> or <a href="#" @click.prevent="goToImportPage()">{{$t('Import form')}}</a>.
+                <p class="text">{{$t('Choose a template to get started right away.')}}
                 </p>
             </template>
 

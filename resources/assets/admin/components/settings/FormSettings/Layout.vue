@@ -99,7 +99,7 @@
                             <div slot="content">
                                 <p>
                                     {{
-                                        $t('Determine, If you want to enable / disable email reporting.If enabled, you will email summaries')
+                                        $t('Determine, If you want to enable / disable email reporting. If enabled, you will get weekly email summaries')
                                     }}
                                 </p>
                             </div>
@@ -107,7 +107,7 @@
                         </el-tooltip>
                     </template>
                     <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> {{
-                            $t('Enable Email Summaries Weekly Delivery')
+                            $t('Enable this feature to get weekly report on the performance of your forms.')
                         }}
                     </el-checkbox>
                 </el-form-item>

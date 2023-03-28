@@ -108,6 +108,6 @@ new Vue({
         this.$on('change-title', (module) => {
             jQuery('title').text(`${module} - FluentForm`);
         });
-        this.$emit('change-title', 'All Forms');
+        this.$emit('change-title', 'Forms');
     }
 });

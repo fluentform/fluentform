@@ -5,7 +5,7 @@
                 <card-head-group class="justify-between">
                     <div>
                         <h5 class="title">{{ $t('Landing Page') }}</h5>
-                        <p class="text" v-if="settings.status != 'yes'">{{ ('Create completely custom "distraction-free" form landing pages to boost conversions.') }}</p>
+                        <p class="text" v-if="settings.status != 'yes'">{{ (' Publish forms on a dedicated landing page for more conversion.') }}</p>
                     </div>
                     <btn-group v-if="!error_text" size="sm">
                         <btn-group-item>

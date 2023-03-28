@@ -9,7 +9,7 @@
                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                     <div slot="content">
                         <p>
-                            {{ $t('After submit, where the page will redirect to.') }}
+                            {{ $t('Choose the type of redirection after form submission.') }}
                         </p>
                     </div>
 

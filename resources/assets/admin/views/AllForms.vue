@@ -1,7 +1,7 @@
 <template>
     <div>
         <section-head size="sm">
-            <h1>{{ $t('All Forms') }}</h1>
+            <h1>{{ $t('Forms') }}</h1>
         </section-head>
         <el-row>
             <el-col :sm="12">
@@ -185,7 +185,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('Short Code')" width="310">
+                    <el-table-column :label="$t('ShortCode')" width="310">
                         <template slot-scope="scope">
                             <div class="shortcode_btn">
                                 <code :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
@@ -359,7 +359,7 @@ export default {
               ]
             },
             filter_by:'all',
-            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Step Form')},
+            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Multi-Step Form')},
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,

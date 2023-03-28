@@ -121,7 +121,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
-                    <el-table-column width="150" :label="$t('Date')">
+                    <el-table-column width="150" :label="$t('Time')">
                         <template slot-scope="scope">
                             {{scope.row.human_date}} {{$t('ago')}}
                         </template>

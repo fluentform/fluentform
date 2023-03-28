@@ -94,7 +94,7 @@ class AdminBar
                 'url'        => 'admin.php?page=fluent_forms'
             ],
             'all_forms'   => [
-                'title'      => __('All Forms', 'fluentform'),
+                'title'      => __('Forms', 'fluentform'),
                 'capability' => $currentUserCapability,
                 'url'        => 'admin.php?page=fluent_forms'
             ],

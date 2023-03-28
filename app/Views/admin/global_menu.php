@@ -11,7 +11,7 @@ $page = sanitize_text_field($_GET['page']);
     <ul class="ff_menu">
         <li class="<?php echo ($page == 'fluent_forms') ? 'active' : '' ?>">
             <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" class="ff_menu_link">
-                <?php _e('All Forms', 'fluentform'); ?>
+                <?php _e('Forms', 'fluentform'); ?>
             </a>
         </li>
         <li class="<?php echo ($page == 'fluent_forms_all_entries') ? 'active' : '' ?>">

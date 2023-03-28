@@ -356,8 +356,8 @@ class Menu
 
         add_submenu_page(
             'fluent_forms',
-            __('All Forms', 'fluentform'),
-            __('All Forms', 'fluentform'),
+            __('Forms', 'fluentform'),
+            __('Forms', 'fluentform'),
             $dashBoardCapability,
             'fluent_forms',
             [$this, 'renderFormAdminRoute']
@@ -366,8 +366,8 @@ class Menu
         if ($settingsCapability) {
             add_submenu_page(
                 'fluent_forms',
-                __('Create New Form', 'fluentform'),
-                __('Create New Form', 'fluentform'),
+                __('New Form', 'fluentform'),
+                __('New Form', 'fluentform'),
                 $fromRole ? $settingsCapability : 'fluentform_forms_manager',
                 'fluent_forms#add=1',
                 [$this, 'renderAddNewFormRoute']
@@ -450,8 +450,8 @@ class Menu
         // Register Documentation
         add_submenu_page(
             'fluent_forms',
-            __('Get Help', 'fluentform'),
-            __('Get Help', 'fluentform'),
+            __('Support', 'fluentform'),
+            __('Support', 'fluentform'),
             $dashBoardCapability,
             'fluent_forms_docs',
             [$this, 'renderDocs']
@@ -579,7 +579,7 @@ class Menu
                 'route' => '/other-confirmations',
             ],
             'all_integrations' => [
-                'title' => __('Marketing & CRM Integrations', 'fluentform'),
+                'title' => __('Configure Integrations', 'fluentform'),
                 'slug'  => 'form_settings',
                 'route' => '/all-integrations',
             ],

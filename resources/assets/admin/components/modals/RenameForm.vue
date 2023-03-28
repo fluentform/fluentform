@@ -10,7 +10,7 @@
                 {{ $t('Rename Form') }}
             </h5>
             <el-form class="mt-4" :model="{}" label-position="top" @submit.native.prevent="rename">
-                <el-form-item class="ff-form-item" :label="$t('Your Form Title')">
+                <el-form-item class="ff-form-item" :label="$t('Form Title')">
                     <el-input class="renameForm" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
                 </el-form-item>
             </el-form>
