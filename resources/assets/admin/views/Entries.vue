@@ -164,7 +164,7 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap text-left">
                             <el-button @click="advancedFilter = !advancedFilter; ">
-                                <span>{{ $t('Advanced Filter') }}</span>
+                                <span>{{ $t('Filter') }}</span>
                                 <i class="ff-icon ff-icon-filter" style="font-size: 14px;"></i>
                             </el-button>
                             <div v-if="advancedFilter" class="ff_advanced_search">

@@ -16,7 +16,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                         <a 
                             class="ff_list_button_link"
                             href="#">
-                            <?php echo __('Settings'); ?>
+                            <?php echo __('General'); ?>
                         </a>
                         <ul class="ff_list_submenu">
                             <li>
@@ -25,7 +25,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                     'hash' => 'settings'
                                     ])); ?>">
-                                    <?php echo __('Global Layout Settings'); ?>
+                                    <?php echo __('Layout'); ?>
                                 </a>
                             </li>
                             <li>
@@ -54,7 +54,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                     class="ff_list_button_link"
                                     data-hash="payment_settings"
                                     href="#">
-                                <?php echo __('Payment Settings', 'fluentform'); ?>
+                                <?php echo __('Payment', 'fluentform'); ?>
                             </a>
                             <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
                                 <ul class="ff_list_submenu">
@@ -129,13 +129,13 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                 'hash' => 'double_optin_settings'
                             ])); ?>">
-                            <?php echo __('Double Optin Settings', 'fluentform'); ?>
+                            <?php echo __('Double Optin', 'fluentform'); ?>
                         </a>
                     </li>
                     
                     <li class="ff_list_button_item has_sub_menu">
                         <a class="ff_list_button_link" href="#">
-                            <?php echo __('All Integration Settings', 'fluentform'); ?>
+                            <?php echo __('Configure Integrations', 'fluentform'); ?>
                         </a>
                         <ul class="ff_list_submenu">
                             <?php foreach ($components as $componentName => $component): ?>
