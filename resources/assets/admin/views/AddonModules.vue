@@ -47,7 +47,7 @@
                                 </template>
                                 <div v-else class="d-flex items-center">
                                      <el-switch 
-                                        active-color="#13ce66" 
+                                        active-color="#2ed573" 
                                         @change="saveStatus(addonKey)" 
                                         active-value="yes" 
                                         inactive-value="no" 
