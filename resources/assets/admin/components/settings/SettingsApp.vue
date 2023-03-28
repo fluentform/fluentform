@@ -61,7 +61,7 @@
                 let pageScollLink = jQuery('.ff-page-scroll');
                 pageScollLink.each(function(){
                     jQuery(this).on("click", function(e){
-                        let targetHash = jQuery(this).attr("data-section-id");
+                        let targetHash = e.target.hash;
                         e.preventDefault();
     
                         if(jQuery('.ff_settings_form').length){
