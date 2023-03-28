@@ -252,7 +252,13 @@ class Menu
             'admin_i18n'               => TranslationString::getAdminI18n(),
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
-            'rest'                     => Helper::getRestInfo()
+            'rest'                     => Helper::getRestInfo(),
+            'payment_icons'            => [
+                'offline'              => fluentformMix('img/payment/offline.png'),
+                'mollie'               => fluentformMix('img/payment/mollie.png'),
+                'paypal'               => fluentformMix('img/payment/paypal.png'),
+                'stripe'               => fluentformMix('img/payment/stripe.png'),
+            ]
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));

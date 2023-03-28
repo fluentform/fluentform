@@ -1613,6 +1613,17 @@ label.el-radio, label.el-checkbox {
   padding: 2px 7px;
   color: $--color-info;
   text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  &_wrap{
+    display: inline-flex;
+    align-items: center;
+  }
+  img{
+    height: 14px;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
   &_pending {
     background-color: mix($--color-warning, $--color-white, 10%);
     border-color: mix($--color-warning, $--color-white, 15%);

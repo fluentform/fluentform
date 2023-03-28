@@ -97,7 +97,7 @@
                             <template slot-scope="props">
                                 <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
                                     <el-button
-                                        class="el-button--soft el-button--icon"
+                                        class="el-button--icon"
                                         size="mini"
                                         type="danger"
                                         icon="el-icon-delete"

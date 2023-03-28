@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Form;
 
 use FluentForm\App\Models\Form;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class Duplicator
 {
@@ -35,6 +36,31 @@ class Duplicator
                 ];
 
                 $form->formMeta()->create($notifyData);
+            }
+        }
+    }
+
+
+    public function maybeDuplicateFiles($form, $existingForm, $data)
+    {
+        if (
+            isset($data['form_fields']) &&
+            $formFields = \json_decode($data['form_fields'], true)
+        ) {
+            $fields = Arr::get($formFields, 'fields', []);
+            foreach ($fields as $field) {
+                if (
+                    "chained_select" === $field['element'] &&
+                    "file" === Arr::get($field, 'settings.data_source.type', '') &&
+                    $metaKey = Arr::get($field, 'settings.data_source.meta_key', '')
+                ) {
+                    // duplicate csv file for chained select field, if uploaded.
+                    $path = wp_upload_dir()['basedir'] . FLUENTFORM_UPLOAD_DIR;
+                    $target = $path . '/' . $metaKey . '_' . $existingForm->id . '.csv';
+                    if (file_exists($target)) {
+                        copy($target, $path . '/' . $metaKey . '_' . $form->id . '.csv');
+                    }
+                }
             }
         }
     }

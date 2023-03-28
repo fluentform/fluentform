@@ -136,6 +136,7 @@ class FormService
         $form->save();
 
         $this->duplicator->duplicateFormMeta($form, $existingForm);
+        $this->duplicator->maybeDuplicateFiles($form, $existingForm, $data);
 
         do_action('fluentform_form_duplicated', $form->id); //*Todo Remove from Next major Release
         do_action('fluentform_form_duplicated', $form->id);
