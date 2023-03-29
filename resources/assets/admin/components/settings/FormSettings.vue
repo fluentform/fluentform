@@ -299,15 +299,15 @@
                 </card-head>
 
                 <card-body>
-                    <advanced-validation :hasPro="hasPro" :inputs="inputs" :settings="advancedValidationSettings"></advanced-validation>
+                    <advanced-validation v-if="hasPro" :hasPro="hasPro" :inputs="inputs" :settings="advancedValidationSettings"></advanced-validation>
                     
                     <notice class="ff_alert_between" type="danger-soft" v-if="!hasPro">
                         <div>
-                            <h6 class="title">{{$t('Advanced Form Validation is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Advanced Form Validation is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </card-body>
@@ -319,15 +319,15 @@
                     <h5 class="title">{{ $t('Survey Result') }}</h5>
                 </card-head>
                 <card-body>
-                    <survey-result :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
+                    <survey-result v-if="hasPro" :data="formSettings.appendSurveyResult" :hasPro="hasPro"/>
 
                     <notice class="ff_alert_between" type="danger-soft" v-if="!hasPro">
                         <div>
-                            <h6 class="title">{{$t('Survey Result is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Survey Result is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </card-body>
@@ -390,11 +390,11 @@
                     
                     <notice class="ff_alert_between" type="danger-soft" v-if="!hasPro">
                         <div>
-                            <h6 class="title">{{$t('Compliance Settings is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Compliance Settings is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </card-body>
@@ -429,11 +429,11 @@
                     </div>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
                         <div>
-                            <h6 class="title">{{$t('Extra CSS Form Class is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Extra CSS Form Class is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </card-body>
@@ -470,11 +470,11 @@
                     
                     <notice class="ff_alert_between" type="danger-soft" v-if="!hasPro">
                         <div>
-                            <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('This is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </card-body>

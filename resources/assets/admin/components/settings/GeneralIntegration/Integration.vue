@@ -35,7 +35,7 @@
                     <el-table v-if="!isEmpty(available_integrations)" v-loading="loading" :data="integrations">
                         <template slot="empty">
                             <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
-                                <p>{{ $t('You don\'t have any form feed integration yet. Create new feed and connect your data to your favorite CRM / Marketing tool') }}</p>
+                                <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
                             </div>
                         </template>
                         <el-table-column width="180" :label="$t('Status')">

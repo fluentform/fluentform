@@ -10,12 +10,12 @@
                         <!--Label Placement-->
                         <el-form-item class="ff-form-item">
                             <template slot="label">
-                                {{ $t('Label placement') }}
+                                {{ $t('Label Placement') }}
 
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('Select the default label placement. Labels can be top aligned above a field, left aligned to the left of a field, or right aligned to the right of a field. This is a global label placement setting.') }}
+                                            {{ $t('Select the default label placement.') }}
                                         </p>
                                     </div>
 
@@ -38,7 +38,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('Where help message will be shown') }}
+                                            {{ $t('Select the placement of help message.') }}
                                         </p>
                                     </div>
 
@@ -64,7 +64,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('Where form validation error messages will be shown') }}
+                                            {{ $t('Select the placement of error message.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -99,7 +99,7 @@
                             <div slot="content">
                                 <p>
                                     {{
-                                        $t('Determine, If you want to enable / disable email reporting. If enabled, you will get weekly email summaries')
+                                        $t('Enable this feature to get weekly reports on how your forms are performing.')
                                     }}
                                 </p>
                             </div>
@@ -107,7 +107,7 @@
                         </el-tooltip>
                     </template>
                     <el-checkbox true-label="yes" false-label="no" v-model="email_report.status"> {{
-                            $t('Enable this feature to get weekly report on the performance of your forms.')
+                            $t('Enable Email Summaries')
                         }}
                     </el-checkbox>
                 </el-form-item>
@@ -118,7 +118,7 @@
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('Please specify who will get the email summary report') }}
+                                        {{ $t('Specify the recipient of the weekly report.') }}
                                     </p>
                                 </div>
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -141,11 +141,11 @@
                         <el-col :sm="24" :md="12">
                             <el-form-item class="ff-form-item">
                                 <template slot="label">
-                                    {{ $t('Sending Day') }}
+                                    {{ $t('Get Reports On') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
-                                                {{ $t('Select which day the email report will be sent') }}
+                                                {{ $t('Select the day to receive weekly report.') }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -160,12 +160,12 @@
                         <el-col :sm="24" :md="12">
                             <el-form-item class="ff-form-item">
                                 <template slot="label">
-                                    {{ $t('Email Subject') }}
+                                    {{ $t('Subject Line') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
-                                                {{ $t('Enter the subject of the email summary') }}
+                                                {{ $t('Enter the subject line of the email summaries') }}
                                             </p>
                                         </div>
 
@@ -190,18 +190,18 @@
             <card-head>
                 <h5 class="title">{{ $t('Integration Failure Email Notification') }}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{$t('Receive an instant email notification when any of your integraion is not running. Enable Integration Failure Notification option and you will get an email when any of your integration fails to run')}}
+                    {{$t('Receive an instant email notification when any of your integration is not running. Enable Integration Failure Notification and you will get an email when any of your integration fails to run.')}}
                 </p>
             </card-head>
             <card-body>
                 <el-form-item class="ff-form-item">
-                    <template slot="label">
+                    <template slot="label" v-if="hasPro">
                         {{$t('Status')}}
                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                             <div slot="content">
                                 <p>
                                     {{
-                                        $t('Enable Integration Failure Notification if you want recieve a email notification each time any of your integration fails to run.')
+                                        $t('Enable Integration Failure Email Notification to receive email notification whenever an integration fails to run.')
                                     }}
                                 </p>
                             </div>
@@ -213,11 +213,11 @@
                     </el-checkbox>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
                         <div>
-                            <h6 class="title">{{$t('Integration Failure Email Notification is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Integration Failure Email Notification is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
-                            {{$t('Upgrage to Pro')}}
+                            {{$t('Upgrade to Pro')}}
                         </a>
                     </notice>
                 </el-form-item>
@@ -239,10 +239,10 @@
                             <el-radio label="custom_email">{{ $t('Custom Email') }}</el-radio>
                         </el-radio-group>
                         <div v-if="integration_failure_notification.send_to_type == 'custom_email'" class="mt-3">
-                            <label class="mb-3" style="display: block;">{{ $t('Please recipient email address') }}</label>
+                            <label class="mb-3" style="display: block;">{{ $t('Enter Recipient Email Address') }}</label>
                             <el-input class="ff_input_width" :placeholder="$t('Recipient Email Address')"
                                         v-model="integration_failure_notification.custom_recipients"></el-input>
-                            <p class="fs-14 mt-1">{{ $t('For Multiple please use comma separated values') }}</p>
+                            <p class="fs-14 mt-1">{{ $t('For multiple email addresses, use comma to separate them') }}</p>
                         </div>
                     </el-form-item>
                 </template>
@@ -255,7 +255,7 @@
                     <h5 class="title">{{ $t('Miscellaneous') }}</h5>
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
-                            <p>{{ $t('These Settings will be used as default settings of a new form where You can customize many options globally, which will effect all forms.') }}</p>
+                            <p>{{ $t('These settings will be applied to all new forms.') }}</p>
                         </div>
                         <i class="ff-icon ff-icon-info-filled text-primary ml-2"></i>
                     </el-tooltip>
@@ -270,7 +270,7 @@
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('If this option is turned off then the IP address of the user will be saved in the database with form data.') }}<br>
+                                        {{ $t('If this option is turned on, the user\'s IP address will not be saved with the form data.') }}<br>
                                     </p>
                                 </div>
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -289,7 +289,7 @@
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('By Default, Fluent Forms track unique views and submissions to show form metrices. You can disable it here.') }}
+                                        {{ $t('Enable this to prevent tracking unique views and submission counts.') }}
                                     </p>
                                 </div>
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -309,14 +309,14 @@
                                     <div slot="content">
                                         <p>
                                             {{
-                                                $t('If you enable this then Fluent Forms will verify honeypot security.Most of the time, bots will fail this test.')
+                                                $t('Enable Honeypot Security for better spam protection')
                                             }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </span>
-                            <p class="text-note mt-1">{{ $t('Recommended settings: Enabled') }}</p>
+                            <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
                         </span>
                     </template>
 
@@ -341,7 +341,7 @@
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1">{{ $t('Recommended settings: Enabled') }}</p>
+                                <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
                             </span>
                         </template>
 
@@ -378,7 +378,7 @@
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('If you enable this then Classic editor will have form inserter button') }}
+                                        {{ $t('Enabling this option will have form inserter button inside classic editor.') }}
                                     </p>
                                 </div>
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -394,19 +394,19 @@
                     <template slot="label">
                         <span style="width: 390px;">
                             <span>
-                                {{ $t('Enable No - Conflict Mode') }}
+                                {{ $t('Enable No-Conflict Mode') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
                                             {{
-                                                $t('If you enable this, then fluent forms will try to prevent other plugin scripts from loading and remove the conflicts.')
+                                                $t('Enable this to prevent conflicts cause by other plugins scripts.')
                                             }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </span>
-                            <p class="text-note mt-1">{{ $t('Recommended settings: Enabled') }}</p>
+                            <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
                         </span>
                         
                     </template>
@@ -421,7 +421,7 @@
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
-                                        {{ $t('If you enable this, then fluent forms will tabindex to form fields automatically.') }}
+                                        {{ $t('Enable this to switch between form fields using Tab.') }}
                                     </p>
                                 </div>
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -434,7 +434,7 @@
 
                 <el-form-item class="ff-form-item">
                     <template slot="label">
-                        {{ $t('Geo-Location provider') }}
+                        {{ $t('Geo-Location Provider') }}
                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                             <div slot="content">
                                 <p>
@@ -466,8 +466,8 @@
                     </el-row>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
                         <div>
-                            <h6 class="title">{{$t('Geo-Location provider is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('Geo-Location provider is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
                             {{$t('Upgrage to Pro')}}
@@ -501,8 +501,8 @@
                     </el-row>
                     <notice class="ff_alert_between" type="danger-soft" v-else>
                         <div>
-                            <h6 class="title">{{$t('File Upload Location is a Pro Feature')}}</h6> 
-                            <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+                            <h6 class="title">{{$t('File Upload Location is available in the pro version')}}</h6>
+                            <p class="text">{{$t('Upgrade to get access to all the advanced features.')}}</p>
                         </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
                             {{$t('Upgrage to Pro')}}
@@ -516,19 +516,19 @@
                         <template slot="label">
                             <span style="width: 390px;">
                                 <span>
-                                    {{ $t('Autoload Captcha') }}
+                                    {{ $t('Auto Load Captcha') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
                                                 {{
-                                                    $t('If you enable this then Fluent Forms will insert captcha in all your forms.Please enable the captcha first.')
+                                                    $t('Enable this to automatically load Captcha in all forms.')
                                                 }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1">For using captcha, you have to enable captcha first.</p>
+                                <p class="text-note mt-1">{{ $t('For using Captcha, enable Captcha first.') }}</p>
                             </span>
                         </template>
                         <el-switch class="el-switch-lg" :disabled="!hasCaptcha" active-color="#2ed573"
@@ -569,7 +569,7 @@
                             <div slot="content">
                                 <p>
                                     {{
-                                        $t('By Default, Fluent Forms add your site title as email footer.You can add email footer text here.(HTML supported)')
+                                        $t('Set custom email footer text here. (HTML is supported)')
                                     }}
                                 </p>
                             </div>
@@ -625,9 +625,9 @@
         data() {
             return {
                 labelPlacementOptions: {
-                    'top': 'Top aligned',
-                    'left': 'Left aligned',
-                    'right': 'Right aligned'
+                    'top': 'Top Aligned',
+                    'left': 'Left Aligned',
+                    'right': 'Right Aligned'
                 },
                 helpMessagePlacementOptions: {
                     'with_label': 'Beside Label as Tooltip',
@@ -653,7 +653,7 @@
                     'ipinfo.io': {
                         label: 'ipinfo.io',
                         has_token: true,
-                        token_instruction: 'If you have much more visitor for your phone field form then you may add an API token. It will work even if you do not use a token'
+                        token_instruction: 'For high volume of users, you can add an API token.'
                     }
                 },
                 hasPro: !!window.FluentFormApp.has_pro

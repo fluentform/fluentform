@@ -4,9 +4,9 @@
         <?php if(!$hasPro){ ?>
             <div class="ff_card ff_card_alert mb-4 el-row justify-between items-center">
                 <div class="el-col el-col-12">
-                    <h5 class='title mb-2'>You are using Fluentform free version.</h5>
+                    <h5 class='title mb-2'>You are using the free version of Fluent Forms.</h5>
                     <p class='text'>
-                        Free version has limited features, Please upgrade to pro to control the fluentform and get all the advanced features.
+                        Upgrade to get access to all the advanced features.
                     </p>
                 </div>
                 <div class="el-col el-col-12 text-right">

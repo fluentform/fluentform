@@ -143,7 +143,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                 'hash' => 'double_optin_settings'
                             ])); ?>">
-                            <?php echo __('Double Optin', 'fluentform'); ?>
+                            <?php echo __('Double Opt-in', 'fluentform'); ?>
                         </a>
                     </li>
                     

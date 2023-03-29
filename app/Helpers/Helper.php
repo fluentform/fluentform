@@ -481,7 +481,7 @@ class Helper
         $locations = [
             [
                 'value' => 'default',
-                'label' => __('Fluentforms Default', 'fluentform'),
+                'label' => __('Fluent Forms Default', 'fluentform'),
             ],
             [
                 'value' => 'wp_media',
