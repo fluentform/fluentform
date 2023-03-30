@@ -20,12 +20,14 @@
 							<?php echo esc_html($settings_menus['form_settings']['title']); ?>
 						</a>
 					</li>
-					<li>
-						<a class="ff-page-scroll"
-							href="#double-optin-confirmation">
-							<?php echo __('Double Optin Confirmation'); ?>
-						</a>
-					</li>
+					<?php if(defined('FLUENTFORMPRO')): ?>
+						<li>
+							<a class="ff-page-scroll"
+								href="#double-optin-confirmation">
+								<?php echo __('Double Optin Confirmation'); ?>
+							</a>
+						</li>
+					<?php endif?>
 					<li>
 						<a class="ff-page-scroll"
 							href="#form-layout">
