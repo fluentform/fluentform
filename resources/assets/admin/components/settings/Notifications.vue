@@ -46,10 +46,9 @@
                                 <el-table-column width="180" :label="$t('Status')">
                                     <template slot-scope="scope">
                                         <span class="mr-3" v-if="scope.row.value.enabled">{{$t('Enabled')}}</span>
-                                        <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                        <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
                                         <el-switch
                                             :width="40"
-                                            active-color="#00b27f" 
                                             @change="handleActive(scope.$index)" 
                                             v-model="scope.row.value.enabled"
                                         ></el-switch>

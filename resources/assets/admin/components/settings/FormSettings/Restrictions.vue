@@ -17,7 +17,7 @@
                     </el-tooltip>
                 </div>
 
-                <el-switch class="el-switch-lg" active-color="#2ed573" v-model="form.limitNumberOfEntries.enabled"></el-switch>
+                <el-switch class="el-switch-lg" v-model="form.limitNumberOfEntries.enabled"></el-switch>
             </el-form-item>
 
             <!--Additional fields when limit number of entries enabled-->
@@ -66,7 +66,7 @@
                     </el-tooltip>
                 </div>
 
-                <el-switch class="el-switch-lg" active-color="#2ed573" v-model="form.scheduleForm.enabled"></el-switch>
+                <el-switch class="el-switch-lg" v-model="form.scheduleForm.enabled"></el-switch>
             </el-form-item>
 
             <!--Additional fields when form sheduling enabled-->
@@ -158,7 +158,7 @@
                     </el-tooltip>
                 </div>
 
-                <el-switch class="el-switch-lg" active-color="#2ed573" v-model="form.requireLogin.enabled"></el-switch>
+                <el-switch class="el-switch-lg" v-model="form.requireLogin.enabled"></el-switch>
             </el-form-item>
 
             <!--Additional fields when user logged in is enabled-->
@@ -204,7 +204,7 @@
                     </el-tooltip>
                 </div>
 
-                <el-switch class="el-switch-lg" active-color="#2ed573" v-model="form.denyEmptySubmission.enabled"></el-switch>
+                <el-switch class="el-switch-lg" v-model="form.denyEmptySubmission.enabled"></el-switch>
             </el-form-item>
 
             <!--Additional fields when empty form submission is not allowed-->

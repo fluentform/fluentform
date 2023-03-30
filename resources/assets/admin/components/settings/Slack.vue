@@ -9,7 +9,7 @@
                     <span slot="label" style="width: 120px;">
                         {{ $t('Integrate Slack') }}
                     </span>
-                    <el-switch class="el-switch-lg" active-color="#2ed573" v-model="slack.enabled"></el-switch>
+                    <el-switch class="el-switch-lg" v-model="slack.enabled"></el-switch>
                 </el-form-item>
 
                 <template v-if="slack.enabled">
