@@ -4,7 +4,7 @@
         class="el-dialog-no-header"
         :visible.sync="visibility"
         :before-close="close"
-        width="24%"
+        width="26%"
         :show-close="false"
     >
 
@@ -23,7 +23,7 @@
         <div slot="footer" class="dialog-footer">
             <btn-group class="ff_btn_group_half">
                 <btn-group-item>
-                    <el-button @click="close" type="dark" class="el-button--soft">{{ $t('Cancel') }}</el-button>
+                    <el-button @click="close" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
                 </btn-group-item>
                 <btn-group-item>
                     <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>

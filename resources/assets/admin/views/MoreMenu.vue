@@ -44,7 +44,7 @@
 
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="visible = false" type="text" class="el-button--text-light">
+                <el-button @click="visible = false" type="info" class="el-button--soft">
                     {{ $t('Cancel') }}
                 </el-button>
                 <el-button type="primary" icon="el-icon-success" @click="confirm">
