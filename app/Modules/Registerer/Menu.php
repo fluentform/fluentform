@@ -208,9 +208,9 @@ class Menu
             FLUENTFORM_VERSION,
             'all'
         );
-
+    
         add_filter('admin_footer_text', function ($text) {
-            return '<span id="footer-thankyou">Thanks for using <a target="_blank" rel="nofollow" href="https://wordpress.org/plugins/fluentform">Fluent Forms</a></span>';
+            return '<span id="footer-thankyou">Thank you very much ♥ for using the plugin from the Fluent Forms team! If you like the plugin please rate Fluent Forms <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">★★★★★ </a> on  <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">WordPress.org</a> to help us spread the word. </span>';
         });
 
         add_filter('update_footer', function ($text) {
