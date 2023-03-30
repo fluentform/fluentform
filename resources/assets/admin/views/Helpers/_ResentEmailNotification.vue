@@ -1,6 +1,6 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="dialogVisible=true" type="dark" size="medium">{{ $t(btn_text) }}</el-button>
+        <el-button v-if="element_type == 'button'" @click="dialogVisible=true" type="info" size="medium">{{ $t(btn_text) }}</el-button>
         <el-dialog
             top="60px"
             @before-close="resetData()"

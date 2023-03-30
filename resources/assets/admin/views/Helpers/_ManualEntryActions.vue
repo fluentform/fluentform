@@ -1,6 +1,6 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="openModal()" type="dark" size="medium">
+        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="medium">
             {{ $t(btn_text) }}
         </el-button>
         <el-dialog
@@ -8,7 +8,7 @@
             @before-close="resetData()"
             :append-to-body="true"
             :visible.sync="dialogVisible"
-            width="70%"
+            :width="has_pro ? '70%' : '45%'"
         >
             <template slot="title">
                 <h4>{{$t('Choose an Action/Integration Feed and Replay')}}</h4>

@@ -22,7 +22,7 @@
                             :placeholder="$t('Please Provide Note Content')"
                             v-model="new_note.content">
                         </el-input>
-                        <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="dark">
+                        <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="info">
                             {{ $t('Submit Note') }}
                         </el-button>
                     </div>
