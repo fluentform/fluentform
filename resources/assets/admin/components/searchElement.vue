@@ -66,15 +66,35 @@ export default {
 
             if (searchElementStr) {
                 searchResult = this.list.filter((item) => {
+                    let search = this.makeSearchString(item);
                     if (tags[item.element]) {
-                        return tags[item.element].toString().toLowerCase().includes(searchElementStr);
+                        search += tags[item.element].toString();
                     }
+                    return search.toLowerCase().includes(searchElementStr);
                 });
                 this.$emit('update:isSidebarSearch', true);
             } else {
                 this.$emit('update:isSidebarSearch', false);
             }
             this.searchResult = _ff.chunk( searchResult, 2 );
+        }
+    },
+    methods: {
+        makeSearchString(field) {
+            let searchStr = '';
+            const { name, type } = field.attributes || {};
+            if (name) searchStr += name;
+            if (type) searchStr += type;
+            if (field.element) searchStr += field.element;
+            if (field.settings?.label) searchStr += field.settings.label;
+            if (field.editor_options?.title) searchStr += field.editor_options.title;
+
+            if (field.fields && typeof field.fields === 'object') {
+                for (const item in field.fields) {
+                    searchStr += this.makeSearchString(field.fields[item]);
+                }
+            }
+            return searchStr.toString();
         }
     }
 }
