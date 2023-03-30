@@ -123,9 +123,8 @@ footer {
   background: $white;
   border-radius: $border-radius;
   margin-bottom: 12px;
-  border: 1px solid transparent;
   &_active {
-    border-color: $--color-primary;
+    border: 1px solid $--color-primary;
   }
   &--title {
     margin: 0;
