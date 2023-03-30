@@ -577,7 +577,7 @@ class NinjaFormsMigrator extends BaseMigrator
             }
             $entries[] = $values;
         }
-        return $entries;
+        return array_reverse($entries);
     }
 
     public function getFieldKeyMaps($form)

@@ -634,7 +634,11 @@ class GravityFormsMigrator extends BaseMigrator
             'offset'    => $offset,
             'page_size' => $perPage
         ];
-        $submissions = \GFAPI::get_entries($formId, [], [], $paging);
+        $shorting = [
+            'key' => 'id',
+            'direction' => 'ASC',
+        ];
+        $submissions = \GFAPI::get_entries($formId, [], $shorting, $paging);
         $entries = [];
         if (!is_array($submissions)) {
             return $entries;

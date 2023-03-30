@@ -175,6 +175,7 @@ class WpFormsMigrator extends BaseMigrator
         }
         $args = [
             'form_id' => $form['ID'],
+            'order'  => 'asc',
         ];
         $totalEntries = wpforms()->entry->get_entries($args, true);// 2nd parameter 'true' means return total entries count
         $args['number'] = apply_filters('fluentform/entry_migration_max_limit', static::DEFAULT_ENTRY_MIGRATION_MAX_LIMIT, $this->key,  $totalEntries, $formId);

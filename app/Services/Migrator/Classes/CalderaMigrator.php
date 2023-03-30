@@ -584,7 +584,7 @@ class CalderaMigrator extends BaseMigrator
 
         }
 
-        return $entries;
+        return array_reverse($entries);
     }
 
     /**
