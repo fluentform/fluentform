@@ -983,6 +983,7 @@ add_action('init', function () {
 add_filter('ff_will_return_html', function ($result, $integration, $key) {
     $dictionary = [
         'notifications' => ['message'],
+        'pdfFeed' => ['body'],
     ];
 
     if (!isset($dictionary[$integration])) {
