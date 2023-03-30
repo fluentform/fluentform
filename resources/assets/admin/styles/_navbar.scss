@@ -12,6 +12,10 @@
         border-radius: 6px;
         line-height: 1.6;
         transition: 0.2s;
+        max-width: 140px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         &:focus{
             box-shadow: none;
             border: 0;

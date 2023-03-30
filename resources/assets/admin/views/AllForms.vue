@@ -157,7 +157,6 @@
                                     </span>
                                     <el-switch
                                         class="el-switch--small"
-                                        active-color="#2ed573" 
                                         :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
                                         @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
                                         
