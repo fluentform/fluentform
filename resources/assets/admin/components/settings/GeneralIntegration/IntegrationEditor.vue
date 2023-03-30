@@ -6,7 +6,7 @@
                     <h5 class="title">{{ title }}</h5>
                     <btn-group>
                         <btn-group-item>
-                            <router-link class="el-button el-button--dark el-button--medium"
+                            <router-link class="el-button el-button--info el-button--medium"
                                          :to="{name: 'allIntegrations'}">
                                 <i class="ff-icon ff-icon-eye"></i>
                                 <span>{{ $t('View All') }}</span>

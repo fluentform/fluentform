@@ -11,7 +11,7 @@
                                 @click="backToHome()"
                                 size="medium" 
                                 icon="ff-icon ff-icon-arrow-left"
-                                type="dark"
+                                type="info"
                                 class="el-button--soft"
                             >
                                 {{ $t('Back') }}
@@ -19,7 +19,7 @@
                             <el-button 
                                 v-else
                                 @click="add" 
-                                type="dark"
+                                type="info"
                                 size="medium" 
                                 icon="ff-icon ff-icon-plus"
                             >

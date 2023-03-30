@@ -6,7 +6,7 @@
                     <h5 class="title">{{ $t('All Form Integrations') }}</h5>
                     <div v-if="!isEmpty(available_integrations)" class="action-buttons">
                         <el-dropdown @command="add" :hide-on-click="false" trigger="click">
-                            <el-button size="medium">
+                            <el-button type="info" size="medium">
                                 {{ $t('Add New Integration') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
