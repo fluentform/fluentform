@@ -35,8 +35,10 @@
                                 :loading="saving"
                                 type="primary"
                                 icon="el-icon-success"
-                                @click="saveSettings()">
-                                {{loading ? $t('Saving ') : $t('Save ') }}
+                                @click="saveSettings()"
+                                size="medium"
+                            >
+                                {{saving ? $t('Saving ') : $t('Save ') }}
                             </el-button>
                         </btn-group-item>
                     </btn-group>
@@ -201,7 +203,7 @@
                                             type="primary"
                                             icon="el-icon-success"
                                             @click="saveSettings()">
-                                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                            {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                                         </el-button>
                                     </el-form-item>
                                 </div>
