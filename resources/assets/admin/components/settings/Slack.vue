@@ -9,7 +9,7 @@
                     <span slot="label" style="width: 120px;">
                         {{ $t('Integrate Slack') }}
                     </span>
-                    <el-switch class="el-switch-lg" active-color="#00b27f" v-model="slack.enabled"></el-switch>
+                    <el-switch class="el-switch-lg" active-color="#2ed573" v-model="slack.enabled"></el-switch>
                 </el-form-item>
 
                 <template v-if="slack.enabled">
@@ -55,8 +55,9 @@
                                 :disabled="!hasPro"
                             ></el-checkbox>
                         </el-checkbox-group>
-                        <div v-show="!hasPro">
-                            {{ $t('Field Selection is a pro feature.') }}
+                        <div v-show="!hasPro" class="mt-3 text-danger">
+                            {{ $t('Select Fields is a pro feature. Please') }}
+                            <a href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" target="_blank">{{$t('Upgrade to Pro')}}.</a>
                         </div>
                     </el-form-item>
 
