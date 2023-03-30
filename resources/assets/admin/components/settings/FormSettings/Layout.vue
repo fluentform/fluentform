@@ -278,7 +278,7 @@
                         </span>
                     </template>
 
-                    <el-switch class="el-switch-lg" active-color="#2ed573" v-model="misc.isIpLogingDisabled"></el-switch>
+                    <el-switch class="el-switch-lg" v-model="misc.isIpLogingDisabled"></el-switch>
                 </el-form-item>
 
                 <el-form-item class="ff-form-item-flex ff-form-item">
@@ -297,7 +297,7 @@
                         </span>
                     </template>
 
-                    <el-switch class="el-switch-lg" active-color="#2ed573" v-model="misc.isAnalyticsDisabled"></el-switch>
+                    <el-switch class="el-switch-lg" v-model="misc.isAnalyticsDisabled"></el-switch>
                 </el-form-item>
 
                 <el-form-item class="ff-form-item-flex ff-form-item">
@@ -320,7 +320,7 @@
                         </span>
                     </template>
 
-                    <el-switch class="el-switch-lg" active-color="#2ed573" active-value="yes" inactive-value="no"
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                v-model="misc.honeypotStatus"></el-switch>
                 </el-form-item>
 
@@ -345,7 +345,7 @@
                             </span>
                         </template>
 
-                        <el-switch class="el-switch-lg" active-color="#2ed573" active-value="yes" inactive-value="no"
+                        <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                    v-model="misc.akismet_status"></el-switch>
                     </el-form-item>
 
@@ -386,7 +386,7 @@
                         </span>
                     </template>
 
-                    <el-switch class="el-switch-lg" active-color="#2ed573" active-value="yes" inactive-value="no"
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                v-model="misc.classicEditorButton"></el-switch>
                 </el-form-item>
 
@@ -410,7 +410,7 @@
                         </span>
                         
                     </template>
-                    <el-switch class="el-switch-lg" active-color="#2ed573" active-value="yes" inactive-value="no"
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                v-model="misc.noConflictStatus"></el-switch>
                 </el-form-item>
 
@@ -428,7 +428,7 @@
                             </el-tooltip>
                         </span>
                     </template>
-                    <el-switch class="el-switch-lg" active-color="#2ed573" active-value="yes" inactive-value="no"
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                v-model="misc.tabIndex"></el-switch>
                 </el-form-item>
 
@@ -531,7 +531,7 @@
                                 <p class="text-note mt-1">{{ $t('For using Captcha, enable Captcha first.') }}</p>
                             </span>
                         </template>
-                        <el-switch class="el-switch-lg" :disabled="!hasCaptcha" active-color="#2ed573"
+                        <el-switch class="el-switch-lg" :disabled="!hasCaptcha"
                                 v-model="misc.autoload_captcha"></el-switch>
                     </el-form-item>
 
@@ -557,7 +557,7 @@
                                 </el-tooltip>
                             </span>
                         </template>
-                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg" :disabled="!hasCaptcha" active-color="#2ed573"
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg" :disabled="!hasCaptcha"
                                 v-model="misc.admin_top_nav_status"></el-switch>
                     </el-form-item>
                 </div>
