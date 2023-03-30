@@ -1,3 +1,6 @@
+// import element ui variable
+@import './element_ui_var';
+
 // colors
 $white:       #ffffff;
 $base-color: #1E1F21;
@@ -19,7 +22,7 @@ $border-radius: 8px;
 $section-layout-sidebar-width: 280px;
 
 // list button
-$list-button-link-active-bg:            #57606f;
+$list-button-link-active-bg:            $--color-info;
 $list-button-link-active-color:         $white;
 
 // payment badge 
