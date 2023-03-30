@@ -287,7 +287,7 @@
                                 class="el-button--upload"
                             >
                                 <span>{{$t('Upload Media')}}</span> 
-                                <span v-if="!has_pro" class="text-danger">{{ $t('(Require Pro Version)') }}</span>
+                                <span v-if="!has_pro" class="text-danger ml-2">{{ $t('(Require Pro Version)') }}</span>
                             </el-button>
                             
                             <div class="mt-4" v-if="selected.value.media_attachments.length" style="width: 350px;">
