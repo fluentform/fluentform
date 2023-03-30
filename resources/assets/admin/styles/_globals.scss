@@ -1224,14 +1224,18 @@ label.el-radio, label.el-checkbox {
     border-radius: 12px;
   }
   &.dark{
-    background-color: $base-color;
+    background-color: $--color-dark;
     color: $white;
     &:hover{
       background-color: $--color-primary;
     }
     &-soft{
-      background-color: #F3F3F3;
-      color: $base-color;
+      background-color: $icon-btn-dark-soft-bg;
+      color: $icon-btn-dark-soft-color;
+      &:hover{
+        background-color: $icon-btn-dark-soft-hover-bg;
+        color: $icon-btn-dark-soft-hover-color;
+      }
     }
   }
   &.primary{

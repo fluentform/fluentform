@@ -32,3 +32,9 @@ $submenu-link-active-color:             $base-color;
 
 $submenu-link-active-hover-bg:           #efefef;
 
+// ff icon btn
+$icon-btn-dark-soft-bg:                           mix($base-color, $white, 10%);
+$icon-btn-dark-soft-color:                        $base-color;
+
+$icon-btn-dark-soft-hover-bg:                     $base-color;
+$icon-btn-dark-soft-hover-color:                  $white;
