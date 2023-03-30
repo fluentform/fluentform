@@ -227,21 +227,21 @@
 </template>
 
 <script type="text/babel">
-    import WpEditor from '../../../../common/_wp_editor';
-    import PhotoUploader from '../../../../common/PhotoUploader';
-    import ConversionStylePref from "../../../conversion_templates/ConversionStylePref";
+    import WpEditor from '@/common/_wp_editor';
+    import PhotoUploader from '@/common/PhotoUploader';
+    import ConversionStylePref from "@/admin/conversion_templates/ConversionStylePref";
     import Browser from './_Browser';
     import Share from './_Sharing';
     import Ff_boxshadow from './BoxShadow';
-    import Card from '../../Card/Card.vue';
-    import CardHead from '../../Card/CardHead.vue';
-    import CardBody from '../../Card/CardBody.vue';
-    import CardHeadGroup from '../../Card/CardHeadGroup.vue';
-    import BtnGroup from '../../BtnGroup/BtnGroup.vue';
-    import BtnGroupItem from '../../BtnGroup/BtnGroupItem.vue';
-    import Tab from '../../Tab/Tab.vue';
-    import TabItem from '../../Tab/TabItem.vue';
-    import TabLink from '../../Tab/TabLink.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Tab from '@/admin/components/Tab/Tab.vue';
+    import TabItem from '@/admin/components/Tab/TabItem.vue';
+    import TabLink from '@/admin/components/Tab/TabLink.vue';
 
     export default {
         name: 'landing_pages',
