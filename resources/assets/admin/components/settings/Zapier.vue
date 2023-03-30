@@ -12,14 +12,16 @@
                                 icon="ff-icon ff-icon-arrow-left"
                                 type="info"
                                 class="el-button--soft"
+                                size="medium"
                             >
                                 {{ $t('Back') }}
                             </el-button>
                             <el-button 
                                 v-else 
                                 @click="add" 
-                                type="dark" 
+                                type="info" 
                                 icon="ff-icon ff-icon-plus"
+                                size="medium"
                             >
                                 {{ $t('Add Webhook') }}
                             </el-button>
