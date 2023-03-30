@@ -4,10 +4,6 @@
             {{ labels.status_label }}
         </el-checkbox>
 
-        <el-checkbox v-else @click.native="comingSoon = true">
-            {{ labels.status_label }}
-        </el-checkbox>
-
         <div v-if="conditionals.status" class="mt-3">
             <div class="mb-3">
                 {{ labels.notification_if_start }}
@@ -84,15 +80,10 @@
             </el-row>
         </div>
 
-        <coming-soon
-            v-if="!hasPro"
-            :visibility.sync="comingSoon"/>
-
     </div>
 </template>
 
 <script>
-    import ComingSoon from '../../modals/ItemDisabled';
     import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
     import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
     import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
@@ -100,7 +91,6 @@
     export default {
         name: 'FilterFields',
         components: {
-            ComingSoon,
             ActionBtn,
             ActionBtnAdd,
             ActionBtnRemove
@@ -134,8 +124,7 @@
                     field: null,
                     operator: '=',
                     value: null
-                },
-                comingSoon: false,
+                }
             }
         },
         computed: {

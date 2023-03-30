@@ -21,7 +21,7 @@
                                 <el-button 
                                     v-else
                                     @click="add" 
-                                    type="dark"
+                                    type="info"
                                     size="medium" 
                                     icon="ff-icon ff-icon-plus"
                                 >
