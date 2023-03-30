@@ -7,7 +7,7 @@
                         {{$t('Submission Logs')}}
                     </div>
                     <div class="entry_info_box_actions">
-                        <el-radio-group fill="#1e1f21" v-model="log_type" size="medium">
+                        <el-radio-group class="el-radio-group-dark" v-model="log_type" size="medium">
                             <el-radio-button label="logs">{{$t('General')}}</el-radio-button>
                             <el-radio-button label="api_calls">{{$t('API Calls')}}</el-radio-button>
                         </el-radio-group>
