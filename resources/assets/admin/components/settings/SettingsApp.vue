@@ -13,7 +13,7 @@
 </template>
 
 <script type="text/babel">
-    import { scrollTop } from '@/admin/helpers';
+    import { scrollTop, handleSidebarActiveLink } from '@/admin/helpers';
 
     export default {
         name: 'settings_app',
@@ -77,34 +77,10 @@
                     });
                 });
             },
-            handleActiveLink($el) {
-                const $link = $el.parent(); // link is parent li element
-                // root route link operation
-                if ('/' === $el.data('route_key')) {
-                    // set root route if route not set yet
-                    if (this.$route.path !== '/') {
-                        this.$router.push({ path: '/' })
-                    }
-
-                    // make first sub-link active if it has submenu
-                    const $subMenuFirstItem = $link.find('ul.ff_list_submenu li:first');
-                    if ($subMenuFirstItem.length) {
-                        $subMenuFirstItem.addClass('active').siblings().removeClass('active');
-                    }
-                }
-                //make current link active and others deactivate
-                $link.addClass('active').siblings().removeClass('active');
-
-                // toggle sub-links if curren link has sub-links
-                if ($link.hasClass('has_sub_menu')) {
-                    $link.toggleClass('is-submenu'); // toggle sub-link icon
-                    $link.find('.ff_list_submenu').slideToggle();
-                }
-
-                // close all others sub-links if it has
-                if ($link.siblings().hasClass('has_sub_menu')) {
-                    $link.siblings().removeClass('is-submenu'); // sub-link icon close
-                    $link.siblings().find('.ff_list_submenu').slideUp();
+            maybeSetRoute($el) {
+                // set root route if route not set yet
+                if ('/' === $el.data('route_key') && this.$route.path !== '/') {
+                    this.$router.push({ path: '/' })
                 }
             }
         },
@@ -112,9 +88,10 @@
             this.fetchInputs();
             this.fetchAllEditorShortcodes();
 
-            let currentActive = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
-            if(currentActive.length) {
-                this.handleActiveLink(currentActive)
+            const $el = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
+            if ($el.length) {
+                this.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
             } else {
                 jQuery('.ff_settings_list li:first-child').addClass('active');
             }
@@ -122,10 +99,11 @@
             const that = this;
             jQuery('.ff_settings_list a').on('click', function (e) {
                 const $el = jQuery(this);
-                if($el.attr('href') === '#' || '/' === $el.data('route_key')){
+                if ($el.attr('href') === '#' || '/' === $el.data('route_key')){
                     e.preventDefault();
                 }
-                that.handleActiveLink($el)
+                that.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
             });
 
             jQuery('head title').text('Settings & Integrations - Fluent Forms');

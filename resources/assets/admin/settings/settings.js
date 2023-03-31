@@ -45,6 +45,7 @@ import {
     Pagination
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
+import { handleSidebarActiveLink } from '@/admin/helpers';
 
 locale.use(lang);
 Vue.use(Button);
@@ -108,47 +109,53 @@ new Vue({
         settings_key: ''
     },
     methods: {
-        setRoute(hash) {
+        setRoute($el, $originalEl = false) {
             // get component by hash
-            let $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']');
+            let hash = $el.data('hash');
             let component = hash;
             if ($el.data('component')) {
                 component = $el.data('component');
             }
-            
             if (this.$options.components[component]) {
-                jQuery('.ff_settings_list li').removeClass('active');
-                $el.closest('.ff_list_button_item.has_sub_menu').addClass('active is-submenu');
-                $el.closest('.ff_list_button_item.has_sub_menu .ff_list_submenu').slideDown();
-                //$el.parent().addClass('active');
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
+                // set route hash
+                location.hash = hash;
+            } else if ($originalEl &&
+                $originalEl.hasClass('ff-payment-settings-root')
+            ) {
+                location.href = $el.attr('href');
+                return 'redirected';
             }
-            console.log($el)
+            return '';
+        },
+        maybeGetFirstSubLink($el) {
+            if (
+                $el.attr('href') === '#' &&
+                $el.parent().hasClass('has_sub_menu') &&
+                $el.parent().find('ul.ff_list_submenu li:first a').length
+            ) {
+                $el = $el.parent().find('ul.ff_list_submenu li:first a');
+            }
+            return $el;
         }
     },
     created() {
         let hash = location.hash.substr(1) || 'settings';
-        this.setRoute(hash);
-
+        let $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']').first();
+        if ($el.length) {
+            $el = this.maybeGetFirstSubLink($el);
+            this.setRoute($el);
+            handleSidebarActiveLink($el.parent(), true)
+        }
         const that = this;
         jQuery('.ff_settings_list li a').on('click', function (e) {
-
-            if(jQuery(this).attr('href') === '#'){
-                e.preventDefault();
+            $el = jQuery(this);
+            if($el.attr('href') === '#') e.preventDefault();
+            if (that.setRoute(that.maybeGetFirstSubLink($el), $el) === 'redirected') {
+                return;
             }
-
-            let hash = jQuery(this).attr('data-hash');
-            let subMenu = jQuery(this).parent().find('.ff_list_submenu');
-
-            if (hash) {
-                that.setRoute(hash);
-            }
-            jQuery(this).parent().addClass('active').siblings().removeClass('active is-submenu');
-            jQuery(this).parent().siblings().find('.ff_list_submenu').slideUp();
-
-            subMenu.parent().toggleClass('is-submenu').siblings().removeClass('is-submenu');
-            subMenu.slideToggle().parent().siblings().find('.ff_list_submenu').slideUp();
+            handleSidebarActiveLink($el.parent())
         });
     }
 });

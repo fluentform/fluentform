@@ -65,7 +65,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                     <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">
                             <a
-                                    class="ff_list_button_link"
+                                    class="ff_list_button_link ff-payment-settings-root"
                                     data-hash="payment_settings"
                                     href="#">
                                 <?php echo __('Payment', 'fluentform'); ?>
