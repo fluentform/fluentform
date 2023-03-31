@@ -174,96 +174,123 @@
                     </card-head-group>
                 </card-head>
                 <card-body>
+
                     <!--Appearance settings form-->
                     <el-form label-position="top">
-                        <!--Label placement-->
-                        <el-form-item class="ff-form-item">
-                            <template slot="label">
-                                {{ $t('Label Alignment') }}
+                        <el-row :gutter="24">
+                            <el-col :sm="24" :md="6">
+                                <!--Label placement-->
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Label Alignment') }}
 
-                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
-                                        <p>
-                                            {{ $t('Select the default label placement.Labels can be top aligned above a field, left aligned to the left of a field, or right aligned to the right of a field.') }}
-                                        </p>
-                                    </div>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Select the default label placement. Labels can be top aligned above a field, left aligned to the left of a field, or right aligned to the right of a field.') }}
+                                                </p>
+                                            </div>
 
-                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                </el-tooltip>
-                            </template>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    
+                                    <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.labelPlacement">
+                                        <el-option 
+                                            v-for="(label, value) in labelPlacementOptions" 
+                                            :label="label"
+                                            :key="value" 
+                                            :value="value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="6">
+                                <!--Help Message placement-->
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Help Message Position') }}
 
-                            <el-radio v-for="(labelOption, optionName) in labelPlacementOptions"
-                                    v-model="formSettings.layout.labelPlacement" :label="optionName"
-                                    :key="optionName" border>
-                                {{ labelOption }}
-                            </el-radio>
-                        </el-form-item>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Select the default help message placement. Help messages can be placed beside label as a tooltip, or below each input.') }}
+                                                </p>
+                                            </div>
 
-                        <!--Help Message placement-->
-                        <el-form-item class="ff-form-item">
-                            <template slot="label">
-                                {{ $t('Help Message Position') }}
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
 
-                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
-                                        <p>
-                                            {{ $t('Select the default help message placement. Help messages can be placed beside label as a tooltip, or below each input.') }}
-                                        </p>
-                                    </div>
+                                    <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.helpMessagePlacement">
+                                        <el-option 
+                                            v-for="(label, value) in helpMessagePlacementOptions" 
+                                            :label="label"
+                                            :key="value" 
+                                            :value="value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="6">
+                                <!--Error Message placement-->
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Error Message Position') }}
 
-                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                </el-tooltip>
-                            </template>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('Select the default error message placement. Error messages can be placed below each input, or stacked after the form submit button.')}}
+                                                </p>
+                                            </div>
 
-                            <el-radio v-for="(option, optionName) in helpMessagePlacementOptions"
-                                    v-model="formSettings.layout.helpMessagePlacement" :label="optionName"
-                                    :key="optionName" border> {{ option }}
-                            </el-radio>
-                        </el-form-item>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
 
-                        <!--Error Message placement-->
-                        <el-form-item class="ff-form-item">
-                            <template slot="label">
-                                {{ $t('Error Message Position') }}
+                                    <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.errorMessagePlacement">
+                                        <el-option 
+                                            v-for="(label, value) in errorMessagesPlacement" 
+                                            :label="label"
+                                            :key="value" 
+                                            :value="value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="6">
+                                <!--Required asterisk mark position -->
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Asterisk Position') }}
 
-                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
-                                        <p>
-                                            {{ $t('Select the default error message placement. Error messages can be placed below each input, or stacked after the form submit button.')}}
-                                        </p>
-                                    </div>
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>
+                                                    {{ $t('The asterisk marker position for the required elements.') }}
+                                                </p>
+                                            </div>
 
-                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                </el-tooltip>
-                            </template>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
 
-                            <el-radio v-for="(option, optionName) in errorMessagesPlacement"
-                                    v-model="formSettings.layout.errorMessagePlacement" :label="optionName"
-                                    :key="optionName" border>{{ option }}
-                            </el-radio>
-                        </el-form-item>
-
-                        <!--Required asterisk mark position -->
-                        <el-form-item class="ff-form-item">
-                            <template slot="label">
-                                {{ $t('Asterisk Position') }}
-
-                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
-                                        <p>
-                                            {{ $t('The asterisk marker position for the required elements.') }}
-                                        </p>
-                                    </div>
-
-                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                </el-tooltip>
-                            </template>
-
-                            <el-radio v-for="(option, optionName) in asteriskPlacementMock"
-                                    v-model="formSettings.layout.asteriskPlacement" :label="optionName"
-                                    :key="optionName" border>{{ option }}
-                            </el-radio>
-                        </el-form-item>
+                                    <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.asteriskPlacement">
+                                        <el-option 
+                                            v-for="(label, value) in asteriskPlacementMock" 
+                                            :label="label"
+                                            :key="value" 
+                                            :value="value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </el-form>
                 </card-body>
             </card>
