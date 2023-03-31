@@ -753,9 +753,9 @@ label.el-radio, label.el-checkbox {
   font-size: 12px;
   border-radius: 6px;
   margin: 0;
-  background-color: #F2F2F2;
+  background-color: $shortcode-bg;
   border: 0;
-  color: $base-color;
+  color: $shortcode-color;
   code {
     background-color: transparent;
     padding: 0;

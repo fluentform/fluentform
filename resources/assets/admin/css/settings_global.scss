@@ -1032,6 +1032,8 @@ body.ff_full_screen {
   white-space: nowrap;
   overflow: hidden;
   font-size: 15px;
+  color: $form-name-color;
+  font-weight: 500;
 }
 
 // editor setting
@@ -1055,7 +1057,7 @@ body.ff_full_screen {
     }
     .ff_menu_link{
       padding: 0;
-      color: $--color-text-regular;
+      color: $menu-back-link-color;
     }
   }
 }

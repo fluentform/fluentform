@@ -5,11 +5,12 @@
 $white:       #ffffff;
 $base-color: #1E1F21;
 $base-text: #606266;
+$dark-800:    #353537;
 
 $primary: $--color-primary;
 $primary-soft: #E8F2FF;
 
-$danger:    #FF6154;
+$danger:    $--color-danger;
 
 $border-color: #ececec;
 
@@ -30,14 +31,32 @@ $payment-badge-border-color:             #b1b1b1;
 
 // submenu link
 $submenu-link-active-bg:                #efefef;
-$submenu-link-color:                    $base-text;
-$submenu-link-active-color:             $base-color;
+$submenu-link-color:                      $base-text;
+$submenu-link-active-color:               $base-color;
 
 $submenu-link-active-hover-bg:           #efefef;
 
 // ff icon btn
-$icon-btn-dark-soft-bg:                           mix($base-color, $white, 10%);
-$icon-btn-dark-soft-color:                        $base-color;
+$icon-btn-dark-soft-bg:                    mix($base-color, $white, 10%);
+$icon-btn-dark-soft-color:                 $base-color;
 
-$icon-btn-dark-soft-hover-bg:                     $base-color;
-$icon-btn-dark-soft-hover-color:                  $white;
+$icon-btn-dark-soft-hover-bg:              $base-color;
+$icon-btn-dark-soft-hover-color:           $white;
+
+// ff menu link
+$menu-link-color:                        $dark-800;
+$menu-link-hover-color:                  $--color-primary;
+
+// ff form name
+$form-name-color:                        $dark-800;
+
+// ff menu back
+$menu-back-link-color:                   $dark-800;
+
+// shortcode 
+$shortcode-bg:                            $--color-info-lighter;
+$shortcode-color:                         $dark-800;
+
+
+
+
