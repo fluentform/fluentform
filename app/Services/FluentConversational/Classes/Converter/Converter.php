@@ -242,8 +242,8 @@ class Converter
                     $question['answer'] = +$field['attributes']['value'];
                 }
 
-                $question['min'] = +$field['attributes']['min'];
-                $question['max'] = +$field['attributes']['max'];
+                $question['min'] = intval($field['attributes']['min']);
+                $question['max'] = intval($field['attributes']['max']);
 
                 if ($step = ArrayHelper::get($field, 'settings.number_step')) {
                     $question['step'] = +$step;
