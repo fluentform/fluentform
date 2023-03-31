@@ -11,7 +11,7 @@
                 return this.size ? this.size : 'small';
             },
             isType(){
-                return this.type ? this.type : 'dark';
+                return this.type ? this.type : 'info';
             }
         }
     }
