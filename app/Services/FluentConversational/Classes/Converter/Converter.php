@@ -246,7 +246,7 @@ class Converter
                 $question['max'] = intval($field['attributes']['max']);
 
                 if ($step = ArrayHelper::get($field, 'settings.number_step')) {
-                    $question['step'] = +$step;
+                    $question['step'] = intval($step);
                 } else {
                     $question['step'] = 1;
                 }
