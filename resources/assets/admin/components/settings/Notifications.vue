@@ -8,6 +8,9 @@
                         <h5 class="title">{{ $t('Email Notifications') }}</h5>
                         <btn-group>
                             <btn-group-item>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formEmailSettings"></video-doc>
+                            </btn-group-item>
+                            <btn-group-item>
                                 <el-button
                                     v-if="selected"
                                     @click="discard"
@@ -27,9 +30,6 @@
                                 >
                                     {{ $t('Add Notification') }}
                                 </el-button>
-                            </btn-group-item>
-                            <btn-group-item>
-                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="formEmailSettings"></video-doc>
                             </btn-group-item>
                         </btn-group>
                     </card-head-group>

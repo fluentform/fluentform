@@ -8,6 +8,9 @@
                         <h5 class="title">{{ $t('Other Confirmations') }}</h5>
                         <btn-group>
                             <btn-group-item>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
+                            </btn-group-item>
+                            <btn-group-item>
                                 <el-button class="el-button--soft" v-if="selected" type="info" size="medium" @click="discard" icon="ff-icon ff-icon-arrow-left">
                                     {{ $t('Back') }}
                                 </el-button>
@@ -16,9 +19,6 @@
                                         {{ $t('Add Confirmation') }}
                                     </el-button>
                                 </template>
-                            </btn-group-item>
-                            <btn-group-item>
-                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
                             </btn-group-item>
                         </btn-group>
                     </card-head-group>
@@ -31,10 +31,9 @@
                                 <el-table-column width="180" :label="$t('Status')">
                                     <template slot-scope="scope">
                                         <span class="mr-3" v-if="scope.row.active">{{$t('Enabled')}}</span>
-                                        <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                        <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
                                         <el-switch
                                             :width="40"
-                                            active-color="#00b27f" 
                                             @change="handleActive(scope.$index)" 
                                             v-model="scope.row.active"
                                         ></el-switch>
@@ -67,7 +66,7 @@
                                                     <el-button 
                                                         class="el-button--icon"
                                                         @click="clone(scope.$index)" 
-                                                        type="success"
+                                                        type="primary"
                                                         icon="el-icon-plus" 
                                                         size="mini"
                                                     ></el-button>
@@ -77,7 +76,7 @@
                                                 <el-button 
                                                     class="el-button--icon"
                                                     @click="edit(scope.$index)" 
-                                                    type="primary"
+                                                    type="success"
                                                     icon="el-icon-setting" 
                                                     size="mini"
                                                 ></el-button>

@@ -14,12 +14,12 @@
                     </div>
                     <btn-group class="action-buttons">
                         <btn-group-item v-if="selectedId">
-                            <el-button @click="discard()" type="info" size="medium" icon="el-icon-arrow-left">
+                            <el-button class="el-button--soft" @click="discard()" type="info" size="medium" icon="ff-icon ff-icon-arrow-left">
                                 {{$t('Back')}}
                             </el-button>
                         </btn-group-item>
                         <btn-group-item v-else>
-                            <el-button @click="addVisible = true" type="info" size="medium" icon="el-icon-plus">
+                            <el-button @click="addVisible = true" type="info" size="medium" icon="ff-icon ff-icon-plus">
                                 {{ $t('Add PDF Feed') }}
                             </el-button>
                         </btn-group-item>
@@ -44,12 +44,12 @@
                                     @click="edit(scope.row.id)"
                                     type="primary"
                                     icon="el-icon-setting"
-                                    class="el-button--soft el-button--icon"
+                                    class="el-button--icon"
                                     size="mini"
                                 ></el-button>
                                 <remove @on-confirm="remove(scope.row.id)">
                                     <el-button
-                                        class="el-button--soft el-button--icon"
+                                        class="el-button--icon"
                                         size="mini"
                                         type="danger"
                                         icon="el-icon-delete"

@@ -57,7 +57,7 @@
             </el-row>
         </div>
         <div slot="footer" class="dialog-footer mt-4">
-            <el-button @click="close()" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+            <el-button @click="close()" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
             <el-button type="primary" @click="insert()">{{ $t('Insert') }}</el-button>
         </div>
     </el-dialog>
