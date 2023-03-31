@@ -3,7 +3,7 @@
         <el-form-item>
             <div slot="label">
                 {{ listItem.label }}
-                <el-tooltip class="ff_tooltip_wrap" :content="listItem.help_text" placement="top">
+                <el-tooltip popper-class="ff_tooltip_wrap" :content="listItem.help_text" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>

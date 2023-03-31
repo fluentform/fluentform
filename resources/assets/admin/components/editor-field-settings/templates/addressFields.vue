@@ -103,7 +103,7 @@
         <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete =='yes'">
             <div slot="label">
                 {{ $t('Auto locate') }}
-                <el-tooltip class="ff_tooltip_wrap" :content="$t('When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end')" placement="top">
+                <el-tooltip poper-class="ff_tooltip_wrap" :content="$t('When map is enabled Please enable Geocoding API if you want to populate address after map marker drag end')" placement="top">
                     <i class="tooltip-icon el-icon-info"></i>
                 </el-tooltip>
             </div>

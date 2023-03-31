@@ -1,7 +1,7 @@
 <template>
     <el-form-item v-if="editItem.settings.progress_indicator != ''">
         <b><elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel></b>
-        <hr />
+        <hr class="mb-3" />
 
         <div v-for="(number, index) in formStepsCount" class="el-form-item" :key="index">
             <label class="el-form-item__label">{{ $t('Step') }} {{ number }}</label>
