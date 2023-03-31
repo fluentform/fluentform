@@ -7,61 +7,63 @@
 		<ul class="ff_settings_list ff_list_button">
 			<?php
 				$settings_base_url = admin_url('admin.php?page=fluent_forms&form_id='.$form_id.'&route=settings&sub_route=form_settings');
+                $form_settings_route = $settings_menus['form_settings']['route'];
 			?>
 			<li class="ff_list_button_item has_sub_menu">
-				<a 
-					class="ff_list_button_link"
-					href="#">
-					<?php echo __('Settings'); ?>
+				<a
+					class="ff_list_button_link ff-page-scroll"
+                    data-route_key="<?php echo esc_attr($form_settings_route); ?>"
+                    href="#confirmation-settings">
+					<?php echo __('Settings', 'fluentform'); ?>
 				</a>
 				<ul class="ff_list_submenu">
 					<li>
-						<a href="<?php echo esc_url($settings_base_url).'&sub_route='. esc_attr($settings_menus['form_settings']['slug']); ?>">
-							<?php echo esc_html($settings_menus['form_settings']['title']); ?>
+						<a class="ff-page-scroll" href="#confirmation-settings">
+							<?php echo __('Confirmation Settings', 'fluentform'); ?>
 						</a>
 					</li>
 					<?php if(defined('FLUENTFORMPRO')): ?>
 						<li>
 							<a class="ff-page-scroll"
 								href="#double-optin-confirmation">
-								<?php echo __('Double Optin Confirmation'); ?>
+								<?php echo __('Double Opt-in Confirmation', 'fluentform'); ?>
 							</a>
 						</li>
 					<?php endif?>
 					<li>
 						<a class="ff-page-scroll"
 							href="#form-layout">
-							<?php echo __('Form Layout'); ?>
+							<?php echo __('Form Layout', 'fluentform'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
 							href="#scheduling-and-restrictions">
-							<?php echo __('Scheduling & Restrictions'); ?>
+							<?php echo __('Scheduling & Restrictions', 'fluentform'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
 							href="#advanced-form-validation">
-							<?php echo __('Advanced Form Validation'); ?>
+							<?php echo __('Advanced Form Validation', 'fluentform'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
 							href="#survey-result">
-							<?php echo __('Survey Result'); ?>
+							<?php echo __('Survey Result', 'fluentform'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
 							href="#compliance-settings">
-							<?php echo __('Compliance Settings'); ?>
+							<?php echo __('Compliance Settings', 'fluentform'); ?>
 						</a>
 					</li>
 					<li>
 						<a class="ff-page-scroll"
 							href="#other">
-							<?php echo __('Other'); ?>
+							<?php echo __('Other', 'fluentform'); ?>
 						</a>
 					</li>
 				</ul>
