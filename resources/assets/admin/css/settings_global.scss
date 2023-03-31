@@ -1232,3 +1232,21 @@ span + .ff_payment_badge{
     }
   }
 }
+
+// input yes no checkbox
+.ff-input-yes-no-checkbox-wrap{
+  &:not(:last-child){
+    margin-bottom: 16px;
+  }
+  .el-checkbox__label{
+    display: inline-flex;
+    align-items: center;
+  }
+  .checkbox-label{
+   max-width: 310px;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   display: inline-block;
+  }
+}
