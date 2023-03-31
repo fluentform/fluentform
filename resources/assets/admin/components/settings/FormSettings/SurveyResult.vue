@@ -16,7 +16,7 @@
                 </el-tooltip>
             </div>
 
-            <el-switch class="el-switch-lg" active-color="#00b27f" v-model="form.enabled" v-if="hasPro"/>
+            <el-switch class="el-switch-lg" v-model="form.enabled" v-if="hasPro"/>
         </el-form-item>
 
         <!--Additional fields when append survey result enabled-->
@@ -37,7 +37,7 @@
                         </el-tooltip>
                     </div>
 
-                    <el-switch class="el-switch-lg" active-color="#00b27f" v-model="form.showLabel" v-if="hasPro"/>
+                    <el-switch class="el-switch-lg" v-model="form.showLabel" v-if="hasPro"/>
                 </el-form-item>
 
                 <el-form-item class="ff-form-item ff-form-item-flex">
@@ -55,7 +55,7 @@
                         </el-tooltip>
                     </div>
 
-                    <el-switch class="el-switch-lg" active-color="#00b27f" v-model="form.showCount" v-if="hasPro"/>
+                    <el-switch class="el-switch-lg" v-model="form.showCount" v-if="hasPro"/>
                 </el-form-item>
             </div>
         </transition>
