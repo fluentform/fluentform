@@ -118,7 +118,8 @@ new Vue({
                     disable_auto_focus: 'no',
                     enable_auto_slider: 'no',
                     enable_step_data_persistency: 'no',
-                    enable_step_page_resume: 'no'
+                    enable_step_page_resume: 'no',
+                    step_animation: 'slide',
                 },
                 editor_options: {
                     title: "Start Paging"
@@ -223,6 +224,10 @@ new Vue({
 
                 if(!formData.stepsWrapper.stepStart.settings.enable_step_page_resume) {
                     formData.stepsWrapper.stepStart.settings.enable_step_page_resume = 'no';
+                }
+
+                if(!formData.stepsWrapper.stepStart.settings.step_animation) {
+                    formData.stepsWrapper.stepStart.settings.step_animation = 'slide';
                 }
 
                 this.form.stepStart = formData.stepsWrapper.stepStart;

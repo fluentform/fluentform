@@ -430,6 +430,7 @@ return [
         'general' => [
             'class',
             'progress_indicator',
+            'step_animation',
             'step_titles',
             'disable_auto_focus',
             'enable_auto_slider',

@@ -437,7 +437,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         };
 
         let inlineCssObj = {
-            left: -(activeStep * 100) + '%'
+            left: -(activeStep * 100) + '%',
         };
 
         if (isRtl) {
@@ -445,11 +445,40 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 right: -(activeStep * 100) + '%'
             };
         }
+        const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
+        switch (animationType) {
+            case 'slide':
+                //slide
+                stepsWrapper.animate(inlineCssObj, animDuration, () => {
+                    isScrollTop && scrollTop();
+                    stepsWrapper.css({width: wrapperWidth});
+                });
+                break;
+            case 'fade':
+                //fadeIn
+                stepsWrapper.css({opacity: 0})
+                stepsWrapper.animate(inlineCssObj, animDuration, () => {
+                    isScrollTop && scrollTop();
+                    stepsWrapper.css({width: wrapperWidth});
+                });
+                stepsWrapper.animate({
+                    opacity: 1,
+                }, animDuration);
+                break;
+            case 'slide_down':
+                //slideDown
+                stepsWrapper.hide();
+                stepsWrapper.css(inlineCssObj);
+                stepsWrapper.slideDown(animDuration);
+                break;
+            case 'none':
+                //fadeIn
+                stepsWrapper.css(inlineCssObj);
+                break;
+            default:
+                stepsWrapper.css(inlineCssObj);
 
-        stepsWrapper.animate(inlineCssObj, animDuration, () => {
-            isScrollTop && scrollTop();
-            stepsWrapper.css({width: wrapperWidth});
-        });
+        }
 
         //skip saving the last step
         let isLastStep = activeStep === 0;

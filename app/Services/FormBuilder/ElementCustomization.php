@@ -293,6 +293,29 @@ $element_customization_settings = [
             ],
         ],
     ],
+    'step_animation' => [
+        'template'  => 'radioButton',
+        'label'     => __('Animation type', 'fluentform'),
+        'help_text' => __('Select any of them below, steps will change according to your choice.', 'fluentform'),
+        'options'   => [
+            [
+                'value' => 'slide',
+                'label' => __('Slide Left/Right', 'fluentform'),
+            ],
+            [
+                'value' => 'fade',
+                'label' => __('Fade In/Out', 'fluentform'),
+            ],
+            [
+                'value' => 'slide_down',
+                'label' => __('Slide Down/Up', 'fluentform'),
+            ],
+            [
+                'value' => 'none',
+                'label' => __('None', 'fluentform'),
+            ],
+        ],
+    ],
     'step_titles' => [
         'template'  => 'customStepTitles',
         'label'     => __('Step Titles', 'fluentform'),
