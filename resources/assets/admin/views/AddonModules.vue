@@ -4,7 +4,7 @@
             <h4 class="title mb-2">
                 {{ $t('Fluent Forms Modules') }}
             </h4>
-            <p class="text">{{ $t('Here is the list of all Fluent Forms modules.You can enable or disable the modules based on your need.') }}</p>
+            <p class="text">{{ $t('Here is the list of all Fluent Forms modules. You can enable or disable the modules based on your need.') }}</p>
         </div>
         <div class="modules_body">
             <el-row class="mb-3" :gutter="24">
@@ -19,7 +19,7 @@
                 </el-col>
                 <el-col :span="6">
                     <div class="ff_mdoules_search">
-                        <el-input :placeholder="$t('Search Modules')" v-model="search" class="el-input-gray" prefix-icon="el-icon-search"></el-input>
+                        <el-input :placeholder="$t('Search Modules')" v-model="search" class="el-input-gray-light" prefix-icon="el-icon-search"></el-input>
                     </div>
                 </el-col>
             </el-row>
@@ -46,8 +46,7 @@
                                     <a class="el-button el-button--primary el-button--soft el-button--small" rel="noopener" :href="addon.purchase_url" target="_blank">{{ $t('Upgrade To Pro') }}</a>
                                 </template>
                                 <div v-else class="d-flex items-center">
-                                     <el-switch 
-                                        active-color="#2ed573" 
+                                     <el-switch
                                         @change="saveStatus(addonKey)" 
                                         active-value="yes" 
                                         inactive-value="no" 
@@ -66,7 +65,7 @@
                 </el-col>
             </el-row>
             <div style="text-align: center" v-if="is_no_modules">
-                <h3>{{ $t('Sorry!No modules found based on your filter') }}</h3>
+                <h3>{{ $t('Sorry! No modules found based on your filter') }}</h3>
             </div>
         </div>
     </div>

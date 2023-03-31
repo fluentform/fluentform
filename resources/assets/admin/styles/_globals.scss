@@ -1373,7 +1373,7 @@ label.el-radio, label.el-checkbox {
 
 // radio group
 .ff_radio_group {
-  background-color: #F2F2F2;
+  background-color: $radio-group-bg;
   border-radius: 8px;
   overflow: hidden;
   .el-radio-button__inner {
@@ -1381,12 +1381,12 @@ label.el-radio, label.el-checkbox {
     background-color: transparent;
     border-radius: 0 !important;
     &:hover{
-      color: $base-color;
+      color: $radio-group-button-hover-color;
     }
   }
   .el-radio-button__orig-radio:checked + .el-radio-button__inner {
-    background-color: $base-color;
-    color: $white;
+    background-color: $radio-group-button-active-bg;
+    color: $radio-group-button-active-color;
     box-shadow: none;
   }
   &_s2{
@@ -1419,23 +1419,40 @@ label.el-radio, label.el-checkbox {
 // input gray
 .el-input-gray {
   .el-input__inner {
-    background-color: #E7E6E6;
-    border-color: #E7E6E6;
+    background-color: $input-gray-bg;
+    border-color: $input-gray-border-color;
     &::placeholder {
       color: $base-text;
       opacity: 1;
     }
-    
     &:-ms-input-placeholder {
       color: $base-text;
     }
-    
     &::-ms-input-placeholder {
       color: $base-text;
     }
   }
   .el-input__prefix{
     color: $base-text;
+  }
+  &-light{
+    .el-input__inner{
+      background-color: $input-gray-light-bg;
+      border-color: $input-gray-light-border-color;
+      &::placeholder {
+        color: $base-text;
+        opacity: 1;
+      }
+      &:-ms-input-placeholder {
+        color: $base-text;
+      }
+      &::-ms-input-placeholder {
+        color: $base-text;
+      }
+    }
+    .el-input__prefix{
+      color: $base-text;
+    }
   }
 }
 
