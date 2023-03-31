@@ -46,7 +46,7 @@
                             </template>
                         </card-body>
                     </card>
-                    <card>
+                    <card v-if="Object.keys(report_items).length">
                         <report-card
                             v-for="(report,report_key) in report_items"
                             :key="report_key"
@@ -109,7 +109,7 @@
                     </card>
                     <btn-group>
                         <btn-group-item>
-                            <el-button @click="printReport()" type="dark">{{ $t('Print this report') }}</el-button>
+                            <el-button @click="printReport()" type="info">{{ $t('Print this report') }}</el-button>
                         </btn-group-item>
                         <btn-group-item>
                             <el-button @click="resetAnalytics()">{{ $t('Reset Form Analytics') }}</el-button>
