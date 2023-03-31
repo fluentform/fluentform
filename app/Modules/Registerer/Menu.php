@@ -253,6 +253,7 @@ class Menu
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
             'rest'                     => Helper::getRestInfo(),
+            'card_brand_icon'          => fluentformMix('img/visa.png'),
             'payment_icons'            => [
                 'offline'              => fluentformMix('img/payment/offline.png'),
                 'mollie'               => fluentformMix('img/payment/mollie.png'),
