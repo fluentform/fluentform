@@ -72,12 +72,10 @@
                 <select v-else class="condition-value ff-select ff-select-small">
                     <option value="" disabled selected>{{ $t('Select') }}</option>
                 </select>
-
-                <div class="action-btn ml-1">
-                    <i @click.prevent="conditional_logics.conditions.pushAfter(i, emptyRules)"
-                       class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
-                    <i @click.prevent="decreaseLogic(i)" class="ff_icon_btn mini dark el-icon-minus"></i>
-                </div>
+                <action-btn class="ml-1">
+                    <action-btn-add @click="conditional_logics.conditions.pushAfter(i, emptyRules)" size="mini"></action-btn-add>
+                    <action-btn-remove @click="decreaseLogic(i)" size="mini"></action-btn-remove>
+                </action-btn>
             </div>
         </template>
 
@@ -95,14 +93,20 @@
 </template>
 
 <script>
-    import elLabel from '../../includes/el-label.vue'
+    import elLabel from '@/admin/components/includes/el-label.vue'
     import each from "lodash/each";
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'conditionalLogics',
         props: ['listItem', 'editItem', 'form_items'],
         components: {
-            elLabel
+            elLabel,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
