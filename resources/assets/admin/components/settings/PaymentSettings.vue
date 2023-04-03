@@ -181,10 +181,10 @@
 
                             <el-form-item class="ff-form-item">
                                 <template slot="label">
-                                    {{ $t('Statement Description') }}
+                                    {{ $t('Statement Descriptor') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
-                                            <p>{{ $t('Provide the statement description.If you keep it empty then your form name will be set.(Contains between 5 and 22 characters)') }} </p>
+                                            <p>{{ $t('Provide the statement descriptor. If you keep it empty then your form name will be set.(Contains between 5 and 22 characters)') }} </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
