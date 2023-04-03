@@ -226,11 +226,11 @@
                     })
                     .finally(() => this.saving = false);
             },
-            remove(item, scope) {
-                const url = FluentFormsGlobal.$rest.route('deleteFormIntegration',this.form_id, item.id);
+            remove(feed_id, scope) {
+                const url = FluentFormsGlobal.$rest.route('deleteFormIntegration', this.form_id);
                 let $index  = scope.$index;
                 let data = {
-                    integration_id: item.id,
+                    integration_id: feed_id,
                     form_id: this.form_id
                 };
                 this.deleting = true;
