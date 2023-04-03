@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'ff_backdrop': visible}">
+    <div>
         <el-dialog
             :title="$t('Rename Form')"
             :visible.sync="visible"
@@ -16,7 +16,7 @@
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="close" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+                <el-button @click="close" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
                 <el-button :loading="loading" type="primary" @click="rename">
                     <span v-if="loading">{{ $t('Renaming Form...') }}</span>
                     <span v-else>{{ $t('Rename') }}</span>

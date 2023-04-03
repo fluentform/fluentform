@@ -1,5 +1,5 @@
 <template>
-<div :class="{'ff_backdrop': visibility}">
+<div>
     <el-dialog
         class="el-dialog-no-header"
         :visible.sync="visibility"
@@ -9,7 +9,7 @@
     >
 
        <div class="text-center">
-            <div class="ff_icon_btn lg warning-soft mx-auto">
+            <div class="ff_icon_btn warning-soft mx-auto">
                 <i class="el-icon-warning-outline"></i>
             </div>
             <h1 class="mt-4 mb-3">{{$t('Are you sure?')}}</h1>
