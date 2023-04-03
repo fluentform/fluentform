@@ -1226,16 +1226,9 @@ label.el-radio, label.el-checkbox {
   &.dark{
     background-color: $--color-dark;
     color: $white;
-    &:hover{
-      background-color: $--color-primary;
-    }
     &-soft{
       background-color: $icon-btn-dark-soft-bg;
       color: $icon-btn-dark-soft-color;
-      &:hover{
-        background-color: $icon-btn-dark-soft-hover-bg;
-        color: $icon-btn-dark-soft-hover-color;
-      }
     }
   }
   &.primary{
@@ -1251,10 +1244,6 @@ label.el-radio, label.el-checkbox {
       background-color: $--color-danger-lighter;
       color: $--color-danger;
     }
-    &:hover{
-      background-color: $--color-danger;
-      color: $white;
-    }
   }
   &.success{
     background-color: $--color-success;
@@ -1262,10 +1251,6 @@ label.el-radio, label.el-checkbox {
     &-soft{
       background-color: $--color-success-lighter;
       color: $--color-success;
-    }
-    &:hover{
-      background-color: $--color-success;
-      color: $white;
     }
   }
   &.warning{
@@ -1308,6 +1293,9 @@ label.el-radio, label.el-checkbox {
     height: 48px;
     img {
       height: 28px;
+      width: 28px;
+      object-fit: cover;
+      object-position: left;
     }
   }
   &.lg {

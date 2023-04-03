@@ -13,7 +13,7 @@
                             v-model="filter_by"
                             :placeholder="$t('All Types')"
                             @change="filterFormType()"
-                            class="ff-input-s1"
+                            class="ff-input-s1 all-forms-select"
                         >
                             <el-option
                                 v-for="(status, status_key) in form_statuses"
@@ -45,13 +45,12 @@
                         <btn-group-item as="div">
                             <el-form @submit.native.prevent="searchForms">
                                 <el-input
-                                    style="width: 270px;"
                                     clearable
                                     @clear="refetchItems"
                                     v-model="searchFormsKeyWord"
                                     :placeholder="$t('Search Forms')"
                                     prefix-icon="el-icon-search"
-                                    class="ff-input-s1 el-input-gray"
+                                    class="ff-input-s1 el-input-gray all-forms-search"
                                 >
                                 </el-input>
                             </el-form>

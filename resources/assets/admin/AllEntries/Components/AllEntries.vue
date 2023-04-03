@@ -90,7 +90,7 @@
                         </el-row>
                     </el-col>
                     <el-col :span="7">
-                        <div class="ff_entries_search_wrap" style="width: 270px; margin-left: auto;">
+                        <div class="ff_entries_search_wrap">
                             <el-input
                                 @keyup.enter.native="fetchEntries()" 
                                 clearable

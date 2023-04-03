@@ -70,6 +70,8 @@ $page = sanitize_text_field($_GET['page']);
             <?php endif; ?>
         </li>
     </ul>
-
+    <span class="ff-menu-toggle">
+        <i class="ff-icon ff-icon-menu"></i>
+    </span>
     <?php do_action('fluentform_after_global_menu'); ?>
 </div>

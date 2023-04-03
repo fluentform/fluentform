@@ -1,3 +1,15 @@
+
+@media (min-width: 1025px) {
+  .all-forms-search{
+    width: 270px;
+  }
+}
+@media (min-width: 769px) {
+  .ff_menu {
+    display: flex;
+  }
+}
+
 @media (max-width: 768px) {
   .form_internal_menu {
     width: 100%;

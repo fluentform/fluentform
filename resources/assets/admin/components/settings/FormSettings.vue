@@ -62,7 +62,7 @@
                                 </el-tooltip>
                             </template>
 
-                            <el-select class="w-100" v-model="double_optin.email_field" :placeholder="$t('Select an email field')">
+                            <el-select class="ff_input_width" v-model="double_optin.email_field" :placeholder="$t('Select an email field')">
                                 <el-option
                                     v-for="(item, index) in emailFields"
                                     :key="index"
