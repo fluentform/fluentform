@@ -44,6 +44,8 @@ $--color-cyan: #0dcaf0 !default;
 
 $--color-dark: #1e1f21 !default;
 
+$--color-blue: #3b5998 !default;
+
 $--color-success-light: mix($--color-white, $--color-success, 80%) !default;
 $--color-warning-light: mix($--color-white, $--color-warning, 80%) !default;
 $--color-danger-light: mix($--color-white, $--color-danger, 80%) !default;
@@ -55,6 +57,7 @@ $--color-danger-lighter: mix($--color-white, $--color-danger, 90%) !default;
 $--color-info-lighter: mix($--color-white, $--color-info, 90%) !default;
 $--color-cyan-lighter: mix($--color-white, $--color-cyan, 90%) !default;
 $--color-dark-lighter: mix($--color-white, $--color-dark, 90%) !default;
+$--color-blue-lighter: mix($--color-white, $--color-blue, 90%) !default;
 
 /// color|1|Font Color|2
 $--color-text-primary: #303133 !default;

@@ -1223,6 +1223,14 @@ label.el-radio, label.el-checkbox {
   &.square {
     border-radius: 12px;
   }
+  &.blue{
+    background-color: $--color-blue;
+    color: $white;
+    &-soft{
+      background-color: $--color-blue-lighter;
+      color: $--color-blue;
+    }
+  }
   &.dark{
     background-color: $--color-dark;
     color: $white;

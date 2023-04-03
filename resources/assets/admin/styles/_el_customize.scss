@@ -229,6 +229,16 @@
     }
     &--soft {
         &.el-button{
+            &--blue {
+                background-color: $--color-blue-lighter;
+                border-color: $--color-blue-lighter;
+                color: $--color-blue;
+                &:hover{
+                    background-color: $--color-blue;
+                    border-color: $--color-blue;
+                    color: $--color-white;
+                }
+            }
             &--primary {
                 background-color: $--color-primary-light-9;
                 border-color: $--color-primary-light-9;

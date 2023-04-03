@@ -114,7 +114,7 @@
                     <div class="ff_card h-100">
                         <div class="ff_media_group items-start">
                             <div class="ff_media_head">
-                                <div class="ff_icon_btn info-soft lg">
+                                <div class="ff_icon_btn blue-soft lg">
                                     <i class="ff-icon ff-icon-handshake"></i>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                                 <p class="text mb-4">
                                     <?php _e('We have a strong community where we discuss ideas and help each other.', 'fluentform') ?>
                                 </p>
-                                <a target="_blank" class="el-button el-button--info el-button--soft" href="https://www.facebook.com/groups/fluentforms/">
+                                <a target="_blank" class="el-button el-button--blue el-button--soft" href="https://www.facebook.com/groups/fluentforms/">
                                     <?php _e('Join community', 'fluentform') ?>
                                 </a>
                             </div>
