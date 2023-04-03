@@ -12,7 +12,6 @@
         border-radius: 6px;
         line-height: 1.6;
         transition: 0.2s;
-        max-width: 140px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -31,6 +30,11 @@
             &:hover{
                 color: $white;
             }
+        }
+    }
+    &.conversion_form_editor {
+        .ff_menu_link {
+            max-width: 140px;
         }
     }
     .active{

@@ -12,8 +12,12 @@
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
 			<span class="ml-1"><?php echo esc_html($form->title); ?></span>
 		</div>
+        <?php
+            $extra_menu_class = 'normal_form_editor';
+            if (\FluentForm\App\Helpers\Helper::isConversionForm($form->id)) $extra_menu_class = "conversion_form_editor";
+        ?>
 
-		<ul class="ff_menu">
+		<ul class="ff_menu <?php echo esc_attr($extra_menu_class)?>">
 			<?php foreach ($menu_items as $menu_index => $menu_item): ?>
 				<li class="<?php if ($route == $menu_item['slug']) echo "active"; ?>">
                     <a class="ff_menu_link" href="<?php echo esc_url($menu_item['url']); ?><?php if (isset($menu_item['hash'])) echo "#". esc_attr($menu_item['hash']); ?>">
