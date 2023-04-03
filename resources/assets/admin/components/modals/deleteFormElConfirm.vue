@@ -1,5 +1,5 @@
 <template>
-<div>
+<div :class="{'ff_backdrop': visibility}">
     <el-dialog
         class="el-dialog-no-header"
         :visible.sync="visibility"

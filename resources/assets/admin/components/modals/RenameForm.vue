@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{'ff_backdrop': visible}">
         <el-dialog
             :title="$t('Rename Form')"
             :visible.sync="visible"
