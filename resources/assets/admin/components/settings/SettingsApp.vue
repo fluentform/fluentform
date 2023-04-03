@@ -93,7 +93,8 @@
                 this.maybeSetRoute($el)
                 handleSidebarActiveLink($el.parent())
             } else {
-                jQuery('.ff_settings_list li:first-child').addClass('active');
+                const $firstLink = jQuery('.ff_settings_list li:first-child').first();
+                handleSidebarActiveLink($firstLink)
             }
 
             const that = this;
