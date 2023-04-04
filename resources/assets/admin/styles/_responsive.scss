@@ -1,12 +1,58 @@
 
+// tablet device
+@media (min-width: 769px) {
+  .ff_header{
+    flex-direction: row;
+    align-items: center;
+    &_group{
+      margin-right: 32px;
+    }
+  }
+  .ff_menu {
+    display: flex;
+    margin-top: 0;
+    &_toggle{
+      display: none;
+    }
+  }
+  .ff_form_wrap{
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .ff_global_setting_wrap, 
+  .ff_tools_wrap, 
+  .ff_screen_settings, 
+  .ff_screen_entries, 
+  .ff_screen_conversational_design, 
+  .ff_screen_msformentries {
+    padding: 0;
+  }
+}
+
+// laptop device
 @media (min-width: 1025px) {
   .all-forms-search{
     width: 270px;
   }
+  .all-forms-select{
+    width: 250px;
+  }
+  .ff_layout_section_sidebar{
+    width: $section-layout-sidebar-width;
+  }
+  .ff_layout_section_sidebar,
+  .ff_layout_section_container {
+    padding: 24px;
+  }
+  .fluent_activation_wrapper .fluentform_label{
+    width: 470px;
+  }
 }
-@media (min-width: 769px) {
-  .ff_menu {
-    display: flex;
+// laptop device
+@media (min-width: 1201px) {
+  .ff_documentaion_wrapper{
+    width: 970px;
+    margin: 0 auto;
   }
 }
 
@@ -34,9 +80,6 @@
     float: right !important;
     text-align: left !important;
   }
-  div#wpbody-content {
-    padding-right: 10px !important;
-  }
 
   input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week] {
     min-height: 30px;
@@ -58,19 +101,6 @@
     }
     .el-form-item__content {
       margin-left: 0 !important;
-    }
-  }
-
-  .ff_settings_container {
-    margin: 0 !important;
-    padding: 0px 10px !important;
-  }
-
-  .ff_settings_wrapper .ff_settings_sidebar {
-    width: 120px !important;
-    ul.ff_settings_list li a {
-      padding: 10px 5px 10px 5px;
-      font-size: 10px;
     }
   }
   .settings_app {

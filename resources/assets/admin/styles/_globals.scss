@@ -96,7 +96,7 @@ a{
 
 // form wrap
 .ff_form_wrap {
-  padding: 32px 24px;
+  padding: 32px 10px;
 }
 
 .ff_global_setting_wrap,
@@ -391,12 +391,17 @@ a.lead-text{
 // ff header
 .ff_header {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     border-bottom: 1px solid $border-color;
     background: $white;
     padding: 14px 24px;
+    &_group{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .plugin-name {
-      margin-right: 32px;
+      //margin-right: 32px;
       height: 30px;
       img {
         height: 100%;
@@ -700,8 +705,9 @@ label.el-radio, label.el-checkbox {
       background-color: #ddd;
       position: absolute;
       content: "";
-      top: 2px;
+      top: 50%;
       right: 3px;
+      transform: translateY(-50%);
     }
     &.trash{
       &::after{
@@ -893,20 +899,20 @@ label.el-radio, label.el-checkbox {
 
 //section layout
 .ff_layout_section {
-  display: table;
+  display: flex;
   width: 100%;
   min-height: 550px;
   &_sidebar {
-    display: table-cell;
+    flex-shrink: 0;
     background-color: #ffffff;
     box-shadow: 0 1px 3px rgba(30, 31, 33, 0.05);
-    width: $section-layout-sidebar-width;
-    padding: 24px;
+    width: $section-layout-sidebar-width-sm;
+    padding: 16px;
     vertical-align: top;
   }
   &_container {
-    display: table-cell;
-    padding: 24px;
+    flex: 1;
+    padding: 16px;
     height: 80vh;
     overflow-y: scroll;
   }

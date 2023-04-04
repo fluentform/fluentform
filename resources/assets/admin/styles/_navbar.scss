@@ -1,6 +1,12 @@
 .ff_menu {
     display: none;
     align-items: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+    &_active{
+        display: flex;
+        justify-content: center;
+    }
     &_link{
         padding: 7px 15px;
         display: inline-block;
@@ -41,6 +47,14 @@
         .ff_menu_link{
             background-color: $primary-soft;
             color: $primary;
+        }
+    }
+    &_toggle{
+        margin-left: auto;
+        font-size: 26px;
+        cursor: pointer;
+        &:hover{
+          color: $--color-primary;
         }
     }
 }

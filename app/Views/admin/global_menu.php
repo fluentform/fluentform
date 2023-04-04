@@ -5,9 +5,14 @@ use FluentForm\App\Modules\Acl\Acl;
 $page = sanitize_text_field($_GET['page']);
 ?>
 <div class="ff_header">
-    <span class="plugin-name">
-        <img src="<?php echo esc_url($logo); ?>"/>
-    </span>
+    <div class="ff_header_group">
+        <span class="plugin-name">
+            <img src="<?php echo esc_url($logo); ?>"/>
+        </span>
+        <span class="ff_menu_toggle">
+            <i class="ff-icon ff-icon-menu"></i>
+        </span>
+    </div>
     <ul class="ff_menu">
         <li class="<?php echo ($page == 'fluent_forms') ? 'active' : '' ?>">
             <a href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms')); ?>" class="ff_menu_link">
@@ -70,8 +75,18 @@ $page = sanitize_text_field($_GET['page']);
             <?php endif; ?>
         </li>
     </ul>
-    <span class="ff-menu-toggle" style="display: none">
-        <i class="ff-icon ff-icon-menu"></i>
-    </span>
+
     <?php do_action('fluentform_after_global_menu'); ?>
+    <?php 
+    echo "<script>
+            let menuToggle = jQuery('.ff_menu_toggle');
+            let targetElem = jQuery('.ff_menu');
+
+            menuToggle.on('click', function() {
+                targetElem.toggleClass('ff_menu_active');
+            });
+        </script>"
+    
+    
+    ?>
 </div>

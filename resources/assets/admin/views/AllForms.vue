@@ -3,12 +3,11 @@
         <section-head size="sm">
             <h1>{{ $t('Forms') }}</h1>
         </section-head>
-        <el-row>
+        <el-row class="ff_all_forms_action_row">
             <el-col :sm="12">
                 <btn-group as="div">
                     <btn-group-item as="div">
                         <el-select
-                            style="width: 250px;"
                             clearable
                             v-model="filter_by"
                             :placeholder="$t('All Types')"

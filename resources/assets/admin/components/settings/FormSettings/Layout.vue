@@ -6,7 +6,7 @@
             </card-head>
             <card-body>
                 <el-row :gutter="24">
-                    <el-col :sm="24" :md="8">
+                    <el-col :md="12" :lg="8">
                         <!--Label Placement-->
                         <el-form-item class="ff-form-item">
                             <template slot="label">
@@ -30,7 +30,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :sm="24" :md="8">
+                    <el-col :md="12" :lg="8">
                         <!-- Help message placement -->
                         <el-form-item class="ff-form-item">
                             <template slot="label">
@@ -55,7 +55,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :sm="24" :md="8">
+                    <el-col :lg="8">
                         <!-- Error message placement -->
                         <el-form-item class="ff-form-item">
                             <template slot="label">
