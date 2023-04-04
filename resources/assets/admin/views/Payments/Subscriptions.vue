@@ -10,63 +10,56 @@
                 class=""
                 v-for="(subscription, subscriptionIndex) in subscriptions"
             >
-                <div class="payment_head_top">
-                    <div class="payment_header_left">
-                        <p class="head_small_title">
+                <div class="ff_subscription_data">
+                    <div class="ff_subscription_data_item">
+                        <p class="ff_subscription_data_item_title">
                             {{ subscription.plan_name }}
-
-                            <span class="mini_title">
+                            <span class="ff_subscription_data_item_name">
                                 ({{ subscription.item_name }})
                             </span>
-                            <span style="font-size: 70%;" class="ff_sub_id">#{{subscription.id}}</span>
+                            <span class="ff_sub_id">#{{subscription.id}}</span>
                         </p>
-
-                        <div class="head_payment_amount">
-                            <span
-                                class="pay_amount"
-                                v-html="mayBeHandleDiscount(subscription.recurring_amount)"
-                            />
-
-                            <span>/{{ subscription.billing_interval }}</span><span v-if="subscription.quantity > 1"> x {{
-                                subscription.quantity
-                            }}</span>
-
-                            <span :class="'ff_pay_status_badge ff_pay_status_' + subscription.status">
+                        <div class="ff_subscription_data_item_payment">
+                            <span class="pay_amount" v-html="mayBeHandleDiscount(subscription.recurring_amount)"/>
+                            <span>/ {{ subscription.billing_interval }}</span><span v-if="subscription.quantity > 1"> x {{subscription.quantity}}</span>
+                            <span :class="'ff_badge ff_badge_' + subscription.status">
                                 <i :class="getPaymentStatusIcon(subscription.status)"></i> {{ subscription.status }}
                             </span>
-
                             <span v-show="parseInt(subscription.initial_amount)"> & Signup Fee: <em
                                 v-html="formatMoney(subscription.initial_amount)"></em></span>
                         </div>
-                    </div>
 
-                    <div class="payment_header_right">
-                        <div class="ff_sub_actions">
-                            <a
-                                rel="noopener"
-                                target="_blank"
-                                :href="getSubscriptionUrl(subscription)"
-                                v-show="getSubscriptionUrl(subscription)"
-                                class="el-button el-button--default el-button--mini"
-                            >
-                                View on {{ payment_method }}
-                            </a>
-                            <el-button @click="cancelSubscription(subscription)"
-                                       v-if="subscription.status == 'active' || subscription.status == 'trialling' || subscription.status == 'failing'"
-                                       style="color: #F56C6C; border-color: #F56C6C;" size="mini" type="default">Cancel
-                            </el-button>
-                        </div>
-
-                        <p style="margin-top: 0">
-                            <span>{{ $t('Total Bills: ')}}</span>
-                            <span
-                                class="table_payment_amount"
-                                v-html="subscription.bill_count"
-                            />
+                        <p class="ff_subscription_data_item_total">
+                            <span>{{ $t('Total Bills:')}}</span>
+                            <span class="table_payment_amount" v-html="subscription.bill_count"/>
                         </p>
-                        <p style="margin-top: 0" v-html="subscriptionHumanText(subscription.original_plan)"></p>
-                    </div>
-                </div>
+                        <p v-html="subscriptionHumanText(subscription.original_plan)"></p>
+                    </div><!-- .ff_subscription_data_item -->
+                    <div class="ff_subscription_data_item">
+                        <btn-group>
+                            <btn-group-item>
+                                <a
+                                    rel="noopener"
+                                    target="_blank"
+                                    :href="getSubscriptionUrl(subscription)"
+                                    v-show="getSubscriptionUrl(subscription)"
+                                    class="el-button el-button--primary el-button--soft el-button--mini"
+                                >
+                                    View on {{ payment_method }}
+                                </a>
+                            </btn-group-item>
+                            <btn-group-item>
+                                <el-button
+                                    class="el-button--soft"
+                                    @click="cancelSubscription(subscription)"
+                                    v-if="subscription.status == 'active' || subscription.status == 'trialling' || subscription.status == 'failing'" size="mini" type="danger">
+                                    {{$t('Cancel')}}
+                                </el-button>
+                            </btn-group-item>
+                        </btn-group>
+                    </div><!-- .ff_subscription_data_item -->
+                </div><!-- .ff_subscription_data -->
+                
                 <div v-if="subscription && subscription.related_payments" class="payment_head_bottom wpf_entry_order_items">
                     <h3>{{ $t('Related Payments') }}</h3>
 
@@ -168,10 +161,18 @@ import each from "lodash/each";
 import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
+import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 
 export default {
     name: "Subscriptions",
-    components: {Card, CardHead, CardBody},
+    components: {
+        Card,
+        CardHead, 
+        CardBody,
+        BtnGroup,
+        BtnGroupItem
+    },
     props: ['subscriptions', 'discounts', 'payment_method'],
     data() {
         return {

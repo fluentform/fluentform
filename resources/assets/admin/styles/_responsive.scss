@@ -31,8 +31,12 @@
 
 // laptop device
 @media (min-width: 1025px) {
-  .all-forms-search{
+  .all-forms-search,
+  .ff_entries_search_wrap {
     width: 270px;
+  }
+  .ff_entries_search_wrap{
+    margin-left: auto;
   }
   .all-forms-select{
     width: 250px;

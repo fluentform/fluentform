@@ -6,6 +6,7 @@
 @import "../styles/table";
 @import "../styles/tab";
 @import "../styles/_el_customize";
+@import "../styles/subscription";
 
 @import "../styles/entries";
 @import "../conversion_templates/browser_frame";
@@ -1247,15 +1248,6 @@ span + .ff_payment_badge{
    white-space: nowrap;
    text-overflow: ellipsis;
    display: inline-block;
-  }
-}
-
-/* ============== Responsive ==============*/
-//ff_entries_search_wrap
-.ff_entries_search_wrap{
-  @media (min-width: 1025px) {
-    width: 270px;
-    margin-left: auto;
   }
 }
 
