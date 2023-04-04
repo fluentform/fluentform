@@ -723,11 +723,12 @@ span.ff_tag {
 
 .ff_badge_status_ {
   &pending {
-    background-color: #ffff03;
+    background-color: $--color-warning;
   }
   &paid {
-    background: #67c23a;
+    background: $--color-success;
     color: white;
+    border-color: $--color-success;
   }
 }
 
@@ -740,20 +741,13 @@ span.ff_tag {
     font-weight: bold;
     text-transform: capitalize;
   }
-  //span {
-  //  &:first-child {
-  //    color: white;
-  //    border-radius: 3px;
-  //  }
-  //}
-
 
   .log_status_failed, .log_status_error {
-    background: #c23434;
+    background: $--color-danger;
   }
 
   .log_status_success {
-    background: #348938;
+    background: $--color-success;
   }
 }
 
