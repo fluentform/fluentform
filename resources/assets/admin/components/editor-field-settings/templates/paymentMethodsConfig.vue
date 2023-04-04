@@ -94,12 +94,20 @@
                         gateWays.push('RazorPay');
                     }
 
+                    if (this.value.square && this.value.square.enabled === 'yes') {
+                        gateWays.push('Square');
+                    }
+
                     if (gateWays.length) {
-                        message = "We don't have Subscription Field support for " + gateWays.join(' & ');
+                        if (gateWays.length > 2) {
+                            message = gateWays.join(', ') + '.';
+                        } else {
+                            message = gateWays.join(' & ');
+                        }
                     }
                 }
 
-                return message;
+                return message && "We don't have Subscription Field support for " + message;
             }
         },
         methods: {
