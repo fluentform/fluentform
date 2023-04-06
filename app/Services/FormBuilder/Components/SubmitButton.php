@@ -17,16 +17,45 @@ class SubmitButton extends BaseComponent
      */
     public function compile($data, $form)
     {
-        if (apply_filters('fluentform_is_hide_submit_btn_' . $form->id, false)) {
+        $maybeHide = apply_filters_deprecated(
+            'fluentform_is_hide_submit_btn_' . $form->id,
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_hide_submit_btn_' . $form->id,
+            'Use fluentform/is_hide_submit_btn_' . $form->id. ' instead of fluentform_is_hide_submit_btn_' . $form->id
+        );
+        if (apply_filters('fluentform/is_hide_submit_btn_' . $form->id, $maybeHide)) {
             return '';
         }
 
         $elementName = $data['element'];
+    
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
 
-        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
-        if (apply_filters('fluentform_submit_button_force_no_style', false)) {
+        $noStyle = apply_filters_deprecated(
+            'fluentform_submit_button_force_no_style',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/submit_button_force_no_style',
+            'Use fluentform/submit_button_force_no_style instead of fluentform_submit_button_force_no_style'
+        );
+        if (apply_filters('fluentform/submit_button_force_no_style', $noStyle)) {
             $btnStyle = 'no_style';
         }
         
@@ -118,7 +147,19 @@ class SubmitButton extends BaseComponent
         }
 
         $html .= '</div>';
+    
+        $html = apply_filters_deprecated(
+            'fluentform_rendering_field_html_' . $elementName,
+            [
+                $html,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_html_' . $elementName,
+            'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform_rendering_field_html_' . $elementName
+        );
 
-        $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
+        $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
     }
 }

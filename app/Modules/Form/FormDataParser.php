@@ -55,9 +55,23 @@ class FormDataParser
 
         foreach ($fields as $field_key => $field) {
             if (isset($response->{$field_key})) {
-                $value = apply_filters(
+                $response = $response->{$field_key};
+                apply_filters_deprecated(
                     'fluentform_response_render_' . $field['element'],
-                    $response->{$field_key},
+                    [
+                        $response,
+                        $field,
+                        $formId,
+                        $isHtml
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/response_render_' . $field['element'],
+                    'Use fluentform/response_render_' . $field['element'] . ' instead of fluentform_response_render_' . $field['element']
+                );
+
+                $value = apply_filters(
+                    'fluentform/response_render_' . $field['element'],
+                    $response,
                     $field,
                     $formId,
                     $isHtml

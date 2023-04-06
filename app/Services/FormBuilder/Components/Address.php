@@ -24,8 +24,18 @@ class Address extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-
-        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
+    
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
+        $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $rootName = $data['attributes']['name'];
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
@@ -38,7 +48,17 @@ class Address extends BaseComponent
                 $data['attributes']['data-ff_with_g_map'] = '1';
             }
             $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', false);
-            do_action('fluentform_address_map_autocomplete', $data, $form);
+            do_action_deprecated(
+                'fluentform_address_map_autocomplete',
+                [
+                    $data,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/address_map_autocomplete',
+                'Use fluentform/address_map_autocomplete instead of fluentform_address_map_autocomplete.'
+            );
+            do_action('fluentform/address_map_autocomplete', $data, $form);
         }
 
         $atts = $this->buildAttributes(
@@ -53,7 +73,17 @@ class Address extends BaseComponent
         }
         ob_start();
         echo '<div ' . $atts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
-        do_action('fluentform_rendering_address_field', $data, $form);
+        do_action_deprecated(
+            'fluentform_rendering_address_field',
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_address_field',
+            'Use fluentform/rendering_address_field instead of fluentform_rendering_address_field.'
+        );
+        do_action('fluentform/rendering_address_field', $data, $form);
         if ($label = $data['settings']['label']):
             echo "<div class='ff-el-input--label'>";
             echo '<label aria-label='.esc_attr("$label").'>' . fluentform_sanitize_html($data['settings']['label']) . '</label>';
@@ -86,10 +116,30 @@ class Address extends BaseComponent
                         }
                         $item['attributes']['data-autocomplete_restrictions'] = json_encode(array_filter($selectedCountries));
                     }
-
-                    $item = apply_filters('fluentform_before_render_item', $item, $form);
+    
+                    $item = apply_filters_deprecated(
+                        'fluentform_before_render_item',
+                        [
+                            $item,
+                            $form
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/before_render_item',
+                        'Use fluentform/before_render_item instead of fluentform_before_render_item.'
+                    );
+                    $item = apply_filters('fluentform/before_render_item', $item, $form);
                     echo "<div class='ff-t-cell'>";
-                    do_action('fluentform_render_item_' . $item['element'], $item, $form);
+                    do_action_deprecated(
+                        'fluentform_render_item_' . $item['element'],
+                        [
+                            $item,
+                            $form
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/render_item_' . $item['element'],
+                        'Use fluentform/render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
+                    );
+                    do_action('fluentform/render_item_' . $item['element'], $item, $form);
                     echo '</div>';
                 }
             }
@@ -100,7 +150,19 @@ class Address extends BaseComponent
         echo '</div>';
 
         $html = ob_get_clean();
+    
+        $html = apply_filters_deprecated(
+            'fluentform_rendering_field_html_' . $elementName,
+            [
+                $html,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_html_' . $elementName,
+            'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform/rendering_field_html_' . $elementName
+        );
 
-        $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
+        $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
     }
 }

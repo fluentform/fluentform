@@ -4,13 +4,20 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
-$settings =  apply_filters('fluentform_email_template_colors', array(
+$colors = array(
     'background_color'      => '#f6f6f6',
     'body_background_color' => '#ffffff',
     'base_color'            => '#444444',
     'text_color'            => '#444444'
-));
+);
+$colors = apply_filters_deprecated(
+    'fluentform_email_template_colors',
+    [$colors],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/email_template_colors',
+    'Use fluentform/email_template_colors instead of fluentform_email_template_colors.'
+);
+$settings =  apply_filters('fluentform/email_template_colors', $colors);
 
 // Load colours
 $bg              = $settings['background_color'];

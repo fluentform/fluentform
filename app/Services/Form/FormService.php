@@ -96,7 +96,18 @@ class FormService
 
             FormMeta::store($form, $formMeta);
 
-            do_action('fluentform_inserted_new_form', $form->id, $data);
+            do_action_deprecated(
+                'fluentform_inserted_new_form',
+                [
+                    $form->id,
+                    $data
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/inserted_new_form',
+                'Use fluentform/inserted_new_form instead of fluentform_inserted_new_form.'
+            );
+
+            do_action('fluentform/inserted_new_form', $form->id, $data);
 
             return $form;
         } catch (Exception $e) {
@@ -138,8 +149,16 @@ class FormService
         $this->duplicator->duplicateFormMeta($form, $existingForm);
         $this->duplicator->maybeDuplicateFiles($form, $existingForm, $data);
 
-        do_action('fluentform_form_duplicated', $form->id); //*Todo Remove from Next major Release
-        do_action('fluentform_form_duplicated', $form->id);
+        do_action_deprecated(
+            'fluentform_form_duplicated',
+            [
+                $form->id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_duplicated',
+            'Use fluentform/form_duplicated instead of fluentform_form_duplicated.'
+        );
+        do_action('fluentform/form_duplicated', $form->id);
 
         return $form;
     }
@@ -243,15 +262,25 @@ class FormService
                 'type'       => isset($item['type']) ? $item['type'] : 'form',
             ];
         }
+        $dropDownForms = [
+            'post' => [
+                'title' => 'Post Form',
+            ],
+        ];
+        $dropDownForms = apply_filters_deprecated(
+            'fluentform-predefined-dropDown-forms',
+            [
+                $dropDownForms
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/predefined_dropdown_forms',
+            'Use fluentform/predefined_dropdown_forms instead of fluentform-predefined-dropDown-forms.'
+        );
 
         return [
             'forms'                     => $forms,
             'categories'                => array_keys($forms),
-            'predefined_dropDown_forms' => apply_filters('fluentform-predefined-dropDown-forms', [
-                'post' => [
-                    'title' => 'Post Form',
-                ],
-            ]),
+            'predefined_dropDown_forms' => apply_filters('fluentform/predefined_dropdown_forms', $dropDownForms),
         ];
     }
 
@@ -262,11 +291,32 @@ class FormService
          */
         $components = $this->app->make('components');
 
-        $this->app->doAction('fluent_editor_init', $components);
+        do_action_deprecated(
+            'fluent_editor_init',
+            [
+                $components
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/editor_init',
+            'Use fluentform/editor_init instead of fluent_editor_init.'
+        );
+
+        $this->app->doAction('fluentform/editor_init', $components);
 
         $editorComponents = $components->sort()->toArray();
+    
+        $editorComponents = apply_filters_deprecated(
+            'fluent_editor_components',
+            [
+                $editorComponents,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/editor_components',
+            'Use fluentform/editor_components instead of fluent_editor_components.'
+        );
 
-        return apply_filters('fluent_editor_components', $editorComponents, $formId);
+        return apply_filters('fluentform/editor_components', $editorComponents, $formId);
     }
 
     public function getDisabledComponents()
@@ -472,8 +522,18 @@ class FormService
                 'video'       => '',
             ];
         }
+    
+        $disabled = apply_filters_deprecated(
+            'fluentform_disabled_components',
+            [
+                $disabled
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disabled_components',
+            'Use fluentform/disabled_components instead of fluentform_disabled_components.'
+        );
 
-        return $this->app->applyFilters('fluentform_disabled_components', $disabled);
+        return $this->app->applyFilters('fluentform/disabled_components', $disabled);
     }
 
     public function fields($id)
@@ -498,12 +558,45 @@ class FormService
 
             $inputs = FormFieldsParser::getEntryInputs($form, $with);
             $labels = FormFieldsParser::getAdminLabels($form, $inputs);
-
-            $labels = apply_filters('fluentfoform_entry_lists_labels', $labels, $form);
-            $labels = apply_filters('fluentform_all_entry_labels', $labels, $formId);
+    
+            $labels = apply_filters_deprecated(
+                'fluentfoform_entry_lists_labels',
+                [
+                    $labels,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/entry_lists_labels',
+                'Use fluentform/entry_lists_labels instead of fluentfoform_entry_lists_labels.'
+            );
+            $labels = apply_filters('fluentform/entry_lists_labels', $labels, $form);
+    
+            $labels = apply_filters_deprecated(
+                'fluentform_all_entry_labels',
+                [
+                    $labels,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/all_entry_labels',
+                'Use fluentform/all_entry_labels instead of fluentform_all_entry_labels.'
+            );
+            $labels = apply_filters('fluentform/all_entry_labels', $labels, $formId);
 
             if ($form->has_payment) {
-                $labels = apply_filters('fluentform_all_entry_labels_with_payment', $labels, false, $form);
+                $labels = apply_filters_deprecated(
+                    'fluentform_all_entry_labels_with_payment',
+                    [
+                        $labels,
+                        false,
+                        $form
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/all_entry_labels_with_payment',
+                    'Use fluentform/all_entry_labels_with_payment instead of fluentform_all_entry_labels_with_payment.'
+                );
+
+                $labels = apply_filters('fluentform/all_entry_labels_with_payment', $labels, false, $form);
             }
 
             return [
@@ -601,7 +694,16 @@ class FormService
                             }
                         }
                     }
-                    do_action('fluentform_form_imported', $formId);
+                    do_action_deprecated(
+                        'fluentform_form_imported',
+                        [
+                            $formId
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/form_imported',
+                        'Use fluentform/form_imported instead of fluentform_form_imported.'
+                    );
+                    do_action('fluentform/form_imported', $formId);
                 }
                 
                 return ([
@@ -631,7 +733,17 @@ class FormService
             'posts_per_page' => -1
         );
     
-        $params = apply_filters('fluentform_find_shortcode_params', $params);
+        $params = apply_filters_deprecated(
+            'fluentform_find_shortcode_params',
+            [
+                $params
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/find_shortcode_params',
+            'Use fluentform/find_shortcode_params instead of fluentform_find_shortcode_params.'
+        );
+        $params = apply_filters('fluentform/find_shortcode_params', $params);
+
         $formLocations = [];
         $posts = get_posts($params);
         foreach($posts as $post) {

@@ -26,8 +26,27 @@ return function ($file) {
     });
 
     add_action('plugins_loaded', function () use ($app) {
-        do_action('fluentform_loaded', $app);
-        do_action('fluentform-loaded', $app);
+        do_action_deprecated(
+            'fluentform_loaded',
+            [
+                $app
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/loaded',
+            'Use fluentform/loaded instead of fluentform_loaded.'
+        );
+
+        do_action_deprecated(
+            'fluentform-loaded',
+            [
+                $app
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/loaded',
+            'Use fluentform/loaded instead of fluentform-loaded.'
+        );
+
+        do_action('fluentform/loaded', $app);
     });
 
     fluentformLoadFile('Services/FluentConversational/plugin.php');

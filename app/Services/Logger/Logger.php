@@ -53,20 +53,16 @@ class Logger
             $log->component = Helper::getLogInitiator($log->component, $type);
         }
 
+        $logs->setCollection(Collection::make($logItems));
+    
         $logItems = apply_filters_deprecated(
             'fluentform_all_logs',
-            [$logItems],
+            [
+                $logItems
+            ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/get_logs'
-        );
-
-        $logs->setCollection(Collection::make($logItems));
-
-        $logs = apply_filters_deprecated(
-            'fluentform_all_logs',
-            [$logs],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/get_logs'
+            'fluentform/get_logs',
+            'Use fluentform/get_logs instead of fluentform_all_logs'
         );
 
         return apply_filters('fluentform/get_logs', $logs);
@@ -152,7 +148,18 @@ class Logger
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            $logs = apply_filters('fluentform_entry_logs', $logs, $submissionId);
+            $log = apply_filters_deprecated(
+                'fluentform_entry_logs',
+                [
+                    $logs,
+                    $submissionId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_logs',
+                'Use fluentform/submission_logs instead of fluentform_entry_logs.'
+            );
+
+            $logs = apply_filters('fluentform/submission_logs', $logs, $submissionId);
 
             $entryLogs = [];
 
@@ -165,7 +172,8 @@ class Logger
                     'created_at'  => (string) $log->created_at,
                 ];
             }
-        } else {
+        }
+        else {
             $columns = [
                 'id',
                 'action',
@@ -179,7 +187,17 @@ class Logger
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            $logs = apply_filters('fluentform_entry_api_logs', $logs, $submissionId);
+            $logs = apply_filters_deprecated(
+                'fluentform_entry_api_logs',
+                [
+                    $logs,
+                    $submissionId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_api_logs',
+                'Use fluentform/submission_api_logs instead of fluentform_entry_api_logs.'
+            );
+            $logs = apply_filters('fluentform/submission_api_logs', $logs, $submissionId);
 
             $entryLogs = [];
 

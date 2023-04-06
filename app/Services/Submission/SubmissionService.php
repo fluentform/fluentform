@@ -299,8 +299,19 @@ class SubmissionService
 
     public function deleteFiles($submissionIds, $formId)
     {
+        apply_filters_deprecated(
+            'fluentform_disable_attachment_delete',
+            [
+                false,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disable_attachment_delete',
+            'Use fluentform/disable_attachment_delete instead of fluentform_disable_attachment_delete'
+        );
+
         $disableAttachmentDelete = apply_filters(
-            'fluentform_disable_attachment_delete', false, $formId
+            'fluentform/disable_attachment_delete', false, $formId
         );
 
         $shouldDelete = defined('FLUENTFORMPRO') && $formId && !$disableAttachmentDelete;
@@ -383,7 +394,19 @@ class SubmissionService
             }
         }
 
-        $notes = apply_filters('fluentform_entry_notes', $notes, $submissionId, $formId);
+        apply_filters_deprecated(
+            'fluentform_entry_notes',
+            [
+                $notes,
+                $submissionId,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/entry_notes',
+            'Use fluentform/entry_notes instead of fluentform_entry_notes'
+        );
+
+        $notes = apply_filters('fluentform/entry_notes', $notes, $submissionId, $formId);
 
         return apply_filters('fluentform/submission_notes', $notes, $submissionId, $formId);
     }
@@ -466,8 +489,23 @@ class SubmissionService
                     'updated_at' => current_time('mysql'),
                 ]);
         }
-    
-        do_action('ff_log_data', [
+
+        do_action_deprecated(
+            'ff_log_data',
+            [
+                'parent_source_id' => $submission->form_id,
+                'source_type'      => 'submission_item',
+                'source_id'        => $submission->id,
+                'component'        => 'General',
+                'status'           => 'info',
+                'title'            => 'Associate user has been changed from ' . $submission->user_id . ' to ' . $userId,
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/log_data',
+            'Use fluentform/log_data instead of ff_log_data.'
+        );
+
+        do_action('fluentform/log_data', [
             'parent_source_id' => $submission->form_id,
             'source_type'      => 'submission_item',
             'source_id'        => $submission->id,
@@ -475,8 +513,19 @@ class SubmissionService
             'status'           => 'info',
             'title'            => 'Associate user has been changed from ' . $submission->user_id . ' to ' . $userId,
         ]);
+
+        do_action_deprecated(
+            'fluentform_submission_user_changed',
+            [
+                $submission,
+                $user
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/submission_user_changed',
+            'Use fluentform/submission_user_changed instead of fluentform_submission_user_changed.'
+        );
     
-        do_action('fluentform_submission_user_changed', $submission, $user);
+        do_action('fluentform/submission_user_changed', $submission, $user);
     
         return([
             'message' => __('Selected user has been successfully assigned to this submission', 'fluentform'),

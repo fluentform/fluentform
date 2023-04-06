@@ -23,13 +23,13 @@ class Form
 
         add_action('wp_ajax_ff_store_conversational_form_settings', [$this, 'saveSettingsAjax']);
 
-        add_filter('fluent_editor_components', [$this, 'filterAcceptedFields'], 999, 2);
+        add_filter('fluentform/editor_components', [$this, 'filterAcceptedFields'], 999, 2);
 
-        add_filter('fluentform_form_admin_menu', [$this, 'pushDesignTab'], 10, 2);
+        add_filter('fluentform/form_admin_menu', [$this, 'pushDesignTab'], 10, 2);
 
-        add_filter('ff_fluentform_form_application_view_conversational_design', [$this, 'renderDesignSettings'], 10, 1);
+        add_action('fluentform/form_application_view_conversational_design', [$this, 'renderDesignSettings'], 10, 1);
 
-        add_filter('fluent_editor_element_settings_placement', [$this, 'maybeAlterPlacement'], 10, 2);
+        add_filter('fluentform/editor_element_settings_placement', [$this, 'maybeAlterPlacement'], 10, 2);
 
         // elements
         new WelcomeScreen();
@@ -78,7 +78,18 @@ class Form
             true
         );
 
-        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+        $slug = apply_filters_deprecated(
+            'fluentform_conversational_url_slug',
+            [
+                'fluent-form'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/conversational_url_slug',
+            'Use fluentform/conversational_url_slug instead of fluentform_conversational_url_slug.'
+        );
+
+        $paramKey = apply_filters('fluentform/conversational_url_slug', $slug);
+
         if ('form' == $paramKey) {
             $paramKey = 'fluent-form';
         }
@@ -230,7 +241,17 @@ class Form
 
     public function render()
     {
-        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+        apply_filters_deprecated(
+            'fluentform_conversational_url_slug',
+            [
+                'fluent-form'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/conversational_url_slug',
+            'Use fluentform/conversational_url_slug instead of fluentform_conversational_url_slug.'
+        );
+
+        $paramKey = apply_filters('fluentform/conversational_url_slug', 'fluent-form');
         if ('form' == $paramKey) {
             $paramKey = 'fluent-form';
         }
@@ -398,7 +419,18 @@ class Form
                 }
             }
         }
-        $elements = apply_filters('fluent_conversational_editor_elements', $elements, $formId);
+
+        apply_filters_deprecated(
+            'fluent_conversational_editor_elements',
+            [
+                'fluent-form'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/conversational_editor_elements',
+            'Use fluentform/conversational_editor_elements instead of fluent_conversational_editor_elements.'
+        );
+
+        $elements = apply_filters('fluentform/conversational_editor_elements', $elements, $formId);
 
         return $elements;
     }
@@ -407,7 +439,7 @@ class Form
     {
         $jsScripts = $this->getRegisteredScripts();
         if ($jsScripts) {
-            add_action('fluentform_conversational_frame_footer', function () use ($jsScripts) {
+            add_action('fluentform/conversational_frame_footer', function () use ($jsScripts) {
                 foreach ($jsScripts as $handle => $jsScript) {
                     if (empty($jsScript->src)) {
                         continue;
@@ -426,7 +458,7 @@ class Form
 
         $cssStyles = $this->getRegisteredStyles();
         if ($cssStyles) {
-            add_action('fluentform_conversational_frame_head', function () use ($cssStyles) {
+            add_action('fluentform/conversational_frame_head', function () use ($cssStyles) {
                 foreach ($cssStyles as $styleName => $cssStyle) {
                     if (empty($cssStyle->src)) {
                         continue;
@@ -561,7 +593,17 @@ class Form
             'date_i18n'            => \FluentForm\App\Modules\Component\Component::getDatei18n(),
         ]);
 
-        if (! apply_filters('fluentform-disabled_analytics', false)) {
+        apply_filters_deprecated(
+            'fluentform-disabled_analytics',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disabled_analytics',
+            'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
+        );
+
+        if (! apply_filters('fluentform/disabled_analytics', false)) {
             if (! Acl::hasAnyFormPermission($form->id)) {
                 (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
     
@@ -657,7 +699,17 @@ class Form
             }
         }
 
-        $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
+        apply_filters_deprecated(
+            'fluentform_rendering_form',
+            [
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_form',
+            'Use fluentform/rendering_form instead of fluentform_rendering_form.'
+        );
+
+        $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
         $form = Converter::convert($form);
 
         $formSettings = wpFluent()
@@ -710,8 +762,19 @@ class Form
             'status'  => true,
             'message' => '',
         ];
+    
+        $isRenderable = apply_filters_deprecated(
+            'fluentform_is_form_renderable',
+            [
+                $isRenderable,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_form_renderable',
+            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
+        );
 
-        $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
+        $isRenderable = apply_filters('fluentform/is_form_renderable', $isRenderable, $form);
 
         if (is_array($isRenderable) && ! $isRenderable['status']) {
             if (! Acl::hasAnyFormPermission($form->id)) {
@@ -719,8 +782,18 @@ class Form
                 exit();
             }
         }
+    
+        $status = apply_filters_deprecated(
+            'fluentform-disabled_analytics',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disabled_analytics',
+            'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
+        );
 
-        if (! apply_filters('fluentform-disabled_analytics', false)) {
+        if (! apply_filters('fluentform/disabled_analytics', $status)) {
             if (! Acl::hasAnyFormPermission($form->id)) {
                 (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
             }
@@ -774,8 +847,19 @@ class Form
         $paymentConfig = null;
 
         if ($form->has_payment && defined('FLUENTFORMPRO')) {
-            $publishableKey = apply_filters(
+            apply_filters_deprecated(
                 'fluentform-payment_stripe_publishable_key',
+                [
+                    \FluentFormPro\Payments\PaymentMethods\Stripe\StripeSettings::getPublishableKey($form->id),
+                    $form->id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/payment_stripe_publishable_key',
+                'Use fluentform/payment_stripe_publishable_key instead of fluentform-payment_stripe_publishable_key.'
+            );
+
+            $publishableKey = apply_filters(
+                'fluentform/payment_stripe_publishable_key',
                 \FluentFormPro\Payments\PaymentMethods\Stripe\StripeSettings::getPublishableKey($form->id),
                 $form->id
             );

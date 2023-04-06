@@ -31,8 +31,20 @@ class SettingsService
 
             $item->value = $value;
         }
+    
+        $result = apply_filters_deprecated(
+            'fluentform_get_meta_key_settings_response',
+            [
+                $result,
+                $formId,
+                $metaKey
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_meta_key_settings_response',
+            'Use fluentform/get_meta_key_settings_response instead of fluentform_get_meta_key_settings_response'
+        );
 
-        $result = apply_filters('fluentform_get_meta_key_settings_response', $result, $formId, $metaKey);
+        $result = apply_filters('fluentform/get_meta_key_settings_response', $result, $formId, $metaKey);
 
         return $result;
     }
@@ -44,7 +56,18 @@ class SettingsService
             'advancedValidationSettings' => Form::getAdvancedValidationSettings($formId),
         ];
 
-        $settings = apply_filters('fluentform_form_settings_ajax', $settings, $formId);
+        $settings = apply_filters_deprecated(
+            'fluentform_form_settings_ajax',
+            [
+                $settings,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_settings_ajax',
+            'Use fluentform/form_settings_ajax instead of fluentform/form_settings_ajax'
+        );
+
+        $settings = apply_filters('fluentform/form_settings_ajax', $settings, $formId);
 
         return $settings;
     }
@@ -82,7 +105,18 @@ class SettingsService
             FormMeta::remove($formId, 'auto_delete_days');
         }
 
-        do_action('fluentform_after_save_form_settings', $formId, $attributes);
+        do_action_deprecated(
+            'fluentform_after_save_form_settings',
+            [
+                $formId,
+                $attributes
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/after_save_form_settings',
+            'Use fluentform/after_save_form_settings instead of fluentform_after_save_form_settings.'
+        );
+
+        do_action('fluentform/after_save_form_settings', $formId, $attributes);
     }
 
     private function sanitizeData($settings)

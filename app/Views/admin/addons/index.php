@@ -1,4 +1,13 @@
-<?php do_action('fluentform_global_menu'); ?>
+<?php
+do_action_deprecated(
+    'fluentform_global_menu',
+    [
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/global_menu',
+    'Use fluentform/global_menu instead of fluentform_global_menu.'
+);
+do_action('fluentform/global_menu'); ?>
 <div class="ff_form_wrap">
     <div class="ff_form_wrap_area">
         <?php if(!$hasPro){ ?>
@@ -34,7 +43,15 @@
             </ul>
             <div class="ff_add_on_body ff_add_on_body_<?php echo esc_attr($current_menu_item); ?>">
                 <?php
-                do_action('fluentform_addons_page_render_' . $current_menu_item);
+                do_action_deprecated(
+                    'fluentform_addons_page_render_' . $current_menu_item,
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform_addons_page_render_' . $current_menu_item,
+                    'Use fluentform_addons_page_render_' . $current_menu_item . ' instead of fluentform_addons_page_render_' . $current_menu_item
+                );
+                do_action('fluentform/addons_page_render_' . $current_menu_item);
                 ?>
             </div>
         </div>

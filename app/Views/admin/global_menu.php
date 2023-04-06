@@ -76,8 +76,7 @@ $page = sanitize_text_field($_GET['page']);
         </li>
     </ul>
 
-    <?php do_action('fluentform_after_global_menu'); ?>
-    <?php 
+    <?php
     echo "<script>
             let menuToggle = jQuery('.ff_menu_toggle');
             let targetElem = jQuery('.ff_menu');
@@ -86,7 +85,15 @@ $page = sanitize_text_field($_GET['page']);
                 targetElem.toggleClass('ff_menu_active');
             });
         </script>"
-    
-    
+        
+    do_action_deprecated(
+        'fluentform_after_global_menu',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/after_global_menu',
+        'Use fluentform/after_global_menu instead of fluentform_after_global_menu.'
+    );
+        do_action('fluentform/after_global_menu');
     ?>
 </div>

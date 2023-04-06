@@ -103,10 +103,21 @@ class FormProperties
      */
     public function renderable()
     {
-        return apply_filters('fluentform_is_form_renderable', [
-            'status'  => true,
-            'message' => '',
-        ], $this->form);
+        $isRenderable = apply_filters_deprecated(
+            'fluentform_is_form_renderable',
+            [
+                [
+                    'status'  => true,
+                    'message' => '',
+                ],
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_form_renderable',
+            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
+        );
+
+        return apply_filters('fluentform/is_form_renderable', $isRenderable, $this->form);
     }
 
     public function conversionRate()

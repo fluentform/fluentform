@@ -18,14 +18,14 @@ class EmailNotificationActions
 
     public function register()
     {
-        add_filter('fluentform_notifying_async_email_notifications', '__return_false', 9);
+        add_filter('fluentform/notifying_async_email_notifications', '__return_false', 9);
 
-        add_filter('fluentform_global_notification_active_types', function ($types) {
+        add_filter('fluentform/global_notification_active_types', function ($types) {
             $types['notifications'] = 'email_notifications';
             return $types;
         });
 
-        add_action('fluentform_integration_notify_notifications', [$this, 'notify'], 10, 4);
+        add_action('fluentform/integration_notify_notifications', [$this, 'notify'], 10, 4);
         add_action('fluentform/notify_on_form_submit', [$this, 'notifyOnSubmitPaymentForm'], 10, 3);
     }
 
@@ -141,10 +141,23 @@ class EmailNotificationActions
             }
             $emailAttachments = array_merge($emailAttachments, $attachments);
         }
-
+    
+        $emailAttachments = apply_filters_deprecated(
+            'fluentform_email_attachments',
+            [
+                $emailAttachments,
+                $emailData,
+                $formData,
+                $entry,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_attachments',
+            'Use fluentform/email_attachments instead of fluentform_email_attachments.'
+        );
         // let others to apply attachments
         $emailAttachments = apply_filters(
-            'fluentform_email_attachments',
+            'fluentform/email_attachments',
             $emailAttachments,
             $emailData,
             $formData,

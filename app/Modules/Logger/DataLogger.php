@@ -94,7 +94,18 @@ class DataLogger
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            $logs = apply_filters('fluentform_entry_logs', $logs, $entry_id);
+            apply_filters_deprecated(
+                'fluentform_entry_logs',
+                [
+                    $logs,
+                    $entry_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_logs',
+                'Use fluentform/submission_logs instead of fluentform_entry_logs.'
+            );
+
+            $logs = apply_filters('fluentform/submission_logs', $logs, $entry_id);
         } else {
             $logs = wpFluent()->table('ff_scheduled_actions')
                 ->select([
@@ -107,8 +118,19 @@ class DataLogger
                 ->where('origin_id', $entry_id)
                 ->orderBy('id', 'DESC')
                 ->get();
+    
+            $logs = apply_filters_deprecated(
+                'fluentform_entry_api_logs',
+                [
+                    $logs,
+                    $entry_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_api_logs',
+                'Use fluentform/submission_api_logs instead of fluentform_entry_api_logs.'
+            );
 
-            $logs = apply_filters('fluentform_entry_api_logs', $logs, $entry_id);
+            $logs = apply_filters('fluentform/submission_api_logs', $logs, $entry_id);
         }
 
 
@@ -164,8 +186,18 @@ class DataLogger
                 $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->entry_id);
             }
         }
+    
+        $logs = apply_filters_deprecated(
+            'fluentform_all_logs',
+            [
+                $logs
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/all_logs',
+            'Use fluentform/all_logs instead of fluentform_all_logs.'
+        );
 
-        $logs = apply_filters('fluentform_all_logs', $logs);
+        $logs = apply_filters('fluentform/all_logs', $logs);
 
         $total = $logsQueryMain->count();
 
@@ -216,8 +248,18 @@ class DataLogger
         $logs = $logsQuery->offset($skip)
             ->limit($limit)
             ->get();
+    
+        $logs = apply_filters_deprecated(
+            'fluentform_api_all_logs',
+            [
+                $logs
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/api_all_logs',
+            'Use fluentform/api_all_logs instead of fluentform_api_all_logs.'
+        );
 
-        $logs = apply_filters('fluentform_api_all_logs', $logs);
+        $logs = apply_filters('fluentform/api_all_logs', $logs);
 
         foreach ($logs as $log) {
             $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->origin_id);

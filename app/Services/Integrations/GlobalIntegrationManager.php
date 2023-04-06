@@ -27,8 +27,26 @@ class GlobalIntegrationManager
     public function getGlobalSettingsAjax()
     {
         $settingsKey = sanitize_text_field($this->request->get('settings_key'));
-        $settings = apply_filters('fluentform_global_integration_settings_' . $settingsKey, []);
-        $fieldSettings = apply_filters('fluentform_global_integration_fields_' . $settingsKey, []);
+        $settings = apply_filters_deprecated(
+            'fluentform_global_integration_settings_' . $settingsKey,
+            [
+                []
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_integration_settings_' . $settingsKey,
+            'Use fluentform/global_integration_settings_' . $settingsKey . ' instead of fluentform_global_integration_settings_' . $settingsKey
+        );
+        $settings = apply_filters('fluentform/global_integration_settings_' . $settingsKey, $settings);
+        $fieldSettings = apply_filters_deprecated(
+            'fluentform_global_integration_fields_' . $settingsKey,
+            [
+                []
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_integration_fields_' . $settingsKey,
+            'Use fluentform/global_integration_fields_' . $settingsKey . ' instead of fluentform_global_integration_fields_' . $settingsKey
+        );
+        $fieldSettings = apply_filters('fluentform/global_integration_fields_' . $settingsKey, $fieldSettings);
 
         if (! $fieldSettings) {
             wp_send_json_error([
@@ -60,7 +78,16 @@ class GlobalIntegrationManager
     {
         $settingsKey = sanitize_text_field($this->request->get('settings_key'));
         $integration = wp_unslash($this->request->get('integration'));
-        do_action('fluentform_save_global_integration_settings_' . $settingsKey, $integration);
+        do_action_deprecated(
+            'fluentform_save_global_integration_settings_' . $settingsKey,
+            [
+                $integration
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/save_global_integration_settings_' . $settingsKey,
+            'Use fluentform/save_global_integration_settings_' . $settingsKey . ' instead of fluentform_save_global_integration_settings_' . $settingsKey
+        );
+        do_action('fluentform/save_global_integration_settings_' . $settingsKey, $integration);
 
         // Someone should catch that above action and send response
         wp_send_json_error([
@@ -73,8 +100,18 @@ class GlobalIntegrationManager
         $formId = $this->request->get('form_id');
 
         $formattedFeeds = $this->getNotificationFeeds($formId);
-
-        $availableIntegrations = apply_filters('fluentform_get_available_form_integrations', [], $formId);
+    
+        $availableIntegrations = apply_filters_deprecated(
+            'fluentform_get_available_form_integrations',
+            [
+                [],
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_available_form_integrations',
+            'Use fluentform/get_available_form_integrations instead of fluentform_get_available_form_integrations.'
+        );
+        $availableIntegrations = apply_filters('fluentform/get_available_form_integrations', $availableIntegrations, $formId);
 
         wp_send_json_success([
             'feeds'                  => $formattedFeeds,
@@ -85,7 +122,17 @@ class GlobalIntegrationManager
 
     public function getNotificationFeeds($formId)
     {
-        $notificationKeys = apply_filters('fluentform_global_notification_types', [], $formId);
+        $notificationKeys = apply_filters_deprecated(
+            'fluentform_global_notification_types',
+            [
+                [],
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_notification_types',
+            'Use fluentform/global_notification_types instead of fluentform_global_notification_types.'
+        );
+        $notificationKeys = apply_filters('fluentform/global_notification_types', $notificationKeys, $formId);
 
         if ($notificationKeys) {
             $feeds = wpFluent()->table('fluentform_form_meta')
@@ -114,7 +161,17 @@ class GlobalIntegrationManager
                 'provider' => $feed->meta_key,
                 'feed'     => $data,
             ];
-            $feedData = apply_filters('fluentform_global_notification_feed_' . $feed->meta_key, $feedData, $formId);
+            $feedData = apply_filters_deprecated(
+                'fluentform_global_notification_feed_' . $feed->meta_key,
+                [
+                    $feedData,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notification_feed_' . $feed->meta_key,
+                'Use fluentform/global_notification_feed_' . $feed->meta_key . ' instead of fluentform_global_notification_feed_' . $feed->meta_key
+            );
+            $feedData = apply_filters('fluentform/global_notification_feed_' . $feed->meta_key, $feedData, $formId);
             $formattedFeeds[] = $feedData;
         }
         return $formattedFeeds;
@@ -184,14 +241,45 @@ class GlobalIntegrationManager
 
             if ($feed->value) {
                 $settings = json_decode($feed->value, true);
-
-                $settings = apply_filters('fluentform_get_integration_values_' . $integrationName, $settings, $feed, $formId);
+                $settings = apply_filters_deprecated(
+                    'fluentform_get_integration_values_' . $integrationName,
+                    [
+                        $settings,
+                        $feed,
+                        $formId
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/get_integration_values_' . $integrationName,
+                    'Use fluentform/get_integration_values_' . $integrationName . ' instead of fluentform_get_integration_values_' . $integrationName
+                );
+                $settings = apply_filters('fluentform/get_integration_values_' . $integrationName, $settings, $feed, $formId);
                 if (! empty($settings['list_id'])) {
-                    $mergeFields = apply_filters('fluentform_get_integration_merge_fields_' . $integrationName, false, $settings['list_id'], $formId);
+                    $mergeFields = apply_filters_deprecated(
+                        'fluentform_get_integration_merge_fields_' . $integrationName,
+                        [
+                            false,
+                            $settings['list_id'],
+                            $formId
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/get_integration_merge_fields_' . $integrationName,
+                        'Use fluentform/get_integration_merge_fields_' . $integrationName . ' instead of fluentform_get_integration_merge_fields_' . $integrationName
+                    );
+                    $mergeFields = apply_filters('fluentform/get_integration_merge_fields_' . $integrationName, $mergeFields, $settings['list_id'], $formId);
                 }
             }
         } else {
-            $settings = apply_filters('fluentform_get_integration_defaults_' . $integrationName, $settings, $formId);
+            $settings = apply_filters_deprecated(
+                'fluentform_get_integration_defaults_' . $integrationName,
+                [
+                    $settings,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/get_integration_defaults_' . $integrationName,
+                'Use fluentform/get_integration_defaults_' . $integrationName . ' instead of fluentform_get_integration_defaults_' . $integrationName
+            );
+            $settings = apply_filters('fluentform/get_integration_defaults_' . $integrationName, $settings, $formId);
         }
 
         if ('true' == $settings['enabled']) {
@@ -199,8 +287,18 @@ class GlobalIntegrationManager
         } elseif ('false' == $settings['enabled'] || $settings['enabled']) {
             $settings['enabled'] = false;
         }
-
-        $settingsFields = apply_filters('fluentform_get_integration_settings_fields_' . $integrationName, $settings, $formId, $settings);
+    
+        $settingsFields = apply_filters_deprecated(
+            'fluentform_get_integration_settings_fields_' . $integrationName,
+            [
+                $settings,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_integration_settings_fields_' . $integrationName,
+            'Use fluentform/get_integration_settings_fields_' . $integrationName . ' instead of fluentform_get_integration_settings_fields_' . $integrationName
+        );
+        $settingsFields = apply_filters('fluentform/get_integration_settings_fields_' . $integrationName, $settings, $formId);
 
         wp_send_json_success([
             'settings'        => $settings,
@@ -233,16 +331,37 @@ class GlobalIntegrationManager
                 ],
             ], 423);
         }
-
-        $integration = apply_filters('fluentform_save_integration_value_' . $integrationName, $integration, $integrationId, $formId);
+    
+        $integration = apply_filters_deprecated(
+            'fluentform_save_integration_value_' . $integrationName,
+            [
+                $integration,
+                $integrationId,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/save_integration_value_' . $integrationName,
+            'Use fluentform/save_integration_value_' . $integrationName . ' instead of fluentform_save_integration_value_' . $integrationName
+        );
+        $integration = apply_filters('fluentform/save_integration_value_' . $integrationName, $integration, $integrationId, $formId);
 
         $data = [
             'form_id'  => $formId,
             'meta_key' => $integrationName . '_feeds',
             'value'    => \json_encode($integration),
         ];
-
-        $data = apply_filters('fluentform_save_integration_settings_' . $integrationName, $data, $integrationId);
+    
+        $data = apply_filters_deprecated(
+            'fluentform_save_integration_settings_' . $integrationName,
+            [
+                $data,
+                $integrationId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/save_integration_settings_' . $integrationName,
+            'Use fluentform/save_integration_settings_' . $integrationName . ' instead of fluentform_save_integration_settings_' . $integrationName
+        );
+        $data = apply_filters('fluentform/save_integration_settings_' . $integrationName, $data, $integrationId);
 
         $created = false;
         if ($integrationId) {
@@ -284,7 +403,18 @@ class GlobalIntegrationManager
         $integrationName = $this->request->get('integration_name');
         $formId = intval($this->request->get('form_id'));
         $listId = $this->request->get('list_id');
-        $merge_fields = apply_filters('fluentform_get_integration_merge_fields_' . $integrationName, false, $listId, $formId);
+        $merge_fields = apply_filters_deprecated(
+            'fluentform_get_integration_merge_fields_' . $integrationName,
+            [
+                false,
+                $listId,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_integration_merge_fields_' . $integrationName,
+            'Use fluentform/get_integration_merge_fields_' . $integrationName . ' instead of fluentform_get_integration_merge_fields_' . $integrationName
+        );
+        $merge_fields = apply_filters('fluentform/get_integration_merge_fields_' . $integrationName, $merge_fields, $listId, $formId);
 
         wp_send_json_success([
             'merge_fields' => $merge_fields,

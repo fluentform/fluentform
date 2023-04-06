@@ -69,8 +69,20 @@ class ExtraSettings
             'props'    => ['form_id'],
             'template' => '<p>Setting Not Found</p>',
         ];
+    
+        $component = apply_filters_deprecated(
+            'fluentform_settings_module_' . $module,
+            [
+                $module,
+                $component,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/settings_module_' . $module,
+            'Use fluentform/settings_module_' . $module . ' instead of fluentform_settings_module_' . $module
+        );
 
-        $component = apply_filters('fluentform_settings_module_' . $module, $component, $formId);
+        $component = apply_filters('fluentform/settings_module_' . $module, $component, $formId);
 
         wp_send_json_success([
             'component' => $component,

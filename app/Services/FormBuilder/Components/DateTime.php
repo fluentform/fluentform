@@ -18,7 +18,17 @@ class DateTime extends BaseComponent
     public function compile($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
+        $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         wp_enqueue_script('flatpickr');
         wp_enqueue_style('flatpickr');
@@ -49,7 +59,19 @@ class DateTime extends BaseComponent
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
 
-        $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
+        $html = apply_filters_deprecated(
+            'fluentform_rendering_field_html_' . $elementName,
+            [
+                $html,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_html_' . $elementName,
+            'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform_rendering_field_html_' . $elementName
+        );
+
+        $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
     }
 
     public function getAvailableDateFormats()

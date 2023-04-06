@@ -116,8 +116,19 @@ class EditorShortCode
         if ($form->has_payment) {
             $groups[] = static::getPaymentShortcodes($form);
         }
+    
+        $groups = apply_filters_deprecated(
+            'fluentform_form_settings_smartcodes',
+            [
+                $groups,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_settings_smartcodes',
+            'Use fluentform/form_settings_smartcodes instead of fluentform_form_settings_smartcodes.'
+        );
 
-        return apply_filters('fluentform_form_settings_smartcodes', $groups, $form);
+        return apply_filters('fluentform/form_settings_smartcodes', $groups, $form);
     }
 
     public static function parse($string, $data, callable $arrayFormatter = null)

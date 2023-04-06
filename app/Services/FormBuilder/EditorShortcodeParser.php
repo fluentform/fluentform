@@ -139,14 +139,35 @@ class EditorShortcodeParser
             }
 
             $handlerArray = explode('.', $handler);
-
+            $handler = '{' . $handler . '}';
             if (count($handlerArray) > 1) {
                 // it's a grouped handler
                 $group = array_shift($handlerArray);
-                return apply_filters('fluentform_editor_shortcode_callback_group_' . $group, '{' . $handler . '}', $form, $handlerArray);
+                $handler = apply_filters_deprecated(
+                    'fluentform_editor_shortcode_callback_group_' . $group,
+                    [
+                        $handler,
+                        $form,
+                        $handlerArray
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/editor_shortcode_callback_group_' . $group,
+                    'Use fluentform/editor_shortcode_callback_group_' . $group . ' instead of fluentform_editor_shortcode_callback_group_' . $group
+                );
+                return apply_filters('fluentform/editor_shortcode_callback_group_' . $group, $handler, $form, $handlerArray);
             }
+    
+            $handler = apply_filters_deprecated(
+                'fluentform_editor_shortcode_callback_' . $handler,
+                [
+                    $handler, $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/editor_shortcode_callback_' . $handler,
+                'Use fluentform/editor_shortcode_callback_' . $handler . ' instead of fluentform_editor_shortcode_callback_' . $handler
+            );
 
-            return apply_filters('fluentform_editor_shortcode_callback_' . $handler, '{' . $handler . '}', $form);
+            return apply_filters('fluentform/editor_shortcode_callback_' . $handler, $handler, $form);
         }
 
         return $filteredValue;

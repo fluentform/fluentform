@@ -807,7 +807,16 @@ class Predefined extends Form
             ],
         ];
 
-        return apply_filters('fluentform_predefined_forms', $forms);
+        apply_filters_deprecated(
+            'fluentform_predefined_forms',
+            [
+                $forms
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/predefined_forms',
+            'Use fluentform/predefined_forms instead of fluentform_predefined_forms.'
+        );
+        return apply_filters('fluentform/predefined_forms', $forms);
     }
 
     private function getBlankConversationalForm()
@@ -864,15 +873,25 @@ class Predefined extends Form
                 'type'       => isset($item['type']) ? $item['type'] : 'form',
             ];
         }
+        $postForm = [
+            'post' => [
+                'title' => 'Post Form',
+            ]
+        ];
+        $dropDownForms = apply_filters_deprecated(
+            'fluentform-predefined-dropDown-forms',
+            [
+                $postForm
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/predefined_dropdown_forms',
+            'Use fluentform/predefined_dropdown_forms instead of fluentform-predefined-dropDown-forms.'
+        );
 
         wp_send_json([
             'forms'                     => $data,
             'categories'                => array_keys($data),
-            'predefined_dropDown_forms' => apply_filters('fluentform-predefined-dropDown-forms', [
-                'post' => [
-                    'title' => 'Post Form',
-                ],
-            ]),
+            'predefined_dropDown_forms' => apply_filters('fluentform/predefined_dropdown_forms',$dropDownForms),
         ], 200);
     }
 
@@ -916,7 +935,19 @@ class Predefined extends Form
         }
         //take global default setting when creating new form
         $defaultSettings = (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->getFormsDefaultSettings();
-        $this->defaultSettings = apply_filters('fluentform_create_default_settings', $defaultSettings);
+
+        $app = wpFluentForm();
+        $defaultSettings = apply_filters_deprecated(
+            'fluentform_create_default_settings',
+            [
+                $defaultSettings
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/create_default_settings',
+            'Use fluentform/create_default_settings instead of fluentform_create_default_settings.'
+        );
+
+        $this->defaultSettings = apply_filters('fluentform/create_default_settings', $defaultSettings);
 
         $predefinedForm['metas'][] = [
             'meta_key' => 'formSettings',

@@ -50,12 +50,21 @@ class FluentFormAsyncRequest
 
     public function dispatchAjax($data = [])
     {
+        apply_filters_deprecated(
+            'fluentform_https_local_ssl_verify',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/https_local_ssl_verify',
+            'Use fluentform/https_local_ssl_verify instead of fluentform_https_local_ssl_verify.'
+        );
         $args = array(
             'timeout' => 0.1,
             'blocking' => false,
             'body' => $data,
             'cookies' => wpFluentForm('request')->cookie(),
-            'sslverify' => apply_filters('fluentform_https_local_ssl_verify', false),
+            'sslverify' => apply_filters('fluentform/https_local_ssl_verify', false),
         );
 
         $queryArgs = array(
@@ -131,7 +140,17 @@ class FluentFormAsyncRequest
         }
 
         if($originId && !empty($form) && !empty($submission)) {
-            do_action('fluentform_global_notify_completed', $submission->id, $form);
+            do_action_deprecated(
+                'fluentform_global_notify_completed',
+                [
+                    $submission->id,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notify_completed',
+                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
+            );
+            do_action('fluentform/global_notify_completed', $submission->id, $form);
         }
     }
 

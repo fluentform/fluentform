@@ -113,8 +113,19 @@ class Entry
             ];
             $submission->user = $user_data;
         }
+    
+        $submission= apply_filters_deprecated(
+            'fluentform_single_response_data',
+            [
+                $submission,
+                $this->form->id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/find_submission',
+            'Use fluentform/find_submission instead of fluentform_single_response_data.'
+        );
 
-        $submission = apply_filters('fluentform_single_response_data', $submission, $this->form->id);
+        $submission = apply_filters('fluentform/find_submission', $submission, $this->form->id);
 
         $submission->response = json_decode($submission->response);
 

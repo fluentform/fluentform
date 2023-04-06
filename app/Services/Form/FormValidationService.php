@@ -54,15 +54,40 @@ class FormValidationService
         foreach ($fields as $fieldName => $field) {
             if (isset($formData[$fieldName])) {
                 $element = $field['element'];
-                $formData[$fieldName] = apply_filters('fluentform_input_data_' . $element, $formData[$fieldName], $field, $formData, $this->form);
+
+                apply_filters_deprecated(
+                    'fluentform_input_data_' . $element,
+                    [
+                        $formData[$fieldName],
+                        $field,
+                        $formData,
+                        $this->form
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/input_data_' . $element,
+                    'Use fluentform/input_data_' . $element . ' instead of fluentform_input_data_' . $element
+                );
+
+                $formData[$fieldName] = apply_filters('fluentform/input_data_' . $element, $formData[$fieldName], $field, $formData, $this->form);
             }
         }
         
         $originalValidations = FormFieldsParser::getValidations($this->form, $formData, $fields);
         
         // Fire an event so that one can hook into it to work with the rules & messages.
-        $validations = apply_filters('fluentform_validations', $originalValidations, $this->form, $formData);
-    
+        $originalValidations = apply_filters_deprecated(
+            'fluentform_validations',
+            [
+                $originalValidations,
+                $this->form,
+                $formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/validations',
+            'Use fluentform/validations instead of fluentform_validations.'
+        );
+        $validations = apply_filters('fluentform/validations', $originalValidations, $this->form, $formData);
+
         /*
          * Clean talk fix for now
          * They should not hook fluentform_validations and return nothing!
@@ -86,14 +111,43 @@ class FormValidationService
                 $errors[$attribute] = $rules;
             }
             // Fire an event so that one can hook into it to work with the errors.
-            $errors = $this->app->applyFilters('fluentform_validation_error', $errors, $this->form, $fields, $formData);
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_error',
+                [
+                    $errors,
+                    $this->form,
+                    $fields,
+                    $formData
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_error',
+                'Use fluentform/validation_error instead of fluentform_validation_error.'
+            );
+
+            $errors = $this->app->applyFilters('fluentform/validation_error', $errors, $this->form, $fields, $formData);
         }
-        
+
         foreach ($fields as $fieldKey => $field) {
             $field['data_key'] = $fieldKey;
             $inputName = Arr::get($field, 'raw.attributes.name');
             $field['name'] = $inputName;
-            $error = apply_filters('fluentform_validate_input_item_' . $field['element'], '', $field, $formData, $fields, $this->form, $errors);
+    
+            $error = apply_filters_deprecated(
+                'fluentform_validate_input_item_' . $field['element'],
+                [
+                    '',
+                    $field,
+                    $formData,
+                    $fields,
+                    $this->form,
+                    $errors
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validate_input_item_' . $field['element'],
+                'Use fluentform/validate_input_item_' . $field['element'] . ' instead of fluentform_validate_input_item_' . $field['element']
+            );
+
+            $error = apply_filters('fluentform/validate_input_item_' . $field['element'], '', $field, $formData, $fields, $this->form, $errors);
             if ($error) {
                 if (empty($errors[$inputName])) {
                     $errors[$inputName] = [];
@@ -105,15 +159,52 @@ class FormValidationService
             }
         }
     
+        $errors = apply_filters_deprecated(
+            'fluentform_validation_errors',
+            [
+                $errors,
+                $formData,
+                $this->form,
+                $fields
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/validation_errors',
+            'Use fluentform/validation_errors instead of fluentform_validation_errors.'
+        );
     
-        $errors = apply_filters('fluentform_validation_errors', $errors, $formData, $this->form, $fields);
+        $errors = apply_filters('fluentform/validation_errors', $errors, $formData, $this->form, $fields);
     
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_registration') && !get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_registration_errors', $errors, $formData, $this->form, $fields);
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_user_registration_errors',
+                [
+                    $errors,
+                    $formData,
+                    $this->form,
+                    $fields
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_user_registration_errors',
+                'Use fluentform/validation_user_registration_errors instead of fluentform_validation_user_registration_errors.'
+            );
+
+            $errors = apply_filters('fluentform/validation_user_registration_errors', $errors, $formData, $this->form, $fields);
         }
     
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_update') && get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_update_errors', $errors, $formData, $this->form, $fields);
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_user_update_errors',
+                [
+                    $errors,
+                    $formData,
+                    $this->form,
+                    $fields
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_user_update_errors',
+                'Use fluentform/validation_user_update_errors instead of fluentform_validation_user_update_errors.'
+            );
+            $errors = apply_filters('fluentform/validation_user_update_errors', $errors, $formData, $this->form, $fields);
         }
         
         if ($errors) {
@@ -178,7 +269,17 @@ class FormValidationService
         // 1. limitNumberOfEntries
         // 2. scheduleForm
         // 3. requireLogin
-        $isAllowed = apply_filters('fluentform_is_form_renderable', $isAllowed, $this->form);
+        $isAllowed = apply_filters_deprecated(
+            'fluentform_is_form_renderable',
+            [
+                $isAllowed,
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_form_renderable',
+            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
+        );
+        $isAllowed = apply_filters('fluentform/is_form_renderable', $isAllowed, $this->form);
         
         if (!$isAllowed['status']) {
             throw new ValidationException('', 422, null,  [
@@ -248,16 +349,34 @@ class FormValidationService
     protected function validateNonce()
     {
         $formId = $this->form->id;
-        $shouldVerifyNonce = $this->app->applyFilters('fluentform_nonce_verify', false, $formId);
+        $shouldVerifyNonce = apply_filters_deprecated(
+            'fluentform_nonce_verify',
+            [
+                false,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/nonce_verify',
+            'Use fluentform/nonce_verify instead of fluentform_nonce_verify.'
+        );
+        $shouldVerifyNonce = $this->app->applyFilters('fluentform/nonce_verify', $shouldVerifyNonce, $formId);
         
         if ($shouldVerifyNonce) {
             $nonce = Arr::get($this->formData, '_fluentform_' . $formId . '_fluentformnonce');
             if (!wp_verify_nonce($nonce, 'fluentform-submit-form')) {
-                $errors = $this->app->applyFilters('fluentForm_nonce_error', [
-                    '_fluentformnonce' => [
-                        __('Nonce verification failed, please try again.', 'fluentform'),
+                $errors = apply_filters_deprecated(
+                    'fluentForm_nonce_error',
+                    [
+                        '_fluentformnonce' => [
+                            __('Nonce verification failed, please try again.', 'fluentform'),
+                        ],
                     ],
-                ]);
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentForm/nonce_error',
+                    'Use fluentForm/nonce_error instead of fluentForm_nonce_error.'
+                );
+
+                $errors = $this->app->applyFilters('fluentForm/nonce_error', $errors);
                 throw new ValidationException('', 422, null, ['errors' => $errors]);
             }
         }
@@ -284,15 +403,38 @@ class FormValidationService
          if (!AkismetHandler::isEnabled()) {
             return false;
         }
-        
-        $isSpamCheck = apply_filters('fluentform_akismet_check_spam', true, $form->id, $formData);
+        $isSpamCheck = apply_filters_deprecated(
+            'fluentform_akismet_check_spam',
+            [
+                true,
+                $form->id,
+                $formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_check_spam',
+            'Use fluentform/akismet_check_spam instead of fluentform_akismet_check_spam.'
+        );
+
+        $isSpamCheck = apply_filters('fluentform/akismet_check_spam', $isSpamCheck, $form->id, $formData);
+
         if (!$isSpamCheck) {
             return false;
         }
         // Let's validate now
         $isSpam = AkismetHandler::isSpamSubmission($formData, $form);
-        
-        return apply_filters('fluentform_akismet_spam_result', $isSpam, $form->id, $formData);
+    
+        $isSpam = apply_filters_deprecated(
+            'fluentform_akismet_spam_result',
+            [
+                $isSpam,
+                $form->id,
+                $formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_spam_result',
+            'Use fluentform/akismet_spam_result instead of fluentform_akismet_spam_result.'
+        );
+        return apply_filters('fluentform/akismet_spam_result', $isSpam, $form->id, $formData);
     }
     
     /**
@@ -301,7 +443,16 @@ class FormValidationService
      */
     private function validateReCaptcha()
     {
-        $autoInclude = apply_filters('ff_has_auto_recaptcha', false);
+        $hasAutoRecap =  apply_filters_deprecated(
+            'ff_has_auto_recaptcha',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_recaptcha',
+            'Use fluentform/has_recaptcha instead of ff_has_auto_recaptcha.'
+        );
+        $autoInclude = apply_filters('fluentform/has_recaptcha', $hasAutoRecap);
         if (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude) {
             $keys = get_option('_fluentform_reCaptcha_details');
             $token = Arr::get($this->formData, 'g-recaptcha-response');
@@ -322,14 +473,23 @@ class FormValidationService
             }
         }
     }
-    
+
     /**
      * Validate hCaptcha.
      * @throws ValidationException
      */
     private function validateHCaptcha()
     {
-        $autoInclude = apply_filters('ff_has_auto_hcaptcha', false);
+        $hasAutoHcap = apply_filters_deprecated(
+            'ff_has_auto_hcaptcha',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_hcaptcha',
+            'Use fluentform/has_hcaptcha instead of ff_has_auto_hcaptcha.'
+        );
+        $autoInclude = apply_filters('fluentform/has_hcaptcha', $hasAutoHcap);
         FormFieldsParser::resetData();
         if (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude) {
             $keys = get_option('_fluentform_hCaptcha_details');
@@ -354,7 +514,16 @@ class FormValidationService
      */
     private function validateTurnstile()
     {
-        $autoInclude = apply_filters('ff_has_auto_turnstile', false);
+        $hasAutoTurnsTile = apply_filters_deprecated(
+            'ff_has_auto_turnstile',
+            [
+                false
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_turnstile',
+            'Use fluentform/has_turnstile instead of ff_has_auto_turnstile.'
+        );
+        $autoInclude = apply_filters('fluentform/has_turnstile', $hasAutoTurnsTile);
         if (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude) {
             $keys = get_option('_fluentform_turnstile_details');
             $token = Arr::get($this->formData, 'cf-turnstile-response');

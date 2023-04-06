@@ -16,8 +16,23 @@ trait LogResponseTrait
             return;
         }
 
-        $prefix = 'fluentform_after_submission_api_response_';
+        $prefix = 'fluentform/after_submission_api_response_';
         $action = $prefix . $status;
+
+        do_action_deprecated(
+            'fluentform_after_submission_api_response_'. $status,
+            [
+                $form,
+                $entryId,
+                $data,
+                $feed,
+                $response,
+                $this->getApiResponseMessage($response, $status)
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            $action,
+            'Use ' . $action . ' instead of fluentform_after_submission_api_response_'. $status
+        );
 
         do_action(
             $action,

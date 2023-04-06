@@ -61,6 +61,17 @@ class DocumentationModule
                 'link'  => 'https://wpmanageninja.com/docs/fluent-form/field-types/',
             ],
         ];
-        return apply_filters('fluentform_user_guide_links', $guides);
+    
+        $guides = apply_filters_deprecated(
+            'fluentform_user_guide_links',
+            [
+                $guides
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/user_guide_links',
+            'Use fluentform/user_guide_links instead of fluentform_user_guide_links'
+        );
+
+        return apply_filters('fluentform/user_guide_links', $guides);
     }
 }

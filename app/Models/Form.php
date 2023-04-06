@@ -177,9 +177,19 @@ class Form extends Model
             'fluentform/forms_default_settings',
             $defaultSettings
         );
+    
+        $defaultSettings = apply_filters_deprecated(
+            'fluentform_create_default_settings',
+            [
+                $defaultSettings
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/create_default_settings',
+            'Use fluentform/create_default_settings instead of fluentform_create_default_settings.'
+        );
 
         return apply_filters(
-            'fluentform_create_default_settings',
+            'fluentform/create_default_settings',
             $defaultSettings
         );
     }

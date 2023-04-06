@@ -36,7 +36,17 @@ class Updater
         ];
 
         if ($formFields) {
-            $formFields = apply_filters('fluentform_form_fields_update', $formFields, $formId);
+            $formFields = apply_filters_deprecated(
+                'fluentform_form_fields_update',
+                [
+                    $formFields,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/form_fields_update',
+                'Use fluentform/form_fields_update instead of fluentform_form_fields_update.'
+            );
+            $formFields = apply_filters('fluentform/form_fields_update', $formFields, $formId);
             $formFields = $this->sanitizeFields($formFields);
             $data['form_fields'] = $formFields;
             

@@ -6,9 +6,40 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-$email_heading = apply_filters('fluentform_email_template_email_heading', false, $form, $notification);
-$headerImage = apply_filters('fluentform_email_template_header_image', false, $form, $notification);
-$contentType = apply_filters('fluentform_email_content_type_header', 'text/html; charset=UTF-8');
+$status = apply_filters_deprecated(
+    'fluentform_email_template_email_heading',
+    [
+        false,
+        $form,
+        $notification
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/email_template_email_heading',
+    'Use fluentform/email_template_email_heading instead of fluentform_email_template_email_heading.'
+);
+$email_heading = apply_filters('fluentform/email_template_email_heading', $status, $form, $notification);
+apply_filters_deprecated(
+    'fluentform_email_template_header_image',
+    [
+        false,
+        $form,
+        $notification
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/email_template_header_image',
+    'Use fluentform/email_template_header_image instead of fluentform_email_template_header_image.'
+);
+$headerImage = apply_filters('fluentform/email_template_header_image', false, $form, $notification);
+$contentType = apply_filters_deprecated(
+    'fluentform_email_content_type_header',
+    [
+        'text/html; charset=UTF-8'
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/email_content_type_header',
+    'Use fluentform/email_content_type_header instead of fluentform_email_content_type_header.'
+);
+$contentType = apply_filters('fluentform/email_content_type_header', $contentType);
 ?>
 <!DOCTYPE html>
 <html dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>">

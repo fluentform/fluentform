@@ -139,7 +139,17 @@ class Transfer
                         }
                     }
 
-                    do_action('fluentform_form_imported', $formId);
+                    do_action_deprecated(
+                        'fluentform_form_imported',
+                        [
+                            $formId
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/form_imported',
+                        'Use fluentform/form_imported instead of fluentform_form_imported.'
+                    );
+
+                    do_action('fluentform/form_imported', $formId);
                 }
 
                 wp_send_json([

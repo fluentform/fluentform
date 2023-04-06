@@ -41,10 +41,20 @@ trait PredefinedForms
             $predefinedForm = static::getBlankConversationalForm();
         } else {
             $predefined = Arr::get($attributes, 'predefined');
+            $predefinedForms = static::getPredefinedForms();
+            $predefinedForms = apply_filters_deprecated(
+                'fluentform_predefined_forms',
+                [
+                    $predefinedForms
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/predefined_forms',
+                'Use fluentform/predefined_forms instead of fluentform_predefined_forms'
+            );
 
             $predefinedForms = apply_filters(
-                'fluentform_predefined_forms',
-                static::getPredefinedForms()
+                'fluentform/predefined_forms',
+                $predefinedForms
             );
 
             $predefinedForm = Arr::get($predefinedForms, $predefined);

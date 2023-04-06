@@ -50,11 +50,35 @@ class HoneyPot
     {
         $option = get_option('_fluentform_global_form_settings');
         $status = 'yes' == ArrayHelper::get($option, 'misc.honeypotStatus');
-        return apply_filters('fluentform_honeypot_status', $status, $formId);
+    
+        $status = apply_filters_deprecated(
+            'fluentform_honeypot_status',
+            [
+                $status,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/honeypot_status',
+            'Use fluentform/honeypot_status instead of fluentform_honeypot_status.'
+        );
+
+        return apply_filters('fluentform/honeypot_status', $status, $formId);
     }
 
     private function getFieldName($formId)
     {
-        return apply_filters('fluentform_honeypot_name', 'item__' . $formId . '__fluent_checkme_', $formId);
+        $honeyPotName = 'item__' . $formId . '__fluent_checkme_';
+        $honeyPotName =  apply_filters_deprecated(
+            'fluentform_honeypot_name',
+            [
+                $honeyPotName,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/honeypot_name',
+            'Use fluentform/honeypot_name instead of fluentform_honeypot_name.'
+        );
+
+        return apply_filters('fluentform/honeypot_name', $honeyPotName, $formId);
     }
 }

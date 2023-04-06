@@ -2,11 +2,31 @@
 
 use FluentForm\App\Helpers\Helper;
 ?>
-<?php do_action('fluentform_global_menu'); ?>
+<?php
+    do_action_deprecated(
+        'fluentform_global_menu',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/global_menu',
+        'Use fluentform/global_menu instead of fluentform_global_menu.'
+    );
+    do_action('fluentform/global_menu');
+?>
 
 <div class="ff_form_wrap ff_tools_wrap">
     <div class="ff_admin_menu_wrapper ff_layout_section">
-        <?php do_action('fluentform_before_export_import_wrapper'); ?>
+        <?php
+            do_action_deprecated(
+                'fluentform_before_export_import_wrapper',
+                [
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/before_export_import_wrapper',
+                'Use fluentform/before_export_import_wrapper instead of fluentform_before_export_import_wrapper.'
+            );
+            do_action('fluentform/before_export_import_wrapper');
+        ?>
 
         <div class="ff_admin_menu_sidebar ff_layout_section_sidebar">
             <ul class="ff_admin_menu_list ff_list_button">
@@ -52,13 +72,42 @@ use FluentForm\App\Helpers\Helper;
         </div>
 
         <div class="ff_admin_menu_container ff_layout_section_container">
-            <?php do_action('fluentform_before_export_import_container'); ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_before_export_import_container',
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/before_export_import_container',
+                    'Use fluentform/before_export_import_container instead of fluentform_before_export_import_container.'
+                );
+                do_action('fluentform/before_export_import_container');
+            ?>
             <div class="ff_transfer" id="ff_transfer_app">
                 <component :is="component" :app="App"></component>
             </div>
-            <?php do_action('fluentform_after_before_export_import_container'); ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_after_export_import_container',
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/after_export_import_container',
+                    'Use fluentform/after_export_import_container instead of fluentform_after_export_import_container.'
+                );
+                do_action('fluentform/after_export_import_container');
+            ?>
         </div>
-
-        <?php do_action('fluentform_after_export_import_wrapper'); ?>
+        <?php
+            do_action_deprecated(
+                'fluentform_after_export_import_wrapper',
+                [
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/after_export_import_wrapper',
+                'Use fluentform/after_export_import_wrapper instead of fluentform_after_export_import_wrapper.'
+            );
+            do_action('fluentform/after_export_import_wrapper');
+        ?>
     </div>
 </div>

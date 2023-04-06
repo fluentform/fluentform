@@ -268,7 +268,17 @@ $country_names = [
     'ZW' => __('Zimbabwe', 'fluentform'),
 ];
 
-$country_names = apply_filters('fluent_editor_countries', $country_names);
+$country_names = apply_filters_deprecated(
+    'fluent_editor_countries',
+    [
+        $country_names
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/editor_countries',
+    'Use fluentform/editor_countries instead of fluent_editor_countries.'
+);
+
+$country_names = apply_filters('fluentform/editor_countries', $country_names);
 
 asort($country_names);
 

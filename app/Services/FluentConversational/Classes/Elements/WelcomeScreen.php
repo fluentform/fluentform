@@ -16,7 +16,7 @@ class WelcomeScreen extends BaseFieldManager
             'general'
         );
 
-        add_filter('fluent_conversational_editor_elements', [$this, 'pushConversationalComponent'], 10, 1);
+        add_filter('fluentform/conversational_editor_elements', [$this, 'pushConversationalComponent'], 10, 1);
     }
 
     public function getComponent()
@@ -105,7 +105,21 @@ class WelcomeScreen extends BaseFieldManager
     public function render($data, $form)
     {
         $elementName = $data['element'];
-        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
+
+        $app = wpFluentForm();
+    
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
+
+        $data = $app->applyFilters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $alignment = ArrayHelper::get($data, 'settings.align');
         if ($alignment) {

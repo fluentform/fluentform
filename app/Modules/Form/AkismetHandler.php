@@ -74,8 +74,20 @@ class AkismetHandler
                 }
             }
         }
+    
+        $info = apply_filters_deprecated(
+            'fluentform_akismet_fields',
+            [
+                $info,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_fields',
+            'Use fluentform/akismet_fields instead of fluentform_akismet_fields.'
+        );
 
-        $info = apply_filters('fluentform_akismet_fields', $info, $data, $form);
+        $info = apply_filters('fluentform/akismet_fields', $info, $data, $form);
 
         return http_build_query($info);
     }

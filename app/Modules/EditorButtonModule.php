@@ -56,8 +56,18 @@ class EditorButtonModule
             $option = get_option('_fluentform_global_form_settings');
             $isEligiblePage = 'yes' == ArrayHelper::get($option, 'misc.classicEditorButton');
         }
+    
+        $isEligiblePage = apply_filters_deprecated(
+            'fluentform_display_add_form_button',
+            [
+                $isEligiblePage
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/display_add_form_button',
+            'Use fluentform/display_add_form_button instead of fluentform_display_add_form_button'
+        );
 
-        return apply_filters('fluentform_display_add_form_button', $isEligiblePage);
+        return apply_filters('fluentform/display_add_form_button', $isEligiblePage);
     }
 
     private function getMenuIcon()

@@ -1,8 +1,28 @@
-<?php do_action('fluentform_global_menu'); ?>
+<?php
+    do_action_deprecated(
+        'fluentform_global_menu',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/global_menu',
+        'Use fluentform/global_menu instead of fluentform_global_menu.'
+    );
+    do_action('fluentform/global_menu');
+?>
 <div class="ff_form_wrap">
     <div class="ff_form_wrap_area">
         <div class="ff_documentaion_wrapper">
-            <?php do_action('fluentform_before_documentation_wrapper'); ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_before_documentation_wrapper',
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/before_documentation_wrapper',
+                    'Use fluentform/before_documentation_wrapper instead of fluentform_before_documentation_wrapper.'
+                );
+                do_action('fluentform/before_documentation_wrapper');
+            ?>
 
             <div class="el-row" style="margin-left: -12px; margin-right: -12px;">
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
@@ -197,7 +217,17 @@
                     ";
             ?>
 
-            <?php do_action('fluentform_after_documentation_wrapper') ?>
+            <?php
+            do_action_deprecated(
+                'fluentform_after_documentation_wrapper',
+                [
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/after_documentation_wrapper',
+                'Use fluentform/after_documentation_wrapper instead of fluentform_after_documentation_wrapper.'
+            );
+                do_action('fluentform/after_documentation_wrapper');
+            ?>
 
         </div>
     </div>

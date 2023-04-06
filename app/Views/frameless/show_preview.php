@@ -56,8 +56,30 @@
         </div>
         <div class="ff_form_styler_wrapper">
             <?php if(defined('FLUENTFORMPRO')): ?>
-            <?php do_action('fluentform_form_styler', $form_id); ?>
-            <?php elseif(apply_filters('fluentform_show_preview_promo', true)): ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_form_styler',
+                    [
+                        $form_id
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/form_styler',
+                    'Use fluentform/form_styler instead of fluentform_form_styler.'
+                );
+                do_action('fluentform/form_styler', $form_id);
+            ?>
+            <?php
+                apply_filters_deprecated(
+                    'fluentform_show_preview_promo',
+                    [
+                        true
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/show_preview_promo',
+                    'Use fluentform/show_preview_promo instead of fluentform_show_preview_promo.'
+                );
+                elseif(apply_filters('fluentform/show_preview_promo', true)):
+            ?>
                 <div class="ff_styler_promo">
                     <div class="ff_promo_header">
                         Advanced Form Styler (Pro)

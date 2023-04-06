@@ -131,8 +131,21 @@ class Export
         $inputLabels = array_merge($inputLabels, $extraLabels);
 
         $data = array_merge([array_values($inputLabels)], $exportData);
+    
+        $data = apply_filters_deprecated(
+            'fluentform_export_data',
+            [
+                $data,
+                $form,
+                $exportData,
+                $inputLabels
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/export_data',
+            'Use fluentform/export_data instead of fluentform_export_data.'
+        );
 
-        $data = apply_filters('fluentform_export_data', $data, $form, $exportData, $inputLabels);
+        $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
 
         $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
 

@@ -75,17 +75,17 @@ class RoleManager
 
         // Give permission to internal issues
         foreach ($availablePermissions as $permission) {
-            add_filter('fluentform_verify_user_permission_' . $permission, function ($allowed) {
+            add_filter('fluentform/verify_user_permission_' . $permission, function ($allowed) {
                 return true;
             });
         }
 
         // Give permission to menu items
-        add_filter('fluentform_dashboard_capability', function ($capability) use ($currentCapability) {
+        add_filter('fluentform/dashboard_capability', function ($capability) use ($currentCapability) {
             return $currentCapability;
         });
 
-        add_filter('fluentform_settings_capability', function ($capability) use ($currentCapability) {
+        add_filter('fluentform/settings_capability', function ($capability) use ($currentCapability) {
             return $currentCapability;
         });
     }

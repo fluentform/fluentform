@@ -4,12 +4,32 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 ?>
-<?php do_action('fluentform_global_menu'); ?>
+<?php
+    do_action_deprecated(
+        'fluentform_global_menu',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/global_menu',
+        'Use fluentform/global_menu instead of fluentform_global_menu.'
+    );
+    do_action('fluentform/global_menu');
+?>
 
 <div class="ff_form_wrap ff_global_setting_wrap">
     <div class="ff_form_wrap_area">
         <div class="ff_settings_wrapper ff_layout_section">
-            <?php do_action('fluentform_before_global_settings_wrapper'); ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_before_global_settings_wrapper',
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/before_global_settings_wrapper',
+                    'Use fluentform/before_global_settings_wrapper instead of fluentform_before_global_settings_wrapper.'
+                );
+                do_action('fluentform/before_global_settings_wrapper');
+            ?>
             <div class="ff_settings_sidebar ff_layout_section_sidebar">
                 <ul class="ff_settings_list ff_list_button">
                     <li class="ff_list_button_item has_sub_menu">
@@ -193,9 +213,29 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                 </ul>
             </div>
             <div class="ff_settings_container ff_layout_section_container" id="ff_settings_container">
-                <?php do_action('fluentform_global_settings_component_' . $currentComponent); ?>
+                <?php
+                do_action_deprecated(
+                    'fluentform_global_settings_component_' . $currentComponent,
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/global_settings_component_' . $currentComponent,
+                    'Use fluentform/global_settings_component_' . $currentComponent . ' instead of fluentform_global_settings_component_' . $currentComponent
+                );
+                    do_action('fluentform/global_settings_component_' . $currentComponent);
+                ?>
             </div>
-            <?php do_action('fluentform_after_global_settings_wrapper'); ?>
+            <?php
+                do_action_deprecated(
+                    'fluentform_after_global_settings_wrapper',
+                    [
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/after_global_settings_wrapper',
+                    'Use fluentform/after_global_settings_wrapper instead of fluentform_after_global_settings_wrapper.'
+                );
+                do_action('fluentform/after_global_settings_wrapper');
+            ?>
         </div>
     </div>
 </div>

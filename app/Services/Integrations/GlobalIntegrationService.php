@@ -10,10 +10,27 @@ class GlobalIntegrationService
     public function get($attr)
     {
         $settingsKey = sanitize_text_field(Arr::get($attr, 'settings_key'));
-        $settings = apply_filters('fluentform_global_integration_settings_' . $settingsKey, []);
-        $fieldSettings = apply_filters('fluentform_global_integration_fields_' . $settingsKey, []);
+        $settings = apply_filters_deprecated(
+            'fluentform_global_integration_settings_' . $settingsKey,
+            [
+                []
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_integration_settings_' . $settingsKey,
+            'Use fluentform/global_integration_settings_' . $settingsKey . ' instead of fluentform_global_integration_settings_' . $settingsKey
+        );
+        $settings = apply_filters('fluentform/global_integration_settings_' . $settingsKey, []);
+        $fieldSettings = apply_filters_deprecated(
+            'fluentform_global_integration_fields_' . $settingsKey,
+            [
+                []
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_integration_fields_' . $settingsKey,
+            'Use fluentform/global_integration_fields_' . $settingsKey . ' instead of fluentform_global_integration_fields_' . $settingsKey
+        );
+        $fieldSettings = apply_filters('fluentform/global_integration_fields_' . $settingsKey, []);
         if (!$fieldSettings) {
-            //@todo maybe create custom exception Handler
             $message = __('Sorry! No integration failed found with: ', 'fluentform').$settingsKey;
            return [
                'status' => false,

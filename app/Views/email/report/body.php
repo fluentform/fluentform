@@ -197,7 +197,17 @@
                                             get_bloginfo('name'),
                                             '</a>'
                                         );
-                                        $generateText = apply_filters('fluentform_email_summary_body_text', $generateText, $submissions);
+                                        $generateText = apply_filters_deprecated(
+                                            'fluentform_email_summary_body_text',
+                                            [
+                                                $generateText,
+                                                $submissions
+                                            ],
+                                            FLUENTFORM_FRAMEWORK_UPGRADE,
+                                            'fluentform/email_summary_body_text',
+                                            'Use fluentform/email_summary_body_text instead of fluentform_email_summary_body_text.'
+                                        );
+                                        $generateText = apply_filters('fluentform/email_summary_body_text', $generateText, $submissions);
                                         ?>
                                         <?php echo wp_kses_post($generateText); ?> .
                                     </td>
@@ -222,7 +232,16 @@
                                     '<a href="' .  admin_url('admin.php?page=fluent_forms_settings') . '">',
                                     '</a>'
                                 );
-                                $footerText = apply_filters('fluentform_email_summary_footer_text', $generateText);
+                                apply_filters_deprecated(
+                                    'fluentform_email_summary_footer_text',
+                                    [
+                                        $footerText
+                                    ],
+                                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                                    'fluentform/email_summary_footer_text',
+                                    'Use fluentform/email_summary_footer_text instead of fluentform_email_summary_footer_text.'
+                                );
+                                $footerText = apply_filters('fluentform/email_summary_footer_text', $footerText);
                                 ?>
                                 <p>
                                     <?php echo wp_kses_post($footerText); ?>

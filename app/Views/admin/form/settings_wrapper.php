@@ -97,6 +97,17 @@
 		</ul>
 	</div>
 	<div class="ff_settings_container ff_layout_section_container">
-		<?php do_action('fluentform_form_settings_container_'.$current_sub_route, $form_id); ?>
+		<?php
+        do_action_deprecated(
+            'fluentform_form_settings_container_' . $current_sub_route,
+            [
+                $form_id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_settings_container_' . $current_sub_route,
+            'Use fluentform/form_settings_container_' . $current_sub_route . ' instead of fluentform_form_settings_container_' . $current_sub_route
+        );
+            do_action('fluentform/form_settings_container_' . $current_sub_route, $form_id);
+        ?>
 	</div>
 </div>

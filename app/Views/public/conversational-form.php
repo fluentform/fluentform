@@ -78,7 +78,17 @@
         }
     </style>
 
-    <?php do_action('fluentform_conversational_frame_head'); ?>
+    <?php
+        do_action_deprecated(
+            'fluentform_conversational_frame_head',
+            [
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/conversational_frame_head',
+            'Use fluentform/conversational_frame_head instead of fluentform_conversational_frame_head.'
+        );
+        do_action('fluentform/conversational_frame_head');
+    ?>
     <style id="ffc_generated_css" type="text/css">
         <?php echo $generated_css; ?>
     </style>
@@ -121,7 +131,14 @@
     </div>
 </div>
 <?php
-do_action('fluentform_conversational_frame_footer');
+do_action_deprecated(
+    'fluentform_conversational_frame_footer',
+    [],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/conversational_frame_footer',
+    'Use fluentform/conversational_frame_footer instead of fluentform_conversational_frame_footer.'
+);
+do_action('fluentform/conversational_frame_footer');
 ?>
 </body>
 </html>

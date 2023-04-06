@@ -40,7 +40,7 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
     public function registerAdminHooks()
     {
         $isEnabled = $this->isEnabled();
-        add_filter('fluentform_global_addons', function ($addons) use ($isEnabled) {
+        add_filter('fluentform/global_addons', function ($addons) use ($isEnabled) {
             $addons[$this->integrationKey] = [
                 'title'                   => $this->title,
                 'category'                => $this->category,
@@ -62,38 +62,38 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         // Global Settings Here
         
         if ($this->hasGlobalMenu) {
-            add_filter('fluentform_global_settings_components', [$this, 'addGlobalMenu']);
-            add_filter('fluentform_global_integration_settings_' . $this->integrationKey, [$this, 'getGlobalSettings'],
+            add_filter('fluentform/global_settings_components', [$this, 'addGlobalMenu']);
+            add_filter('fluentform/global_integration_settings_' . $this->integrationKey, [$this, 'getGlobalSettings'],
                 $this->priority, 1);
-            add_filter('fluentform_global_integration_fields_' . $this->integrationKey, [$this, 'getGlobalFields'],
+            add_filter('fluentform/global_integration_fields_' . $this->integrationKey, [$this, 'getGlobalFields'],
                 $this->priority, 1);
-            add_action('fluentform_save_global_integration_settings_' . $this->integrationKey,
+            add_action('fluentform/save_global_integration_settings_' . $this->integrationKey,
                 [$this, 'saveGlobalSettings'], $this->priority, 1);
         }
         
-        add_filter('fluentform_global_notification_types', [$this, 'addNotificationType'], $this->priority);
+        add_filter('fluentform/global_notification_types', [$this, 'addNotificationType'], $this->priority);
         
-        add_filter('fluentform_get_available_form_integrations', [$this, 'pushIntegration'], $this->priority, 2);
+        add_filter('fluentform/get_available_form_integrations', [$this, 'pushIntegration'], $this->priority, 2);
         
-        add_filter('fluentform_global_notification_feed_' . $this->settingsKey, [$this, 'setFeedAttributes'], 10, 2);
+        add_filter('fluentform/global_notification_feed_' . $this->settingsKey, [$this, 'setFeedAttributes'], 10, 2);
         
-        add_filter('fluentform_get_integration_defaults_' . $this->integrationKey, [$this, 'getIntegrationDefaults'],
+        add_filter('fluentform/get_integration_defaults_' . $this->integrationKey, [$this, 'getIntegrationDefaults'],
             10, 2);
-        add_filter('fluentform_get_integration_settings_fields_' . $this->integrationKey, [$this, 'getSettingsFields'],
+        add_filter('fluentform/get_integration_settings_fields_' . $this->integrationKey, [$this, 'getSettingsFields'],
             10, 2);
-        add_filter('fluentform_get_integration_merge_fields_' . $this->integrationKey, [$this, 'getMergeFields'], 10,
+        add_filter('fluentform/get_integration_merge_fields_' . $this->integrationKey, [$this, 'getMergeFields'], 10,
             3);
         
-        add_filter('fluentform_save_integration_settings_' . $this->integrationKey, [$this, 'setMetaKey'], 10, 2);
-        add_filter('fluentform_get_integration_values_' . $this->integrationKey, [$this, 'prepareIntegrationFeed'], 10,
+        add_filter('fluentform/save_integration_settings_' . $this->integrationKey, [$this, 'setMetaKey'], 10, 2);
+        add_filter('fluentform/get_integration_values_' . $this->integrationKey, [$this, 'prepareIntegrationFeed'], 10,
             3);
     }
     
     public function registerNotificationHooks()
     {
         if ($this->isConfigured()) {
-            add_filter('fluentform_global_notification_active_types', [$this, 'addActiveNotificationType'], $this->priority);
-            add_action('fluentform_integration_notify_' . $this->settingsKey, [$this, 'notify'], $this->priority, 4);
+            add_filter('fluentform/global_notification_active_types', [$this, 'addActiveNotificationType'], $this->priority);
+            add_action('fluentform/integration_notify_' . $this->settingsKey, [$this, 'notify'], $this->priority, 4);
         }
     }
     

@@ -105,10 +105,32 @@ class CustomSubmitButton extends BaseFieldManager
             return '';
         }
 
-        add_filter('fluentform_is_hide_submit_btn_' . $form->id, '__return_true');
+        $hideSubmit = apply_filters_deprecated(
+            'fluentform_is_hide_submit_btn_' . $form->id,
+            [
+                '__return_true'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_hide_submit_btn_' . $form->id,
+            'Use fluentform/is_hide_submit_btn_' . $form->id . ' instead of fluentform_is_hide_submit_btn_' . $form->id
+        );
+
+        add_filter('fluentform/is_hide_submit_btn_' . $form->id, $hideSubmit);
 
         $elementName = $data['element'];
-        $data = apply_filters('fluentform_rendering_field_data_' . $elementName, $data, $form);
+    
+        $data = apply_filters_deprecated(
+            'fluentform_rendering_field_data_' . $elementName,
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_data_' . $elementName,
+            'Use fluentform/rendering_field_data_' . $elementName . ' instead of fluentform_rendering_field_data_' . $elementName
+        );
+
+        $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
 
@@ -197,6 +219,18 @@ class CustomSubmitButton extends BaseFieldManager
 
         $html .= '</div>';
 
-        $this->printContent('fluentform_rendering_field_html_' . $elementName, $html, $data, $form);
+        $html = apply_filters_deprecated(
+            'fluentform_rendering_field_html_' . $elementName,
+            [
+                $html,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/rendering_field_html_' . $elementName,
+            'Use fluentform/rendering_field_html_' . $elementName . ' instead of fluentform_rendering_field_html_' . $elementName
+        );
+
+        $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
     }
 }

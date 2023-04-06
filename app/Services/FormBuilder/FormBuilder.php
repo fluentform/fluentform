@@ -81,20 +81,44 @@ class FormBuilder
             $formClass .= ' ff_has_dynamic_smartcode';
             wp_enqueue_script('fluentform-advanced');
         }
+    
+        $formClass = apply_filters_deprecated(
+            'fluentform_form_class',
+            [
+                $formClass,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_class',
+            'Use fluentform/form_class instead of fluentform_form_class.'
+        );
 
-        $formClass = apply_filters('fluentform_form_class', $formClass, $form);
+        $formClass = apply_filters('fluentform/form_class', $formClass, $form);
 
         if ($form->has_payment) {
             $formClass .= ' fluentform_has_payment';
         }
 
-        $formAttributes = apply_filters('fluent_form_html_attributes', [
+        $data = [
             'data-form_id'       => $form->id,
             'id'                 => 'fluentform_' . $form->id,
             'class'              => $formClass,
             'data-form_instance' => $instanceCssClass,
             'method'             => 'POST',
-        ], $form);
+        ];
+    
+        $data = apply_filters_deprecated(
+            'fluent_form_html_attributes',
+            [
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_html_attributes',
+            'Use fluentform/form_html_attributes instead of fluent_form_html_attributes.'
+        );
+
+        $formAttributes = apply_filters('fluentform/form_html_attributes', $data, $form);
 
         $formAtts = $this->buildAttributes($formAttributes);
 
@@ -104,17 +128,47 @@ class FormBuilder
 
         echo "<div class='" . esc_attr($wrapperClasses) . "'>";
 
-        do_action('fluentform_before_form_render', $form);
+        do_action_deprecated(
+            'fluentform_before_form_render',
+            [
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_form_render',
+            'Use fluentform/before_form_render instead of fluentform_before_form_render.'
+        );
+
+        do_action('fluentform/before_form_render', $form);
 
         echo '<form ' . $formAtts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $formAtts is escaped before being passed in.
-
-        $isAccessible = apply_filters('fluentform_disable_accessibility_fieldset', true, $form);
+    
+        $isAccessible = apply_filters_deprecated(
+            'fluentform_disable_accessibility_fieldset',
+            [
+                true,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disable_accessibility_fieldset',
+            'Use fluentform/disable_accessibility_fieldset instead of fluentform_disable_accessibility_fieldset.'
+        );
+        $isAccessible = apply_filters('fluentform/disable_accessibility_fieldset', true, $form);
 
         if ($isAccessible) {
             echo $this->fieldsetHtml($form);
         }
 
-        do_action('fluentform_form_element_start', $form);
+        do_action_deprecated(
+            'fluentform_form_element_start',
+            [
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_element_start',
+            'Use fluentform/form_element_start instead of fluentform_form_element_start.'
+        );
+
+        do_action('fluentform/form_element_start', $form);
 
         echo "<input type='hidden' name='__fluent_form_embded_post_id' value='" . get_the_ID() . "' />";
 
@@ -135,14 +189,23 @@ class FormBuilder
 
         echo esc_attr($extraCssClass) . '_errors ' . esc_attr($instanceCssClass) . "_errors'></div></div>";
 
-        do_action('fluentform_after_form_render', $form);
+        do_action_deprecated(
+            'fluentform_after_form_render',
+            [
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/after_form_render',
+            'Use fluentform/after_form_render instead of fluentform_after_form_render.'
+        );
+        do_action('fluentform/after_form_render', $form);
 
         return ob_get_clean();
     }
 
     /**
      * @param \stdClass $form
-     * 
+     *
      * @return string form body
      */
     public function buildFormBody($form)
@@ -159,10 +222,31 @@ class FormBuilder
             }
 
             $this->setUniqueIdentifier($item);
+    
+            $item = apply_filters_deprecated(
+                'fluentform_before_render_item',
+                [
+                    $item,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/before_render_item',
+                'Use fluentform/before_render_item instead of fluentform_before_render_item.'
+            );
+            $item = apply_filters('fluentform/before_render_item', $item, $form);
 
-            $item = apply_filters('fluentform_before_render_item', $item, $form);
+            do_action_deprecated(
+                'fluentform_render_item_' . $item['element'],
+                [
+                    $item,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform_render_item_' . $item['element'],
+                'Use fluentform_render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
+            );
 
-            do_action('fluentform_render_item_' . $item['element'], $item, $form);
+            do_action('fluentform/render_item_' . $item['element'], $item, $form);
 
             $this->extractValidationRules($item);
 
@@ -170,9 +254,29 @@ class FormBuilder
         }
 
         if ($hasStepWrapper) {
-            do_action('fluentform_render_item_step_end', $form->fields['stepsWrapper']['stepEnd'], $form);
+            do_action_deprecated(
+                'fluentform_render_item_step_end',
+                [
+                    $form->fields['stepsWrapper']['stepEnd'],
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/render_item_step_end',
+                'Use fluentform/render_item_step_end instead of fluentform_render_item_step_end.'
+            );
+            do_action('fluentform/render_item_step_end', $form->fields['stepsWrapper']['stepEnd'], $form);
         } else {
-            do_action('fluentform_render_item_submit_button', $form->fields['submitButton'], $form);
+            do_action_deprecated(
+                'fluentform_render_item_submit_button',
+                [
+                    $form->fields['submitButton'],
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/render_item_submit_button',
+                'Use fluentform/render_item_submit_button instead of fluentform_render_item_submit_button.'
+            );
+            do_action('fluentform/render_item_submit_button', $form->fields['submitButton'], $form);
         }
 
         $content = ob_get_clean();
@@ -195,7 +299,17 @@ class FormBuilder
 
             ob_start();
 
-            do_action('fluentform_render_item_step_start', $startElement, $form);
+            do_action_deprecated(
+                'fluentform/render_item_step_start',
+                [
+                    $startElement,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/render_item_step_start',
+                'Use fluentform/render_item_step_start instead of fluentform_render_item_step_start.'
+            );
+            do_action('fluentform/render_item_step_start', $startElement, $form);
 
             $stepStatrt = ob_get_clean();
 
@@ -312,17 +426,50 @@ class FormBuilder
             $rules = $item['settings']['validation_rules'];
             foreach ($rules as $ruleName => $rule) {
                 if (isset($rule['message'])) {
-                    $rules[$ruleName]['message'] = apply_filters('fluentform_validation_message_' . $ruleName, $rule['message'], $item);
-                    $rules[$ruleName]['message'] = apply_filters('fluentform_validation_message_' . $item['element'] . '_' . $ruleName, $rule['message'], $item);
+                    $rules[$ruleName]['message'] = apply_filters_deprecated(
+                        'fluentform_validation_message_' . $ruleName,
+                        [
+                            $rule['message'],
+                            $item
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/validation_message_' . $ruleName,
+                        'Use fluentform/validation_message_' . $ruleName . ' instead of fluentform_validation_message_' . $ruleName
+                    );
+                    $rules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $ruleName, $rule['message'], $item);
+
+                    apply_filters_deprecated(
+                        'fluentform_validation_message_' . $item['element'] . '_' . $ruleName,
+                        [
+                            $rule['message'],
+                            $item
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/validation_message_' . $item['element'] . '_' . $ruleName,
+                        'Use fluentform/validation_message_' . $item['element'] . '_' . $ruleName . ' instead of fluentform_validation_message_' . $item['element'] . '_' . $ruleName
+                    );
+                    $rules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $item['element'] . '_' . $ruleName, $rule['message'], $item);
                 }
             }
-            $rules = apply_filters('fluentform_item_rules_' . $item['element'], $rules, $item);
+    
+            $rules= apply_filters_deprecated(
+                'fluentform_item_rules_' . $item['element'],
+                [
+                    $rules,
+                    $item
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/item_rules_' . $item['element'],
+                'Use fluentform/item_rules_' . $item['element'] . ' instead of fluentform_item_rules_' . $item['element']
+            );
+
+            $rules = apply_filters('fluentform/item_rules_' . $item['element'], $rules, $item);
             $this->validationRules[$item['attributes']['name']] = $rules;
         }
     }
 
     /**
-     * Extract conditipnal logic from a given element
+     * Extract conditional logic from a given element
      *
      * @param array $item
      *

@@ -65,8 +65,20 @@ class FormIntegrationController extends Controller
             $integrationName = $this->request->get('integration_name');
             $formId = intval($this->request->get('form_id'));
             $listId = $this->request->get('list_id');
-            $merge_fields = apply_filters('fluentform_get_integration_merge_fields_' . $integrationName, false, $listId,
-                $formId);
+            $merge_fields = false;
+            $merge_fields = apply_filters_deprecated(
+                'fluentform_get_integration_merge_fields_' . $integrationName,
+                [
+                    $merge_fields,
+                    $listId,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/get_integration_merge_fields_' . $integrationName,
+                'Use fluentform/get_integration_merge_fields_' . $integrationName . ' instead of fluentform_get_integration_merge_fields_' . $integrationName
+            );
+
+            $merge_fields = apply_filters('fluentform/get_integration_merge_fields_' . $integrationName, $merge_fields, $listId, $formId);
             
             return $this->sendSuccess([
                 'merge_fields' => $merge_fields,

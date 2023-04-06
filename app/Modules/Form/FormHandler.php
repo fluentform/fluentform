@@ -112,10 +112,34 @@ class FormHandler
             $this->handleSpamError();
         }
 
-        do_action('fluentform_before_insert_submission', $insertData, $data, $this->form);
+        do_action_deprecated(
+            'fluentform_before_insert_submission',
+            [
+                $insertData,
+                $data,
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_insert_submission',
+            'Use fluentform/before_insert_submission instead of fluentform_before_insert_submission.'
+        );
+
+        do_action('fluentform/before_insert_submission', $insertData, $data, $this->form);
 
         if ($this->form->has_payment) {
-            do_action('fluentform_before_insert_payment_form', $insertData, $data, $this->form);
+            do_action_deprecated(
+                'fluentform_before_insert_payment_form',
+                [
+                    $insertData,
+                    $data,
+                    $this->form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/before_insert_payment_form',
+                'Use fluentform/before_insert_payment_form instead of fluentform_before_insert_payment_form.'
+            );
+
+            do_action('fluentform/before_insert_payment_form', $insertData, $data, $this->form);
         }
 
         $insertId = wpFluent()->table('fluentform_submissions')->insertGetId($insertData);
@@ -125,7 +149,19 @@ class FormHandler
         $uidHash = md5(wp_generate_uuid4() . $insertId);
         Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
 
-        do_action('fluentform_before_form_actions_processing', $insertId, $this->formData, $this->form);
+        do_action_deprecated(
+            'fluentform_before_form_actions_processing',
+            [
+                $insertId,
+                $this->formData,
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_form_actions_processing',
+            'Use fluentform/before_form_actions_processing instead of fluentform_before_form_actions_processing.'
+        );
+
+        do_action('fluentform/before_form_actions_processing', $insertId, $this->formData, $this->form);
 
         $result = $this->processFormSubmissionData($insertId, $this->formData, $this->form);
 
@@ -148,8 +184,20 @@ class FormHandler
 
         $error = '';
         try {
-            $this->app->doAction(
+            do_action_deprecated(
                 'fluentform_submission_inserted',
+                [
+                    $insertId,
+                    $formData,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_inserted',
+                'Use fluentform/submission_inserted instead of fluentform_submission_inserted.'
+            );
+
+            $this->app->doAction(
+                'fluentform/submission_inserted',
                 $insertId,
                 $formData,
                 $form
@@ -157,8 +205,20 @@ class FormHandler
 
             Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
 
-            $this->app->doAction(
+            do_action_deprecated(
                 'fluentform_submission_inserted_' . $form->type . '_form',
+                [
+                    $insertId,
+                    $formData,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_inserted',
+                'Use fluentform/submission_inserted_' . $form->type . '_form' . ' instead of fluentform_submission_inserted_' . $form->type . '_form'
+            );
+
+            $this->app->doAction(
+                'fluentform/submission_inserted_' . $form->type . '_form',
                 $insertId,
                 $formData,
                 $form
@@ -169,11 +229,19 @@ class FormHandler
             }
         }
 
-        do_action('fluentform_before_submission_confirmation', $insertId, $formData, $form);
+        do_action_deprecated(
+            'fluentform_before_submission_confirmation',
+            [
+                $insertId,
+                $formData,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_submission_confirmation',
+            'Use fluentform/before_submission_confirmation instead of fluentform_before_submission_confirmation.'
+        );
 
-        // that was a typo. We will remove that after september
-        // @todo: Remove this action after september 2021
-        do_action('fluenform_before_submission_confirmation', $insertId, $formData, $form);
+        do_action('fluentform/before_submission_confirmation', $insertId, $formData, $form);
 
         return [
             'insert_id' => $insertId,
@@ -192,16 +260,42 @@ class FormHandler
 
             $form->settings = $formSettings ? json_decode($formSettings->value, true) : [];
         }
-
-        $confirmation = apply_filters(
+        $confirmation = $form->settings['confirmation'];
+        $confirmation = apply_filters_deprecated(
             'fluentform_form_submission_confirmation',
-            $form->settings['confirmation'],
+            [
+                $confirmation,
+                $formData,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_submission_confirmation',
+            'Use fluentform/form_submission_confirmation instead of fluentform_form_submission_confirmation.'
+        );
+    
+        $confirmation = $this->app->applyFilters(
+            'fluentform/form_submission_confirmation',
+            $confirmation,
             $formData,
             $form
         );
 
         if ('samePage' == $confirmation['redirectTo']) {
-            $confirmation['messageToShow'] = apply_filters('fluentform_submission_message_parse', $confirmation['messageToShow'], $insertId, $formData, $form);
+    
+            $confirmation['messageToShow'] = apply_filters_deprecated(
+                'fluentform_submission_message_parse',
+                [
+                    $confirmation['messageToShow'],
+                    $insertId,
+                    $formData,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_message_parse',
+                'Use fluentform/submission_message_parse instead of fluentform_submission_message_parse.'
+            );
+            $confirmation['messageToShow'] = apply_filters('fluentform/submission_message_parse',
+                $confirmation['messageToShow'], $insertId, $formData, $form);
 
             $message = ShortCodeParser::parse(
                 $confirmation['messageToShow'],
@@ -235,8 +329,19 @@ class FormHandler
                     $redirectUrl .= '?' . Arr::get($confirmation, 'query_strings');
                 }
             }
+            $parseUrl = true;
+            $parseUrl = apply_filters_deprecated(
+                'fluentform_will_parse_url_value',
+                [
+                    $parseUrl,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/will_parse_url_value',
+                'Use fluentform/will_parse_url_value instead of fluentform_will_parse_url_value.'
+            );
 
-            $isUrlParser = apply_filters('fluentform_will_parse_url_value', true, $form);
+            $isUrlParser = apply_filters('fluentform/will_parse_url_value', $parseUrl, $form);
 
             $redirectUrl = ShortCodeParser::parse(
                 $redirectUrl,
@@ -284,9 +389,21 @@ class FormHandler
                 'message'     => $message,
             ];
         }
+    
+        $returnData = apply_filters_deprecated(
+            'fluentform_submission_confirmation',
+            [
+                $returnData,
+                $form,
+                $confirmation
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/submission_confirmation',
+            'Use fluentform/submission_confirmation instead of fluentform_submission_confirmation.'
+        );
 
         return $this->app->applyFilters(
-            'fluentform_submission_confirmation',
+            'fluentform/submission_confirmation',
             $returnData,
             $form,
             $confirmation
@@ -315,14 +432,40 @@ class FormHandler
         foreach ($fields as $fieldName => $field) {
             if (isset($this->formData[$fieldName])) {
                 $element = $field['element'];
-                $this->formData[$fieldName] = apply_filters('fluentform_input_data_' . $element, $this->formData[$fieldName], $field, $this->formData, $this->form);
+    
+                $this->formData[$fieldName] = apply_filters_deprecated(
+                    'fluentform_input_data_' . $element,
+                    [
+                        $this->formData[$fieldName],
+                        $field,
+                        $this->formData,
+                        $this->form
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/input_data_' . $element,
+                    'Use fluentform/input_data_' . $element . ' instead of fluentform_input_data_' . $element
+                );
+
+                $this->formData[$fieldName] = $this->app->applyFilters('fluentform/input_data_' . $element,
+                    $this->formData[$fieldName], $field, $this->formData, $this->form);
             }
         }
 
         $originalValidations = FormFieldsParser::getValidations($this->form, $this->formData, $fields);
-
+    
+        $originalValidations = apply_filters_deprecated(
+            'fluentform_validations',
+            [
+                $originalValidations,
+                $this->form,
+                $this->formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/validations',
+            'Use fluentform/validations instead of fluentform_validations.'
+        );
         // Fire an event so that one can hook into it to work with the rules & messages.
-        $validations = apply_filters('fluentform_validations', $originalValidations, $this->form, $this->formData);
+        $validations = apply_filters('fluentform/validations', $originalValidations, $this->form, $this->formData);
 
         /*
          * Clean talk fix for now
@@ -346,15 +489,45 @@ class FormHandler
 
                 $errors[$attribute] = $rules;
             }
+    
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_error',
+                [
+                    $errors,
+                    $this->form,
+                    $fields,
+                    $this->formData
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_error',
+                'Use fluentform/validation_error instead of fluentform_validation_error.'
+            );
             // Fire an event so that one can hook into it to work with the errors.
-            $errors = $this->app->applyFilters('fluentform_validation_error', $errors, $this->form, $fields, $this->formData);
+            $errors = $this->app->applyFilters('fluentform/validation_error', $errors, $this->form, $fields,
+                $this->formData);
         }
 
         foreach ($fields as $fieldKey => $field) {
             $field['data_key'] = $fieldKey;
             $inputName = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.name');
             $field['name'] = $inputName;
-            $error = apply_filters('fluentform_validate_input_item_' . $field['element'], '', $field, $this->formData, $fields, $this->form, $errors);
+    
+            $error = apply_filters_deprecated(
+                'fluentform_validate_input_item_' . $field['element'],
+                [
+                    '',
+                    $field,
+                    $this->formData,
+                    $fields,
+                    $this->form,
+                    $errors
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform_validate_input_item_' . $field['element'],
+                'Use fluentform/validate_input_item_' . $field['element'] . ' instead of fluentform_validate_input_item_' . $field['element']
+            );
+
+            $error = apply_filters('fluentform/validate_input_item_' . $field['element'], $error, $field, $this->formData, $fields, $this->form, $errors);
             if ($error) {
                 if (empty($errors[$inputName])) {
                     $errors[$inputName] = [];
@@ -367,15 +540,55 @@ class FormHandler
                 $errors[$inputName] = array_merge($error, $errors[$inputName]);
             }
         }
+    
+        $errors = apply_filters_deprecated(
+            'fluentform_validation_errors',
+            [
+                $errors,
+                $this->formData,
+                $this->form,
+                $fields
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/validation_errors',
+            'Use fluentform/validation_errors instead of fluentform_validation_errors.'
+        );
 
-        $errors = apply_filters('fluentform_validation_errors', $errors, $this->formData, $this->form, $fields);
+        $errors = apply_filters('fluentform/validation_errors', $errors, $this->formData, $this->form, $fields);
 
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_registration') && !get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_registration_errors', $errors, $this->formData, $this->form, $fields);
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_user_registration_errors',
+                [
+                    $errors,
+                    $this->formData,
+                    $this->form,
+                    $fields
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_user_registration_errors',
+                'Use fluentform/validation_user_registration_errors instead of fluentform_validation_user_registration_errors.'
+            );
+
+            $errors = apply_filters('fluentform/validation_user_registration_errors', $errors, $this->formData,
+                $this->form, $fields);
         }
 
         if ('yes' == Helper::getFormMeta($this->form->id, '_has_user_update') && get_current_user_id()) {
-            $errors = apply_filters('fluentform_validation_user_update_errors', $errors, $this->formData, $this->form, $fields);
+            $errors = apply_filters_deprecated(
+                'fluentform_validation_user_update_errors',
+                [
+                    $errors,
+                    $this->formData,
+                    $this->form,
+                    $fields
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/validation_user_update_errors',
+                'Use fluentform/validation_user_update_errors instead of fluentform_validation_user_update_errors.'
+            );
+
+            $errors = apply_filters('fluentform/validation_user_update_errors', $errors, $this->formData, $this->form, $fields);
         }
 
         if ($errors) {
@@ -391,13 +604,36 @@ class FormHandler
     protected function validateNonce()
     {
         $formId = $this->form->id;
+        $nonceVerify = false;
+        apply_filters_deprecated(
+            'fluentform_nonce_verify',
+            [
+                $nonceVerify,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/nonce_verify',
+            'Use fluentform/nonce_verify instead of fluentform_nonce_verify.'
+        );
 
-        $shouldVerifyNonce = $this->app->applyFilters('fluentform_nonce_verify', false, $formId);
+        $shouldVerifyNonce = $this->app->applyFilters('fluentform/nonce_verify', $nonceVerify, $formId);
 
         if ($shouldVerifyNonce) {
             $nonce = Arr::get($this->formData, '_fluentform_' . $formId . '_fluentformnonce');
             if (!wp_verify_nonce($nonce, 'fluentform-submit-form')) {
-                $errors = $this->app->applyFilters('fluentForm_nonce_error', [
+                apply_filters_deprecated(
+                    'fluentForm_nonce_error',
+                    [
+                        '_fluentformnonce' => [
+                            __('Nonce verification failed, please try again.', 'fluentform'),
+                        ],
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/nonce_error',
+                    'Use fluentform/nonce_error instead of fluentForm_nonce_error.'
+                );
+
+                $errors = $this->app->applyFilters('fluentform/nonce_error', [
                     '_fluentformnonce' => [
                         __('Nonce verification failed, please try again.', 'fluentform'),
                     ],
@@ -426,15 +662,39 @@ class FormHandler
         if (!AkismetHandler::isEnabled()) {
             return false;
         }
+        $isSpamCheck = true;
+        $isSpamCheck = apply_filters_deprecated(
+            'fluentform_akismet_check_spam',
+            [
+                true,
+                $form->id,
+                $formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_check_spam',
+            'Use fluentform/akismet_check_spam instead of fluentform_akismet_check_spam.'
+        );
 
-        $isSpamCheck = apply_filters('fluentform_akismet_check_spam', true, $form->id, $formData);
+        $isSpamCheck = apply_filters('fluentform/akismet_check_spam', $isSpamCheck, $form->id, $formData);
         if (!$isSpamCheck) {
             return false;
         }
         // Let's validate now
         $isSpam = AkismetHandler::isSpamSubmission($formData, $form);
+    
+        $isSpam = apply_filters_deprecated(
+            'fluentform_akismet_spam_result',
+            [
+                $isSpam,
+                $form->id,
+                $formData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_spam_result',
+            'Use fluentform/akismet_spam_result instead of fluentform_akismet_spam_result.'
+        );
 
-        return apply_filters('fluentform_akismet_spam_result', $isSpam, $form->id, $formData);
+        return $this->app->applyFilters('fluentform/akismet_spam_result', $isSpam, $form->id, $formData);
     }
 
     /**
@@ -442,7 +702,17 @@ class FormHandler
      */
     private function validateReCaptcha()
     {
-        $autoInclude = apply_filters('ff_has_auto_recaptcha', false);
+        $hasAutoRecaptcha = false;
+        $hasAutoRecaptcha = apply_filters_deprecated(
+            'ff_has_auto_recaptcha',
+            [
+                $hasAutoRecaptcha
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_recaptcha',
+            'Use fluentform/has_recaptcha instead of ff_has_auto_recaptcha.'
+        );
+        $autoInclude = apply_filters('fluentform/has_recaptcha', $hasAutoRecaptcha);
         if (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude) {
             $keys = get_option('_fluentform_reCaptcha_details');
             $token = Arr::get($this->formData, 'g-recaptcha-response');
@@ -469,7 +739,18 @@ class FormHandler
      */
     private function validateHCaptcha()
     {
-        $autoInclude = apply_filters('ff_has_auto_hcaptcha', false);
+        $hasAutoHcaptcha = false;
+    
+        apply_filters_deprecated(
+            'ff_has_auto_hcaptcha',
+            [
+                $hasAutoHcaptcha
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_hcaptcha',
+            'Use fluentform/has_hcaptcha instead of ff_has_auto_hcaptcha.'
+        );
+        $autoInclude = apply_filters('fluentform/has_hcaptcha', $hasAutoHcaptcha);
         FormFieldsParser::resetData();
         if (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude) {
             $keys = get_option('_fluentform_hCaptcha_details');
@@ -493,7 +774,17 @@ class FormHandler
      */
     private function validateTurnstile()
     {
-        $autoInclude = apply_filters('ff_has_auto_turnstile', false);
+        $hasAutoTurnsTile = false;
+        apply_filters_deprecated(
+            'ff_has_auto_turnstile',
+            [
+                $hasAutoTurnsTile
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/has_turnstile',
+            'Use fluentform/has_turnstile instead of ff_has_auto_turnstile.'
+        );
+        $autoInclude = apply_filters('fluentform/has_turnstile', $hasAutoTurnsTile);
         if (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude) {
             $keys = get_option('_fluentform_turnstile_details');
             $token = Arr::get($this->formData, 'cf-turnstile-response');
@@ -535,7 +826,17 @@ class FormHandler
         // 1. limitNumberOfEntries
         // 2. scheduleForm
         // 3. requireLogin
-        $isAllowed = apply_filters('fluentform_is_form_renderable', $isAllowed, $this->form);
+        $isAllowed = apply_filters_deprecated(
+            'fluentform_is_form_renderable',
+            [
+                $isAllowed,
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_form_renderable',
+            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
+        );
+        $isAllowed = apply_filters('fluentform/is_form_renderable', $isAllowed, $this->form);
 
         if (!$isAllowed['status']) {
             wp_send_json([
@@ -629,12 +930,35 @@ class FormHandler
         $browser = new Browser();
 
         $inputConfigs = FormFieldsParser::getEntryInputs($this->form, ['admin_label', 'raw']);
-
-        $this->formData = apply_filters('fluentform_insert_response_data', $formData, $formId, $inputConfigs);
+    
+        $formData = apply_filters_deprecated(
+            'fluentform_insert_response_data',
+            [
+                $formData,
+                $formId,
+                $inputConfigs
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/insert_response_data',
+            'Use fluentform/insert_response_data instead of fluentform_insert_response_data.'
+        );
+        $this->formData = apply_filters('fluentform/insert_response_data', $formData, $formId, $inputConfigs);
 
         $ipAddress = $this->app->request->getIp();
+        $disableIpLogging = false;
+        $disableIpLogging = apply_filters_deprecated(
+            'fluentform_disable_ip_logging',
+            [
+                $disableIpLogging,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/disable_ip_logging',
+            'Use fluentform/disable_ip_logging instead of fluentform_disable_ip_logging.'
+        );
 
-        if ((defined('FLUENTFROM_DISABLE_IP_LOGGING') && FLUENTFROM_DISABLE_IP_LOGGING) || apply_filters('fluentform_disable_ip_logging', false, $formId)) {
+        if ((defined('FLUENTFROM_DISABLE_IP_LOGGING') && FLUENTFROM_DISABLE_IP_LOGGING) || apply_filters('fluentform/disable_ip_logging',
+                $disableIpLogging, $formId)) {
             $ipAddress = false;
         }
 
@@ -650,8 +974,18 @@ class FormHandler
             'created_at'    => current_time('mysql'),
             'updated_at'    => current_time('mysql'),
         ];
+    
+        $response = apply_filters_deprecated(
+            'fluentform_filter_insert_data',
+            [
+                $response
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/filter_insert_data',
+            'Use fluentform/filter_insert_data instead of fluentform_filter_insert_data.'
+        );
 
-        return apply_filters('fluentform_filter_insert_data', $response);
+        return apply_filters('fluentform/filter_insert_data', $response);
     }
 
     /**
@@ -705,7 +1039,8 @@ class FormHandler
                 wp_send_json([
                     'errors' => [
                         'restricted' => [
-                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id), 'fluentform'),
+                            __(apply_filters('fluentform/too_many_requests', 'Too Many Requests.', $this->form->id),
+                                'fluentform'),
                         ],
                     ],
                 ], 429);

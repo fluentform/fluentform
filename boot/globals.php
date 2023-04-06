@@ -103,16 +103,41 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
 
 function fluentFormEditorShortCodes()
 {
-    return apply_filters('fluentform_editor_shortcodes', [
-        EditorShortCode::getGeneralShortCodes(),
+    $generalShortCodes = EditorShortCode::getGeneralShortCodes();
+    apply_filters_deprecated(
+        'fluentform_editor_shortcodes',
+        [
+            [
+                $generalShortCodes,
+            ]
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/editor_shortcodes',
+        'Use fluentform/editor_shortcodes instead of fluentform_editor_shortcodes'
+    );
+
+    return apply_filters('fluentform/editor_shortcodes', [
+        $generalShortCodes,
     ]);
 }
 
 function fluentFormGetAllEditorShortCodes($form)
 {
-    return apply_filters(
+    $editorShortCodes = EditorShortCode::getShortCodes($form);
+    apply_filters_deprecated(
         'fluentform_all_editor_shortcodes',
-        EditorShortCode::getShortCodes($form),
+        [
+            $editorShortCodes,
+            $form
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/all_editor_shortcodes',
+        'Use fluentform/all_editor_shortcodes instead of fluentform_all_editor_shortcodes'
+    );
+
+    return apply_filters(
+        'fluentform/all_editor_shortcodes',
+        $editorShortCodes,
         $form
     );
 }
@@ -184,8 +209,17 @@ if (!function_exists('isWpAsyncRequest')) {
 function fluentFormIsHandlingSubmission()
 {
     $status = fluentFormWasSubmitted() || isWpAsyncRequest('fluentform_async_request');
-
-    return apply_filters('fluentform_is_handling_submission', $status);
+    
+    $status = apply_filters_deprecated(
+        'fluentform_is_handling_submission',
+        [
+            $status
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/is_handling_submission',
+        'Use fluentform/is_handling_submission instead of fluentform_is_handling_submission'
+    );
+    return apply_filters('fluentform/is_handling_submission', $status);
 }
 
 function fluentform_mb_strpos($haystack, $needle)
@@ -205,7 +239,15 @@ function fluentFormHandleScheduledTasks()
 
     $rand = mt_rand(1, 10);
     if ($rand >= 7) {
-        do_action('fluentform_maybe_scheduled_jobs');
+        do_action_deprecated(
+            'fluentform_maybe_scheduled_jobs',
+            [
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/maybe_scheduled_jobs',
+            'Use fluentform/maybe_scheduled_jobs instead of fluentform_maybe_scheduled_jobs.'
+        );
+        do_action('fluentform/maybe_scheduled_jobs');
     }
 }
 
@@ -351,8 +393,17 @@ function fluentform_sanitize_html($html)
         ];
         $tags = array_merge($tags, $svg_args);
     }
-
-    $tags = apply_filters('fluentform_allowed_html_tags', $tags);
+    
+    $tags = apply_filters_deprecated(
+        'fluentform_allowed_html_tags',
+        [
+            $tags
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/allowed_html_tags',
+        'Use fluentform/allowed_html_tags instead of fluentform_allowed_html_tags'
+    );
+    $tags = apply_filters('fluentform/allowed_html_tags', $tags);
 
     return wp_kses($html, $tags);
 }
@@ -370,9 +421,9 @@ function fluentform_kses_js($content)
  *
  * @return array $input
  */
-function fluentform_backend_sanitizer($array, $sanitizeMap = [])
+function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
 {
-    foreach ($array as $key => &$value) {
+    foreach ($inputs as $key => &$value) {
         if (is_array($value)) {
             $value = fluentform_backend_sanitizer($value, $sanitizeMap);
         } else {
@@ -383,8 +434,18 @@ function fluentform_backend_sanitizer($array, $sanitizeMap = [])
             }
         }
     }
+    
+    $inputs = apply_filters_deprecated(
+        'fluent_backend_sanitized_values',
+        [
+            $inputs
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/backend_sanitized_values',
+        'Use fluentform/backend_sanitized_values instead of fluent_backend_sanitized_values'
+    );
 
-    return apply_filters('fluent_backend_sanitized_values', $array);
+    return apply_filters('fluentform/backend_sanitized_values', $inputs);
 }
 
 /**
@@ -399,7 +460,17 @@ function fluentformSanitizeCSS($css)
 
 function fluentformCanUnfilteredHTML()
 {
-    return current_user_can('unfiltered_html') || apply_filters('fluent_form_disable_fields_sanitize', false);
+    $status = apply_filters_deprecated(
+        'fluent_form_disable_fields_sanitize',
+        [
+            false
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/disable_fields_sanitize',
+        'Use fluentform/disable_fields_sanitize instead of fluent_form_disable_fields_sanitize'
+    );
+
+    return current_user_can('unfiltered_html') || apply_filters('fluentform/disable_fields_sanitize', $status);
 }
 
 function fluentformLoadFile($path)

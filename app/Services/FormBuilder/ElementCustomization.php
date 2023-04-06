@@ -670,4 +670,14 @@ $element_customization_settings = [
     ]
 ];
 
-return apply_filters('fluent_editor_element_customization_settings', $element_customization_settings);
+$element_customization_settings = apply_filters_deprecated(
+    'fluentform_editor_element_customization_settings',
+    [
+        $element_customization_settings
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/editor_element_customization_settings',
+    'Use fluentform/editor_element_customization_settings instead of fluent_editor_element_customization_settings.'
+);
+
+return apply_filters('fluentform/editor_element_customization_settings', $element_customization_settings);

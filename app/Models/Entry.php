@@ -116,8 +116,20 @@ class Entry extends Model
                     }
                 }
             });
+        
+        $response = $query->paginate();
+        apply_filters_deprecated(
+            'fluentform_get_raw_responses',
+            [
+                $response,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_raw_responses',
+            'Use fluentform/get_raw_responses instead of fluentform_get_raw_responses.'
+        );
 
-        return apply_filters('fluentform_get_raw_responses', $query->paginate(), $formId);
+        return apply_filters('fluentform/get_raw_responses', $response, $formId);
     }
 
     public function countByGroup($formId)

@@ -76,12 +76,27 @@ class IntegrationManagerHelper
         if (!$response) {
             return;
         }
-        
-        $prefix = 'fluentform_after_submission_api_response_';
-        $action = $prefix . $status;
+
+        $oldAction = 'fluentform_after_submission_api_response_' . $status;
+        $newAction = 'fluentform/after_submission_api_response_' . $status;
+
+        do_action_deprecated(
+            $oldAction,
+            [
+                $form,
+                $entryId,
+                $data,
+                $feed,
+                $response,
+                $this->getApiResponseMessage($response, $status)
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            $newAction,
+            'Use ' . $newAction . ' instead of ' .$oldAction
+        );
         
         do_action(
-            $action,
+            $newAction,
             $form,
             $entryId,
             $data,

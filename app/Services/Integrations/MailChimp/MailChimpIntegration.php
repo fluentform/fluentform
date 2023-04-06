@@ -32,9 +32,9 @@ class MailChimpIntegration extends IntegrationManager
 
         add_action('wp_ajax_fluentform_mailchimp_interest_groups', [$this, 'fetchInterestGroups']);
 
-        add_filter('fluentform_save_integration_value_mailchimp', [$this, 'sanitizeSettings'], 10, 3);
+        add_filter('fluentform/save_integration_value_mailchimp', [$this, 'sanitizeSettings'], 10, 3);
 
-//        add_filter('fluentform_notifying_async_mailchimp', '__return_false');
+//        add_filter('fluentform/notifying_async_mailchimp', '__return_false');
     }
 
     public function getGlobalFields($fields)
@@ -483,13 +483,36 @@ class MailChimpIntegration extends IntegrationManager
         $response = $this->subscribe($feed, $formData, $entry, $form);
 
         if (true == $response && !is_wp_error($response)) {
-            do_action('ff_integration_action_result', $feed, 'success', __('Mailchimp feed has been successfully initialed and pushed data', 'fluentform'));
+            $message = __('Mailchimp feed has been successfully initialed and pushed data', 'fluentform');
+            do_action_deprecated(
+                'ff_integration_action_result',
+                [
+                    $feed,
+                    'success',
+                    $message
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/integration_action_result',
+                'Use fluentform/integration_action_result instead of fluentform_nonce_verify.'
+            );
+            do_action('fluentform/integration_action_result', $feed, 'success', $message);
         } else {
             $message = __('Mailchimp feed has been failed to deliver feed', 'fluentform');
             if (is_wp_error($response)) {
                 $message = $response->get_error_message();
             }
-            do_action('ff_integration_action_result', $feed, 'failed', $message);
+            do_action_deprecated(
+                'ff_integration_action_result',
+                [
+                    $feed,
+                    'failed',
+                    $message
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/integration_action_result',
+                'Use fluentform/integration_action_result instead of fluentform_nonce_verify.'
+            );
+            do_action('fluentform/integration_action_result', $feed, 'failed', $message);
         }
     }
 }

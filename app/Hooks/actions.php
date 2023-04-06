@@ -25,42 +25,42 @@ $app->addAction(
 );
 
 $app->addAction(
-    'ff_fluentform_form_application_view_editor',
+    'fluentform/form_application_view_editor',
     function ($formId) use ($app) {
         (new \FluentForm\App\Modules\Registerer\Menu($app))->renderEditor($formId);
     }
 );
 
 $app->addAction(
-    'ff_fluentform_form_application_view_settings',
+    'fluentform/form_application_view_settings',
     function ($formId) use ($app) {
         (new \FluentForm\App\Modules\Registerer\Menu($app))->renderSettings($formId);
     }
 );
 
 $app->addAction(
-    'fluentform_form_settings_container_form_settings',
+    'fluentform/form_settings_container_form_settings',
     function ($formId) use ($app) {
         (new \FluentForm\App\Modules\Registerer\Menu($app))->renderFormSettings($formId);
     }
 );
 
 $app->addAction(
-    'fluentform_global_settings_component_settings',
+    'fluentform/global_settings_component_settings',
     function () use ($app) {
         (new \FluentForm\App\Modules\Renderer\GlobalSettings\Settings($app))->render();
     }
 );
 
 $app->addAction(
-    'fluentform_global_settings_component_reCaptcha',
+    'fluentform/global_settings_component_reCaptcha',
     function () use ($app) {
         (new \FluentForm\App\Modules\Renderer\GlobalSettings\Settings($app))->render();
     }
 );
 
 $app->addAction(
-    'fluentform_global_settings_component_hCaptcha',
+    'fluentform/global_settings_component_hCaptcha',
     function () use ($app) {
         (new \FluentForm\App\Modules\Renderer\GlobalSettings\Settings($app))->render();
     }
@@ -77,11 +77,11 @@ add_action('admin_enqueue_scripts', function () use ($app) {
 }, 10);
 
 // Add Entries Menu
-$app->addAction('ff_fluentform_form_application_view_entries', function ($form_id) {
+$app->addAction('fluentform/form_application_view_entries', function ($form_id) {
     (new \FluentForm\App\Modules\Entries\Entries())->renderEntries($form_id);
 });
 
-$app->addAction('fluentform_after_form_navigation', function ($form_id) use ($app) {
+$app->addAction('fluentform/after_form_navigation', function ($form_id) use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->addCopyShortcodeButton($form_id);
     (new \FluentForm\App\Modules\Registerer\Menu($app))->addPreviewButton($form_id);
 });
@@ -90,7 +90,7 @@ $app->addAction('media_buttons', function () {
     (new \FluentForm\App\Modules\EditorButtonModule())->addButton();
 });
 
-$app->addAction('fluentform_addons_page_render_fluentform_add_ons', function () {
+$app->addAction('fluentform/addons_page_render_fluentform_add_ons', function () {
     (new \FluentForm\App\Modules\AddOnModule())->showFluentAddOns();
 });
 
@@ -104,19 +104,19 @@ add_filter('pre_set_site_transient_update_plugins', function ($updates) {
     return $updates;
 }, 999, 1);
 
-$app->addAction('fluentform_global_menu', function () use ($app) {
+$app->addAction('fluentform/global_menu', function () use ($app) {
     $menu = new \FluentForm\App\Modules\Registerer\Menu($app);
     $menu->renderGlobalMenu();
     if ('yes' != get_option('fluentform_scheduled_actions_migrated')) {
         \FluentForm\App\Databases\Migrations\ScheduledActions::migrate();
     }
 
-    $hookName = 'fluentform_do_scheduled_tasks';
+    $hookName = 'fluentform/do_scheduled_tasks';
     if (!wp_next_scheduled($hookName)) {
         wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
     }
 
-    $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
+    $emailReportHookName = 'fluentform/do_email_report_scheduled_tasks';
     if (!wp_next_scheduled($emailReportHookName)) {
         wp_schedule_event(time(), 'daily', $emailReportHookName);
     }
@@ -187,7 +187,18 @@ add_action('wp_print_scripts', function () {
         if (\FluentForm\App\Helpers\Helper::isFluentAdminPage()) {
             $option = get_option('_fluentform_global_form_settings');
             $isSkip = 'no' == \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.noConflictStatus');
-            $isSkip = apply_filters('fluentform_skip_no_conflict', $isSkip);
+    
+            $isSkip = apply_filters_deprecated(
+                'fluentform_skip_no_conflict',
+                [
+                    $isSkip
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/skip_no_conflict',
+                'Use fluentform/skip_no_conflict instead of fluentform_skip_no_conflict.'
+            );
+
+            $isSkip = apply_filters('fluentform/skip_no_conflict', $isSkip);
 
             if ($isSkip) {
                 return;
@@ -213,8 +224,8 @@ add_action('wp_print_scripts', function () {
     }
 }, 1);
 
-add_action('fluentform_loading_editor_assets', function ($form) {
-    add_filter('fluentform_editor_init_element_input_name', function ($field) {
+$app->addAction('fluentform/loading_editor_assets', function ($form) {
+    add_filter('fluentform/editor_init_element_input_name', function ($field) {
         if (empty($field['settings']['label_placement'])) {
             $field['settings']['label_placement'] = '';
         }
@@ -230,7 +241,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
     ];
 
     foreach ($upgradableCheckInputs as $upgradeElement) {
-        add_filter('fluentform_editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement) {
+        add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement) {
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
                 $formattedOptions = [];
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);
@@ -299,7 +310,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         'input_image',
     ];
     foreach ($upgradableFileInputs as $upgradeElement) {
-        add_filter('fluentform_editor_init_element_' . $upgradeElement, function ($element) {
+        add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) {
             if (!isset($element['settings']['upload_file_location'])) {
                 $element['settings']['upload_file_location'] = 'default';
             }
@@ -311,7 +322,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         });
     }
 
-    add_filter('fluentform_editor_init_element_gdpr_agreement', function ($element) {
+    add_filter('fluentform/editor_init_element_gdpr_agreement', function ($element) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
         }
@@ -319,7 +330,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $element;
     });
 
-    add_filter('fluentform_editor_init_element_input_text', function ($element) {
+    add_filter('fluentform/editor_init_element_input_text', function ($element) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
@@ -327,7 +338,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $element;
     });
 
-    add_filter('fluentform_editor_init_element_textarea', function ($element) {
+    add_filter('fluentform/editor_init_element_textarea', function ($element) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
@@ -335,7 +346,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $element;
     });
 
-    add_filter('fluentform_editor_init_element_input_date', function ($item) {
+    add_filter('fluentform/editor_init_element_input_date', function ($item) {
         if (!isset($item['settings']['date_config'])) {
             $item['settings']['date_config'] = '';
         }
@@ -343,7 +354,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $item;
     });
 
-    add_filter('fluentform_editor_init_element_container', function ($item) {
+    add_filter('fluentform/editor_init_element_container', function ($item) {
         if (!isset($item['settings']['conditional_logics'])) {
             $item['settings']['conditional_logics'] = [];
         }
@@ -365,7 +376,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $item;
     });
 
-    add_filter('fluentform_editor_init_element_input_number', function ($item) {
+    add_filter('fluentform/editor_init_element_input_number', function ($item) {
         if (!isset($item['settings']['number_step'])) {
             $item['settings']['number_step'] = '';
         }
@@ -382,7 +393,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $item;
     });
 
-    add_filter('fluentform_editor_init_element_input_email', function ($item) {
+    add_filter('fluentform/editor_init_element_input_email', function ($item) {
         if (!isset($item['settings']['is_unique'])) {
             $item['settings']['is_unique'] = 'no';
         }
@@ -399,7 +410,7 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $item;
     });
 
-    add_filter('fluentform_editor_init_element_input_text', function ($item) {
+    add_filter('fluentform/editor_init_element_input_text', function ($item) {
         if (isset($item['attributes']['data-mask'])) {
             if (!isset($item['settings']['data-mask-reverse'])) {
                 $item['settings']['data-mask-reverse'] = 'no';
@@ -426,32 +437,26 @@ add_action('fluentform_loading_editor_assets', function ($form) {
         return $item;
     });
 
-    add_filter('fluentform_editor_init_element_recaptcha', function ($item, $form) {
+    add_filter('fluentform/editor_init_element_recaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'g-recaptcha-response';
 
         return $item;
     }, 10, 2);
 
-    add_filter('fluentform_editor_init_element_hcaptcha', function ($item, $form) {
+    add_filter('fluentform/editor_init_element_hcaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'h-captcha-response';
 
         return $item;
     }, 10, 2);
 
-    add_filter('fluentform_editor_init_element_turnstile', function ($item, $form) {
+    add_filter('fluentform/editor_init_element_turnstile', function ($item, $form) {
         $item['attributes']['name'] = 'cf-turnstile-response';
 
         return $item;
     }, 10, 2);
 }, 10);
 
-add_filter('fluentform_addons_extra_menu', function ($menus) {
-    $menus['fluentform_pdf'] = __('Fluent Forms PDF', 'fluentform');
-
-    return $menus;
-}, 99, 1);
-
-add_action('fluentform_addons_page_render_fluentform_pdf', function () use ($app) {
+add_action('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {
     $url = '';
     if (!defined('FLUENTFORM_PDF_VERSION')) {
         $url = wp_nonce_url(
@@ -467,59 +472,27 @@ add_action('fluentform_addons_page_render_fluentform_pdf', function () use ($app
     ]);
 });
 
-//Add file upload location in global settings
-add_filter('fluentform_get_global_settings_values', function ($values, $key) {
-    if (is_array($key)) {
-        if (in_array('_fluentform_global_form_settings', $key)) {
-            $values['file_upload_optoins'] = FluentForm\App\Helpers\Helper::fileUploadLocations();
-        }
-
-        if (in_array('_fluentform_turnstile_details', $key)) {
-            $values = FluentForm\App\Modules\Turnstile\Turnstile::ensureSettings($values);
-        }
+$app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {
+    $url = '';
+    if (!defined('FLUENTFORM_PDF_VERSION')) {
+        $url = wp_nonce_url(
+            self_admin_url('update.php?action=install-plugin&plugin=fluentforms-pdf'),
+            'install-plugin_fluentforms-pdf'
+        );
     }
 
-    return $values;
-}, 10, 2);
+    $app->view->render('admin.addons.pdf_promo', [
+        'public_url' => fluentFormMix(),
+        'install_url'  => $url,
+        'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
+    ]);
+});
 
-add_action('ff_installed_by', function ($by) {
+$app->addAction('fluentform/installed_by', function ($by) {
     if (is_string($by) && !get_option('_ff_ins_by')) {
         update_option('_ff_ins_by', sanitize_text_field($by), 'no');
     }
 });
-
-//Enables recaptcha validation when autoload recaptcha enabled for all forms
-$autoIncludeRecaptcha = [
-    [
-        'type'        => 'hcaptcha',
-        'is_disabled' => !get_option('_fluentform_hCaptcha_keys_status', false),
-    ],
-    [
-        'type'        => 'recaptcha',
-        'is_disabled' => !get_option('_fluentform_reCaptcha_keys_status', false),
-    ],
-    [
-        'type'        => 'turnstile',
-        'is_disabled' => !get_option('_fluentform_turnstile_keys_status', false),
-    ],
-];
-
-foreach ($autoIncludeRecaptcha as $input) {
-    if ($input['is_disabled']) {
-        continue;
-    }
-    add_filter('ff_has_auto_' . $input['type'], function () use ($input) {
-        $option = get_option('_fluentform_global_form_settings');
-        $autoload = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
-        $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
-
-        if ($autoload && $type == $input['type']) {
-            return true;
-        }
-
-        return false;
-    });
-}
 
 // from Frontend.php
 if (defined('WP_ROCKET_VERSION')) {
@@ -531,58 +504,6 @@ if (defined('WP_ROCKET_VERSION')) {
         return $lines;
     });
 }
-/*
- * Push captcha in all forms when enabled from global settings
- */
-add_filter('fluentform_rendering_form', function ($form) {
-    $option = get_option('_fluentform_global_form_settings');
-    $enabled = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
-    if (!$enabled) {
-        return $form;
-    }
-    $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
-    $reCaptcha = [
-        'element'    => 'recaptcha',
-        'attributes' => [
-            'name' => 'recaptcha',
-        ],
-    ];
-    $hCaptcha = [
-        'element'    => 'hcaptcha',
-        'attributes' => [
-            'name' => 'hcaptcha',
-        ],
-    ];
-    $turnstile = [
-        'element'    => 'turnstile',
-        'attributes' => [
-            'name' => 'turnstile',
-        ],
-    ];
-
-    if ('recaptcha' == $type) {
-        $captcha = $reCaptcha;
-    } elseif ('hcaptcha' == $type) {
-        $captcha = $hCaptcha;
-    } elseif ('turnstile' == $type) {
-        $captcha = $turnstile;
-    }
-
-    // place recaptcha below custom submit button
-    $hasCustomSubmit = false;
-    foreach ($form->fields['fields'] as $index => $field) {
-        if ('custom_submit_button' == $field['element']) {
-            $hasCustomSubmit = true;
-            array_splice($form->fields['fields'], $index, 0, [$captcha]);
-            break;
-        }
-    }
-    if (!$hasCustomSubmit) {
-        $form->fields['fields'][] = $captcha;
-    }
-
-    return $form;
-}, 10, 1);
 
 // from Common.php
 add_action('save_post', function ($post_id) use ($app) {
@@ -647,7 +568,19 @@ add_action('wp', function () use ($app) {
             ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
-            if (apply_filters('fluentform_load_default_public', true, $form)) {
+
+            $loadPublicStyle = apply_filters_deprecated(
+                'fluentform_load_default_public',
+                [
+                    true,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/load_default_public',
+                'Use fluentform/load_default_public instead of fluentform_load_default_public.'
+            );
+
+            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, $form)) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
@@ -658,118 +591,9 @@ add_action('wp', function () use ($app) {
     }
 }, 1);
 
-$elements = [
-    'select',
-    'input_checkbox',
-    'input_radio',
-    'address',
-    'select_country',
-    'gdpr_agreement',
-    'terms_and_condition',
-    'multi_payment_component'
-];
-
-foreach ($elements as $element) {
-    $event = 'fluentform_response_render_' . $element;
-    $app->addFilter($event, function ($response, $field, $form_id, $isLabel = false) {
-        $element = $field['element'];
-
-        if ('address' == $element && !empty($response->country)) {
-            $countryList = getFluentFormCountryList();
-            if (isset($countryList[$response->country])) {
-                $response->country = $countryList[$response->country];
-            }
-        }
-
-        if ('select_country' == $element) {
-            $countryList = getFluentFormCountryList();
-            if (isset($countryList[$response])) {
-                $response = $countryList[$response];
-            }
-        }
-
-        if (in_array($field['element'], ['gdpr_agreement', 'terms_and_condition'])) {
-            if (!empty($response) && 'on' == $response) {
-                $response = __('Accepted', 'fluentform');
-            } else {
-                $response = __('Declined', 'fluentform');
-            }
-        }
-
-        if ($response && $isLabel && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
-            if (!isset($field['options'])) {
-                $field['options'] = [];
-                foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
-                    $field['options'][$option['value']] = $option['label'];
-                }
-            }
-            if (isset($field['options'][$response])) {
-                return $field['options'][$response];
-            }
-        }
-    
-        if (in_array($element, ['select', 'input_checkbox', 'multi_payment_component']) && is_array($response)) {
-            return \FluentForm\App\Modules\Form\FormDataParser::formatCheckBoxValues($response, $field, $isLabel);
-        }
-
-        return \FluentForm\App\Modules\Form\FormDataParser::formatValue($response);
-    }, 10, 4);
-}
-
-$app->addFilter('fluentform_response_render_textarea', function ($value, $field, $formId, $isHtml) {
-    $value = $value ? nl2br($value) : $value;
-
-    if (!$isHtml || !$value) {
-        return $value;
-    }
-
-    return '<span style="white-space: pre-line">' . $value . '</span>';
-}, 10, 4);
-
-$app->addFilter('fluentform_response_render_input_file', function ($response, $field, $form_id, $isHtml = false) {
-    return \FluentForm\App\Modules\Form\FormDataParser::formatFileValues($response, $isHtml, $form_id);
-}, 10, 4);
-
-$app->addFilter('fluentform_response_render_input_image', function ($response, $field, $form_id, $isHtml = false) {
-    return \FluentForm\App\Modules\Form\FormDataParser::formatImageValues($response, $isHtml, $form_id);
-}, 10, 4);
-
-$app->addFilter('fluentform_response_render_input_repeat', function ($response, $field, $form_id) {
-    return \FluentForm\App\Modules\Form\FormDataParser::formatRepeatFieldValue($response, $field, $form_id);
-}, 10, 3);
-
-$app->addFilter('fluentform_response_render_tabular_grid', function ($response, $field, $form_id, $isHtml = false) {
-    return \FluentForm\App\Modules\Form\FormDataParser::formatTabularGridFieldValue($response, $field, $form_id, $isHtml);
-}, 10, 4);
-
-$app->addFilter('fluentform_response_render_input_name', function ($response) {
-    return \FluentForm\App\Modules\Form\FormDataParser::formatName($response);
-}, 10, 1);
-
-$app->addFilter('fluentform_response_render_input_password', function ($value, $field, $formId) {
-    if (Helper::shouldHidePassword($formId)) {
-        $value = str_repeat('*', 6) . ' ' . __('(truncated)', 'fluentform');
-    }
-
-    return $value;
-}, 10, 3);
-
-$app->addFilter('fluentform_filter_insert_data', function ($data) {
-    $settings = get_option('_fluentform_global_form_settings', false);
-    if (is_array($settings) && isset($settings['misc'])) {
-        if (isset($settings['misc']['isIpLogingDisabled'])) {
-            if ($settings['misc']['isIpLogingDisabled']) {
-                unset($data['ip']);
-            }
-        }
-    }
-
-    return $data;
-});
-
 // Register api response log hooks
 $app->addAction(
-    'fluentform_after_submission_api_response_success',
+    'fluentform/after_submission_api_response_success',
     function ($form, $entryId, $data, $feed, $res, $msg = '') {
         fluentform_after_submission_api_response_success($form, $entryId, $data, $feed, $res, $msg = '');
     },
@@ -778,7 +602,7 @@ $app->addAction(
 );
 
 $app->addAction(
-    'fluentform_after_submission_api_response_failed',
+    'fluentform/after_submission_api_response_failed',
     function ($form, $entryId, $data, $feed, $res, $msg = '') {
         fluentform_after_submission_api_response_failed($form, $entryId, $data, $feed, $res, $msg = '');
     },
@@ -790,7 +614,20 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
 {
     try {
         $isDev = 'production' != wpFluentForm()->getEnv();
-        if (!apply_filters('fluentform_api_success_log', $isDev, $form, $feed)) {
+
+        apply_filters_deprecated(
+            'fluentform_api_success_log',
+            [
+                $isDev,
+                $form,
+                $feed
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/api_success_log',
+            'Use fluentform/api_success_log instead of fluentform_api_success_log.'
+        );
+
+        if (!apply_filters('fluentform/api_success_log', $isDev, $form, $feed)) {
             return;
         }
 
@@ -813,7 +650,20 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 {
     try {
         $isDev = 'production' != wpFluentForm()->getEnv();
-        if (!apply_filters('fluentform_api_failed_log', $isDev, $form, $feed)) {
+    
+        $isDev = apply_filters_deprecated(
+            'fluentform_api_failed_log',
+            [
+                $isDev,
+                $form,
+                $feed
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/api_failed_log',
+            'Use fluentform/api_failed_log instead of fluentform_api_failed_log.'
+        );
+
+        if (!apply_filters('fluentform/api_failed_log', $isDev, $form, $feed)) {
             return;
         }
 
@@ -832,20 +682,33 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
     }
 }
 
-$app->addFilter('fluentform-disabled_analytics', function ($status) {
-    $settings = get_option('_fluentform_global_form_settings');
-    if (isset($settings['misc']['isAnalyticsDisabled']) && $settings['misc']['isAnalyticsDisabled']) {
-        return true;
-    }
-
-    return $status;
+$app->addAction('fluentform/before_form_render', function ($form) {
+    do_action_deprecated(
+        'fluentform_load_form_assets',
+        [
+            $form->id
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/load_form_assets',
+        'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
+    );
+    do_action('fluentform/load_form_assets', $form->id);
 });
 
-$app->addAction('fluentform_before_form_render', function ($form) {
-    do_action('fluentform_load_form_assets', $form->id);
+$app->addAction('fluentform/before_form_render', function ($form) {
+    do_action_deprecated(
+        'fluentform_load_form_assets',
+        [
+            $form->id,
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/load_form_assets',
+        'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
+    );
+    do_action('fluentform/load_form_assets', $form->id);
 });
 
-$app->addAction('fluentform_load_form_assets', function ($formId) {
+$app->addAction('fluentform/load_form_assets', function ($formId) {
     // check if alreaded loaded
     if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
         (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId);
@@ -853,12 +716,45 @@ $app->addAction('fluentform_load_form_assets', function ($formId) {
         $selectedStyle = \FluentForm\App\Helpers\Helper::getFormMeta($formId, '_ff_selected_style');
 
         if ($selectedStyle) {
-            do_action('fluentform_init_custom_stylesheet', $selectedStyle, $formId);
+            do_action_deprecated(
+                'fluentform_init_custom_stylesheet',
+                [
+                    $selectedStyle,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/init_custom_stylesheet',
+                'Use fluentform/init_custom_stylesheet instead of fluentform_init_custom_stylesheet.'
+            );
+            do_action('fluentform/init_custom_stylesheet', $selectedStyle, $formId);
         }
     }
 });
 
-$app->addAction('fluentform_submission_inserted', function ($insertId, $formData, $form) use ($app) {
+$app->addAction('fluentform/load_form_assets', function ($formId) {
+    // check if alreaded loaded
+    if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
+        (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId);
+        \FluentForm\App\Helpers\Helper::$loadedForms[] = $formId;
+        $selectedStyle = \FluentForm\App\Helpers\Helper::getFormMeta($formId, '_ff_selected_style');
+
+        if ($selectedStyle) {
+            do_action_deprecated(
+                'fluentform_init_custom_stylesheet',
+                [
+                    $selectedStyle,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/init_custom_stylesheet',
+                'Use fluentform/init_custom_stylesheet instead of fluentform_init_custom_stylesheet.'
+            );
+            do_action('fluentform/init_custom_stylesheet', $selectedStyle, $formId);
+        }
+    }
+});
+
+$app->addAction('fluentform/submission_inserted', function ($insertId, $formData, $form) use ($app) {
     $notificationManager = new \FluentForm\App\Hooks\Handlers\GlobalNotificationHandler($app);
     $notificationManager->globalNotify($insertId, $formData, $form);
 }, 10, 3);
@@ -867,25 +763,20 @@ $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
 });
 
-$app->addAction('fluentform_form_element_start', function ($form) use ($app) {
+$app->addAction('fluentform/form_element_start', function ($form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->renderHoneyPot($form);
 });
 
-$app->addAction('fluentform_before_insert_submission', function ($insertData, $requestData, $form) use ($app) {
+$app->addAction('fluentform/before_insert_submission', function ($insertData, $requestData, $form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->verify($insertData, $requestData, $form->id);
 }, 9, 3);
 
-add_action('ff_log_data', function ($data) use ($app) {
+add_action('fluentform/log_data', function ($data) use ($app) {
     $dataLogger = new \FluentForm\App\Modules\Logger\DataLogger($app);
     $dataLogger->log($data);
 });
-
-// permision based filters
-add_filter('fluentform_permission_callback', function ($status, $permission) {
-    return (new \FluentForm\App\Modules\Acl\RoleManager())->currentUserFormFormCapability();
-}, 10, 2);
 
 // widgets
 add_action('widgets_init', function () {
@@ -903,13 +794,19 @@ add_action('wp', function () {
 
     if ($fluentFormIds && is_array($fluentFormIds)) {
         foreach ($fluentFormIds as $formId) {
-            do_action('fluentform_load_form_assets', $formId);
+            do_action_deprecated(
+                'fluentform_load_form_assets',
+                [
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/load_form_assets',
+                'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
+            );
+            do_action('fluentform/load_form_assets', $formId);
         }
     }
 });
-
-add_filter('fluentform_validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
-add_filter('fluentform_validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
 
 add_filter('cron_schedules', function ($schedules) {
     $schedules['ff_every_five_minutes'] = [
@@ -920,10 +817,10 @@ add_filter('cron_schedules', function ($schedules) {
     return $schedules;
 }, 10, 1);
 
-add_action('fluentform_do_scheduled_tasks', 'fluentFormHandleScheduledTasks');
-add_action('fluentform_do_email_report_scheduled_tasks', 'fluentFormHandleScheduledEmailReport');
+add_action('fluentform/do_scheduled_tasks', 'fluentFormHandleScheduledTasks');
+add_action('fluentform/do_email_report_scheduled_tasks', 'fluentFormHandleScheduledEmailReport');
 
-add_action('ff_integration_action_result', function ($feed, $status, $note = '') {
+add_action('fluentform/integration_action_result', function ($feed, $status, $note = '') {
     if (!isset($feed['scheduled_action_id']) || !$status) {
         return;
     }
@@ -948,8 +845,19 @@ add_action('ff_integration_action_result', function ($feed, $status, $note = '')
         ]);
 }, 10, 3);
 
-add_action('fluentform_global_notify_completed', function ($insertId, $form) use ($app) {
-    if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform_truncate_password_values', true, $form->id)) {
+add_action('fluentform/global_notify_completed', function ($insertId, $form) use ($app) {
+    apply_filters_deprecated(
+        'fluentform_truncate_password_values',
+        [
+            true,
+            $form->id
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/truncate_password_values',
+        'Use fluentform/truncate_password_values instead of fluentform_truncate_password_values.'
+    );
+
+    if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform/truncate_password_values', true, $form->id)) {
         // we have password
         (new \FluentForm\App\Services\Integrations\GlobalNotificationService())->cleanUpPassword($insertId, $form);
     }
@@ -979,36 +887,6 @@ add_action('init', function () {
 /*
  * Smartcode parser shortcodes
  */
-
-add_filter('ff_will_return_html', function ($result, $integration, $key) {
-    $dictionary = [
-        'notifications' => ['message'],
-        'pdfFeed' => ['body'],
-    ];
-
-    if (!isset($dictionary[$integration])) {
-        return $result;
-    }
-
-    if (in_array($key, $dictionary[$integration])) {
-        return true;
-    }
-
-    return $result;
-}, 10, 3);
-
-$app->addFilter('fluentform_response_render_input_number', function ($response, $field, $form_id, $isHtml = false) {
-    if (!$response || !$isHtml) {
-        return $response;
-    }
-    $fieldSettings = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings');
-    $formatter = \FluentForm\Framework\Helpers\ArrayHelper::get($fieldSettings, 'numeric_formatter');
-    if (!$formatter) {
-        return $response;
-    }
-
-    return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
-}, 10, 4);
 
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 

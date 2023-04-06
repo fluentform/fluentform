@@ -10,7 +10,17 @@
     }
 </style>
 
-<?php do_action('fluentform_before_no_permission'); ?>
+<?php
+do_action_deprecated(
+    'fluentform_before_no_permission',
+    [
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/before_no_permission',
+    'Use fluentform/before_no_permission instead of fluentform_before_no_permission.'
+);
+    do_action('fluentform/before_no_permission');
+?>
 
 <div id="no_permission_page">
     <div class="wp-die-message">
@@ -18,4 +28,14 @@
     </div>
 </div>
 
-<?php do_action('fluentform_after_no_permission'); ?>
+<?php
+    do_action_deprecated(
+        'fluentform_after_no_permission',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/after_no_permission',
+        'Use fluentform/after_no_permission instead of fluentform_after_no_permission.'
+    );
+    do_action('fluentform/after_no_permission');
+?>

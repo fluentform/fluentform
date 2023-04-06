@@ -20,7 +20,7 @@ class ProcessExteriorModule
     public function renderFormPreview($form_id)
     {
         if (Acl::hasAnyFormPermission($form_id)) {
-            add_filter('fluentform_is_form_renderable', function ($renderable) {
+            add_filter('fluentform/is_form_renderable', function ($renderable) {
                 $renderable['status'] = true;
                 return $renderable;
             });

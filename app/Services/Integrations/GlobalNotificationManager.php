@@ -27,11 +27,31 @@ class GlobalNotificationManager
 
     public function globalNotify($insertId, $formData, $form)
     {
+        $notifications = apply_filters_deprecated(
+            'fluentform_global_notification_active_types',
+            [
+                [],
+                $form->id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_notification_active_types',
+            'Use fluentform/global_notification_active_types instead of fluentform_global_notification_active_types.'
+        );
         // Let's find the feeds that are available for this form
-        $feedKeys = apply_filters('fluentform_global_notification_active_types', [], $form->id);
+        $feedKeys = apply_filters('fluentform/global_notification_active_types', $notifications, $form->id);
 
         if (! $feedKeys) {
-            do_action('fluentform_global_notify_completed', $insertId, $form);
+            do_action_deprecated(
+                'fluentform_global_notify_completed',
+                [
+                    $insertId,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notify_completed',
+                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
+            );
+            do_action('fluentform/global_notify_completed', $insertId, $form);
             return;
         }
 
@@ -43,7 +63,17 @@ class GlobalNotificationManager
             ->get();
 
         if (! $feeds) {
-            do_action('fluentform_global_notify_completed', $insertId, $form);
+            do_action_deprecated(
+                'fluentform_global_notify_completed',
+                [
+                    $insertId,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notify_completed',
+                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
+            );
+            do_action('fluentform/global_notify_completed', $insertId, $form);
             return;
         }
 
@@ -51,7 +81,17 @@ class GlobalNotificationManager
         $enabledFeeds = $this->getEnabledFeeds($feeds, $formData, $insertId);
 
         if (! $enabledFeeds) {
-            do_action('fluentform_global_notify_completed', $insertId, $form);
+            do_action_deprecated(
+                'fluentform_global_notify_completed',
+                [
+                    $insertId,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notify_completed',
+                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
+            );
+            do_action('fluentform/global_notify_completed', $insertId, $form);
             return;
         }
 
@@ -62,7 +102,7 @@ class GlobalNotificationManager
             // We will decide if this feed will run on async or sync
             $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
 
-            $action = 'fluentform_integration_notify_' . $feed['meta_key'];
+            $action = 'fluentform/integration_notify_' . $feed['meta_key'];
 
             if (! $entry) {
                 $entry = $this->getEntry($insertId, $form);
@@ -80,7 +120,17 @@ class GlobalNotificationManager
             $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData, $form, false, $feed['meta_key']);
             $feed['processedValues'] = $processedValues;
 
-            if (apply_filters('fluentform_notifying_async_' . $integrationKey, true, $form->id)) {
+            apply_filters_deprecated(
+                'fluentform/notifying_async_' . $integrationKey,
+                [
+                    true,
+                    $form->id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/notifying_async_' . $integrationKey,
+                'Use fluentform/notifying_async_' . $integrationKey . ' instead of fluentform_notifying_async_' . $integrationKey
+            );
+            if (apply_filters('fluentform/notifying_async_' . $integrationKey, true, $form->id)) {
                 // It's async
                 $asyncFeeds[] = [
                     'action'     => $action,
@@ -94,12 +144,34 @@ class GlobalNotificationManager
                     'updated_at' => current_time('mysql'),
                 ];
             } else {
+                do_action_deprecated(
+                    'fluentform_integration_notify_' . $feed['meta_key'],
+                    [
+                        $feed,
+                        $formData,
+                        $entry,
+                        $form
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    $action,
+                    'Use ' . $action . ' instead of fluentform_integration_notify_' . $feed['meta_key']
+                );
                 do_action($action, $feed, $formData, $entry, $form);
             }
         }
 
         if (! $asyncFeeds) {
-            do_action('fluentform_global_notify_completed', $insertId, $form);
+            do_action_deprecated(
+                'fluentform_global_notify_completed',
+                [
+                    $insertId,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/global_notify_completed',
+                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
+            );
+            do_action('fluentform/global_notify_completed', $insertId, $form);
             return;
         }
 

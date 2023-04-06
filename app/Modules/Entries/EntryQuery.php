@@ -98,7 +98,19 @@ class EntryQuery
 
         $total = $query->count();
         $responses = $query->get();
-        $responses = apply_filters('fluentform_get_raw_responses', $responses, $this->formId);
+    
+        $responses = apply_filters_deprecated(
+            'fluentform_get_raw_responses',
+            [
+                $responses,
+                $this->formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_raw_responses',
+            'Use fluentform/get_raw_responses instead of fluentform_get_raw_responses.'
+        );
+
+        $responses = apply_filters('fluentform/get_raw_responses', $responses, $this->formId);
 
         return [
             'data'     => $responses,

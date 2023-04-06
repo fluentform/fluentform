@@ -1,5 +1,17 @@
 <div class="ff_form_wrap ff_screen_<?php echo esc_attr($route); ?>">
-	<?php do_action('fluentform_before_form_screen_wrapper', $form_id, $route); ?>
+	<?php
+        do_action_deprecated(
+            'fluentform_before_form_screen_wrapper',
+            [
+                $form_id,
+                $route
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_form_screen_wrapper',
+            'Use fluentform/before_form_screen_wrapper instead of fluentform_before_form_screen_wrapper.'
+        );
+        do_action('fluentform/before_form_screen_wrapper', $form_id, $route);
+    ?>
 	
 	<div class="form_internal_menu">
         <?php if (isset($_SERVER['HTTP_REFERER'])): ?>
@@ -28,8 +40,31 @@
 		</ul>
 		
 		<div class="ff-navigation-right">
-			<?php do_action('fluentform_after_form_navigation', $form_id, $route); ?>
-			<?php do_action('fluentform_after_form_navigation_' . $route, $form_id); ?>
+			<?php
+                do_action_deprecated(
+                    'fluentform_after_form_navigation',
+                    [
+                        $form_id,
+                        $route
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/after_form_navigation',
+                    'Use fluentform/after_form_navigation instead of fluentform_after_form_navigation.'
+                );
+                do_action('fluentform/after_form_navigation', $form_id, $route);
+            ?>
+			<?php
+            do_action_deprecated(
+                'fluentform_after_form_navigation_' . $route,
+                [
+                    $form_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/after_form_navigation_' . $route,
+                'Use fluentform/after_form_navigation_' . $route . ' instead of fluentform_after_form_navigation_' . $route
+            );
+                do_action('fluentform/after_form_navigation_' . $route, $form_id);
+            ?>
 
 			<div id="more-menu">
 				<more-menu />
@@ -38,8 +73,31 @@
 	</div>
 
 	<div class="ff_form_application_container">
-		<?php do_action('ff_fluentform_form_application_view_' . $route, $form_id); ?>
+		<?php
+            do_action_deprecated(
+                'ff_fluentform_form_application_view_' . $route,
+                [
+                    $form_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/form_application_view_' . $route,
+                'Use fluentform/form_application_view_' . $route . ' instead of ff_fluentform_form_application_view_' . $route
+            );
+            do_action('fluentform/form_application_view_' . $route, $form_id);
+        ?>
 	</div>
 	
-	<?php do_action('fluentform_after_form_screen_wrapper', $form_id, $route); ?>
+	<?php
+        do_action_deprecated(
+            'fluentform_after_form_screen_wrapper',
+            [
+                $form_id,
+                $route
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/after_form_screen_wrapper',
+            'Use fluentform/after_form_screen_wrapper instead of fluentform_after_form_screen_wrapper.'
+        );
+        do_action('fluentform/after_form_screen_wrapper', $form_id, $route);
+    ?>
 </div>

@@ -70,7 +70,20 @@ class FormSettings
                 $item->value['layout']['asteriskPlacement'] = 'asterisk-right';
             }
         }
-        $result = apply_filters('fluentform_get_meta_key_settings_response', $result, $this->formId, $metaKey);
+    
+        $result = apply_filters_deprecated(
+            'fluentform_get_meta_key_settings_response',
+            [
+                $result,
+                $this->formId,
+                $metaKey
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_meta_key_settings_response',
+            'Use fluentform/get_meta_key_settings_response instead of fluentform_get_meta_key_settings_response.'
+        );
+
+        $result = $this->app->applyFilters('fluentform/get_meta_key_settings_response', $result, $this->formId, $metaKey);
         wp_send_json_success(['result' => $result], 200);
     }
 
@@ -83,7 +96,18 @@ class FormSettings
             'advancedValidationSettings' => $form->getAdvancedValidationSettings($formId),
         ];
 
-        $settings = apply_filters('fluentform_form_settings_ajax', $settings, $formId);
+        $settings = apply_filters_deprecated(
+            'fluentform_form_settings_ajax',
+            [
+                $settings,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/form_settings_ajax',
+            'Use fluentform/form_settings_ajax instead of fluentform_form_settings_ajax.'
+        );
+
+        $settings = $this->app->applyFilters('fluentform/form_settings_ajax', $settings, $formId);
 
         wp_send_json_success($settings, 200);
     }
@@ -152,7 +176,18 @@ class FormSettings
             $form->deleteMeta($formId, 'auto_delete_days');
         }
 
-        do_action('fluentform_after_save_form_settings', $formId, $this->request->all());
+        do_action_deprecated(
+            'fluentform_after_save_form_settings',
+            [
+                $formId,
+                $this->request->all()
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/after_save_form_settings',
+            'Use fluentform/after_save_form_settings instead of fluentform_after_save_form_settings.'
+        );
+
+        $this->app->doAction('fluentform/after_save_form_settings', $formId, $this->request->all());
 
         wp_send_json_success([
             'message' => __('Settings has been saved.', 'fluentform'),

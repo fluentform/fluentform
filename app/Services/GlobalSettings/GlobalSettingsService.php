@@ -19,8 +19,19 @@ class GlobalSettingsService
         } else {
             $values[$key] = get_option($key);
         }
+    
+        $values = apply_filters_deprecated(
+            'fluentform_get_global_settings_values',
+            [
+                $values,
+                $key
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/get_global_settings_values',
+            'Use fluentform/get_global_settings_values instead of fluentform_get_global_settings_values.'
+        );
 
-        return apply_filters('fluentform_get_global_settings_values', $values, $key);
+        return apply_filters('fluentform/get_global_settings_values', $values, $key);
     }
 
     public function store($attributes = [])
@@ -52,7 +63,17 @@ class GlobalSettingsService
             $method = 'store' . ucwords($key);
         }
 
-        do_action('fluentform_saving_global_settings_with_key_method', $attributes);
+        do_action_deprecated(
+            'fluentform_saving_global_settings_with_key_method',
+            [
+                $attributes
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/saving_global_settings_with_key_method',
+            'Use fluentform/saving_global_settings_with_key_method instead of fluentform_saving_global_settings_with_key_method.'
+        );
+
+        do_action('fluentform/saving_global_settings_with_key_method', $attributes);
 
         if (in_array($method, $allowedMethods)) {
             return $globalSettingsHelper->{$method}($attributes);

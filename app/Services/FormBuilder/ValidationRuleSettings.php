@@ -51,7 +51,17 @@ $fileTypeOptions = [
     ],
 ];
 
-$fileTypeOptions = apply_filters('fluentform_file_type_options', $fileTypeOptions);
+$fileTypeOptions = apply_filters_deprecated(
+    'fluentform_file_type_options',
+    [
+        $fileTypeOptions
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/file_type_options',
+    'Use fluentform/file_type_options instead of fluentform_file_type_options.'
+);
+
+$fileTypeOptions = apply_filters('fluentform/file_type_options', $fileTypeOptions);
 
 $validation_rule_settings = [
     'required' => [
@@ -249,4 +259,14 @@ $validation_rule_settings = [
     ],
 ];
 
-return apply_filters('fluent_editor_validation_rule_settings', $validation_rule_settings);
+$validation_rule_settings = apply_filters_deprecated(
+    'fluent_editor_validation_rule_settings',
+    [
+        $validation_rule_settings
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/editor_validation_rule_settings',
+    'Use fluentform/editor_validation_rule_settings instead of fluent_editor_validation_rule_settings.'
+);
+
+return apply_filters('fluentform/editor_validation_rule_settings', $validation_rule_settings);

@@ -37,7 +37,18 @@ class GlobalIntegrationController extends Controller
         try {
             $settingsKey = sanitize_text_field($this->request->get('settings_key'));
             $integration = wp_unslash($this->request->get('integration'));
-            do_action('fluentform_save_global_integration_settings_' . $settingsKey, $integration);
+
+            do_action_deprecated(
+                'fluentform_save_global_integration_settings_' . $settingsKey,
+                [
+                    $integration
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/save_global_integration_settings_' . $settingsKey,
+                'Use fluentform/save_global_integration_settings_' . $settingsKey . ' instead of fluentform_save_global_integration_settings_' . $settingsKey
+            );
+
+            do_action('fluentform/save_global_integration_settings_' . $settingsKey, $integration);
             
             // Someone should catch that above action and send response
             return $this->sendError([

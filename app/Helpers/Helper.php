@@ -98,11 +98,25 @@ class Helper
 
     public static function getEntryStatuses($form_id = false)
     {
-        $statuses = apply_filters('fluentform_entry_statuses_core', [
+        $statuses = [
             'unread'    => 'Unread',
             'read'      => 'Read',
             'favorites' => 'Favorites',
-        ], $form_id);
+        ];
+    
+        $statuses = apply_filters_deprecated(
+            'fluentform_entry_statuses_core',
+            [
+                $statuses,
+                $form_id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/entry_statuses_core',
+            'Use fluentform/entry_statuses_core instead of fluentform_entry_statuses_core.'
+        );
+
+        $statuses = apply_filters('fluentform/entry_statuses_core', $statuses, $form_id);
+
         $statuses['trashed'] = 'Trashed';
 
         return $statuses;
@@ -110,7 +124,7 @@ class Helper
 
     public static function getReportableInputs()
     {
-        return apply_filters('fluentform_reportable_inputs', [
+        $data = [
             'select',
             'input_radio',
             'input_checkbox',
@@ -118,12 +132,34 @@ class Helper
             'net_promoter',
             'select_country',
             'net_promoter_score',
-        ]);
+        ];
+
+        apply_filters_deprecated(
+            'fluentform_reportable_inputs',
+            [
+                $data
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/reportable_inputs',
+            'Use fluentform/reportable_inputs instead of fluentform_reportable_inputs.'
+        );
+
+        return apply_filters('fluentform/reportable_inputs', $data);
     }
 
     public static function getSubFieldReportableInputs()
     {
-        return apply_filters('fluentform_subfield_reportable_inputs', [
+        apply_filters_deprecated(
+            'fluentform_subfield_reportable_inputs',
+            [
+                'tabular_grid'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/subfield_reportable_inputs',
+            'Use fluentform/subfield_reportable_inputs instead of fluentform_subfield_reportable_inputs.'
+        );
+
+        return apply_filters('fluentform/subfield_reportable_inputs', [
             'tabular_grid',
         ]);
     }
@@ -227,7 +263,17 @@ class Helper
             $status = false;
         }
 
-        return apply_filters('fluentform_is_admin_page', $status);
+        apply_filters_deprecated(
+            'fluentform_is_admin_page',
+            [
+                $status
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/is_admin_page',
+            'Use fluentform/is_admin_page instead of fluentform_is_admin_page.'
+        );
+
+        return apply_filters('fluentform/is_admin_page', $status);
     }
 
     public static function getShortCodeIds($content, $tag = 'fluentform', $selector = 'id')
@@ -311,7 +357,7 @@ class Helper
 
     public static function getNumericFormatters()
     {
-        return apply_filters('fluentform_numeric_styles', [
+        $data = [
             'none' => [
                 'value' => '',
                 'label' => 'None',
@@ -356,7 +402,19 @@ class Helper
                     'symbol'    => '',
                 ],
             ],
-        ]);
+        ];
+
+        apply_filters_deprecated(
+            'fluentform_numeric_styles',
+            [
+                $data
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/numeric_styles',
+            'Use fluentform/numeric_styles instead of fluentform_numeric_styles.'
+        );
+
+        return apply_filters('fluentform/numeric_styles', $data);
     }
 
     public static function getNumericValue($input, $formatterName)
@@ -465,7 +523,19 @@ class Helper
     {
         $meta = static::getFormMeta($formId, 'ffc_form_settings_meta', []);
         $key = ArrayHelper::get($meta, 'share_key', '');
-        $paramKey = apply_filters('fluentform_conversational_url_slug', 'fluent-form');
+
+        apply_filters_deprecated(
+            'fluentform_conversational_url_slug',
+            [
+                'fluent-form'
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/conversational_url_slug',
+            'Use fluentform/conversational_url_slug instead of fluentform_conversational_url_slug.'
+        );
+
+        $paramKey = apply_filters('fluentform/conversational_url_slug', 'fluent-form');
+
         if ('form' == $paramKey) {
             $paramKey = 'fluent-form';
         }
@@ -489,7 +559,17 @@ class Helper
             ],
         ];
 
-        return apply_filters('fluentform_file_upload_options', $locations);
+        apply_filters_deprecated(
+            'fluentform_file_upload_options',
+            [
+                $locations
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/file_upload_options',
+            'Use fluentform/file_upload_options instead of fluentform_file_upload_options'
+        );
+
+        return apply_filters('fluentform/file_upload_options', $locations);
     }
 
     public static function unreadCount($formId)
@@ -561,7 +641,18 @@ class Helper
 
     public static function shouldHidePassword($formId)
     {
-        return apply_filters('fluentform_truncate_password_values', true, $formId) &&
+        apply_filters_deprecated(
+            'fluentform_truncate_password_values',
+            [
+                true,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/truncate_password_values',
+            'Use fluentform/truncate_password_values instead of fluentform_truncate_password_values.'
+        );
+
+        return apply_filters('fluentform/truncate_password_values', true, $formId) &&
         (
             (defined('FLUENTFORM_RENDERING_ENTRIES') && FLUENTFORM_RENDERING_ENTRIES) ||
             (defined('FLUENTFORM_RENDERING_ENTRY') && FLUENTFORM_RENDERING_ENTRY) ||

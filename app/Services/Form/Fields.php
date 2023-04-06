@@ -47,8 +47,17 @@ class Fields
             'input_image',
             'subscription_payment_component',
         ];
-
-        return apply_filters('fluentform_supported_conditional_fields', $supportedConditionalFields);
+    
+        $supportedConditionalFields = apply_filters_deprecated(
+            'fluentform_supported_conditional_fields',
+            [
+                $supportedConditionalFields
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/supported_conditional_fields',
+            'Use fluentform/supported_conditional_fields instead of fluentform_supported_conditional_fields.'
+        );
+        return apply_filters('fluentform/supported_conditional_fields', $supportedConditionalFields);
     }
 
     public function filterEditorFields($fields)

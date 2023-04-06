@@ -1,4 +1,14 @@
-<?php do_action('fluentform_global_menu'); ?>
+<?php
+    do_action_deprecated(
+        'fluentform_global_menu',
+        [
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/global_menu',
+        'Use fluentform/global_menu instead of fluentform_global_menu.'
+    );
+    do_action('fluentform/global_menu');
+?>
 <div class="ff_addon_wrapper ff_block">
     <div class="ff_card text-center mb-4">
         <img class="mb-6" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>

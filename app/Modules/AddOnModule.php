@@ -27,8 +27,18 @@ class AddOnModule
     public function render()
     {
         $extraMenus = [];
+    
+        $extraMenus = apply_filters_deprecated(
+            'fluentform_addons_extra_menu',
+            [
+                $extraMenus
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/addons_extra_menu',
+            'Use fluentform/addons_extra_menu instead of fluentform_addons_extra_menu'
+        );
 
-        $extraMenus = apply_filters('fluentform_addons_extra_menu', $extraMenus);
+        $extraMenus = apply_filters('fluentform/addons_extra_menu', $extraMenus);
 
         $current_menu_item = 'fluentform_add_ons';
 
@@ -52,8 +62,18 @@ class AddOnModule
     public function showFluentAddOns()
     {
         wp_enqueue_script('fluentform-modules');
+    
+        $addOns = apply_filters_deprecated(
+            'fluentform_global_addons',
+            [
+                []
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/global_addons',
+            'Use fluentform/global_addons instead of fluentform_global_addons'
+        );
 
-        $addOns = apply_filters('fluentform_global_addons', []);
+        $addOns = apply_filters('fluentform/global_addons', $addOns);
 
         $addOns['slack'] = [
             'title'       => 'Slack',

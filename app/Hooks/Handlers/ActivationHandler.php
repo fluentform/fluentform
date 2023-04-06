@@ -188,12 +188,30 @@ class ActivationHandler
             return $schedules;
         }, 10, 1);
 
-        $hookName = 'fluentform_do_scheduled_tasks';
+        do_action_deprecated(
+            'fluentform_do_scheduled_tasks',
+            [
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/do_scheduled_tasks',
+            'Use fluentform/do_scheduled_tasks instead of fluentform_do_scheduled_tasks.'
+        );
+
+        $hookName = 'fluentform/do_scheduled_tasks';
         if (!wp_next_scheduled($hookName)) {
             wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
         }
 
-        $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
+        do_action_deprecated(
+            'fluentform_do_email_report_scheduled_tasks',
+            [
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/do_email_report_scheduled_tasks',
+            'Use fluentform/do_email_report_scheduled_tasks instead of fluentform_do_email_report_scheduled_tasks.'
+        );
+
+        $emailReportHookName = 'fluentform/do_email_report_scheduled_tasks';
         if (!wp_next_scheduled($emailReportHookName)) {
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
