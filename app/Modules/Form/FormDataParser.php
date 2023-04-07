@@ -52,11 +52,11 @@ class FormDataParser
     public static function parseData($response, $fields, $formId, $isHtml = false)
     {
         $trans = [];
-
         foreach ($fields as $field_key => $field) {
             if (isset($response->{$field_key})) {
                 $response = $response->{$field_key};
-                apply_filters_deprecated(
+                
+                $response = apply_filters_deprecated(
                     'fluentform_response_render_' . $field['element'],
                     [
                         $response,

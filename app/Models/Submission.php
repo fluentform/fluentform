@@ -151,7 +151,7 @@ class Submission extends Model
         $formId = Arr::get($attributes, 'form_id');
         $query = $this->customQuery($attributes);
         $response = $query->paginate();
-        apply_filters_deprecated(
+        $response = apply_filters_deprecated(
             'fluentform_get_raw_responses',
             [
                 $response,

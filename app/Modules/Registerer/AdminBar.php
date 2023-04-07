@@ -56,7 +56,7 @@ class AdminBar
     private function getMenuItems()
     {
         $dashBoardCapability = 'fluentform_dashboard_access';
-        apply_filters_deprecated(
+        $dashBoardCapability = apply_filters_deprecated(
             'fluentform_dashboard_capability',
             [
                 $dashBoardCapability
@@ -72,7 +72,7 @@ class AdminBar
         );
     
         $settingManager = 'fluentform_settings_manager';
-        apply_filters_deprecated(
+        $settingManager = apply_filters_deprecated(
             'fluentform_settings_capability',
             [
                 $settingManager

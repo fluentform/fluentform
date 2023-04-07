@@ -145,7 +145,7 @@ class Component
         $fluentFormIds = get_post_meta($postId, '_has_fluentform', true);
         $hasFluentformMeta = is_a($post, 'WP_Post') && $fluentFormIds;
 
-        apply_filters_deprecated(
+        $loadStyle =  apply_filters_deprecated(
             'fluentform_load_styles',
             [
                 false,
@@ -156,7 +156,7 @@ class Component
             'Use fluentform/load_styles instead of fluentform_load_styles.'
         );
 
-        if ($hasFluentformMeta || apply_filters('fluentform/load_styles', false, $post)) {
+        if ($hasFluentformMeta || apply_filters('fluentform/load_styles', $loadStyle, $post)) {
             wp_enqueue_style('fluent-form-styles');
             wp_enqueue_style('fluentform-public-default');
 

@@ -84,7 +84,7 @@ $page = sanitize_text_field($_GET['page']);
             menuToggle.on('click', function() {
                 targetElem.toggleClass('ff_menu_active');
             });
-        </script>"
+        </script>";
         
     do_action_deprecated(
         'fluentform_after_global_menu',

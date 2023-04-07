@@ -93,8 +93,8 @@ class DataLogger
                 ->where('source_type', $sourceType)
                 ->orderBy('id', 'DESC')
                 ->get();
-
-            apply_filters_deprecated(
+    
+            $logs = apply_filters_deprecated(
                 'fluentform_entry_logs',
                 [
                     $logs,

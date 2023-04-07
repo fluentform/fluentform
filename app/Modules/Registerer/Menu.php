@@ -318,7 +318,7 @@ class Menu
      */
     public function register()
     {
-        apply_filters_deprecated(
+        $dashBoardCapability = apply_filters_deprecated(
             'fluentform_dashboard_capability',
             [
                 'fluentform_dashboard_access'
@@ -330,10 +330,10 @@ class Menu
 
         $dashBoardCapability = $this->app->applyFilters(
             'fluentform/dashboard_capability',
-            'fluentform_dashboard_access'
+            $dashBoardCapability
         );
-
-        apply_filters_deprecated(
+    
+        $settingManager = apply_filters_deprecated(
             'fluentform_settings_capability',
             [
                 'fluentform_settings_manager'
@@ -345,7 +345,7 @@ class Menu
 
         $settingsCapability = $this->app->applyFilters(
             'fluentform/settings_capability',
-            'fluentform_settings_manager'
+            $settingManager
         );
 
         $fromRole = false;

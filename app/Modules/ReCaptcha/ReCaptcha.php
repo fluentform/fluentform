@@ -36,7 +36,7 @@ class ReCaptcha
             if($version == 'v3_invisible' && $result->success) {
                 $score = $result->score;
                 $value = 0.5;
-                apply_filters_deprecated(
+                $value = apply_filters_deprecated(
                     'fluentforms_recaptcha_v3_ref_score',
                     [
                         $value
