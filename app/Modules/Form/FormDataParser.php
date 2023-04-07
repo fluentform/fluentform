@@ -54,12 +54,12 @@ class FormDataParser
         $trans = [];
         foreach ($fields as $field_key => $field) {
             if (isset($response->{$field_key})) {
-                $response = $response->{$field_key};
+                $value = $response->{$field_key};
                 
-                $response = apply_filters_deprecated(
+                $value = apply_filters_deprecated(
                     'fluentform_response_render_' . $field['element'],
                     [
-                        $response,
+                        $value,
                         $field,
                         $formId,
                         $isHtml
@@ -71,7 +71,7 @@ class FormDataParser
 
                 $value = apply_filters(
                     'fluentform/response_render_' . $field['element'],
-                    $response,
+                    $value,
                     $field,
                     $formId,
                     $isHtml
