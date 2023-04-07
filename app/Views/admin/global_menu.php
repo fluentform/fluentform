@@ -76,16 +76,9 @@ $page = sanitize_text_field($_GET['page']);
         </li>
     </ul>
 
-    <?php
-    echo "<script>
-            let menuToggle = jQuery('.ff_menu_toggle');
-            let targetElem = jQuery('.ff_menu');
 
-            menuToggle.on('click', function() {
-                targetElem.toggleClass('ff_menu_active');
-            });
-        </script>";
-        
+    <?php
+
     do_action_deprecated(
         'fluentform_after_global_menu',
         [
@@ -94,6 +87,14 @@ $page = sanitize_text_field($_GET['page']);
         'fluentform/after_global_menu',
         'Use fluentform/after_global_menu instead of fluentform_after_global_menu.'
     );
-        do_action('fluentform/after_global_menu');
+    do_action('fluentform/after_global_menu');
+    
+    wp_add_inline_script('fluent_forms_global', "
+                //for mobile nav
+                let targetElem = jQuery('.ff_menu');
+                jQuery('.ff_menu_toggle').on('click', function() {
+                    targetElem.toggleClass('ff_menu_active');
+                });
+           ");
     ?>
 </div>

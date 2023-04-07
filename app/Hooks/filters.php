@@ -251,6 +251,7 @@ $app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\H
 $app->addFilter('fluentform/will_return_html', function ($result, $integration, $key) {
     $dictionary = [
         'notifications' => ['message'],
+        'pdfFeed'       => ['body'],
     ];
 
     if (!isset($dictionary[$integration])) {

@@ -56,13 +56,13 @@
                     <div class="ff_card h-100">
                         <h3 class="mb-3"><?php _e('User Guides', 'fluentform') ?></h3>
                         <p class="text">
-                            <?php _e('Please check the following articles for getting started with Fluent Forms', 'fluentform') ?> 
+                            <?php _e('Please check the following articles for getting started with Fluent Forms', 'fluentform') ?>
                         </p>
                         <ul class="ff_list">
                             <?php foreach ($user_guides as $user_guide): ?>
                                 <li>
                                     <a target="_blank" href="<?php echo esc_url($user_guide['link']); ?>">
-                                      <i class="el-icon el-icon-caret-right"></i>  
+                                      <i class="el-icon el-icon-caret-right"></i>
                                       <span><?php echo esc_html($user_guide['title']); ?></span>
                                     </a>
                                 </li>
@@ -192,30 +192,6 @@
                 </div><!--.el-col -->
             </div><!-- .el-row -->
 
-            <?php
-                echo "
-                        <script>
-                            let btnOpenEl = document.getElementById('ff_video_btn');
-                            let btnCloseEl = document.getElementById('ff_close_btn');
-                            let dialogEl = document.getElementById('ff_dialog_wrapper');
-
-                            dialogEl.classList.add('hidden');
-
-                            btnOpenEl.addEventListener('click', function(e){
-                                e.preventDefault();
-                                dialogEl.parentElement.classList.add('ff_backdrop');
-                                dialogEl.classList.remove('hidden');
-                                dialogEl.classList.add('dialog-fade-enter-active');
-                            });
-
-                            btnCloseEl.addEventListener('click', function(){
-                                dialogEl.parentElement.classList.remove('ff_backdrop');
-                                dialogEl.classList.add('hidden');
-                                dialogEl.classList.remove('dialog-fade-enter-active');
-                            });
-                        </script>
-                    ";
-            ?>
 
             <?php
             do_action_deprecated(
@@ -226,10 +202,32 @@
                 'fluentform/after_documentation_wrapper',
                 'Use fluentform/after_documentation_wrapper instead of fluentform_after_documentation_wrapper.'
             );
-                do_action('fluentform/after_documentation_wrapper');
+            do_action('fluentform/after_documentation_wrapper');
+
+            wp_add_inline_script('fluent_forms_global', "
+
+                // For support Page Modal
+                let btnOpenEl = document.getElementById('ff_video_btn');
+                let btnCloseEl = document.getElementById('ff_close_btn');
+                let dialogEl = document.getElementById('ff_dialog_wrapper');
+    
+                dialogEl.classList.add('hidden');
+    
+                btnOpenEl.addEventListener('click', function(e){
+                    e.preventDefault();
+                    dialogEl.parentElement.classList.add('ff_backdrop');
+                    dialogEl.classList.remove('hidden');
+                    dialogEl.classList.add('dialog-fade-enter-active');
+                });
+    
+                btnCloseEl.addEventListener('click', function(){
+                    dialogEl.parentElement.classList.remove('ff_backdrop');
+                    dialogEl.classList.add('hidden');
+                    dialogEl.classList.remove('dialog-fade-enter-active');
+                });
+            ");
             ?>
 
         </div>
     </div>
 </div>
-		
