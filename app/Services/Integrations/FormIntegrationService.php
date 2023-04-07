@@ -209,7 +209,7 @@ class FormIntegrationService
                 $feedData = apply_filters_deprecated(
                     'fluentform_global_notification_feed_' . $feed->meta_key,
                     [
-                        false,
+                        $feedData,
                         $formId
                     ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
