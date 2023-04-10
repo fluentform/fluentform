@@ -26,7 +26,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Send To')">
-                        <el-radio-group v-model="form.send_to_type" fill="#1e1f21">
+                        <el-radio-group v-model="form.send_to_type" class="el-radio-group-info">
                             <el-radio-button label="default">{{ $t('Default Recipient') }}</el-radio-button>
                             <el-radio-button label="custom">{{ $t('Custom Recipient') }}</el-radio-button>
                         </el-radio-group>
