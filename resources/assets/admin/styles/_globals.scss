@@ -1694,24 +1694,7 @@ label.el-radio, label.el-checkbox {
 // choose template modal
 .ff_choose_template_wrap{
   .el-dialog{
-    width: 100%;
-    height: 100vh;
-    border-radius: 0;
-    padding-top: 50px;
-    box-shadow: none;
     max-width: 1280px;
-    &__header{
-      border-bottom: 0;
-    }
-    &__headerbtn {
-      top: 22px;
-      right: 30px;
-    }
-    &__wrapper{
-      background-color: $--color-white;
-      transform: none !important;
-      z-index: 999999999 !important;
-    }
   }
 }
 

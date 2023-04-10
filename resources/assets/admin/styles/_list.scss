@@ -37,11 +37,11 @@
         background-color: transparent;
         padding: 12px 18px;
         font-size: 16px;
-        color: $base-color;
+        color: $list-button-link-color;
         transition: 0.2s;
         &:hover{
-            background-color: mix($base-color, $white, 6%);
-            color: $base-color;
+            background-color: $list-button-link-hover-bg;
+            color: $list-button-link-hover-color;
         }
     }
     &_small{
@@ -55,14 +55,14 @@
         .ff_list_button{
             &_item.active {
                 .ff_list_button_link{
-                    background-color: mix($base-color, $white, 6%);
-                    color: $base-color;
+                    background-color: $list-button-s1-link-active-bg;
+                    color: $list-button-s1-link-active-color;
                     font-weight: 600;
                 }
             }
             &_link{
                 font-size: 15px;
-                color: $base-text;
+                color: $list-button-s1-link-color;
             }
         }
     }
