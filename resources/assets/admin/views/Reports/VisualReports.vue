@@ -33,20 +33,14 @@
                                 <h6 class="mb-2">{{ $t('Fetching Data... Please wait!') }}</h6>
                             </div>
                             <template v-if="!loading">
-                                <el-alert 
-                                    :title="$t('Sorry! No reports found based on your filter, available form submissions and input types')"
-                                    type="error" 
-                                    v-if="(!total_entries && !loading) || (!reportIndexes.length && !loading)" 
-                                    :closable="false"
-                                    show-icon
-                                    class="no_entries_found mb-4"
-                                >
-                                </el-alert>
                                 <entries-chart :date_range="date_range" :form_id="form_id"></entries-chart>
                             </template>
                         </card-body>
                     </card>
                     <card v-if="Object.keys(report_items).length">
+                        <card-head class="report_header">
+                            <span class="mr-3 title">{{ $t('Advance Field Report') }}</span>
+                        </card-head>
                         <report-card
                             v-for="(report,report_key) in report_items"
                             :key="report_key"
