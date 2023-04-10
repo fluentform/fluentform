@@ -25,16 +25,14 @@
                         </el-select>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <a
-                            class="el-button el-button--primary"
+                        <el-button
                             v-if="hasPermission('fluentform_forms_manager')"
                             type="primary"
-                            href="#"
                             @click.prevent="showAddFormModal = true"
                         >
                             <i class="el-icon-plus el-icon-left el-icon"></i>
                             <span>{{ $t('Add New Form') }}</span>
-                        </a>
+                        </el-button>
                     </btn-group-item>
                 </btn-group>
             </el-col>

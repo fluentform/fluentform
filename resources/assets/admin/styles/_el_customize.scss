@@ -197,6 +197,7 @@
 .el-button {
     display: inline-flex;
     align-items: center;
+    transition: 0.3s;
     .el-loading-mask{
         border-radius: 7px;
         .el-loading-spinner {
@@ -355,6 +356,12 @@
             background-color: #3a3a40;
             border-color: #3a3a40;
             color: $--color-white;
+        }
+    }
+    &--primary{
+        &:hover{
+            background-color: $primary-button-hover-bg;
+            border-color: $primary-button-hover-border-color;
         }
     }
 }

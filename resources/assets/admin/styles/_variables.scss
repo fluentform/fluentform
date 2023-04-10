@@ -10,13 +10,18 @@ $dark-800:    #353537;
 $primary: $--color-primary;
 $primary-soft: #E8F2FF;
 
+// primary button hover
+$primary-button-hover-bg: #1565C9;
+$primary-button-hover-border-color: $primary-button-hover-bg;
+
+
 $danger:    $--color-danger;
 
 $border-color: #ececec;
 
 $body-bg:     #F2F2F2;
 
-$bg-gray: #F2F2F2;
+$bg-gray: #F5F5F3;
 
 $border-radius: 8px;
 
