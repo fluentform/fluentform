@@ -17,7 +17,7 @@ $--color-transition-base: color .2s cubic-bezier(.645,.045,.355,1) !default;
 /* Color
 -------------------------- */
 /// color|1|Brand Color|0
-$--color-primary: #1e90ff !default;
+$--color-primary: #1A7EFB !default;
 /// color|1|Background Color|4
 $--color-white: #FFFFFF !default;
 /// color|1|Background Color|4
@@ -38,7 +38,7 @@ $--color-warning: #E6A23C !default;
 /// color|1|Functional Color|1
 $--color-danger: #ff6154 !default;
 /// color|1|Functional Color|1
-$--color-info: #57606f !default;
+$--color-info: #4B4C4D !default;
 
 $--color-cyan: #0dcaf0 !default;
 
@@ -989,7 +989,7 @@ $--descriptions-title-font-size: 16px !default;
 $--descriptions-table-border: 1px solid $--border-color-lighter !default;
 $--descriptions-item-bordered-label-background: #fafafa !default;
 
-/* Skeleton 
+/* Skeleton
 --------------------------*/
 $--skeleton-color: #f2f2f2 !default;
 $--skeleton-to-color: #e6e6e6 !default;
