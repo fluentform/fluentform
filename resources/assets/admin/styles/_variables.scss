@@ -28,12 +28,12 @@ $list-button-link-active-bg:            $--color-info;
 $list-button-link-active-color:         $white;
 
 $list-button-link-color:                $base-color;
-$list-button-link-hover-bg:           #f2f2f2;
+$list-button-link-hover-bg:           $bg-gray;
 $list-button-link-hover-color:          $base-color;
 
 // list button style 1
 $list-button-s1-link-color:               $base-text;
-$list-button-s1-link-active-bg:         #f2f2f2;
+$list-button-s1-link-active-bg:         $bg-gray;
 $list-button-s1-link-active-color:        $base-color;
 
 
@@ -72,11 +72,11 @@ $shortcode-color:                         $dark-800;
 $input-gray-bg:                           #E7E6E6;
 $input-gray-border-color:                 #E7E6E6;
 
-$input-gray-light-bg:                      #f2f2f2;
-$input-gray-light-border-color:            #f2f2f2;
+$input-gray-light-bg:                      $bg-gray;
+$input-gray-light-border-color:            $bg-gray;
 
 // ff radio group
-$radio-group-bg:                            #F2F2F2;
+$radio-group-bg:                            $bg-gray;
 $radio-group-button-hover-color:              $base-color;
 
 $radio-group-button-active-bg:                 $--color-info;
@@ -88,5 +88,25 @@ $predefined-form-sidebar-width:                       240px;
 // btn element 
 $btn-element-color:                                   $base-color;
 $btn-element-bg:                                      $white;
-$btn-element-hover-bg:                              #33383F;
+$btn-element-hover-bg:                                $--color-info;
 $btn-element-hover-color:                             $white;
+
+// form editor items action
+$editor-item-action-bg:                               $--color-info;
+
+// popup search icon
+$editor-popup-icon-bg:                               $--color-info;
+$editor-popup-icon-color:                            $white;
+
+// tab list
+$tab-link-bg:                                    $bg-gray;
+$tab-link-color:                                   $base-color;
+$tab-link-active-bg:                               $--color-info;
+$tab-link-active-color:                            $white;
+
+//editor inserter content item
+$editor-inserter-content-item-hover-bg:                  $bg-gray;
+$editor-inserter-content-item-hover-color:               $base-color;
+
+
+

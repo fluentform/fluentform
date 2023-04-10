@@ -20,7 +20,7 @@
                 color: #23282d;
 
                 &:hover {
-                    background-color: #337ab7;
+                    background-color: $--color-primary;
                     color: #fff;
                 }
             }
@@ -30,7 +30,7 @@
             }
 
             &.active a {
-                background-color: #337ab7;
+                background-color: $--color-primary;
                 color: #fff;
             }
         }
@@ -44,16 +44,12 @@
         flex: 1;
         &.active {
             a{
-                background-color: $base-color;
-                color: $white;
-                &:hover{
-                    color: $white;
-
-                }
+                background-color: $tab-link-active-bg;
+                color: $tab-link-active-color;
             }
         }
         a {
-            color: $base-text;
+            color: $tab-link-color;
             display: block;
             padding: 12px;
             font-weight: 500;
@@ -62,12 +58,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
             text-align: center;
-            background-color: $bg-gray;
+            background-color: $tab-link-bg;
             &:focus {
                 box-shadow: none;
-            }
-            &:hover{
-                color: $base-color;
             }
         }
     }

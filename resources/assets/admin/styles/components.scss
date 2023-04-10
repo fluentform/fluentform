@@ -129,8 +129,8 @@
 .popup-search-element {
   display: inline-block;
   cursor: pointer;
-  background: #33383F;
-  color: #fff;
+  background: $editor-popup-icon-bg;
+  color: $editor-popup-icon-color;
   width: 26px;
   height: 26px;
   line-height: 26px;
@@ -177,7 +177,7 @@
 }
 
 .item-actions {
-  background-color: #1E1F21;
+  background-color: $editor-item-action-bg;
   position: absolute;
   top: 8px;
   right: 14px;
@@ -367,14 +367,14 @@
   &__content-item {
     width: calc(100% / 3);
     text-align: center;
-    padding: 15px 5px;
+    padding: 15px;
     cursor: pointer;
     border-radius: 6px;
     font-size: 14px;
-    border: 1px solid transparent;
+    background-color: $white;
     &:hover {
-      box-shadow: 0 1px 4px rgba(30, 31, 33, 0.1);
-      border-color: $border-color;
+      background-color: $editor-inserter-content-item-hover-bg;
+      color: $editor-inserter-content-item-hover-color;
     }
 
     .icon {
