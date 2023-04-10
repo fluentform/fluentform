@@ -1632,13 +1632,14 @@ label.el-radio, label.el-checkbox {
 // ff badge
 .ff_badge {
   background-color: mix($--color-info, $--color-white, 10%);
-  border: 1px solid mix($--color-info, $--color-white, 15%);
+  border: 1px solid mix($--color-info, $--color-white, 20%);
   border-radius: 30px;
   padding: 2px 7px;
   color: $--color-info;
   text-transform: capitalize;
   display: inline-flex;
   align-items: center;
+  line-height: 1.2;
   &_wrap{
     display: inline-flex;
     align-items: center;
