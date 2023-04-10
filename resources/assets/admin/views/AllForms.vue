@@ -182,13 +182,13 @@
 
                     <el-table-column :label="$t('ShortCode')" width="310">
                         <template slot-scope="scope">
-                            <div class="shortcode_btn">
+                            <div class="shortcode_btn shortcode_btn_thin">
                                 <code :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
                                     [fluentform id="{{ scope.row.id }}"]
                                 </code>
                                 <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
                             </div>
-                            <div class="shortcode_btn conversational_shortcode" v-if="scope.row.conversion_preview">
+                            <div class="shortcode_btn shortcode_btn_thin conversational_shortcode" v-if="scope.row.conversion_preview">
                                 <code :id="`fluentform_conversational_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
                                     [fluentform type="conversational" id="{{scope.row.id }}"]
                                 </code>
