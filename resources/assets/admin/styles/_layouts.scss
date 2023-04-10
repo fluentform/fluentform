@@ -5,8 +5,8 @@ $ff:              'ff_predefined';
         display: flex;
     }
     &_sidebar{
-        width: 240px;
-        margin-right: 50px;
+        width: $predefined-form-sidebar-width;
+        margin-right: 20px;
         margin-top: 18px;
         flex-shrink: 0;
         transition: 0.3s;
@@ -17,7 +17,7 @@ $ff:              'ff_predefined';
         }
     }
     &_main{
-        width: calc(100% - 240px);
+        width: calc(100% - $predefined-form-sidebar-width);
         margin-left: auto;
         margin-top: 18px;
         padding: 10px;

@@ -1,9 +1,9 @@
 <template>
-    <div class="ff_choose_template_wrap">
+    <div class="ff_choose_template_wrap" :class="{'ff_backdrop': visibility}">
         <el-dialog
             :visible.sync="visibility"
             width="100%"
-            top= "0"
+            top= "50px"
             :before-close="close"
         >
             <template slot="title">
@@ -12,7 +12,7 @@
                 </p>
             </template>
 
-            <div class="ff_predefined_options">
+            <div class="ff_predefined_options mt-4">
                 <div class="ff_predefined_sidebar">
                     <h5 class="ff_predefined_title mb-3">{{$t('Categoires')}}</h5>
                     <ul class="ff_list_button ff_list_button_s1">

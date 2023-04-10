@@ -38,6 +38,9 @@
     &_form_action {
         cursor: pointer;
         height: 100%;
+        .ff_card_text{
+            word-break: break-word;
+        }
     }
     &_img {
         img {

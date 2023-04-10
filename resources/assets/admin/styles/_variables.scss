@@ -27,6 +27,16 @@ $section-layout-sidebar-width-sm: 230px;
 $list-button-link-active-bg:            $--color-info;
 $list-button-link-active-color:         $white;
 
+$list-button-link-color:                $base-color;
+$list-button-link-hover-bg:           #f2f2f2;
+$list-button-link-hover-color:          $base-color;
+
+// list button style 1
+$list-button-s1-link-color:               $base-text;
+$list-button-s1-link-active-bg:         #f2f2f2;
+$list-button-s1-link-active-color:        $base-color;
+
+
 // payment badge 
 $payment-badge-border-color:             #b1b1b1;
 
@@ -72,3 +82,5 @@ $radio-group-button-hover-color:              $base-color;
 $radio-group-button-active-bg:                 $--color-info;
 $radio-group-button-active-color:              $--color-white;
 
+// predefined form sidebar
+$predefined-form-sidebar-width:                       240px;
