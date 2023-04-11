@@ -49,7 +49,7 @@
         data() {
             return {
                 app_ready: false,
-                image_url: this.value,
+                image_url: this.value || '',
                 design_mode_name: this.design_mode || 'small',
                 enable_clear_name: this.enable_clear,
                 image_name: '',
