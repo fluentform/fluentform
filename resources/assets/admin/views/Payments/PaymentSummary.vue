@@ -295,7 +295,7 @@
                     route: 'update_transaction'
                 })
                 .then(response => {
-                    this.$notify.success(response.data.message);
+                    this.$success(response.data.message);
                     this.$emit('reload_payments');
                     this.transactionModal = false;
                     this.editingTransaction = false;
