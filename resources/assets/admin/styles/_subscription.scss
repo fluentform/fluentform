@@ -18,6 +18,14 @@
       &_payment{
         font-size: 15px;
         margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        .ff_badge{
+          margin-left: 5px;
+          i{
+            margin-right: 2px;
+          }
+        }
       }
       &_total{
         font-weight: 500;
@@ -29,6 +37,14 @@
 
 // payment details
 .ff_payment_detail_data_payment{
-    font-size: 15px;
-    margin-bottom: 10px;
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  .ff_badge{
+    margin-left: 5px;
+    i{
+      margin-right: 2px;
+    }
+  }
 }

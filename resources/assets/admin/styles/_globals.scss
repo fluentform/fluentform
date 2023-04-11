@@ -1652,6 +1652,17 @@ label.el-radio, label.el-checkbox {
     flex-shrink: 0;
     margin-right: 4px;
   }
+  &_active,
+  &_primary {
+    background-color: mix($--color-primary, $--color-white, 10%);
+    border-color: mix($--color-primary, $--color-white, 15%);
+    color: $--color-primary;
+  }
+  &_paid {
+    background-color: mix($--color-success, $--color-white, 10%);
+    border-color: mix($--color-success, $--color-white, 15%);
+    color: $--color-success;
+  }
   &_pending {
     background-color: mix($--color-warning, $--color-white, 10%);
     border-color: mix($--color-warning, $--color-white, 15%);
@@ -1686,6 +1697,36 @@ label.el-radio, label.el-checkbox {
     background-color: mix(#5469d4, #ffffff, 10%);
     color: #5469d4;
     border-color: mix(#5469d4, #ffffff, 15%);
+  }
+  &.is-solid{
+    &.ff_badge{
+      &_active{
+        background-color: $--color-primary;
+        border-color: $--color-primary;
+        color: $--color-white;
+      }
+      &_processing{
+        background-color: $--color-cyan;
+        border-color: $--color-cyan;
+        color: $--color-white;
+      }
+      &_paid {
+        background-color: $--color-success;
+        border-color: $--color-success;
+        color: $--color-white;
+      }
+      &_pending {
+        background-color: $--color-warning;
+        border-color: $--color-warning;
+        color: $--color-white;
+      }
+      &_failed,
+      &_cancelled {
+        background-color: $--color-danger;
+        border-color: $--color-danger;
+        color: $--color-white;
+      }
+    }
   }
 }
 

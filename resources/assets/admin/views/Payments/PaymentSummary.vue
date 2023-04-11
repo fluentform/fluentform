@@ -69,7 +69,7 @@
                             {{ submission.currency }}
                         </span>
 
-                        <span :class="'ff_badge ff_status_' + submission.payment_status">
+                        <span :class="'ff_badge ff_badge_' + submission.payment_status">
                             <i :class="getPaymentStatusIcon(submission.payment_status)"/>
                             {{ payment_statuses[submission.payment_status] || submission.payment_status }}
                         </span>
@@ -116,7 +116,7 @@
                         <li>
                             <div class="ff_list_header">{{$t('Payment Method')}}</div>
                             <div class="ff_list_value">
-                                <span class="ff_card_badge" v-if="transaction.payment_method">{{ transaction.payment_method }}</span>
+                                <span class="ff_badge ff_badge_primary" v-if="transaction.payment_method">{{ transaction.payment_method }}</span>
                                 <span v-else>n/a</span>
                             </div>
                         </li>
@@ -135,7 +135,7 @@
                         <li v-show="transaction.card_last_4">
                             <div class="ff_list_header">{{$t('Card Last 4')}}</div>
                             <div class="ff_list_value"><span
-                                    class="ff_card_badge">{{ transaction.card_brand }}</span> <i
+                                    class="ff_badge ff_badge_primary">{{ transaction.card_brand }}</span> <i
                                     class="el-icon-more"></i> {{ transaction.card_last_4 }}
                             </div>
                         </li>
@@ -146,7 +146,7 @@
                         <li v-show="transaction.status">
                             <div class="ff_list_header">{{$t('Payment Status')}}</div>
                             <div class="ff_list_value">
-                                <span class="ff_card_badge" :class="'ff_badge_status_'+transaction.status">{{ payment_statuses[transaction.status] || transaction.status }}</span>
+                                <span class="ff_badge is-solid" :class="'ff_badge_'+transaction.status">{{ payment_statuses[transaction.status] || transaction.status }}</span>
                             </div>
                         </li>
                         <li>
@@ -191,7 +191,7 @@
                         <div class="transaction_item_body">
                             <div class="transaction_item_line">
                                 <span class="ff_list_value" v-html="formatMoney(transaction.payment_total, transaction.currency)"></span> {{$t('has been refunded via')}}
-                                <span class="ff_card_badge" v-if="transaction.payment_method">{{ transaction.payment_method }}</span> {{$t('at')}}
+                                <span class="ff_badge ff_badge_primary" v-if="transaction.payment_method">{{ transaction.payment_method }}</span> {{$t('at')}}
                                 {{ transaction.created_at }}
                             </div>
                             <p v-if="transaction.payment_note && typeof transaction.payment_note == 'string'">{{$t('Note')}}: {{transaction.payment_note}}</p>
@@ -244,7 +244,7 @@
                 <template v-if="editingTransaction.status == 'partially-refunded'">
                     <el-form-item class="ff-form-item" :label="$t('New Refund Amount')">
                         <el-input type="number" step="any" v-model="editingTransaction.refund_amount"></el-input>
-                        <p>{{$t('Please Provide new refund amount only.')}}</p>
+                        <p class="text-note mt-1">{{$t('Please Provide new refund amount only.')}}</p>
                     </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Refund Note')">
                         <el-input type="textarea" v-model="editingTransaction.refund_note"></el-input>
