@@ -1,7 +1,6 @@
 <template>
     <div v-if="order_data" class="ff-payment_details">
-        <div  v-if="order_data.order_items.length" class="ff_card">
-
+        <card  v-if="order_data.order_items.length">
             <card-head>
                 <h6>
                     {{$t('Order Details')}}
@@ -45,21 +44,21 @@
                     </table>
                 </div>
             </card-body>
-        </div>
+        </card>
 
         <subscriptions
-                :discounts="{}"
-                @reload_payments="emitReload()"
-                :subscriptions="order_data.subscriptions"
-                :payment_method="submission.payment_method"
-                v-if="order_data.subscriptions && order_data.subscriptions.length"
+            :discounts="{}"
+            @reload_payments="emitReload()"
+            :subscriptions="order_data.subscriptions"
+            :payment_method="submission.payment_method"
+            v-if="order_data.subscriptions && order_data.subscriptions.length"
         />
 
-        <div
-                v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
-                class="ff_card mt-4 mb-4"
+        <card v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
         >
-            <card-head> <h6>{{$t('Payment Details')}}</h6> </card-head>
+            <card-head>
+                <h6>{{$t('Payment Details')}}</h6> 
+            </card-head>
             <card-body class="entry_info_body ff_payment_detail_data">
                 <div class="ff_payment_detail_data_payment">
                     <template v-if="parseFloat(submission.payment_total)">
@@ -168,15 +167,13 @@
                     </el-button>
                 </div>
             </card-body>
-        </div>
+        </card>
 
-        <div v-if="order_data.refunds && order_data.refunds.length" class="entry_info_box entry_submission_order_data">
-            <div class="entry_info_header">
-                <div class="info_box_header">
-                    {{$t('Refunds')}}
-                </div>
-            </div>
-            <div class="entry_info_body">
+        <card v-if="order_data.refunds && order_data.refunds.length">
+            <card-head>
+                <h6> {{$t('Refunds')}}</h6> 
+            </card-head>
+            <card-body class="entry_info_body">
                 <div v-for="(transaction, index) in order_data.refunds" class="wpf_entry_transaction" :key="index">
                     <div class="transaction_item_small">
                         <div class="transaction_item_heading">
@@ -190,16 +187,16 @@
                         </div>
                         <div class="transaction_item_body">
                             <div class="transaction_item_line">
-                                <span class="ff_list_value" v-html="formatMoney(transaction.payment_total, transaction.currency)"></span> {{$t('has been refunded via')}}
-                                <span class="ff_badge ff_badge_primary" v-if="transaction.payment_method">{{ transaction.payment_method }}</span> {{$t('at')}}
+                                <span class="ff_badge is-solid small ff_badge_paid" v-html="formatMoney(transaction.payment_total, transaction.currency)"></span> {{$t('has been refunded via')}}
+                                <span class="ff_badge small ff_badge_primary" v-if="transaction.payment_method">{{ transaction.payment_method }}</span> {{$t('at')}}
                                 {{ transaction.created_at }}
                             </div>
                             <p v-if="transaction.payment_note && typeof transaction.payment_note == 'string'">{{$t('Note')}}: {{transaction.payment_note}}</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </card-body>
+        </card>
 
         <el-dialog
             v-loading="editing"
@@ -237,7 +234,7 @@
                             :label="status_key"
                         >{{paymentStatus}}</el-radio>
                     </el-radio-group>
-                    <p v-if="(editingTransaction.status == 'refunded' || editingTransaction.status == 'partial-refunded') && original_editing_status != editingTransaction.status">
+                    <p class="text-note mt-2" v-if="(editingTransaction.status == 'refunded' || editingTransaction.status == 'partial-refunded') && original_editing_status != editingTransaction.status">
                         $t{{'refunds-to-be-handled-from-provider-text'}}
                     </p>
                 </el-form-item>
@@ -283,9 +280,6 @@
         methods: {
             getFormattedMoney(amount) {
                 return amount;
-                if (!amount) {
-                    return 'n/a';
-                }
             },
             initTransactionEditor(transaction) {
                 this.editingTransaction = transaction;
@@ -301,7 +295,7 @@
                     route: 'update_transaction'
                 })
                 .then(response => {
-                    this.$notify.success(response.data.message);
+                    this.$success(response.data.message);
                     this.$emit('reload_payments');
                     this.transactionModal = false;
                     this.editingTransaction = false;

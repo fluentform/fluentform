@@ -1,5 +1,5 @@
 <template>
-    <div class="ff_card mt-4 entry_submission_order_data ">
+    <div class="ff_card entry_submission_order_data">
         <card-head>
             <h6> {{ $t('Subscriptions (Recurring Payments)') }} </h6>
         </card-head>
@@ -113,7 +113,7 @@
                         </tr>
 
                         <template v-if="discounts.percent">
-                            <tr v-for="(payment,i) in subscription.related_payments">
+                            <tr v-for="(payment,i) in subscription.related_payments" :key="i">
                                 <td>
                                     {{ $t('Discounts') }}
                                 </td>
