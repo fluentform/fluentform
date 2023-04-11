@@ -300,7 +300,7 @@ class FormBuilder
             ob_start();
 
             do_action_deprecated(
-                'fluentform/render_item_step_start',
+                'fluentform_render_item_step_start',
                 [
                     $startElement,
                     $form
