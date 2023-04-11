@@ -372,7 +372,7 @@
                                             type: entry_type
                                         }
                                     }">
-                                        <span class="el-button el-button--soft el-button--primary el-button--small el-button--icon">
+                                        <span class="el-button el-button--primary el-button--mini el-button--icon">
                                             <i class="ff-icon ff-icon-eye-filled"></i>
                                         </span>
                                     </router-link>
@@ -382,8 +382,8 @@
                                         v-if="hasPermission('fluentform_manage_entries')"
                                         @on-confirm="removeEntry(scope.row.id, scope.$index)">
                                         <el-button
-                                            class="el-button--soft el-button--icon"
-                                            size="small"
+                                            class="el-button--icon"
+                                            size="mini"
                                             type="danger"
                                             icon="ff-icon ff-icon-trash"
                                         />
