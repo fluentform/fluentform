@@ -141,6 +141,20 @@ class SubmissionHandlerService
     
     public function processSubmissionData($insertId, $formData, $form)
     {
+        do_action_deprecated(
+            'fluentform_before_form_actions_processing',
+            [
+                $insertId,
+                $this->formData,
+                $this->form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/before_form_actions_processing',
+            'Use fluentform/before_form_actions_processing instead of fluentform_before_form_actions_processing.'
+        );
+    
+        do_action('fluentform/before_form_actions_processing', $insertId, $this->formData, $this->form);
+        
         if ($insertId) {
             ob_start();
             $this->submissionService->recordEntryDetails($insertId, $form->id, $formData);
@@ -421,8 +435,8 @@ class SubmissionHandlerService
                 'fluentform/before_insert_payment_form',
                 'Use fluentform/before_insert_payment_form instead of fluentform_before_insert_payment_form.'
             );
-
-            do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form);
+            $submissionServiceHandler = $this;
+            do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form, $submissionServiceHandler);
         }
         
         $insertId = Submission::insertGetId($insertData);
@@ -431,20 +445,7 @@ class SubmissionHandlerService
         
         $uidHash = md5(wp_generate_uuid4() . $insertId);
         Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $formId);
-
-        do_action_deprecated(
-            'fluentform_before_form_actions_processing',
-            [
-                $insertId,
-                $this->formData,
-                $this->form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/before_form_actions_processing',
-            'Use fluentform/before_form_actions_processing instead of fluentform_before_form_actions_processing.'
-        );
         
-        do_action('fluentform/before_form_actions_processing', $insertId, $this->formData, $this->form);
         
         return $insertId;
     }
