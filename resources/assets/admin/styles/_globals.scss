@@ -1643,6 +1643,10 @@ label.el-radio, label.el-checkbox {
   display: inline-flex;
   align-items: center;
   line-height: 1.2;
+  font-weight: 500;
+  &.small{
+    font-size: 13px;
+  }
   &_wrap{
     display: inline-flex;
     align-items: center;
@@ -1655,22 +1659,27 @@ label.el-radio, label.el-checkbox {
   &_active,
   &_primary {
     background-color: mix($--color-primary, $--color-white, 10%);
-    border-color: mix($--color-primary, $--color-white, 15%);
+    border-color: mix($--color-primary, $--color-white, 20%);
     color: $--color-primary;
   }
   &_paid {
     background-color: mix($--color-success, $--color-white, 10%);
-    border-color: mix($--color-success, $--color-white, 15%);
+    border-color: mix($--color-success, $--color-white, 20%);
     color: $--color-success;
+  }
+  &_processing{
+    background-color: mix($--color-cyan, $--color-white, 10%);
+    border-color: mix($--color-cyan, $--color-white, 20%);
+    color: $--color-cyan;
   }
   &_pending {
     background-color: mix($--color-warning, $--color-white, 10%);
-    border-color: mix($--color-warning, $--color-white, 15%);
+    border-color: mix($--color-warning, $--color-white, 20%);
     color: $--color-warning;
   }
   &_failed {
     background-color: mix($--color-danger, $--color-white, 10%);
-    border-color: mix($--color-danger, $--color-white, 15%);
+    border-color: mix($--color-danger, $--color-white, 20%);
     color: $--color-danger;
   }
   &_visa {
