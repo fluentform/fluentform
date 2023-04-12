@@ -64,7 +64,7 @@ abstract class Controller
         return $this->response->send($data, $code);
     }
 
-    public function sendSuccess($data = null, $code = null)
+    public function sendSuccess($data = null, $code = 200)
     {
         return $this->response->sendSuccess($data, $code);
     }
