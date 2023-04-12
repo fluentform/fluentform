@@ -14,7 +14,7 @@
                 <template slot="title">
                     <div class="el-dialog__header_group">
                         <h4 class="mr-3">{{ $t('Create A New Form') }}</h4>
-                        <el-button size="medium" @click="showFormsImport = !showFormsImport" type="primary"
+                        <el-button size="medium" @click="showFormsImport = !showFormsImport" type="info"
                                    class="el-button--soft">
                             {{ $t('Import Form') }}
                             &nbsp;<i v-if=" showFormsImport" class="el-icon-circle-close"></i>

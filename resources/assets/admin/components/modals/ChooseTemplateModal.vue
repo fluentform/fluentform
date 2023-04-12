@@ -204,7 +204,7 @@
                 }
     
                 jQuery('.ff_predefined_form_wrap').animate({
-                    scrollTop: jQuery(targetHash).offset().top - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
+                    scrollTop: jQuery(targetHash).offset().top - 54 - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
 
                 }, 'slow');
                 

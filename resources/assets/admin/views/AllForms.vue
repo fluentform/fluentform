@@ -47,7 +47,7 @@
                                     v-model="searchFormsKeyWord"
                                     :placeholder="$t('Search Forms')"
                                     prefix-icon="el-icon-search"
-                                    class="ff-input-s1 el-input-gray all-forms-search"
+                                    class="all-forms-search"
                                 >
                                 </el-input>
                             </el-form>
