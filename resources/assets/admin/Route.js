@@ -20,10 +20,7 @@ class Route {
     getForms = "forms";
     storeForms = this.getForms;
     getTemplates = this.getForms + "/templates";
-
-    importForms = this.getForms +'/import';
-    exportForms = this.getForms +'/export';
-
+    
 
     findForm = this.getForms + "/{param}";
     updateForm = this.findForm;

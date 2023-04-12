@@ -3,37 +3,47 @@
 namespace FluentForm\App\Http\Controllers;
 
 use Exception;
-use FluentForm\App\Services\Form\FormService;
+use FluentForm\App\Services\Transfer\TransferService;
 
 class TransferController extends Controller
 {
     /**
      * Export forms as JSON.
      */
-    public function export(FormService $formService)
+    public function exportForms()
     {
         try {
             $formIds = $this->request->get('forms');
-            return $formService->export($formIds);
+            TransferService::exportForms($formIds);
         } catch (Exception $exception) {
-            return $this->sendError([
-                'message' => $exception->getMessage(),
-            ]);
+            $this->json([
+                'message' => $exception->getMessage()
+            ], 424);
         }
     }
     
     /**
      * Import forms from a previously exported JSON file.
      */
-    public function import(FormService $formService)
+    public function importForms()
     {
         try {
             $file = $this->request->file('file');
-            return $this->sendSuccess($formService->import($file), 200);
+            $this->json(TransferService::importForms($file), 200);
         } catch (Exception $exception) {
-            return $this->sendError([
-                'message' => $exception->getMessage(),
-            ], 403);
+            $this->json([
+                'message' => $exception->getMessage()
+            ], 424);
+        }
+    }
+
+    public function exportEntries() {
+        try {
+            TransferService::exportEntries($this->request->get());
+        } catch (Exception $exception) {
+            $this->json([
+                'message' => $exception->getMessage()
+            ], 424);
         }
     }
 }

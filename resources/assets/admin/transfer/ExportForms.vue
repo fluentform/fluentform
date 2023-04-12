@@ -65,16 +65,13 @@
         methods: {
             exportForms() {
                 if (this.selected.length) {
-
                     const data = {
+	                    action: 'fluentform-export-forms',
                         forms: this.selected,
                         format: 'json',
-                        _wpnonce: window.fluent_forms_global_var.rest.nonce
+	                    fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                     };
-                    const route = FluentFormsGlobal.$rest.route('exportForms');
-                    const url = `${window.fluent_forms_global_var.rest.url}/${route}`;
-                    console.log(url +'?'+jQuery.param(data))
-                    location.href = url + '?' + jQuery.param(data);
+	                location.href = ajaxurl + '?' + jQuery.param(data);
                 }
             }
         }
