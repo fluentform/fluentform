@@ -167,6 +167,9 @@
             display: block;
             &.lead-text{
                 color: $--color-primary;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
