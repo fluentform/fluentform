@@ -48,8 +48,8 @@ do_action('fluentform/global_menu'); ?>
                     [
                     ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform_addons_page_render_' . $current_menu_item,
-                    'Use fluentform_addons_page_render_' . $current_menu_item . ' instead of fluentform_addons_page_render_' . $current_menu_item
+                    'fluentform/addons_page_render_' . $current_menu_item,
+                    'Use fluentform/addons_page_render_' . $current_menu_item . ' instead of fluentform_addons_page_render_' . $current_menu_item
                 );
                 do_action('fluentform/addons_page_render_' . $current_menu_item);
                 ?>

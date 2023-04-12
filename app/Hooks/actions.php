@@ -456,22 +456,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     }, 10, 2);
 }, 10);
 
-add_action('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {
-    $url = '';
-    if (!defined('FLUENTFORM_PDF_VERSION')) {
-        $url = wp_nonce_url(
-            self_admin_url('update.php?action=install-plugin&plugin=fluentforms-pdf'),
-            'install-plugin_fluentforms-pdf'
-        );
-    }
-
-    $app->view->render('admin.addons.pdf_promo', [
-        'public_url' => fluentFormMix(),
-        'install_url'  => $url,
-        'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
-    ]);
-});
-
 $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use ($app) {
     $url = '';
     if (!defined('FLUENTFORM_PDF_VERSION')) {
