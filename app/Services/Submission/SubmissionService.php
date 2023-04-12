@@ -21,13 +21,11 @@ class SubmissionService
      * @var \FluentForm\App\Models\Submission|\FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Orm\Builder
      */
     protected $model;
-    protected $exporter;
     protected $formService;
 
-    public function __construct(Submission $submission, FormService $formService, Export $exporter)
+    public function __construct(Submission $submission, FormService $formService)
     {
         $this->model = $submission;
-        $this->exporter = $exporter;
         $this->formService = $formService;
     }
 
@@ -356,11 +354,6 @@ class SubmissionService
         }
 
         return $attachments;
-    }
-
-    public function exportSubmission($args)
-    {
-        $this->exporter->index($args);
     }
 
     public function getNotes($submissionId, $attributes)

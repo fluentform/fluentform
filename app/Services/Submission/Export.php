@@ -23,13 +23,14 @@ class Export
      */
     protected $model;
 
-    public function __construct(Submission $submission, Application $application) {
+    public function __construct(Application $application) {
         $this->app = $application;
-        $this->model = $submission;
+        $this->model = new Submission;
     }
 
-    public function index($args)
+    public function index()
     {
+        $args = $this->app->request->get();
         if (!defined('FLUENTFORM_EXPORTING_ENTRIES')) {
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
@@ -76,7 +77,7 @@ class Export
 
             $temp[] = @$submission->id;
             $temp[] = @$submission->status;
-            $temp[] = @$submission->created_at;
+            $temp[] = (string) @$submission->created_at;
             $exportData[] = $temp;
         }
 
