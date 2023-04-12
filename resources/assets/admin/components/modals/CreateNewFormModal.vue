@@ -3,7 +3,7 @@
         <div :class="{'ff_backdrop': visibility}">
             <el-dialog
                 top="50px"
-                :width="has_pro ? '84%' : '63%'"
+                :width="has_pro ? '84%' : '64%'"
                 :element-loading-text="$t('Creating Form, Please wait...')"
                 element-loading-spinner="el-icon-loading"
                 :loading="creatingForm"
