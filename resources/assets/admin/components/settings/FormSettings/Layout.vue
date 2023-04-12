@@ -595,6 +595,7 @@
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import { scrollTop } from '@/admin/helpers';
 
     export default {
         name: 'FormLayout',
@@ -673,12 +674,22 @@
                         jQuery(this).on("click", function(e){
                             let targetId = jQuery(this).attr("data-section-id");
                             e.preventDefault();
-        
-                            jQuery('.ff_global_settings_option').animate({
-                                scrollTop: jQuery(targetId).offset().top - 34 - jQuery('.ff_global_settings_option').position().top + jQuery('.ff_global_settings_option').scrollTop()
-        
-                            }, 'slow');
-                    
+
+                            jQuery(targetId).addClass('highlight-border');
+
+                            const $settingsOption = jQuery('.ff_global_settings_option');
+
+                            if($settingsOption.length){
+                                const top = jQuery(targetId).offset().top - 34 - $settingsOption.position().top + $settingsOption.scrollTop();
+
+                                scrollTop(top, 'fast', '.ff_global_settings_option').then((_) => {
+                                    if(targetId.length) {
+                                        setTimeout(() => {
+                                            jQuery(targetId).not(this).removeClass('highlight-border');
+                                        }, 500);
+                                    }
+                                })
+                            }
                         });
                     });
                 }

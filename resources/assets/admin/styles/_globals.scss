@@ -907,7 +907,7 @@ label.el-radio, label.el-checkbox {
   min-height: 550px;
   &_sidebar {
     flex-shrink: 0;
-    background-color: #ffffff;
+    background-color: $white;
     box-shadow: 0 1px 3px rgba(30, 31, 33, 0.05);
     width: $section-layout-sidebar-width-sm;
     padding: 16px;
@@ -916,7 +916,7 @@ label.el-radio, label.el-checkbox {
   &_container {
     flex: 1;
     padding: 16px;
-    height: 80vh;
+    height: 95vh;
     overflow-y: scroll;
   }
 }

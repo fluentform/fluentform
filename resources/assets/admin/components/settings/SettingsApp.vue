@@ -71,7 +71,7 @@
                         const $settingsForm = jQuery('.ff_settings_form');
                         if($settingsForm.length){
                             const top = jQuery(targetHash).offset().top - 34 - $settingsForm.position().top + $settingsForm.scrollTop();
-                            scrollTop(top, 'slow', '.ff_settings_form').then((_) => {
+                            scrollTop(top, 'fast', '.ff_settings_form').then((_) => {
                                 jQuery('head title').text( e.target.textContent.trim() + ' - Fluent Forms');
                                 if(targetHash.length) {
                                     setTimeout(() => {
