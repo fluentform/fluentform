@@ -140,7 +140,6 @@ footer {
       font-weight: 600;
     }
     &.active {
-      border-color: $--color-primary;
       color: $--color-primary;
       &:after {
         transform: rotate(-180deg);

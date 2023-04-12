@@ -176,7 +176,7 @@
                                         ...paymentsMockList
                                     ]"/>
                                 </div>
-                                
+
                                 <div class="sidebar_elements_wrapper" v-show="!isSidebarSearch">
                                     <!-- Post Fields -->
                                     <div
@@ -507,7 +507,7 @@ export default {
             },
             renameFormVisibility: false,
             editorInserterInContainer: false,
-            instructionImage: FluentFormApp.plugin_public_url + 'img/help.png',
+            instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false
         }
@@ -839,7 +839,7 @@ export default {
          */
         fetchSettings() {
             const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
-            
+
             FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
                 .then(response => {
                     let result = response[0];
