@@ -13,7 +13,7 @@
                 <component :is="contentComponent"></component>
             </template>
 
-            <template v-else-if="modal">
+            <template v-else-if="modal && !modal.disable_html">
                 <el-row :gutter="25" class="items-center">
                     <el-col v-if="modal.video || modal.image" :span="12">
                         <div v-if="modal.video" class="video-wrapper mr-3">
@@ -46,11 +46,15 @@
                 </el-row>
             </template>
 
+            <div v-else-if="modal && modal.disable_html">
+                <div v-html="modal.disable_html"></div>
+            </div>
+
             <div v-else>
                 <p>{{ $t('This field is only available on pro add - on') }}</p>
                 <a target="_blank"
-                    class="el-button el-button--danger"
-                    :href="campaignUrl" >
+                   class="el-button el-button--danger"
+                   :href="campaignUrl" >
                     {{ $t('Upgrade to Pro Now') }}
                 </a>
             </div>
