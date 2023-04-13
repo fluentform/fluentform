@@ -21,6 +21,7 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        max-width: 138px;
         &:focus{
             box-shadow: none;
             border: 0;
