@@ -2,10 +2,10 @@
     <div v-loading="loading" class="ff_global_setting_options_wrap">
         <!--Different form settings section-->
         <template v-if="app_ready">
-            <layout 
-                :email_report="email_report" 
-                :integration_failure_notification="integration_failure_notification" 
-                :data="formSettings" 
+            <layout
+                :email_report="email_report"
+                :integration_failure_notification="integration_failure_notification"
+                :data="formSettings"
                 :file_upload_optoins="file_upload_optoins"
                 :captcha_status="captcha_status"
             />
@@ -157,7 +157,6 @@
                     .then(response => {
                     })
                     .catch(e => {
-                        this.$fail(e?.data?.message);
                     });
             }
         },

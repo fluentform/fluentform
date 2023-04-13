@@ -315,7 +315,7 @@ class Settings
         update_option('_fluentform_global_form_settings', $sanitizedSettings, 'no');
 
         wp_send_json_success([
-            'message' => __('Global layout settings has been saved'),
+            'message' => __('Global settings has been saved'),
         ], 200);
     }
 

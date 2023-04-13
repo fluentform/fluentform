@@ -225,7 +225,7 @@ class GlobalSettingsHelper
         update_option('_fluentform_global_form_settings', $sanitizedSettings, 'no');
 
         return ([
-            'message' => __('Global layout settings has been saved')
+            'message' => __('Global settings has been saved')
         ]);
     }
 

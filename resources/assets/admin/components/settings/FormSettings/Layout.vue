@@ -132,10 +132,10 @@
                     <el-row :gutter="24">
                         <el-col :span="24" v-if="email_report.send_to_type == 'custom_email'">
                             <el-form-item class="ff-form-item">
-                                <label class="mb-3" style="display: block;">{{ $t('Please recipient email address') }}</label>
+                                <label class="mb-3" style="display: block;">{{ $t('Enter Recipient Email Address ') }}</label>
                                 <el-input class="w-100" :placeholder="$t('Recipient Email Address')"
                                         v-model="email_report.custom_recipients"></el-input>
-                                <p class="fs-14 mt-1">{{ $t('For Multiple please use comma separated values') }}</p>
+                                <p class="fs-14 mt-1">{{ $t(' For multiple email addresses, use comma to separate them.') }}</p>
                             </el-form-item>
                         </el-col>
                         <el-col :sm="24" :md="12">
@@ -190,7 +190,7 @@
             <card-head>
                 <h5 class="title">{{ $t('Integration Failure Email Notification') }}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{$t('Receive an instant email notification when any of your integration is not running. Enable Integration Failure Notification and you will get an email when any of your integration fails to run.')}}
+                    {{$t('Enable Integration Failure Notification and you will get an email when any of your integration fails to run.')}}
                 </p>
             </card-head>
             <card-body>
@@ -247,7 +247,7 @@
                     </el-form-item>
                 </template>
             </card-body>
-        </card>        
+        </card>
 
         <card id="miscellaneous">
             <card-head>
@@ -408,7 +408,7 @@
                             </span>
                             <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
                         </span>
-                        
+
                     </template>
                     <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                v-model="misc.noConflictStatus"></el-switch>
@@ -561,7 +561,7 @@
                                 v-model="misc.admin_top_nav_status"></el-switch>
                     </el-form-item>
                 </div>
-                
+
                 <el-form-item class="ff-form-item">
                     <template slot="label">
                         {{ $t('Email Footer Text') }}
@@ -698,7 +698,7 @@
         mounted() {
             // init page scroll
             this.scrollTo();
-             
+
             this.layout = this.data.layout;
 
             if (!this.data.misc.akismet_validation) {
