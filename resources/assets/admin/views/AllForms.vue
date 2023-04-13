@@ -54,7 +54,11 @@
                         </btn-group-item>
                         <btn-group-item as="div">
                             <div class="ff_advanced_filter_wrap">
-                                <el-button @click="advancedFilter = !advancedFilter">
+                                <el-button v-if="hasEnabledDateFilter" @click="resetAdvancedFilter">
+                                    <span>{{$t('Reset Filter')}}</span>
+                                    <i class="ff-icon ff-icon-close"></i>
+                                </el-button>
+                                <el-button v-else @click="advancedFilter = !advancedFilter">
                                     <span>{{$t('Filter')}}</span>
                                     <i class="ff-icon ff-icon-filter"></i>
                                 </el-button>
@@ -72,7 +76,7 @@
                                         <el-date-picker
                                             v-model="filter_date_range"
                                             type="daterange"
-                                            @change="fetchItems()"
+                                            @change="filterDateRangedPicked"
                                             :picker-options="pickerOptions"
                                             format="dd MMM, yyyy"
                                             value-format="yyyy-MM-dd"
@@ -313,7 +317,7 @@ export default {
             checkedItems: [],
             showSelectFormModal: false,
             advancedFilter: false,
-            filter_date_range: ['', ''],
+            filter_date_range: null,
             pickerOptions: {
               disabledDate(time) {
                 return time.getTime() >= Date.now();
@@ -411,7 +415,7 @@ export default {
                 sort_column: this.sort_column,
                 sort_by: this.sort_by
             };
-            if (this.advancedFilter) {
+            if (this.hasEnabledDateFilter) {
               data.date_range = this.filter_date_range;
             }
             
@@ -429,6 +433,9 @@ export default {
                 })
                 .finally(() => {
                     this.loading = false;
+	                if (this.advancedFilter) {
+		                this.advancedFilter = false;
+	                }
                 });
         },
         refetchItems() {
@@ -525,8 +532,13 @@ export default {
             }
         },
         resetAdvancedFilter() {
-          this.advancedFilter = false;
+		  this.radioOption = "";
+		  this.filter_date_range = null;
           this.fetchItems();
+        },
+	    filterDateRangedPicked() {
+		    this.radioOption = "";
+			this.fetchItems();
         },
         filterFormType() {
           this.search_string = '';
@@ -575,16 +587,19 @@ export default {
 	        location.href = ajaxurl + '?' + jQuery.param(data);
         }
     },
+    computed: {
+	    hasEnabledDateFilter() {
+		    return !!(this.radioOption ||
+			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
+		    );
+        }
+    },
     mounted() {
         this.fetchItems();
         this.getPredefinedForms();
-        this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
-
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
-
-        
     },
     created() {
         let hash = window.location.hash;
@@ -621,6 +636,9 @@ export default {
             const end = new Date();
             let number = 1;
             switch (this.radioOption) {
+                case 'today':
+					number = 0;
+					break;
                 case 'yesterday':
                     end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
                     break;
@@ -631,7 +649,7 @@ export default {
                     number = 30;
                     break;
                 default:
-                    number = 0;
+                    return;
             }
             start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
             const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();

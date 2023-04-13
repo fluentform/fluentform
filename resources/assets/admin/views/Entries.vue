@@ -162,7 +162,11 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button @click="advancedFilter = !advancedFilter; ">
+                            <el-button v-if="hasEnabledDateFilter" @click="resetAdvancedFilter">
+                                <span>{{ $t('Reset Filter') }}</span>
+                                <i class="ff-icon ff-icon-close" style="font-size: 14px;"></i>
+                            </el-button>
+                            <el-button v-else @click="advancedFilter = !advancedFilter; ">
                                 <span>{{ $t('Filter') }}</span>
                                 <i class="ff-icon ff-icon-filter" style="font-size: 14px;"></i>
                             </el-button>
@@ -180,7 +184,7 @@
                                     <el-date-picker
                                             v-model="filter_date_range"
                                             type="daterange"
-                                            @change="getData()"
+                                            @change="filterDateRangedPicked"
                                             :picker-options="pickerOptions"
                                             format="dd MMM, yyyy"
                                             value-format="yyyy-MM-dd"
@@ -461,6 +465,9 @@
                 const end = new Date();
                 let number = 1;
                 switch (this.radioOption) {
+                    case 'today':
+						number = 0;
+						break;
                     case 'yesterday':
                         end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
                         break;
@@ -471,7 +478,7 @@
                         number = 30;
                         break;
                     default:
-                        number = 0;
+                        return;
                 }
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
                 const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
@@ -506,7 +513,7 @@
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
                 advancedFilter: false,
-                filter_date_range: ['', ''],
+                filter_date_range: null,
                 autoDeleteStatus: window.fluent_form_entries_vars.enabled_auto_delete,
                 pickerOptions: {
                     disabledDate(time) {
@@ -634,6 +641,11 @@
                 }
 
                 return columnsOrder;
+            },
+	        hasEnabledDateFilter() {
+				return !!(this.radioOption ||
+					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
+                );
             }
         },
         methods: {
@@ -689,7 +701,7 @@
                     parse_entry: true,
                 };
 
-                if (this.advancedFilter) {
+                if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                 }
 
@@ -709,6 +721,9 @@
                     .finally(() => {
                         this.getVisibleColumns();
                         this.loading = false;
+						if (this.advancedFilter) {
+							this.advancedFilter = false;
+                        }
                     });
             },
             handleTableSort(column) {
@@ -917,8 +932,13 @@
                 let dateObj = moment(dateString);
                 return dateObj.isValid() ? dateObj.format(format) : null;
             },
+	        filterDateRangedPicked() {
+			    this.radioOption = "";
+				this.getData();
+            },
             resetAdvancedFilter() {
-                this.advancedFilter = false;
+                this.radioOption = "";
+				this.filter_date_range = null;
                 this.getData();
             },
             gotoVisualReport() {
@@ -960,7 +980,6 @@
         },
         mounted() {
             this.getEntryResources();
-            this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
             (new ClipboardJS('.copy')).on('success', (e) => {
                 this.$copy();
             });
