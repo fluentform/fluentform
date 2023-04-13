@@ -97,7 +97,7 @@
                                 v-model="search"
                                 :placeholder="$t('Search Forms')"
                                 prefix-icon="el-icon-search"
-                                class="ff-input-s1 el-input-gray"
+                                class="ff-input-s1"
                             >
                             </el-input>
                         </div>
