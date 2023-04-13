@@ -70,7 +70,7 @@
       height: 100vh;
       overflow-y: scroll;
       border-left: 1px solid $border-color;
-      background-color: $bg-gray;
+      background-color: $body-bg;
 
       &::-webkit-scrollbar {
         -webkit-appearance: none;
@@ -507,7 +507,7 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
         padding: 4px 12px;
       }
     }
-    
+
   }
 }
 .pull-right.top-check-action {
