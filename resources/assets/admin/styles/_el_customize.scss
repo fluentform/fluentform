@@ -102,9 +102,9 @@
 // SIDEBAR OPTIONS
 .option-fields-section--content {
     .el-form-item__label {
-        padding-bottom: 10px;
+        padding-bottom: 4px;
         line-height: 1;
-        color:#1e1f21;
+        color: $base-color;
     }
 
     .el-form-item__content {
@@ -117,7 +117,7 @@
     }
     strong{
         font-weight: 600;
-        color: #1e1f21;
+        color: $base-color;
     }
 }
 
