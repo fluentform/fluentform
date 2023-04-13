@@ -751,36 +751,40 @@ label.el-radio, label.el-checkbox {
   border-radius: 4px;
 }
 
-.shortcode_btn {
-  padding: 4px;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  border-radius: 6px;
-  margin: 0;
-  background-color: $shortcode-bg;
-  border: 0;
-  color: $shortcode-color;
-  &_thin{
-    background-color: $shortcode-bg-thin;
+.ff_shortcode{
+  &_wrap{
+    + .ff_shortcode_wrap{
+      margin-top: 0.5rem;
+    }
   }
-  code {
-    background-color: transparent;
-    padding: 0;
-    font-size: 12px;
+  &_btn {
+    padding: 4px 10px;
     overflow: hidden;
-    white-space: nowrap;
-    width: 200px;
-    text-overflow: ellipsis;
-  }
-  + .shortcode_btn{
-    margin-top: 0.5rem;
-  }
-  &_md{
-    padding: 10px 14px;
-    font-size: 15px;
-    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    border-radius: 4px;
+    margin: 0;
+    background-color: $shortcode-bg;
+    border: 0;
+    color: $shortcode-color;
+    span{
+      overflow: hidden;
+      white-space: nowrap;
+      width: 200px;
+      text-overflow: ellipsis;
+    }
+    .el-icon{
+      margin-right: 1px;
+    }
+    &_thin{
+      background-color: $shortcode-bg-thin;
+    }
+    &_md{
+      padding: 10px 14px;
+      font-size: 15px;
+      line-height: 1.2;
+    }
   }
 }
 

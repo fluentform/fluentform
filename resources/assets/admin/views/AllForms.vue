@@ -182,17 +182,17 @@
 
                     <el-table-column :label="$t('ShortCode')" width="310">
                         <template slot-scope="scope">
-                            <div class="shortcode_btn shortcode_btn_thin">
-                                <code class="copy" title="Click to copy" :id="`fluentform_${scope.row.id}`" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
-                                    [fluentform id="{{ scope.row.id }}"]
+                            <div class="ff_shortcode_wrap">
+                                <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
+                                    <span><i class="el-icon el-icon-document-copy"></i> [fluentform id="{{ scope.row.id }}"]</span>
                                 </code>
-                                <span class="copy copy_btn" :data-clipboard-target="`#fluentform_${scope.row.id}`">Copy</span>
                             </div>
-                            <div class="shortcode_btn shortcode_btn_thin conversational_shortcode" v-if="scope.row.conversion_preview">
-                                <code class="copy" title="Click to copy" :id="`fluentform_conversational_${scope.row.id}`" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
-                                    [fluentform type="conversational" id="{{scope.row.id }}"]
+                            
+                            <div class="ff_shortcode_wrap ff_conversational_shortcode" v-if="scope.row.conversion_preview">
+                                <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                    <span><i class="el-icon el-icon-document-copy"></i> [fluentform type="conversational" id="{{
+                                    scope.row.id }}"]</span>
                                 </code>
-                                <span class="copy copy_btn" :data-clipboard-target="`#fluentform_conversational_${scope.row.id}`">Copy</span>
                             </div>
                         </template>
                     </el-table-column>
