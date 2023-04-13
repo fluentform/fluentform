@@ -1171,9 +1171,10 @@ label.el-radio, label.el-checkbox {
   .mce-top-part::before{
     box-shadow: none;
   }
-  div.mce-toolbar-grp{
+  div.mce-toolbar-grp,
+  .quicktags-toolbar {
     border-bottom: 0;
-    background-color: #F1F1F0;
+    background: #F1F1F0;
   }
   .mce-toolbar .mce-btn-group .mce-btn.mce-listbox{
     border: 0;
@@ -1182,6 +1183,7 @@ label.el-radio, label.el-checkbox {
   }
   textarea{
     border: 0;
+    padding-top: 15px;
   }
 }
 
