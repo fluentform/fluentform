@@ -52,7 +52,7 @@
                             </card>
                         </el-col>
                         <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature">
-                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="chooseTemplateImg" imgClass="mb-3">
+                            <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="postTypeFormImg" imgClass="mb-3">
                                 <card-body>
                                     <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
                                     <p class="ff_card_text">{{$t('Create a Post type form from scratch.')}}</p>
@@ -117,6 +117,7 @@
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
+                postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',
                 showChooseTemplateModal: false,
                 postTypeSelectionDialogVisibility: false,
                 showFormsImport : false,
