@@ -219,6 +219,10 @@
             }
         }
     }
+    &--block{
+        width: 100%;
+        justify-content: center;
+    }
     &--small{
         .ff-icon{
             font-size: 14px;
