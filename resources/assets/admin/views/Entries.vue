@@ -1,7 +1,7 @@
 <template>
     <div class="ff_entries_wrap">
-        <el-row class="mb-4 items-center">
-            <el-col :span="12">
+        <section-head class="ff_section_head_between items-center">
+            <section-head-content>
                 <el-dropdown
                     @command="handleSwitchForm"
                     class="current_form_name"
@@ -21,26 +21,38 @@
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-            </el-col>
-            <el-col :span="12">
-                <div class="text-right">
-                    <btn-group>
-                        <btn-group-item as="div">
-                            <el-button @click="gotoVisualReport()" type="primary">
-                                <i class="ff-icon ff-icon-donut-chart"></i>
-                                <span>{{ $t('View Visual Report') }}</span>
+            </section-head-content>
+            <section-head-content>
+                <btn-group>
+                    <btn-group-item as="div">
+                        <el-button @click="gotoVisualReport()" type="primary">
+                            <i class="ff-icon ff-icon-donut-chart"></i>
+                            <span>{{ $t('View Visual Report') }}</span>
+                        </el-button>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown @command="exportEntries" trigger="click">
+                            <el-button>
+                                {{ $t('Export') }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
-                        </btn-group-item>
-                    </btn-group>
-                </div>
-            </el-col>
-        </el-row>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                </btn-group>
+            </section-head-content>
+        </section-head>
 
         <div class="separator mb-4"></div>
 
-        <el-row class="mb-4">
-            <el-col :span="10">
-                <btn-group class="ff_entries_select_wrap" as="div">
+        <section-head class="ff_form_editor_entries_actions ff_section_head_between items-center" size="sm">
+            <section-head-content>
+                 <btn-group class="ff_entries_select_wrap" as="div">
                     <template v-if="entrySelections.length">
                         <btn-group-item as="div">
                             <label for="bulk-action-selector-top" class="screen-reader-text">
@@ -110,8 +122,8 @@
                         </el-select>
                     </btn-group-item>
                 </btn-group>
-            </el-col>
-            <el-col :span="14" class="text-right">
+            </section-head-content>
+            <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
@@ -122,26 +134,13 @@
                                 :placeholder="$t('Search')"
                                 v-model="search_string"
                                 prefix-icon="el-icon-search"
-                                class="el-input-gray"
+                                class="ff_entries_report_search"
                         >
                         </el-input>
                     </btn-group-item>
+                    
                     <btn-group-item as="div">
-                        <el-dropdown @command="exportEntries" trigger="click">
-                            <el-button>
-                                {{ $t('Export') }}
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
-                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </btn-group-item>
-                    <btn-group-item as="div">
-                        <el-dropdown split-button type="default" class="current_form_name" :hide-on-click="false">
+                        <el-dropdown split-button type="default" class="current_form_name_column" :hide-on-click="false">
                             <span class="el-dropdown-link">
                                 {{ $t('Columns') }}
                             </span>
@@ -162,7 +161,7 @@
                         </el-dropdown>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <div class="ff_advanced_filter_wrap text-left">
+                        <div class="ff_advanced_filter_wrap">
                             <el-button @click="advancedFilter = !advancedFilter; ">
                                 <span>{{ $t('Filter') }}</span>
                                 <i class="ff-icon ff-icon-filter" style="font-size: 14px;"></i>
@@ -194,8 +193,8 @@
                         </div><!-- .ff_advanced_filter_wrap -->
                     </btn-group-item>
                 </btn-group>
-            </el-col>
-        </el-row>
+            </section-head-content>
+        </section-head>
 
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
@@ -436,6 +435,8 @@
     import ColumnDragAndDrop from "./ColumnDragAndDrop";
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+    import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
 
     export default {
         name: 'FormEntries',
@@ -445,7 +446,9 @@
             EmailResend,
             ColumnDragAndDrop,
             BtnGroup,
-            BtnGroupItem
+            BtnGroupItem,
+            SectionHead,
+            SectionHeadContent
         },
         watch: {
             search_string() {

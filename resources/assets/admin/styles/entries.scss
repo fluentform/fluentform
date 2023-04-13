@@ -434,11 +434,21 @@ a.input-image:hover {
   cursor: pointer;
 }
 
-.current_form_name button.el-button.el-button--default.el-button--mini {
-  max-width: 170px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.current_form_name{
+  .el-button:not(.el-dropdown__caret-button){
+    width: 200px;
+  }
+  button.el-button.el-button--default.el-button--mini {
+    max-width: 170px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+.ff_form_editor_entries_actions{
+  .ff_section_head_content{
+    margin-bottom: 10px;
+  }
 }
 .ff_email_resend_inline + .compact_input{
   margin-left: 10px;
