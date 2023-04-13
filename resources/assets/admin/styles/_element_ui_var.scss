@@ -172,7 +172,7 @@ $--checkbox-input-width: 14px !default;
 $--checkbox-border-radius: $--border-radius-small !default;
 /// color||Color|0
 $--checkbox-background-color: $--color-white !default;
-$--checkbox-input-border: $--border-base !default;
+$--checkbox-input-border: 1px solid #868686 !default;
 
 /// color||Color|0
 $--checkbox-disabled-border-color: $--border-color-base !default;
