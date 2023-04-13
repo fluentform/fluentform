@@ -2,7 +2,7 @@
     <div class="button_styler">
         <el-form-item>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-            <el-select class="el-fluid" v-model="model" :placeholder="$t('Select Date Format')">
+            <el-select size="small" class="el-fluid" v-model="model" :placeholder="$t('Select Date Format')">
                 <el-option
                     v-for="(item, key) in btnStyles"
                     :key="key"
