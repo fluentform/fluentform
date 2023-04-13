@@ -794,11 +794,9 @@ ul.fcc_inline_social {
 }
 
 .copy_share.fc_copy_success {
-  color: $--color-primary !important;
-
   i {
     &::before {
-      content: "\e932";
+      content: "\e6da";
     }
   }
 }
