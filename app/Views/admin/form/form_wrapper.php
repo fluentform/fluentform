@@ -26,7 +26,7 @@
 		</div>
         <?php
             $extra_menu_class = 'normal_form_editor';
-            if (\FluentForm\App\Helpers\Helper::isConversionForm($form->id)) $extra_menu_class = "conversion_form_editor";
+            if (\FluentForm\App\Helpers\Helper::hasPartialEntries($form->id)) $extra_menu_class = "partial_entries_form_editor";
         ?>
 
 		<ul class="ff_menu <?php echo esc_attr($extra_menu_class)?>">

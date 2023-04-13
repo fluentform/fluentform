@@ -21,7 +21,6 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        max-width: 138px;
         &:focus{
             box-shadow: none;
             border: 0;
@@ -39,7 +38,7 @@
             }
         }
     }
-    &.conversion_form_editor {
+    &.conversion_form_editor, &.partial_entries_form_editor {
         .ff_menu_link {
             max-width: 140px;
         }

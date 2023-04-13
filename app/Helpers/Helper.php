@@ -355,6 +355,18 @@ class Helper
         return $validation;
     }
 
+    public static function hasPartialEntries($formId)
+    {
+        static $cache = [];
+        if (isset($cache[$formId])) {
+            return $cache[$formId];
+        }
+
+        $cache[$formId] = 'yes' == static::getFormMeta($formId, 'form_save_state_status');
+
+        return $cache[$formId];
+    }
+
     public static function getNumericFormatters()
     {
         $data = [
