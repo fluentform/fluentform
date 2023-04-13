@@ -158,7 +158,7 @@ input[type=checkbox]:disabled {
     height: 40px !important;
     line-height: 40px !important;
     outline: 0 !important;
-    padding: 0 40px 0 20px !important;
+    padding: 0 29px 0 20px !important;
     -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1) !important;
     transition: border-color .2s cubic-bezier(.645,.045,.355,1) !important;
     max-width: inherit !important;
@@ -166,6 +166,7 @@ input[type=checkbox]:disabled {
     background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 14px top 55% !important;
     background-size: 16px 16px !important;
     background-blend-mode: hard-light;
+    text-overflow: ellipsis;
     &:focus{
       box-shadow: none !important;
       outline: none !important;
@@ -177,9 +178,9 @@ input[type=checkbox]:disabled {
     &-small{
       height: 32px !important;
       line-height: 32px !important;
-      padding-right: 15px !important;
+      padding-right: 20px !important;
       padding-left: 15px !important;
-      background-position-x: 88px !important;
+      background-position-x: 100px !important;
       border-radius: 5px !important;
     }
   }
