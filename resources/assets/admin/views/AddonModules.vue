@@ -26,7 +26,7 @@
 
             <el-row :gutter="24">
                 <el-col :md="12" :lg="8" v-for="(addon, addonKey) in filteredAddons" :key="addonKey">
-                    <div class="ff_card ff_card_s2 h-100">
+                    <div class="ff_card ff_card_s2 h-100" :class="'ff_addon_enabled_' + addon.enabled">
                         <div class="ff_card_body mb-4">
                             <div class="ff_media_group mb-3">
                                 <div class="ff_media_head">

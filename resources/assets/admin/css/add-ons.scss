@@ -182,4 +182,8 @@ p.contact_us_line {
     }
 }
 
+.ff_addon_enabled_no img {
+    filter: grayscale(100%);
+}
+
 @import "../styles/responsive";
