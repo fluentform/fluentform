@@ -68,7 +68,7 @@ trait PredefinedForms
         return [
 
             'blank_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/blank.png'),
                 'createable' => true,
                 'title'      => 'Blank Form',
                 'brief'      => 'Create a blank form',
@@ -100,7 +100,7 @@ trait PredefinedForms
             ],
 
             'conversational' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/conversational.png'),
                 'createable' => true,
                 'title'      => 'Conversational Form',
                 'brief'      => 'Create Smart form UI',
@@ -111,7 +111,7 @@ trait PredefinedForms
 
             //form number : 84
             'newsletter_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/newsletter_form.png'),
                 'createable' => true,
                 'title'      => 'Newsletter Form',
                 'is_pro'     => false,
@@ -122,7 +122,7 @@ trait PredefinedForms
             ],
 
             'support_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/support_form.png'),
                 'createable' => true,
                 'title'      => 'Support Form',
                 'brief'      => 'Using this support form users can ask questions.',
@@ -132,7 +132,7 @@ trait PredefinedForms
             ],
 
             'inline_subscription' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/inline_subscription.png'),
                 'createable' => true,
                 'title'      => 'Optin Form',
                 'brief'      => 'Create inline optin form.',
@@ -142,7 +142,7 @@ trait PredefinedForms
             ],
 
             'polling_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/polling_form.png'),
                 'createable' => true,
                 'title'      => 'Polling Form',
                 'brief'      => 'A sample polling form to get user opinion from your scheduled time.',
@@ -153,7 +153,7 @@ trait PredefinedForms
 
             //form number : 55
             'product_order_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/product_order_form.png'),
                 'createable' => true,
                 'title'      => 'Product Order Form',
                 'is_pro'     => true,
@@ -165,7 +165,7 @@ trait PredefinedForms
 
             //form number : 58
             'online_service_order_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/online_service_order_form.png'),
                 'createable' => true,
                 'title'      => 'Online Service Order Form',
                 'is_pro'     => false,
@@ -177,7 +177,7 @@ trait PredefinedForms
 
             //form number : 60
             'payment_donation_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/payment_donation_form.png'),
                 'createable' => true,
                 'title'      => 'Online Donation Form',
                 'is_pro'     => true,
@@ -189,7 +189,7 @@ trait PredefinedForms
 
             //form number : 61
             'order_bump_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/order_bump_form.png'),
                 'createable' => true,
                 'title'      => 'Order Bump Example Form',
                 'is_pro'     => true,
@@ -201,7 +201,7 @@ trait PredefinedForms
 
             //form number : 62
             'student_survey_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/student_survey_form.png'),
                 'createable' => true,
                 'title'      => 'Student Survey Form',
                 'is_pro'     => true,
@@ -213,7 +213,7 @@ trait PredefinedForms
 
             //form number : 63
             'classroom_observation_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/classroom_observation_form.png'),
                 'createable' => true,
                 'title'      => 'Classroom Observation Form',
                 'is_pro'     => true,
@@ -225,7 +225,7 @@ trait PredefinedForms
 
             //form number : 64
             'client_satisfaction_survey_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/client_satisfaction_survey_form.png'),
                 'createable' => true,
                 'title'      => 'Client Satisfaction Survey Form',
                 'is_pro'     => false,
@@ -237,7 +237,7 @@ trait PredefinedForms
 
             //form number : 67
             'customer_complaint_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/customer_complaint_form.png'),
                 'createable' => true,
                 'title'      => 'Customer Complaint Form',
                 'is_pro'     => false,
@@ -250,7 +250,7 @@ trait PredefinedForms
 
             //form number : 68
             'course_evaluation_survey_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/course_evaluation_survey_form.png'),
                 'createable' => true,
                 'title'      => 'Course Evaluation Survey form',
                 'is_pro'     => true,
@@ -263,7 +263,7 @@ trait PredefinedForms
 
             //form number : 70
             'market_research_survey_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/market_research_survey_form.png'),
                 'createable' => true,
                 'title'      => 'Market Research Survey Form',
                 'is_pro'     => true,
@@ -274,8 +274,8 @@ trait PredefinedForms
             ],
 
             //form number : 71
-            'database_management_help request_from' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+            'database_management_help_request_from' => [
+                'screenshot' => fluentformMix('img/forms/database_management_help_request_from.png'),
                 'createable' => true,
                 'title'      => 'Database Management Help Request from',
                 'is_pro'     => true,
@@ -288,7 +288,7 @@ trait PredefinedForms
 
             //form number : 72
             'university_enrollment_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/university_enrollment_form.png'),
                 'createable' => true,
                 'title'      => 'University Enrollment Form',
                 'is_pro'     => true,
@@ -301,7 +301,7 @@ trait PredefinedForms
 
             //form number : 74
             'volunteer_signup_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/volunteer_signup_form.png'),
                 'createable' => true,
                 'title'      => 'Volunteer sign up form',
                 'is_pro'     => false,
@@ -313,7 +313,7 @@ trait PredefinedForms
 
             //form number : 76
             'donation_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/donation_form.png'),
                 'createable' => true,
                 'title'      => 'Donation Form',
                 'is_pro'     => false,
@@ -325,7 +325,7 @@ trait PredefinedForms
 
             //form number : 78
             'graphic_designer_contact_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/graphic_designer_contact_form.png'),
                 'createable' => true,
                 'title'      => 'Graphic Designer Contact Form',
                 'is_pro'     => false,
@@ -337,7 +337,7 @@ trait PredefinedForms
 
             //form number : 79
             'multi_file_upload_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/multi_file_upload_form.png'),
                 'createable' => true,
                 'title'      => 'Multi file upload form',
                 'is_pro'     => true,
@@ -349,7 +349,7 @@ trait PredefinedForms
 
             //form number : 81
             'highschool_transcript_request_from' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/highschool_transcript_request_from.png'),
                 'createable' => true,
                 'title'      => 'High School Transcript Request From',
                 'is_pro'     => true,
@@ -361,7 +361,7 @@ trait PredefinedForms
 
             //form number : 82
             'partnership_application_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/partnership_application_form.png'),
                 'createable' => true,
                 'title'      => 'Partnership application form',
                 'is_pro'     => true,
@@ -374,7 +374,7 @@ trait PredefinedForms
 
             //form number : 83
             'employee_evaluation_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/employee_evaluation_form.png'),
                 'createable' => true,
                 'title'      => 'Employee Evaluation Form',
                 'is_pro'     => true,
@@ -387,7 +387,7 @@ trait PredefinedForms
 
             //form number : 85
             'party_invite_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/party_invite_form.png'),
                 'createable' => true,
                 'title'      => 'Party Invite Form',
                 'is_pro'     => true,
@@ -399,7 +399,7 @@ trait PredefinedForms
 
             //form number : 87
             'software_survey_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/software_survey_form.png'),
                 'createable' => true,
                 'title'      => 'Software Survey Form',
                 'is_pro'     => true,
@@ -411,7 +411,7 @@ trait PredefinedForms
 
             //form number : 88
             'hardware_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/hardware_request_form.png'),
                 'createable' => true,
                 'title'      => 'Hardware Request Form',
                 'is_pro'     => false,
@@ -423,7 +423,7 @@ trait PredefinedForms
 
             //form number : 89
             'functional_behavioral_assessment_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/functional_behavioral_assessment_form.png'),
                 'createable' => true,
                 'title'      => 'Functional Behavioral Assessment Form',
                 'is_pro'     => true,
@@ -435,7 +435,7 @@ trait PredefinedForms
 
             //form number : 92
             'finance_application_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/finance_application_form.png'),
                 'createable' => true,
                 'title'      => 'Finance Application Form',
                 'is_pro'     => true,
@@ -447,7 +447,7 @@ trait PredefinedForms
 
             //form number : 94
             'blood_donation_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/blood_donation_form.png'),
                 'createable' => true,
                 'title'      => 'Blood Donation Form',
                 'is_pro'     => false,
@@ -459,7 +459,7 @@ trait PredefinedForms
 
             //form number : 95
             'room_booking_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/room_booking_form.png'),
                 'createable' => true,
                 'title'      => 'Room Booking Form',
                 'is_pro'     => true,
@@ -471,7 +471,7 @@ trait PredefinedForms
 
             //form number : 96
             'marriage_gift_registration' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/marriage_gift_registration.png'),
                 'createable' => true,
                 'title'      => 'Marriage Gift Registration',
                 'is_pro'     => true,
@@ -483,7 +483,7 @@ trait PredefinedForms
 
             //form number : 97
             'accident_report_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/accident_report_form.png'),
                 'createable' => true,
                 'title'      => 'Accident Report Form',
                 'is_pro'     => false,
@@ -495,7 +495,7 @@ trait PredefinedForms
 
             //form number : 98
             'bug_report_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/bug_report_form.png'),
                 'createable' => true,
                 'title'      => 'Bug Report From',
                 'is_pro'     => true,
@@ -507,7 +507,7 @@ trait PredefinedForms
 
             //form number : 100
             'check_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/check_request_form.png'),
                 'createable' => true,
                 'title'      => 'Check Request Form',
                 'is_pro'     => false,
@@ -519,7 +519,7 @@ trait PredefinedForms
 
             //form number : 120
             'quote_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/quote_request_form.png'),
                 'createable' => true,
                 'title'      => 'Quote Request Form',
                 'is_pro'     => true,
@@ -530,7 +530,7 @@ trait PredefinedForms
             ],
 
             'pricing_survey' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/pricing_survey.png'),
                 'createable' => true,
                 'title'      => 'Pricing Survey Form',
                 'is_pro'     => true,
@@ -542,7 +542,7 @@ trait PredefinedForms
 
             //form number : 117
             'business_loan_application_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/business_loan_application_form.png'),
                 'createable' => true,
                 'title'      => 'Loan Application Form',
                 'is_pro'     => true,
@@ -556,7 +556,7 @@ trait PredefinedForms
 
             //form number : 116
             'birthday_invitation_party' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/birthday_invitation_party.png'),
                 'createable' => true,
                 'title'      => 'Birthday invitation Party Form',
                 'is_pro'     => true,
@@ -567,7 +567,7 @@ trait PredefinedForms
             ],
 
             'vehicle_inspection_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/vehicle_inspection_form.png'),
                 'createable' => true,
                 'title'      => 'Vehicle Inspection Form',
                 'is_pro'     => true,
@@ -579,7 +579,7 @@ trait PredefinedForms
 
             //form number : 114
             'workshop_registration_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/workshop_registration_form.png'),
                 'createable' => true,
                 'title'      => 'Workshop Registration Form',
                 'is_pro'     => true,
@@ -591,7 +591,7 @@ trait PredefinedForms
 
             //form number : 113
             'social_service_home_visit_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/social_service_home_visit_form.png'),
                 'createable' => true,
                 'title'      => 'Social Service Home Visit Form',
                 'is_pro'     => true,
@@ -604,7 +604,7 @@ trait PredefinedForms
 
             //form number : 112
             'it_service_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/it_service_request_form.png'),
                 'createable' => true,
                 'title'      => 'IT Service Request Form',
                 'is_pro'     => false,
@@ -616,7 +616,7 @@ trait PredefinedForms
 
             //form number : 111
             'handicap_parking_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/handicap_parking_request_form.png'),
                 'createable' => true,
                 'title'      => 'Handicap Parking Request Form',
                 'is_pro'     => true,
@@ -629,7 +629,7 @@ trait PredefinedForms
 
             //form number : 109
             'sponsor_request_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/sponsor_request_form.png'),
                 'createable' => true,
                 'title'      => 'Sponsor Request Form',
                 'is_pro'     => true,
@@ -641,7 +641,7 @@ trait PredefinedForms
 
             //form number : 107
             'annual_vehicles_inspection_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/annual_vehicles_inspection_form.png'),
                 'createable' => true,
                 'title'      => 'Annual Vehicles Inspection Form',
                 'is_pro'     => true,
@@ -653,7 +653,7 @@ trait PredefinedForms
 
             //form number : 106
             'finance_department_analysis_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/finance_department_analysis_form.png'),
                 'createable' => true,
                 'title'      => 'Finance Department Analysis Form',
                 'is_pro'     => false,
@@ -665,7 +665,7 @@ trait PredefinedForms
 
             //form number : 104
             'swimming_competition_enrollment_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/swimming_competition_enrollment_form.png'),
                 'createable' => true,
                 'title'      => 'Swimming Competition Enrollment Form',
                 'is_pro'     => true,
@@ -677,7 +677,7 @@ trait PredefinedForms
 
             //form number : 103
             'confidential_morbidity_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/confidential_morbidity_form.png'),
                 'createable' => true,
                 'title'      => 'Confidential Morbidity Form',
                 'is_pro'     => true,
@@ -691,7 +691,7 @@ trait PredefinedForms
 
             //form number : 102
             'complaint_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/complaint_form.png'),
                 'createable' => true,
                 'title'      => 'Complaint form',
                 'is_pro'     => false,
@@ -703,7 +703,7 @@ trait PredefinedForms
 
             //form number : 101
             'charity_dinner_party_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/charity_dinner_party_form.png'),
                 'createable' => true,
                 'title'      => 'Charity Dinner Party Form',
                 'is_pro'     => false,
@@ -714,7 +714,7 @@ trait PredefinedForms
             ],
 
             'event_registration_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/event_registration_form.png'),
                 'createable' => true,
                 'title'      => 'Event Registration Form',
                 'brief'      => 'Using this registration form you can enable your event to achieve it\'s goal.',
@@ -724,7 +724,7 @@ trait PredefinedForms
             ],
 
             'vendor_contact_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/vendor_contact_form.png'),
                 'createable' => true,
                 'title'      => 'Vendor Contact Form',
                 'brief'      => 'Easily create a vendor contact form and get logged in user details easily.',
@@ -734,7 +734,7 @@ trait PredefinedForms
             ],
 
             'patient_intake_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/patient_intake_form.png'),
                 'createable' => true,
                 'title'      => 'Patient Intake Form',
                 'brief'      => 'Using this form you can get the patient information with the medical history.',
@@ -744,7 +744,7 @@ trait PredefinedForms
             ],
 
             'volunteer_application_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/volunteer_application_form.png'),
                 'createable' => true,
                 'title'      => 'Volunteer Application Form',
                 'brief'      => 'Get volunteer applicants data according to their particular interests with working days.',
@@ -754,7 +754,7 @@ trait PredefinedForms
             ],
 
             'request_for_quote' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/request_for_quote.png'),
                 'createable' => true,
                 'title'      => 'Request for Quote',
                 'brief'      => 'Get user request for quote using this simple form.',
@@ -764,7 +764,7 @@ trait PredefinedForms
             ],
 
             'conference_proposal' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/conference_proposal.png'),
                 'createable' => true,
                 'title'      => 'Conference Proposal',
                 'brief'      => 'This sample form is to make a conference proposal efficient and effective.',
@@ -774,7 +774,7 @@ trait PredefinedForms
             ],
 
             'report_a_bug' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/report_a_bug.png'),
                 'createable' => true,
                 'title'      => 'Report a bug',
                 'brief'      => 'You can get user feedback, bug report, and the issue details from user.',
@@ -784,7 +784,7 @@ trait PredefinedForms
             ],
 
             'tell_a_friend_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/tell_a_friend_form.png'),
                 'createable' => true,
                 'title'      => 'Tell A Friend Form',
                 'brief'      => 'Get text from you site users.',
@@ -794,7 +794,7 @@ trait PredefinedForms
             ],
 
             'directory_information_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/directory_information_form.png'),
                 'createable' => true,
                 'title'      => 'Directory Information Form',
                 'brief'      => 'This form allows you to get the directory information.',
@@ -804,7 +804,7 @@ trait PredefinedForms
             ],
 
             'request_for_leave' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/request_for_leave.png'),
                 'createable' => true,
                 'title'      => 'Request for Leave',
                 'category'   => 'HR',
@@ -814,7 +814,7 @@ trait PredefinedForms
             ],
 
             'admission_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/admission_form.png'),
                 'createable' => true,
                 'is_pro'     => true,
                 'title'      => 'Admissions Form',
@@ -825,7 +825,7 @@ trait PredefinedForms
             ],
 
             'loan_application_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/loan_application_form.png'),
                 'createable' => true,
                 'title'      => 'Loan Application Form',
                 'is_pro'     => true,
@@ -836,7 +836,7 @@ trait PredefinedForms
             ],
 
             'job_listing_form' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/job_listing_form.png'),
                 'createable' => true,
                 'title'      => 'Job Listing Form',
                 'is_pro'     => true,
@@ -847,7 +847,7 @@ trait PredefinedForms
             ],
 
             'website_feedback' => [
-                'screenshot' => fluentformMix('img/forms/form-layout.png'),
+                'screenshot' => fluentformMix('img/forms/website_feedback.png'),
                 'createable' => true,
                 'title'      => 'Website Feedback',
                 'is_pro'     => true,
