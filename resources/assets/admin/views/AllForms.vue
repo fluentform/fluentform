@@ -184,7 +184,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('ShortCode')" width="310">
+                    <el-table-column :label="$t('ShortCode')" width="280">
                         <template slot-scope="scope">
                             <div class="ff_shortcode_wrap">
                                 <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
@@ -201,7 +201,20 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('Entries')" width="120">
+                    <el-table-column width="120">
+                        <template slot="header">
+                            {{$t('Entries')}}
+                            <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <h6>{{ $t('Numbers of entries') }}</h6>
+                                    <p>
+                                        {{ $t('Unead / Total') }}
+                                    </p>
+                                </div>
+
+                                <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                            </el-tooltip>
+                        </template>
                         <template slot-scope="scope">
                             <a :href="scope.row.entries_url"><span
                                 v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
@@ -216,7 +229,18 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column v-if="!isDisabledAnalytics" :label="$t('Conversion')">
+                    <el-table-column v-if="!isDisabledAnalytics">
+                        <template slot="header">
+                            {{$t('Conversion')}}
+                            <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>{{ $t('Percentage of total submission and Total views') }}</p>
+                                </div>
+
+                                <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                            </el-tooltip>
+                        </template>
+
                         <template slot-scope="scope">
                             {{ scope.row.conversion }}%
                         </template>

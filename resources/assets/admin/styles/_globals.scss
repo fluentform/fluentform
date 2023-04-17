@@ -955,6 +955,12 @@ label.el-radio, label.el-checkbox {
   max-width: 320px;
   line-height: 1.6;
   font-size: 14px;
+  h6{
+    color: $white;
+  }
+}
+.ff-icon-gray{
+  color: #757D8A;
 }
 
 .el-form--label-top{
