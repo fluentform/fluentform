@@ -10,7 +10,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
-use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Validator\ValidationException;
 
@@ -25,11 +25,10 @@ class SubmissionHandlerService
     protected $submissionService;
     
     public function __construct(
-        Application $app,
         FormValidationService $formValidationService,
         SubmissionService $submissionService
     ) {
-        $this->app = $app;
+        $this->app = App::getInstance();
         $this->validationService = $formValidationService;
         $this->submissionService = $submissionService;
     }
@@ -50,6 +49,9 @@ class SubmissionHandlerService
         return $this->processSubmissionData($insertId, $this->formData, $this->form);
     }
     
+    /**
+     * @throws ValidationException
+     */
     protected function prepareHandler($formId, $formDataRaw)
     {
         $this->form = Form::find($formId);

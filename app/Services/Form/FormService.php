@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Form;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
@@ -37,19 +38,14 @@ class FormService
      * @var \FluentForm\App\Services\Form\Fields
      */
     protected $fields;
-
-    public function __construct(
-        Application $application,
-        Form $form,
-        Updater $updater,
-        Duplicator $duplicator,
-        Fields $fields
-    ) {
-        $this->model = $form;
-        $this->fields = $fields;
-        $this->app = $application;
-        $this->updater = $updater;
-        $this->duplicator = $duplicator;
+    
+    public function __construct()
+    {
+        $this->model = new Form();
+        $this->fields = new Fields();
+        $this->app = App::getInstance();
+        $this->updater = new Updater();
+        $this->duplicator = new Duplicator();
     }
 
     /**

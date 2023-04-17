@@ -23,10 +23,10 @@ class SubmissionService
     protected $model;
     protected $formService;
 
-    public function __construct(Submission $submission, FormService $formService)
+    public function __construct()
     {
-        $this->model = $submission;
-        $this->formService = $formService;
+        $this->model = new Submission();
+        $this->formService = new FormService();
     }
 
     public function get($attributes = [])
