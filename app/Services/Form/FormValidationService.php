@@ -41,6 +41,8 @@ class FormValidationService
      */
     public function validateSubmission(&$fields, &$formData)
     {
+        do_action('fluentform/before_form_validation', $fields, $formData);
+        
         $this->preventMaliciousAttacks();
     
         $this->validateRestrictions($fields);

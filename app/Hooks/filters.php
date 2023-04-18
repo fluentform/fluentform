@@ -35,38 +35,40 @@ add_filter('fluentform/get_global_settings_values', function ($values, $key) {
 }, 10, 2);
 
 //Enables recaptcha validation when autoload recaptcha enabled for all forms
-$autoIncludeRecaptcha = [
-    [
-        'type'        => 'hcaptcha',
-        'is_disabled' => !get_option('_fluentform_hCaptcha_keys_status', false),
-    ],
-    [
-        'type'        => 'recaptcha',
-        'is_disabled' => !get_option('_fluentform_reCaptcha_keys_status', false),
-    ],
-    [
-        'type'        => 'turnstile',
-        'is_disabled' => !get_option('_fluentform_turnstile_keys_status', false),
-    ],
-];
 
-foreach ($autoIncludeRecaptcha as $input) {
-    if ($input['is_disabled']) {
-        continue;
-    }
-
-    add_filter('fluentform/has_' . $input['type'], function () use ($input) {
-        $option = get_option('_fluentform_global_form_settings');
-        $autoload = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
-        $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
-
-        if ($autoload && $type == $input['type']) {
-            return true;
+add_action('fluentform/before_form_validation',function (){
+    $autoIncludeRecaptcha = [
+        [
+            'type'        => 'hcaptcha',
+            'is_disabled' => !get_option('_fluentform_hCaptcha_keys_status', false),
+        ],
+        [
+            'type'        => 'recaptcha',
+            'is_disabled' => !get_option('_fluentform_reCaptcha_keys_status', false),
+        ],
+        [
+            'type'        => 'turnstile',
+            'is_disabled' => !get_option('_fluentform_turnstile_keys_status', false),
+        ],
+    ];
+    foreach ($autoIncludeRecaptcha as $input) {
+        if ($input['is_disabled']) {
+            continue;
         }
-
-        return false;
-    });
-}
+        
+        add_filter('fluentform/has_' . $input['type'], function () use ($input) {
+            $option = get_option('_fluentform_global_form_settings');
+            $autoload = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
+            $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
+            
+            if ($autoload && $type == $input['type']) {
+                return true;
+            }
+            
+            return false;
+        });
+    }
+});
 
 /*
  * Push captcha in all forms when enabled from global settings
