@@ -7,6 +7,16 @@ use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
 
 return function ($file) {
+    add_action('plugins_loaded',function (){
+        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.0.0', '<');
+        if ($isNotCompatible) {
+            return add_action('admin_notices', function () {
+                $class = 'notice notice-error';
+                $message = 'You are using old version of Fluent Forms Pro. Please update to latest from your plugins list or you can downgrade Fluent Forms Pro to a previous version.';
+                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), $message);
+            });
+        }
+    });
     $app = new Application($file);
 
     register_activation_hook($file, function () use ($app) {
