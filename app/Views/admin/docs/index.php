@@ -25,6 +25,16 @@
             ?>
 
             <div class="el-row" style="margin-left: -12px; margin-right: -12px;">
+                <div class="el-col el-col-24" style="padding-left: 12px; padding-right: 12px">
+                    <div class="ff_card h-100">
+                        <h3 class="mb-3"><i class="el-icon el-icon-warning text-warning" ></i> <?php _e('Fluent Forms Beta Version', 'fluentform') ?></h3>
+                        <p class="text">
+                            <?php _e('As a beta user, if you are experiencing any trouble, please open a support ticket <a href="https://wpmanageninja.com/support-tickets/"> here </a> using the hashtag <span class="text-primary">#fluentforms_beta</span>. We will get back to you soon. Thanks for using our Fluent Forms!', 'fluentform') ?>
+                        </p>
+                       
+                    </div>
+                </div><!-- .el-col -->
+
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
                     <div class="ff_card h-100">
                         <h3 class="mb-3"><?php _e('Get Started with Fluent Form Wordpress Plugin', 'fluentform') ?></h3>
