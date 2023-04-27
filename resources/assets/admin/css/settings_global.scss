@@ -1247,4 +1247,8 @@ span + .ff_payment_badge{
   }
 }
 
+.el-tooltip__popper{
+  max-width: 300px;
+}
+
 @import "../styles/responsive";
