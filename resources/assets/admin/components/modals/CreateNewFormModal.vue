@@ -135,14 +135,6 @@
                     this.predefinedForms = response.forms;
                     this.categories = response.categories;
 
-                    // let categoryLength = response.categories.length;
-
-                    // for (let i = 0; i < categoryLength; i++) {
-                    //    let catData = response.categories[i];
-                    //    this.categories.push(catData);
-                    // }
-
-
                 }).catch(error => {
                     this.$fail(error.message);
                 })
@@ -191,7 +183,7 @@
             },
             doCreateForm(data) {
                 const url = FluentFormsGlobal.$rest.route('getForms');
-                
+
                 FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
                         this.$success(response.message);
@@ -221,8 +213,12 @@
                 this.formsImported = value;
             }
         },
-        mounted() {
-            this.getPredefinedForms();
-        }
+        watch: {
+            visibility: function (newVal, oldVal) {
+               if (newVal == true && Object.entries(this.predefinedForms).length == 0){
+                   this.getPredefinedForms();
+               }
+            },
+        },
     };
 </script>

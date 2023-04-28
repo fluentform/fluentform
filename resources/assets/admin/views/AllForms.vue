@@ -157,11 +157,11 @@
                                     <el-switch
                                         class="el-switch--small"
                                         :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
-                                        @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
-                                        
-                                        active-value="published" 
-                                        inactive-value="unpublished" 
-                                        v-model="scope.row.status" 
+                                        @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)"
+
+                                        active-value="published"
+                                        inactive-value="unpublished"
+                                        v-model="scope.row.status"
                                     />
 
                                 </template>
@@ -190,7 +190,7 @@
                                     <span><i class="el-icon el-icon-document-copy"></i> [fluentform id="{{ scope.row.id }}"]</span>
                                 </code>
                             </div>
-                            
+
                             <div class="ff_shortcode_wrap ff_conversational_shortcode" v-if="scope.row.conversion_preview">
                                 <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
                                     <span><i class="el-icon el-icon-document-copy"></i> [fluentform type="conversational" id="{{
@@ -293,8 +293,6 @@
         <CreateNewFormModal
             v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
-            :categories="categories"
-            :predefinedForms="predefinedForms"
             :visibility.sync="showAddFormModal"
         />
     </div>
@@ -331,9 +329,6 @@ export default {
             },
             loading: true,
             items: [],
-            predefinedForms: {},
-            predefinedDropDownForms: false,
-            categories: [],
             search_string: '',
             selectAll: 0,
             showAddFormModal: false,
@@ -396,14 +391,14 @@ export default {
     methods: {
         toggleStatus(id, title, status) {
             this.loading = true;
-    
+
             let data = {
                 title,
                 status,
             };
 
             const url = FluentFormsGlobal.$rest.route('updateForm', id);
-    
+
             FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
@@ -441,9 +436,9 @@ export default {
             if (this.hasEnabledDateFilter) {
               data.date_range = this.filter_date_range;
             }
-            
+
             const url = FluentFormsGlobal.$rest.route('getForms');
-            
+
             FluentFormsGlobal.$rest.get(url, data)
                 .then((response) => {
                     this.items = response.data;
@@ -468,23 +463,6 @@ export default {
             this.$nextTick(() => {
                 this.clearingSearchKeyword = false;
             });
-        },
-        getPredefinedForms() {
-            this.loading = true;
-
-            const url = FluentFormsGlobal.$rest.route('getTemplates');
-
-            FluentFormsGlobal.$rest.get(url)
-                .then(response => {
-                    this.predefinedForms = response.forms;
-                    this.categories = response.categories;
-                    this.predefinedDropDownForms = response.predefined_dropDown_forms;
-                }).catch(error => {
-                    this.$fail(error.message);
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
         },
         removeForm(id, index) {
             const url = FluentFormsGlobal.$rest.route('deleteForm', id);
@@ -619,7 +597,6 @@ export default {
     },
     mounted() {
         this.fetchItems();
-        this.getPredefinedForms();
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
@@ -645,7 +622,7 @@ export default {
             this.showSelectFormModal = true;
         });
 
-        
+
     },
     watch: {
         searchFormsKeyWord: function (newVal, oldVal) {
