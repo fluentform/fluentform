@@ -22,6 +22,8 @@ import {
     Message,
     Notification,
     DatePicker,
+    Skeleton,
+    SkeletonItem,
 } from 'element-ui';
 
 Vue.use(Loading.directive);
@@ -45,6 +47,8 @@ Vue.use(Radio);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 import App from './App.vue';
 locale.use(lang);

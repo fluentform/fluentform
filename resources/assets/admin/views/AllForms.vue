@@ -99,7 +99,7 @@
         <div class="ff_forms_table mt-4">
             <template v-if="app.formsCount > 0">
                 <div class="ff_table">
-                    <el-skeleton :loading="loading" animated :rows="8">
+                    <el-skeleton :loading="loading" animated :rows="10">
                         <el-table
                             :data="items"
                             :stripe="true"
@@ -263,34 +263,31 @@
                     </el-pagination>
                 </div>
             </template>
-            <div v-else>
-                <div class="fluent_form_intro">
-                    <h1 class="text-center">
-                        {{ $t('Welcome to WP Fluent Froms') }}
-                    </h1>
-                    <p class="text-center">
-                        {{ $t('Thank you for installing WP Fluent Froms - The Most Advanced Form Builder Plugin for WordPress') }}
-                    </p>
-                    <div class="text-center">
-                        <el-button
-                            round
-                            type="primary"
-                            @click="showAddFormModal = true"
-                        >
-                        {{$t('Click Here to Create Your First Form')}}
-                        </el-button>
-                    </div>
-                </div>
-                <div class="fluent_form_intro_video">
-                    <h2>{{$t('Check the Video Intro')}}</h2>
-                    <div class="videoWrapper">
-                        <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE"
+            <template v-else>
+                <el-row :gutter="24">
+                    <el-col :lg="12">
+                        <card class="fluent_form_intro" style="height: 390px;">
+                            <card-body>
+                                <h2 class="mb-3">{{ $t('Welcome to WP Fluent Froms') }}</h2>
+                                <p class="mb-4 fs-17">{{ $t('Thank you for installing WP Fluent Froms - The Most Advanced Form Builder Plugin for WordPress.') }}
+                                </p>
+                                <el-button type="primary" size="large" @click="showAddFormModal = true">
+                                    {{$t('Click Here to Create Your First Form')}}
+                                </el-button>
+                            </card-body>
+                        </card>
+                    </el-col>
+                    <el-col :lg="12">
+                        <card class="fluent_form_intro_video">
+                            <h2 class="mb-4">{{$t('Check the Video Intro')}}</h2>
+                            <iframe src="https://www.youtube.com/embed/AqVr0l1JrGE"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
-                    </div>
-                </div>
-            </div>
+                        </card>
+                    </el-col>
+                </el-row>
+            </template>
         </div>
 
         <CreateNewFormModal
@@ -309,6 +306,8 @@ import moment from "moment";
 import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
 import {scrollTop} from '@/admin/helpers';
 
 export default {
@@ -318,7 +317,9 @@ export default {
         remove,
         BtnGroup,
         BtnGroupItem,
-        SectionHead
+        SectionHead,
+        Card,
+        CardBody
     },
     data() {
         return {

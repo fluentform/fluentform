@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" class="ff_entries_wrapper">
+    <div class="ff_entries_wrapper">
         <section-head class="ff_section_head_between mb-0">
             <section-head-content>
                 <h1 class="ff_section_title">{{$t('Form Entries')}}</h1>
@@ -54,7 +54,7 @@
             </section-head-content>
         </section-head>
 
-        <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mb-5">
+        <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mt-4 mb-4">
             <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status" ></entry-chart>
         </div>
         
@@ -111,37 +111,41 @@
                     </el-col>
                 </el-row>
             </div>
-            <div v-loading="loading" class="ff_table_wrap" element-loading-text="Loading entries...">
-                <el-table v-loading="loading" :data="entries" class="ff_table">
-                    <el-table-column width="200" :label="$t('Submission ID')">
-                        <template slot-scope="scope">
-                            <span>#{{scope.row.id}}</span>
-                            <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column :label="$t('Form')" prop="form.title" width="400"></el-table-column>
-                    <el-table-column width="150" :label="$t('Status')">
-                        <template slot-scope="scope">
-                            <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
-                            <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
-                            <span v-else>{{scope.row.status|ucFirst}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
-                    <el-table-column width="150" :label="$t('Time')">
-                        <template slot-scope="scope">
-                            {{scope.row.human_date}} {{$t('ago')}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="150" :label="$t('Action')">
-                        <template slot-scope="scope">
-                            <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft el-button--small">
-                                <i class="ff-icon ff-icon-eye"></i>
-                                <span>{{$t('View')}}</span>
-                            </a>
-                        </template>
-                    </el-table-column>
-                </el-table>
+            <div class="ff_table_wrap">
+                <div class="ff_table">
+                    <el-skeleton :loading="loading" animated :rows="10">
+                        <el-table :data="entries">
+                            <el-table-column width="200" :label="$t('Submission ID')">
+                                <template slot-scope="scope">
+                                    <span>#{{scope.row.id}}</span>
+                                    <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="$t('Form')" prop="form.title" width="400"></el-table-column>
+                            <el-table-column width="150" :label="$t('Status')">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
+                                    <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
+                                    <span v-else>{{scope.row.status|ucFirst}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
+                            <el-table-column width="150" :label="$t('Time')">
+                                <template slot-scope="scope">
+                                    {{scope.row.human_date}} {{$t('ago')}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="150" :label="$t('Action')">
+                                <template slot-scope="scope">
+                                    <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft el-button--small">
+                                        <i class="ff-icon ff-icon-eye"></i>
+                                        <span>{{$t('View')}}</span>
+                                    </a>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
+                </div><!-- .ff_table -->
                 <div class="ff_pagination_wrap text-right mt-4">
                     <el-pagination
                         class="ff_pagination"
