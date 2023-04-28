@@ -26,7 +26,7 @@
                     <el-button @click="close" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
                 </btn-group-item>
                 <btn-group-item>
-                    <el-button type="primary" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>
+                    <el-button type="danger" @click="$emit('on-confirm')">{{ $t('Yes, Confirm!') }}</el-button>
                 </btn-group-item>
             </btn-group>
         </div>
@@ -59,7 +59,7 @@ export default {
     computed: {
         dataLostMsg() {
             let matched = [];
-            
+
             if (this.editItem?.attributes && window.FluentFormApp.used_name_attributes) {
                 matched = window.FluentFormApp.used_name_attributes.filter(
                     name => name.field_name === this.editItem?.attributes.name
