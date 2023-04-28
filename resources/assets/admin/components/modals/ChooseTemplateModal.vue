@@ -8,11 +8,11 @@
         >
             <template slot="title">
                 <h3 class="title">{{$t('Choose a Template')}}</h3>
-                <p class="text">{{$t('Choose a template to get started right away.')}}
+                <p class="text">{{$t('Choose a pre-made form template to get started right away.')}}
                 </p>
             </template>
 
-            <div class="ff_predefined_options mt-4">
+            <div class="ff_predefined_options mt-6">
                 <div class="ff_predefined_sidebar">
                     <h5 class="ff_predefined_title mb-3">{{$t('Categoires')}}</h5>
                     <ul class="ff_list_button ff_list_button_s1">
@@ -36,7 +36,7 @@
                     <div class="form_item_group form_item_group_search mb-5">
                         <el-input
                             v-model="search"
-                            :placeholder="$t('Search Forms')"
+                            :placeholder="$t('Search a form template')"
                             class="el-input-search el-input-border"
                             prefix-icon="el-icon-search"
                         >
@@ -54,7 +54,7 @@
                             class="ff_form_group" 
                             :key="category"
                         >
-                            <h5 class="ff_form_group_title mb-3">{{category}}</h5>
+                            <h5 class="ff_form_group_title">{{category}}</h5>
                             <div class="ff_form_item_group">
                                 <div v-for="(form, name, i) in forms" :class="form.class" class="ff_form_item_col" :key="i">
                                     <div class="ff_form_card">

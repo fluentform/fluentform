@@ -22,10 +22,10 @@ use FluentForm\App\Helpers\Helper;
                 [
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/before_export_import_wrapper',
-                'Use fluentform/before_export_import_wrapper instead of fluentform_before_export_import_wrapper.'
+                'fluentform/before_tools_wrapper',
+                'Use fluentform/before_tools_wrapper instead of fluentform_before_export_import_wrapper.'
             );
-            do_action('fluentform/before_export_import_wrapper');
+            do_action('fluentform/before_tools_wrapper');
         ?>
 
         <div class="ff_admin_menu_sidebar ff_layout_section_sidebar">
@@ -78,10 +78,10 @@ use FluentForm\App\Helpers\Helper;
                     [
                     ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform/before_export_import_container',
-                    'Use fluentform/before_export_import_container instead of fluentform_before_export_import_container.'
+                    'fluentform/before_tools_container',
+                    'Use fluentform/before_tools_container instead of fluentform_before_export_import_container.'
                 );
-                do_action('fluentform/before_export_import_container');
+                do_action('fluentform/before_tools_container');
             ?>
             <div class="ff_transfer" id="ff_transfer_app">
                 <component :is="component" :app="App"></component>
@@ -92,10 +92,10 @@ use FluentForm\App\Helpers\Helper;
                     [
                     ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform/after_export_import_container',
-                    'Use fluentform/after_export_import_container instead of fluentform_after_export_import_container.'
+                    'fluentform/after_tools_container',
+                    'Use fluentform/after_tools_container instead of fluentform_after_export_import_container.'
                 );
-                do_action('fluentform/after_export_import_container');
+                do_action('fluentform/after_tools_container');
             ?>
         </div>
         <?php
@@ -104,10 +104,10 @@ use FluentForm\App\Helpers\Helper;
                 [
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/after_export_import_wrapper',
-                'Use fluentform/after_export_import_wrapper instead of fluentform_after_export_import_wrapper.'
+                'fluentform/after_tools_wrapper',
+                'Use fluentform/after_tools_wrapper instead of fluentform_after_export_import_wrapper.'
             );
-            do_action('fluentform/after_export_import_wrapper');
+            do_action('fluentform/after_tools_wrapper');
         ?>
     </div>
 </div>

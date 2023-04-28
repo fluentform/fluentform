@@ -1,26 +1,8 @@
 <template>
     <div class="ff_entries_wrap">
-        <section-head class="ff_section_head_between items-center">
+        <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
-                <el-dropdown
-                    @command="handleSwitchForm"
-                    class="current_form_name"
-                    placement="top-start"
-                    split-button
-                >
-                    <span>
-                        {{ current_form_title }}
-                    </span>
-                    <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
-                        <el-dropdown-item
-                                v-for="form in forms"
-                                :key="'form_switch_'+form.id"
-                                :command="form.id"
-                                :disabled="form.id == form_id"
-                        >{{ form.title }}
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                <h1 class="ff_section_title">{{$t('Entries')}}</h1>
             </section-head-content>
             <section-head-content>
                 <btn-group>
@@ -41,6 +23,27 @@
                                 <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
                                 <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
                                 <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-dropdown
+                            @command="handleSwitchForm"
+                            class="current_form_name"
+                            trigger="click"
+                        >
+                            <el-button>
+                                {{ current_form_title }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown" style="max-height:300px; overflow-y:scroll;">
+                                <el-dropdown-item
+                                        v-for="form in forms"
+                                        :key="'form_switch_'+form.id"
+                                        :command="form.id"
+                                        :disabled="form.id == form_id"
+                                >{{ form.title }}
+                                </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -140,12 +143,13 @@
                     </btn-group-item>
                     
                     <btn-group-item as="div">
-                        <el-dropdown split-button type="default" class="current_form_name_column" :hide-on-click="false">
-                            <span class="el-dropdown-link">
-                                {{ $t('Columns') }}
-                            </span>
+                        <el-dropdown trigger="click" class="current_form_name_column" :hide-on-click="false">
+                            <el-button>
+                                 {{ $t('Columns') }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
                             <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown"
-                                              style="max-height:300px; overflow-y:scroll;">
+                                style="max-height:300px; overflow-y:scroll;">
                                 <el-dropdown-item v-for="(column, column_name) in columns" :key="column_name">
                                     <el-checkbox @change="handleColumnChange" :key="column" :label="column_name"
                                                  v-model="visibleColumns">
