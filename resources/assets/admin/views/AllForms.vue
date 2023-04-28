@@ -105,10 +105,9 @@
                     @selection-change="handleSelectionChange"
                     :row-class-name="tableRowClass">
 
-                    <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="60"></el-table-column>
+                    <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="40"></el-table-column>
 
-
-                    <el-table-column sortable="custom" :label="$t('Title')" prop="title" width="480">
+                    <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="400">
                         <template slot-scope="scope">
                             <strong>
                                 {{ scope.row.title }}
@@ -184,7 +183,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('ShortCode')" width="280">
+                    <el-table-column :label="$t('ShortCode')" width="240">
                         <template slot-scope="scope">
                             <div class="ff_shortcode_wrap">
                                 <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
@@ -201,7 +200,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column width="120">
+                    <el-table-column width="90" align="center">
                         <template slot="header">
                             {{$t('Entries')}}
                             <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
@@ -223,13 +222,13 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')">
+                    <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')" width="60" align="center">
                         <template slot-scope="scope">
                             {{ scope.row.total_views }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column v-if="!isDisabledAnalytics">
+                    <el-table-column v-if="!isDisabledAnalytics" width="188" align="center">
                         <template slot="header">
                             {{$t('Conversion')}}
                             <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
