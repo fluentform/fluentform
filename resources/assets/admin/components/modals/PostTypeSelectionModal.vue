@@ -48,7 +48,7 @@ export default {
     data() {
         return {
             post_type: null,
-            post_types: [],
+            post_types: window.FluentFormApp.post_types || [],
             loading: true,
         };
     },
@@ -57,20 +57,6 @@ export default {
             this.post_type = null;
             this.$emit('on-post-type-selction-end', undefined);
         }
-    },
-    mounted() {
-        if (this.post_types.length) return;
-
-        this.loading = true;
-        FluentFormsGlobal.$get({action: 'fluentform_get_post_types'}).done(res => {
-            this.post_types = res.data.post_types;
-        })
-            .fail(res => {
-                console.log(res)
-            })
-            .always(() => {
-                this.loading = false;
-            })
     },
     computed: {
         visibility: {
