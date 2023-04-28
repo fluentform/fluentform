@@ -184,6 +184,11 @@ input[type=checkbox]:disabled {
       border-radius: 5px !important;
     }
   }
+  &_filter_selected {
+    color: #1A7EFB;
+    border-color: #bad8fe;
+    background-color: #e8f2ff;
+  }
 }
 
 p {

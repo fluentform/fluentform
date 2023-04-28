@@ -13,17 +13,20 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button v-if="hasEnabledDateFilter" @click="resetAdvancedFilter">
-                                <span>{{$t('Reset Filter')}}</span>
-                                <i class="ff-icon ff-icon-close"></i>
-                            </el-button>
-                            <el-button v-else @click="advancedFilter = !advancedFilter">
-                                <span>{{$t('Filter')}}</span>
-                                <i class="ff-icon ff-icon-filter"></i>
+                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                                <span v-if="advancedFilter">
+                                    <span>{{$t('Close')}}</span>
+                                    <i class="ff-icon ff-icon-close"></i>
+                                </span>
+                                <span v-else>
+                                    <span>{{ $t('Filter') }}</span>
+                                    <i class="ff-icon ff-icon-filter"></i>
+                                </span>
                             </el-button>
                             <div v-if="advancedFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                        <el-radio label="all">All</el-radio>
                                         <el-radio label="today">Today</el-radio>
                                         <el-radio label="yesterday">Yesterday</el-radio>
                                         <el-radio label="last-week">Last Week</el-radio>
@@ -312,14 +315,14 @@ export default {
 			this.fetchEntries();
         },
         resetAdvancedFilter() {
-            this.radioOption = '';
+            this.radioOption = "";
 			this.filter_date_range = null;
             this.fetchEntries();
         }
     },
     computed: {
 	    hasEnabledDateFilter() {
-			return !!(this.radioOption ||
+			return !!(this.radioOption && this.radioOption != 'all' ||
 				(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
             );
         }
@@ -342,6 +345,10 @@ export default {
                 case 'last-month':
                     number = 30;
                     break;
+                case 'all':
+                    this.filter_date_range = null;
+                    this.fetchEntries();
+                    return;
                 default:
                     return;
             }
@@ -364,6 +371,7 @@ export default {
         if (status) {
             this.chart_status = status;
         }
+        this.radioOption = 'all';
         this.fetchEntries();
     }
 };

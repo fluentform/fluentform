@@ -65,7 +65,7 @@ class TranslationString
             'Export' => __('Export', 'fluentform'),
             'Export as' => __('Export as', 'fluentform'),
             'Filter' => __('Filter', 'fluentform'),
-            'Reset Filter' => __('Reset Filter', 'fluentform'),
+            'All' => __('All', 'fluentform'),
             'Filter By Date Range' => __('Filter By Date Range', 'fluentform'),
             'Favorites Entries only' => __('Favorites Entries only', 'fluentform'),
             'Amount' => __('Amount', 'fluentform'),
