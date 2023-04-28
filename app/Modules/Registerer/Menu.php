@@ -210,7 +210,7 @@ class Menu
         );
     
         add_filter('admin_footer_text', function ($text) {
-            $text = '<span id="footer-thankyou">Please note: you are using beta version so you may face some bugs ,please add <b>#fluentforms_beta</b> hash tag in your support ticket <a target="_blank" rel="nofollow" href="https://wpmanageninja.com/support-tickets">Support Portal Link </a> </span><br>';
+            $text = '<span id="footer-thankyou">Please note: You are using beta version so you may face some bugs. Please add <b>#fluentforms_beta</b> hash tag in your <a target="_blank" rel="nofollow" href="https://wpmanageninja.com/support-tickets"> support ticket. </a></span><br>';
             $text .= '<span id="footer-thankyou">Thank you very much for using the plugin ♥ from the Fluent Forms team! If you like the plugin please rate Fluent Forms <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">★★★★★ </a> on  <a target="_blank" rel="nofollow" href="https://wordpress.org/support/plugin/fluentform/reviews/#new-post">WordPress.org</a> to help us spread the word. </span>';
             return $text;
         });
