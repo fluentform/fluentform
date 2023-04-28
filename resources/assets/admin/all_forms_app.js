@@ -29,7 +29,9 @@ import {
     DropdownItem,
     Switch,
     DatePicker,
-    RadioButton
+    RadioButton,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -56,6 +58,8 @@ Vue.use(Button);
 Vue.use(Switch);
 Vue.use(DatePicker);
 Vue.use(RadioButton);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service

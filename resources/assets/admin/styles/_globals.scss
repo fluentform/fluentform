@@ -395,7 +395,7 @@ a.lead-text{
     flex-direction: column;
     border-bottom: 1px solid $border-color;
     background: $white;
-    padding: 14px 24px;
+    padding: $header-padding-y $header-padding-x;
     &_group{
       display: flex;
       align-items: center;

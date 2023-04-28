@@ -2,6 +2,7 @@
     border-radius: $border-radius;
     box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
     padding: 0.625rem 1.5rem;
+    background-color: $white;
     .el-table_1_column_1{
         vertical-align: top;
     }
@@ -12,7 +13,7 @@
     tr,
     th.el-table__cell,
     .el-table__body tr.el-table__row--striped td.el-table__cell,
-    &.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
+    .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell{
         background-color: transparent;
     }
     .el-table--border::after, 

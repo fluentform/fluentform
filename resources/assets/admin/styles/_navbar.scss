@@ -8,7 +8,7 @@
         justify-content: center;
     }
     &_link{
-        padding: 7px 15px;
+        padding: $menu-link-padding-y $menu-link-padding-x;
         display: inline-block;
         text-decoration: none;
         color: $menu-link-color;
