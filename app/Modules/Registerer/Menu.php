@@ -1046,7 +1046,7 @@ class Menu
             'transfer_str' => TranslationString::getTransferModuleI18n(),
         ]);
 
-        $this->app->view->render('admin.transfer.index');
+        $this->app->view->render('admin.tools.index');
     }
 
     public function addPreviewButton($formId)
