@@ -200,7 +200,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column width="90" align="center">
+                    <el-table-column width="120" align="center">
                         <template slot="header">
                             {{$t('Entries')}}
                             <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">

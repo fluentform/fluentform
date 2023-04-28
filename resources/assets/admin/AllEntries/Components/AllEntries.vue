@@ -1,8 +1,8 @@
 <template>
     <div v-loading="loading" class="ff_entries_wrapper">
-        <section-head class="ff_section_head_between items-center" size="sm">
+        <section-head class="ff_section_head_between mb-0">
             <section-head-content>
-                <h1 class="ff_section_title">{{$t('All Form Entries')}}</h1>
+                <h1 class="ff_section_title">{{$t('Form Entries')}}</h1>
             </section-head-content>
             <section-head-content>
                 <btn-group as="div">
