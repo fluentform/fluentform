@@ -326,14 +326,6 @@
     }
   }
 }
-.ff_global_setting{
-  &_wrap{
-    .ff_settings_list{
-      height: 660px;
-      overflow-y: auto;
-    }
-  }
-}
 
 .ff_pdf_form_wrap {
   display: flex;
