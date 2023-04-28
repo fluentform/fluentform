@@ -1,7 +1,7 @@
 <template>
     <div>
         <section-head size="sm">
-            <h1>{{ $t('Forms') }}</h1>
+            <h1 class="ff_section_title">{{ $t('Forms') }}</h1>
         </section-head>
         <el-row class="ff_all_forms_action_row">
             <el-col :sm="12">
