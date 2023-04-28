@@ -42,7 +42,9 @@ import {
     TableColumn,
     Tag,
     Popover,
-    Pagination
+    Pagination,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
 import { handleSidebarActiveLink } from '@/admin/helpers';
@@ -72,6 +74,9 @@ Vue.use(TableColumn);
 Vue.use(Tag);
 Vue.use(Popover);
 Vue.use(Pagination);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
+
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 
