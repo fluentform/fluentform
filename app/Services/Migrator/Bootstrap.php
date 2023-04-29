@@ -93,7 +93,7 @@ class Bootstrap
         \FluentForm\App\Modules\Acl\Acl::verify(['fluentform_settings_manager', 'fluentform_forms_manager']);
         
         $formIds = wpFluentForm('request')->get('form_ids');
-        $formIds = array_map('intval', $formIds);
+        $formIds = array_map('sanitize_text_field', $formIds);
 
         $this->setImporterType();
         $this->importer->import_forms($formIds);
