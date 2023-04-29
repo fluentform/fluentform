@@ -36,7 +36,9 @@ import {
     Switch,
     InputNumber,
     Card,
-    Alert
+    Alert,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -78,6 +80,8 @@ Vue.use(Upload);
 Vue.use(Switch);
 Vue.use(InputNumber);
 Vue.use(Alert);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
