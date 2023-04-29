@@ -68,10 +68,11 @@ small {
     border-radius: $border-radius;
     border: 1px solid #EDEAE9;
     position: relative;
+    height: 258px;
     img {
         border-radius: inherit;
         width: 100%;
-        height: auto;
+        height: 100%;
         display: block;
     }
     &:hover .ff_form_card_overlap {

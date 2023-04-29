@@ -7,7 +7,7 @@
             :before-close="close"
         >
             <template slot="title">
-                <h3 class="title">{{$t('Choose a Template')}}</h3>
+                <h3 class="title">{{$t('Predefined Form Templates')}}</h3>
                 <p class="text">{{$t('Choose a pre-made form template to get started right away.')}}
                 </p>
             </template>
