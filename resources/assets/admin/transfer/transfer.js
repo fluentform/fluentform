@@ -17,7 +17,9 @@ import {
     Tabs,
     TabPane,
     Loading,
-    Tag
+    Tag,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 Vue.use(Button);
@@ -35,6 +37,8 @@ Vue.use(Popover);
 Vue.use(Tabs);
 Vue.use(TabPane);
 Vue.use(Tag);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 
 Vue.prototype.$notify = Notification;

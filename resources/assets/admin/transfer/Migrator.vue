@@ -8,149 +8,150 @@
                 </p>
             </card-head>
             <card-body>
-                <div class="ff_migrator_navigation" v-loading="loading">
-                    <el-tabs v-model="currentFormType" @tab-click="getForms">
-                        <el-tab-pane 
-                            :label="migrators.name" 
-                            v-for="(migrators,index) in migratorData" 
-                            :key="index"
-                            :name="migrators.key"
-                        >
-                            <div class="ff_migrator_navigation_header mt-1 mb-2">
-                                <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
-                                <el-button v-if="forms.length" size="small" type="info" @click="importForms()"> 
-                                    {{ $t('Import All Forms') }}
-                                </el-button>
-                            </div>
-                        </el-tab-pane>
-                        <div class="ff-table-container"  v-if="forms.length">
-                            <el-table
-                                :data="listForms"
-                                class="ff_migrator_table"
-                                @selection-change="handleSelectionChange"
+                <div class="ff_migrator_navigation">
+                    <el-skeleton :loading="loading" animated :rows="8">
+                        <el-tabs v-model="currentFormType" @tab-click="getForms">
+                            <el-tab-pane 
+                                :label="migrators.name" 
+                                v-for="(migrators,index) in migratorData" 
+                                :key="index"
+                                :name="migrators.key"
                             >
-                                <el-table-column
-                                    type="selection"
-                                    width="50">
-                                </el-table-column>
-                                <el-table-column
-                                    prop="name"
-                                    min-width="140"
-                                    :label="$t('Form Name')">
-                                </el-table-column>
-                                
-                                <el-table-column
-                                    :label="$t('Imported')"
-                                    width="120"
-                                    align="center">
-                                    <template slot-scope="props">
-                                        <span v-if="props.row.imported_ff_id">
-                                        <i class="el-icon-success el-text-success"></i>
-                                        </span>
-                                        <span v-else>
-                                            <i class="el-icon-success"></i>
-                                        </span>
-                                    </template>
-                                </el-table-column>
-                                
-                                <el-table-column
-                                    v-if="entryImportSupported"
-                                    align="right"
-                                    width="120"
-                                    label=""
-                                >
-                                    <template slot-scope="props">
-                                        <el-button 
-                                            v-if="entryImportSupported && props.row.imported_ff_id" 
-                                            class="el-button--soft"
-                                            size="mini" 
-                                            type="success"
-                                            @click="importEntries( props.row.imported_ff_id, props.row.id )"
-                                        >
-                                            {{ $t('Import Entries') }}
-                                        </el-button>
-                                    </template>
-                                </el-table-column>
-                                
-                                <el-table-column width="160" :label="$t('Action')" align="right">
-                                    <template slot-scope="props">
-                                        <el-button 
-                                            class="el-button--soft"
-                                            size="mini" 
-                                            type="info"
-                                            @click="importForms([props.row.id])"
-                                        >
-                                            {{ $t('Import Form') }}
-                                        </el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div v-else>
-                            {{$t('No Forms Found')}}
-                        </div>
-
-                        <div class="ff_between_wrap mt-3">
-                            <el-button
-                                v-if="multipleSelection.length"
-                                size="small" 
-                                type="info" 
-                                icon="el-icon-success"
-                                @click="importForms(multipleSelection)"
-                            >
-                                {{ $t('Import Selected Forms') }}
-                            </el-button>
-                            <div class="ff_pagination_wrap" style="margin-left: auto;">
-                                <el-pagination
-                                    background
-                                    :hide-on-single-page="true"
-                                    :page-size="per_page"
-                                    :current-page.sync="page_number"
-                                    layout="prev, pager, next"
-                                    :total="total">
-                                </el-pagination>
-                            </div>
-                            
-                        </div>
-                    
-                        <div v-if="migratedForms.length">
-                            <h5 class="mb-2 mt-5" style="border-top: 1px solid #ececec; padding-top: 20px;">{{ $t('Imported Forms') }}</h5>
-                            <div class="ff-table-container">
+                                <div class="ff_migrator_navigation_header mt-1 mb-2">
+                                    <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
+                                    <el-button v-if="forms.length" size="small" type="info" @click="importForms()"> 
+                                        {{ $t('Import All Forms') }}
+                                    </el-button>
+                                </div>
+                            </el-tab-pane>
+                            <div class="ff-table-container"  v-if="forms.length">
                                 <el-table
-                                    max-height="400"
-                                    :data="migratedForms"
-                                    class="ff_migrator_response_table"
+                                    :data="listForms"
+                                    class="ff_migrator_table"
+                                    @selection-change="handleSelectionChange"
                                 >
-                                    
                                     <el-table-column
-                                        prop="title"
-                                        :label="$t('Imported Form')">
+                                        type="selection"
+                                        width="50">
+                                    </el-table-column>
+                                    <el-table-column
+                                        prop="name"
+                                        min-width="140"
+                                        :label="$t('Form Name')">
                                     </el-table-column>
                                     
-                                    <el-table-column width="120" prop="edit_url" label="" align="right">
+                                    <el-table-column
+                                        :label="$t('Imported')"
+                                        width="120"
+                                        align="center">
                                         <template slot-scope="props">
-                                            <a :href="props.row.edit_url"> {{ $t('Edit Form') }}</a>
+                                            <span v-if="props.row.imported_ff_id">
+                                            <i class="el-icon-success el-text-success"></i>
+                                            </span>
+                                            <span v-else>
+                                                <i class="el-icon-success"></i>
+                                            </span>
+                                        </template>
+                                    </el-table-column>
+                                    
+                                    <el-table-column
+                                        v-if="entryImportSupported"
+                                        align="right"
+                                        width="120"
+                                        label=""
+                                    >
+                                        <template slot-scope="props">
+                                            <el-button 
+                                                v-if="entryImportSupported && props.row.imported_ff_id" 
+                                                class="el-button--soft"
+                                                size="mini" 
+                                                type="success"
+                                                @click="importEntries( props.row.imported_ff_id, props.row.id )"
+                                            >
+                                                {{ $t('Import Entries') }}
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                    
+                                    <el-table-column width="160" :label="$t('Action')" align="right">
+                                        <template slot-scope="props">
+                                            <el-button 
+                                                class="el-button--soft"
+                                                size="mini" 
+                                                type="info"
+                                                @click="importForms([props.row.id])"
+                                            >
+                                                {{ $t('Import Form') }}
+                                            </el-button>
                                         </template>
                                     </el-table-column>
                                 </el-table>
                             </div>
-                        </div>
+                            <div v-else>
+                                {{$t('No Forms Found')}}
+                            </div>
 
-                        <div v-if="unSupportedFields.length" class="ff-error">
-                            {{$t('The following fields are not supported, please create them manually.')}}
-                            <b>{{unSupportedFields.join(', ')}} </b>
-                        </div>
-                        <div v-if="entryPageUrl">
-                            <h4>{{ $t('Imported Form Entries') }}</h4>
-                            <a :href="entryPageUrl"> {{ $t('View Entries') }}</a>
-                        </div>
-                    
-                    </el-tabs>
+                            <div class="ff_between_wrap mt-3">
+                                <el-button
+                                    v-if="multipleSelection.length"
+                                    size="small" 
+                                    type="info" 
+                                    icon="el-icon-success"
+                                    @click="importForms(multipleSelection)"
+                                >
+                                    {{ $t('Import Selected Forms') }}
+                                </el-button>
+                                <div class="ff_pagination_wrap" style="margin-left: auto;">
+                                    <el-pagination
+                                        background
+                                        :hide-on-single-page="true"
+                                        :page-size="per_page"
+                                        :current-page.sync="page_number"
+                                        layout="prev, pager, next"
+                                        :total="total">
+                                    </el-pagination>
+                                </div>
+                                
+                            </div>
+                        
+                            <div v-if="migratedForms.length">
+                                <h5 class="mb-2 mt-5" style="border-top: 1px solid #ececec; padding-top: 20px;">{{ $t('Imported Forms') }}</h5>
+                                <div class="ff-table-container">
+                                    <el-table
+                                        max-height="400"
+                                        :data="migratedForms"
+                                        class="ff_migrator_response_table"
+                                    >
+                                        
+                                        <el-table-column
+                                            prop="title"
+                                            :label="$t('Imported Form')">
+                                        </el-table-column>
+                                        
+                                        <el-table-column width="120" prop="edit_url" label="" align="right">
+                                            <template slot-scope="props">
+                                                <a :href="props.row.edit_url"> {{ $t('Edit Form') }}</a>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                </div>
+                            </div>
+
+                            <div v-if="unSupportedFields.length" class="ff-error">
+                                {{$t('The following fields are not supported, please create them manually.')}}
+                                <b>{{unSupportedFields.join(', ')}} </b>
+                            </div>
+                            <div v-if="entryPageUrl">
+                                <h4>{{ $t('Imported Form Entries') }}</h4>
+                                <a :href="entryPageUrl"> {{ $t('View Entries') }}</a>
+                            </div>
+                        
+                        </el-tabs>
+                    </el-skeleton>
                 </div>
             </card-body>
         </card>    
     </div>
-
 </template>
 
 <script>

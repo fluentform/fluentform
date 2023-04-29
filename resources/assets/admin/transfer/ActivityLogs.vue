@@ -50,81 +50,83 @@
                     </el-col>
                 </el-row>
 
-                <div v-loading="loading" class="ff_activity_logs_body mt-4">
-                    <div v-if="multipleSelection.length" class="logs_actions mb-3">
-                        <remove icon="el-icon-delete" @on-confirm="deleteItems()">
-                            <button type="button" class="el-button el-button--danger el-button--mini">
-                                <i class="el-icon-delete"></i>
-                                <span>{{ $t('Delete Selected Logs') }}</span>
-                            </button>
-                        </remove>
-                    </div>
+                <div class="ff_activity_logs_body mt-4">
+                    <el-skeleton :loading="loading" animated :rows="10">
+                        <div v-if="multipleSelection.length" class="logs_actions mb-3">
+                            <remove icon="el-icon-delete" @on-confirm="deleteItems()">
+                                <button type="button" class="el-button el-button--danger el-button--mini">
+                                    <i class="el-icon-delete"></i>
+                                    <span>{{ $t('Delete Selected Logs') }}</span>
+                                </button>
+                            </remove>
+                        </div>
+                        
+                        <el-table
+                            :data="logs"
+                            stripe
+                            class="entry_submission_log ff_table_s2"
+                            @selection-change="handleSelectionChange"
+                        >
+                            <el-table-column type="selection" width="50"></el-table-column>
+                            <el-table-column type="expand">
+                                <template slot-scope="props">
+                                    <p v-html="props.row.description"></p>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="50px" :label="$t('ID')">
+                                <template slot-scope="props">
+                                    <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
+                                    <span v-else>n/a</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="$t('Form')">
+                                <template slot-scope="props">
+                                    <span v-if="props.row.form_title">{{props.row.form_title}}</span>
+                                    <span v-else>{{ $t('General Log') }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="title" :label="$t('Title')"></el-table-column>
+                            <el-table-column prop="status" :label="$t('Status')" width="100">
+                                <template slot-scope="props">
+                                    <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
+                                        {{props.row.status}}
+                                    </el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="120" :label="$t('Component')">
+                                <template slot-scope="props">
+                                    <div>{{ props.row.component }}</div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
+                            <el-table-column width="70" :label="$t('Action')">
+                                <template slot-scope="props">
+                                    <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
+                                        <el-button
+                                            class="el-button--icon"
+                                            size="mini"
+                                            type="danger"
+                                            icon="el-icon-delete"
+                                        />
+                                    </remove>
+                                </template>
+                            </el-table-column>
+                        </el-table>
 
-                    <el-table
-                        :data="logs"
-                        stripe
-                        class="entry_submission_log ff_table_s2"
-                        @selection-change="handleSelectionChange"
-                    >
-                        <el-table-column type="selection" width="50"></el-table-column>
-                        <el-table-column type="expand">
-                            <template slot-scope="props">
-                                <p v-html="props.row.description"></p>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="50px" :label="$t('ID')">
-                            <template slot-scope="props">
-                                <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
-                                <span v-else>n/a</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column :label="$t('Form')">
-                            <template slot-scope="props">
-                                <span v-if="props.row.form_title">{{props.row.form_title}}</span>
-                                <span v-else>{{ $t('General Log') }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="title" :label="$t('Title')"></el-table-column>
-                        <el-table-column prop="status" :label="$t('Status')" width="100">
-                            <template slot-scope="props">
-                                <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
-                                    {{props.row.status}}
-                                </el-tag>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" :label="$t('Component')">
-                            <template slot-scope="props">
-                                <div>{{ props.row.component }}</div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
-                        <el-table-column width="70" :label="$t('Action')">
-                            <template slot-scope="props">
-                                <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
-                                    <el-button
-                                        class="el-button--icon"
-                                        size="mini"
-                                        type="danger"
-                                        icon="el-icon-delete"
-                                    />
-                                </remove>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-
-                    <div class="ff_pagination_wrap text-right mt-4">
-                        <el-pagination
-                            class="ff_pagination"
-                            background
-                            @size-change="handleSizeChange"
-                            @current-change="goToPage"
-                            :current-page.sync="paginate.current_page"
-                            :page-sizes="[5, 10, 20, 50, 100]"
-                            :page-size="parseInt(paginate.per_page)"
-                            layout="total, sizes, prev, pager, next"
-                            :total="paginate.total">
-                        </el-pagination>
-                    </div>
+                        <div class="ff_pagination_wrap text-right mt-4">
+                            <el-pagination
+                                class="ff_pagination"
+                                background
+                                @size-change="handleSizeChange"
+                                @current-change="goToPage"
+                                :current-page.sync="paginate.current_page"
+                                :page-sizes="[5, 10, 20, 50, 100]"
+                                :page-size="parseInt(paginate.per_page)"
+                                layout="total, sizes, prev, pager, next"
+                                :total="paginate.total">
+                            </el-pagination>
+                        </div>
+                    </el-skeleton>
                 </div>
             </card-body>
         </card>
