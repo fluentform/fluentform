@@ -1,31 +1,33 @@
 <template>
     <div class="ff_pdf_wrap">
-        <card>
-            <card-head>
-                <h5 class="title">{{ $t('Global PDF Settings') }}</h5>
-                <p class="text">{{$t('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed')}}</p>
-            </card-head>
-            <card-body v-loading="loading">
-                <el-form class="ff_pdf_form_wrap" label-position="top">
-                    <field-mapper
-                        v-for="field in fields"
-                        :key="field.key"
-                        :field="field"
-                        :errors="errors"
-                        v-model="settings[field.key]"
-                    />
-                </el-form>
-            </card-body>
-        </card>
-        <div>
-            <el-button
-                type="primary"
-                icon="el-icon-success"
-                @click="save"
-            >
-                {{ $t('Save Settings') }}
-            </el-button>
-        </div>
+        <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card' : ''">
+            <card>
+                <card-head>
+                    <h5 class="title">{{ $t('Global PDF Settings') }}</h5>
+                    <p class="text">{{$t('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed')}}</p>
+                </card-head>
+                <card-body v-loading="loading">
+                    <el-form class="ff_pdf_form_wrap" label-position="top">
+                        <field-mapper
+                            v-for="field in fields"
+                            :key="field.key"
+                            :field="field"
+                            :errors="errors"
+                            v-model="settings[field.key]"
+                        />
+                    </el-form>
+                </card-body>
+            </card>
+            <div>
+                <el-button
+                    type="primary"
+                    icon="el-icon-success"
+                    @click="save"
+                >
+                    {{ $t('Save Settings') }}
+                </el-button>
+            </div>
+        </el-skeleton>
     </div>
 </template>
 

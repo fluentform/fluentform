@@ -19,52 +19,54 @@
 
         <div class="ff_managers_list mt-4">
             <div class="ff_table_wrap">
-                <el-table class="ff_table_s2" :data="managers">
-                    <el-table-column :label="$t('ID')" prop="id" width="70"/>
-                    <el-table-column :label="$t('Name')" width="180">
-                        <template slot-scope="scope">
-                            {{ scope.row.first_name }} {{ scope.row.last_name }}
-                        </template>
-                    </el-table-column>
+                <el-skeleton :loading="loading" animated :rows="6">
+                    <el-table class="ff_table_s2" :data="managers">
+                        <el-table-column :label="$t('ID')" prop="id" width="70"/>
+                        <el-table-column :label="$t('Name')" width="180">
+                            <template slot-scope="scope">
+                                {{ scope.row.first_name }} {{ scope.row.last_name }}
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column :label="$t('Email')" prop="email" width="240" />
+                        <el-table-column :label="$t('Email')" prop="email" width="240" />
 
-                    <el-table-column :label="$t('Roles')" prop="roles" width="120" />
+                        <el-table-column :label="$t('Roles')" prop="roles" width="120" />
 
-                    <el-table-column :label="$t('Permissions')">
-                        <template slot-scope="scope">
-                            <el-tag
-                                type="info"
-                                size="mini"
-                                v-for="permission in scope.row.permissions"
-                                :key="permission"
-                                class="mr-1"
-                            >
-                                {{ permissions[permission].title }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
+                        <el-table-column :label="$t('Permissions')">
+                            <template slot-scope="scope">
+                                <el-tag
+                                    type="info"
+                                    size="mini"
+                                    v-for="permission in scope.row.permissions"
+                                    :key="permission"
+                                    class="mr-1"
+                                >
+                                    {{ permissions[permission].title }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column :label="$t('Action')" width="90">
-                        <template slot-scope="scope">
-                            <el-button
-                                class="el-button--icon"
-                                size="mini"
-                                type="primary"
-                                icon="ff-icon ff-icon-edit"
-                                @click="edit(scope.row)"
-                            />
-                            <confirm @on-confirm="remove(scope.row)">
+                        <el-table-column :label="$t('Action')" width="90">
+                            <template slot-scope="scope">
                                 <el-button
                                     class="el-button--icon"
                                     size="mini"
-                                    type="danger"
-                                    icon="ff-icon ff-icon-trash"
+                                    type="primary"
+                                    icon="ff-icon ff-icon-edit"
+                                    @click="edit(scope.row)"
                                 />
-                            </confirm>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                                <confirm @on-confirm="remove(scope.row)">
+                                    <el-button
+                                        class="el-button--icon"
+                                        size="mini"
+                                        type="danger"
+                                        icon="ff-icon ff-icon-trash"
+                                    />
+                                </confirm>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-skeleton>
             </div>
     
             <div class="ff_pagination_wrap text-right mt-4">
