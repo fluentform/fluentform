@@ -1,22 +1,24 @@
 <template>
-    <div v-loading="loading" class="ff_global_setting_options_wrap">
-        <!--Different form settings section-->
-        <template v-if="app_ready">
-            <layout
-                :email_report="email_report"
-                :integration_failure_notification="integration_failure_notification"
-                :data="formSettings"
-                :file_upload_optoins="file_upload_optoins"
-                :captcha_status="captcha_status"
-            />
-        </template>
+    <div class="ff_global_setting_options_wrap">
+        <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card' : ''">
+            <!--Different form settings section-->
+            <template v-if="app_ready">
+                <layout
+                    :email_report="email_report"
+                    :integration_failure_notification="integration_failure_notification"
+                    :data="formSettings"
+                    :file_upload_optoins="file_upload_optoins"
+                    :captcha_status="captcha_status"
+                />
+            </template>
 
-        <!--Save settings-->
-        <div class="mt-4">
-            <el-button type="primary" icon="el-icon-success" @click="save">
-                {{ $t('Save Settings') }}
-            </el-button>
-        </div>
+            <!--Save settings-->
+            <div class="mt-4">
+                <el-button type="primary" icon="el-icon-success" @click="save">
+                    {{ $t('Save Settings') }}
+                </el-button>
+            </div>
+        </el-skeleton>
     </div>
 </template>
 
