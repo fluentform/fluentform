@@ -21,78 +21,79 @@
                 </div>
             </card-body>
         </card>
-
-        <div v-else v-loading="loading" class="ff_general_integration_body">
-            <template v-if="settings.config_instruction && !integration.status">
-                <div class="integration_instraction" v-html="settings.config_instruction"></div>
-            </template>
-            <el-form label-position="top">
-                <card>
-                    <card-head>
-                        <h5 class="title">{{ settings.menu_title }}</h5>
-                        <p class="text" v-html="settings.menu_description"></p>
-                    </card-head>
-                    <card-body>
-                        <!--Site key-->
-                        <el-form-item class="ff-form-item" v-for="(field,fieldKey) in settings.fields" :key="fieldKey">
-                            <template slot="label">
-                                {{ field.label }}
-                                <el-tooltip v-if="field.label_tips" class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
-                                        <div v-html="field.label_tips">
+        <div v-else class="ff_general_integration_body">
+            <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card' : ''">
+                <template v-if="settings.config_instruction && !integration.status">
+                    <div class="integration_instraction" v-html="settings.config_instruction"></div>
+                </template>
+                <el-form label-position="top">
+                    <card>
+                        <card-head>
+                            <h5 class="title">{{ settings.menu_title }}</h5>
+                            <p class="text" v-html="settings.menu_description"></p>
+                        </card-head>
+                        <card-body>
+                            <!--Site key-->
+                            <el-form-item class="ff-form-item" v-for="(field,fieldKey) in settings.fields" :key="fieldKey">
+                                <template slot="label">
+                                    {{ field.label }}
+                                    <el-tooltip v-if="field.label_tips" class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <div v-html="field.label_tips">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                </el-tooltip>
-                            </template>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
 
-                            <template v-if="field.type == 'select'">
-                                <el-select class="w-100 ff-input-s1" v-model="integration[fieldKey]">
-                                    <el-option
-                                        v-for="(optionName, optionValue) in field.options"
-                                        :key="optionValue"
-                                        :label="optionName"
-                                        :value="optionValue"></el-option>
-                                </el-select>
-                            </template>
-                            <template v-else-if="field.type == 'link'">
-                                <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
-                                <p class="mt-2">{{ field.tips }}</p>
-                            </template>
-                            <template v-else-if="field.type == 'dynamic_link'">
-                                <a :target="field.target" :disabled="!getDynamicAuthLink(field)" :class="field.btn_class" :href="getDynamicAuthLink(field)">{{ field.link_text }}</a>
-                                <p>{{ field.tips }}</p>
-                            </template>
-                            <template v-else-if="field.type == 'checkbox-single'">
-                                <el-checkbox v-model="integration[fieldKey]">
-                                    {{field.checkbox_label}}
-                                </el-checkbox>
-                            </template>
-                            <template v-else>
-                                <el-input :placeholder="field.placeholder" :type="field.type"
-                                        v-model="integration[fieldKey]"></el-input>
-                                <p class="text-note mt-2" v-if="field.tips">{{ field.tips }}</p>
-                            </template>
-                        </el-form-item>
-                        <!--Validate Keys-->
+                                <template v-if="field.type == 'select'">
+                                    <el-select class="w-100 ff-input-s1" v-model="integration[fieldKey]">
+                                        <el-option
+                                            v-for="(optionName, optionValue) in field.options"
+                                            :key="optionValue"
+                                            :label="optionName"
+                                            :value="optionValue"></el-option>
+                                    </el-select>
+                                </template>
+                                <template v-else-if="field.type == 'link'">
+                                    <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
+                                    <p class="mt-2">{{ field.tips }}</p>
+                                </template>
+                                <template v-else-if="field.type == 'dynamic_link'">
+                                    <a :target="field.target" :disabled="!getDynamicAuthLink(field)" :class="field.btn_class" :href="getDynamicAuthLink(field)">{{ field.link_text }}</a>
+                                    <p>{{ field.tips }}</p>
+                                </template>
+                                <template v-else-if="field.type == 'checkbox-single'">
+                                    <el-checkbox v-model="integration[fieldKey]">
+                                        {{field.checkbox_label}}
+                                    </el-checkbox>
+                                </template>
+                                <template v-else>
+                                    <el-input :placeholder="field.placeholder" :type="field.type"
+                                            v-model="integration[fieldKey]"></el-input>
+                                    <p class="text-note mt-2" v-if="field.tips">{{ field.tips }}</p>
+                                </template>
+                            </el-form-item>
+                            <!--Validate Keys-->
 
-                        <div v-if="integration.status">
-                            <p><i class="el-icon-success"></i> {{ settings.valid_message }}</p>
-                        </div>
-                        <div v-else>
-                            <p><i class="ff-icon ff-icon-close-circle-filled"></i> {{ settings.invalid_message }}</p>
-                        </div>
+                            <div v-if="integration.status">
+                                <p><i class="el-icon-success"></i> {{ settings.valid_message }}</p>
+                            </div>
+                            <div v-else>
+                                <p><i class="ff-icon ff-icon-close-circle-filled"></i> {{ settings.invalid_message }}</p>
+                            </div>
 
-                        <p v-if="error_message">{{ error_message }}</p>
-                    </card-body>
-                </card>
+                            <p v-if="error_message">{{ error_message }}</p>
+                        </card-body>
+                    </card>
 
-                <div class="mt-4">
-                    <el-button v-loading="saving" type="primary" icon="el-icon-success" @click="save">
-                        {{ settings.save_button_text }}
-                    </el-button>
-                </div>
-            </el-form>
+                    <div class="mt-4">
+                        <el-button v-loading="saving" type="primary" icon="el-icon-success" @click="save">
+                            {{ settings.save_button_text }}
+                        </el-button>
+                    </div>
+                </el-form>
+            </el-skeleton>
         </div>
     </div>
 </template>
