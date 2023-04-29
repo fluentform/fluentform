@@ -153,9 +153,6 @@ div#js-form-editor--body {
 // fullscreen
 body.ff_full_screen {
   overflow-y: hidden;
-  .v-modal {
-    z-index: 999999 !important;
-  }
   .form-editor--sidebar-content {
     height: calc(100vh - 56px);
   }
