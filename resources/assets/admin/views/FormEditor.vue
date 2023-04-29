@@ -406,15 +406,16 @@
                                 <!-- =========================
                                     EDIT FIELDS
                                 ============================== -->
-                                <template
-                                    v-if="fieldMode == 'edit' && Object.keys(editItem).length">
-                                    <div class="ff-input-customization-wrap" v-loading="sidebarLoading" style="min-height: 100px;">
-                                        <EditorSidebar
-                                            v-if="!sidebarLoading"
-                                            :editItem="editItem"
-                                            :form_items="form.dropzone"
-                                            :haveFormSteps="haveFormSteps"
-                                        />
+                                <template v-if="fieldMode == 'edit' && Object.keys(editItem).length">
+                                    <div class="ff-input-customization-wrap" style="min-height: 100px;">
+                                        <el-skeleton :loading="sidebarLoading" animated :rows="10">
+                                            <EditorSidebar
+                                                v-if="!sidebarLoading"
+                                                :editItem="editItem"
+                                                :form_items="form.dropzone"
+                                                :haveFormSteps="haveFormSteps"
+                                            />
+                                        </el-skeleton>
                                     </div>
                                 </template>
                             </template>
