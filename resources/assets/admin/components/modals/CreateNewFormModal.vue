@@ -214,11 +214,14 @@
             }
         },
         watch: {
-            visibility: function (newVal, oldVal) {
-               if (newVal == true && Object.entries(this.predefinedForms).length == 0){
-                   this.getPredefinedForms();
-               }
-            },
+	        visibility: {
+		        immediate: true,
+		        handler(newVal, oldVal) {
+			        if (this.visibility && Object.entries(this.predefinedForms).length === 0) {
+				        this.getPredefinedForms();
+			        }
+		        }
+	        }
         },
     };
 </script>
