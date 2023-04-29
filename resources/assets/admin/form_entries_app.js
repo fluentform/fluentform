@@ -35,7 +35,9 @@ import {
     Radio,
     CheckboxGroup,
     OptionGroup,
-    Alert
+    Alert,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 Vue.use(Vddl);
 Vue.use(Form);
@@ -65,6 +67,8 @@ Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
 Vue.use(Dropdown)
 Vue.use(Dialog)
+Vue.use(Skeleton)
+Vue.use(SkeletonItem)
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
