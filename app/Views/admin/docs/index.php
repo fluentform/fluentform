@@ -46,7 +46,7 @@
                             </a>
                         </div>
                         <div id="ff_backdrop">
-                            <div id="ff_dialog_wrapper" class="el-dialog__wrapper">
+                            <div id="ff_dialog_wrapper" class="el-dialog__wrapper hidden">
                                 <div role="dialog" aria-modal="true" class="el-dialog" style="margin-top: 25vh; width: 50%;">
                                     <div class="el-dialog__header mb-5">
                                         <h4><?php _e( 'Fluent Forms Video Tutorials', 'fluentform' ) ?></h4>
