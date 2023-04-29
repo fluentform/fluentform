@@ -205,7 +205,7 @@
                                                                 :moved="moved"
                                                                 effectAllowed="copy">
                                                                 <i :class="itemMock.editor_options.icon_class"></i>
-                                                                {{ itemMock.editor_options.title }}
+                                                                <span>{{ itemMock.editor_options.title }}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
@@ -251,7 +251,7 @@
                                                                 :moved="moved"
                                                                 effectAllowed="copy">
                                                                 <i :class="itemMock.editor_options.icon_class"></i>
-                                                                {{ itemMock.editor_options.title }}
+                                                                <span>{{ itemMock.editor_options.title }}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
@@ -287,7 +287,7 @@
                                                                 :moved="moved"
                                                                 effectAllowed="copy">
                                                                 <i :class="itemMock.editor_options.icon_class"></i>
-                                                                {{ itemMock.editor_options.title }}
+                                                                <span>{{ itemMock.editor_options.title }}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
@@ -320,9 +320,8 @@
                                                                 :disable-if="isDisabled(itemMock)"
                                                                 :moved="moved"
                                                                 effect-allowed="copy"
-                                                            ><i :class="itemMock.editor_options.icon_class"></i> {{
-                                                                    itemMock.editor_options.title
-                                                                }}
+                                                            ><i :class="itemMock.editor_options.icon_class"></i> 
+                                                            <span>{{itemMock.editor_options.title}}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
@@ -354,9 +353,8 @@
                                                                 :selected="insertItemOnClick"
                                                                 :moved="moved"
                                                                 effect-allowed="copy"
-                                                            ><i :class="mockItem.editor_options.icon_class"></i> {{
-                                                                    mockItem.editor_options.title
-                                                                }}
+                                                            ><i :class="mockItem.editor_options.icon_class"></i> 
+                                                            <span>{{mockItem.editor_options.title}}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
@@ -392,7 +390,7 @@
                                                                 :moved="moved"
                                                                 effectAllowed="copy">
                                                                 <i :class="itemMock.editor_options.icon_class"></i>
-                                                                {{ itemMock.editor_options.title }}
+                                                                <span>{{ itemMock.editor_options.title }}</span>
                                                             </vddl-draggable>
                                                         </div>
                                                     </div>
