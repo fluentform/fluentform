@@ -5,77 +5,79 @@
                 <h5 class="title">{{ $t('Quiz Settings') }}</h5>
             </card-head>
             <card-body>
-                <div v-loading="loading" class="ff-quiz-settings-wrapper">
-                    <el-form v-if="settings" label-position="top">
-                        <field-mapper
-                            :field="{ component: 'checkbox-single', label: $t('Enabled'), checkbox_label:  $t('Enable Quiz Module') }"
-                            :editorShortcodes="editorShortcodes"
-                            :errors="errors"
-                            v-model="settings.enabled"
-                        >
-                        </field-mapper>
-                        <div  v-if="settings.enabled">
+                <div class="ff-quiz-settings-wrapper">
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-form v-if="settings" label-position="top">
                             <field-mapper
-                                v-for="field in settingsFields"
-                                :key="field.key"
-                                :field="field"
-                                :errors="errors"
+                                :field="{ component: 'checkbox-single', label: $t('Enabled'), checkbox_label:  $t('Enable Quiz Module') }"
                                 :editorShortcodes="editorShortcodes"
-                                v-model="settings[field.key]"
-                            />
-                            <el-form-item class="ff-form-item">
-                                <template slot="label">
-                                    {{ $t('Grade System') }}
-                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
-                                            <p>{{ $t('Result will be showed in grade when the score type is set as grade in the score input field') }}</p>
+                                :errors="errors"
+                                v-model="settings.enabled"
+                            >
+                            </field-mapper>
+                            <div  v-if="settings.enabled">
+                                <field-mapper
+                                    v-for="field in settingsFields"
+                                    :key="field.key"
+                                    :field="field"
+                                    :errors="errors"
+                                    :editorShortcodes="editorShortcodes"
+                                    v-model="settings[field.key]"
+                                />
+                                <el-form-item class="ff-form-item">
+                                    <template slot="label">
+                                        {{ $t('Grade System') }}
+                                        <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                            <div slot="content">
+                                                <p>{{ $t('Result will be showed in grade when the score type is set as grade in the score input field') }}</p>
+                                            </div>
+                                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    <table>
+                                        <tr>
+                                            <td><span class="lead-title mb-2">{{ $t('Grade Label') }}</span></td>
+                                            <td><span class="lead-title mb-2">{{ $t('Minimum Range') }}</span></td>
+                                            <td><span class="lead-title mb-2">{{ $t('Max Range') }}</span></td>
+                                        </tr>
+                                        <tr v-for="(item, itemIdex) in settings.grades" :key="itemIdex">
+                                            <td>
+                                                <el-input size="small" v-model="settings.grades[itemIdex].label"/>
+                                            </td>
+                                            <td>
+                                                <el-input size="small" type="number" v-model="settings.grades[itemIdex].min"/>
+                                            </td>
+                                            <td>
+                                                <el-input size="small" type="number" v-model="settings.grades[itemIdex].max"/>
+                                            </td>
+                                            <td>
+                                                <action-btn class="ml-2 mb-1">
+                                                    <action-btn-add @click="addItem(itemIdex)"></action-btn-add>
+                                                    <action-btn-remove v-if="settings.grades.length > 1" @click="removeItem(itemIdex)"></action-btn-remove>
+                                                </action-btn>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </el-form-item>
+                                <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
+                                    <template v-if="quizFields">
+                                        <div v-for="(input, key) in quizFields" :key="key">
+                                            <quiz-input :input="getInput(key)" :original_input="quizFields[key]"></quiz-input>
                                         </div>
-                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                                    </el-tooltip>
-                                </template>
-                                <table>
-                                    <tr>
-                                        <td><span class="lead-title mb-2">{{ $t('Grade Label') }}</span></td>
-                                        <td><span class="lead-title mb-2">{{ $t('Minimum Range') }}</span></td>
-                                        <td><span class="lead-title mb-2">{{ $t('Max Range') }}</span></td>
-                                    </tr>
-                                    <tr v-for="(item, itemIdex) in settings.grades" :key="itemIdex">
-                                        <td>
-                                            <el-input size="small" v-model="settings.grades[itemIdex].label"/>
-                                        </td>
-                                        <td>
-                                            <el-input size="small" type="number" v-model="settings.grades[itemIdex].min"/>
-                                        </td>
-                                        <td>
-                                            <el-input size="small" type="number" v-model="settings.grades[itemIdex].max"/>
-                                        </td>
-                                        <td>
-                                            <action-btn class="ml-2 mb-1">
-                                                <action-btn-add @click="addItem(itemIdex)"></action-btn-add>
-                                                <action-btn-remove v-if="settings.grades.length > 1" @click="removeItem(itemIdex)"></action-btn-remove>
-                                            </action-btn>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </el-form-item>
-                            <el-form-item :label="$t('Quiz Questions')" class="quiz-questions ff-form-item">
-                                <template v-if="quizFields">
-                                    <div v-for="(input, key) in quizFields" :key="key">
-                                        <quiz-input :input="getInput(key)" :original_input="quizFields[key]"></quiz-input>
-                                    </div>
-                                </template>
-                            </el-form-item>
-                        </div>
-                        <div v-if="settings && settings.enabled" class="mt-4">
-                            <el-button
-                                :loading="saving"
-                                type="primary"
-                                icon="el-icon-success"
-                                @click="saveSettings">
-                                {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
-                            </el-button>
-                        </div>
-                    </el-form>
+                                    </template>
+                                </el-form-item>
+                            </div>
+                            <div v-if="settings && settings.enabled" class="mt-4">
+                                <el-button
+                                    :loading="saving"
+                                    type="primary"
+                                    icon="el-icon-success"
+                                    @click="saveSettings">
+                                    {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                </el-button>
+                            </div>
+                        </el-form>
+                    </el-skeleton>
                 </div>
             </card-body>
         </card>

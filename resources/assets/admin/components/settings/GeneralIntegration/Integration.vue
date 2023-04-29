@@ -32,64 +32,66 @@
 
                 <!-- GetResponse Feeds Table: 1 -->
                 <div class="ff-table-container">
-                    <el-table v-if="!isEmpty(available_integrations)" v-loading="loading" :data="integrations">
-                        <template slot="empty">
-                            <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
-                                <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
-                            </div>
-                        </template>
-                        <el-table-column width="180" :label="$t('Status')">
-                            <template slot-scope="scope">
-                                <span class="mr-3" v-if="scope.row.enabled">{{$t('Enabled')}}</span>
-                                <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
-                                <el-switch 
-                                    active-color="#00b27f" 
-                                    @change="handleActive(scope.row)" 
-                                    v-model="scope.row.enabled">
-                                </el-switch>
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-table v-if="!isEmpty(available_integrations)" :data="integrations">
+                            <template slot="empty">
+                                <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
+                                    <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
+                                </div>
                             </template>
-                        </el-table-column>
+                            <el-table-column width="180" :label="$t('Status')">
+                                <template slot-scope="scope">
+                                    <span class="mr-3" v-if="scope.row.enabled">{{$t('Enabled')}}</span>
+                                    <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                    <el-switch 
+                                        active-color="#00b27f" 
+                                        @change="handleActive(scope.row)" 
+                                        v-model="scope.row.enabled">
+                                    </el-switch>
+                                </template>
+                            </el-table-column>
 
-                        <el-table-column width="180" :label="$t('Integration')">
-                            <template slot-scope="scope">
-                                <img v-if="scope.row.provider_logo" class="general_integration_logo" :src="scope.row.provider_logo" :alt="scope.row.provider" />
-                                <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
-                            </template>
-                        </el-table-column>
+                            <el-table-column width="180" :label="$t('Integration')">
+                                <template slot-scope="scope">
+                                    <img v-if="scope.row.provider_logo" class="general_integration_logo" :src="scope.row.provider_logo" :alt="scope.row.provider" />
+                                    <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
+                                </template>
+                            </el-table-column>
 
 
-                        <el-table-column :label="$t('Title')">
-                            <template slot-scope="scope">
-                                {{scope.row.name}}
-                            </template>
-                        </el-table-column>
+                            <el-table-column :label="$t('Title')">
+                                <template slot-scope="scope">
+                                    {{scope.row.name}}
+                                </template>
+                            </el-table-column>
 
-                        <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
-                            <template slot-scope="scope">
-                                <btn-group size="sm">
-                                    <btn-group-item>
-                                        <el-button
-                                            class="el-button--soft el-button--icon"
-                                            @click="edit(scope.row)"
-                                            type="success"
-                                            icon="ff-icon-setting"
-                                            size="small">
-                                        </el-button>
-                                    </btn-group-item>
-                                    <btn-group-item>
-                                        <remove @on-confirm="remove(scope.row.id, scope)">
+                            <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <btn-group size="sm">
+                                        <btn-group-item>
                                             <el-button
                                                 class="el-button--soft el-button--icon"
-                                                size="small"
-                                                type="danger"
-                                                icon="ff-icon-trash"
-                                            />
-                                        </remove>
-                                    </btn-group-item>
-                                </btn-group>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                                                @click="edit(scope.row)"
+                                                type="success"
+                                                icon="ff-icon-setting"
+                                                size="small">
+                                            </el-button>
+                                        </btn-group-item>
+                                        <btn-group-item>
+                                            <remove @on-confirm="remove(scope.row.id, scope)">
+                                                <el-button
+                                                    class="el-button--soft el-button--icon"
+                                                    size="small"
+                                                    type="danger"
+                                                    icon="ff-icon-trash"
+                                                />
+                                            </remove>
+                                        </btn-group-item>
+                                    </btn-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
                 </div><!-- .ff-table-container -->
 
                 <p v-if="has_pro && !integrations.length" class="text-center">

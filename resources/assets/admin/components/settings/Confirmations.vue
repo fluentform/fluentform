@@ -27,74 +27,76 @@
                     <template v-if="has_pro">
                         <!-- Confirmation Items Table -->
                         <div class="ff-table-container" v-if="!selected">
-                            <el-table v-loading="confLoading" :data="confirmations">
-                                <el-table-column width="180" :label="$t('Status')">
-                                    <template slot-scope="scope">
-                                        <span class="mr-3" v-if="scope.row.active">{{$t('Enabled')}}</span>
-                                        <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
-                                        <el-switch
-                                            :width="40"
-                                            @change="handleActive(scope.$index)" 
-                                            v-model="scope.row.active"
-                                        ></el-switch>
-                                    </template>
-                                </el-table-column>
-
-                                <el-table-column prop="name" label="Name" width="180" class-name="content-ellipsis"></el-table-column>
-
-                                <el-table-column :label="$t('Content')" class-name="content-ellipsis">
-                                    <template slot-scope="scope">
-                                        <template v-if="scope.row.redirectTo === 'samePage'">
-                                            <span v-html="scope.row.messageToShow"></span>
+                            <el-skeleton :loading="confLoading" animated :rows="6">
+                                <el-table :data="confirmations">
+                                    <el-table-column width="180" :label="$t('Status')">
+                                        <template slot-scope="scope">
+                                            <span class="mr-3" v-if="scope.row.active">{{$t('Enabled')}}</span>
+                                            <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
+                                            <el-switch
+                                                :width="40"
+                                                @change="handleActive(scope.$index)" 
+                                                v-model="scope.row.active"
+                                            ></el-switch>
                                         </template>
+                                    </el-table-column>
 
-                                        <template v-else-if="scope.row.redirectTo === 'customUrl'">
-                                            <span v-html="scope.row.customUrl"></span>
+                                    <el-table-column prop="name" label="Name" width="180" class-name="content-ellipsis"></el-table-column>
+
+                                    <el-table-column :label="$t('Content')" class-name="content-ellipsis">
+                                        <template slot-scope="scope">
+                                            <template v-if="scope.row.redirectTo === 'samePage'">
+                                                <span v-html="scope.row.messageToShow"></span>
+                                            </template>
+
+                                            <template v-else-if="scope.row.redirectTo === 'customUrl'">
+                                                <span v-html="scope.row.customUrl"></span>
+                                            </template>
+
+                                            <template v-else>
+                                                <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
+                                            </template>
                                         </template>
+                                    </el-table-column>
 
-                                        <template v-else>
-                                            <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
-                                        </template>
-                                    </template>
-                                </el-table-column>
-
-                                <el-table-column width="120" :label="$t('Actions')" class-name="action-buttons">
-                                    <template slot-scope="scope">
-                                        <ul class="ff_btn_group sm">
-                                            <li>
-                                                <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
+                                    <el-table-column width="120" :label="$t('Actions')" class-name="action-buttons">
+                                        <template slot-scope="scope">
+                                            <ul class="ff_btn_group sm">
+                                                <li>
+                                                    <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
+                                                        <el-button 
+                                                            class="el-button--icon"
+                                                            @click="clone(scope.$index)" 
+                                                            type="primary"
+                                                            icon="el-icon-plus" 
+                                                            size="mini"
+                                                        ></el-button>
+                                                    </el-tooltip>
+                                                </li>
+                                                <li>
                                                     <el-button 
                                                         class="el-button--icon"
-                                                        @click="clone(scope.$index)" 
-                                                        type="primary"
-                                                        icon="el-icon-plus" 
+                                                        @click="edit(scope.$index)" 
+                                                        type="success"
+                                                        icon="el-icon-setting" 
                                                         size="mini"
                                                     ></el-button>
-                                                </el-tooltip>
-                                            </li>
-                                            <li>
-                                                <el-button 
-                                                    class="el-button--icon"
-                                                    @click="edit(scope.$index)" 
-                                                    type="success"
-                                                    icon="el-icon-setting" 
-                                                    size="mini"
-                                                ></el-button>
-                                            </li>
-                                            <li>
-                                                <remove @on-confirm="remove(scope.$index, scope.row.id)">
-                                                    <el-button
-                                                        class="el-button--icon"
-                                                        size="mini"
-                                                        type="danger"
-                                                        icon="el-icon-delete"
-                                                    />
-                                                </remove>
-                                            </li>
-                                        </ul>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                                                </li>
+                                                <li>
+                                                    <remove @on-confirm="remove(scope.$index, scope.row.id)">
+                                                        <el-button
+                                                            class="el-button--icon"
+                                                            size="mini"
+                                                            type="danger"
+                                                            icon="el-icon-delete"
+                                                        />
+                                                    </remove>
+                                                </li>
+                                            </ul>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-skeleton>
                         </div><!-- .ff-table-container -->
                         
                         <template v-if="selected">
