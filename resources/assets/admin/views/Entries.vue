@@ -167,23 +167,18 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
                             <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span v-if="advancedFilter">
-                                    <span>{{$t('Close')}}</span>
-                                    <i class="ff-icon ff-icon-close"></i>
-                                </span>
-                                <span v-else>
-                                    <span>{{ $t('Filter') }}</span>
-                                    <i class="ff-icon ff-icon-filter"></i>
-                                </span>
+                                <span>{{ $t('Filter') }}</span>
+                                <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                                <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
                             <div v-if="advancedFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                        <el-radio label="all">All</el-radio>
-                                        <el-radio label="today">Today</el-radio>
-                                        <el-radio label="yesterday">Yesterday</el-radio>
-                                        <el-radio label="last-week">Last Week</el-radio>
-                                        <el-radio label="last-month">Last Month</el-radio>
+                                        <el-radio label="all">{{$t('All')}}</el-radio>
+                                        <el-radio label="today">{{$t('Today')}}</el-radio>
+                                        <el-radio label="yesterday">{{$t('Yesterday')}}</el-radio>
+                                        <el-radio label="last-week">{{$t('Last Week')}}</el-radio>
+                                        <el-radio label="last-month">{{$t('Last Month')}}</el-radio>
                                     </el-radio-group>
                                 </div>
                                 <div class="ff_advanced_search_date_range">
@@ -229,181 +224,177 @@
             type="error">
         </el-alert>
 
-        <div
-                v-loading="loading"
-                :element-loading-text="$t('Loading Entries...')"
-                style="min-height: 60px;"
-                class="entries_table"
-        >
-
-            <div class="ff-table-container">
-                <el-table
+        <div style="min-height: 300px;" class="entries_table">
+            <div class="ff_table">
+                <el-skeleton :loading="loading" animated :rows="6">
+                    <el-table
                         :data="entries"
                         :stripe="true"
                         :class="{'compact': isCompact}"
                         @sort-change="handleTableSort"
                         @selection-change="handleSelectionChange"
-                >
-
-                    <el-table-column type="selection" width="30"></el-table-column>
-                    <el-table-column label="#" sortable="custom" prop="id" width="100px">
-                        <template slot-scope="scope">
-                            <div class="has_hover_item">
-                                <router-link :to="{
-                                        name: 'form-entry',
-                                        params: {
-                                            form_id: scope.row.form_id,
-                                            entry_id: scope.row.id
-                                        },
-                                        query: {
-                                            sort_by: sort_by,
-                                            current_page: paginate.current_page,
-                                            pos: scope.$index,
-                                            type: entry_type
-                                        }
-                                    }">
-                                    {{ scope.row.serial_number }}
-                                </router-link>
-                                <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
-                                    <span v-if="scope.row.is_favourite != '0'"
-                                          @click="changeFavorite(scope.row.id, scope.$index, 0)"
-                                          :title="$t('Remove from Favorites')"
-                                          class="icon-favorite el-icon-star-on action_button"
-                                    />
-                                    <span v-else
-                                          @click="changeFavorite(scope.row.id, scope.$index, 1)"
-                                          :title="$t('Mark as Favorites')"
-                                          class="icon-favorite el-icon-star-off action_button"
-                                    />
-
-                                    <span v-if="scope.row.status == 'read'"
-                                          @click="changeStatus(scope.row.id, scope.$index, 'unread')"
-                                          :title="$t('Mark as Unread')"
-                                          class="icon-status el-icon-circle-check action_button"
-                                    />
-                                    <span v-else
-                                          @click="changeStatus(scope.row.id, scope.$index, 'read')"
-                                          :title="$t('Mark as Read')"
-                                          class="icon-status el-icon-finished action_button"
-                                    />
-                                </div>
-
-                                <div class="inline_actions inline_item" v-else>
-                                        <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                              class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
-                                </div>
-                            </div>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column
-                            v-for="(column, index) in formattedColumn"
-                            :label="column.label"
-                            :show-overflow-tooltip="isCompact"
-                            min-width="200"
-                            :key="index">
-                        <template slot-scope="scope">
-                            <span v-html="scope.row.user_inputs[column.field]"></span>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column
-                            label="Entry Status"
-                            width="120px">
-                        <template slot-scope="scope">
-                            {{ getStatusName(scope.row.status) }}
-                        </template>
-                    </el-table-column>
-
-                    <template v-if="has_payment">
-                        <el-table-column
-                                :label="$t('Amount')"
-                                min-width="120px">
-                            <template slot-scope="scope">
-                                <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                :label="$t('Payment Status')"
-                                min-width="120px">
-                            <template slot-scope="scope">
-                                <span class="ff_badge"
-                                      :class="'ff_badge_'+scope.row.payment_status"
-                                      v-if="scope.row.payment_status"
-                                >
-                                    {{ scope.row.payment_status }}
-                                </span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                :label="$t('Payment Method')"
-                                min-width="120px">
-                            <template slot-scope="scope">
-                                <span class="ff_badge" v-if="scope.row.payment_method"
-                                      :class="`ff_badge_${
-                                    scope.row.payment_method == 'stripe' ? 'stripe' :
-                                    scope.row.payment_method == 'paypal' ? 'paypal' :
-                                    scope.row.payment_method == 'mollie' ? 'mollie' :
-                                    scope.row.payment_method == 'razorpay' ? 'razorpay' :
-                                    scope.row.payment_method == 'paystack' ? 'paystack' : 'default' }`">
-                                    {{ getPaymentMethodName(scope.row.payment_method) }}
-                                </span>
-                            </template>
-                        </el-table-column>
-                    </template>
-
-                    <el-table-column
-                            :label="$t('Submitted at')"
-                            width="120px">
-                        <template slot-scope="scope">
-                            {{ dateFormat(scope.row.created_at) }}
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column
-                            fixed="right"
-                            :label="$t('Actions')"
-                            :width="115"
-                            align="center"
                     >
-                        <template slot-scope="scope">
-                            <btn-group size="sm">
-                                <btn-group-item>
+
+                        <el-table-column type="selection" width="30"></el-table-column>
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px">
+                            <template slot-scope="scope">
+                                <div class="has_hover_item">
                                     <router-link :to="{
-                                        name: 'form-entry',
-                                        params: {
-                                            form_id: scope.row.form_id,
-                                            entry_id: scope.row.id
-                                        },
-                                        query: {
-                                            sort_by: sort_by,
-                                            current_page: paginate.current_page,
-                                            pos: scope.$index,
-                                            type: entry_type
-                                        }
-                                    }">
-                                        <span class="el-button el-button--primary el-button--mini el-button--icon">
-                                            <i class="ff-icon ff-icon-eye-filled"></i>
-                                        </span>
+                                            name: 'form-entry',
+                                            params: {
+                                                form_id: scope.row.form_id,
+                                                entry_id: scope.row.id
+                                            },
+                                            query: {
+                                                sort_by: sort_by,
+                                                current_page: paginate.current_page,
+                                                pos: scope.$index,
+                                                type: entry_type
+                                            }
+                                        }">
+                                        {{ scope.row.serial_number }}
                                     </router-link>
-                                </btn-group-item>
-                                <btn-group-item>
-                                    <confirm
-                                        v-if="hasPermission('fluentform_manage_entries')"
-                                        @on-confirm="removeEntry(scope.row.id, scope.$index)">
-                                        <el-button
-                                            class="el-button--icon"
-                                            size="mini"
-                                            type="danger"
-                                            icon="ff-icon ff-icon-trash"
+                                    <div v-if="scope.row.status != 'trashed'" class="show_on_hover inline_actions">
+                                        <span v-if="scope.row.is_favourite != '0'"
+                                            @click="changeFavorite(scope.row.id, scope.$index, 0)"
+                                            :title="$t('Remove from Favorites')"
+                                            class="icon-favorite el-icon-star-on action_button"
                                         />
-                                    </confirm>
-                                </btn-group-item>
-                            </btn-group>
+                                        <span v-else
+                                            @click="changeFavorite(scope.row.id, scope.$index, 1)"
+                                            :title="$t('Mark as Favorites')"
+                                            class="icon-favorite el-icon-star-off action_button"
+                                        />
+
+                                        <span v-if="scope.row.status == 'read'"
+                                            @click="changeStatus(scope.row.id, scope.$index, 'unread')"
+                                            :title="$t('Mark as Unread')"
+                                            class="icon-status el-icon-circle-check action_button"
+                                        />
+                                        <span v-else
+                                            @click="changeStatus(scope.row.id, scope.$index, 'read')"
+                                            :title="$t('Mark as Read')"
+                                            class="icon-status el-icon-finished action_button"
+                                        />
+                                    </div>
+
+                                    <div class="inline_actions inline_item" v-else>
+                                            <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
+                                                class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                v-for="(column, index) in formattedColumn"
+                                :label="column.label"
+                                :show-overflow-tooltip="isCompact"
+                                min-width="200"
+                                :key="index">
+                            <template slot-scope="scope">
+                                <span v-html="scope.row.user_inputs[column.field]"></span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                label="Entry Status"
+                                width="120px">
+                            <template slot-scope="scope">
+                                {{ getStatusName(scope.row.status) }}
+                            </template>
+                        </el-table-column>
+
+                        <template v-if="has_payment">
+                            <el-table-column
+                                    :label="$t('Amount')"
+                                    min-width="120px">
+                                <template slot-scope="scope">
+                                    <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    :label="$t('Payment Status')"
+                                    min-width="120px">
+                                <template slot-scope="scope">
+                                    <span class="ff_badge"
+                                        :class="'ff_badge_'+scope.row.payment_status"
+                                        v-if="scope.row.payment_status"
+                                    >
+                                        {{ scope.row.payment_status }}
+                                    </span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    :label="$t('Payment Method')"
+                                    min-width="120px">
+                                <template slot-scope="scope">
+                                    <span class="ff_badge" v-if="scope.row.payment_method"
+                                        :class="`ff_badge_${
+                                        scope.row.payment_method == 'stripe' ? 'stripe' :
+                                        scope.row.payment_method == 'paypal' ? 'paypal' :
+                                        scope.row.payment_method == 'mollie' ? 'mollie' :
+                                        scope.row.payment_method == 'razorpay' ? 'razorpay' :
+                                        scope.row.payment_method == 'paystack' ? 'paystack' : 'default' }`">
+                                        {{ getPaymentMethodName(scope.row.payment_method) }}
+                                    </span>
+                                </template>
+                            </el-table-column>
                         </template>
-                    </el-table-column>
-                </el-table>
-            </div><!-- .ff-table-container -->
+
+                        <el-table-column
+                                :label="$t('Submitted at')"
+                                width="120px">
+                            <template slot-scope="scope">
+                                {{ dateFormat(scope.row.created_at) }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                fixed="right"
+                                :label="$t('Actions')"
+                                :width="115"
+                                align="center"
+                        >
+                            <template slot-scope="scope">
+                                <btn-group size="sm">
+                                    <btn-group-item>
+                                        <router-link :to="{
+                                            name: 'form-entry',
+                                            params: {
+                                                form_id: scope.row.form_id,
+                                                entry_id: scope.row.id
+                                            },
+                                            query: {
+                                                sort_by: sort_by,
+                                                current_page: paginate.current_page,
+                                                pos: scope.$index,
+                                                type: entry_type
+                                            }
+                                        }">
+                                            <span class="el-button el-button--primary el-button--mini el-button--icon">
+                                                <i class="ff-icon ff-icon-eye-filled"></i>
+                                            </span>
+                                        </router-link>
+                                    </btn-group-item>
+                                    <btn-group-item>
+                                        <confirm
+                                            v-if="hasPermission('fluentform_manage_entries')"
+                                            @on-confirm="removeEntry(scope.row.id, scope.$index)">
+                                            <el-button
+                                                class="el-button--icon"
+                                                size="mini"
+                                                type="danger"
+                                                icon="ff-icon ff-icon-trash"
+                                            />
+                                        </confirm>
+                                    </btn-group-item>
+                                </btn-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-skeleton>
+            </div><!-- .ff_table -->
 
             <el-row class="mt-4 items-center">
                 <el-col :span="12">

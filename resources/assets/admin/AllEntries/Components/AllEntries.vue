@@ -240,7 +240,7 @@ export default {
             chart_status: 'yes',
             entry_status: '',
             search: '',
-            radioOption: ''
+            radioOption: 'all'
         }
     },
     methods: {
@@ -375,7 +375,6 @@ export default {
         if (status) {
             this.chart_status = status;
         }
-        this.radioOption = 'all';
         this.fetchEntries();
     }
 };
