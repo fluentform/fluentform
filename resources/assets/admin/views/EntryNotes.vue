@@ -13,44 +13,46 @@
             </card-head-group>
         </card-head>
         <card-body>
-            <div v-loading="loading" class="entry_info_body">
-                <div class="wpf_entry_details">
-                    <div v-if="add_note_box" class="wpf_add_note_box">
-                        <el-input
-                            type="textarea"
-                            :autosize="{ minRows: 3}"
-                            :placeholder="$t('Please Provide Note Content')"
-                            v-model="new_note.content">
-                        </el-input>
-                        <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="info">
-                            {{ $t('Submit Note') }}
-                        </el-button>
-                    </div>
-                    <template v-if="notes && notes.length">
-                        <div 
-                            v-for="activity in showingNotes" 
-                            :key="activity.id"
-                            class="wpf_each_entry"
-                        >
-                            <div class="wpf_entry_label">
-                                {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
-                            </div>
-                            <div class="wpf_entry_value" v-html="activity.value"></div>
+            <div class="entry_info_body">
+                <el-skeleton :loading="loading" animated :rows="6">
+                    <div class="wpf_entry_details">
+                        <div v-if="add_note_box" class="wpf_add_note_box">
+                            <el-input
+                                type="textarea"
+                                :autosize="{ minRows: 3}"
+                                :placeholder="$t('Please Provide Note Content')"
+                                v-model="new_note.content">
+                            </el-input>
+                            <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="info">
+                                {{ $t('Submit Note') }}
+                            </el-button>
                         </div>
+                        <template v-if="notes && notes.length">
+                            <div 
+                                v-for="activity in showingNotes" 
+                                :key="activity.id"
+                                class="wpf_each_entry"
+                            >
+                                <div class="wpf_entry_label">
+                                    {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
+                                </div>
+                                <div class="wpf_entry_value" v-html="activity.value"></div>
+                            </div>
 
-                        <el-button 
-                            class="mt-3 el-button--text-light"
-                            v-if="notes.length > 5" 
-                            type="text" 
-                            @click="initial_limit =  !initial_limit"
-                        >
-                            <span v-if="initial_limit">{{ $t('Show More') }} <i class="el-icon-arrow-down"></i></span>
-                            <span v-else>{{ $t('Show Less')}} <i class="el-icon-arrow-up"></i></span>
-                        </el-button>
+                            <el-button 
+                                class="mt-3 el-button--text-light"
+                                v-if="notes.length > 5" 
+                                type="text" 
+                                @click="initial_limit =  !initial_limit"
+                            >
+                                <span v-if="initial_limit">{{ $t('Show More') }} <i class="el-icon-arrow-down"></i></span>
+                                <span v-else>{{ $t('Show Less')}} <i class="el-icon-arrow-up"></i></span>
+                            </el-button>
 
-                    </template>
-                    <p v-else class="fs-17"> {{$t('Sorry, No Notes found!')}}</p>
-                </div>
+                        </template>
+                        <p v-else class="fs-17"> {{$t('Sorry, No Notes found!')}}</p>
+                    </div>
+                </el-skeleton>
             </div>
         </card-body>
     </card>

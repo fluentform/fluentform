@@ -15,32 +15,34 @@
                 </card-head-group>
             </card-head>
             <card-body>
-                <div v-loading="loading" class="entry_info_body">
-                    <div class="wpf_entry_details">
-                        <template v-if="logs && logs.length">
-                            <div v-for="(log, logKey) in logs" class="entry_submission_log wpf_each_entry" :key="logKey">
-                                <div class="wpf_entry_label">
-                                    <span class="ff_tag" :class="'log_status_' + log.status">{{log.status}}</span>
-                                     {{ $t('in') }} 
-                                     <span class="entry_submission_log_component">{{log.title}}</span> 
-                                     {{ $t('at') }}
-                                    {{log.created_at}}
-                                    <span class="wpf_entry_remove">
-                                        <remove :plain="true" @on-confirm="removeLog(log.id)">
-                                            <el-button
-                                                class="el-button--icon el-button--soft"
-                                                size="mini"
-                                                type="danger"
-                                                icon="el-icon-delete"
-                                            />
-                                        </remove>
-                                    </span>
+                <div class="entry_info_body">
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <div class="wpf_entry_details">
+                            <template v-if="logs && logs.length">
+                                <div v-for="(log, logKey) in logs" class="entry_submission_log wpf_each_entry" :key="logKey">
+                                    <div class="wpf_entry_label">
+                                        <span class="ff_tag" :class="'log_status_' + log.status">{{log.status}}</span>
+                                        {{ $t('in') }} 
+                                        <span class="entry_submission_log_component">{{log.title}}</span> 
+                                        {{ $t('at') }}
+                                        {{log.created_at}}
+                                        <span class="wpf_entry_remove">
+                                            <remove :plain="true" @on-confirm="removeLog(log.id)">
+                                                <el-button
+                                                    class="el-button--icon el-button--soft"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </span>
+                                    </div>
+                                    <div class="entry_submission_log_des" v-html="log.description"></div>
                                 </div>
-                                <div class="entry_submission_log_des" v-html="log.description"></div>
-                            </div>
-                        </template>
-                        <p class="fs-17" v-else>{{$t('Sorry, No Logs found!')}}</p>
-                    </div>
+                            </template>
+                            <p class="fs-17" v-else>{{$t('Sorry, No Logs found!')}}</p>
+                        </div>
+                    </el-skeleton>
                 </div>
             </card-body>
         </card>
