@@ -593,7 +593,6 @@ export default {
     },
     computed: {
 	    hasEnabledDateFilter() {
-            return  false;
 		    return !!(this.radioOption && this.radioOption != 'all' ||
 			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
 		    );
