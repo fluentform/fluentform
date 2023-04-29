@@ -13,43 +13,45 @@
         </el-row>
         <el-row :gutter="24">
             <el-col :sm="24" :md="17">
-                <div class="all_report_items" v-loading="loading">
-                    <card>
-                        <card-head class="report_header">
-                            <span class="mr-3 title">{{ $t('Submission Stats') }}</span>
-                            <el-date-picker
-                                v-model="date_range"
-                                size="medium"
-                                value-format="yyyy-MM-dd"
-                                type="daterange"
-                                :picker-options="pickerOptions"
-                                range-separator="To"
-                                :start-placeholder="$t('Start date')"
-                                :end-placeholder="$t('End date')">
-                            </el-date-picker>
-                        </card-head>
-                        <card-body>
-                            <div v-if="loading">
-                                <h6 class="mb-2">{{ $t('Fetching Data... Please wait!') }}</h6>
-                            </div>
-                            <template v-if="!loading">
-                                <entries-chart :date_range="date_range" :form_id="form_id"></entries-chart>
-                            </template>
-                        </card-body>
-                    </card>
-                    <card v-if="Object.keys(report_items).length">
-                        <card-head class="report_header">
-                            <span class="mr-3 title">{{ $t('Advance Field Report') }}</span>
-                        </card-head>
-                        <report-card
-                            v-for="(report,report_key) in report_items"
-                            :key="report_key"
-                            :form_id="form_id"
-                            :report_key="report_key"
-                            :report_indexes="reportIndexes"
-                            :report="report">
-                        </report-card>
-                    </card>
+                <div class="all_report_items">
+                    <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card': ''">                    
+                        <card>
+                            <card-head class="report_header">
+                                <span class="mr-3 title">{{ $t('Submission Stats') }}</span>
+                                <el-date-picker
+                                    v-model="date_range"
+                                    size="medium"
+                                    value-format="yyyy-MM-dd"
+                                    type="daterange"
+                                    :picker-options="pickerOptions"
+                                    range-separator="To"
+                                    :start-placeholder="$t('Start date')"
+                                    :end-placeholder="$t('End date')">
+                                </el-date-picker>
+                            </card-head>
+                            <card-body>
+                                <div v-if="loading">
+                                    <h6 class="mb-2">{{ $t('Fetching Data... Please wait!') }}</h6>
+                                </div>
+                                <template v-if="!loading">
+                                    <entries-chart :date_range="date_range" :form_id="form_id"></entries-chart>
+                                </template>
+                            </card-body>
+                        </card>
+                        <card v-if="Object.keys(report_items).length">
+                            <card-head class="report_header">
+                                <span class="mr-3 title">{{ $t('Advance Field Report') }}</span>
+                            </card-head>
+                            <report-card
+                                v-for="(report,report_key) in report_items"
+                                :key="report_key"
+                                :form_id="form_id"
+                                :report_key="report_key"
+                                :report_indexes="reportIndexes"
+                                :report="report">
+                            </report-card>
+                        </card>
+                    </el-skeleton>
                 </div>
             </el-col>
             <el-col :sm="8" :md="7">
