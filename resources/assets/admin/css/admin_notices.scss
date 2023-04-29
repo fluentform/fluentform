@@ -1,6 +1,14 @@
 .fluentform-admin-notice {
-
+  h3{
+    font-size: 16px;
+    margin: 16px 0;
+  }
+  p{
+    margin: 8px 0;
+    padding: 2px;
+  }
   display: block;
+  margin: 10px 0;
   .ff_logo_holder {
     max-width: 90px;
     display: inline-block;

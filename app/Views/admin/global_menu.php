@@ -98,3 +98,6 @@ $page = sanitize_text_field($_GET['page']);
            ");
     ?>
 </div>
+<?php
+do_action('fluentform/after_global_menu_render',$page);
+?>
