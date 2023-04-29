@@ -4,74 +4,76 @@
             <h5 class="title">{{ $t('Slack Integration') }}</h5>
         </card-head>
         <card-body>
-            <el-form label-position="top" v-loading="loading" :element-loading-text="$t('Loading Settings...')">
-                <el-form-item class="ff-form-item ff-form-item-flex">
-                    <span slot="label" style="width: 120px;">
-                        {{ $t('Integrate Slack') }}
-                    </span>
-                    <el-switch class="el-switch-lg" v-model="slack.enabled"></el-switch>
-                </el-form-item>
-
-                <template v-if="slack.enabled">
-                    <el-form-item class="ff-form-item" :label="$t('Slack Title')">
-                        <el-input placeholder="optional" v-model="slack.textTitle"></el-input>
+            <el-skeleton :loading="loading" animated :rows="6">
+                <el-form label-position="top">
+                    <el-form-item class="ff-form-item ff-form-item-flex">
+                        <span slot="label" style="width: 120px;">
+                            {{ $t('Integrate Slack') }}
+                        </span>
+                        <el-switch class="el-switch-lg" v-model="slack.enabled"></el-switch>
                     </el-form-item>
 
-                    <el-form-item class="conditional-items ff-form-item">
-                        <template slot="label">
-                            {{ $t('Webhook URL') }}
+                    <template v-if="slack.enabled">
+                        <el-form-item class="ff-form-item" :label="$t('Slack Title')">
+                            <el-input placeholder="optional" v-model="slack.textTitle"></el-input>
+                        </el-form-item>
 
-                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
-                                    <p>
-                                        {{$t('The')}}
-                                        <a href="https://api.slack.com/incoming-webhooks" target="_blank">
-                                            {{ $t('slack webhook URL') }}
-                                        </a> 
-                                        {{ $t(' where Fluent Forms will send JSON payload.') }}
-                                    </p>
-                                </div>
+                        <el-form-item class="conditional-items ff-form-item">
+                            <template slot="label">
+                                {{ $t('Webhook URL') }}
 
-                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
-                            </el-tooltip>
-                        </template>
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{$t('The')}}
+                                            <a href="https://api.slack.com/incoming-webhooks" target="_blank">
+                                                {{ $t('slack webhook URL') }}
+                                            </a> 
+                                            {{ $t(' where Fluent Forms will send JSON payload.') }}
+                                        </p>
+                                    </div>
 
-                        <el-input placeholder="https://hooks.slack.com/services/..." v-model="slack.webhook">
-                        </el-input>
-                    </el-form-item>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
 
-                    <el-form-item v-if="formattedFields"  class="conditional-items ff-form-item">
-                        <template slot="label">
-                            {{$t('Select Fields')}}
-                        </template>
-                        <el-checkbox class="mb-2" :disabled="!hasPro" :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">{{ $t('Check all') }}</el-checkbox>
+                            <el-input placeholder="https://hooks.slack.com/services/..." v-model="slack.webhook">
+                            </el-input>
+                        </el-form-item>
 
-                        <el-checkbox-group v-model="slack.fields">
-                            <el-checkbox
-                                v-for="(value, i) in formattedFields"
-                                :label="value"
-                                :key="value + i"
-                                @change="handleCheckedChange"
-                                :disabled="!hasPro"
-                            ></el-checkbox>
-                        </el-checkbox-group>
-                        <div v-show="!hasPro" class="mt-3 text-danger">
-                            {{ $t('Select Fields is a pro feature. Please') }}
-                            <a href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" target="_blank">{{$t('Upgrade to Pro')}}.</a>
-                        </div>
-                    </el-form-item>
+                        <el-form-item v-if="formattedFields"  class="conditional-items ff-form-item">
+                            <template slot="label">
+                                {{$t('Select Fields')}}
+                            </template>
+                            <el-checkbox class="mb-2" :disabled="!hasPro" :indeterminate="isIndeterminate" v-model="slack.checkAll"  @change="handleCheckAllChange">{{ $t('Check all') }}</el-checkbox>
 
-                    <el-form-item class="ff-form-item" :label="$t('Slack Footer message')">
-                        <el-input placeholder="Default is 'fluentform'" v-model="slack.footerText"></el-input>
-                    </el-form-item>
-                </template>
+                            <el-checkbox-group v-model="slack.fields">
+                                <el-checkbox
+                                    v-for="(value, i) in formattedFields"
+                                    :label="value"
+                                    :key="value + i"
+                                    @change="handleCheckedChange"
+                                    :disabled="!hasPro"
+                                ></el-checkbox>
+                            </el-checkbox-group>
+                            <div v-show="!hasPro" class="mt-3 text-danger">
+                                {{ $t('Select Fields is a pro feature. Please') }}
+                                <a href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" target="_blank">{{$t('Upgrade to Pro')}}.</a>
+                            </div>
+                        </el-form-item>
 
-                <div v-if="slack.enabled">
-                    <el-button type="primary" icon="el-icon-success" @click="save">
-                        {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
-                    </el-button>
-                </div>
-            </el-form>
+                        <el-form-item class="ff-form-item" :label="$t('Slack Footer message')">
+                            <el-input placeholder="Default is 'fluentform'" v-model="slack.footerText"></el-input>
+                        </el-form-item>
+                    </template>
+
+                    <div v-if="slack.enabled">
+                        <el-button type="primary" icon="el-icon-success" @click="save">
+                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                        </el-button>
+                    </div>
+                </el-form>
+            </el-skeleton>
         </card-body>
     </card>
 </template>

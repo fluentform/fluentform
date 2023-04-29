@@ -45,6 +45,8 @@ import {
     ColorPicker,
     Tabs,
     TabPane,
+    Skeleton,
+    SkeletonItem,
 } from 'element-ui';
 
 global.Errors = Errors;
@@ -86,6 +88,8 @@ Vue.use(TableColumn);
 Vue.use(InputNumber);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive);
 

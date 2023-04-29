@@ -32,53 +32,49 @@
             <card-body>
                 <!-- Notification Table: 1 -->
                 <div class="ff-table-wrap" v-if="!selected">
-                    <el-table
-                        class="ff_table_s2"
-                        v-loading="loading"
-                        :element-loading-text="$t('Fetching Settings...')"
-                        :data="notifications"
-                    >
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-table class="ff_table_s2" :data="notifications">
+                            <el-table-column width="100">
+                                <template slot-scope="scope">
+                                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
+                                    active-value="true"
+                                    inactive-value="false"
+                                    v-model="scope.row.value.enabled"
+                                    ></el-switch>
+                                </template>
+                            </el-table-column>
 
-                        <el-table-column width="100">
-                            <template slot-scope="scope">
-                                <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                                active-value="true"
-                                inactive-value="false"
-                                v-model="scope.row.value.enabled"
-                                ></el-switch>
-                            </template>
-                        </el-table-column>
+                            <el-table-column width="300" prop="value.name" :label="$t('Name')"></el-table-column>
 
-                        <el-table-column width="300" prop="value.name" :label="$t('Name')"></el-table-column>
+                            <el-table-column prop="value.url" :label="$t('Webhook Url')"></el-table-column>
 
-                        <el-table-column prop="value.url" :label="$t('Webhook Url')"></el-table-column>
-
-                        <el-table-column width="160" label="Actions" class-name="action-buttons">
-                            <template slot-scope="scope">
-                                <btn-group>
-                                    <btn-group-item>
-                                        <el-button
-                                            class="el-button--icon"
-                                            @click="edit(scope.$index)" 
-                                            type="primary"
-                                            icon="el-icon-setting" 
-                                            size="mini"
-                                        ></el-button>
-                                    </btn-group-item>
-                                    <btn-group-item>
-                                        <remove @on-confirm="remove(scope.$index, scope.row.id)" :plain="false">
+                            <el-table-column width="160" label="Actions" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <btn-group>
+                                        <btn-group-item>
                                             <el-button
                                                 class="el-button--icon"
+                                                @click="edit(scope.$index)" 
+                                                type="primary"
+                                                icon="el-icon-setting" 
                                                 size="mini"
-                                                type="danger"
-                                                icon="el-icon-delete"
-                                            />
-                                        </remove>
-                                    </btn-group-item>
-                                </btn-group>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                                            ></el-button>
+                                        </btn-group-item>
+                                        <btn-group-item>
+                                            <remove @on-confirm="remove(scope.$index, scope.row.id)" :plain="false">
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </btn-group-item>
+                                    </btn-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
                 </div>
                 <!-- Notification Editor -->
                 <el-form v-else label-position="top">

@@ -38,64 +38,62 @@
                     <template v-if="!selected">
                         <!-- Notification Table: 1 -->
                         <div class="ff-table-container">
-                            <el-table 
-                                v-loading="loading"
-                                :element-loading-text="$t('Fetching Notifications...')"
-                                :data="notifications"
-                            >
-                                <el-table-column width="180" :label="$t('Status')">
-                                    <template slot-scope="scope">
-                                        <span class="mr-3" v-if="scope.row.value.enabled">{{$t('Enabled')}}</span>
-                                        <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
-                                        <el-switch
-                                            :width="40"
-                                            @change="handleActive(scope.$index)" 
-                                            v-model="scope.row.value.enabled"
-                                        ></el-switch>
-                                    </template>
-                                </el-table-column>
+                            <el-skeleton :loading="loading" animated :rows="6">
+                                <el-table :data="notifications">
+                                    <el-table-column width="180" :label="$t('Status')">
+                                        <template slot-scope="scope">
+                                            <span class="mr-3" v-if="scope.row.value.enabled">{{$t('Enabled')}}</span>
+                                            <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
+                                            <el-switch
+                                                :width="40"
+                                                @change="handleActive(scope.$index)" 
+                                                v-model="scope.row.value.enabled"
+                                            ></el-switch>
+                                        </template>
+                                    </el-table-column>
 
-                                <el-table-column prop="value.name" :label="$t('Name')"></el-table-column>
+                                    <el-table-column prop="value.name" :label="$t('Name')"></el-table-column>
 
-                                <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
+                                    <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
 
-                                <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
-                                    <template slot-scope="scope">
-                                        <btn-group size="sm">
-                                            <btn-group-item>
-                                                <el-tooltip :content="$t('Duplicate notification settings')" placement="top">
+                                    <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
+                                        <template slot-scope="scope">
+                                            <btn-group size="sm">
+                                                <btn-group-item>
+                                                    <el-tooltip :content="$t('Duplicate notification settings')" placement="top">
+                                                        <el-button 
+                                                            class="el-button--icon"
+                                                            @click="clone(scope.$index)" 
+                                                            type="primary" 
+                                                            icon="ff-icon-plus" 
+                                                            size="mini"
+                                                        ></el-button>
+                                                    </el-tooltip>
+                                                </btn-group-item>
+                                                <btn-group-item>
                                                     <el-button 
                                                         class="el-button--icon"
-                                                        @click="clone(scope.$index)" 
-                                                        type="primary" 
-                                                        icon="ff-icon-plus" 
+                                                        @click="edit(scope.$index)" 
+                                                        type="success" 
+                                                        icon="ff-icon-setting" 
                                                         size="mini"
                                                     ></el-button>
-                                                </el-tooltip>
-                                            </btn-group-item>
-                                            <btn-group-item>
-                                                <el-button 
-                                                    class="el-button--icon"
-                                                    @click="edit(scope.$index)" 
-                                                    type="success" 
-                                                    icon="ff-icon-setting" 
-                                                    size="mini"
-                                                ></el-button>
-                                            </btn-group-item>
-                                            <btn-group-item>
-                                                <remove @on-confirm="remove(scope.$index, scope.row.id)">
-                                                    <el-button
-                                                        class="el-button--icon"
-                                                        size="mini"
-                                                        type="danger"
-                                                        icon="ff-icon-trash"
-                                                    />
-                                                </remove>
-                                            </btn-group-item>
-                                        </btn-group>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                                                </btn-group-item>
+                                                <btn-group-item>
+                                                    <remove @on-confirm="remove(scope.$index, scope.row.id)">
+                                                        <el-button
+                                                            class="el-button--icon"
+                                                            size="mini"
+                                                            type="danger"
+                                                            icon="ff-icon-trash"
+                                                        />
+                                                    </remove>
+                                                </btn-group-item>
+                                            </btn-group>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-skeleton>
                         </div><!-- .ff_table_wrap -->
 
                         <div style="margin-top: 50px;" v-if="!has_fluentsmtp && !smtp_closed" class="ff_smtp_suggest">

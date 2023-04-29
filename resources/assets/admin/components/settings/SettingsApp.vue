@@ -1,14 +1,16 @@
 <template>
-    <div v-loading="!app_ready" class="settings_app">
-        <router-view
-            v-if="app_ready"
-            :form_id="form_id"
-            :form="form"
-            :inputs="inputs"
-            :has_pro="hasPro"
-            :has_pdf="hasPDF"
-            :editorShortcodes="editorShortcodes"
-        ></router-view>
+    <div class="settings_app">
+        <el-skeleton :loading="!app_ready" animated :rows="10">
+            <router-view
+                v-if="app_ready"
+                :form_id="form_id"
+                :form="form"
+                :inputs="inputs"
+                :has_pro="hasPro"
+                :has_pdf="hasPDF"
+                :editorShortcodes="editorShortcodes"
+            ></router-view>
+        </el-skeleton>
     </div>
 </template>
 
