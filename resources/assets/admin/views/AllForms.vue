@@ -55,14 +55,14 @@
                         <btn-group-item as="div">
                             <div class="ff_advanced_filter_wrap">
                                 <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                    <span v-if="advancedFilter">
-                                        <span>{{$t('Close')}}</span>
-                                        <i class="ff-icon ff-icon-close"></i>
+
+                                    <span>
+
+                                    <span>{{ $t('Filter') }}</span>
+                                        <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                                        <i v-else class="ff-icon ff-icon-filter"></i>
                                     </span>
-                                    <span v-else>
-                                        <span>{{ $t('Filter') }}</span>
-                                        <i class="ff-icon ff-icon-filter"></i>
-                                    </span>
+
                                 </el-button>
                                 <div v-if="advancedFilter" class="ff_advanced_search">
                                     <div class="ff_advanced_search_radios">
@@ -389,7 +389,7 @@ export default {
             sort_by: 'DESC',
             formLocations: {},
             loadingLocations: false,
-            radioOption: ''
+            radioOption: 'all'
         }
     },
     methods: {
@@ -442,7 +442,6 @@ export default {
             }
 
             const url = FluentFormsGlobal.$rest.route('getForms');
-
             FluentFormsGlobal.$rest.get(url, data)
                 .then((response) => {
                     this.items = response.data;
@@ -594,6 +593,7 @@ export default {
     },
     computed: {
 	    hasEnabledDateFilter() {
+            return  false;
 		    return !!(this.radioOption && this.radioOption != 'all' ||
 			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
 		    );
@@ -601,7 +601,6 @@ export default {
     },
     mounted() {
         this.fetchItems();
-        this.radioOption = 'all';
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
