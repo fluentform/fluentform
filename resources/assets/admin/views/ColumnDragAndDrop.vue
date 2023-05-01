@@ -35,7 +35,7 @@
             <el-button type="primary" @click="saveColumnOrder()" size="medium">
                 {{ $t('Save') }}
             </el-button>
-            <el-button @click="resetColumnOrder()" type="text" size="medium" class="el-button--text-light">
+            <el-button @click="resetColumnOrder()" type="info" size="medium" class="el-button--soft">
                 {{ $t('Reset') }}
             </el-button>
         </div>
