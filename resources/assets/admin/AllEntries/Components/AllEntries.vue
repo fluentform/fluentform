@@ -14,14 +14,9 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
                             <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span v-if="advancedFilter">
-                                    <span>{{$t('Close')}}</span>
-                                    <i class="ff-icon ff-icon-close"></i>
-                                </span>
-                                <span v-else>
-                                    <span>{{ $t('Filter') }}</span>
-                                    <i class="ff-icon ff-icon-filter"></i>
-                                </span>
+                                <span>{{ $t('Filter') }}</span>
+                                <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                                <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
                             <div v-if="advancedFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
