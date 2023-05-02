@@ -628,11 +628,11 @@ class Menu
                 'hash'  => 'email_notifications',
                 'route' => '/email-settings',
             ],
-            'other_confirmations' => [
-                'title' => __('Other Confirmations', 'fluentform'),
+            'conditional_confirmations' => [
+                'title' => __('Conditional Confirmations', 'fluentform'),
                 'slug'  => 'form_settings',
-                'hash'  => 'other_confirmations',
-                'route' => '/other-confirmations',
+                'hash'  => 'conditional_confirmations',
+                'route' => '/conditional-confirmations',
             ],
             'all_integrations' => [
                 'title' => __('Configure Integrations', 'fluentform'),

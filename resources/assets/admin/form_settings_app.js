@@ -115,7 +115,7 @@ Vue.mixin({
             }
             return str;
         },
-        
+
         ...notifier
     },
 });
@@ -167,7 +167,7 @@ const routes = [
         component: PdfFeeds
     },
     {
-        path: '/other-confirmations',
+        path: '/conditional-confirmations',
         name: 'formOtherConfirmations',
         component: Confirmations
     },

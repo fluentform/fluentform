@@ -5,7 +5,7 @@
             <card>
                 <card-head>
                     <card-head-group class="justify-between">
-                        <h5 class="title">{{ $t('Other Confirmations') }}</h5>
+                        <h5 class="title">{{ $t('Conditional Confirmations') }}</h5>
                         <btn-group>
                             <btn-group-item>
                                 <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
@@ -35,7 +35,7 @@
                                             <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
                                             <el-switch
                                                 :width="40"
-                                                @change="handleActive(scope.$index)" 
+                                                @change="handleActive(scope.$index)"
                                                 v-model="scope.row.active"
                                             ></el-switch>
                                         </template>
@@ -64,21 +64,21 @@
                                             <ul class="ff_btn_group sm">
                                                 <li>
                                                     <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
-                                                        <el-button 
+                                                        <el-button
                                                             class="el-button--icon"
-                                                            @click="clone(scope.$index)" 
+                                                            @click="clone(scope.$index)"
                                                             type="primary"
-                                                            icon="el-icon-plus" 
+                                                            icon="el-icon-plus"
                                                             size="mini"
                                                         ></el-button>
                                                     </el-tooltip>
                                                 </li>
                                                 <li>
-                                                    <el-button 
+                                                    <el-button
                                                         class="el-button--icon"
-                                                        @click="edit(scope.$index)" 
+                                                        @click="edit(scope.$index)"
                                                         type="success"
-                                                        icon="el-icon-setting" 
+                                                        icon="el-icon-setting"
                                                         size="mini"
                                                     ></el-button>
                                                 </li>
@@ -98,7 +98,7 @@
                                 </el-table>
                             </el-skeleton>
                         </div><!-- .ff-table-container -->
-                        
+
                         <template v-if="selected">
                             <el-form-item class="ff-form-item">
                                 <template slot="label">
@@ -116,7 +116,7 @@
                                 <el-input v-model="selected.name"></el-input>
                             </el-form-item>
 
-                            <add-confirmation 
+                            <add-confirmation
                                 class="mb-4"
                                 :errors="errors"
                                 :pages="pages"
@@ -146,9 +146,9 @@
 
                     <notice v-else type="danger-soft" class="ff_alert_between">
                         <div>
-                            <h6 class="title">You are using the free version of Fluent Forms.</h6> 
+                            <h6 class="title">You are using the free version of Fluent Forms.</h6>
                             <p class="text">Upgrade to get access to all the advanced features.</p>
-                        </div> 
+                        </div>
                         <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
                             Upgrage to Pro
                         </a>
@@ -282,7 +282,7 @@
                 };
 
                 const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
-            
+
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         confirmation.id = response.id;
@@ -322,7 +322,7 @@
 
             fetch() {
                 const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form.id);
-            
+
                 FluentFormsGlobal.$rest.get(url, {meta_key: 'confirmations'})
                     .then(response => {
                         this.confirmations = response.map((item) => {
@@ -347,7 +347,7 @@
                 };
 
                 const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
-            
+
                 FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.selected.id = response.id;
@@ -372,7 +372,7 @@
             this.getPages();
 
             // Back to all notifications by clicking on menu item
-            jQuery('[data-hash="other_confirmations"]').on('click', this.discard);
+            jQuery('[data-hash="conditional_confirmations"]').on('click', this.discard);
 
             jQuery('head title').text('Other Confirmations - Fluent Forms');
 
