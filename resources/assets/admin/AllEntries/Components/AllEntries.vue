@@ -243,6 +243,9 @@ export default {
             if (type == 'reset') {
                 this.paginate.current_page = 1;
             }
+	        if (this.advancedFilter) {
+		        this.advancedFilter = false;
+	        }
             this.loading = true;
             const url = FluentFormsGlobal.$rest.route('getAllSubmissions');
             let data = {
@@ -266,9 +269,6 @@ export default {
                 })
                 .finally(() => {
                     this.loading = false;
-	                if (this.advancedFilter) {
-		                this.advancedFilter = false;
-	                }
                 })
         },
         setPaginate(data = {}) {

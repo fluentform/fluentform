@@ -706,7 +706,9 @@
                 if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                 }
-
+	            if (this.advancedFilter) {
+		            this.advancedFilter = false;
+	            }
                 this.loading = true;
 
                 const url = FluentFormsGlobal.$rest.route('getSubmissions');
@@ -723,9 +725,6 @@
                     .finally(() => {
                         this.getVisibleColumns();
                         this.loading = false;
-						if (this.advancedFilter) {
-							this.advancedFilter = false;
-                        }
                     });
             },
             handleTableSort(column) {

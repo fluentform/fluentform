@@ -423,6 +423,9 @@ export default {
             })
         },
         fetchItems() {
+	        if (this.advancedFilter) {
+		        this.advancedFilter = false;
+	        }
             this.loading = true;
             let data = {
                 search: this.searchFormsKeyWord,
@@ -449,9 +452,6 @@ export default {
                 })
                 .finally(() => {
                     this.loading = false;
-	                if (this.advancedFilter) {
-		                this.advancedFilter = false;
-	                }
                 });
         },
         refetchItems() {
