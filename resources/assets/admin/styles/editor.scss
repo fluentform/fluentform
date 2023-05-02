@@ -156,7 +156,12 @@ body.ff_full_screen {
   .form-editor--sidebar-content {
     height: calc(100vh - 56px);
   }
-
+  #switchScreen{
+    &::before{
+      content: "\e96b";
+      font-weight: 600;
+    }
+  }
   // ff_screen_editor
   .ff_screen_editor {
     background: #fff;

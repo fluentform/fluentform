@@ -24,6 +24,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.ff-icon-fullscreen-out:before {
+  content: "\e96b";
+}
 .ff-icon-menu:before {
   content: "\e96a";
 }
