@@ -1163,12 +1163,13 @@ label.el-radio, label.el-checkbox {
     height: auto;
     margin: 0 0 0 4px;
     background-color: transparent;
-    padding: 8px 20px;
+    padding: 7px 14px;
     font-size: 14px;
     border-radius: 5px;
     line-height: inherit;
     border-color: transparent;
     float: none;
+    font-weight: 500;
   }
   .html-active .switch-html, 
   .tmce-active .switch-tmce{
@@ -1197,7 +1198,10 @@ label.el-radio, label.el-checkbox {
     padding-top: 15px;
   }
 }
-
+.wp-media-buttons .insert-media {
+  padding-left: 8px;
+  padding-right: 10px;
+}
 .mce-menu .mce-menu-item.mce-active.mce-menu-item-normal,
 .mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, 
 .mce-menu .mce-menu-item.mce-selected, 
