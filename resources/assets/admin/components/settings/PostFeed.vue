@@ -64,49 +64,56 @@
                             <el-checkbox v-model="feed.value.allowed_guest_user">{{ feed.value.allowed_guest_user ? 'Allowed' : 'Not Allowed' }}</el-checkbox>
                         </el-form-item>
 
-                        <el-form-item class="ff-form-item" :label="$t('Post Status')">
-                            <el-select v-model="feed.value.post_status" class="ff_input_full_width">
-                                <el-option
-                                    v-for="status in postStatuses"
-                                    :key="status"
-                                    :value="status"
-                                    :label="status | ucFirst"
-                                />
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item class="ff-form-item" :label="$t('Comment Status')">
-                            <el-select v-model="feed.value.comment_status" class="ff_input_full_width">
-                                <el-option
-                                    v-for="status in commentStatuses"
-                                    :key="status"
-                                    :value="status"
-                                    :label="status | ucFirst"
-                                />
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item class="ff-form-item" v-if="postFormats.length" :label="$t('Post Format')">
-                            <el-select v-model="feed.value.post_format" class="ff_input_full_width">
-                                <el-option
-                                    v-for="format in postFormats"
-                                    :key="format"
-                                    :value="format"
-                                    :label="format | ucFirst"
-                                />
-                            </el-select>
-                        </el-form-item>
-
-                        <el-form-item class="ff-form-item" v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
-                            <el-select clearable v-model="feed.value.default_category" class="ff_input_full_width">
-                                <el-option
-                                    v-for="item in categories"
-                                    :key="item.category_id"
-                                    :value="item.category_id"
-                                    :label="item.category_name"
-                                />
-                            </el-select>
-                        </el-form-item>
+                        <el-row :gutter="24">
+                            <el-col :lg="6" style="flex: 1">
+                                <el-form-item class="ff-form-item" :label="$t('Post Status')">
+                                    <el-select v-model="feed.value.post_status" class="ff_input_full_width">
+                                        <el-option
+                                            v-for="status in postStatuses"
+                                            :key="status"
+                                            :value="status"
+                                            :label="status | ucFirst"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :lg="6" style="flex: 1">
+                                <el-form-item class="ff-form-item" :label="$t('Comment Status')">
+                                    <el-select v-model="feed.value.comment_status" class="ff_input_full_width">
+                                        <el-option
+                                            v-for="status in commentStatuses"
+                                            :key="status"
+                                            :value="status"
+                                            :label="status | ucFirst"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :lg="6" style="flex: 1" v-if="postFormats.length">
+                                <el-form-item class="ff-form-item" :label="$t('Post Format')">
+                                    <el-select v-model="feed.value.post_format" class="ff_input_full_width">
+                                        <el-option
+                                            v-for="format in postFormats"
+                                            :key="format"
+                                            :value="format"
+                                            :label="format | ucFirst"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :lg="6" style="flex: 1">
+                                <el-form-item class="ff-form-item" v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
+                                    <el-select clearable v-model="feed.value.default_category" class="ff_input_full_width">
+                                        <el-option
+                                            v-for="item in categories"
+                                            :key="item.category_id"
+                                            :value="item.category_id"
+                                            :label="item.category_name"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
 
                         <!-- Post Fields Mapping -->
                         <div class="post_fields_mapping">

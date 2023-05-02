@@ -6,7 +6,7 @@
                     <h5 class="title">{{ $t('Post Feeds') }}</h5>
                     <el-button
                         size="medium"
-                        type="dark"
+                        type="info"
                         icon="el-icon-plus"
                         @click="addPostFeed"
                     >
