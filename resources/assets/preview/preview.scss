@@ -152,6 +152,9 @@ ol{
     &_header{
       background-color: #F8F9FA;
       padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       .dot{
         width: 13px;
         height: 13px;
@@ -177,6 +180,23 @@ ol{
     max-height: calc(100vh - 90px);
     overflow-y: scroll;
     margin-left: 3%;
+  }
+}
+// device control
+.ff_device_control{
+  width: 24px;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  &.active {
+    svg{
+      fill: $--color-primary;
+    }
+  }
+  svg{
+    width: 20px;
+    height: 20px;
+    fill: #626261;
   }
 }
 

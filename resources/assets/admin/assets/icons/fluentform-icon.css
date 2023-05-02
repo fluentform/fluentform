@@ -24,6 +24,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.ff-icon-tablet:before {
+  content: "\e96f";
+}
+.ff-icon-mobile:before {
+  content: "\e970";
+}
+.ff-icon-monitor:before {
+  content: "\e971";
+}
 .ff-icon-fullscreen-out:before {
   content: "\e96b";
 }
