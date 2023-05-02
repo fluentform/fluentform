@@ -37,17 +37,17 @@ class ReviewQuery
                 [
                     'href' => 'https://wordpress.org/support/plugin/fluentform/reviews/#new-post',
                     'btn_text' => 'Yes',
-                    'btn_atts' => 'class="el-button--primary el-button--mini ff_review_now" data-notice_name="review_query"',
+                    'btn_atts' => 'class="mr-1 el-button--success el-button--mini ff_review_now" data-notice_name="review_query"',
                 ],
                 [
                     'href' => admin_url('admin.php?page=fluent_forms'),
                     'btn_text' => 'Maybe Later',
-                    'btn_atts' => 'class="el-button el-button--secondary el-button--mini ff_nag_cross" data-notice_type="temp" data-notice_name="review_query"',
+                    'btn_atts' => 'class="mr-1 el-button--info el-button--soft el-button--mini ff_nag_cross" data-notice_type="temp" data-notice_name="review_query"',
                 ],
                 [
                     'href' => admin_url('admin.php?page=fluent_forms'),
                     'btn_text' => 'Do not show again',
-                    'btn_atts' => 'class="el-button--secondary el-button--mini ff_nag_cross" data-notice_type="permanent" data-notice_name="review_query"',
+                    'btn_atts' => 'class="el-button el-button--mini ff_nag_cross" data-notice_type="permanent" data-notice_name="review_query"',
                 ],
             ],
         ];

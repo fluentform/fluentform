@@ -65,7 +65,7 @@ class AdminNoticeController extends Controller
         wpFluentForm('view')->render('admin.notices.info', array(
             'notice'        => $notice,
             'show_logo'     => false,
-            'show_hide_nag' => true,
+            'show_hide_nag' => false,
             'logo_url'      => fluentformMix('img/fluent_icon.png')
         ));
     }
