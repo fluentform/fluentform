@@ -96,6 +96,9 @@
                             </el-skeleton>
                         </el-col>
                     </el-row>
+                    <div class="scroll-wrap">
+                        <div class="scroll" @click="showChooseTemplate"></div>
+                    </div>
                 </div>
             </el-dialog>
         </div>
@@ -171,7 +174,6 @@
                 .then(response => {
                     this.predefinedForms = response.forms;
                     this.categories = response.categories;
-
                 }).catch(error => {
                     this.$fail(error.message);
                 })

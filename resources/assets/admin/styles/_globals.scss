@@ -1778,3 +1778,56 @@ label.el-radio, label.el-checkbox {
     margin: 0 0 20px 0;
   }
 }
+
+.scroll {
+	position: relative;
+	animation: down 2s ease-in-out infinite;
+	-webkit-animation: down 2s ease-in-out infinite;
+  margin: 0 auto;
+  height: 26px;
+  width: 60px;
+  cursor: pointer;
+	&::before {
+		content: '';
+		position: absolute;
+    top: 30px;
+    left: 18px;
+    width: 16px;
+    height: 16px;
+    border-left: 2px solid #777;
+    border-bottom: 2px solid #777;
+		transform: rotate(-45deg);
+	}
+}
+
+@keyframes down {
+	0% {
+    -webkit-transform: translate(0,-14px);
+    opacity: 0
+  }
+
+  50% {
+      opacity: 1
+  }
+
+  100% {
+      -webkit-transform: translate(0,14px);
+      opacity: 0
+  }
+}
+
+@-webkit-keyframes down {
+	0% {
+    -webkit-transform: translate(0,-14);
+    opacity: 0
+}
+
+50% {
+    opacity: 1
+}
+
+100% {
+    -webkit-transform: translate(0,14);
+    opacity: 0
+}
+}
