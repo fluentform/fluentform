@@ -5,8 +5,6 @@ namespace FluentForm\App\Modules\Registerer;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
-use function FortAwesome\fa;
-
 class AdminBar
 {
     
