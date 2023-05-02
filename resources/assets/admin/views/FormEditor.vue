@@ -320,7 +320,7 @@
                                                                 :disable-if="isDisabled(itemMock)"
                                                                 :moved="moved"
                                                                 effect-allowed="copy"
-                                                            ><i :class="itemMock.editor_options.icon_class"></i> 
+                                                            ><i :class="itemMock.editor_options.icon_class"></i>
                                                             <span>{{itemMock.editor_options.title}}</span>
                                                             </vddl-draggable>
                                                         </div>
@@ -353,7 +353,7 @@
                                                                 :selected="insertItemOnClick"
                                                                 :moved="moved"
                                                                 effect-allowed="copy"
-                                                            ><i :class="mockItem.editor_options.icon_class"></i> 
+                                                            ><i :class="mockItem.editor_options.icon_class"></i>
                                                             <span>{{mockItem.editor_options.title}}</span>
                                                             </vddl-draggable>
                                                         </div>
@@ -916,8 +916,14 @@ export default {
                 if (window.localStorage) {
                     if (wasFullScreen) {
                         window.localStorage.setItem('ff_is_full_screen', 'no');
+                        jQuery(this).html('');
+                        jQuery(this).addClass('ff-icon-fullscreen')
+
+
                     } else {
                         window.localStorage.setItem('ff_is_full_screen', 'yes');
+                        jQuery(this).removeClass('ff-icon-fullscreen')
+                        jQuery(this).html('<img style="width:30px;" src="'+window.FluentFormApp.plugin_public_url+'img/zoom-out.png">');
                     }
                 }
                 $body.toggleClass('ff_full_screen');

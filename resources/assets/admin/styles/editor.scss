@@ -953,7 +953,7 @@ mark {
 // search element wrap
 .search-element-wrap{
   .el-input__inner{
-    background-color: transparent;
+    background-color: rgb(255 255 255 / 57%);
     border-color: #CED0D4;
     height: 44px;
     &:hover,
@@ -966,6 +966,11 @@ mark {
     }
     &::-webkit-input-placeholder{
       color: #626261;
+    }
+  }
+  .active{
+    .el-input__inner{
+      background-color: #ffffff;
     }
   }
 }
