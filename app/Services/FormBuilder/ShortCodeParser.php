@@ -260,6 +260,9 @@ class ShortCodeParser
         if (is_null(static::$store['post'])) {
             $postId = static::$store['inputs']['__fluent_form_embded_post_id'];
             static::$store['post'] = get_post($postId);
+            if (is_null(static::$store['post'])) {
+                return '';
+            }
             static::$store['post']->permalink = get_the_permalink(static::$store['post']);
         }
 
