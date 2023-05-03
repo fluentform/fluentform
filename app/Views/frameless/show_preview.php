@@ -125,7 +125,7 @@
                             <li><i class="el-icon el-icon-check"></i> Visual Data Reporting</li>
                         </ul>
                         <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
+                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
                         </div>
                         <?php $addOns = (new \FluentForm\App\Modules\AddOnModule())->getPremiumAddOns(); ?>
 
@@ -137,7 +137,7 @@
                         </ul>
 
                         <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
-                            <a target="_blank" rel="nofollow" class="ff_upgrade_btn" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
+                            <a target="_blank" rel="nofollow" class="el-button el-button--primary" href="<?php echo esc_url(fluentform_upgrade_url()); ?>">Upgrade to Pro</a>
                         </div>
                     </div>
                 </div>
