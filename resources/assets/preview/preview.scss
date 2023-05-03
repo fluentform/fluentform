@@ -133,21 +133,33 @@ ol{
   padding-bottom: 40px;
   min-height: 85vh;
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
   padding: 30px 60px;
+  position: relative;
 }
 
 .ff_form{
   &_preview{
     padding: 20px;
     &_wrapper {
-      overflow-y: scroll;
       width: 60%;
       background: #fff;
       border-radius: 10px;
-      max-height: calc(100vh - 90px);
-      overflow-y: scroll;
+      //max-height: calc(100vh - 90px);
+      //overflow-y: scroll;
+      height: 100%;
       box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+      margin: 0 auto;
+      &.monitor{
+        width: 100%;
+      }
+      &.mobile{
+        width: 375px;
+      }
+      &.tablet{
+        width: 768px;
+      }
     }
     &_header{
       background-color: #F8F9FA;
@@ -155,6 +167,8 @@ ol{
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
       .dot{
         width: 13px;
         height: 13px;
@@ -174,12 +188,66 @@ ol{
         }
       }
     }
+    &_style_toggle{
+      position: absolute;
+      right: 12px;
+      background: $--color-info;
+      padding: 8px 10px;
+      text-align: center;
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.5s;
+      &.monitor{
+        opacity: 1;
+        visibility: visible;
+      }
+      &:hover,
+      &.active {
+        background-color: $--color-primary;
+      }
+      svg{
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+      }
+    }
   }
   &_styler_wrapper {
-    width: 37%;
-    max-height: calc(100vh - 90px);
-    overflow-y: scroll;
-    margin-left: 3%;
+    min-width: 30%;
+    width: 30%;
+    //max-height: calc(100vh - 90px);
+    //overflow-y: scroll;
+    &.monitor{
+      position: absolute;
+      top: 65px;
+      right: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.2s;
+      padding: 14px;
+      .styler_wrapper{
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+        border-radius: 8px;
+        border: 1px solid #e3e3e3;
+      }
+      &::before{
+        position: absolute;
+        content: "";
+        top: 9px;
+        right: 30px;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        transform: rotate(45deg);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      }
+      &.active{
+        opacity: 1;
+        visibility: visible;
+      }
+    }
   }
 }
 // device control
