@@ -10,7 +10,7 @@
   .group-title {
     display: block;
     padding: 5px 10px;
-    background-color: $info;
+    background-color: $--color-info;
     color: #fff;
   }
 }
@@ -31,19 +31,7 @@
 }
 
 .el-text-danger {
-  color: #FF4949;
-}
-
-
-.el-dropdown-list-wrapper {
-  padding: 0;
-
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: $info;
-    color: #fff;
-  }
+  color: $--color-danger;
 }
 
 .input-textarea-value {
@@ -173,7 +161,7 @@
 }
 
 .photo_widget_btn_clear {
-  color: red;
+  color: $--color-danger;
   position: absolute;
   top: 0;
   left: 0;
@@ -228,11 +216,7 @@
 }
 
 .is-error .el-input__inner {
-  border-color: #ff4949;
-}
-
-.el-form-item__error {
-  /*position: unset;*/
+  border-color: $--color-danger;
 }
 
 .el-form-item__error {
@@ -244,13 +228,6 @@
 }
 
 .el-dropdown-list-wrapper {
-  padding: 0;
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: gray;
-    color: #fff;
-  }
   &.el-popover {
     z-index: 9999999999999 !important;
   }
@@ -296,17 +273,6 @@
     max-height: 388px;
     overflow: auto;
     width: 280px;
-  }
-}
-
-.el-dropdown-list-wrapper {
-  padding: 0;
-
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: $info;
-    color: #fff;
   }
 }
 
