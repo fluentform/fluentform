@@ -28,7 +28,7 @@
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
                         <el-col :sm="has_post_feature ? 6 : 8">
-                            <el-skeleton :loading="loading" animated>
+                            <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
                                     <el-skeleton-item variant="h3" style="width: 80%;"/>
@@ -45,7 +45,7 @@
                             </el-skeleton>
                         </el-col>
                         <el-col :sm="has_post_feature ? 6 : 8">
-                            <el-skeleton :loading="loading" animated>
+                            <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
                                     <el-skeleton-item variant="h3" style="width: 80%;"/>
@@ -62,7 +62,7 @@
                             </el-skeleton>
                         </el-col>
                         <el-col :sm="has_post_feature ? 6 : 8">
-                            <el-skeleton :loading="loading" animated>
+                            <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
                                     <el-skeleton-item variant="h3" style="width: 80%;"/>
@@ -79,7 +79,7 @@
                             </el-skeleton>
                         </el-col>
                         <el-col :sm="has_post_feature ? 6 : 8" v-if="has_post_feature">
-                            <el-skeleton :loading="loading" animated>
+                            <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
                                     <el-skeleton-item variant="h3" style="width: 80%;"/>
