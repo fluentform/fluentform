@@ -44,11 +44,6 @@
         </div>
     </div>
     <div class="ff_preview_body">
-        <div class="ff_form_preview_style_toggle">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
-                <path d="M762.069 324.1l47.561-47.563-104.832-104.835-47.565 47.563 104.836 104.835zM702.046 384.123l-104.836-104.835-392.169 392.17-24.128 128.964 128.963-24.132 392.17-392.167zM872.188 219.050c31.748 31.749 31.748 83.225 0 114.975l-511.58 511.581c-6.052 6.050-13.793 10.133-22.206 11.708l-202.8 37.943c-29.326 5.487-55.011-20.198-49.524-49.527l37.943-202.799c1.574-8.414 5.655-16.154 11.707-22.204l511.581-511.582c31.748-31.749 83.226-31.749 114.974 0l109.905 109.905zM853.756 896h-342.178c-56.324 0-56.324-85.333 0-85.333h342.178c56.324 0 56.324 85.333 0 85.333z"/>
-            </svg>
-        </div>
         <div class="ff_form_preview_wrapper">
             <div class="ff_form_preview_header">
                 <div class="ff_dot_wrap">
@@ -61,17 +56,20 @@
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                             <path d="M853.35 597.335c0 23.506-19.113 42.665-42.665 42.665h-597.336c-23.552 0-42.666-19.159-42.666-42.665v-341.335c0-23.51 19.114-42.666 42.666-42.666h597.336c23.552 0 42.665 19.157 42.665 42.666v341.335zM810.685 128h-597.336c-70.57 0-128 57.43-128 128v341.335c0 70.569 57.43 128 128 128h256v85.33h-170.666c-23.466 0-42.666 19.2-42.666 42.67 0 23.465 19.2 42.665 42.666 42.665h426.667c23.465 0 42.665-19.2 42.665-42.665 0-23.47-19.2-42.67-42.665-42.67h-170.665v-85.33h256c70.569 0 128-57.431 128-128v-341.335c0-70.57-57.431-128-128-128v0z"/>
                         </svg>
+                        <span class="ff_tooltip">Monitor</span>
                     </span>
                     <span class="ff_device_control tablet" data-type="tablet">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                             <path d="M768 170.683c23.562 0 42.665 19.103 42.665 42.666v597.336c0 23.562-19.103 42.665-42.665 42.665h-512c-23.564 0-42.666-19.103-42.666-42.665v-597.336c0-23.564 19.102-42.666 42.666-42.666h512zM256 85.35c-70.692 0-128 57.308-128 128v597.336c0 70.692 57.308 128 128 128h512c70.692 0 128-57.308 128-128v-597.336c0-70.692-57.308-128-128-128h-512z"/>
                             <path d="M554.685 768.015c0 23.567-19.103 42.67-42.67 42.67-23.563 0-42.665-19.103-42.665-42.67 0-23.562 19.103-42.665 42.665-42.665 23.567 0 42.67 19.103 42.67 42.665z"/>
                         </svg>
+                        <span class="ff_tooltip">Tablet</span>
                     </span>
                     <span class="ff_device_control mobile"  data-type="mobile">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                             <path d="M384.017 170.683h-42.667c-23.564 0-42.666 19.103-42.666 42.666v597.336c0 23.562 19.103 42.665 42.666 42.665h341.336c23.562 0 42.665-19.103 42.665-42.665v-597.336c0-23.564-19.103-42.666-42.665-42.666h-42.67c0 35.346-28.652 64-64 64h-127.998c-35.346 0-64-28.654-64-64zM682.685 85.35c70.692 0 128 57.308 128 128v597.336c0 70.692-57.308 128-128 128h-341.336c-70.692 0-128-57.308-128-128v-597.336c0-70.692 57.308-128 128-128h341.336z"/>
                         </svg>
+                        <span class="ff_tooltip">Mobile</span>
                     </span>
                 </div>
             </div>
@@ -162,29 +160,18 @@ wp_footer();
 
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-
         let screenType = window.localStorage.getItem('ff_window_type');
         $(('*[data-type="'+screenType+'"]')).addClass('active');
-
-
-
 
         let mobile = '375px';
         let tablet = '768px';
         let monitor = '100%';
         let $wrapper = $('.ff_form_preview_wrapper');
-        let $StyleWrapper = $('.ff_form_styler_wrapper');
-        let $styleToggle = $('.ff_form_preview_style_toggle');
         $wrapper.addClass(screenType);
-        if(screenType == 'monitor'){
-            $StyleWrapper.addClass(screenType);
-            $styleToggle.addClass('monitor');
-        }
+
         $('.ff_device_control').click(function(){
             let screenType = $(this).data('type');
             $('.ff_device_control').removeClass('active');
-            $StyleWrapper.removeClass('monitor');
-            $styleToggle.removeClass('monitor');
             
             $(('*[data-type="'+screenType+'"]')).addClass('active');
             let width = mobile;
@@ -196,8 +183,6 @@ wp_footer();
             }
             else if(screenType == 'monitor'){
                 width = monitor;
-                $StyleWrapper.addClass(screenType);
-                $styleToggle.addClass('monitor');
             }
             $wrapper.animate({
                width: width
@@ -207,9 +192,9 @@ wp_footer();
 
         $('.ff_device_control').on('click', function () {
             let screenType = $(this).data('type');
-            window.localStorage.setItem('ff_window_type', screenType);
-            
+            window.localStorage.setItem('ff_window_type', screenType); 
         });
+
         $('#ff_preview_only').on('change', function () {
             var isChecked = $(this).is(':checked');
             if(isChecked) {
@@ -223,12 +208,6 @@ wp_footer();
 
             }
         });
-        
-        // show form preview style
-        $('.ff_form_preview_style_toggle').on('click', function () {
-            $(this).toggleClass('active');
-            $StyleWrapper.toggleClass('active');
-        })
 
         // copy to clipboard
         let copyToggle = $("#copy-toggle");
