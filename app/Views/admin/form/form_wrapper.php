@@ -71,6 +71,9 @@
 			</div>
 		</div>
 	</div>
+    <?php
+        do_action('fluentform/after_form_menu');
+    ?>
 
 	<div class="ff_form_application_container">
 		<?php
