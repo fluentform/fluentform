@@ -242,7 +242,7 @@
 
                         <filter-fields :fields="form_fields"
                             :conditionals="feed.value.conditionals"
-                            :hasPro="false"
+                            :hasPro="hasPro"
                         />
 
                         <div class="mt-4">
@@ -291,11 +291,12 @@
             'form_id',
             'form_fields',
             'post_settings',
-            'editorShortcodes'
+            'editorShortcodes',
         ],
         data() {
             return {
-                saving: false
+                saving: false,
+                hasPro: !!window.FluentFormApp.hasPro
             };
         },
         methods: {
@@ -313,7 +314,7 @@
                 };
 
                 const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
-            
+
                 FluentFormsGlobal.$rest.post(url, feed)
                     .then(response => {
                         this.feed.id = response.id;
