@@ -137,6 +137,7 @@ ol{
   justify-content: space-between;
   position: relative;
   padding-left: 30px;
+  padding-right: 30px;
   background-color: #f2f2f2;
 }
 
@@ -195,6 +196,7 @@ ol{
     background: $--color-white;
     border-left: 1px solid #E4E7ED;
     margin-left: 30px;
+    margin-right: -30px;
   }
 }
 // device control
@@ -251,7 +253,6 @@ ol{
 .ff_preview_only {
   .ff_form_preview_wrapper {
     max-height: 100%;
-    margin: 0 auto;
     width: 78%;
     @media (max-width: 767px) {
       width: 100%;
