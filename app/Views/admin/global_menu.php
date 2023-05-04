@@ -67,13 +67,13 @@ $page = sanitize_text_field($_GET['page']);
                 <?php _e('Support', 'fluentform'); ?>
             </a>
         </li>
-        <li>
-            <?php if(!defined('FLUENTFORMPRO')): ?>
+        <?php if(!defined('FLUENTFORMPRO')): ?>
+            <li>
                 <a target="_blank" rel="noopener" href="<?php echo esc_url(fluentform_upgrade_url()); ?>" class="ff_menu_link ff_menu_link_buy">
                     <?php _e('Upgrade to Pro', 'fluentform'); ?>
                 </a>
-            <?php endif; ?>
-        </li>
+            </li>
+        <?php endif; ?>
     </ul>
 
 

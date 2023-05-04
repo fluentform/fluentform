@@ -33,6 +33,20 @@
                         </p>
                     </div>
                 </div><!-- .el-col -->
+                
+                <?php if(!defined('FLUENTFORMPRO')): ?>
+                    <div class="el-col el-col-24" style="padding-left: 12px; padding-right: 12px">
+                        <div class="ff_card h-100 ff_card_pro primary has-mask">
+                            <div class="mask">
+                                <div class="mask-1"></div>
+                                <div class="mask-2"></div>
+                                <div class="mask-3"></div>
+                            </div>
+                            <h3><?php _e('To unlock more features consider upgrading to PRO', 'fluentform') ?></h3>
+                            <a target="_blank" rel="nofollow" class="el-button ff_upgrade_btn_large" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=kadence">Upgrade to Pro</a>
+                        </div>
+                    </div><!-- .el-col -->
+                <?php endif; ?>
 
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px">
                     <div class="ff_card h-100">
