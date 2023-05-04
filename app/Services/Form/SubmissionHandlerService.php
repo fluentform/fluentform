@@ -24,13 +24,11 @@ class SubmissionHandlerService
     protected $validationService;
     protected $submissionService;
     
-    public function __construct(
-        FormValidationService $formValidationService,
-        SubmissionService $submissionService
-    ) {
+    public function __construct()
+    {
         $this->app = App::getInstance();
-        $this->validationService = $formValidationService;
-        $this->submissionService = $submissionService;
+        $this->validationService = new FormValidationService();
+        $this->submissionService = new SubmissionService();
     }
     
     /**
