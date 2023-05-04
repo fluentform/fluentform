@@ -958,6 +958,14 @@ header.vff-header svg.f-logo {
   width: 100%;
 }
 
+.footer-inner-wrap .f-nav a.ffc_power {
+  display: inline-block;
+  width: 82px;
+  white-space: break-spaces;
+  line-height: 1.2;
+  font-size: 14px;
+}
+
 /*
   animations
 */
