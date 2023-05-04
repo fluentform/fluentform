@@ -138,7 +138,6 @@ ol{
   position: relative;
   padding-left: 30px;
   padding-right: 30px;
-  background-color: #f2f2f2;
 }
 
 .ff_form{
@@ -148,9 +147,9 @@ ol{
       width: 768px;
       background: #fff;
       border-radius: 10px;
-      height: 100%;
       box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
       margin: 30px auto;
+      min-height: 71vh;
       &.monitor{
         width: 100%;
       }
