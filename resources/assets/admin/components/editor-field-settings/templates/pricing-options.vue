@@ -107,10 +107,10 @@
                             />
                         </div>
 
-                        <div class="action-btn">
-                            <i @click="increase(index)" class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
-                            <i @click="decrease(index)" class="ff_icon_btn mini dark el-icon-minus"></i>
-                        </div>
+                        <action-btn>
+                            <action-btn-add @click="increase(index)" size="mini"></action-btn-add>
+                            <action-btn-remove @click="decrease(index)" size="mini"></action-btn-remove>
+                        </action-btn>
                     </vddl-nodrag>
                     <div v-if="editItem.settings.enable_desc_input" class="item_desc">
                         <textarea :placeholder="$t('Item Short Description')" v-model="option.desc" />
@@ -134,15 +134,21 @@
 </template>
 
 <script type="text/babel">
-    import elLabel from '../../includes/el-label.vue'
-    import PhotoWidget from '../../../../common/PhotoUploader'
+    import elLabel from '../../includes/el-label.vue';
+    import PhotoWidget from '@/common/PhotoUploader';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'pricing-options',
         props: ['editItem', 'listItem'],
         components: {
             elLabel,
-            PhotoWidget
+            PhotoWidget,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
