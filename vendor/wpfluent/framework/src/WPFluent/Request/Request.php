@@ -56,9 +56,7 @@ class Request
 
     public function set($key, $value)
     {
-        $inputs = $this->inputs();
-
-        Arr::set($inputs, $key, $value);
+        $this->request[$key] = $value;
 
         return $this;
     }
