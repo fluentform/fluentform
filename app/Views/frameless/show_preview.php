@@ -192,7 +192,7 @@ wp_footer();
 
         $('.ff_device_control').on('click', function () {
             let screenType = $(this).data('type');
-            window.localStorage.setItem('ff_window_type', screenType); 
+            window.localStorage.setItem('ff_window_type', screenType);
         });
 
         $('#ff_preview_only').on('change', function () {
@@ -232,7 +232,34 @@ wp_footer();
             }, 2000);
             
         });
-        
+
+        $('.ff_form_preview_wrapper .fluentform ').on('click', function (e) {
+            $elm = $( e.target );
+            const islabel = $elm.parent().hasClass('ff-el-input--label');
+            const isInput = $elm.hasClass('ff-el-form-control');
+            const isCheckable = $elm.parent().hasClass('ff-el-form-check-label');
+            const isSubmitBtn = $elm.hasClass('ff-btn-submit');
+            const isSectionBreak = $elm.parent().hasClass('ff-el-section-break') || $elm.parent().hasClass('ff-custom_html');
+            let type = '';
+            if(islabel){
+                type = 'label';
+            }else if(isInput){
+                type = 'input';
+            }else if(isCheckable){
+                type = 'checkable';
+            }else if(isSubmitBtn){
+                type = 'submitBtn';
+            }else if(isSectionBreak){
+                type = 'sectionBrk';
+            }
+            if(type != ''){
+                window.dispatchEvent(new CustomEvent("selectionFired", {
+                    "detail": {
+                        'type' : type
+                    }
+                }));
+            }
+        });
         
 
     });
