@@ -56,7 +56,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                             <path d="M853.35 597.335c0 23.506-19.113 42.665-42.665 42.665h-597.336c-23.552 0-42.666-19.159-42.666-42.665v-341.335c0-23.51 19.114-42.666 42.666-42.666h597.336c23.552 0 42.665 19.157 42.665 42.666v341.335zM810.685 128h-597.336c-70.57 0-128 57.43-128 128v341.335c0 70.569 57.43 128 128 128h256v85.33h-170.666c-23.466 0-42.666 19.2-42.666 42.67 0 23.465 19.2 42.665 42.666 42.665h426.667c23.465 0 42.665-19.2 42.665-42.665 0-23.47-19.2-42.67-42.665-42.67h-170.665v-85.33h256c70.569 0 128-57.431 128-128v-341.335c0-70.57-57.431-128-128-128v0z"/>
                         </svg>
-                        <span class="ff_tooltip">Monitor</span>
+                        <span class="ff_tooltip">Desktop</span>
                     </span>
                     <span class="ff_device_control tablet" data-type="tablet">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
@@ -166,6 +166,8 @@ wp_footer();
         let mobile = '375px';
         let tablet = '768px';
         let monitor = '100%';
+		let containerElements = [];
+		let containerDisplay = 'flex'; // 'flex' is container element default display value
         let $wrapper = $('.ff_form_preview_wrapper');
         $wrapper.addClass(screenType);
 
@@ -175,18 +177,28 @@ wp_footer();
             
             $(('*[data-type="'+screenType+'"]')).addClass('active');
             let width = mobile;
-            if(screenType == 'mobile'){
+            if (screenType === 'mobile'){
                 width = mobile;
-            }
-            else if(screenType == 'tablet'){
+                // check has container elements
+                containerElements = $('.frm-fluent-form .ff-t-container');
+				if (containerElements.length) {
+					//change breakpoint css
+					containerDisplay = 'block';
+                }
+            } else if (screenType === 'tablet'){
+	            containerDisplay = 'flex';
                 width = tablet;
-            }
-            else if(screenType == 'monitor'){
+            } else if (screenType === 'monitor'){
+	            containerDisplay = 'flex';
                 width = monitor;
             }
             $wrapper.animate({
                width: width
            })
+            //set breakpoint css for container elements
+            if (containerElements.length) {
+	            containerElements.css('display', containerDisplay);
+            }
             $('body').find('form').trigger('screen-change', width);
         });
         
