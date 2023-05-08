@@ -187,6 +187,7 @@ wp_footer();
             $wrapper.animate({
                width: width
            })
+            $('body').find('form').trigger('screen-change', width);
         });
         
 

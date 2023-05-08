@@ -66,10 +66,10 @@
                         ></el-input>
                     </div>
 
-                    <div class="action-btn">
-                        <i @click="increase(index)" class="ff_icon_btn mini dark el-icon-plus mr-1"></i>
-                        <i @click="decrease(index)" class="ff_icon_btn mini dark el-icon-minus"></i>
-                    </div>
+                    <action-btn>
+                        <action-btn-add @click="increase(index)" size="mini"></action-btn-add>
+                        <action-btn-remove @click="decrease(index)" size="mini"></action-btn-remove>
+                    </action-btn>
                 </vddl-nodrag>
             </vddl-draggable>
         </vddl-list>
@@ -117,7 +117,7 @@
             </div>
             <div slot="footer" class="dialog-footer text-left mt-4">
                 <el-button type="primary" @click="confirmBulkEdit()">{{ $t('Yes, Confirm!') }}</el-button>
-                <el-button @click="bulkEditVisible = false" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+                <el-button @click="bulkEditVisible = false" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
             </div>
         </el-dialog>
 
@@ -125,9 +125,12 @@
 </template>
 
 <script type="text/babel">
-    import elLabel from '../../includes/el-label.vue'
+    import elLabel from '../../includes/el-label.vue';
     import each from 'lodash/each';
-    import PhotoWidget from '../../../../common/PhotoUploader'
+    import PhotoWidget from '@/common/PhotoUploader';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'advanced-options',
@@ -146,7 +149,10 @@
         },
         components: {
             elLabel,
-            PhotoWidget
+            PhotoWidget,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
