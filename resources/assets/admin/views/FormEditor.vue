@@ -43,7 +43,7 @@
                                 <!-- Empty dropzone placeholder -->
                                 <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
                                     <i @click.stop="editorInserterPopup(0, form.dropzone)"
-                                    class="popup-search-element ff-icon ff-icon-plus"></i>
+                                    class="popup-search-element ff-icon el-icon-circle-plus-outline"></i>
                                 </div>
 
                                 <template v-if="is_conversion_form">

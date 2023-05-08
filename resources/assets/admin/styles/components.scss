@@ -124,6 +124,19 @@
     border-color: transparent;
     height: auto;
   }
+  .popup-search-element{
+    background-color: #CAF6EA;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $base-color;
+    &:hover{
+      color: $white;
+      background-color: #26B991;
+    }
+  }
 }
 
 .popup-search-element {
