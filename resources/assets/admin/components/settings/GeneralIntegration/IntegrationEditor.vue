@@ -19,7 +19,7 @@
                 </card-head-group>
             </card-head>
             <card-body>
-                <div v-loading="loading_app" class="integration_edit">
+                <el-skeleton :loading="loading_app" animated :rows="6" class="integration_edit">
                     <el-form v-if="!loading_app" label-position="top">
                         <template v-for="(field, fieldIndex) in settings_fields.fields">
                             <el-form-item
@@ -320,7 +320,7 @@
                             </el-button>
                         </template>
                     </el-form>
-                </div>
+                </el-skeleton>
             </card-body>
         </card>
     </div>
