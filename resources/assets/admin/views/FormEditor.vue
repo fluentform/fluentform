@@ -42,9 +42,8 @@
 
                                 <!-- Empty dropzone placeholder -->
                                 <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
-                                    <span @click.stop="editorInserterPopup(0, form.dropzone)"
-                                    class="popup-search-element">
-                                    <img :src="plusIcon" alt=""></span>
+                                    <i @click.stop="editorInserterPopup(0, form.dropzone)"
+                                    class="popup-search-element ff-icon ff-icon-plus"></i>
                                 </div>
 
                                 <template v-if="is_conversion_form">
@@ -82,7 +81,7 @@
                         <!-- =========================
                             SUBMIT BUTTON
                         ============================== -->
-                        <div class="ff_default_submit_button_wrapper mt-3" v-if="form.dropzone.length">
+                        <div class="ff_default_submit_button_wrapper mt-3">
                             <submitButton
                                 v-if="Object.keys(submitButton).length"
                                 :editItem="editItem"
@@ -507,7 +506,6 @@ export default {
             renameFormVisibility: false,
             editorInserterInContainer: false,
             instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
-            plusIcon: FluentFormApp.plugin_public_url + 'img/plus.svg',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false
         }
