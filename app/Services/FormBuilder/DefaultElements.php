@@ -161,7 +161,7 @@ $defaultElements = [
                 'unique_validation_message' => __('Email address need to be unique.', 'fluentform'),
             ],
             'editor_options' => [
-                'title'      => __('Email Address', 'fluentform'),
+                'title'      => __('Email', 'fluentform'),
                 'icon_class' => 'ff-edit-email',
                 'template'   => 'inputText',
             ],
@@ -1098,7 +1098,7 @@ $defaultElements = [
                 'conditional_logics' => [],
             ],
             'editor_options' => [
-                'title'      => __('Password Field', 'fluentform'),
+                'title'      => __('Password', 'fluentform'),
                 'icon_class' => 'ff-edit-password',
                 'template'   => 'inputText',
             ],
@@ -1396,7 +1396,7 @@ if (! defined('FLUENTFORMPRO')) {
         'attributes'     => [],
         'settings'       => [],
         'editor_options' => [
-            'title'      => __('Phone Field', 'fluentform'),
+            'title'      => __('Phone', 'fluentform'),
             'icon_class' => 'el-icon-phone-outline',
             'template'   => 'inputText',
         ],
@@ -1469,7 +1469,7 @@ if (! defined('FLUENTFORMPRO')) {
         'settings'       => [],
         'options'        => [],
         'editor_options' => [
-            'title'      => __('Chained Select Field', 'fluentform'),
+            'title'      => __('Chained Select', 'fluentform'),
             'icon_class' => 'ff-edit-link',
             'template'   => 'chainedSelect',
         ],
@@ -1515,7 +1515,7 @@ if (! defined('FLUENTFORMPRO')) {
             'attributes'     => [],
             'settings'       => [],
             'editor_options' => [
-                'title'      => __('Payment Field', 'fluentform'),
+                'title'      => __('Payment', 'fluentform'),
                 'icon_class' => 'ff-edit-shopping-cart',
                 'element'    => 'input-radio',
                 'template'   => 'inputMultiPayment',
@@ -1527,7 +1527,7 @@ if (! defined('FLUENTFORMPRO')) {
             'attributes'     => [],
             'settings'       => [],
             'editor_options' => [
-                'title'      => __('Subscription Field', 'fluentform'),
+                'title'      => __('Subscription', 'fluentform'),
                 'icon_class' => 'ff-edit-shopping-cart',
                 'element'    => 'input-radio',
                 'template'   => 'inputSubscriptionPayment',
@@ -1561,7 +1561,7 @@ if (! defined('FLUENTFORMPRO')) {
             'attributes'     => [],
             'settings'       => [],
             'editor_options' => [
-                'title'      => __('Payment Method Field', 'fluentform'),
+                'title'      => __('Payment Method', 'fluentform'),
                 'icon_class' => 'ff-edit-credit-card',
                 'template'   => 'inputPaymentMethods',
             ],
