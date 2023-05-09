@@ -211,7 +211,7 @@ class Logger
                 ];
 
                 if ($log->action) {
-                    $entryLog['title'] = Helper::getLogInitiator($log->action);
+                    $entryLog['title'] = Helper::getLogInitiator($log->action, $logType);
                 }
 
                 $entryLogs[] = $entryLog;

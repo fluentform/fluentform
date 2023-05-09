@@ -752,7 +752,7 @@ class Helper
         } else {
             $title = ucwords(
                 str_replace(
-                    ['fluentform_integration_notify_', 'fluentform_', '_notification_feed', '_'],
+                    ['fluentform/integration_notify_', 'fluentform_', '_notification_feed', '_'],
                     ['', '', '', ' '],
                     $action
                 )
