@@ -514,7 +514,7 @@ class FormService
                 'disabled'    => true,
                 'title'       => __('Coupon', 'fluentform'),
                 'description' => __('Coupon is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/Coupon.png'),
+                'image'       => fluentformMix('img/pro-fields/coupon.png'),
                 'video'       => '',
             ];
         }
