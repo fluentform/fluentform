@@ -88,6 +88,25 @@ const registerRepeaterButtonsOldVersion = function ($theForm) {
 };
 
 const registerRepeaterHandler = function ($theForm) {
+    // Get the screen type from local storage
+    let screenType = window.localStorage.getItem('ff_window_type');
+
+    // Add screen type clasess
+    if(jQuery('.ff_form_preview')){
+        jQuery('.ff-el-repeater').addClass(screenType);
+    }
+
+    // Add mobile class to repeater fields on screen mobile view
+    $theForm.on('screen-change', function(e, width){
+        if(jQuery('.ff_form_preview')){
+            if(width == '375px'){
+                jQuery('.ff-el-repeater').addClass('mobile');
+            }else{
+                jQuery('.ff-el-repeater').removeClass('mobile');
+            }
+        }
+    });
+
     $theForm.on('click', '.js-repeater .repeat-plus', function (e) {
         let $btnPlus = jQuery(this);
         let $table = $btnPlus.closest('table');

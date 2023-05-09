@@ -478,6 +478,33 @@ table.ff_flexible_table {
   }
 }
 
+// preview repeater fields mobile
+.ff-el-repeater{
+  &.mobile{
+    thead {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    tbody{
+      tr{
+        display: block;
+        background: #fff;
+        position: relative;
+        border: 1px solid #ced4da;
+        border-top: 2px solid #ced4da;
+        border-bottom: 4px solid #ced4da;
+        margin: 16px 0 10px;
+      }
+      td{
+        display: block;
+        width: 100%;
+        padding: 10px;
+      }
+    }
+  }
+}
+
 span.ff-el-rating-text {
   line-height: 100%;
   vertical-align: bottom;
