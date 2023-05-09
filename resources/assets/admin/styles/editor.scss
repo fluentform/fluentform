@@ -728,7 +728,6 @@ mark {
 }
 .repeat-field--item {
   width: calc(100% - 40px);
-  float: left;
   margin-right: 5px;
   display: flex;
 
@@ -745,10 +744,15 @@ mark {
     width: 100%;
   }
 }
-
+.repeat-field{
+  .el-form-item__content{
+    display: flex;
+    align-items: center;
+  }
+}
 
 .repeat-field-actions {
-  margin-top: 40px;
+  margin-top: 26px;
 }
 
 .section-break {
