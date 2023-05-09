@@ -124,7 +124,6 @@ class FormIntegrationService
         } else {
             if (empty($metaValue['name'])) {
                 $errors['name'] = [__('Feed name is required', 'fluentform')];
-//                throw new ValidationException('Validation Failed!!', 422, null, $errors);
                 wp_send_json_error([
                     'message' => __('Validation Failed! Feed name is required', 'fluentform'),
                     'errors'  => $errors
@@ -161,11 +160,19 @@ class FormIntegrationService
             'Use fluentform/save_integration_settings_' . $integrationName . ' instead of fluentform_save_integration_settings_' . $integrationName
         );
         $data = apply_filters('fluentform/save_integration_settings_' . $integrationName, $data, $integrationId);
-        $integration = FormMeta::persist($data['form_id'], $data['meta_key'], $data['value']);
+    
+        if ($integrationId) {
+            FormMeta::where('form_id', $formId)
+                ->where('id', $integrationId)
+                ->update($data);
+        } else {
+            $integrationId = FormMeta::insertGetId($data);
+        }
+        
         
         return ([
             'message'          => __('Integration successfully saved', 'fluentform'),
-            'integration_id'   => $integration->id,
+            'integration_id'   => $integrationId,
             'integration_name' => $integrationName,
             'created'          => empty($integrationId),
         ]);
@@ -183,13 +190,13 @@ class FormIntegrationService
             'fluentform/global_notification_types',
             'Use fluentform/global_notification_types instead of fluentform_global_notification_types.'
         );
-        $notificationKeys = apply_filters('fluentform/global_notification_types', [], $formId);
+        $notificationKeys = apply_filters('fluentform/global_notification_types', $notificationKeys, $formId);
         $feeds = [];
         if ($notificationKeys) {
             $feeds = FormMeta::whereIn('meta_key', $notificationKeys)->where('form_id', $formId)->get();
         }
         $formattedFeeds = [];
-        
+      
         if (!empty($feeds)) {
             foreach ($feeds as $feed) {
                 $data = json_decode($feed->value, true);
