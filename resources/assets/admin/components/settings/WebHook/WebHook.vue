@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" class="ff_webhook_wrap">
+    <div class="ff_webhook_wrap">
         <card>
             <card-head>
                 <card-head-group class="justify-between">
@@ -32,55 +32,57 @@
             <card-body>
                 <!-- WebHook Feeds Table: 1 -->
                 <div class="ff-table-wrap" v-if="!show_edit">
-                    <el-table class="ff_table_s2" :data="tableData">
-                    <template slot="empty">
-                        {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
-                        <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
-                    </template>
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-table class="ff_table_s2" :data="tableData">
+                            <template slot="empty">
+                                {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
+                                <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
+                            </template>
 
-                    <el-table-column width="100">
-                        <template slot-scope="scope">
-                            <el-switch active-color="#13ce66" @change="handleActive(scope.row)" v-model="scope.row.formattedValue.enabled"></el-switch>
-                        </template>
-                    </el-table-column>
+                            <el-table-column width="100">
+                                <template slot-scope="scope">
+                                    <el-switch active-color="#13ce66" @change="handleActive(scope.row)" v-model="scope.row.formattedValue.enabled"></el-switch>
+                                </template>
+                            </el-table-column>
 
-                    <el-table-column
-                        prop="formattedValue.name"
-                        :label="$t('Name')">
-                    </el-table-column>
+                            <el-table-column
+                                prop="formattedValue.name"
+                                :label="$t('Name')">
+                            </el-table-column>
 
-                    <el-table-column
-                        prop="formattedValue.request_url"
-                        :label="('WebHook URL')">
-                    </el-table-column>
+                            <el-table-column
+                                prop="formattedValue.request_url"
+                                :label="('WebHook URL')">
+                            </el-table-column>
 
-                    <el-table-column width="160" label="Actions" class-name="action-buttons">
-                        <template slot-scope="scope">
-                            <btn-group>
-                                <btn-group-item>
-                                    <el-button
-                                        class="el-button--icon"
-                                        @click="edit(scope.$index)"
-                                        type="primary"
-                                        icon="el-icon-setting"
-                                        size="mini"
-                                    >
-                                    </el-button>
-                                </btn-group-item>
-                                <btn-group-item>
-                                    <remove @on-confirm="remove(scope.row.id)">
-                                        <el-button
-                                            class="el-button--icon"
-                                            size="mini"
-                                            type="danger"
-                                            icon="el-icon-delete"
-                                        />
-                                    </remove>
-                                </btn-group-item>
-                            </btn-group>
-                        </template>
-                    </el-table-column>
-                    </el-table>
+                            <el-table-column width="160" label="Actions" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <btn-group>
+                                        <btn-group-item>
+                                            <el-button
+                                                class="el-button--icon"
+                                                @click="edit(scope.$index)"
+                                                type="primary"
+                                                icon="el-icon-setting"
+                                                size="mini"
+                                            >
+                                            </el-button>
+                                        </btn-group-item>
+                                        <btn-group-item>
+                                            <remove @on-confirm="remove(scope.row.id)">
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </btn-group-item>
+                                    </btn-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
                 </div>
                 <!-- WebHook Feed Editor -->
                 <editor
