@@ -29,7 +29,7 @@
             <notice v-else class="mt-4" type="danger-soft">
                 <h6 class="title mb-2">Post type form is a Pro features</h6>
                 <p class="text">Please upgrade to PRO to unlock the feature.</p>
-                <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">Upgrage to Pro</a>
+                <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">Upgrade to Pro</a>
             </notice>
         </el-dialog>
     </div>
