@@ -61,7 +61,7 @@
                     <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
                 </div>
                 <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
-                    {{$t('Upgrage to Pro')}}
+                    {{$t('Upgrade to Pro')}}
                 </a>
             </notice>
         </el-dialog>

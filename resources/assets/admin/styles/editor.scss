@@ -429,16 +429,16 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 .editor_play_video {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: -70px;
   transform: translateX(-50%);
   background: $white;
   border: 1px solid $base-color;
-  padding: 12px 24px;
+  padding: 10px 14px;
   color: $base-color;
   border-radius: 20px;
   border-radius: 10px;
   box-shadow: 2px 2px $base-color;
-  font-size: 16px;
+  font-size: 15px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -467,7 +467,7 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
   .ff-user-guide {
     text-align: center;
     margin-top: -138px;
-    padding-right: 22px;
+    margin-left: -16px;
     img{
       width: 100%;
     }

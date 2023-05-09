@@ -42,8 +42,9 @@
 
                                 <!-- Empty dropzone placeholder -->
                                 <div v-if="!form.dropzone.length" class="empty-dropzone-placeholder">
-                                    <i @click.stop="editorInserterPopup(0, form.dropzone)"
-                                    class="popup-search-element ff-icon el-icon-circle-plus-outline"></i>
+                                    <span @click.stop="editorInserterPopup(0, form.dropzone)"
+                                    class="popup-search-element">
+                                    <img :src="plusIcon" alt=""></span>
                                 </div>
 
                                 <template v-if="is_conversion_form">
@@ -506,6 +507,7 @@ export default {
             renameFormVisibility: false,
             editorInserterInContainer: false,
             instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
+            plusIcon: FluentFormApp.plugin_public_url + 'img/plus.svg',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false
         }
