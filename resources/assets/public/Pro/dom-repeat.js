@@ -93,16 +93,16 @@ const registerRepeaterHandler = function ($theForm) {
 
     // Add screen type clasess
     if(jQuery('.ff_form_preview')){
-        jQuery('.ff-el-repeater').addClass(screenType);
+        jQuery('.ff_flexible_table').addClass(screenType);
     }
 
     // Add mobile class to repeater fields on screen mobile view
     $theForm.on('screen-change', function(e, width){
         if(jQuery('.ff_form_preview')){
             if(width == '375px'){
-                jQuery('.ff-el-repeater').addClass('mobile');
+                jQuery('.ff_flexible_table').addClass('mobile');
             }else{
-                jQuery('.ff-el-repeater').removeClass('mobile');
+                jQuery('.ff_flexible_table').removeClass('mobile');
             }
         }
     });

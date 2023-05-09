@@ -478,8 +478,7 @@ table.ff_flexible_table {
   }
 }
 
-// preview repeater fields mobile
-.ff-el-repeater{
+.ff_flexible_table{
   &.mobile{
     thead {
       position: absolute;
@@ -487,6 +486,11 @@ table.ff_flexible_table {
       left: -9999px;
     }
     tbody{
+      td{
+        display: block;
+        width: 100%;
+        padding: 10px;
+      }
       tr{
         display: block;
         background: #fff;
@@ -496,10 +500,58 @@ table.ff_flexible_table {
         border-bottom: 4px solid #ced4da;
         margin: 16px 0 10px;
       }
+    }
+  }
+}
+
+.ff_repeater_table{
+  &.mobile{
+    tbody{
       td{
         display: block;
         width: 100%;
         padding: 10px;
+        .ff-el-group{
+          margin-top: 6px;
+        }
+        &::before {
+          content: attr(data-label);
+          font-size: .875em;
+          letter-spacing: .5pt;
+          white-space: nowrap;
+          display: block;
+          clear: both;
+        }
+      }
+    }
+  }
+}
+
+.ff-checkable-grids {
+  &.mobile{
+    border: 0;
+    tbody {
+      tr {
+        padding-top: 0 !important;
+        &:nth-child(2n) > td {
+          background: transparent;
+        }
+      }
+      td{
+        text-align: left !important;
+        padding-left: 10px !important;
+        padding-left: 10px !important;
+        &.ff_grid_header {
+          background-color: #eeeeee !important;
+          margin: 0;
+        }
+        &::after {
+          padding-left: 10px;
+          content: attr(data-label);
+          letter-spacing: 0.5pt;
+          white-space: nowrap;
+          display: inline-block;
+        }
       }
     }
   }
