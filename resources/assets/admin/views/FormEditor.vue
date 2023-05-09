@@ -82,7 +82,7 @@
                         <!-- =========================
                             SUBMIT BUTTON
                         ============================== -->
-                        <div class="ff_default_submit_button_wrapper mt-3">
+                        <div class="ff_default_submit_button_wrapper mt-3" v-if="form.dropzone.length">
                             <submitButton
                                 v-if="Object.keys(submitButton).length"
                                 :editItem="editItem"
