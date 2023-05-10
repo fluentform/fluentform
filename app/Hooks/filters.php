@@ -212,7 +212,7 @@ $app->addFilter('fluentform/response_render_input_name', function ($response) {
 }, 10, 1);
 
 $app->addFilter('fluentform/response_render_input_password', function ($value, $field, $formId) {
-    if (Helper::shouldHidePassword($formId)) {
+    if (\FluentForm\App\Helpers\Helper::shouldHidePassword($formId)) {
         $value = str_repeat('*', 6) . ' ' . __('(truncated)', 'fluentform');
     }
 
