@@ -807,7 +807,7 @@ class Predefined extends Form
             ],
         ];
 
-        apply_filters_deprecated(
+        $forms = apply_filters_deprecated(
             'fluentform_predefined_forms',
             [
                 $forms

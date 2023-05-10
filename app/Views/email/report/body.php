@@ -232,7 +232,7 @@
                                     '<a href="' .  admin_url('admin.php?page=fluent_forms_settings') . '">',
                                     '</a>'
                                 );
-                                apply_filters_deprecated(
+                                $footerText = apply_filters_deprecated(
                                     'fluentform_email_summary_footer_text',
                                     [
                                         $footerText

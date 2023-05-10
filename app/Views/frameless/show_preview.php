@@ -92,7 +92,7 @@
                 do_action('fluentform/form_styler', $form_id);
             ?>
             <?php
-                apply_filters_deprecated(
+                $isShowPreview = apply_filters_deprecated(
                     'fluentform_show_preview_promo',
                     [
                         true
@@ -101,7 +101,7 @@
                     'fluentform/show_preview_promo',
                     'Use fluentform/show_preview_promo instead of fluentform_show_preview_promo.'
                 );
-                elseif(apply_filters('fluentform/show_preview_promo', true)):
+                elseif(apply_filters('fluentform/show_preview_promo', $isShowPreview)):
             ?>
                 <div class="ff_styler_promo">
                     <div class="ff_promo_header">

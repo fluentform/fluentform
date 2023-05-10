@@ -204,7 +204,7 @@ class Component
 
         $editorComponents = $components->sort()->toArray();
 
-        apply_filters_deprecated(
+        $editorComponents = apply_filters_deprecated(
             'fluent_editor_components',
             [
                 $editorComponents,
@@ -433,7 +433,7 @@ class Component
             ];
         }
 
-        apply_filters_deprecated(
+        $disabled = apply_filters_deprecated(
             'fluentform_disabled_components',
             [
                 $disabled

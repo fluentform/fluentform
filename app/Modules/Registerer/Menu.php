@@ -429,7 +429,7 @@ class Menu
                 [$this, 'renderAllEntriesAdminRoute']
             );
 
-            apply_filters_deprecated(
+            $isShowPaymentSubmission = apply_filters_deprecated(
                 'fluentform_show_payment_entries',
                 [
                     false
@@ -439,7 +439,7 @@ class Menu
                 'Use fluentform/show_payment_entries instead of fluentform_show_payment_entries.'
             );
 
-            if (apply_filters('fluentform/show_payment_entries', false)) {
+            if (apply_filters('fluentform/show_payment_entries', $isShowPaymentSubmission)) {
                 add_submenu_page(
                     'fluent_forms',
                     __('Payments', 'fluentform'),
@@ -589,7 +589,7 @@ class Menu
             ];
         }
 
-        apply_filters_deprecated(
+        $formAdminMenus = apply_filters_deprecated(
             'fluentform_form_admin_menu',
             [
                 $formAdminMenus,
@@ -650,7 +650,7 @@ class Menu
             ];
         }
 
-        apply_filters_deprecated(
+        $settingsMenus = apply_filters_deprecated(
             'fluentform_form_settings_menu',
             [
                 $settingsMenus,
@@ -742,7 +742,7 @@ class Menu
 
         $formsCount = wpFluent()->table('fluentform_forms')->count();
 
-        apply_filters_deprecated(
+        $isDisabledAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
                 false
@@ -759,11 +759,11 @@ class Menu
             'upgrade_url'        => fluentform_upgrade_url(),
             'adminUrl'           => admin_url('admin.php?page=fluent_forms'),
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
-            'isDisableAnalytics' => $this->app->applyFilters('fluentform/disabled_analytics', false),
+            'isDisableAnalytics' => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
             'plugin_public_url'    => fluentformMix(),
         ];
 
-        apply_filters_deprecated(
+        $data = apply_filters_deprecated(
             'fluent_all_forms_vars',
             [
                 $data

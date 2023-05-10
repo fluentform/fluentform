@@ -39,7 +39,7 @@
     </div>
 </div>
 <?php
-apply_filters_deprecated(
+$dashboard_notices = apply_filters_deprecated(
     'fluentform_dashboard_notices',
     [
         []
@@ -48,7 +48,7 @@ apply_filters_deprecated(
     'fluentform/dashboard_notices',
     'Use fluentform/dashboard_notices instead of fluentform_dashboard_notices.'
 );
-$notices = apply_filters('fluentform/dashboard_notices', []);
+$notices = apply_filters('fluentform/dashboard_notices', $dashboard_notices);
 
 if ($notices) {
     echo '<div class="ff_global_notices">';

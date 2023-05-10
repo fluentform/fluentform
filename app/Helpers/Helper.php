@@ -134,7 +134,7 @@ class Helper
             'net_promoter_score',
         ];
 
-        apply_filters_deprecated(
+        $data = apply_filters_deprecated(
             'fluentform_reportable_inputs',
             [
                 $data
@@ -149,7 +149,7 @@ class Helper
 
     public static function getSubFieldReportableInputs()
     {
-        apply_filters_deprecated(
+        $grid = apply_filters_deprecated(
             'fluentform_subfield_reportable_inputs',
             [
                 'tabular_grid'
@@ -159,9 +159,7 @@ class Helper
             'Use fluentform/subfield_reportable_inputs instead of fluentform_subfield_reportable_inputs.'
         );
 
-        return apply_filters('fluentform/subfield_reportable_inputs', [
-            'tabular_grid',
-        ]);
+        return apply_filters('fluentform/subfield_reportable_inputs', $grid);
     }
 
     public static function getFormMeta($formId, $metaKey, $default = '')
@@ -263,7 +261,7 @@ class Helper
             $status = false;
         }
 
-        apply_filters_deprecated(
+        $status = apply_filters_deprecated(
             'fluentform_is_admin_page',
             [
                 $status
@@ -416,7 +414,7 @@ class Helper
             ],
         ];
 
-        apply_filters_deprecated(
+        $data = apply_filters_deprecated(
             'fluentform_numeric_styles',
             [
                 $data
@@ -536,7 +534,7 @@ class Helper
         $meta = static::getFormMeta($formId, 'ffc_form_settings_meta', []);
         $key = ArrayHelper::get($meta, 'share_key', '');
 
-        apply_filters_deprecated(
+        $slug = apply_filters_deprecated(
             'fluentform_conversational_url_slug',
             [
                 'fluent-form'
@@ -546,7 +544,7 @@ class Helper
             'Use fluentform/conversational_url_slug instead of fluentform_conversational_url_slug.'
         );
 
-        $paramKey = apply_filters('fluentform/conversational_url_slug', 'fluent-form');
+        $paramKey = apply_filters('fluentform/conversational_url_slug', $slug);
 
         if ('form' == $paramKey) {
             $paramKey = 'fluent-form';
@@ -571,7 +569,7 @@ class Helper
             ],
         ];
 
-        apply_filters_deprecated(
+        $locations = apply_filters_deprecated(
             'fluentform_file_upload_options',
             [
                 $locations
@@ -653,7 +651,7 @@ class Helper
 
     public static function shouldHidePassword($formId)
     {
-        apply_filters_deprecated(
+        $isTruncate = apply_filters_deprecated(
             'fluentform_truncate_password_values',
             [
                 true,
@@ -664,7 +662,7 @@ class Helper
             'Use fluentform/truncate_password_values instead of fluentform_truncate_password_values.'
         );
 
-        return apply_filters('fluentform/truncate_password_values', true, $formId) &&
+        return apply_filters('fluentform/truncate_password_values', $isTruncate, $formId) &&
         (
             (defined('FLUENTFORM_RENDERING_ENTRIES') && FLUENTFORM_RENDERING_ENTRIES) ||
             (defined('FLUENTFORM_RENDERING_ENTRY') && FLUENTFORM_RENDERING_ENTRY) ||

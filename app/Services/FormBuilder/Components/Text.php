@@ -83,7 +83,7 @@ class Text extends BaseComponent
                 );
                 do_action('fluentform/rendering_calculation_form', $form, $data);
             } else {
-                apply_filters_deprecated(
+                $isDisable = apply_filters_deprecated(
                     'fluentform_disable_inputmode',
                     [
                         false
@@ -92,7 +92,7 @@ class Text extends BaseComponent
                     'fluentform/disable_input_mode',
                     'Use fluentform/disable_input_mode instead of fluentform_disable_inputmode'
                 );
-                if (! apply_filters('fluentform/disable_input_mode', false)) {
+                if (! apply_filters('fluentform/disable_input_mode', $isDisable)) {
                     $inputMode = ArrayHelper::get($data, 'attributes.inputmode');
                     if (! $inputMode) {
                         $inputMode = 'numeric';

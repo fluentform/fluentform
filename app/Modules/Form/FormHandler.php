@@ -605,7 +605,7 @@ class FormHandler
     {
         $formId = $this->form->id;
         $nonceVerify = false;
-        apply_filters_deprecated(
+        $nonceVerify = apply_filters_deprecated(
             'fluentform_nonce_verify',
             [
                 $nonceVerify,
@@ -621,7 +621,7 @@ class FormHandler
         if ($shouldVerifyNonce) {
             $nonce = Arr::get($this->formData, '_fluentform_' . $formId . '_fluentformnonce');
             if (!wp_verify_nonce($nonce, 'fluentform-submit-form')) {
-                apply_filters_deprecated(
+                $nonceMessage = apply_filters_deprecated(
                     'fluentForm_nonce_error',
                     [
                         '_fluentformnonce' => [
@@ -633,11 +633,7 @@ class FormHandler
                     'Use fluentform/nonce_error instead of fluentForm_nonce_error.'
                 );
 
-                $errors = $this->app->applyFilters('fluentform/nonce_error', [
-                    '_fluentformnonce' => [
-                        __('Nonce verification failed, please try again.', 'fluentform'),
-                    ],
-                ]);
+                $errors = $this->app->applyFilters('fluentform/nonce_error', $nonceMessage);
                 wp_send_json(['errors' => $errors], 422);
             }
         }
@@ -740,8 +736,8 @@ class FormHandler
     private function validateHCaptcha()
     {
         $hasAutoHcaptcha = false;
-    
-        apply_filters_deprecated(
+
+        $hasAutoHcaptcha = apply_filters_deprecated(
             'ff_has_auto_hcaptcha',
             [
                 $hasAutoHcaptcha
@@ -775,7 +771,7 @@ class FormHandler
     private function validateTurnstile()
     {
         $hasAutoTurnsTile = false;
-        apply_filters_deprecated(
+        $hasAutoTurnsTile = apply_filters_deprecated(
             'ff_has_auto_turnstile',
             [
                 $hasAutoTurnsTile

@@ -120,7 +120,7 @@ class GlobalNotificationManager
             $processedValues = ShortCodeParser::parse($processedValues, $insertId, $formData, $form, false, $feed['meta_key']);
             $feed['processedValues'] = $processedValues;
 
-            apply_filters_deprecated(
+            $isNotifyAsync = apply_filters_deprecated(
                 'fluentform/notifying_async_' . $integrationKey,
                 [
                     true,
@@ -130,7 +130,10 @@ class GlobalNotificationManager
                 'fluentform/notifying_async_' . $integrationKey,
                 'Use fluentform/notifying_async_' . $integrationKey . ' instead of fluentform_notifying_async_' . $integrationKey
             );
-            if (apply_filters('fluentform/notifying_async_' . $integrationKey, true, $form->id)) {
+
+            $isNotifyAsync = apply_filters('fluentform/notifying_async_' . $integrationKey, $isNotifyAsync, $form->id);
+
+            if ($isNotifyAsync) {
                 // It's async
                 $asyncFeeds[] = [
                     'action'     => $action,

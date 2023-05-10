@@ -204,7 +204,7 @@ class Scheduler
     private static function cleanUpOldData()
     {
         $days = 60;
-        apply_filters_deprecated(
+        $days = apply_filters_deprecated(
             'fluentform_cleanup_days_count',
             [
                 $days

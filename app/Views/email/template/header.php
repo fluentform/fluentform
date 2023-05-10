@@ -18,7 +18,7 @@ $status = apply_filters_deprecated(
     'Use fluentform/email_template_email_heading instead of fluentform_email_template_email_heading.'
 );
 $email_heading = apply_filters('fluentform/email_template_email_heading', $status, $form, $notification);
-apply_filters_deprecated(
+$hasHeaderImage = apply_filters_deprecated(
     'fluentform_email_template_header_image',
     [
         false,
@@ -29,7 +29,7 @@ apply_filters_deprecated(
     'fluentform/email_template_header_image',
     'Use fluentform/email_template_header_image instead of fluentform_email_template_header_image.'
 );
-$headerImage = apply_filters('fluentform/email_template_header_image', false, $form, $notification);
+$headerImage = apply_filters('fluentform/email_template_header_image', $hasHeaderImage, $form, $notification);
 $contentType = apply_filters_deprecated(
     'fluentform_email_content_type_header',
     [

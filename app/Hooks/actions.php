@@ -600,7 +600,7 @@ function fluentform_after_submission_api_response_success($form, $entryId, $data
     try {
         $isDev = 'production' != wpFluentForm()->getEnv();
 
-        apply_filters_deprecated(
+        $isDev = apply_filters_deprecated(
             'fluentform_api_success_log',
             [
                 $isDev,
@@ -831,7 +831,7 @@ add_action('fluentform/integration_action_result', function ($feed, $status, $no
 }, 10, 3);
 
 add_action('fluentform/global_notify_completed', function ($insertId, $form) use ($app) {
-    apply_filters_deprecated(
+    $isTruncate = apply_filters_deprecated(
         'fluentform_truncate_password_values',
         [
             true,
@@ -842,7 +842,7 @@ add_action('fluentform/global_notify_completed', function ($insertId, $form) use
         'Use fluentform/truncate_password_values instead of fluentform_truncate_password_values.'
     );
 
-    if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform/truncate_password_values', true, $form->id)) {
+    if (strpos($form->form_fields, '"element":"input_password"') && apply_filters('fluentform/truncate_password_values', $isTruncate, $form->id)) {
         // we have password
         (new \FluentForm\App\Services\Integrations\GlobalNotificationService())->cleanUpPassword($insertId, $form);
     }

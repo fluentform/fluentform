@@ -203,7 +203,7 @@ trait MailChimpSubscriber
             }
 
             if ($arguments['tags']) {
-                apply_filters_deprecated(
+                $isExistingTags = apply_filters_deprecated(
                     'fluentform_mailchimp_keep_existing_tags',
                     [
                         true,
@@ -213,7 +213,7 @@ trait MailChimpSubscriber
                     'fluentform/mailchimp_keep_existing_tags',
                     'Use fluentform/mailchimp_keep_existing_tags instead of fluentform_mailchimp_keep_existing_tags.'
                 );
-                if (apply_filters('fluentform/mailchimp_keep_existing_tags', true, $form->id)) {
+                if (apply_filters('fluentform/mailchimp_keep_existing_tags', $isExistingTags, $form->id)) {
                     $tags = ArrayHelper::get($existingMember, 'tags', []);
                     $tagNames = [];
                     foreach ($tags as $tag) {
