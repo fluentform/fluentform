@@ -130,36 +130,44 @@
     margin-bottom: 56px;
 }
 
-.fluent_activation_wrapper {
-    border: 1px solid #F2F2F2;
-    .el-button {
-        height: 44px;
-    }
-}
 .fluent_activate_now {
     display: none;
 }
 
-label.fluentform_label {
-    display: inline-block;
-    margin-right: 10px;
-    margin-top: -2px;
-    width: 470px;
-    input{
-        width: 100%;
-        height: 44px;
-        background-color: #F2F2F2;
+.fluent_activation_wrapper{
+    .fluentform_label {
+      display: inline-block;
+      margin-right: 10px;
+      margin-top: -4px;
+      width: 270px;
+      input{
+          width: 100%;
+          background-color: #F2F2F2;
+          &::-webkit-input-placeholder{
+            color: #908f8f;
+          }
+      }
     }
-}
-p.contact_us_line {
-    margin-top: 12px;
+    .contact_us_line {
+      margin-top: 12px;
+    }
+    .fluent_plugin_activated_hide {
+      display: none;
+    }
 }
 
 .license_activated_sucess {
-    padding: 20px 0px;
-    font-size: 20px;
-    color: #525556;
+    margin-bottom: 16px;
+    h5{
+        margin-bottom: 8px;
+    }
 }
+.ff_add_on_body{
+    .notice, div.error, div.updated{
+        margin: 0 0 10px 0;
+    }
+}
+
 .fluent_activation_wrapper .fluent_plugin_activated_hide {
     display: none !important;
 }
