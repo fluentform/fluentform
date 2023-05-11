@@ -562,7 +562,7 @@
                 visibleColReorderModal: false,
                 visibleColumns: null,
                 columnsOrder: null,
-                radioOption: ''
+                radioOption: 'all'
             }
         },
         computed: {
@@ -981,7 +981,6 @@
         },
         mounted() {
             this.getEntryResources();
-            this.radioOption = 'all';
             (new ClipboardJS('.copy')).on('success', (e) => {
                 this.$copy();
             });
