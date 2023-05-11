@@ -10,9 +10,15 @@ return function ($file) {
     add_action('plugins_loaded',function (){
         $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.0.0', '<');
         if ($isNotCompatible) {
-            return add_action('admin_notices', function () {
-                $class = 'notice notice-error';
-                $message = 'You are using old version of Fluent Forms Pro. Please update to latest from your plugins list or you can downgrade Fluent Forms Pro to a previous version.';
+            $class = 'notice notice-error';
+            $message = __('You are using old version of Fluent Forms Pro. Please update Fluent Forms Pro to the latest from your plugins list or you can downgrade Fluent Forms less than 5.0.0 version.', 'fluentform');
+            add_action('admin_notices', function () use ($class, $message) {
+                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), $message);
+            });
+            add_action('fluentform/global_menu', function () use ($class, $message) {
+                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), $message);
+            });
+            return add_action('fluentform/after_form_menu', function () use ($class, $message) {
                 printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), $message);
             });
         }
