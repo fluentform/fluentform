@@ -680,42 +680,6 @@ $app->addAction('fluentform/before_form_render', function ($form) {
     do_action('fluentform/load_form_assets', $form->id);
 });
 
-$app->addAction('fluentform/before_form_render', function ($form) {
-    do_action_deprecated(
-        'fluentform_load_form_assets',
-        [
-            $form->id,
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/load_form_assets',
-        'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
-    );
-    do_action('fluentform/load_form_assets', $form->id);
-});
-
-$app->addAction('fluentform/load_form_assets', function ($formId) {
-    // check if alreaded loaded
-    if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
-        (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId);
-        \FluentForm\App\Helpers\Helper::$loadedForms[] = $formId;
-        $selectedStyle = \FluentForm\App\Helpers\Helper::getFormMeta($formId, '_ff_selected_style');
-
-        if ($selectedStyle) {
-            do_action_deprecated(
-                'fluentform_init_custom_stylesheet',
-                [
-                    $selectedStyle,
-                    $formId
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/init_custom_stylesheet',
-                'Use fluentform/init_custom_stylesheet instead of fluentform_init_custom_stylesheet.'
-            );
-            do_action('fluentform/init_custom_stylesheet', $selectedStyle, $formId);
-        }
-    }
-});
-
 $app->addAction('fluentform/load_form_assets', function ($formId) {
     // check if alreaded loaded
     if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
