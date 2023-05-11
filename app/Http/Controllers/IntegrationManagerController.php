@@ -4,6 +4,7 @@ namespace FluentForm\App\Http\Controllers;
 
 
 use FluentForm\App\Helpers\IntegrationManagerHelper;
+use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 abstract class IntegrationManagerController extends IntegrationManagerHelper
@@ -25,6 +26,9 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
     
     public function __construct($app, $title, $integrationKey, $optionKey, $settingsKey, $priority = 11)
     {
+        if (!$app) {
+            $app = App::getInstance();
+        }
         $this->app = $app;
         $this->title = $title;
         $this->integrationKey = $integrationKey;
