@@ -20,35 +20,20 @@ class FormCssJs
 
     public function addCssJs($formId)
     {
-        // @todo: Limit 3 sometimes make things double
-        $metas = wpFluent()->table('fluentform_form_meta')
-            ->where('form_id', $formId)
-            ->whereIn('meta_key', [
-                '_custom_form_css',
-                '_custom_form_js',
-                '_ff_form_styler_css',
-            ])
-            ->groupBy('meta_key')
-            //->limit(3)
-            ->get();
-
-        if (!$metas) {
-            return;
-        }
-
-        foreach ($metas as $meta) {
-            if ($meta->value) {
-                if ('_custom_form_css' == $meta->meta_key) {
-                    $css = $meta->value;
-                    $css = str_replace('{form_id}', $formId, $css);
-                    $css = str_replace('FF_ID', $formId, $css);
-                    $this->addCss($formId, $css, 'fluentform_custom_css_' . $formId);
-                } elseif ('_ff_form_styler_css' == $meta->meta_key) {
-                    $css = $meta->value;
-                    $this->addCss($formId, $css, 'fluentform_styler_css_' . $formId);
-                } elseif ('_custom_form_js' == $meta->meta_key) {
-                    $this->addJs($formId, $meta->value);
-                }
+        $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId);
+        foreach ($metas as $metaKey => $metaValue) {
+            if (!$metaKey) {
+                continue;
+            }
+            if ('css' == $metaKey) {
+                $css = $metaKey;
+                $css = str_replace('{form_id}', $formId, $css);
+                $css = str_replace('FF_ID', $formId, $css);
+                $this->addCss($formId, $css, 'fluentform_custom_css_' . $formId);
+            } elseif ('styler' == $metaKey) {
+                $this->addCss($formId, $metaValue, 'fluentform_styler_css_' . $formId);
+            } elseif ('js' == $metaKey) {
+                $this->addJs($formId, $metaValue);
             }
         }
     }

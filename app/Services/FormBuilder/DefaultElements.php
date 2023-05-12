@@ -1242,7 +1242,7 @@ $defaultElements = [
                 'class' => '',
             ],
             'settings' => [
-                'shortcode'          => '[your_shorcode_here]',
+                'shortcode'          => '[your_shortcode_here]',
                 'conditional_logics' => [],
             ],
             'editor_options' => [

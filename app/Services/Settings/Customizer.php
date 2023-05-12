@@ -11,18 +11,25 @@ class Customizer
     public function get($formId)
     {
         $customizer = FormMeta::where('form_id', $formId)
-            ->whereIn('meta_key', ['_custom_form_css', '_custom_form_js'])
+            ->whereIn('meta_key', ['_custom_form_css', '_custom_form_js', '_ff_form_styler_css'])
             ->get()
             ->keyBy(function ($item) {
-                return '_custom_form_css' === $item->meta_key ? 'css' : 'js';
+                if ($item->meta_key === '_custom_form_css') {
+                    return 'css';
+                } elseif ($item->meta_key === '_custom_form_js') {
+                    return 'js';
+                } elseif ($item->meta_key === '_ff_form_styler_css') {
+                    return 'styler';
+                }
             })
             ->transform(function ($item) {
                 return $item->value;
             })->toArray();
-
+        
         return [
-            'css' => Arr::get($customizer, 'css'),
-            'js'  => Arr::get($customizer, 'js'),
+            'css'    => Arr::get($customizer, 'css'),
+            'js'     => Arr::get($customizer, 'js'),
+            'styler' => Arr::get($customizer, 'styler'),
         ];
     }
 
