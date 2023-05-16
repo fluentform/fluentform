@@ -21,19 +21,44 @@ class FormCssJs
     public function addCssJs($formId)
     {
         $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId);
+        do_action('fluentform/adding_custom_styler_css_js', $formId, $metas);
+        $stylerCss = $selectedStyle = '';
         foreach ($metas as $metaKey => $metaValue) {
-            if (!$metaKey) {
-                continue;
+            if ($metaValue) {
+                switch ($metaKey) {
+                    case 'css':
+                        $css = $metaValue;
+                        $css = str_replace('{form_id}', $formId, $css);
+                        $css = str_replace('FF_ID', $formId, $css);
+                        $this->addCss($formId, $css, 'fluentform_custom_css_' . $formId);
+                        break;
+                    case 'styler':
+                        $stylerCss = $metaValue;
+                        break;
+                    case 'js':
+                        $this->addJs($formId, $metaValue);
+                        break;
+                    case 'selected_style':
+                        $selectedStyle = $metaValue;
+                        break;
+                }
             }
-            if ('css' == $metaKey) {
-                $css = $metaKey;
-                $css = str_replace('{form_id}', $formId, $css);
-                $css = str_replace('FF_ID', $formId, $css);
-                $this->addCss($formId, $css, 'fluentform_custom_css_' . $formId);
-            } elseif ('styler' == $metaKey) {
-                $this->addCss($formId, $metaValue, 'fluentform_styler_css_' . $formId);
-            } elseif ('js' == $metaKey) {
-                $this->addJs($formId, $metaValue);
+        }
+        // Add styler css if a preset is selected
+        if ($selectedStyle) {
+            do_action_deprecated(
+                'fluentform_init_custom_stylesheet',
+                [
+                    $selectedStyle,
+                    $formId
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/init_custom_stylesheet',
+                'Use fluentform/init_custom_stylesheet instead of fluentform_init_custom_stylesheet.'
+            );
+            do_action('fluentform/init_custom_stylesheet', $selectedStyle, $formId);
+            if (defined('FLUENTFORMPRO')) {
+                $this->addCss($formId, $stylerCss, 'fluentform_styler_css_' . $formId);
             }
         }
     }
