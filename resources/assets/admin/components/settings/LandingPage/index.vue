@@ -429,6 +429,7 @@
                         window.localStorage.setItem('ff_landing_is_full_screen', 'no');
                     }
                 }
+	            this.saveSettings(true);
             },
             changeDeviceType (type) {
                 this.settings.remember_device_type = type;
