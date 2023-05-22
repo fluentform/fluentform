@@ -52,34 +52,36 @@ jQuery(document).ready(function ($) {
     });
 
     $('.ff_form_preview_wrapper .fluentform ').on('click', function (e) {
-        $elm = $( e.target );
+        $elm = $(e.target);
         const islabel = $elm.parent().hasClass('ff-el-input--label');
         const isInput = $elm.hasClass('ff-el-form-control');
         const isCheckable = $elm.parent().hasClass('ff-el-form-check-label');
         const isSubmitBtn = $elm.hasClass('ff-btn-submit');
         const isSectionBreak = $elm.parent().hasClass('ff-el-section-break') || $elm.parent().hasClass('ff-custom_html');
+        const isCoupon = $elm.hasClass('ff_coupon_item');
+
         let type = '';
-        if(islabel){
+        if (islabel) {
             type = 'label';
-        }else if(isInput){
+        } else if (isInput && !isCoupon) {
             type = 'input';
-        }else if(isCheckable){
+        } else if (isCheckable) {
             type = 'checkable';
-        }else if(isSubmitBtn){
+        } else if (isSubmitBtn) {
             type = 'submitBtn';
-        }else if(isSectionBreak){
+        } else if (isSectionBreak) {
             type = 'sectionBrk';
+        } else if (isCoupon) {
+            type = 'coupon';
         }
-        if(type != ''){
+        if (type != '') {
             window.dispatchEvent(new CustomEvent("selectionFired", {
                 "detail": {
-                    'type' : type
+                    'type': type
                 }
             }));
         }
     });
-
-
 });
 
 function screenChange(screenType){
