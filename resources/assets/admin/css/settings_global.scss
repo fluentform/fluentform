@@ -263,7 +263,12 @@
 }
 
 .general_integration_logo {
-  max-height: 30px;
+  height: 28px;
+  width: 28px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: left;
+  object-position: left;
 }
 
 .general_integration_name {
@@ -1075,6 +1080,9 @@ body.ff_full_screen {
   .ff_routing_fields {
     margin-top: 16px;
     margin-bottom: 10px;
+  }
+  .el-select + .el-checkbox{
+    margin-left: 10px;
   }
 }
 
