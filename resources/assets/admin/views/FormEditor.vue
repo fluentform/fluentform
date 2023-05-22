@@ -591,6 +591,10 @@ export default {
          */
         haveFormSteps() {
             let result = false;
+
+			if (this.is_conversion_form) {
+				return result; // Conversation form doesn't support steps field
+            }
             _ff.map(this.form.dropzone, (field) => {
                 if (field && field.editor_options && field.editor_options.template == "formStep") {
                     return result = true;
