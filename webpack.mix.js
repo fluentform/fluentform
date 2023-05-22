@@ -46,10 +46,11 @@ mix
     .js('resources/assets/admin/modules.js', `assets/js/modules.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
-    .vue({ 
+    .vue({
         version: 2,
         extractStyles: true
     })
+    .js('resources/assets/admin/fluent_forms_editor_helper.js', `assets/js/fluent_forms_editor_helper.js`)
 
     .sass('resources/assets/admin/css/element-ui-css.scss', `assets/css/element-ui-css.css`)
     .sass('resources/assets/admin/css/fluent-forms-admin.scss', `assets/css/fluent-forms-admin-sass.css`)
@@ -100,21 +101,21 @@ mix.then(() => {
             return;
         }
     });
-    
+
     exec('rtlcss ./assets/css/fluent-all-forms.css ./assets/css/fluent-all-forms-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return;
         }
     });
-    
+
     exec('rtlcss ./assets/css/fluent-forms-admin-sass.css ./assets/css/fluent-forms-admin-sass-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return;
         }
     });
-    
+
     exec('rtlcss ./assets/css/fluent-forms-admin.css ./assets/css/fluent-forms-admin-rtl.css', (error) => {
         if (error) {
             console.error(`exec error: ${error}`);

@@ -13,7 +13,13 @@ class ProcessExteriorModule
             // oxygen page compatibility
             remove_action('wp_head', 'oxy_print_cached_css', 999999);
         }
-
+        wp_register_script(
+            'fluentform_editor_helper',
+            fluentFormMix('js/fluent_forms_editor_helper.js'),
+            array('jquery'),
+            FLUENTFORM_VERSION,
+            true
+        );
         $this->renderFormPreview(intval(wpFluentForm('request')->get('preview_id')));
     }
 
@@ -24,9 +30,10 @@ class ProcessExteriorModule
                 $renderable['status'] = true;
                 return $renderable;
             });
-
+            
             $form = Form::find($form_id);
             if ($form) {
+                wp_enqueue_script('fluentform_editor_helper');
                 wpFluentForm('view')->render('frameless.show_preview', [
                     'form_id' => $form_id,
                     'form'    => $form,
