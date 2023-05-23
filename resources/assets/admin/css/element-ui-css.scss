@@ -6,7 +6,6 @@
 
 .el-dropdown-list-wrapper {
   padding: 0;
-
   .group-title {
     display: block;
     padding: 5px 10px;
@@ -17,7 +16,6 @@
 
 .input-textarea-value {
   position: relative;
-
   .icon {
     position: absolute;
     right: 0;
@@ -105,13 +103,11 @@
   height: 100% !important;
   flex-direction: column !important;
   text-align: center;
-
   .preview_header {
     background-color: #f2f5f9 !important;
     color: #53657a !important;
     padding: 6px 0;
   }
-
   .preview_body {
     align-items: center !important;
     height: 100%;
@@ -142,17 +138,14 @@
     text-align: left;
     color: white;
     border-radius: 3px;
-
     img {
       width: 64px;
       display: inline-block;
     }
-
     .photo_widget_btn {
       display: inline-block;
       vertical-align: top;
       color: black;
-
       span {
         font-size: 40px;
       }
@@ -180,13 +173,11 @@
 }
 .wp_vue_editor_wrapper {
   position: relative;
-
   .popover-wrapper {
     z-index: 2;
     position: absolute;
     top: 0;
     right: 0;
-
     &-plaintext {
       left: auto;
       right: 0;

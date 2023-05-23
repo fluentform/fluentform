@@ -16,16 +16,6 @@
   }
 }
 
-//.ultimate-forms-wrapper {
-//    background: #f1f1f1;
-//    margin-top: 0;
-//    margin-left: 0;
-//    position: fixed;
-//    top: 32px;
-//    bottom: 35px;
-//    overflow: hidden;
-//}
-
 /* CONTAINERS */
 .flex-container {
   display: flex;
@@ -124,6 +114,17 @@
     border-color: transparent;
     height: auto;
   }
+  &-placeholder {
+    display: table-cell;
+    text-align: center;
+    width: 1000px;
+    height: inherit;
+    vertical-align: middle;
+    .popup-search-element {
+      position: relative;
+      z-index: 2;
+    }
+  }
 }
 
 .popup-search-element {
@@ -140,19 +141,6 @@
   font-weight: bold;
   &:hover{
     background: $--color-primary;
-  }
-}
-
-.empty-dropzone-placeholder {
-  display: table-cell;
-  text-align: center;
-  width: 1000px;
-  height: inherit;
-  vertical-align: middle;
-
-  .popup-search-element {
-    position: relative;
-    z-index: 2;
   }
 }
 
