@@ -31,7 +31,7 @@
     &.ff-featured-addon {
         width: 100%;
         a.button.button-primary {
-            background: #0084ff;
+            background: $--color-primary;
             font-size: 18px;
             padding: 5px 20px;
             height: auto;
@@ -190,8 +190,12 @@
     }
 }
 
-.ff_addon_enabled_no img {
-    filter: grayscale(100%);
+.ff_addon_enabled_yes{
+    background-color: $--color-primary-light-9;
+    border-color: $--color-primary-light-7;
+    .ff_card_footer{
+        border-top-color: $--color-primary-light-7;
+    }
 }
 
 @import "../styles/responsive";
