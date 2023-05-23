@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
     let isPreviewOnly = window.localStorage.getItem('ff_preview_only');
-    if(isPreviewOnly){
+    if(isPreviewOnly == 'true'){
         $('.ff_preview_body').addClass('ff_preview_only');
         $("#ff_preview_only").attr("checked", true);
     }
