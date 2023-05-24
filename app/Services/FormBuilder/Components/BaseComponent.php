@@ -24,8 +24,8 @@ class BaseComponent
      */
     protected function makeElementId($data, $form)
     {
-        $formInstance = \FluentForm\App\Helpers\Helper::$formInstance;
         if (isset($data['attributes']['name'])) {
+            $formInstance = \FluentForm\App\Helpers\Helper::$formInstance;
             if (!empty($data['attributes']['id'])) {
                 return $data['attributes']['id'];
             }
