@@ -436,10 +436,10 @@
                     })
                     .catch(error => {
                         // when failed show default field if available
-                        if (this.fromChainedAjax && error.responseJSON.settings_fields) {
-                            this.settings_fields = error.responseJSON.settings_fields;
+                        if (this.fromChainedAjax && error.data?.settings_fields) {
+	                        this.settings_fields = error.data.settings_fields;
                         }
-                        this.$fail(error.responseJSON.data.message);
+                        this.$fail(error.data?.message || 'Error on integration settings');
                     })
                     .finally(() => {
                         this.loading_app = false;
