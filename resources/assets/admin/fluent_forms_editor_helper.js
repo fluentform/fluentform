@@ -58,12 +58,11 @@ jQuery(document).ready(function ($) {
         const isCheckable = $elm.parent().hasClass('ff-el-form-check-label');
         const isSubmitBtn = $elm.hasClass('ff-btn-submit');
         const isSectionBreak = $elm.parent().hasClass('ff-el-section-break') || $elm.parent().hasClass('ff-custom_html');
-        const isCoupon = $elm.hasClass('ff_coupon_item');
 
         let type = '';
         if (islabel) {
             type = 'label';
-        } else if (isInput && !isCoupon) {
+        } else if (isInput) {
             type = 'input';
         } else if (isCheckable) {
             type = 'checkable';
@@ -71,8 +70,6 @@ jQuery(document).ready(function ($) {
             type = 'submitBtn';
         } else if (isSectionBreak) {
             type = 'sectionBrk';
-        } else if (isCoupon) {
-            type = 'coupon';
         }
         if (type != '') {
             window.dispatchEvent(new CustomEvent("selectionFired", {
