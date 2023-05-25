@@ -271,7 +271,7 @@
                                 </template>
 
                                 <template v-else-if="field.component == 'html_info'">
-                                    <div style="margin-left: -205px;" v-html="field.html_info"></div>
+                                    <div v-html="field.html_info"></div>
                                 </template>
 
                                 <template v-else-if="field.component == 'selection_routing'">
