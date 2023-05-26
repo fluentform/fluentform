@@ -191,7 +191,7 @@ ol{
     }
   }
   &_styler_wrapper {
-    width: 360px;
+    width: 380px;
     flex-shrink: 0;
     background: $--color-white;
     border-left: 1px solid #E4E7ED;
@@ -336,12 +336,14 @@ ol{
   display: flex;
   flex-wrap: wrap;
   li {
-    width: 30%;
-    padding: 20px;
-    background: #f2f2f2;
+    width: 47%;
+    padding: 13px 18px;
+    border: 1px solid #E4E7ED;
     margin: 5px;
     border-radius: 8px;
     text-align: center;
+    display: grid;
+    place-items: center;
     img {
       max-width: 100%;
       max-height: 40px;
