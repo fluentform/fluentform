@@ -9,7 +9,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(item, itemIdex) in settings[field.key]" :key="'item_'+itemIdex">
+            <tr v-for="(item, itemIndex) in settings[field.key]" :key="'item_'+itemIndex">
                 <td>
                     <el-select class="w-100" v-model="item.label">
                         <el-option
@@ -28,8 +28,8 @@
                 </td>
                 <td>
                     <action-btn>
-                        <action-btn-add @click="addItemAfter(itemIdex)"></action-btn-add>
-                        <action-btn-remove v-if="settings[field.key].length > 1" @click="removeItem(itemIdex)"></action-btn-remove>
+                        <action-btn-add @click="addItemAfter(itemIndex)"></action-btn-add>
+                        <action-btn-remove v-if="settings[field.key].length > 1" @click="removeItem(itemIndex)"></action-btn-remove>
                     </action-btn>
                 </td>
             </tr>

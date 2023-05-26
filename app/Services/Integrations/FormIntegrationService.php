@@ -160,13 +160,14 @@ class FormIntegrationService
             'Use fluentform/save_integration_settings_' . $integrationName . ' instead of fluentform_save_integration_settings_' . $integrationName
         );
         $data = apply_filters('fluentform/save_integration_settings_' . $integrationName, $data, $integrationId);
-    
+        $created = false;
         if ($integrationId) {
             FormMeta::where('form_id', $formId)
                 ->where('id', $integrationId)
                 ->update($data);
         } else {
             $integrationId = FormMeta::insertGetId($data);
+            $created = true;
         }
         
         
@@ -174,7 +175,7 @@ class FormIntegrationService
             'message'          => __('Integration successfully saved', 'fluentform'),
             'integration_id'   => $integrationId,
             'integration_name' => $integrationName,
-            'created'          => empty($integrationId),
+            'created'          => $created,
         ]);
     }
     
