@@ -78,7 +78,10 @@
             </div>
         </div>
         <div class="ff_form_styler_wrapper">
-            <?php if(defined('FLUENTFORMPRO')): ?>
+            <?php
+            $isShowPreview = true;
+
+            if(defined('FLUENTFORMPRO')): ?>
             <?php
                 do_action_deprecated(
                     'fluentform_form_styler',
@@ -114,9 +117,12 @@
                         <ul class="ff_feature_list">
                             <li><i class="el-icon el-icon-check"></i> Stripe & PayPal Integration</li>
                             <li><i class="el-icon el-icon-check"></i> Advanced Form Styler</li>
+                            <li><i class="el-icon el-icon-check"></i> Style Export & Import</li>
                             <li><i class="el-icon el-icon-check"></i> Advanced Form Fields</li>
+                            <li><i class="el-icon el-icon-check"></i> Quiz & Survey Forms</li>
                             <li><i class="el-icon el-icon-check"></i> Payment Processing</li>
-                            <li><i class="el-icon el-icon-check"></i> 20+ CRM integrations</li>
+                            <li><i class="el-icon el-icon-check"></i> Inventory Module</li>
+                            <li><i class="el-icon el-icon-check"></i> 42+ CRM & Other integrations</li>
                             <li><i class="el-icon el-icon-check"></i> Calculated Fields for quotation form</li>
                             <li><i class="el-icon el-icon-check"></i> Multi-Step Forms</li>
                             <li><i class="el-icon el-icon-check"></i> Conditional Logics</li>
