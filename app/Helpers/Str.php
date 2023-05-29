@@ -85,4 +85,27 @@ class Str
     {
         return !self::contains($haystack, $needles);
     }
+
+    /**
+     * Split string as array of string on given substring.
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return array
+     */
+    public static function separateString($haystack, $needles)
+    {
+        $separateArray = [];
+        if (self::contains($haystack, $needles)) {
+            if (is_array($needles)) {
+                foreach ($needles as $needle) {
+                    $separateArray[] = array_map('trim', explode($needle, $haystack));
+                }
+            } else {
+                $separateArray = array_map('trim', explode($needles, $haystack));
+            }
+        }
+        return $separateArray;
+    }
 }
