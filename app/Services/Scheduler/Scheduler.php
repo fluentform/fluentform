@@ -33,8 +33,10 @@ class Scheduler
         $config = apply_filters_deprecated(
             'fluentform_email_summary_config',
             [
-                'status' => $currentDay == $reportingDay,
-                'days' => 7
+                [
+                    'status' => $currentDay == $reportingDay,
+                    'days' => 7
+                ]
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/email_summary_config',
