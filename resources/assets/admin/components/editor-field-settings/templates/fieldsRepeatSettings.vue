@@ -34,9 +34,9 @@
                 <div v-if="field.element == 'input_mask'">
                     <fieldOptionSettings :field="field" :child-fields="inputMaskChildFields"></fieldOptionSettings>
                 </div>
-                <template v-else>
+                <div v-if="field.element == 'input_text' || field.element == 'input_email' || field.element == 'input_number'">
                     <fieldOptionSettings :child-fields="inputChildFields" :field="field"></fieldOptionSettings>
-                </template>
+                </div>
             </div>
 
         </div>
