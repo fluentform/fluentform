@@ -123,12 +123,15 @@ trait MailChimpSubscriber
                             if('address' == $fieldSettings['type']) {
                                 $mergeFields[$fieldName] = [
                                     'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
-                                    'addr2'   => ArrayHelper::get($formFieldValue, 'address_line_2'),
                                     'city'    => ArrayHelper::get($formFieldValue, 'city'),
                                     'state'   => ArrayHelper::get($formFieldValue, 'state'),
                                     'zip'     => ArrayHelper::get($formFieldValue, 'zip'),
                                     'country' => ArrayHelper::get($formFieldValue, 'country'),
                                 ];
+
+                                if (ArrayHelper::exists($formFieldValue, 'address_line_2')) {
+                                    $mergeFields[$fieldName]['addr2'] = ArrayHelper::get($formFieldValue, 'address_line_2');
+                                }
                             }
                             else {
                                 $mergeFields[$fieldName] = date('d/m', strtotime($formFieldValue));
