@@ -285,7 +285,9 @@ export default {
                 'suffix_label',
                 'numeric_formatter',
                 'layout_class',
-                'class'
+                'class',
+                'rows',
+                'cols'
             ];
 
             if(!this.hasPro) {
