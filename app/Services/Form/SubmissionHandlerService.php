@@ -141,19 +141,20 @@ class SubmissionHandlerService
     
     public function processSubmissionData($insertId, $formData, $form)
     {
+        $form = isset($this->form) ? $this->form : $form;
         do_action_deprecated(
             'fluentform_before_form_actions_processing',
             [
                 $insertId,
                 $this->formData,
-                $this->form
+                $form
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/before_form_actions_processing',
             'Use fluentform/before_form_actions_processing instead of fluentform_before_form_actions_processing.'
         );
     
-        do_action('fluentform/before_form_actions_processing', $insertId, $this->formData, $this->form);
+        do_action('fluentform/before_form_actions_processing', $insertId, $this->formData, $form);
         
         if ($insertId) {
             ob_start();
