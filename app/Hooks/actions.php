@@ -780,6 +780,36 @@ add_action('fluentform/integration_action_result', function ($feed, $status, $no
         ]);
 }, 10, 3);
 
+
+// Support for third party plugin who do_action this hook on previous way (before 5.0.0 way)
+// In Fluent Forms 5.0.0 'ff_integration_action_result' add_action replaced in above action named 'fluentform/integration_action_result'.
+// @todo - notify them for updating do_action name 'fluentform/integration_action_result'.
+// @todo - We will remove bellow add_action after 2 or more version release latter.
+add_action('ff_integration_action_result', function ($feed, $status, $note = '') {
+    if (!isset($feed['scheduled_action_id']) || !$status) {
+        return;
+    }
+    if (!$note) {
+        $note = $status;
+    }
+
+    if (strlen($note) > 255) {
+        if (function_exists('mb_substr')) {
+            $note = mb_substr($note, 0, 251) . '...';
+        } else {
+            $note = substr($note, 0, 251) . '...';
+        }
+    }
+
+    $actionId = intval($feed['scheduled_action_id']);
+    wpFluent()->table('ff_scheduled_actions')
+        ->where('id', $actionId)
+        ->update([
+            'status' => $status,
+            'note'   => $note,
+        ]);
+}, 10, 3);
+
 add_action('fluentform/global_notify_completed', function ($insertId, $form) use ($app) {
     $isTruncate = apply_filters_deprecated(
         'fluentform_truncate_password_values',
