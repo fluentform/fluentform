@@ -242,6 +242,8 @@ ol{
   opacity: 0;
   visibility: hidden;
   transition: 0.3s;
+  word-break: normal;
+  word-wrap: normal;
 }
 @media (min-width: 1280px){
   .ff_device_control_wrap{
