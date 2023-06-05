@@ -186,4 +186,16 @@
     }
 }
 
+.ff_download_logs{
+    background-color: $--color-info;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow: scroll;
+    text-align: left;
+    color: $--color-white;
+    line-height: 28px;
+    padding: 10px 20px;
+
+}
+
 @import "../styles/responsive";
