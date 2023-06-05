@@ -75,9 +75,9 @@
                                     <p v-html="props.row.note"></p>
                                 </template>
                             </el-table-column>
-                            <el-table-column width="50px" :label="$t('ID')">
+                            <el-table-column width="100px" :label="$t('ID')">
                                 <template slot-scope="props">
-                                    <a :href="props.row.submission_url">#{{props.row.origin_id}}</a>
+                                    <a :href="props.row.submission_url">#{{props.row.submission_id}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="form_title" :label="$t('Form')"></el-table-column>
@@ -90,7 +90,7 @@
                             </el-table-column>
                             <el-table-column :label="$t('Component')">
                                 <template slot-scope="props">
-                                    <div>{{getReadableName(props.row.action)}}</div>
+                                    <div>{{getReadableName(props.row.component)}}</div>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
