@@ -132,10 +132,10 @@
                     <el-row :gutter="24">
                         <el-col :span="24" v-if="email_report.send_to_type == 'custom_email'">
                             <el-form-item class="ff-form-item">
-                                <label class="mb-3" style="display: block;">{{ $t('Enter Recipient Email Address ') }}</label>
+                                <label class="mb-3" style="display: block;">{{ $t('Enter Recipient Email Address') }}</label>
                                 <el-input class="w-100" :placeholder="$t('Recipient Email Address')"
                                         v-model="email_report.custom_recipients"></el-input>
-                                <p class="fs-14 mt-1">{{ $t(' For multiple email addresses, use comma to separate them.') }}</p>
+                                <p class="fs-14 mt-1">{{ $t('For multiple email addresses, use comma to separate them.') }}</p>
                             </el-form-item>
                         </el-col>
                         <el-col :sm="24" :md="12">
@@ -334,7 +334,7 @@
                                         <div slot="content">
                                             <p>
                                                 {{
-                                                    $t('If you enable this then Fluent Forms will verify the form submission with Akismet.It will save you from spam form submission.')
+                                                    $t('If you enable this then Fluent Forms will verify the form submission with Akismet. It will save you from spam form submission.')
                                                 }}
                                             </p>
                                         </div>
@@ -550,14 +550,14 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{$t('Toggle Admin Top Navigation on or off. Please reload the page after changing this option.') }}
+                                            {{ $t('Toggle Admin Top Navigation on or off and Save the Settings. Please reload the page after changing this option.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </span>
                         </template>
-                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg" :disabled="!hasCaptcha"
+                        <el-switch active-value="yes" inactive-value="no" class="el-switch-lg"
                                 v-model="misc.admin_top_nav_status"></el-switch>
                     </el-form-item>
                 </div>
