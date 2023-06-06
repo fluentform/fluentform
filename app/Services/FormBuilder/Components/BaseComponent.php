@@ -186,7 +186,7 @@ class BaseComponent
         $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
 
-        return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($label) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
+        return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($this->filterAriaLabel($label)) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
     }
 
     /**
@@ -256,7 +256,7 @@ class BaseComponent
                 '<div class="%1$s"><label %2$s aria-label="%3$s">%4$s</label>%5$s</div>',
                 esc_attr($labelClass),
                 $forStr,
-                esc_attr($ariaLabel),
+                esc_attr($this->filterAriaLabel($label)),
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
             );
@@ -319,5 +319,21 @@ class BaseComponent
     protected function printContent($hook, $html, $data, $form)
     {
         echo apply_filters($hook, $html, $data, $form); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $html is escaped before being passed in.
+    }
+
+    /**
+     * A helper method for remove any type of shortcode from aria label
+     *
+     * @param string $label
+     *
+     * @return string $label
+     */
+    protected function filterAriaLabel($label)
+    {
+        preg_match_all('/{(.*?)}/', $label, $matches);
+        if ($matches[0]) {
+            $label = trim(str_replace($matches[0], '', $label));
+        }
+        return $label;
     }
 }
