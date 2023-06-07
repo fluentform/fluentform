@@ -57,7 +57,7 @@ class FormValidationService
             if (isset($formData[$fieldName])) {
                 $element = $field['element'];
 
-                apply_filters_deprecated(
+                $formData[$fieldName] = apply_filters_deprecated(
                     'fluentform_input_data_' . $element,
                     [
                         $formData[$fieldName],
@@ -149,7 +149,7 @@ class FormValidationService
                 'Use fluentform/validate_input_item_' . $field['element'] . ' instead of fluentform_validate_input_item_' . $field['element']
             );
 
-            $error = apply_filters('fluentform/validate_input_item_' . $field['element'], '', $field, $formData, $fields, $this->form, $errors);
+            $error = apply_filters('fluentform/validate_input_item_' . $field['element'], $error, $field, $formData, $fields, $this->form, $errors);
             if ($error) {
                 if (empty($errors[$inputName])) {
                     $errors[$inputName] = [];
