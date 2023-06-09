@@ -278,7 +278,7 @@ new Vue({
                     this.saveHash();
                 })
                 .catch(error => {
-                    this.$fail.error(error.responseJSON.title);
+                    this.$fail(error?.message || 'Saving failed');
                     this.form_saving = false;
                 });
         },
