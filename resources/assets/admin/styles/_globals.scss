@@ -187,6 +187,9 @@ input[type=checkbox]:disabled {
       padding-left: 10px !important;
       background-position-x: 38px !important;
       border-radius: 5px !important;
+        &.condition-field, &.condition-operator, &.condition-value {
+            background-position-x: 90% !important;
+        }
     }
   }
   &_filter_selected {
