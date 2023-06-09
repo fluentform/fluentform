@@ -160,7 +160,7 @@ class TransferService
             }
 
             if ($form->has_payment) {
-                $temp[] = round($submission->payment_total / 100, 1);
+                $temp[] = round($submission->payment_total / 100, 2);
                 $temp[] = $submission->payment_status;
                 $temp[] = $submission->currency;
             }
