@@ -713,6 +713,15 @@ add_action('fluentform/log_data', function ($data) use ($app) {
     $dataLogger->log($data);
 });
 
+// Support for third party plugin who do_action this hook on previous way (before 5.0.0 way)
+// In Fluent Forms 5.0.0 'ff_log_data' add_action replaced with action named 'fluentform/log_data'.
+// @todo - notify them for updating do_action name 'fluentform/log_data'.
+// @todo - We will remove bellow add_action after 2 or more version release latter.
+add_action('ff_log_data', function ($data) use ($app) {
+    $dataLogger = new \FluentForm\App\Modules\Logger\DataLogger($app);
+    $dataLogger->log($data);
+});
+
 // widgets
 add_action('widgets_init', function () {
     register_widget('FluentForm\App\Modules\Widgets\SidebarWidgets');

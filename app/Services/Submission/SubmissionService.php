@@ -483,21 +483,6 @@ class SubmissionService
                 ]);
         }
 
-        do_action_deprecated(
-            'ff_log_data',
-            [
-                'parent_source_id' => $submission->form_id,
-                'source_type'      => 'submission_item',
-                'source_id'        => $submission->id,
-                'component'        => 'General',
-                'status'           => 'info',
-                'title'            => 'Associate user has been changed from ' . $submission->user_id . ' to ' . $userId,
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/log_data',
-            'Use fluentform/log_data instead of ff_log_data.'
-        );
-
         do_action('fluentform/log_data', [
             'parent_source_id' => $submission->form_id,
             'source_type'      => 'submission_item',

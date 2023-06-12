@@ -1094,16 +1094,6 @@ class Entries extends EntryQuery
             'title'            => 'Associate user has been changed from ' . $submission->user_id . ' to ' . $userId,
         ];
 
-        do_action_deprecated(
-            'ff_log_data',
-            [
-                $logData
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/log_data',
-            'Use fluentform/log_data instead of ff_log_data.'
-        );
-
         do_action('fluentform/log_data', $logData);
 
         do_action_deprecated(
