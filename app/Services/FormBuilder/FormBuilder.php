@@ -114,11 +114,11 @@ class FormBuilder
                 $form
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/form_html_attributes',
-            'Use fluentform/form_html_attributes instead of fluent_form_html_attributes.'
+            'fluentform/html_attributes',
+            'Use fluentform/html_attributes instead of fluent_form_html_attributes.'
         );
 
-        $formAttributes = apply_filters('fluentform/form_html_attributes', $data, $form);
+        $formAttributes = apply_filters('fluentform/html_attributes', $data, $form);
 
         $formAtts = $this->buildAttributes($formAttributes);
 
