@@ -95,11 +95,11 @@ function screenChange(screenType){
     jQuery('.ff_device_control').removeClass('active');
     jQuery(('*[data-type="'+screenType+'"]')).addClass('active');
     
-    let width = mobile;
+    let width = monitor;
     if (screenType === 'tablet'){
         width = tablet;
-    } else if (screenType === 'monitor'){
-        width = monitor;
+    } else if (screenType === 'mobile'){
+        width = mobile;
     }
     $wrapper.animate({
         width: width
