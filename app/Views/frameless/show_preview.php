@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="ff_preview_body">
-        <div class="ff_form_preview_wrapper">
+        <div class="ff_form_preview_wrapper" style="width:100%">
             <div class="ff_form_preview_header">
                 <div class="ff_dot_wrap">
                     <span class="dot dot-red"></span>

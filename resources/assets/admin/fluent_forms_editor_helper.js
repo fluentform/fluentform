@@ -30,7 +30,7 @@ jQuery(document).ready(function ($) {
             $('.ff_form_preview_style_toggle').show();
         }
         window.localStorage.setItem('ff_preview_only', isChecked);
-
+        jQuery('body').find('form.frm-fluent-form').trigger('fluentform-preview-mode-change', isChecked);
     });
     // copy to clipboard
     let copyToggle = $("#copy-toggle");
