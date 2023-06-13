@@ -191,6 +191,10 @@ body.ff_full_screen {
       padding: 30px;
     }
   }
+
+  .form-editor--sidebar {
+    margin-top: 52.2px; // Top nav height 52.2px, that is absolute position on top 0
+  }
 }
 
 .ff_screen_editor{
