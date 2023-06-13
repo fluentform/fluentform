@@ -7,6 +7,9 @@
             &.ff_cond_v {
                 display: flex !important;
             }
+            &.mobile {
+                display: block !important;
+            }
         }
 
         .ff-t-cell {

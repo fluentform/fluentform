@@ -85,35 +85,24 @@ function screenChange(screenType){
     let mobile = '375px';
     let tablet = '768px';
     let monitor = '100%';
-    let containerElements = [];
-    let containerDisplay = 'flex'; // 'flex' is container element default display value
     let $wrapper = jQuery('.ff_form_preview_wrapper');
-    $wrapper.addClass(screenType);
+    
+    const screenTypes = ['mobile', 'tablet', 'monitor'];
+    const screenTypeClasses = screenTypes.join(' ');
+    $wrapper.removeClass(screenTypeClasses).addClass(screenType);
+    jQuery('.frm-fluent-form .ff-t-container').removeClass(screenTypeClasses).addClass(screenType);
 
     jQuery('.ff_device_control').removeClass('active');
     jQuery(('*[data-type="'+screenType+'"]')).addClass('active');
+    
     let width = mobile;
-    if (screenType === 'mobile'){
-        width = mobile;
-        // check has container elements
-        containerElements = jQuery('.frm-fluent-form .ff-t-container');
-        if (containerElements.length) {
-            //change breakpoint css
-            containerDisplay = 'block';
-        }
-    } else if (screenType === 'tablet'){
-        containerDisplay = 'flex';
+    if (screenType === 'tablet'){
         width = tablet;
     } else if (screenType === 'monitor'){
-        containerDisplay = 'flex';
         width = monitor;
     }
     $wrapper.animate({
         width: width
     })
-    //set breakpoint css for container elements
-    if (containerElements.length) {
-        containerElements.css('display', containerDisplay);
-    }
-    jQuery('body').find('form').trigger('screen-change', width);
+    jQuery('body').find('form').trigger('screen-change', [width, screenType, screenTypes]);
 }
