@@ -7,12 +7,12 @@
             <section-head-content>
                 <btn-group>
                     <btn-group-item>
-                        <el-button size="medium" @click="changeEntry('-')" :disabled="!prevId">
+                        <el-button size="medium" :loading="entry_changing_prev" @click="changeEntry('-')" :disabled="!prevId">
                             <i class="ff-icon ff-icon-arrow-left"/> <span>{{$t('Previous')}}</span>
                         </el-button>
                     </btn-group-item>
                     <btn-group-item>
-                        <el-button size="medium" @click="changeEntry('+')" :disabled="!nextId">
+                        <el-button size="medium" :loading="entry_changing_next" @click="changeEntry('+')" :disabled="!nextId">
                             <span>{{$t('Next')}} </span> <i class="ff-icon ff-icon-arrow-right"/>
                         </el-button>
                     </btn-group-item>
@@ -40,14 +40,14 @@
                                         {{$t('Form Entry Data')}}
                                     </div>
                                     <div class="entry_info_box_actions">
-                                        <span 
+                                        <span
                                             @click="changeFavorite()"
-                                            :title="$t('Remove from Favorites')" 
+                                            :title="$t('Remove from Favorites')"
                                             v-if="entry.is_favourite != '0' || entry.is_favourite == '1'"
                                             class="el-icon-star-on star_big action_button text-warning"></span>
-                                        <span 
+                                        <span
                                             @click="changeFavorite()"
-                                            :title="$t('Mark as Favorite')" 
+                                            :title="$t('Mark as Favorite')"
                                             v-else
                                             class="el-icon-star-off star_big action_button text-warning"></span>
 
@@ -58,7 +58,7 @@
                             <card-body>
                                 <div v-if="entry.serial_number">
                                     <div v-show="!view_as_json" class="wpf_entry_details">
-                                        <div 
+                                        <div
                                             v-for="(label, label_index) in labels"
                                             :key="label_index"
                                             v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
@@ -97,7 +97,7 @@
                                 </div>
                             </card-body>
                         </card>
-            
+
                         <card v-for="(card, cardKey) in extraCards" class="entry_info_box" :key="cardKey">
                             <card-head>
                                 <h6>{{card.title}}</h6>
@@ -108,12 +108,12 @@
                                 </div>
                             </card-body>
                         </card>
-            
-            
-                        <payment-summary 
-                            @reload_payments="getEntry()" 
-                            v-if="order_data" 
-                            :submission="entry" 
+
+
+                        <payment-summary
+                            @reload_payments="getEntry()"
+                            v-if="order_data"
+                            :submission="entry"
                             :order_data="order_data"
                         />
 
@@ -190,7 +190,7 @@
                             <div class="entry-footer" v-if="hasPermission('fluentform_manage_entries')">
                                 <btn-group>
                                     <btn-group-item>
-                                        <el-button @click="editTable = true" size="small" type="primary" icon="el-icon-edit"> 
+                                        <el-button @click="editTable = true" size="small" type="primary" icon="el-icon-edit">
                                             {{$t('Edit')}}
                                         </el-button>
                                     </btn-group-item>
@@ -200,9 +200,9 @@
                                                 {{$t('Change status to')}} <i class="el-icon-arrow-down el-icon--right"></i>
                                             </el-button>
                                             <el-dropdown-menu slot="dropdown">
-                                                <el-dropdown-item 
-                                                    v-for="(statusName, statusKey) in entry_statuses" 
-                                                    :command="statusKey" 
+                                                <el-dropdown-item
+                                                    v-for="(statusName, statusKey) in entry_statuses"
+                                                    :command="statusKey"
                                                     :key="statusKey"
                                                 >
                                                     {{statusName}}
@@ -238,13 +238,13 @@
             <template slot="title">
                 <h4>{{$t('Edit Entry Data')}}</h4>
             </template>
-            <edit-entry 
-                @reloadData="getEntry()" 
-                :form_id="form_id" 
-                :entry_id="entry_id" 
+            <edit-entry
+                @reloadData="getEntry()"
+                :form_id="form_id"
+                :entry_id="entry_id"
                 @close="editTable = false"
-                v-if="editTable" 
-                :labels="labels" 
+                v-if="editTable"
+                :labels="labels"
                 :submission="entry"
                 :fields="formFields"
             ></edit-entry>
@@ -322,7 +322,9 @@
                 show_empty: 'no',
                 widgets: {},
                 labels: {},
-                extraCards :{}
+                extraCards :{},
+                entry_changing_next : false,
+                entry_changing_prev : false,
             }
         },
         computed: {
@@ -364,7 +366,9 @@
                         this.$fail(error.message);
                     })
                     .finally(() => {
+                        this.entry_changing_next = this.entry_changing_prev = false;
                         this.loading = false;
+
                     });
             },
             changeFavorite() {
@@ -397,8 +401,14 @@
                 let entryId = (operator === '+' && this.nextId) || (operator === '-' && this.prevId);
 
                 if (entryId) {
+                    if (operator === '+'){
+                        this.entry_changing_next = true;
+                    }else{
+                        this.entry_changing_prev = true;
+                    }
                     this.entry_id = entryId;
                     this.getEntry();
+
                 }
             },
             explodeFileUrls(value, chunkSize = 4) {
@@ -478,7 +488,7 @@
                     widgets: true,
                     orderData: true,
                 };
-                
+
                 const url = FluentFormsGlobal.$rest.route('getSubmissionsResources');
 
                 FluentFormsGlobal.$rest.get(url, data)

@@ -2,7 +2,7 @@
     <div class="ff_entries_wrapper">
         <section-head class="ff_section_head_between mb-0">
             <section-head-content>
-                <h1 class="ff_section_title">{{$t('Form Entries')}}</h1>
+                <h1 class="ff_section_title">{{$t('Entries from All Forms')}}</h1>
             </section-head-content>
             <section-head-content>
                 <btn-group as="div">
@@ -52,7 +52,7 @@
         <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mt-4 mb-4">
             <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status" ></entry-chart>
         </div>
-        
+
         <div class="ff_entries_details">
             <div class="ff_section_head sm">
                 <el-row :gutter="24">
@@ -65,9 +65,9 @@
                                 <div class="ff_entries_select">
                                     <el-select
                                         class="ff_filter_form_select ff-input-s1 w-100"
-                                        @change="fetchEntries()" 
-                                        clearable 
-                                        filterable 
+                                        @change="fetchEntries()"
+                                        clearable
+                                        filterable
                                         v-model="selectedFormId"
                                         :placeholder="$t('Select Form')"
                                     >
@@ -94,7 +94,7 @@
                     <el-col :span="7">
                         <div class="ff_entries_search_wrap">
                             <el-input
-                                @keyup.enter.native="fetchEntries()" 
+                                @keyup.enter.native="fetchEntries()"
                                 clearable
                                 v-model="search"
                                 :placeholder="$t('Search Forms')"
@@ -112,8 +112,10 @@
                         <el-table :data="entries">
                             <el-table-column width="200" :label="$t('Submission ID')">
                                 <template slot-scope="scope">
-                                    <span>#{{scope.row.id}}</span>
-                                    <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
+                                    <a :href="scope.row.entry_url" >
+                                        <span>#{{scope.row.id}}</span>
+                                        <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
+                                    </a>
                                 </template>
                             </el-table-column>
                             <el-table-column :label="$t('Form')" prop="form.title" width="400"></el-table-column>

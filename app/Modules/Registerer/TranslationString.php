@@ -27,7 +27,7 @@ class TranslationString
             'Search' => __('Search', 'fluentform'),
             'Click Here to Create Your First Form' => __('Click Here to Create Your First Form', 'fluentform'),
             'Check the video intro' => __('Check the video intro', 'fluentform'),
-            'All Form Entries' => __('All Form Entries', 'fluentform'),
+            'Entries from All Forms' => __('Entries from All Forms', 'fluentform'),
             'Browser' => __('Browser', 'fluentform'),
             'Date' => __('Date', 'fluentform'),
             'Hide Chart' => __('Hide Chart', 'fluentform'),
