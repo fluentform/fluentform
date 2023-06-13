@@ -47,7 +47,7 @@ class ReviewQuery
                 [
                     'href' => admin_url('admin.php?page=fluent_forms'),
                     'btn_text' => 'Do not show again',
-                    'btn_atts' => 'class="el-button el-button--mini ff_nag_cross" data-notice_type="permanent" data-notice_name="review_query"',
+                    'btn_atts' => 'class="text-button el-button--mini ff_nag_cross" data-notice_type="permanent" data-notice_name="review_query"',
                 ],
             ],
         ];
