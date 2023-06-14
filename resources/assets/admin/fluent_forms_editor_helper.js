@@ -87,7 +87,7 @@ function initFFPreviewHelper($) {
     });
 }
 
-function screenChange(screenType, $) {
+function screenChange(screenType ='monitor', $) {
     let mobile = '375px';
     let tablet = '768px';
     let monitor = '100%';
