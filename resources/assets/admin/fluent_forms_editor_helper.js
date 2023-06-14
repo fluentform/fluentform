@@ -1,57 +1,63 @@
-jQuery(document).ready(function ($) {
+
+function initFFPreviewHelper($) {
+
+    let $previewBody = $('.ff_preview_body');
+    let $previewText = $('.ff_preview_text');
+    let $formPreviewStyleToggle = $('.ff_form_preview_style_toggle');
 
     let isPreviewOnly = window.localStorage.getItem('ff_preview_only');
-    if(isPreviewOnly == 'true'){
-        $('.ff_preview_body').addClass('ff_preview_only');
+    if (isPreviewOnly == 'true') {
+        $previewBody.addClass('ff_preview_only');
         $("#ff_preview_only").attr("checked", true);
     }
     let screenType = window.localStorage.getItem('ff_window_type');
-    screenChange(screenType);
+    screenChange(screenType, $);
 
-    $('.ff_device_control').click(function(){
-        let screenType = $(this).data('type');
-        screenChange(screenType);
-    });
-
-    $('.ff_device_control').on('click', function () {
+    $('body').on('click', '.ff_device_control', function () {
         let screenType = $(this).data('type');
         window.localStorage.setItem('ff_window_type', screenType);
+        screenChange(screenType, $);
     });
 
+
     $('#ff_preview_only').on('change', function () {
-        var isChecked = $(this).is(':checked');
-        if(isChecked) {
-            $('.ff_preview_body').addClass('ff_preview_only');
-            $('.ff_preview_text').html('Preview Mode');
-            $('.ff_form_preview_style_toggle').hide();
-        } else {
-            $('.ff_preview_body').removeClass('ff_preview_only');
-            $('.ff_preview_text').html('Design Mode');
-            $('.ff_form_preview_style_toggle').show();
-        }
+        const isChecked = $(this).is(':checked');
+        $previewBody.toggleClass('ff_preview_only', isChecked);
+        $previewText.html(isChecked ? 'Preview Mode' : 'Design Mode');
+        $formPreviewStyleToggle.toggle(!isChecked);
         window.localStorage.setItem('ff_preview_only', isChecked);
-        jQuery('body').find('form.frm-fluent-form').trigger('fluentform-preview-mode-change', isChecked);
+        $('body').find('form.frm-fluent-form').trigger('fluentform-preview-mode-change', isChecked);
     });
-    // copy to clipboard
+
+    let alertElem = $(`
+    <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 999999;">
+      <i class="el-notification__icon el-icon-success"></i>
+      <div class="el-notification__group is-with-icon">
+        <h2 class="el-notification__title">Success</h2>
+        <div class="el-notification__content">
+          <p>Copied to Clipboard.</p>
+        </div>
+      </div>
+    </div>
+  `);
+
     let copyToggle = $("#copy-toggle");
     let copy = $('#copy');
     let body = $("body");
-    copyToggle.on('click', function(){
+    copyToggle.on('click', function () {
         let copyText = copy.text();
         let temp = $("<input>");
         body.append(temp);
         temp.val(copyText).select();
         document.execCommand("copy");
         temp.remove();
-        let alertElem = $('<div role="alert" class="el-notification right" style="bottom: 16px; z-index: 999999;"><i class="el-notification__icon el-icon-success"></i><div class="el-notification__group is-with-icon"><h2 class="el-notification__title">Success</h2><div class="el-notification__content"><p>Copied to Clipboard.</p></div></div></div>');
         body.append(alertElem);
-        setTimeout(function(){
+        setTimeout(function () {
             alertElem.remove();
         }, 2000);
-
     });
 
-    $('.ff_form_preview_wrapper .fluentform ').on('click', function (e) {
+    $('.ff_form_preview_wrapper .fluentform').on('click', function (e) {
         $elm = $(e.target);
         const islabel = $elm.parent().hasClass('ff-el-input--label');
         const isInput = $elm.hasClass('ff-el-form-control');
@@ -79,30 +85,35 @@ jQuery(document).ready(function ($) {
             }));
         }
     });
-});
+}
 
-function screenChange(screenType){
+function screenChange(screenType, $) {
     let mobile = '375px';
     let tablet = '768px';
     let monitor = '100%';
-    let $wrapper = jQuery('.ff_form_preview_wrapper');
-    
+    let $wrapper = $('.ff_form_preview_wrapper');
+
     const screenTypes = ['mobile', 'tablet', 'monitor'];
     const screenTypeClasses = screenTypes.join(' ');
     $wrapper.removeClass(screenTypeClasses).addClass(screenType);
-    jQuery('.frm-fluent-form .ff-t-container').removeClass(screenTypeClasses).addClass(screenType);
+    $('.frm-fluent-form .ff-t-container').removeClass(screenTypeClasses).addClass(screenType);
 
-    jQuery('.ff_device_control').removeClass('active');
-    jQuery(('*[data-type="'+screenType+'"]')).addClass('active');
-    
+    $('.ff_device_control').removeClass('active');
+    $('*[data-type="' + screenType + '"]').addClass('active');
+
     let width = monitor;
-    if (screenType === 'tablet'){
+    if (screenType === 'tablet') {
         width = tablet;
-    } else if (screenType === 'mobile'){
+    } else if (screenType === 'mobile') {
         width = mobile;
     }
     $wrapper.animate({
         width: width
-    })
-    jQuery('body').find('form').trigger('screen-change', [width, screenType, screenTypes]);
+    });
+    $('body').find('form').trigger('screen-change', [width, screenType, screenTypes]);
 }
+
+jQuery(document).ready(function () {
+    const $ = jQuery.noConflict();
+    initFFPreviewHelper($);
+});
