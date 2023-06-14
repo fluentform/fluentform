@@ -1515,7 +1515,7 @@ if (! defined('FLUENTFORMPRO')) {
             'attributes'     => [],
             'settings'       => [],
             'editor_options' => [
-                'title'      => __('Payment', 'fluentform'),
+                'title'      => __('Payment Item', 'fluentform'),
                 'icon_class' => 'ff-edit-shopping-cart',
                 'element'    => 'input-radio',
                 'template'   => 'inputMultiPayment',
