@@ -4,7 +4,7 @@
             <div class="ff_card_head">
                 <h5 class="title">{{$t('Api Logs')}}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{ $t('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration. Last 2 months data only') }}
+                    {{ $t('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)') }}
                 </p>
             </div><!-- .ff_card_head -->
             <div class="ff_card_body">

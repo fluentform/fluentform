@@ -1347,7 +1347,7 @@ class TranslationString
             'success' => __('success', 'fluentform'),
             'failed' => __('failed', 'fluentform'),
             'Api Logs' => __('Api Logs', 'fluentform'),
-            'All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration.(Last 2 months data only)' => __('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration.(Last 2 months data only)', 'fluentform'),
+            'All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)' => __('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)', 'fluentform'),
             'Submission Id' => __('Submission Id', 'fluentform'),
             'Export Forms' => __('Export Forms', 'fluentform'),
             'Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer.Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.' => __('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer.Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.',  'fluentform'),
