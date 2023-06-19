@@ -107,7 +107,7 @@
                                         :hide-on-single-page="true"
                                         :page-size="per_page"
                                         :current-page.sync="page_number"
-                                        layout="prev, pager, next"
+                                        layout="total, prev, pager, next"
                                         :total="total">
                                     </el-pagination>
                                 </div>
@@ -174,7 +174,7 @@
                 forms: [],
                 loading: false,
                 page_number: 1,
-                per_page: 3,
+                per_page: 5,
                 total: 0,
                 multipleSelection: [],
                 entryPageUrl : false,
