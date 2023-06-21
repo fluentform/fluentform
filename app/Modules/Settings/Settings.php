@@ -382,7 +382,7 @@ class Settings
 
         update_option('_fluentform_email_report_summary', $settings);
 
-        $emailReportHookName = 'fluentform/do_email_report_scheduled_tasks';
+        $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
         if (!wp_next_scheduled($emailReportHookName)) {
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
