@@ -4,8 +4,8 @@ namespace FluentForm\App\Hooks\Handlers;
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Database\DBMigrator;
-use FluentForm\Database\Migrations\FormLogs;
-use FluentForm\Database\Migrations\FormSubmissionDetails;
+use FluentForm\Database\Migrations\Logs;
+use FluentForm\Database\Migrations\SubmissionDetails;
 
 class ActivationHandler
 {
@@ -68,11 +68,11 @@ class ActivationHandler
         $this->migrateGlobalAddOns();
 
         if (!get_option('fluentform_entry_details_migrated')) {
-            FormSubmissionDetails::migrate();
+            SubmissionDetails::migrate();
         }
 
         if (!get_option('fluentform_db_fluentform_logs_added')) {
-            FormLogs::migrate();
+            Logs::migrate();
         }
     }
 

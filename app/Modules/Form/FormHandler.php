@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App\Databases\Migrations\FormSubmissionDetails;
+use FluentForm\App\Databases\Migrations\SubmissionDetails;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Activator;
 use FluentForm\App\Modules\Entries\Entries;
@@ -176,7 +176,7 @@ class FormHandler
             $entries->recordEntryDetails($insertId, $form->id, $formData);
             $isError = ob_get_clean();
             if ($isError) {
-                FormSubmissionDetails::migrate();
+                SubmissionDetails::migrate();
             }
         }
 

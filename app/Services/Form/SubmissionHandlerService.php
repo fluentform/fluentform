@@ -10,6 +10,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
+use FluentForm\Database\Migrations\SubmissionDetails;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 use FluentForm\Framework\Validator\ValidationException;
@@ -161,7 +162,7 @@ class SubmissionHandlerService
             $this->submissionService->recordEntryDetails($insertId, $form->id, $formData);
             $isError = ob_get_clean();
             if ($isError) {
-                FormSubmissionDetails::migrate();
+                SubmissionDetails::migrate();
             }
         }
         $returnData = $this->getReturnData($insertId, $form, $formData);
