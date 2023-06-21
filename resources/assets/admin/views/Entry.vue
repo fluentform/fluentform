@@ -31,7 +31,7 @@
         <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card' : ''">
             <el-row :gutter="20" style="min-height: 400px;">
                 <el-col :lg="16">
-                    <div class="ff_entry_detail_wrap">
+                    <div v-loading="entry_changing_next || entry_changing_prev" class="ff_entry_detail_wrap">
                         <card class="entry_info_box entry_input_data">
                             <card-head>
                                 <card-head-group class="justify-between">
@@ -339,7 +339,6 @@
         methods: {
             getEntry() {
                 const url = FluentFormsGlobal.$rest.route('findSubmission', this.entry_id);
-
                 FluentFormsGlobal.$rest.get(url)
                     .then(submission => {
                         this.entry = submission;

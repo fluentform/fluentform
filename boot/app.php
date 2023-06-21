@@ -25,8 +25,8 @@ return function ($file) {
     });
     $app = new Application($file);
 
-    register_activation_hook($file, function () use ($app) {
-        ($app->make(ActivationHandler::class))->handle();
+    register_activation_hook($file, function ($network_wide) use ($app) {
+        ($app->make(ActivationHandler::class))->handle($network_wide);
     });
 
     add_action('wp_insert_site', function ($blog) use ($app) {

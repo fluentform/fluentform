@@ -39,8 +39,8 @@
         "promise-polyfill": "^8.2.3",
         "resolve-url-loader": "^5.0.0",
         "rtlcss": "^3.5.0",
-        "sass": "^1.49.9",
-        "sass-loader": "^12.6.0",
+        "sass": "^1.63.5",
+        "sass-loader": "^13.3.2",
         "vue-loader": "^15.9.8",
         "vue-template-compiler": "^2.6.14"
     }

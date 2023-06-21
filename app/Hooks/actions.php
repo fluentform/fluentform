@@ -111,12 +111,12 @@ $app->addAction('fluentform/global_menu', function () use ($app) {
         \FluentForm\App\Databases\Migrations\ScheduledActions::migrate();
     }
 
-    $hookName = 'fluentform/do_scheduled_tasks';
+    $hookName = 'fluentform_do_scheduled_tasks';
     if (!wp_next_scheduled($hookName)) {
         wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
     }
 
-    $emailReportHookName = 'fluentform/do_email_report_scheduled_tasks';
+    $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
     if (!wp_next_scheduled($emailReportHookName)) {
         wp_schedule_event(time(), 'daily', $emailReportHookName);
     }
@@ -761,8 +761,8 @@ add_filter('cron_schedules', function ($schedules) {
     return $schedules;
 }, 10, 1);
 
-add_action('fluentform/do_scheduled_tasks', 'fluentFormHandleScheduledTasks');
-add_action('fluentform/do_email_report_scheduled_tasks', 'fluentFormHandleScheduledEmailReport');
+add_action('fluentform_do_scheduled_tasks', 'fluentFormHandleScheduledTasks');
+add_action('fluentform_do_email_report_scheduled_tasks', 'fluentFormHandleScheduledEmailReport');
 
 add_action('fluentform/integration_action_result', function ($feed, $status, $note = '') {
     if (!isset($feed['scheduled_action_id']) || !$status) {
