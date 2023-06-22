@@ -385,7 +385,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.0.0 (Date: June 02, 2023) =
+= 5.0.0 (Date: June 22, 2023) =
  - Updated translation strings
  - Fixed issue with repeater field not appearing correctly on PDF
  - Fixed issue with WPForm Migrator not properly transferring text fields to text input fields with correct maximum text length
