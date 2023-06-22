@@ -68,6 +68,5 @@ return function ($file) {
 
     fluentformLoadFile('Services/FluentConversational/plugin.php');
     (new FluentConversational)->boot();
-
     (new FormsMigrator())->boot();
 };

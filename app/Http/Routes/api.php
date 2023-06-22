@@ -130,10 +130,11 @@ $router->prefix('managers')->withPolicy('RoleManagerPolicy')->group(function ($r
 $router->prefix('analytics')->withPolicy('FormPolicy')->group(function ($router) {
     $router->post('/{form_id}/reset', 'AnalyticsController@reset');
 });
+
 /*
 * Form Submission Handler
 */
-$router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('PublicPolicy');
+$router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('SubmissionPolicy');
 /*
 * Form Report
 */
