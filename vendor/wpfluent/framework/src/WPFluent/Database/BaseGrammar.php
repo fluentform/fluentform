@@ -36,7 +36,7 @@ abstract class BaseGrammar
             return $this->getValue($table);
         }
 
-        return $this->wrap($this->getTableNameWithPrefix($table), true);
+        return $this->wrap($this->tablePrefix.$table, true);
     }
 
     /**
@@ -184,19 +184,5 @@ abstract class BaseGrammar
         $this->tablePrefix = $prefix;
 
         return $this;
-    }
-
-    /**
-     * Get the grammar's full table name.
-     * Handles multisite table names
-     *
-     * @param  string  $table
-     * @return string $tableName
-     */
-    protected function getTableNameWithPrefix($table)
-    {
-        global $wpdb;
-
-        return isset($wpdb->{$table}) ? $wpdb->{$table} : $this->tablePrefix.$table;
     }
 }
