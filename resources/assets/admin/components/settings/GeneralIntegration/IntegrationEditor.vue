@@ -293,6 +293,14 @@
                                     </el-date-picker>
                                 </template>
 
+                                <template v-else-if="field.component == 'wp_editor'">
+                                    <wp_editor
+                                        :editorShortcodes="editorShortcodes"
+                                        :height="field.height || 200"
+                                        v-model="settings[field.key]">
+                                    </wp_editor>
+                                </template>
+
                                 <template v-else>
                                     <p>{{
                                             $t('No Template found. Please make sure you are using latest version of Fluent Forms')
@@ -347,6 +355,7 @@
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
+    import wpEditor from '@/common/_wp_editor';
 
     export default {
         name: 'general_notification_edit',
@@ -369,7 +378,8 @@
             CardBody,
             BtnGroup,
             BtnGroupItem,
-            Notice
+            Notice,
+            'wp_editor' : wpEditor
         },
         props: ['form_id', 'inputs', 'has_pro', 'editorShortcodes'],
         watch: {},

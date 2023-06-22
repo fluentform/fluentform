@@ -828,7 +828,7 @@ class Component
             'forms'                 => [],
             'step_text'             => $stepText,
             'is_rtl'                => is_rtl(),
-            'date_i18n'             => $this->getDatei18n(),
+            'date_i18n'             => self::getDatei18n(),
             'pro_version'           => (defined('FLUENTFORMPRO_VERSION')) ? FLUENTFORMPRO_VERSION : false,
             'fluentform_version'    => FLUENTFORM_VERSION,
             'force_init'            => false,
@@ -847,7 +847,6 @@ class Component
                 'clearIfNotMatch' => false,
             ],
             'rest'                     => Helper::getRestInfo()
-
         ];
     
         $data = apply_filters_deprecated(
