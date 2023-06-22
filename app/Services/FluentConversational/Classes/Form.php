@@ -535,8 +535,7 @@ class Form
             'uploading_txt'        => __('Uploading', 'fluentform'),
             'upload_completed_txt' => __('100% Completed', 'fluentform'),
             'paymentConfig'        => $this->getPaymentConfig($form),
-            'date_i18n'            => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'rest'                 => Helper::getRestInfo()
+            'date_i18n'            => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
 
         $disableAnalytics = apply_filters_deprecated(

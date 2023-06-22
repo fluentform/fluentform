@@ -846,8 +846,7 @@ class Component
             'input_mask_vars' => [
                 'clearIfNotMatch' => false,
             ],
-            'rest'                     => Helper::getRestInfo()
-        ];
+       ];
     
         $data = apply_filters_deprecated(
             'fluentform_global_form_vars',

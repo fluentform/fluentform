@@ -148,7 +148,7 @@ jQuery(document).ready(function () {
 
                         var formData = {
                             data: $inputs.serialize(),
-                            // action: 'fluentform_submit',
+                            action: 'fluentform_submit',
                             form_id: $theForm.data('form_id')
                         };
 
@@ -245,12 +245,12 @@ jQuery(document).ready(function () {
                 var sendData = function ($theForm, formData) {
                     function addParameterToURL(param) {
                         const route = 'form-submit';
-                        let _url = `${window.fluentFormVars.rest.url}/${route}`;
+                        let _url = `${window.fluentFormVars.ajaxUrl}`;
                         _url += (_url.split('?')[1] ? '&' : '?') + param;
                         return _url;
                     }
 
-                    var ajaxRequestUrl = addParameterToURL('t=' + Date.now()+'&_wpnonce=' + window.fluentFormVars.rest.nonce);
+                    var ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
                     if (this.isSending) {
                         return;
@@ -1346,7 +1346,7 @@ jQuery(document).ready(function () {
                 return false;
             }
             formInstance.reinitExtras();
-           
+
             if (window.hcaptcha) {
                 hcaptcha.reset(); //two recapthca on same page creates conflicts
             }

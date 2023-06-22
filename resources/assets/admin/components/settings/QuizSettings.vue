@@ -67,7 +67,7 @@
                                     </template>
                                 </el-form-item>
                             </div>
-                            <div v-if="settings && settings.enabled" class="mt-4">
+                            <div class="mt-4">
                                 <el-button
                                     :loading="saving"
                                     type="primary"
