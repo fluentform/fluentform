@@ -10,11 +10,12 @@ use FluentForm\App\Services\FormBuilder\EditorShortCode;
  * This file will be loaded even before the framework is loaded
  * so the $app is not available here, only declare functions here.
  */
-if ('dev' == $app->config->get('app.env')) {
-    $globalsDevFile = __DIR__ . '/globals_dev.php';
 
-    is_readable($globalsDevFile) && include $globalsDevFile;
-}
+//if ('dev' == $app->config->get('app.env')) {
+//    $globalsDevFile = __DIR__ . '/globals_dev.php';
+//
+//    is_readable($globalsDevFile) && include $globalsDevFile;
+//}
 
 if (!function_exists('dd')) {
     // function dd()
@@ -52,13 +53,16 @@ function fluentFormMix($path = '')
     return wpFluentForm('url.assets') . ltrim($path, '/');
 }
 
-/**
- * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection
- */
-function wpFluent()
-{
-    return wpFluentForm('db');
+if (! function_exists('wpFluent')) {
+    /**
+     * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection
+     */
+    function wpFluent()
+    {
+        return wpFluentForm('db');
+    }
 }
+
 
 function wpFluentFormAddComponent(BaseComponent $component)
 {
