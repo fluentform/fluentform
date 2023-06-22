@@ -42,6 +42,9 @@ $router->prefix('settings')->withPolicy('FormPolicy')->group(function ($router) 
         $router->post('customizer', 'FormSettingsController@storeCustomizer');
 
         $router->post('entry-columns', 'FormSettingsController@storeEntryColumns');
+
+        $router->get('conversational-design', 'FormSettingsController@conversationalDesign');
+        $router->post('store-conversational-design', 'FormSettingsController@storeConversationalDesign');
     });
 });
 /*

@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\Settings;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Support\Arr;
+use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
 
 class SettingsService
 {
@@ -236,5 +237,48 @@ class SettingsService
         $id = intval(Arr::get($attributes, 'meta_id'));
 
         FormMeta::where('form_id', $formId)->where('id', $id)->delete();
+    }
+
+    public function conversationalDesign($formId)
+    {
+        $conversationalForm = new FluentConversational();
+
+        return [
+            'design_settings' => $conversationalForm->getDesignSettings($formId),
+            'meta_settings'   => $conversationalForm->getMetaSettings($formId),
+            'has_pro'         => defined('FLUENTFORMPRO'),
+        ];
+    }
+
+    public function storeConversationalDesign($attributes, $formId)
+    {
+        $metaKey = "ffc_form_settings";
+        $formId = intval($formId);
+
+        $settings = Arr::get($attributes, 'design_settings');
+        FormMeta::persist($formId, $metaKey . '_design', $settings);
+
+        $generatedCss = wp_strip_all_tags(Arr::get($attributes, 'generated_css'));
+        if ($generatedCss) {
+            FormMeta::persist($formId, $metaKey . '_generated_css', $generatedCss);
+        }
+
+        $meta = Arr::get($attributes, 'meta_settings', []);
+        if ($meta) {
+            FormMeta::persist($formId, $metaKey . '_meta', $meta);
+        }
+
+        $params = [
+            'fluent-form' => $formId,
+        ];
+        if (isset($meta['share_key']) && !empty($meta['share_key'])) {
+            $params['form'] = $meta['share_key'];
+        }
+
+        $shareUrl = add_query_arg($params, site_url());
+        return [
+            'message'   => __('Settings successfully updated'),
+            'share_url' => $shareUrl,
+        ];
     }
 }
