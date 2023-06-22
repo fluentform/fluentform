@@ -2,7 +2,9 @@
     <div class="fluentform-wrapper">
         <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
-                    <h3>{{$t('Entry Details')}} #{{entry.serial_number}}</h3>
+                <h3>
+                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Details')}} #{{entry.serial_number}}
+                </h3>
             </section-head-content>
             <section-head-content>
                 <btn-group>
