@@ -428,8 +428,7 @@ class SubmissionHandlerService
                 'fluentform/before_insert_payment_form',
                 'Use fluentform/before_insert_payment_form instead of fluentform_before_insert_payment_form.'
             );
-            $submissionServiceHandler = $this;
-            do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form, $submissionServiceHandler);
+            do_action('fluentform/before_insert_payment_form', $insertData, $formDataRaw, $this->form);
         }
         
         $insertId = Submission::insertGetId($insertData);
