@@ -82,6 +82,19 @@ div.error,
 div.updated{
   margin: 8px 24px 2px;
 }
+.fluentform-admin-notice.notice-error {
+  margin: 8px 24px;
+  padding: 10px 20px;
+    h3 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+}
+.ff_form_wrap_area {
+  .fluentform-admin-notice {
+    margin: 8px 0;
+  }
+}
 .ff_backdrop {
   background: rgba(0, 0, 0, 0.5);
   position: fixed;
