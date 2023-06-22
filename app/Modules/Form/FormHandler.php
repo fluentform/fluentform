@@ -184,19 +184,13 @@ class FormHandler
 
         $error = '';
         try {
-            do_action_deprecated(
-                'fluentform_submission_inserted',
-                [
-                    $insertId,
-                    $formData,
-                    $form
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/submission_inserted',
-                'Use fluentform/submission_inserted instead of fluentform_submission_inserted.'
-            );
 
-            $this->app->doAction(
+            /*
+             * We will keep this old hook for backward compatability.
+             */
+            do_action('fluentform_submission_inserted', $insertId, $formData, $form);
+
+            do_action(
                 'fluentform/submission_inserted',
                 $insertId,
                 $formData,
@@ -217,12 +211,13 @@ class FormHandler
                 'Use fluentform/submission_inserted_' . $form->type . '_form' . ' instead of fluentform_submission_inserted_' . $form->type . '_form'
             );
 
-            $this->app->doAction(
+            do_action(
                 'fluentform/submission_inserted_' . $form->type . '_form',
                 $insertId,
                 $formData,
                 $form
             );
+
         } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 $error = $e->getMessage();
