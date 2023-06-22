@@ -55,7 +55,7 @@ class SubmissionService
                 define('FLUENTFORM_RENDERING_ENTRY', true);
             }
 
-            $submission = $this->model->with(['form', 'user'])->findOrFail($submissionId);
+            $submission = $this->model->with(['form'])->findOrFail($submissionId);
 
             $form = $submission->form;
 
@@ -74,6 +74,23 @@ class SubmissionService
 
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
 
+            
+            if($submission->user_id) {
+                $user = get_user_by('ID', $submission->user_id);
+                $userDisplayName = trim($user->first_name.' '.$user->last_name);
+                if(!$userDisplayName) {
+                    $userDisplayName = $user->display_name;
+                }
+                
+                if($user) {
+                    $submission->user = [
+                        'ID' => $user->ID,
+                        'name' => $userDisplayName,
+                        'permalink' => get_edit_user_link($user->ID)
+                    ];
+                }
+            }
+            
             $submission = apply_filters_deprecated(
                 'fluentform_single_response_data',
                 [$submission, $form->id],
