@@ -103,28 +103,24 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
 
 function fluentFormEditorShortCodes()
 {
-    $generalShortCodes = EditorShortCode::getGeneralShortCodes();
-    apply_filters_deprecated(
+    $generalShortCodes = [EditorShortCode::getGeneralShortCodes()];
+    $generalShortCodes = apply_filters_deprecated(
         'fluentform_editor_shortcodes',
         [
-            [
-                $generalShortCodes,
-            ]
+            $generalShortCodes
         ],
         FLUENTFORM_FRAMEWORK_UPGRADE,
         'fluentform/editor_shortcodes',
         'Use fluentform/editor_shortcodes instead of fluentform_editor_shortcodes'
     );
 
-    return apply_filters('fluentform/editor_shortcodes', [
-        $generalShortCodes,
-    ]);
+    return apply_filters('fluentform/editor_shortcodes', $generalShortCodes);
 }
 
 function fluentFormGetAllEditorShortCodes($form)
 {
     $editorShortCodes = EditorShortCode::getShortCodes($form);
-    apply_filters_deprecated(
+    $editorShortCodes = apply_filters_deprecated(
         'fluentform_all_editor_shortcodes',
         [
             $editorShortCodes,

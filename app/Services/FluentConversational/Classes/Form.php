@@ -428,6 +428,11 @@ class Form
         $pluginUrl = plugins_url() . '/fluentform';
 
         foreach ($wp_scripts->queue as $script) {
+
+            if (!isset($wp_scripts->registered[$script])) {
+                continue;
+            }
+
             $item = $wp_scripts->registered[$script];
             $src = $wp_scripts->registered[$script]->src;
 
@@ -477,6 +482,10 @@ class Form
                 continue;
             }
 
+            if(!$item->deps) {
+                continue;
+            }
+
             foreach ($item->deps as $dep) {
                 if (! isset($items[$dep])) {
                     $child = $wp_styles->registered[$dep];
@@ -485,10 +494,12 @@ class Form
                     } else {
                         // this core file maybe
                         $childDependencies = $child->deps;
-                        foreach ($childDependencies as $childDependency) {
-                            $childX = $wp_styles->registered[$childDependency];
-                            if ($childX->src) {
-                                $cssStyles[$childDependency] = $childX;
+                        if($childDependencies && is_array($childDependencies)) {
+                            foreach ($childDependencies as $childDependency) {
+                                $childX = $wp_styles->registered[$childDependency];
+                                if ($childX->src) {
+                                    $cssStyles[$childDependency] = $childX;
+                                }
                             }
                         }
                     }

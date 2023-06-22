@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 5.0.0
+Stable tag: 5.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -385,8 +385,13 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
+= 5.0.1 (Date: June 22, 2023) =
+ - hotfix: custom Editor shortcode compatibility issue fixed
+
 = 5.0.0 (Date: June 22, 2023) =
- - Updated translation strings
+ - Revamped UI and better UX
+ - Global Styler Improvement
+ - The new framework for faster response
  - Fixed issue with repeater field not appearing correctly on PDF
  - Fixed issue with WPForm Migrator not properly transferring text fields to text input fields with correct maximum text length
  - Fixed issue with entry migration
@@ -394,6 +399,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
  - Fixed radio field label issue
  - Updated Ajax routes to Rest Routes
  - Updated filter & action hooks naming convention with older hooks support
+ - Updated translation strings
 
 = 4.3.24 (Date: February 03, 2023) =
 - Fixes Accessibility CSS issue
