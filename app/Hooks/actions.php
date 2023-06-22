@@ -108,7 +108,7 @@ $app->addAction('fluentform/global_menu', function () use ($app) {
     $menu = new \FluentForm\App\Modules\Registerer\Menu($app);
     $menu->renderGlobalMenu();
     if ('yes' != get_option('fluentform_scheduled_actions_migrated')) {
-        \FluentForm\App\Databases\Migrations\ScheduledActions::migrate();
+        \FluentForm\Database\Migrations\ScheduledActions::migrate();
     }
 
     $hookName = 'fluentform_do_scheduled_tasks';

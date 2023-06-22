@@ -168,19 +168,10 @@ class SubmissionHandlerService
         $returnData = $this->getReturnData($insertId, $form, $formData);
         $error = '';
         try {
-            
-            do_action_deprecated(
-                'fluentform_submission_inserted',
-                [
-                    $insertId,
-                    $formData,
-                    $form
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/submission_inserted',
-                'Use fluentform/submission_inserted instead of fluentform_submission_inserted.'
-            );
-            $this->app->doAction(
+
+            do_action('fluentform_submission_inserted', $insertId, $formData, $form);
+
+            do_action(
                 'fluentform/submission_inserted',
                 $insertId,
                 $formData,
