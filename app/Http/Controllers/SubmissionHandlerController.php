@@ -11,7 +11,7 @@ class SubmissionHandlerController extends Controller
     /**
      * Handle form submission
      */
-    public function submit(SubmissionHandlerService $submissionHandlerService)
+    public function submit()
     {
         try {
             parse_str($this->request->get('data'), $data);     // Parse the url encoded data from the request object.
@@ -19,7 +19,7 @@ class SubmissionHandlerController extends Controller
             $this->request->merge(['data' => $data]);           // Merge it back again to the request object.
             
             $formId = intval($this->request->get('form_id'));
-            $response = $submissionHandlerService->handleSubmission($data, $formId);
+            $response = (new SubmissionHandlerService())->handleSubmission($data, $formId);
             
             return $this->sendSuccess($response);
             
