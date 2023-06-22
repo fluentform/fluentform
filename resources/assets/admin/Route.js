@@ -44,6 +44,9 @@ class Route {
     storeFormSettingsCustomizer = this.getFormSettingsCustomizer;
     storeEntryColumns = this.getFormSettings + '/entry-columns';
 
+    getFormSettingsConversationalDesign = this.getFormSettings + '/conversational-design';
+    storeFormSettingsConversationalDesign = this.getFormSettings + '/store-conversational-design';
+
     getSubmissions = "submissions";
     getSubmissionsResources = this.getSubmissions + '/resources';
     handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';

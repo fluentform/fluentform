@@ -19,10 +19,6 @@ class Form
     {
         add_action('wp', [$this, 'render'], 100);
 
-        add_action('wp_ajax_ff_get_conversational_form_settings', [$this, 'getSettingsAjax']);
-
-        add_action('wp_ajax_ff_store_conversational_form_settings', [$this, 'saveSettingsAjax']);
-
         add_filter('fluentform/editor_components', [$this, 'filterAcceptedFields'], 999, 2);
 
         add_filter('fluentform/form_admin_menu', [$this, 'pushDesignTab'], 10, 2);
@@ -109,58 +105,6 @@ class Form
         );
 
         echo '<div id="ff_conversation_form_design_app"><design-skeleton><h1 style="text-align: center; margin: 60px 0px;">Loading App Please wait....</h1></design-skeleton></div>';
-    }
-
-    public function getSettingsAjax()
-    {
-        $formId = intval(wpFluentForm('request')->get('form_id'));
-
-        Acl::verify('fluentform_forms_manager', $formId);
-
-        $designSettings = $this->getDesignSettings($formId);
-        $meta_settings = $this->getMetaSettings($formId);
-
-        wp_send_json_success([
-            'design_settings' => $designSettings,
-            'meta_settings'   => $meta_settings,
-            'has_pro'         => defined('FLUENTFORMPRO'),
-        ]);
-    }
-
-    public function saveSettingsAjax()
-    {
-        $request = wpFluentForm('request');
-
-        $formId = intval($request->get('form_id'));
-
-        Acl::verify('fluentform_forms_manager', $formId);
-
-        $settings = wp_unslash($request->get('design_settings'));
-        Helper::setFormMeta($formId, $this->metaKey . '_design', $settings);
-        $generatedCss = wp_strip_all_tags(wp_unslash($request->get('generated_css')));
-        if ($generatedCss) {
-            Helper::setFormMeta($formId, $this->metaKey . '_generated_css', $generatedCss);
-        }
-
-        $meta = wp_unslash($request->get('meta_settings', []));
-        if ($meta) {
-            Helper::setFormMeta($formId, $this->metaKey . '_meta', $meta);
-        }
-
-        $params = [
-            'fluent-form' => $formId,
-        ];
-
-        if (! empty($meta['share_key'])) {
-            $params['form'] = $meta['share_key'];
-        }
-
-        $shareUrl = add_query_arg($params, site_url());
-
-        wp_send_json_success([
-            'message'   => __('Settings successfully updated'),
-            'share_url' => $shareUrl,
-        ]);
     }
 
     public function getDesignSettings($formId)
@@ -252,7 +196,7 @@ class Form
             'Use fluentform/conversational_url_slug instead of fluentform_conversational_url_slug.'
         );
 
-        $paramKey = apply_filters('fluentform/conversational_url_slug', $slug);
+        $paramKey = apply_filters('fluentform/conversational_url_slug', $paramKey);
         if ('form' == $paramKey) {
             $paramKey = $slug;
         }
