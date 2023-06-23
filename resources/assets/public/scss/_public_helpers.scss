@@ -124,7 +124,7 @@
           display: inline-block;
 
           &:hover {
-            color: #409eff;
+            color: #1a7efb;
           }
         }
 
@@ -138,7 +138,7 @@
             border-radius: 0 !important;
           }
           &.ff_item_selected {
-            border-color: #409eff;
+            border-color: #1a7efb;
           }
         }
 
@@ -154,13 +154,13 @@
 
         &.ff_item_selected label > span {
           color: #fff;
-          background-color: #409eff;
-          border-color: #409eff;
+          background-color: #1a7efb;
+          border-color: #1a7efb;
           box-shadow: -1px 0 0 0 #8cc5ff;
         }
 
         &.ff_item_selected:first-child label > span {
-          border-left-color: #409eff;
+          border-left-color: #1a7efb;
         }
 
         @media only screen and (max-width: 768px) {

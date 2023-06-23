@@ -11,20 +11,29 @@
         </el-form-item>
     </div>
     <div :class="{'repeat-field-actions': isMultiCol }">
-        <i class="icon icon-plus-circle"></i>
-        <i class="icon icon-minus-circle"></i>
+        <action-btn>
+            <action-btn-add size="mini"></action-btn-add>
+            <action-btn-remove size="mini"></action-btn-remove>
+        </action-btn>
     </div>
 </el-form-item>
 </template>
 
 <script>
-import elLabel from '../includes/el-label.vue'
+import ActionBtn from '../ActionBtn/ActionBtn.vue';
+import ActionBtnAdd from '../ActionBtn/ActionBtnAdd.vue';
+import ActionBtnRemove from '../ActionBtn/ActionBtnRemove.vue';
+import elLabel from '../includes/el-label.vue';
+
 
 export default {
     name: 'repeat_fields',
     props: ['item'],
     components: {
-        elLabel
+        elLabel,
+        ActionBtn,
+        ActionBtnAdd,
+        ActionBtnRemove
     },
     computed: {
         firstField() {

@@ -1,130 +1,165 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <h2>{{ $t('Other Confirmations') }}</h2>
-            </el-col>
-
-            <!--Save settings-->
-            <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <el-button v-if="selected" @click="discard"
-                           class="pull-right" icon="el-icon-arrow-left" size="small"
-                >{{ $t('Back') }}
-                </el-button>
-
-                <template v-else>
-                    <el-button v-if='has_pro' @click="add" type="primary"
-                           size="small" icon="el-icon-plus"
-                    >{{ $t('Add Confirmation') }}
-                    </el-button>
-
-                    <el-button v-else @click="comingSoonVisibility = true" type="primary"
-                           size="small" icon="el-icon-plus"
-                    >{{ $t('Add Confirmation') }}
-                    </el-button>
-                </template>
-                <video-doc btn_text="Learn" route_id="otherConfirmationSettings" />
-            </el-col>
-        </el-row>
-
-        <!-- Confirmation Items Table -->
-        <el-table v-loading="confLoading" v-if="! selected" :data="confirmations" stripe class="el-fluid">
-            <el-table-column width="100">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                               v-model="scope.row.active"
-                    ></el-switch>
-                </template>
-            </el-table-column>
-
-            <el-table-column prop="name" label="Name" width="200" class-name="content-ellipsis"></el-table-column>
-
-            <el-table-column :label="$t('Content')" class-name="content-ellipsis">
-                <template slot-scope="scope">
-                    <template v-if="scope.row.redirectTo === 'samePage'">
-                        <span v-html="scope.row.messageToShow"></span>
-                    </template>
-
-                    <template v-else-if="scope.row.redirectTo === 'customUrl'">
-                        <span v-html="scope.row.customUrl"></span>
-                    </template>
-
-                    <template v-else>
-                        <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
-                    </template>
-                </template>
-            </el-table-column>
-
-            <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-tooltip class="item" effect="light" :content="$t('Duplicate notification settings')" placement="top">
-                        <el-button @click="clone(scope.$index)" type="success"
-                                   icon="el-icon-plus" size="mini"
-                        ></el-button>
-                    </el-tooltip>
-
-                    <el-button @click="edit(scope.$index)" type="primary"
-                               icon="el-icon-setting" size="mini"
-                    ></el-button>
-
-                    <remove @on-confirm="remove(scope.$index, scope.row.id)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
-        
+    <div class="ff_other_confirmation">
         <!-- Confirmation Item Editor -->
-        <el-form v-if="selected" label-width="205px" label-position="left">
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Confirmation Name') }}
+        <el-form label-position="top">
+            <card>
+                <card-head>
+                    <card-head-group class="justify-between">
+                        <h5 class="title">{{ $t('Conditional Confirmations') }}</h5>
+                        <btn-group>
+                            <btn-group-item>
+                                <video-doc btn_size="medium" :btn_text="$t('Learn More')" route_id="otherConfirmationSettings"/>
+                            </btn-group-item>
+                            <btn-group-item>
+                                <el-button class="el-button--soft" v-if="selected" type="info" size="medium" @click="discard" icon="ff-icon ff-icon-arrow-left">
+                                    {{ $t('Back') }}
+                                </el-button>
+                                <template v-else>
+                                    <el-button v-if='has_pro' @click="add" type="info" size="medium" icon="ff-icon ff-icon-plus">
+                                        {{ $t('Add Confirmation') }}
+                                    </el-button>
+                                </template>
+                            </btn-group-item>
+                        </btn-group>
+                    </card-head-group>
+                </card-head>
+                <card-body>
+                    <template v-if="has_pro">
+                        <!-- Confirmation Items Table -->
+                        <div class="ff-table-container" v-if="!selected">
+                            <el-skeleton :loading="confLoading" animated :rows="6">
+                                <el-table :data="confirmations">
+                                    <el-table-column width="180" :label="$t('Status')">
+                                        <template slot-scope="scope">
+                                            <span class="mr-3" v-if="scope.row.active">{{$t('Enabled')}}</span>
+                                            <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
+                                            <el-switch
+                                                :width="40"
+                                                @change="handleActive(scope.$index)"
+                                                v-model="scope.row.active"
+                                            ></el-switch>
+                                        </template>
+                                    </el-table-column>
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Confirmation Name') }}</h3>
+                                    <el-table-column prop="name" label="Name" width="180" class-name="content-ellipsis"></el-table-column>
 
-                            <p>{{ $t('The name to identify each confirmation.') }}</p>
+                                    <el-table-column :label="$t('Content')" class-name="content-ellipsis">
+                                        <template slot-scope="scope">
+                                            <template v-if="scope.row.redirectTo === 'samePage'">
+                                                <span v-html="scope.row.messageToShow"></span>
+                                            </template>
+
+                                            <template v-else-if="scope.row.redirectTo === 'customUrl'">
+                                                <span v-html="scope.row.customUrl"></span>
+                                            </template>
+
+                                            <template v-else>
+                                                <span class="page" v-html="getPageUrl(scope.row.customPage)"></span>
+                                            </template>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column width="120" :label="$t('Actions')" class-name="action-buttons">
+                                        <template slot-scope="scope">
+                                            <ul class="ff_btn_group sm">
+                                                <li>
+                                                    <el-tooltip class="item" :content="$t('Duplicate notification settings')" placement="top">
+                                                        <el-button
+                                                            class="el-button--icon"
+                                                            @click="clone(scope.$index)"
+                                                            type="primary"
+                                                            icon="el-icon-plus"
+                                                            size="mini"
+                                                        ></el-button>
+                                                    </el-tooltip>
+                                                </li>
+                                                <li>
+                                                    <el-button
+                                                        class="el-button--icon"
+                                                        @click="edit(scope.$index)"
+                                                        type="success"
+                                                        icon="el-icon-setting"
+                                                        size="mini"
+                                                    ></el-button>
+                                                </li>
+                                                <li>
+                                                    <remove @on-confirm="remove(scope.$index, scope.row.id)">
+                                                        <el-button
+                                                            class="el-button--icon"
+                                                            size="mini"
+                                                            type="danger"
+                                                            icon="el-icon-delete"
+                                                        />
+                                                    </remove>
+                                                </li>
+                                            </ul>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-skeleton>
+                        </div><!-- .ff-table-container -->
+
+                        <template v-if="selected">
+                            <el-form-item class="ff-form-item">
+                                <template slot="label">
+                                    {{ $t('Confirmation Name') }}
+
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>{{ $t('The name to identify each confirmation.') }}</p>
+                                        </div>
+
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
+
+                                <el-input v-model="selected.name"></el-input>
+                            </el-form-item>
+
+                            <add-confirmation
+                                class="mb-4"
+                                :errors="errors"
+                                :pages="pages"
+                                :editorShortcodes="editorShortcodes"
+                                :confirmation="selected">
+                            </add-confirmation>
+
+                            <el-form-item class="ff-form-item">
+                                <template slot="label">
+                                    {{ $t('Conditional Logic') }}
+
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>
+                                                {{ $t('Enable this feed conditionally') }}
+                                            </p>
+                                        </div>
+
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </template>
+
+                                <FilterFields :fields="inputs" :conditionals="selected.conditionals" :hasPro="has_pro"></FilterFields>
+                            </el-form-item>
+                        </template>
+                    </template>
+
+                    <notice v-else type="danger-soft" class="ff_alert_between">
+                        <div>
+                            <h6 class="title">You are using the free version of Fluent Forms.</h6>
+                            <p class="text">Upgrade to get access to all the advanced features.</p>
                         </div>
+                        <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+                            Upgrade to Pro
+                        </a>
+                    </notice>
+                </card-body>
+            </card>
 
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <el-input v-model="selected.name"></el-input>
-            </el-form-item>
-
-            <add-confirmation 
-                :errors="errors"
-                :pages="pages"
-                :editorShortcodes="editorShortcodes"
-                :confirmation="selected">
-            </add-confirmation>
-
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Conditional Logic') }}
-
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Conditional Logic') }}</h3>
-
-                            <p>
-                                {{ $t('Enable this feed conditionally') }}
-                            </p>
-                        </div>
-
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <FilterFields :fields="inputs" :conditionals="selected.conditionals" :disabled="!has_pro"></FilterFields>
-            </el-form-item>
-
-            <div class="text-right">
-                <el-button @click="store" size="medium" type="success" icon="el-icon-success">Save Notification</el-button>
+            <div v-if="selected">
+                <el-button @click="store" type="primary" icon="el-icon-success">{{$t('Save Notification')}}</el-button>
             </div>
         </el-form>
-
-        <coming-soon :visibility.sync="comingSoonVisibility" />
     </div>
 </template>
 
@@ -132,11 +167,16 @@
     import Remove from '../confirmRemove.vue'
     import InputPopover from '../input-popover.vue'
     import FilterFields from './Includes/FilterFields'
-    import ErrorView from '../../../common/errorView'
+    import ErrorView from '@/common/errorView'
     import AddConfirmation from './Includes/AddConfirmation.vue'
-    import ComingSoon from '../modals/ItemDisabled.vue'
     import VideoDoc from '@/common/VideoInstruction.vue';
-
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue'
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue'
+    import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
         name: 'Confirmations',
@@ -159,8 +199,14 @@
             FilterFields,
             ErrorView,
             AddConfirmation,
-            ComingSoon,
-            VideoDoc
+            VideoDoc,
+            Card,
+            CardHead,
+            CardHeadGroup,
+            CardBody,
+            BtnGroup,
+            BtnGroupItem,
+            Notice
         },
         data() {
             return {
@@ -189,8 +235,7 @@
                     },
                 },
                 pages: [],
-                errors: new Errors,
-                comingSoonVisibility: false,
+                errors: new Errors
             }
         },
         methods: {
@@ -231,52 +276,43 @@
                 delete (confirmation.id);
 
                 let data = {
-                    form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(confirmation),
-                    id,
-                    action: 'fluentform-settings-formSettings-store'
+                    meta_id: id,
                 };
 
-                FluentFormsGlobal.$post(data)
-                    .done(response => {
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
                         confirmation.id = response.id;
 
                         let handle = confirmation.active ? 'enabled' : 'disabled';
 
-                        this.$notify.success({
-                            message: 'Successfully ' + handle + ' the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully ' + handle + ' the confirmation.'));
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
             remove(index, id) {
-                FluentFormsGlobal.$post({
-                    action: 'fluentform-settings-formSettings-remove',
-                    id,
-                    form_id: this.form.id
-                })
-                    .done(response => {
+                const url = FluentFormsGlobal.$rest.route('deleteFormSettings', this.form.id);
 
+                FluentFormsGlobal.$rest.delete(url, {meta_id: id})
+                    .then(response => {
                         this.confirmations.splice(index, 1);
 
-                        this.$notify.success({
-                            message: 'Successfully removed the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully removed the confirmation.'));
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
 
             getPages() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-pages'
-                })
-                    .done(response => {
-                        this.pages = response.data.pages;
+                const url = FluentFormsGlobal.$rest.route('getFormPages', this.form.id);
+
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
+                        this.pages = response.pages;
                     })
-                    .fail(e => {})
+                    .catch(e => {})
             },
             getPageUrl(id) {
                 let page = this.pages[id];
@@ -285,21 +321,17 @@
             },
 
             fetch() {
-                let data = {
-                    form_id: this.form.id,
-                    meta_key: 'confirmations',
-                    action: 'fluentform-settings-formSettings'
-                };
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form.id);
 
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
-                        this.confirmations = response.data.result.map((item) => {
+                FluentFormsGlobal.$rest.get(url, {meta_key: 'confirmations'})
+                    .then(response => {
+                        this.confirmations = response.map((item) => {
                             const {value, ...rest} = item;
                             return {...rest, ...value};
                         });
                     })
-                    .fail(e => {})
-                    .always(_ => this.confLoading = false)
+                    .catch(e => {})
+                    .finally(_ => this.confLoading = false)
             },
             store() {
                 this.errors.clear();
@@ -309,30 +341,27 @@
                 delete (this.selected.id);
 
                 let data = {
-                    form_id: this.form.id,
                     meta_key: 'confirmations',
                     value: JSON.stringify(this.selected),
-                    id,
-                    action: 'fluentform-settings-formSettings-store'
+                    meta_id: id,
                 };
 
-                FluentFormsGlobal.$post(data)
-                    .done(response => {
-                        this.selected.id = response.data.id;
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form.id);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        this.selected.id = response.id;
 
                         this.confirmations.splice(this.selectedIndex, 1, this.selected);
 
-                        this.$notify.success({
-                            message: 'Successfully saved the confirmation.',
-                            offset: 30
-                        });
+                        this.$success(this.$t('Successfully saved the confirmation.'));
 
                         this.selected = null;
 
                         this.selectedIndex = null;
                     })
-                    .fail(errors => {
-                        this.errors.record(errors.responseJSON.errors);
+                    .catch(errors => {
+                        this.errors.record(errors);
 
                         this.selected.id = id;
                     });
@@ -343,7 +372,7 @@
             this.getPages();
 
             // Back to all notifications by clicking on menu item
-            jQuery('[data-hash="other_confirmations"]').on('click', this.discard);
+            jQuery('[data-hash="conditional_confirmations"]').on('click', this.discard);
 
             jQuery('head title').text('Other Confirmations - Fluent Forms');
 

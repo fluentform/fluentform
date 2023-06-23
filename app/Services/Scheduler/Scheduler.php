@@ -2,8 +2,9 @@
 
 namespace FluentForm\App\Services\Scheduler;
 
+use FluentForm\App\Models\FormAnalytics;
+use FluentForm\App\Models\Submission;
 use FluentForm\App\Services\Emogrifier\Emogrifier;
-use FluentForm\View;
 
 class Scheduler
 {
@@ -28,11 +29,21 @@ class Scheduler
 
         $currentDay = date('D');
         $reportingDay = $settings['sending_day'];
+    
+        $config = apply_filters_deprecated(
+            'fluentform_email_summary_config',
+            [
+                [
+                    'status' => $currentDay == $reportingDay,
+                    'days' => 7
+                ]
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_summary_config',
+            'Use fluentform/email_summary_config instead of fluentform_email_summary_config.'
+        );
 
-        $config = apply_filters('fluentform_email_summary_config', [
-            'status' => $currentDay == $reportingDay,
-            'days' => 7
-        ]);
+        $config = apply_filters('fluentform/email_summary_config', $config);
 
         if (!$config['status']) {
             return;
@@ -67,8 +78,7 @@ class Scheduler
         }
 
         $reportDateFrom = date('Y-m-d', time() - $days * 86400); // 7 days
-        $submissionCounts = wpFluent()->table('fluentform_submissions')
-            ->select([
+        $submissionCounts = Submission::select([
                 wpFluent()->raw("COUNT({$wpdb->prefix}fluentform_submissions.id) as total"),
                 'fluentform_submissions.form_id',
                 'fluentform_forms.title'
@@ -114,9 +124,20 @@ class Scheduler
             'payments' => $paymentCounts,
             'days' => $days
         );
-        $emailBody = View::make('email.report.body', $data);
+        $emailBody = wpFluentForm('view')->make('email.report.body', $data);
+    
+        $emailBody = apply_filters_deprecated(
+            'fluentform_email_summary_body',
+            [
+                $emailBody,
+                $data
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_summary_body',
+            'Use fluentform/email_summary_body instead of fluentform_email_summary_body.'
+        );
 
-        $emailBody = apply_filters('fluentform_email_summary_body', $emailBody, $data);
+        $emailBody = apply_filters('fluentform/email_summary_body', $emailBody, $data);
 
         $originalEmailBody = $emailBody;
 
@@ -143,12 +164,37 @@ class Scheduler
         if (isset($settings['subject']) && $settings['subject']) {
             $emailSubject = $settings['subject'];
         }
-
-        $emailSubject = apply_filters('fluentform_email_summary_subject', $emailSubject);
+    
+        $emailSubject = apply_filters_deprecated(
+            'fluentform_email_summary_subject',
+            [
+                $emailSubject
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_summary_subject',
+            'Use fluentform/email_summary_subject instead of fluentform_email_summary_subject'
+        );
+        $emailSubject = apply_filters('fluentform/email_summary_subject', $emailSubject);
 
         $emailResult = wp_mail($recipients, $emailSubject, $emailBody, $headers);
 
-        do_action('fluentform_email_summary_details', [
+        do_action_deprecated(
+            'fluentform_email_summary_details',
+            [
+                [
+                    'recipients' => $recipients,
+                    'email_subject' => $emailSubject,
+                    'email_body' => $emailBody
+                ],
+                $data,
+                $emailResult
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_summary_details',
+            'Use fluentform/email_summary_details instead of fluentform_email_summary_details.'
+        );
+
+        do_action('fluentform/email_summary_details', [
             'recipients' => $recipients,
             'email_subject' => $emailSubject,
             'email_body' => $emailBody
@@ -159,20 +205,28 @@ class Scheduler
 
     private static function cleanUpOldData()
     {
-        $deleteDaysCount = apply_filters('fluentform_cleanup_days_count', 60);
+        $days = 60;
+        $days = apply_filters_deprecated(
+            'fluentform_cleanup_days_count',
+            [
+                $days
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/cleanup_days_count',
+            'Use fluentform/cleanup_days_count instead of fluentform_cleanup_days_count.'
+        );
+        $deleteDaysCount = apply_filters('fluentform/cleanup_days_count', $days);
         if(!$deleteDaysCount) {
             return;
         }
         $seconds = $deleteDaysCount * 86400;
         $deleteTo = date('Y-m-d H:i:s', time() - $seconds);
         // delete 60 days old analytics data
-        wpFluent()->table('fluentform_form_analytics')
-            ->where('created_at', '<', $deleteTo)
+        FormAnalytics::where('created_at', '<', $deleteTo)
             ->delete();
 
         // delete 60 days old scheduled_actions data
-        wpFluent()->table('ff_scheduled_actions')
-            ->where('created_at', '<', $deleteTo)
+        \FluentForm\App\Models\Scheduler::where('created_at', '<', $deleteTo)
             ->delete();
 
     }

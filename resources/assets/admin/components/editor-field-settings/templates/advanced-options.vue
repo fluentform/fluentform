@@ -42,7 +42,7 @@
                         style="max-width: 64px; max-height: 32px; overflow: hidden;"
                         v-if="editItem.settings.enable_image_input && hasImageSupport"
                     >
-                        <photo-widget enable_clear="yes" v-model="option.image" />
+                        <photo-widget enable_clear="yes" v-model="option.image" :for_advanced_option="true" />
                     </div>
 
                     <div>
@@ -66,10 +66,10 @@
                         ></el-input>
                     </div>
 
-                    <div class="action-btn">
-                        <i @click="increase(index)" class="icon icon-plus-circle"></i>
-                        <i @click="decrease(index)" class="icon icon-minus-circle"></i>
-                    </div>
+                    <action-btn>
+                        <action-btn-add @click="increase(index)" size="mini"></action-btn-add>
+                        <action-btn-remove @click="decrease(index)" size="mini"></action-btn-remove>
+                    </action-btn>
                 </vddl-nodrag>
             </vddl-draggable>
         </vddl-list>
@@ -90,36 +90,47 @@
         <el-dialog
             :append-to-body="true"
             class="ff_backdrop"
-            :title="$t('Edit your options')"
             :visible.sync="bulkEditVisible"
+            width="60%"
         >
-            <div v-if="bulkEditVisible" class="bulk_editor_wrapper">
-                <h4>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</h4>
+        <div slot="title">
+            <h4 class="mb-2">{{$t('Edit your options')}}</h4>
+            <p>{{ $t('Please provide the value as LABEL:VALUE as each line or select from predefined data sets') }}</p>
+        </div>
+            <div v-if="bulkEditVisible" class="bulk_editor_wrapper mt-4">
                 <el-row :gutter="20">
-                    <el-col :span="12">
-                        <ul class="ff_bulk_option_groups">
-                            <li @click="setOptions(options)" v-for="(options, optionGroup) in editor_options" :key="optionGroup">{{optionGroup}}</li>
+                    <el-col :span="24">
+                        <ul class="ff_bulk_option_groups mb-3">
+                            <li 
+                            @click="setOptions(options)" 
+                            v-for="(options, optionGroup) in editor_options" 
+                            :key="optionGroup"
+                            :class="{ 'active': options === activeClass}"
+                            >{{optionGroup}}</li>
                         </ul>
                     </el-col>
-                    <el-col :span="12">
-                        <el-input type="textarea" :rows="14" v-model="value_key_pair_text"></el-input>
-                        <p>{{ $t('You can simply give value only the system will convert the label as value') }}</p>
+                    <el-col :span="24">
+                        <el-input type="textarea" :rows="5" v-model="value_key_pair_text"></el-input>
+                        <p class="mt-2">{{ $t('You can simply give value only the system will convert the label as value') }}</p>
                     </el-col>
                 </el-row>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button size="mini" @click="bulkEditVisible = false">{{ $t('Cancel') }}</el-button>
-                <el-button size="mini" type="primary" @click="confirmBulkEdit()">{{ $t('Confirm') }}</el-button>
-            </span>
+            <div slot="footer" class="dialog-footer text-left mt-4">
+                <el-button type="primary" @click="confirmBulkEdit()">{{ $t('Yes, Confirm!') }}</el-button>
+                <el-button @click="bulkEditVisible = false" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
+            </div>
         </el-dialog>
 
     </el-form-item>
 </template>
 
 <script type="text/babel">
-    import elLabel from '../../includes/el-label.vue'
+    import elLabel from '../../includes/el-label.vue';
     import each from 'lodash/each';
-    import PhotoWidget from '../../../../common/PhotoUploader'
+    import PhotoWidget from '@/common/PhotoUploader';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'advanced-options',
@@ -138,7 +149,10 @@
         },
         components: {
             elLabel,
-            PhotoWidget
+            PhotoWidget,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
@@ -147,7 +161,8 @@
                 value_key_pair_text: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 pro_mock: false,
-                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json)
+                editor_options: JSON.parse(window.FluentFormApp.bulk_options_json),
+                activeClass: null,
             }
         },
         computed: {
@@ -274,6 +289,7 @@
 
             setOptions(options) {
                 this.value_key_pair_text = options.join('\n');
+                this.activeClass = options;
             },
 
             clear() {

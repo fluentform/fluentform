@@ -28,6 +28,16 @@
 
         <el-input v-model="editItem.settings[prop].img_url"></el-input>
     </el-form-item>
+
+    <el-form-item v-if="editItem.settings[prop].type == 'img'">
+        <elLabel
+            slot="label"
+            :label="listItem.label + ' Image ALT Text'"
+            helpText="Alt attribute of the image">
+        </elLabel>
+
+        <el-input v-model="editItem.settings[prop].img_alt"></el-input>
+    </el-form-item>
 </div>
 </template>
 

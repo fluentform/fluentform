@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Form\Settings\Validator;
 
-use FluentValidator\Validator as FluentValidator;
+use FluentForm\Framework\Validator\Validator;
 
 class Pdfs
 {
@@ -19,7 +19,7 @@ class Pdfs
         list($rules, $messages) = static::validations();
 
         // Make validator instance.
-        $validator = FluentValidator::make($data, $rules, $messages);
+        $validator = wpFluentForm('validator')->make($data, $rules, $messages);
 
         // Add conditional validations if there's any.
         $validator = static::conditionalValidations($validator);
@@ -49,18 +49,18 @@ class Pdfs
                 'name.required'     => 'The Name field is required.',
                 'template.required' => 'The Template field is required.',
                 'filename.required' => 'The Filename field is required.',
-            ]
+            ],
         ];
     }
 
     /**
      * Add conditional validations to the validator.
      *
-     * @param FluentValidator $validator
+     * @param \FluentForm\Framework\Validator\Validator $validator
      *
-     * @return FluentValidator
+     * @return \FluentForm\Framework\Validator\Validator
      */
-    public static function conditionalValidations(FluentValidator $validator)
+    public static function conditionalValidations(Validator $validator)
     {
         return $validator;
     }

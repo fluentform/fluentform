@@ -6,6 +6,7 @@ import Router from 'vue-router';
 import Errors from '../common/Errors';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
+import notifier from './notifier';
 
 import {
     Button,
@@ -44,6 +45,8 @@ import {
     ColorPicker,
     Tabs,
     TabPane,
+    Skeleton,
+    SkeletonItem,
 } from 'element-ui';
 
 global.Errors = Errors;
@@ -85,6 +88,8 @@ Vue.use(TableColumn);
 Vue.use(InputNumber);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive);
 
@@ -110,6 +115,8 @@ Vue.mixin({
             }
             return str;
         },
+
+        ...notifier
     },
 });
 
@@ -120,13 +127,13 @@ import PostFeeds from './components/settings/PostFeeds.vue';
 import BasicSettings from './components/settings/FormSettings.vue';
 import Confirmations from './components/settings/Confirmations.vue';
 import EmailNotifications from './components/settings/Notifications.vue';
-import WebHook from './components/settings/WebHook/WebHook';
-import CustomCssJs from './components/settings/FormCustomCssJs';
-import GeneralIntegration from './components/settings/GeneralIntegration/Integration';
+import WebHook from './components/settings/WebHook/WebHook.vue';
+import CustomCssJs from './components/settings/FormCustomCssJs.vue';
+import GeneralIntegration from './components/settings/GeneralIntegration/Integration.vue';
 import EditGeneralIntegration from './components/settings/GeneralIntegration/IntegrationEditor.vue';
 import PdfFeeds from './components/settings/PdfFeeds.vue';
-import PaymentSettings from './components/settings/PaymentSettings';
-import QuizSettings from './components/settings/QuizSettings';
+import PaymentSettings from './components/settings/PaymentSettings.vue';
+import QuizSettings from './components/settings/QuizSettings.vue';
 
 const routes = [
     {
@@ -160,7 +167,7 @@ const routes = [
         component: PdfFeeds
     },
     {
-        path: '/other-confirmations',
+        path: '/conditional-confirmations',
         name: 'formOtherConfirmations',
         component: Confirmations
     },
@@ -205,7 +212,7 @@ const router = new Router({
     routes: routes
 });
 
-import App from './components/settings/SettingsApp';
+import App from './components/settings/SettingsApp.vue';
 
 const app = new Vue({
     el: '#ff_form_settings_app',

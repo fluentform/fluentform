@@ -1,115 +1,79 @@
+@import "../assets/icons/fluentform-icon.css";
+@import "../styles/variables";
+@import "../styles/element_ui_var";
+@import "../styles/navbar";
+@import "../styles/card";
 @import "../styles/globals";
+@import "../styles/el_customize";
+@import "../styles/responsive";
 
-.ff_doc_top_blocks {
-  display: block;
-  width: 100%;
+.ff_documentaion_wrapper{
+  .el-col{
+    margin-bottom: 24px;
+  }
+}
+.ff_upgrade_btn_large{
+  color: $--color-primary;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 18px 24px;
+  border-color: #fff;
+  text-transform: uppercase;
+}
+
+// mask
+.has-mask{
   position: relative;
-  margin-bottom: 20px;
-  overflow: hidden;
-
-  > * {
-    box-sizing: border-box;
-  }
-
-  .block_1_3 {
-    width: 33.33%;
-    float: left;
-    padding-right: 30px;
-    margin-bottom: 30px;
-    @media (max-width: 768px) {
-      width: 100%;
-      float: none;
-      padding-right: 0px;
-      margin-bottom: 30px;
-    }
-  }
-
-  .block_2_3 {
-    width: 66.67%;
-    float: left;
-    padding-right: 30px;
-    margin-bottom: 30px;
-    @media (max-width: 768px) {
-      width: 100%;
-      float: none;
-      padding-right: 0px;
-      margin-bottom: 30px;
-    }
-  }
+  z-index: 1;
 }
-
-.ff_block {
-  .ff_block_box {
-    padding: 15px;
-    background: white;
-    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .05);
-    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .05);
-    box-shadow: 0 0 5px rgba(0, 0, 0, .05);
-    border-radius: 4px;
-
-    ul {
-      list-style: disc;
-      margin-left: 20px;
-
-      li a {
-        font-size: 14px;
-        text-decoration: none;
-        line-height: 22px;
-      }
-    }
-  }
-}
-
-.ff_block_half {
-  width: 50%;
-  float: left;
-  padding-right: 30px;
-  margin-bottom: 30px;
-  @media (max-width: 768px) {
+.mask{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  &-1{
+    background-image: url(../../../img/grid-shape.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    top: 0;
+    position: absolute;
     width: 100%;
-    float: none;
-    padding-right: 0px;
-    margin-bottom: 30px;
+    left: 0;
   }
-}
-
-.text-center {
-  text-align: center;
+  &-2{
+    background-image: url(../../../img/shape.png);
+    background-repeat: no-repeat;
+    width: 63px;
+    height: 52px;
+    top: 20px;
+    position: absolute;
+    left: 50%;
+  }
+  &-3{
+    background-image: url(../../../img/shape-2.png);
+    background-repeat: no-repeat;
+    width: 63px;
+    height: 52px;
+    top: 14px;
+    position: absolute;
+    left: 26px;
+  }
 }
 
 .ff_addon_wrapper {
   margin: 45px auto;
-  max-width: 900px;
-
+  max-width: 950px;
   .ff_addon_header {
-    text-align: center;
-
     p {
       font-size: 16px;
     }
   }
-
   .ff_addon_banner {
     max-width: 100%;
-  }
-
-  .ff_addon_btn_wrapper {
-    padding: 30px;
-  }
-  .ff_addon_features {
-    overflow: hidden;
-  }
-  .ff_addon_feature_card {
-    margin-top: 30px;
-  }
-  .ff_addon_header_ff {
-    margin: 0px -15px 20px;
-    border-bottom: 1px solid #2b454e;
-    text-align: left !important;
-    padding: 5px 20px 10px;
-    color: #23282d;
-    font-size: 1.3em;
-    font-weight: 500;
+    border-radius: 8px;
   }
   .ff_addon_btn {
     text-decoration: none;
@@ -120,6 +84,7 @@
     font-size: 18px;
     cursor: pointer;
     border-radius: 8px;
+    display: inline-block;
     &.ff_invert {
       background: #c716c1;
       color: white;
@@ -133,11 +98,4 @@
       color: white;
     }
   }
-  .ff_addon_footer {
-    border-top: 1px solid #cecbcb;
-    padding-top: 20px;
-  }
 }
-
-
-@import "../styles/responsive";

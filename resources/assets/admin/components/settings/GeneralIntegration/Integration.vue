@@ -1,118 +1,152 @@
 <template>
     <div class="ff_form_integrations">
-        <el-row class="setting_header">
-            <el-col :md="12"><h2>{{ $t('All Form Integrations') }}</h2></el-col>
-            <!--Add Feed-->
-            <el-col v-if="!isEmpty(available_integrations)" :md="12" class="action-buttons mb15 clearfix">
-                <el-dropdown type="primary" class="pull-right" @command="add" :hide-on-click="false" >
-                    <el-button size="small" type="primary">
-                        {{ $t('Add New Integration') }}<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown" style="max-height: 400px;overflow: auto">
-                        <el-dropdown-item>
-                            <el-input @click.prevent autofocus v-model="search" :placeholder="$t('Search Integration')"></el-input>
-                        </el-dropdown-item>
-                        <el-dropdown-item v-for="(integration,integration_name) in filteredList" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-col>
-        </el-row>
-
-        <div v-if="has_pro && isEmpty(available_integrations) && !loading">
-            <p style="font-size: 18px; text-align: center;">
-                {{ $t(this.integrationsResource.instruction) }}
-            </p>
-            <p style="text-align: center;">
-                <a 
-                    class="el-button el-button--primary el-button--small el-dropdown-selfdefine" 
-                    :href="all_module_config_url"
-                >
-                    {{ $t('Configure Modules') }}
-                </a>
-            </p>
-        </div>
-
-        <!-- GetResponse Feeds Table: 1 -->
-        <el-table v-if="!isEmpty(available_integrations)" stripe v-loading="loading" :data="integrations" class="el-fluid">
-            <template slot="empty">
-                <div class="getting_started_message">
-                    <p>{{ $t('You don\'t have any form feed integration yet. Create new feed and connect your data to your favorite CRM / Marketing tool') }}</p>
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <h5 class="title">{{ $t('All Form Integrations') }}</h5>
+                    <div v-if="!isEmpty(available_integrations)" class="action-buttons">
+                        <el-dropdown @command="add" :hide-on-click="false" trigger="click">
+                            <el-button type="info" size="medium">
+                                {{ $t('Add New Integration') }}
+                                <i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu class="ff-dropdown-menu" slot="dropdown" style="max-height: 400px; overflow: auto">
+                                <el-dropdown-item>
+                                    <el-input @click.prevent autofocus v-model="search" :placeholder="$t('Search Integration')"></el-input>
+                                </el-dropdown-item>
+                                <el-dropdown-item v-for="(integration,integration_name) in filteredList" :key="integration_name" :command="integration_name">{{integration.title}}</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <div v-if="has_pro && isEmpty(available_integrations) && !loading" class="text-center">
+                    <p style="font-size: 16px; margin-bottom: 20px; max-width: 760px; margin-left: auto; margin-right: auto;">
+                        {{ $t(this.integrationsResource.instruction) }}
+                    </p>
+                     <a class="el-button el-button--primary el-dropdown-selfdefine" :href="all_module_config_url">
+                        {{ $t('Configure Modules') }}
+                    </a>
                 </div>
-            </template>
-            <el-table-column label="Status" width="90">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.row)" v-model="scope.row.enabled"></el-switch>
-                </template>
-            </el-table-column>
 
-            <el-table-column
-                width="180"
-                :label="$t('Integration')">
-                <template slot-scope="scope">
-                    <img v-if="scope.row.provider_logo" class="general_integration_logo" :src="scope.row.provider_logo" :alt="scope.row.provider" />
-                    <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
-                </template>
-            </el-table-column>
+                <!-- GetResponse Feeds Table: 1 -->
+                <div class="ff-table-container">
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-table v-if="!isEmpty(available_integrations)" :data="integrations">
+                            <template slot="empty">
+                                <div class="getting_started_message" style="padding-top: 16px; padding-bottom: 10px;">
+                                    <p>{{ $t('You haven\'t added any integration feed yet. Add new integration to connect your favourite tools with your forms') }}</p>
+                                </div>
+                            </template>
+                            <el-table-column width="180" :label="$t('Status')">
+                                <template slot-scope="scope">
+                                    <span class="mr-3" v-if="scope.row.enabled">{{$t('Enabled')}}</span>
+                                    <span class="mr-3" v-else style="color:#fa3b3c;">{{ $t('Disabled') }}</span>
+                                    <el-switch 
+                                        active-color="#00b27f" 
+                                        @change="handleActive(scope.row)" 
+                                        v-model="scope.row.enabled">
+                                    </el-switch>
+                                </template>
+                            </el-table-column>
 
-            <el-table-column
-                :label="$t('Title')">
-                <template slot-scope="scope">
-                    {{scope.row.name}}
-                </template>
-            </el-table-column>
+                            <el-table-column width="180" :label="$t('Integration')">
+                                <template slot-scope="scope">
+                                    <img v-if="scope.row.provider_logo" class="general_integration_logo" :src="scope.row.provider_logo" :alt="scope.row.provider" />
+                                    <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
+                                </template>
+                            </el-table-column>
 
-            <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-button
-                        @click="edit(scope.row)"
-                        type="primary"
-                        icon="el-icon-setting"
-                        size="mini"></el-button>
-                    <remove @on-confirm="remove(scope.row.id, scope)"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
 
-        <br />
-        <p v-show="has_pro && !integrations.length" style="text-align: right;">
-            <a :href="all_module_config_url">Check Global Integration Settings</a>
-            <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">{{ $t('View Documentations') }}</a>
-        </p>
+                            <el-table-column :label="$t('Title')">
+                                <template slot-scope="scope">
+                                    {{scope.row.name}}
+                                </template>
+                            </el-table-column>
 
-        <div v-if="!has_pro" class="upgrade_to_pro">
-            <p>
-                {{ $t(this.integrationsResource.instruction) }}
-            </p>
+                            <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <btn-group size="sm">
+                                        <btn-group-item>
+                                            <el-button
+                                                class="el-button--soft el-button--icon"
+                                                @click="edit(scope.row)"
+                                                type="success"
+                                                icon="ff-icon-setting"
+                                                size="small">
+                                            </el-button>
+                                        </btn-group-item>
+                                        <btn-group-item>
+                                            <remove @on-confirm="remove(scope.row.id, scope)">
+                                                <el-button
+                                                    class="el-button--soft el-button--icon"
+                                                    size="small"
+                                                    type="danger"
+                                                    icon="ff-icon-trash"
+                                                />
+                                            </remove>
+                                        </btn-group-item>
+                                    </btn-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
+                </div><!-- .ff-table-container -->
 
-            <div class="action-btns">
-                <a 
-                    class="el-button el-button--primary el-button--small el-dropdown-selfdefine" 
-                    :href="upgrade_url"
-                >
-                    {{ $t('Upgrade to PRO') }}
-                </a>
+                <p v-if="has_pro && !integrations.length" class="text-center">
+                    <a :href="all_module_config_url">{{$t('Check Global Integration Settings')}}</a>
+                    <a style="margin-left: 20px" target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/integrations-available-in-wp-fluent-form/">
+                        {{ $t('View Documentations') }}
+                    </a>
+                </p>
 
-                <a 
-                    class="" 
-                    :href="integrationsResource.list_url"
-                >
-                    {{ $t('See All Integrations') }}
-                </a>
-            </div>
-            
-            <img :src="integrationsResource.asset_url" alt="integrations asset" />
-        </div>
+                <div v-if="!has_pro" class="upgrade_to_pro text-center mt-4" style="max-width: 750px; margin: auto;">
+                    <p style="font-size: 16px;" class="mb-4">
+                        {{ $t(this.integrationsResource.instruction) }}
+                    </p>
+
+                    <btn-group>
+                        <btn-group-item>
+                            <a class="el-button el-button--primary el-dropdown-selfdefine" :href="upgrade_url">
+                                {{ $t('Upgrade to PRO') }}
+                            </a>
+                        </btn-group-item>
+                        <btn-group-item>
+                            <a class="el-button el-button--default" :href="integrationsResource.list_url">
+                                {{ $t('See All Integrations') }}
+                            </a>
+                        </btn-group-item>
+                    </btn-group>
+                    
+                    <img class="mt-6" :src="integrationsResource.asset_url" alt="integrations asset" />
+                </div>
+            </card-body>
+        </card>
     </div>
 </template>
 
 <script>
     import remove from '../../confirmRemove.vue';
     import isEmpty from 'lodash/isEmpty';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    
     export default {
         name: 'generalSettings',
         props: ['form_id', 'inputs', 'has_pro', 'editorShortcodes'],
         components: {
-            remove
+            remove,
+            Card,
+            CardHead,
+            CardBody,
+            BtnGroup,
+            BtnGroupItem,
+            CardHeadGroup
         },
         data() {
             return {
@@ -156,12 +190,6 @@
                     }
                 });
                 return;
-
-                console.log(integration);
-                this.selectedIndex = this.integrations.length;
-                this.selected_id = 0;
-                this.editing_item = false;
-                this.show_edit = true;
             },
             edit(integration) {
                 this.$router.push({
@@ -176,60 +204,69 @@
                 let data = {
                     form_id: this.form_id,
                     status: row.enabled,
-                    notification_id: row.id,
-                    action: 'fluentform_post_update_form_integration_status'
-                };
-                FluentFormsGlobal.$post(data)
-                    .then(response => {
-                        console.log(response);
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success!',
-                            message: response.data.message
-                        });
-                    })
-                    .fail(error => {
-                        this.$notify.error({
-                            offset: 30,
-                            title: 'Success!',
-                            message: error.responseJSON.data.message
-                        });
-                    });
-            },
-            remove(id, scope) {
-               let $index  = scope.$index;
-                let data = {
-                    action: 'fluentform-delete-general_integration_feed',
-                    integration_id: id,
-                    form_id: this.form_id
+                    integration_id: row.id,
                 };
 
-                FluentFormsGlobal.$post(data)
+                this.errors.clear();
+
+                this.saving = true;
+
+                const url = FluentFormsGlobal.$rest.route('updateFormIntegrationSettings',this.form_id);
+
+                FluentFormsGlobal.$rest.post(url,data)
                     .then(response => {
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success!',
-                            message: response.data.message
-                        });
+                        if(response.created) {
+                            this.$router.push({
+                                name: 'allIntegrations'
+                            });
+                        }
+                        this.$success(response.message);
+                    })
+                    .catch((error) => {
+                        const message = error?.message || error?.data?.message
+                        this.$fail(message);
+                    })
+                    .finally(() => this.saving = false);
+            },
+            remove(feed_id, scope) {
+                const url = FluentFormsGlobal.$rest.route('deleteFormIntegration', this.form_id);
+                let $index  = scope.$index;
+                let data = {
+                    integration_id: feed_id,
+                    form_id: this.form_id
+                };
+                this.deleting = true;
+                FluentFormsGlobal.$rest.delete(url,data)
+                    .then(response => {
+                        this.$success(response.message);
                         this.integrations.splice($index, 1);
                     })
-                    .fail(e => console.log(e));
+                    .catch((error) => {
+                        const message = error?.message || error?.data?.message
+                        this.$fail(message);
+                    })
+                    .finally(()=>{});
+
             },
             getFeeds() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform_get_all-general-integration-feeds',
-                    form_id: this.form_id
-                })
+
+                const url = FluentFormsGlobal.$rest.route('getIntegrations', this.form_id);
+                FluentFormsGlobal.$rest.get(url)
                     .then(response => {
-                        this.integrations = response.data.feeds;
-                        this.available_integrations = response.data.available_integrations;
-                        this.all_module_config_url = response.data.all_module_config_url;
+                        this.integrations = response.feeds;
+                        this.available_integrations = response.available_integrations;
+                        this.all_module_config_url = response.all_module_config_url;
+                        // this.$success(response.message);
                     })
-                    .fail(error => {
-                        console.log(error);
+                    .catch(error => {
+                        console.log(error)
+                        this.errors.record(error);
                     })
-                    .always(r => this.loading = false);
+                    .finally(() => {
+                        this.loading = false;
+                    });
+
             },
             isEmpty
         },

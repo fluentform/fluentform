@@ -1,19 +1,21 @@
 <template>
-    <div v-loading="!app_ready" class="settings_app">
-        <router-view
-            v-if="app_ready"
-            :form_id="form_id"
-            :form="form"
-            :inputs="inputs"
-            :has_pro="hasPro"
-            :has_pdf="hasPDF"
-            :editorShortcodes="editorShortcodes"
-        ></router-view>
+    <div class="settings_app">
+        <el-skeleton :loading="!app_ready" animated :rows="10">
+            <router-view
+                v-if="app_ready"
+                :form_id="form_id"
+                :form="form"
+                :inputs="inputs"
+                :has_pro="hasPro"
+                :has_pdf="hasPDF"
+                :editorShortcodes="editorShortcodes"
+            ></router-view>
+        </el-skeleton>
     </div>
 </template>
 
 <script type="text/babel">
-    import Clipboard from "clipboard";
+    import { scrollTop, handleSidebarActiveLink } from '@/admin/helpers';
 
     export default {
         name: 'settings_app',
@@ -32,26 +34,21 @@
         },
         methods: {
             fetchInputs() {
-                let data = {
-                    action: 'fluentform-form-inputs',
-                    formId: this.form_id
-                };
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = FluentFormsGlobal.$rest.route('getFormFields', this.form_id);
+                
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
                         this.inputs = Object.assign({}, response);
                         this.app_ready = true;
                     })
-                    .fail(e => {
+                    .catch(e => {
                     });
             },
             fetchAllEditorShortcodes() {
-                let data = {
-                    action: 'fluentform-load-all-editor-shortcodes',
-                    formId: this.form_id,
-                    input_only: true
-                };
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = FluentFormsGlobal.$rest.route('getFormShortcodes', this.form_id);
+                
+                FluentFormsGlobal.$rest.get(url, {input_only: true})
+                    .then(response => {
                         let allShortCodes = response;
                         if (allShortCodes[0] && allShortCodes[0]['shortcodes']) {
                             delete allShortCodes[0]['shortcodes']['{all_data}'];
@@ -61,36 +58,71 @@
                         this.editorShortcodes = allShortCodes;
                         this.app_ready = true;
                     })
-                    .fail(e => {
+                    .catch(e => {
                     });
             },
+            scrollTo() {
+                let pageScrollLink = jQuery('.ff-page-scroll');
+                pageScrollLink.each(function(){
+                    jQuery(this).on("click", function(e){
+                        let targetHash = e.target.hash;
+                        e.preventDefault();
+                        
+                        jQuery(targetHash).addClass('highlight-border');
+
+                        const $settingsForm = jQuery('.ff_settings_form');
+                        if($settingsForm.length){
+                            const top = jQuery(targetHash).offset().top - 34 - $settingsForm.position().top + $settingsForm.scrollTop();
+                            scrollTop(top, 'fast', '.ff_settings_form').then((_) => {
+                                jQuery('head title').text( e.target.textContent.trim() + ' - Fluent Forms');
+                                if(targetHash.length) {
+                                    setTimeout(() => {
+                                        jQuery(targetHash).not(this).removeClass('highlight-border');
+                                    }, 500);
+                                }
+                            })
+                        }
+                
+                    });
+                });
+            },
+            maybeSetRoute($el) {
+                // set root route if route not set yet
+                if ('/' === $el.data('route_key') && this.$route.path !== '/') {
+                    this.$router.push({ path: '/' })
+                }
+            }
         },
         mounted() {
             this.fetchInputs();
             this.fetchAllEditorShortcodes();
 
-            let currentActive = jQuery('.ff_settings_list a[href="#' + this.$route.fullPath + '"]');
-
-            if(currentActive.length) {
-                currentActive.parent().addClass('active');
+            const $el = jQuery('.ff_settings_list a[data-route_key="' + this.$route.path + '"]');
+            if ($el.length) {
+                this.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
             } else {
-                jQuery('.ff_settings_list li:first-child').addClass('active');
+                const $firstLink = jQuery('.ff_settings_list li:first-child').first();
+                handleSidebarActiveLink($firstLink)
             }
 
-
-            jQuery('.ff_settings_list a').on('click', function () {
-                jQuery('.ff_settings_list li').removeClass('active');
-                jQuery(this).parent().addClass('active');
+            const that = this;
+            jQuery('.ff_settings_list a').on('click', function (e) {
+                const $el = jQuery(this);
+                if ($el.attr('href') === '#' || '/' === $el.data('route_key')){
+                    e.preventDefault();
+                }
+                that.maybeSetRoute($el)
+                handleSidebarActiveLink($el.parent())
             });
 
             jQuery('head title').text('Settings & Integrations - Fluent Forms');
-            (new Clipboard('.copy')).on('success', (e) => {
-                this.$message({
-                                  message: 'Copied to Clipboard!',
-                                  type: 'success',
-                                  offset: 40
-                              });
+            (new ClipboardJS('.copy')).on('success', (e) => {
+                this.$copy();
             });
+
+            // init scrolling page
+            this.scrollTo();
 
         }
     }

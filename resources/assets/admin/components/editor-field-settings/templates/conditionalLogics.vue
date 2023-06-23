@@ -12,8 +12,8 @@
                 <elLabel slot="label" :label="$t('Condition Match')"
                          :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')"></elLabel>
 
-                <el-radio v-model="conditional_logics.type" :label="$t('any')">{{ $t('Any') }}</el-radio>
-                <el-radio v-model="conditional_logics.type" :label="$t('all')">{{ $t('All') }}</el-radio>
+                <el-radio v-model="conditional_logics.type" label="any">{{ $t('Any') }}</el-radio>
+                <el-radio v-model="conditional_logics.type" label="all">{{ $t('All') }}</el-radio>
             </el-form-item>
 
             <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
@@ -21,17 +21,19 @@
                         v-model="condition.field"
                         @change="condition.value = ''"
                         :placeholder="$t('Select')"
-                        class="condition-field"
+                        class="condition-field ff-select ff-select-small"
                 >
-                    <option value="" disabled>- Select -</option>
-                    <option v-for="(dep, meta, i) in dependencies"
+                    <option value="" disabled>Select</option>
+                    <template v-for="(dep, meta, i) in dependencies">
+                        <option 
                             v-if="meta != editItem.attributes.name"
                             :key="i"
                             :value="meta">{{ dep.field_label || meta }}
-                    </option>
+                        </option>
+                    </template>
                 </select>
-                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator">
-                    <option value="" disabled>- {{ $t('Select') }} -</option>
+                <select v-model="condition.operator" :placeholder="$t('Select')" class="condition-operator ff-select ff-select-small">
+                    <option value="" disabled>{{ $t('Select') }}</option>
                     <option value="=">{{ $t('equal') }}</option>
                     <option value="!=">{{ $t('not equal') }}</option>
 
@@ -57,25 +59,23 @@
                             v-model="condition.value"
                     >
                     <select v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
-                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value">
-                        <option value="" selected >- {{ $t('Select') }} -</option>
-                        <option v-for="(label, key, i) in dependencies[condition.field].options"
-                                :key="key"
-                                :value="key">{{ label }}
+                            v-model="condition.value" :placeholder="$t('Select')" class="condition-value ff-select ff-select-small">
+                        <option value="" selected >{{ $t('Select') }}</option>
+                        <option v-for="(option, i) in dependencies[condition.field].options"
+                                :key="i"
+                                :value="option.value">{{ option.label }}
                         </option>
                     </select>
                 </template>
 
                 <!-- JUST A PLACEHOLDER -->
-                <select v-else class="condition-value">
-                    <option value="" disabled selected>- {{ $t('Select') }} -</option>
+                <select v-else class="condition-value ff-select ff-select-small">
+                    <option value="" disabled selected>{{ $t('Select') }}</option>
                 </select>
-
-                <div class="action-btn">
-                    <i @click.prevent="conditional_logics.conditions.pushAfter(i, emptyRules)"
-                       class="icon icon-plus-circle"></i>
-                    <i @click.prevent="decreaseLogic(i)" class="icon icon-minus-circle"></i>
-                </div>
+                <action-btn class="ml-1">
+                    <action-btn-add @click="conditional_logics.conditions.pushAfter(i, emptyRules)" size="mini"></action-btn-add>
+                    <action-btn-remove @click="decreaseLogic(i)" size="mini"></action-btn-remove>
+                </action-btn>
             </div>
         </template>
 
@@ -93,14 +93,20 @@
 </template>
 
 <script>
-    import elLabel from '../../includes/el-label.vue'
+    import elLabel from '@/admin/components/includes/el-label.vue'
     import each from "lodash/each";
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'conditionalLogics',
         props: ['listItem', 'editItem', 'form_items'],
         components: {
-            elLabel
+            elLabel,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
             return {
@@ -167,7 +173,7 @@
                         if (this.editItem.uniqElKey != formItem.uniqElKey) {
                             if (['terms_and_condition', 'gdpr_agreement'].includes(formItem.element)) {
                                 dependencies[formItem.attributes.name] = {
-                                    options: {'on': 'Checked'},
+                                    options: this.formatOptions({'on': 'Checked'}),
                                     field_label: formItem.settings.label
                                 }
                             } else if (['address', 'input_name'].includes(formItem.element)) {
@@ -175,11 +181,11 @@
                                     if (item.settings.visible) {
                                         let name = formItem.attributes.name + '[' + item.attributes.name + ']';
                                         dependencies[name] = {
-                                            options: item.options,
+                                            options: item.options ? this.formatOptions(item.options) : null,
                                             field_label: formItem.attributes.name + '[' + item.settings.label + ']'
                                         };
                                         if (item.element == 'select_country') {
-                                            dependencies[name]['options'] = window.FluentFormApp.countries;
+                                            dependencies[name]['options'] = this.formatOptions(window.FluentFormApp.countries);
                                         }
                                     }
                                 });
@@ -187,31 +193,31 @@
                                 this.mapElements(formItem.settings.data_source.headers, item => {
                                     let name = formItem.attributes.name + '[' + item + ']';
                                     dependencies[name] = {
-                                        options: formItem.options || null,
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
                                         field_label: formItem.attributes.name + '[' + item + ']'
                                     };
                                 });
                             } else if (formItem.element == 'select_country') {
                                 dependencies[formItem.attributes.name] = {
-                                    options: window.FluentFormApp.countries,
+                                    options: this.formatOptions(window.FluentFormApp.countries),
                                     field_label: formItem.settings.label
                                 };
                             } else if (['input_radio', 'select', 'input_checkbox'].includes(formItem.element)) {
-                                let options = formItem.options;
+                                let options = formItem.options ? this.formatOptions(formItem.options) : null;
                                 if (!options) {
-                                    options = {};
-                                    each(formItem.settings.advanced_options, (optionItem) => {
-                                        options[optionItem.value] = optionItem.label;
-                                    });
+                                    options = formItem.settings.advanced_options;
                                 }
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
                                     field_label: formItem.settings.label
                                 }
                             } else if (formItem.element == 'payment_method') {
-                                let options = {};
+                                let options = [];
                                 each(formItem.settings.payment_methods, (optionItem, itemName) => {
-                                    options[itemName] = optionItem.title;
+                                    options.push({
+                                        label: optionItem.title,
+                                        value: itemName
+                                    })
                                 });
                                 dependencies[formItem.attributes.name] = {
                                     options: options,
@@ -224,20 +230,15 @@
                                         field_label: formItem.settings.label
                                     }
                                 } else {
-                                    let options = {};
-                                    each(formItem.settings.pricing_options, (optionItem) => {
-                                        options[optionItem.label] = optionItem.label;
-                                    });
-
                                     dependencies[formItem.attributes.name] = {
-                                        options: options,
+                                        options: formItem.settings.pricing_options,
                                         field_label: formItem.settings.label
                                     }
                                 }
                             } else {
                                 if (formItem.attributes.name) {
                                     dependencies[formItem.attributes.name] = {
-                                        options: formItem.options || null,
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
                                         field_label: formItem.settings.label
                                     }
                                 }
@@ -267,6 +268,16 @@
                 if (!this.conditional_logics.conditions.length) {
                     this.conditional_logics.conditions.push(this.emptyRules);
                 }
+            },
+            formatOptions(items) {
+                let options = [];
+                
+                each(items, (value, key) => options.push({
+                    label: value,
+                    value: key
+                }));
+
+                return options;
             }
         },
         beforeMount() {

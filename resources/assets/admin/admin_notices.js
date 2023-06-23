@@ -9,15 +9,15 @@ const ffNoticeApp = {
             
             jQuery('#ff_notice_' + noticeName).remove();
 
-            FluentFormsGlobal.$post({
-                action: 'fluentform_notice_action',
+            const url = FluentFormsGlobal.$rest.route('noticeAction')
+            FluentFormsGlobal.$rest.post(url,{
                 notice_name: noticeName,
                 action_type: noticeType
             })
                 .then(function (response) {
                     console.log(response);
                 })
-                .fail(function (error) {
+                .catch(function (error) {
                     console.log(error);
                 });
         });
@@ -85,12 +85,40 @@ const ffNoticeApp = {
                 });
         });
     },
+    handleReviewQuery(){
+        let $btn = jQuery('.ff_review_now');
+        $btn.on('click', function (e) {
+            e.preventDefault();
+            jQuery(this).attr('disabled', true);
+            let noticeName = jQuery(this).attr('data-notice_name');
+
+            const route = FluentFormsGlobal.$rest.route('noticeAction')
+            FluentFormsGlobal.$rest.post(route,{
+                notice_name: noticeName,
+            })
+                .then(function (response) {
+                    if (response) {
+                        $btn.html('Thank You! We Really appreciate it.').fadeIn();
+                        setTimeout(function () {
+                            const url = $btn.attr('href');
+                            jQuery('#ff_notice_' + noticeName).remove();
+                            window.open(url, '_blank');
+                        }, 1000)
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        });
+    },
 
     initReady() {
         jQuery(document).ready(() => {
             this.initNagButton();
             this.initTrackYes();
             this.initSmtpInstall();
+            this.handleReviewQuery();
         });
     }
 };

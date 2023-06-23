@@ -1,10 +1,13 @@
 <template>
     <div class="search-element">
-        <el-input v-model="searchElementStr" type="text" size="small" :placeholder="placeholder" />
+        <div class="ff-input-wrap">
+            <span class="el-icon el-icon-search"></span>
+            <el-input :class="[searchElementStr.length > 0 ? 'active' : '']" v-model="searchElementStr" type="text" :placeholder="placeholder" />
+        </div>
 
-        <div class="search-element-result" v-show="searchResult.length" style="margin-top: 10px;">
+        <div class="search-element-result" v-show="searchResult.length" style="margin-top: 15px;">
             <div v-for="(itemMockList, i) in searchResult" :key="i" class="v-row mb15">
-                <div class="v-col--33" v-for="(itemMock, i) in itemMockList" :key="i">
+                <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
                     <vddl-draggable
                         class="btn-element"
                         :draggable="itemMock"
@@ -15,7 +18,7 @@
                         :moved="moved"
                         effectAllowed="copy">
                         <i :class="itemMock.editor_options.icon_class"></i>
-                        {{ itemMock.editor_options.title }}
+                        <span>{{ itemMock.editor_options.title }}</span>
                     </vddl-draggable>
                 </div>
             </div>
@@ -64,14 +67,35 @@ export default {
             if (searchElementStr) {
                 searchResult = this.list.filter((item) => {
                     if (tags[item.element]) {
-                        return tags[item.element].toString().toLowerCase().includes(searchElementStr);
+                        let search = this.makeSearchString(item);
+                        search += tags[item.element].toString();
+                        return search.toLowerCase().includes(searchElementStr);
                     }
+					return false;
                 });
                 this.$emit('update:isSidebarSearch', true);
             } else {
                 this.$emit('update:isSidebarSearch', false);
             }
-            this.searchResult = _ff.chunk( searchResult, 3 );
+            this.searchResult = _ff.chunk( searchResult, 2 );
+        }
+    },
+    methods: {
+        makeSearchString(field) {
+            let searchStr = '';
+            const { name, type } = field.attributes || {};
+            if (name) searchStr += name;
+            if (type) searchStr += type;
+            if (field.element) searchStr += field.element;
+            if (field.settings?.label) searchStr += field.settings.label;
+            if (field.editor_options?.title) searchStr += field.editor_options.title;
+
+            if (field.fields && typeof field.fields === 'object') {
+                for (const item in field.fields) {
+                    searchStr += this.makeSearchString(field.fields[item]);
+                }
+            }
+            return searchStr.toString();
         }
     }
 }

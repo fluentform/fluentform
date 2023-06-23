@@ -3,7 +3,7 @@
         :class="['text-' + submitButton.settings.align, {'selected': !!editItem.uniqElKey && editItem.uniqElKey == submitButton.uniqElKey}]">
         <div @click="editSelected(submitButton)" class="item-actions-wrapper hover-action-middle">
             <div class="item-actions">
-                <i @click="editSelected(submitButton)" class="icon icon-pencil"></i>
+                <i @click="editSelected(submitButton)" class="el-icon el-icon-edit"></i>
             </div>
         </div>
         <!-- ADDED IN v1.2.6 -->

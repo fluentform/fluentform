@@ -13,12 +13,32 @@ export default new Vuex.Store({
     state: {
         fieldMode: 'add',
         sidebarLoading: true,
-        editorShortcodes: {}
+        editorShortcodes: {},
+        editorComponents: {},
+        editorDisabledComponents: {},
+        
+        postMockList: [],
+        taxonomyMockList: [],
+        generalMockList: [],
+        advancedMockList: [],
+        paymentsMockList: [],
+        containerMockList: [],
+        isMockLoaded: false,
     },
     getters: {
         fieldMode: state => state.fieldMode,
         sidebarLoading: state => state.sidebarLoading,
         editorShortcodes: state => state.editorShortcodes,
+        
+        editorComponents: state => state.editorComponents,
+        editorDisabledComponents: state => state.editorDisabledComponents,
+        postMockList: state => state.postMockList,
+        taxonomyMockList: state => state.taxonomyMockList,
+        generalMockList: state => state.generalMockList,
+        advancedMockList: state => state.advancedMockList,
+        paymentsMockList: state => state.paymentsMockList,
+        containerMockList: state => state.containerMockList,
+        isMockLoaded: state => state.isMockLoaded,
     },
     actions,
     mutations,

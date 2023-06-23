@@ -9,8 +9,8 @@ class Turnstile
     /**
      * Verify turnstile response.
      *
-     * @param string $token response from the user.
-     * @param null $secret provided or already stored secret key.
+     * @param string $token  response from the user.
+     * @param null   $secret provided or already stored secret key.
      *
      * @return bool
      */
@@ -22,7 +22,7 @@ class Turnstile
             'method' => 'POST',
             'body'   => [
                 'secret'   => $secret,
-                'response' => $token
+                'response' => $token,
             ],
         ]);
 
@@ -34,5 +34,18 @@ class Turnstile
         }
 
         return $isValid;
+    }
+
+    public static function ensureSettings($values)
+    {
+        $settings = ArrayHelper::get($values, '_fluentform_turnstile_details');
+
+        $settings['invisible'] = ArrayHelper::get($settings, 'invisible', 'no');
+        $settings['theme'] = ArrayHelper::get($settings, 'theme', 'auto');
+        unset($settings['token']);
+
+        $values['_fluentform_turnstile_details'] = $settings;
+
+        return $values;
     }
 }

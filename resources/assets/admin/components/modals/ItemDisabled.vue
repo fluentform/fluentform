@@ -1,25 +1,24 @@
 <template>
-    <div :class="{'ff_backdrop': visibility}" class="disabled-info">
+    <div :class="{'ff_backdrop': visibility}" class="disabled-info" v-if="modal">
         <el-dialog
-            :title="!modal ? $t('Field disabled') : ''"
             :visible.sync="isVisible"
             :before-close="close"
-            width="70%">
+            :width="modal.video || modal.image ? '74%' : '50%'"
+        >
+            <div slot="title">
+                <h4>{{!modal ? $t('Field disabled') : ''}}</h4>
+            </div>
+
             <template v-if="contentComponent">
                 <component :is="contentComponent"></component>
             </template>
 
-            <template v-else-if="modal">
-                <el-row :gutter="25">
-                    <el-col v-if="modal.video || modal.image"
-                            :md="12"
-                            :span="24"
-                    >
-                        <div v-if="modal.video"
-                             style="width: 100%; overflow: hidden;"
-                        >
+            <template v-else-if="modal && !modal.disable_html">
+                <el-row :gutter="25" class="items-center">
+                    <el-col v-if="modal.video || modal.image" :span="12">
+                        <div v-if="modal.video" class="video-wrapper mr-3">
                             <iframe
-                                style="width: 100%; height: 350px;"
+                                style="width: 100%; height: 300px; border-radius: 10px;"
                                 :src="modal.video"
                                 title="YouTube video player"
                                 frameborder="0"
@@ -27,45 +26,43 @@
                                 allowfullscreen
                             />
                         </div>
-                        <div v-else style="overflow: hidden;">
-                            <img :src="modal.image" :alt="modal.title" />
+                        <div v-else class="mr-3">
+                            <img class="w-100 img-thumb" :src="modal.image" :alt="modal.title" />
                         </div>
                     </el-col>
 
-                    <el-col :md="modal.video || modal.image ? 12 : 24" :span="24">
-                        <i v-show="!modal.hidePro" class="ff-edit-password ff-icon-lock" />
-
-                        <div>
-                            <h3>{{ modal.title }}</h3>
-
-                            <p>{{ modal.description }}</p>
-
-                            <a
-                                v-show="!modal.hidePro"
-                                target="_blank"
-                                class="el-button el-button--primary"
-                                :href="campaignUrl"
-                            >
+                    <el-col :span="modal.video || modal.image ? 12 : 24">
+                        <div class="video-content">
+                            <div class="ff_icon_btn mb-4" v-if="!modal.hidePro">
+                                 <i class="ff-edit-password el-icon"/>
+                            </div>
+                            <h3 class="mb-3 title">{{ modal.title }}</h3>
+                            <p class="text">{{ modal.description }}</p>
+                            <el-button class="mt-2" type="primary" v-if="!modal.hidePro" target="_blank" :href="campaignUrl">
                                 {{ $t('Upgrade to PRO') }}
-                            </a>
+                            </el-button>
                         </div>
                     </el-col>
                 </el-row>
             </template>
 
+            <div v-else-if="modal && modal.disable_html">
+                <div v-html="modal.disable_html"></div>
+            </div>
+
             <div v-else>
-                <p style="margin-bottom: 30px; font-size: 18px;">{{ $t('This field is only available on pro add - on') }}</p>
-                <a  target="_blank"
-                    class="el-button el-button--danger"
-                    :href="campaignUrl" >
+                <p>{{ $t('This field is only available on pro add - on') }}</p>
+                <a target="_blank"
+                   class="el-button el-button--danger"
+                   :href="campaignUrl" >
                     {{ $t('Upgrade to Pro Now') }}
                 </a>
             </div>
 
             <template v-if="false">
-                <div style="text-align: center;">
+                <div>
                     <div v-if="modal && modal.is_payment">
-                        <h2>{{ $t('Fluent Forms Payment Module') }}</h2>
+                        <h2 class="mb-3">{{ $t('Fluent Forms Payment Module') }}</h2>
                         <p>{{ $t('Accept Payment online as part of the Forms submission process.With Fluent Forms Powerful payment integration, you can easily accept and process payments in your Fluent Forms via Stripe / PayPal.Payment Module is available on Pro Version.') }}</p>
                         <a  target="_blank"
                             class="el-button el-button--danger"
@@ -77,14 +74,13 @@
                         <div v-html="modal.disable_html"></div>
                     </div>
                     <div v-else>
-                        <p style="margin-bottom: 30px; font-size: 18px;">{{ $t('This field is only available on pro add - on') }}</p>
-                        <a  target="_blank"
+                        <p>{{ $t('This field is only available on pro add - on') }}</p>
+                        <a target="_blank"
                             class="el-button el-button--danger"
                             :href="campaignUrl" >
                             {{ $t('Upgrade to Pro Now') }}
                         </a>
                     </div>
-
                 </div>
             </template>
         </el-dialog>

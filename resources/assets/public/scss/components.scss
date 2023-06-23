@@ -15,8 +15,7 @@
             &--label {
               text-align: left;
               float: none;
-              display: inline-block;
-              margin-bottom: 5px;
+              display: block;
             }
 
             &--content {
@@ -52,9 +51,8 @@
     &-input {
       &--label {
         display: inline-block;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         position: relative;
-
         &#{$el-prefix}-is-required {
           &.asterisk-left label:before {
             content: "* ";
@@ -72,8 +70,9 @@
         label {
           margin-bottom: 0;
           display: inline-block;
-          font-weight: 600;
+          font-weight: 500;
           line-height: inherit;
+          font-size: 15px;
         }
       }
     }
@@ -106,7 +105,7 @@
 
       label {
         margin-right: 3px;
-        display: inline;
+        display: inherit;
 
         &.active {
           svg {
@@ -242,7 +241,7 @@
         color: $font-color;
       }
       svg {
-        fill: lighten($font-color, 35%);
+        fill: $primary;
       }
     }
 
@@ -267,7 +266,7 @@
       line-height: 1.2rem;
 
       &-bar {
-        background-color: #007bff;
+        background-color: $primary;
         height: inherit;
         width: 0;
         transition: width 0.3s;
@@ -319,8 +318,18 @@
     &-step {
       &-t-container {
         display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         justify-content: space-between;
-        gap: 12px
+        gap: 12px;
+        & .ff-t-cell {
+          width: initial;
+        }
+        &.ff-inner_submit_container {
+          & .ff-el-group{
+            margin-bottom: 0;
+          }
+        }
       }
 
       &-container {
@@ -344,6 +353,9 @@
 
         /*CSS counters to number the steps*/
         counter-reset: step;
+        &-navs {
+          cursor: pointer;   
+        }
 
         li {
           display: table-cell;
@@ -571,7 +583,8 @@
 
     &_upload_btn.ff-btn {
       display: inline-block;
-      background: rgb(111, 117, 126);
+      background: #6f757e;
+      border-color: #6f757e;
       color: white;
       cursor: pointer;
       padding: 10px 20px;
@@ -594,7 +607,30 @@
       }
     }
   }
+  .ff-saved-state-input {
+    .ff_input-group-text {
+      background-color: #1a7efb;
+      border-color: #1a7efb;
+      margin-left: -1px;
+      &:hover {
+        background-color: #4898fc;
+        border-color: #4898fc;
+        opacity: 1;
+      }
 
+      img {
+        width: 28px;
+      }
+    }
+  }
+
+  .ff-saved-state-link input {
+    text-overflow: ellipsis;
+  }
+
+  .ff-hide-group {
+    display: none;
+  }
 
   .ff_t_c {
     padding: 0px 5px 0px 0px;
@@ -624,6 +660,10 @@
   &.active {
     height: auto;
   }
+  .ff_summary_container{
+    margin-top: 10px;
+    font-size: 14px;
+  }
 }
 
 .step-nav {
@@ -640,9 +680,8 @@
   padding: 15px;
   margin-top: 10px;
   position: relative;
-  border: solid #ced4da 1px;
+  border: 1px solid #ced4da;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  overflow-wrap: break-word;
 }
 
 #{$prefix}-errors-in-stack {

@@ -1,46 +1,71 @@
 <template>
     <div class="add_on_modules">
-        <div class="modules_header">
-            <div class="module_title">
+        <div class="modules_header mb-5">
+            <h4 class="title mb-2">
                 {{ $t('Fluent Forms Modules') }}
-            </div>
-            <p>{{ $t('Here is the list of all Fluent Forms modules.You can enable or disable the modules based on your need.') }}</p>
+            </h4>
+            <p class="text">{{ $t('Here is the list of all Fluent Forms modules. You can enable or disable the modules based on your need.') }}</p>
         </div>
         <div class="modules_body">
-            <div class="ff_module_navs">
-                <div class="ff_module_selectors">
-                    <el-radio-group size="small" v-model="module_type">
-                        <el-radio-button label="all">{{ $t('All') }}</el-radio-button>
-                        <el-radio-button label="crm">{{ $t('CRM & SASS Integrations') }}</el-radio-button>
-                        <el-radio-button label="wp_core">{{ $t('WP Core Modules') }}</el-radio-button>
-                    </el-radio-group>
-                </div>
-                <div class="ff_mdoules_search">
-                    <el-input size="small" :placeholder="$t('Search Modules')" v-model="search" class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
-                </div>
+            <el-row class="mb-3" :gutter="24">
+                <el-col :span="18">
+                    <div class="ff_module_selectors">
+                        <el-radio-group class="ff_radio_group" v-model="module_type">
+                            <el-radio-button label="all">{{ $t('All') }}</el-radio-button>
+                            <el-radio-button label="crm">{{ $t('CRM & SASS Integrations') }}</el-radio-button>
+                            <el-radio-button label="wp_core">{{ $t('WP Core Modules') }}</el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div class="ff_mdoules_search">
+                        <el-input :placeholder="$t('Search Modules')" v-model="search" class="el-input-gray-light" prefix-icon="el-icon-search"></el-input>
+                    </div>
+                </el-col>
+            </el-row>
 
-            </div>
-            <div v-for="(addon, addonKey) in filteredAddons" :class="'addon_enabled_'+addon.enabled" class="add_on_card">
-                <div class="addon_header">{{addon.title}}</div>
-                <div class="addon_body">
-                    <img v-if="addon.logo" :src="addon.logo" />
-                    {{addon.description}}
-                </div>
-                <div class="addon_footer">
-                    <template v-if="addon.purchase_url">
-                        <a class="pro_update_btn" rel="noopener" :href="addon.purchase_url">{{ $t('Upgrade To Pro') }}</a>
-                    </template>
-                    <template v-else>
-                        <el-switch active-color="#13ce66" @change="saveStatus(addonKey)" active-value="yes" inactive-value="no" v-model="addon.enabled" />
-                        <span>{{ $t('Currently') }}</span> <span v-if="addon.enabled == 'yes'">{{ $t('Enabled') }}</span><span v-else>{{ $t('Disabled') }}</span>
-                    </template>
-                    <a style="float: right;text-decoration: none;" v-if="addon.config_url && addon.enabled == 'yes'" :href="addon.config_url"><span class="dashicons dashicons-admin-generic"></span></a>
-                </div>
-            </div>
+            <el-row :gutter="24">
+                <el-col :md="12" :lg="8" v-for="(addon, addonKey) in filteredAddons" :key="addonKey">
+                    <div class="ff_card ff_card_s2 h-100" :class="'ff_addon_enabled_' + addon.enabled">
+                        <div class="ff_card_body mb-4">
+                            <div class="ff_media_group mb-3">
+                                <div class="ff_media_head">
+                                    <div class="ff_icon_btn dark-soft md square">
+                                        <img v-if="addon.logo" :src="addon.logo" />
+                                    </div>
+                                </div>
+                                <div class="ff_media_body">
+                                    <h4>{{addon.title}}</h4>
+                                </div>
+                            </div><!-- .ff_media_group -->
+                            <p class="text">{{addon.description}}</p>
+                        </div><!-- .ff_card_body -->
+                        <div class="ff_card_footer">
+                            <div class="ff_card_footer_group">
+                                <template v-if="addon.purchase_url">
+                                    <a class="el-button el-button--primary el-button--soft el-button--small" rel="noopener" :href="addon.purchase_url" target="_blank">{{ $t('Upgrade To Pro') }}</a>
+                                </template>
+                                <div v-else class="d-flex items-center">
+                                     <el-switch
+                                        @change="saveStatus(addonKey)" 
+                                        active-value="yes" 
+                                        inactive-value="no" 
+                                        v-model="addon.enabled" 
+                                    />
+                                    <span class="ml-2 fs-15">
+                                        {{addon.enabled == 'yes' ? $t('Enabled') : $t('Disabled')}}
+                                    </span>
+                                </div>
+                                <a style="font-size: 22px;" class="text-secondary" v-if="addon.config_url && addon.enabled == 'yes'" :href="addon.config_url">
+                                    <i class="el-icon-setting"></i>
+                                </a>
+                            </div>
+                        </div><!-- .ff_card_footer -->
+                    </div>
+                </el-col>
+            </el-row>
             <div style="text-align: center" v-if="is_no_modules">
-                <h3>{{ $t('Sorry!No modules found based on your filter') }}</h3>
+                <h3>{{ $t('Sorry! No modules found based on your filter') }}</h3>
             </div>
         </div>
     </div>
@@ -91,35 +116,24 @@
         },
         methods: {
             saveStatus(addonKey) {
-                let addonModules = {};
-                jQuery.each(this.addOns, (key, addon) => {
-                    addonModules[key] = addon.enabled;
-                });
-                FluentFormsGlobal.$post({
-                    action: 'fluentform_update_modules',
-                    addons: addonModules
-                })
+
+                // let addonModules = {};
+                // jQuery.each(this.addOns, (key, addon) => {
+                //     addonModules[key] = addon.enabled;
+                // });
+                // delete this later
+                const url = FluentFormsGlobal.$rest.route('updateGlobalIntegrationStatus');
+                FluentFormsGlobal.$rest.post(url, {
+                        module_key: addonKey,
+                        module_status: this.addOns[addonKey].enabled
+                    })
                     .then((response) => {
-                        this.$message({
-                            message: response.data.message,
-                            type: 'success',
-                            offset: 32
-                        });
+                        this.$success(response.message)
                     })
-                    .fail(error => {
-
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
-
-                    });
-            },
-            $t(str) {
-                let transString = window.fluent_addon_modules.addOnModule_str[str];
-                if(transString) {
-                    return transString;
-                }
-                return str;
-            },
+            }
         }
     }
 </script>

@@ -16,11 +16,11 @@
         <transition name="slide-down">
             <div v-if="input.enabled == true && input.has_advance_scoring == 'no'" class="quiz-field">
                 <div class="quiz-field-setting">
-                    {{ $t('Score') }}
-                    <el-input-number   size="small" v-model="input.points" controls-position="right" :min="1" :max="100"></el-input-number>
+                    <div class="lead-title mb-2">{{ $t('Score') }}</div>
+                    <el-input-number size="small" v-model="input.points" controls-position="right" :min="1" :max="100"></el-input-number>
                 </div>
                 <div class="quiz-field-setting" v-if="ifNeedsCondition(input.element)">
-                    {{ $t('Condition') }}
+                   <div class="lead-title mb-2"> {{ $t('Condition') }}</div>
                     <el-select @change="resetValue(input)"  size="small" style="width: 100%" v-model="input.condition"
                                :placeholder="$t('Select Condition')">
                         <el-option
@@ -32,8 +32,7 @@
                     </el-select>
                 </div>
                 <div class="quiz-field-setting"  v-if="ifNeedsCondition(input.element)">
-                    {{ $t('Correct Answer') }}
-                    
+                   <div class="lead-title mb-2"> {{ $t('Correct Answer') }}</div>
                     <el-select
                         ref="resetInput"
                         size="small"
@@ -56,7 +55,7 @@
                     </el-select>
                 </div>
                 <div class="quiz-field-setting" v-else-if="isRadioInput(input.element)">
-                    {{ $t('Correct Answer') }}
+                   <div class="lead-title mb-2"> {{ $t('Correct Answer') }}</div>
                     <el-select
                         multiple
                         size="small" style="width: 100%" v-model="input.correct_answer" :placeholder="$t('Correct Answer')">
@@ -72,11 +71,13 @@
         </transition>
         <transition v-if="input.has_advance_scoring == 'yes'">
             <div>
-                <span v-for="(item, key) in original_input.options" class="quiz-field">
+                <span v-for="(item, key) in original_input.options" class="quiz-field" :key="key">
                     <div  class="quiz-field-setting">
-                       <el-input-number size="small" v-model="input.advance_points[key]"
-                                        controls-position="right"
-                                        :min="0" :max="100">
+                       <el-input-number 
+                            size="small" 
+                            v-model="input.advance_points[key]"
+                            controls-position="right"
+                            :min="0" :max="100">
                        </el-input-number>
                     </div>
                     <div class="quiz-field-setting" >

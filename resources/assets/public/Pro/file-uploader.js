@@ -86,10 +86,20 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 return true;
             }
 
-            function addParameterToURL(param) {
-                let _url = fluentFormVars.ajaxUrl;
-                _url += (_url.split('?')[1] ? '&' : '?') + param;
-                return _url;
+            function getFormData($form) {
+                const formData = $form.serializeArray();
+
+                formData.push({
+                    name: 'action',
+                    value: 'fluentform_file_upload'
+                });
+                
+                formData.push({
+                    name: 'formId',
+                    value: form.id
+                });
+
+                return formData;
             }
 
             const $el = $(el);
@@ -98,7 +108,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
             element.fileupload({
                 dataType: 'json',
                 dropZone: element.closest('.ff-el-group'),
-                url: addParameterToURL('action=fluentform_file_upload&formId=' + form.id),
+                url: fluentFormVars.ajaxUrl,
+                formData: getFormData,
                 change: changeValidation,
                 add: function (e, data) {
                     if (!changeValidation(e, data)) {
@@ -270,7 +281,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
         ctx.font = "13px Arial";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
-        ctx.fillText(file.type.substr(file.type.indexOf('/') + 1), 30, 30, 60);
+        ctx.fillText(file.name.substr(file.name.lastIndexOf('.') + 1), 30, 30, 60);
         return canvas.toDataURL();
     };
 

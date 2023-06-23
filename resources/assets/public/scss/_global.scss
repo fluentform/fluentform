@@ -44,11 +44,18 @@
     max-width: 100%;
   }
 
+  .ff-el-form-check {
+    margin-bottom: 5px;
+    span.ff_span {
+      margin-left: 6px;
+    }
+  }
+
   .ff-el-form-check-label {
     .ff-el-form-check-input {
       position: relative;
       vertical-align: middle;
-      top: -3px;
+      top: -2px;
     }
   }
 
@@ -136,6 +143,7 @@
   input[type=radio] {
     -webkit-appearance: radio;
   }
+
 }
 
 .ff_coupon_wrapper {

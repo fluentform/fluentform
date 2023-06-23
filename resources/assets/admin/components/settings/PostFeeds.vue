@@ -1,62 +1,72 @@
 <template>
     <div class="post_feeds">
-        <div v-if="show_feeds">
-            <div class="setting_header el-row">
-                <div class="el-col el-col-24 el-col-md-12">
-                    <h2>{{ $t('Post Feeds') }}</h2>
-                </div>
-
-                <div class="action-buttons clearfix mb15 text-right el-col el-col-24 el-col-md-12">
+        <card v-if="show_feeds">
+            <card-head>
+                <card-head-group class="justify-between">
+                    <h5 class="title">{{ $t('Post Feeds') }}</h5>
                     <el-button
-                        size="small"
-                        type="primary"
+                        size="medium"
+                        type="info"
                         icon="el-icon-plus"
                         @click="addPostFeed"
-                    >{{ $t('Add Post Feed') }}</el-button>
+                    >
+                        {{ $t('Add Post Feed') }}
+                    </el-button>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <div class="ff-table-container">
+                    <el-table :data="feeds" style="width: 100%">
+                        <el-table-column width="180" :label="$t('Status')">
+                            <template slot-scope="scope">
+                                <span class="mr-3" :class="{
+                                    green: scope.row.value.feed_status,
+                                    red: !scope.row.value.feed_status
+                                }">
+                                    {{ scope.row.value.feed_status ? $t('Enabled') : $t('Disabled') }}
+                                </span>
+                                <el-switch
+                                    :width="40"
+                                    active-color="#00b27f" 
+                                    @change="handleActive(scope.$index)" 
+                                    v-model="scope.row.value.feed_status"
+                                ></el-switch>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column :label="$t('Name')">
+                            <template slot-scope="scope">{{ scope.row.value.feed_name }}</template>
+                        </el-table-column>
+
+                        <el-table-column :label="$t('Actions')" align="right">
+                            <template slot-scope="scope">
+                                <btn-group size="sm">
+                                    <btn-group-item>
+                                        <el-button
+                                            class="el-button--soft el-button--icon"
+                                            size="small"
+                                            type="primary"
+                                            icon="el-icon-setting"
+                                            @click="editPostFeed(scope.row)"
+                                        />
+                                    </btn-group-item>
+                                    <btn-group-item>
+                                        <remove @on-confirm="deletePostFeed(scope.$index, scope.row)">
+                                            <el-button
+                                                class="el-button--soft el-button--icon"
+                                                size="small"
+                                                type="danger"
+                                                icon="el-icon-delete"
+                                            />
+                                        </remove>
+                                    </btn-group-item>
+                                </btn-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
-            </div>
-
-            <el-table :data="feeds" style="width: 100%">
-                <el-table-column width="180">
-                    <template slot-scope="scope">
-                        <el-switch
-                            v-model="scope.row.value.feed_status"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            @change="handleActive(scope.$index)"
-                        />
-                    </template>
-                </el-table-column>
-
-                <el-table-column :label="$t('Status')">
-                    <template slot-scope="scope">
-                        <span :class="{
-                            green: scope.row.value.feed_status,
-                            red: !scope.row.value.feed_status
-                        }">
-                            {{ scope.row.value.feed_status ? $t('Enabled') : $t('Disabled') }}
-                        </span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column :label="$t('Name')">
-                    <template slot-scope="scope">{{ scope.row.value.feed_name }}</template>
-                </el-table-column>
-
-                <el-table-column :label="$t('Actions')" align="right">
-                    <template slot-scope="scope">
-                        <el-button
-                            size="mini"
-                            type="primary"
-                            icon="el-icon-setting"
-                            @click="editPostFeed(scope.row)"
-                        />
-                        
-                        <remove @on-confirm="deletePostFeed(scope.$index, scope.row)"></remove>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
+            </card-body>
+        </card>
 
         <PostFeed
             v-else
@@ -72,11 +82,26 @@
 
 <script type="text/babel">
     import PostFeed from './PostFeed';
-    import remove from '../confirmRemove.vue'
+    import remove from '../confirmRemove.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
 
     export default {
         name: 'PostFeeds',
-        components: { PostFeed, remove },
+        components: { 
+            PostFeed, 
+            remove,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
+        },
         data() {
             return {
                 feed: null,
@@ -96,13 +121,13 @@
                 });
             },
             fetchPostFeeds() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-settings-formSettings',
-                    form_id: this.form_id,
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', this.form_id);
+            
+                FluentFormsGlobal.$rest.get(url, {
                     meta_key: 'postFeeds',
                     is_multiple: true
-                }).done(response => {
-                    this.feeds = response.data.result;
+                }).then(response => {
+                    this.feeds = response;
                 });
             },
             addPostFeed() {
@@ -129,21 +154,13 @@
                 this.show_feeds = false;
             },
             deletePostFeed(index, feed) {
-                FluentFormsGlobal.$post({
-                    action: 'fluentform-settings-formSettings-remove',
-                    id: feed.id,
-                    form_id: feed.form_id
-                })
-                .done(response => {
+                const url = FluentFormsGlobal.$rest.route('deleteFormSettings', feed.form_id);
 
-                    this.feeds.splice(index, 1);
-
-                    this.$notify.success({
-                        offset: 32,
-                        title: 'Success',
-                        message: 'Successfully deleted the feed.'
+                FluentFormsGlobal.$rest.delete(url, {meta_id: feed.id})
+                    .then(response => {
+                        this.feeds.splice(index, 1);
+                        this.$success(this.$t('Successfully deleted the feed.'));
                     });
-                });
             },
             handleActive(index) {
                 let feed = this.feeds[index];
@@ -153,26 +170,23 @@
                 delete (feed.id);
 
                 let data = {
-                    id,
-                    form_id: this.form_id,
+                    meta_id: id,
                     meta_key: 'postFeeds',
                     value: JSON.stringify(feed.value),
-                    action: 'fluentform-settings-formSettings-store'
                 };
 
-                FluentFormsGlobal.$post(data).done(response => {
-                    feed.id = response.data.id;
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', this.form_id);
+            
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then(response => {
+                        feed.id = response.id;
 
-                    let handle = feed.value.status ? 'enabled' : 'disabled';
+                        let handle = feed.value.status ? 'enabled' : 'disabled';
 
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully ' + handle + ' the feed.',
-                        offset: 30
+                        this.$success(this.$t('Successfully ' + handle + ' the feed.'));
+                    }).catch(e => {
+                        feed.id = id;
                     });
-                }).fail(e => {
-                    feed.id = id;
-                });
             },
             showPostFeeds(feed) {
                 if (!feed) {

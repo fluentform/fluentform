@@ -37,10 +37,10 @@
                         <el-input v-model="option.value"></el-input>
                     </div>
 
-                    <div class="action-btn">
-                        <i @click="increase(index)" class="icon icon-plus-circle"></i>
-                        <i @click="decrease(index)" class="icon icon-minus-circle"></i>
-                    </div>
+                    <action-btn>
+                        <action-btn-add size="mini" @click="increase(index)"></action-btn-add>
+                        <action-btn-remove size="mini" @click="decrease(index)"></action-btn-remove>
+                    </action-btn>
                 </vddl-nodrag>
             </vddl-draggable>
         </vddl-list>
@@ -51,13 +51,19 @@
 </template>
 
 <script>
+import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 import elLabel from '../../includes/el-label.vue';
 
 export default {
     name: 'gridRowCols',
     props: ['editItem', 'listItem', 'value', 'prop', 'valuesAlwaysVisible'],
     components: {
-        elLabel
+        elLabel,
+        ActionBtn,
+        ActionBtnAdd,
+        ActionBtnRemove
     },
     data() {
         return {

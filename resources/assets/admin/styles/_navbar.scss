@@ -1,0 +1,60 @@
+.ff_menu {
+    display: none;
+    align-items: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+    &_active{
+        display: flex;
+        justify-content: center;
+    }
+    &_link{
+        padding: $menu-link-padding-y $menu-link-padding-x;
+        display: inline-block;
+        text-decoration: none;
+        color: $menu-link-color;
+        font-size: 15px;
+        font-weight: 500;
+        background-color: transparent;
+        border-radius: 6px;
+        line-height: 1.6;
+        transition: 0.2s;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        &:focus{
+            box-shadow: none;
+            border: 0;
+            outline: none;
+        }
+        &:hover{
+            color: $menu-link-hover-color;
+        }
+        &_buy{
+            background-color: $primary;
+            color: $white;
+            margin-left: 12px;
+            &:hover{
+                color: $white;
+            }
+        }
+    }
+    &.conversion_form_editor, &.partial_entries_form_editor {
+        .ff_menu_link {
+            max-width: 140px;
+        }
+    }
+    .active{
+        .ff_menu_link{
+            background-color: $primary-soft;
+            color: $primary;
+        }
+    }
+    &_toggle{
+        margin-left: auto;
+        font-size: 26px;
+        cursor: pointer;
+        &:hover{
+          color: $--color-primary;
+        }
+    }
+}

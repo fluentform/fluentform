@@ -88,6 +88,25 @@ const registerRepeaterButtonsOldVersion = function ($theForm) {
 };
 
 const registerRepeaterHandler = function ($theForm) {
+    // Get the screen type from local storage
+    let screenType = window.localStorage.getItem('ff_window_type');
+
+    // Add screen type classes
+    if (jQuery('.ff_form_preview').length){
+        jQuery('.ff_flexible_table').addClass(screenType);
+    }
+
+    // Add mobile class to repeater fields on screen mobile view
+    $theForm.on('screen-change', function(e, width){
+        if (jQuery('.ff_form_preview').length){
+            if (width === '375px'){
+                jQuery('.ff_flexible_table').addClass('mobile');
+            } else {
+                jQuery('.ff_flexible_table').removeClass('mobile');
+            }
+        }
+    });
+
     $theForm.on('click', '.js-repeater .repeat-plus', function (e) {
         let $btnPlus = jQuery(this);
         let $table = $btnPlus.closest('table');
@@ -106,6 +125,12 @@ const registerRepeaterHandler = function ($theForm) {
         $freshCopy.find('td').each(function (i, td) {
             var el = jQuery(this).find('.ff-el-form-control:last-child');
             var tabIndex = el.attr('tabindex');
+
+            var dataMask = el.attr('data-mask');
+            if (dataMask) {
+                el.mask(dataMask);
+            }
+
             var newId = 'ffrpt-' + (new Date()).getTime() + i;
             let oldDataName = el.data('name');
             var itemProp = {

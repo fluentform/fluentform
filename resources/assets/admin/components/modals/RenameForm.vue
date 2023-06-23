@@ -3,20 +3,21 @@
         <el-dialog
             :title="$t('Rename Form')"
             :visible.sync="visible"
-            :before-close="close">
+            :before-close="close"
+        >
 
-            <span slot="title" class="el-dialog__title">
+            <h5 slot="title" class="el-dialog__title">
                 {{ $t('Rename Form') }}
-            </span>
-            <el-form :model="{}" style="margin: -20px 0;" label-position="top" @submit.native.prevent="rename">
-                <el-form-item :label="$t('Your Form Title')">
-                <el-input class="renameForm" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
+            </h5>
+            <el-form class="mt-4" :model="{}" label-position="top" @submit.native.prevent="rename">
+                <el-form-item class="ff-form-item" :label="$t('Form Title')">
+                    <el-input class="renameForm" v-model="model" type="text" :placeholder="$t('Awesome Form')"></el-input>
                 </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="close">{{ $t('Cancel') }}</el-button>
-                <el-button size="small" :loading="loading" type="primary" @click="rename">
+                <el-button @click="close" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
+                <el-button :loading="loading" type="primary" @click="rename">
                     <span v-if="loading">{{ $t('Renaming Form...') }}</span>
                     <span v-else>{{ $t('Rename') }}</span>
                 </el-button>
@@ -26,55 +27,51 @@
 </template>
 
 <script>
-export default {
-    name: 'RenameModal',
-    props: ['visible', 'formTitle'],
-    data() {
-        return {
-            loading: false,
-            model: this.formTitle
-        }
-    },
-    watch: {
-        visible() {
-            if (this.visible) {
-                this.model = this.formTitle;
-                this.$nextTick( _ => jQuery('.renameForm input').focus());
+    export default {
+        name: 'RenameModal',
+        props: ['visible', 'formTitle'],
+        data() {
+            return {
+                loading: false,
+                model: this.formTitle
+            }
+        },
+        watch: {
+            visible() {
+                if (this.visible) {
+                    this.model = this.formTitle;
+                    this.$nextTick(_ => jQuery('.renameForm input').focus());
+                }
+            }
+        },
+        methods: {
+            close() {
+                this.$emit('update:visible', false);
+            },
+
+            rename() {
+                this.loading = true;
+
+                let data = {
+                    title: this.model,
+                };
+
+                const url = FluentFormsGlobal.$rest.route('updateForm', window.FluentFormApp.form_id);
+
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then((response) => {
+                        this.$success(response.message);
+                        this.close();
+                        this.$emit('rename-success', data.title);
+                    })
+                    .catch(error => {
+                        this.$fail(error.message);
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
             }
         }
-    },
-    methods: {
-        close() {
-            this.$emit('update:visible', false);
-        },
 
-        rename() {
-            this.loading = true;
-            
-            let data = {
-                action: 'fluentform-form-update',
-                title: this.model,
-                formId: window.FluentFormApp.form_id
-            };
-
-            FluentFormsGlobal.$post(data)
-                .then((response) => {
-                    this.$notify.success({
-                        title: 'Success!',
-                        message: response.message,
-                        offset: 30
-                    });
-                    this.close();
-                    this.$emit('rename-success', data.title);
-                })
-                .fail(error => {
-                    this.$message.error('Please Provide the form name');
-                })
-                .always(() => {
-                    this.loading = false;
-                });
-        }
     }
-
-}
 </script>

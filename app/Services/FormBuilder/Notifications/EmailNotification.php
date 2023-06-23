@@ -2,23 +2,25 @@
 
 namespace FluentForm\App\Services\FormBuilder\Notifications;
 
+use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Emogrifier\Emogrifier;
-use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\View;
 
 class EmailNotification
 {
     /**
      * FluentForm\Framework\Foundation\Application
+     *
      * @var $app
      */
     protected $app = null;
 
     /**
      * Biuld the instance of this class
+     *
      * @param \FluentForm\Framework\Foundation\Application $app
+     *
      * @return $this
      */
     public function __construct(Application $app)
@@ -28,34 +30,73 @@ class EmailNotification
 
     /**
      * Send the email notification
-     * @param array $notification [Notification settings from form meta]
-     * @param array $submittedData [User submitted form data]
-     * @param \StdClass $form [The form object from database]
+     *
+     * @param array     $notification  [Notification settings from form meta]
+     * @param array     $submittedData [User submitted form data]
+     * @param \StdClass $form          [The form object from database]
+     *
      * @return bool
      */
     public function notify($notification, $submittedData, $form, $entryId = false)
     {
-        $isSendAsPlain = ArrayHelper::get($notification, 'asPlainText') == 'yes';
+        $isSendAsPlain = 'yes' == ArrayHelper::get($notification, 'asPlainText');
+    
+        $isSendAsPlain= apply_filters_deprecated(
+            'fluentform_send_plain_html_email',
+            [
+                $isSendAsPlain,
+                $form,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/send_plain_html_email',
+            'Use fluentform/send_plain_html_email instead of fluentform_send_plain_html_email.'
+        );
 
-        $isSendAsPlain = apply_filters('fluentform_send_plain_html_email', $isSendAsPlain, $form, $notification);
+        $isSendAsPlain = apply_filters('fluentform/send_plain_html_email', $isSendAsPlain, $form, $notification);
 
         $emailBody = $notification['message'];
+    
+        $emailBody = apply_filters_deprecated(
+            'fluentform_submission_message_parse',
+            [
+                $emailBody,
+                $entryId,
+                $submittedData,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/submission_message_parse',
+            'Use fluentform/submission_message_parse instead of fluentform_submission_message_parse.'
+        );
 
-        $emailBody = apply_filters('fluentform_submission_message_parse', $emailBody, $entryId, $submittedData, $form);
+        $emailBody = apply_filters('fluentform/submission_message_parse', $emailBody, $entryId, $submittedData, $form);
 
         $notification['parsed_message'] = $emailBody;
 
-        if (!$isSendAsPlain) {
+        if (! $isSendAsPlain) {
             $emailBody = $this->getEmailWithTemplate($emailBody, $form, $notification);
         }
 
         $sendAddresses = $this->getSendAddresses($notification, $submittedData);
+        $notification['subject'] = apply_filters_deprecated(
+            'fluentform_email_subject',
+            [
+                $notification['subject'],
+                $notification,
+                $submittedData,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_subject',
+            'Use fluentform/email_subject instead of fluentform_email_subject.'
+        );
 
-        $subject = apply_filters('fluentform_email_subject', $notification['subject'], $notification, $submittedData, $form);
+        $subject = apply_filters('fluentform/email_subject', $notification['subject'], $notification, $submittedData, $form);
 
-        if (!$sendAddresses || !$subject) {
-            if($entryId) {
-                do_action('ff_log_data', [
+        if (! $sendAddresses || ! $subject) {
+            if ($entryId) {
+                do_action('fluentform/log_data', [
                     'parent_source_id' => $form->id,
                     'source_type'      => 'submission_item',
                     'source_id'        => $entryId,
@@ -69,26 +110,51 @@ class EmailNotification
         }
 
         $headers = $this->getHeaders($notification, $isSendAsPlain);
-        $attachments = $this->app->applyFilters(
+        $notificationAttachments = isset($notification['attachments']) ? $notification['attachments'] : [];
+        $notificationAttachments = apply_filters_deprecated(
             'fluentform_filter_email_attachments',
-            isset($notification['attachments']) ? $notification['attachments'] : [],
+            [
+                $notificationAttachments,
+                $notification,
+                $form,
+                $submittedData
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/filter_email_attachments',
+            'Use fluentform/filter_email_attachments instead of fluentform_filter_email_attachments.'
+        );
+        $attachments = $this->app->applyFilters(
+            'fluentform/filter_email_attachments',
+            $notificationAttachments,
             $notification,
             $form,
             $submittedData
         );
+    
+        $emailBody = apply_filters_deprecated(
+            'fluentform_email_body',
+            [
+                $emailBody,
+                $notification,
+                $submittedData,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_body',
+            'Use fluentform/email_body instead of fluentform_email_body.'
+        );
 
-        $emailBody = apply_filters('fluentform_email_body', $emailBody, $notification, $submittedData, $form);
+        $emailBody = apply_filters('fluentform/email_body', $emailBody, $notification, $submittedData, $form);
 
         if ($entryId) {
             /*
             * Inline email logger. It will work fine hopefully
             */
             add_action('wp_mail_failed', function ($error) use ($notification, $form, $entryId) {
-
                 $failedMailSubject = ArrayHelper::get($error->error_data, 'wp_mail_failed.subject');
                 if ($failedMailSubject == $notification['subject']) {
                     $reason = $error->get_error_message();
-                    do_action('ff_log_data', [
+                    do_action('fluentform/log_data', [
                         'parent_source_id' => $form->id,
                         'source_type'      => 'submission_item',
                         'source_id'        => $entryId,
@@ -102,27 +168,39 @@ class EmailNotification
         }
         $result = false;
         foreach ($sendAddresses as $address) {
-            do_action('ff_log_data', [
+
+            do_action('fluentform/log_data', [
                 'parent_source_id' => $form->id,
                 'source_type'      => 'submission_item',
                 'source_id'        => $entryId,
                 'component'        => 'EmailNotification',
                 'status'           => 'info',
                 'title'            => 'Email sending initiated',
-                'description'      => "Email Notification broadcasted to " . $address . ".<br />Subject: {$subject}",
+                'description'      => 'Email Notification broadcasted to ' . $address . ".<br />Subject: {$subject}",
             ]);
-            $emailTo = apply_filters('fluentform_email_to', $address, $notification, $submittedData, $form);
+            $address =  apply_filters_deprecated(
+                'fluentform_email_to',
+                [
+                    $address,
+                    $notification,
+                    $submittedData,
+                    $form
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/email_to',
+                'Use fluentform/email_to instead of fluentform_email_to.'
+            );
+            $emailTo = apply_filters('fluentform/email_to', $address, $notification, $submittedData, $form);
             $result = $this->broadCast([
-                'email' => $emailTo,
-                'subject' => $subject,
-                'body' => $emailBody,
-                'headers' => $headers,
-                'attachments' => $attachments
+                'email'       => $emailTo,
+                'subject'     => $subject,
+                'body'        => $emailBody,
+                'headers'     => $headers,
+                'attachments' => $attachments,
             ]);
         }
         return $result;
     }
-
 
     private function broadCast($data)
     {
@@ -143,17 +221,17 @@ class EmailNotification
     private function getSendAddresses($notification, $submittedData)
     {
         $sendAddresses = [
-            ArrayHelper::get($notification, 'sendTo.email')
+            ArrayHelper::get($notification, 'sendTo.email'),
         ];
 
-        if (ArrayHelper::get($notification, 'sendTo.type') == 'field' && !empty($notification['sendTo']['field'])) {
+        if ('field' == ArrayHelper::get($notification, 'sendTo.type') && ! empty($notification['sendTo']['field'])) {
             $sendAddresses = [
-                ArrayHelper::get($submittedData, $notification['sendTo']['field'])
+                ArrayHelper::get($submittedData, $notification['sendTo']['field']),
             ];
             $sendAddresses = array_filter($sendAddresses, 'is_email');
         }
 
-        if (ArrayHelper::get($notification, 'sendTo.type') != 'routing') {
+        if ('routing' != ArrayHelper::get($notification, 'sendTo.type')) {
             return $sendAddresses;
         }
 
@@ -161,7 +239,7 @@ class EmailNotification
         $validAddresses = [];
         foreach ($routings as $routing) {
             $inputValue = ArrayHelper::get($routing, 'input_value');
-            if(!$inputValue || !is_email($inputValue)) {
+            if (! $inputValue || ! is_email($inputValue)) {
                 continue;
             }
             $condition = [
@@ -169,9 +247,9 @@ class EmailNotification
                     'status'     => true,
                     'type'       => 'any',
                     'conditions' => [
-                        $routing
-                    ]
-                ]
+                        $routing,
+                    ],
+                ],
             ];
             if (\FluentForm\App\Services\ConditionAssesor::evaluate($condition, $submittedData)) {
                 $validAddresses[] = $inputValue;
@@ -183,7 +261,9 @@ class EmailNotification
 
     /**
      * @param $formId
+     *
      * @return array
+     *
      * @todo: Implement Caching mechanism so we don't have to parse these things for every request
      */
     private function getFormInputsAndLabels($form)
@@ -194,33 +274,69 @@ class EmailNotification
 
         return [
             'inputs' => $formInputs,
-            'labels' => $inputLabels
+            'labels' => $inputLabels,
         ];
     }
 
     public function getEmailWithTemplate($emailBody, $form, $notification)
     {
         $originalEmailBody = $emailBody;
-        $emailHeader = apply_filters('fluentform_email_header', '', $form, $notification);
-        $emailFooter = apply_filters('fluentform_email_footer', '', $form, $notification);
+        $emailHeader = "";
+        $emailHeader = apply_filters_deprecated(
+            'fluentform_email_header',
+            [
+                $emailHeader,
+                $form,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_header',
+            'Use fluentform/email_header instead of fluentform_email_header.'
+        );
+        $emailHeader = apply_filters('fluentform/email_header', $emailHeader, $form, $notification);
+    
+        $emailFooter = '';
+        $emailFooter = apply_filters_deprecated(
+            'fluentform_email_footer',
+            [
+                $emailFooter,
+                $form,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_footer',
+            'Use fluentform/email_footer instead of fluentform_email_footer.'
+        );
+        $emailFooter = apply_filters('fluentform/email_footer', $emailFooter, $form, $notification);
 
         if (empty($emailHeader)) {
-            $emailHeader = View::make('email.template.header', array(
+            $emailHeader = wpFluentForm('view')->make('email.template.header', [
                 'form'         => $form,
-                'notification' => $notification
-            ));
+                'notification' => $notification,
+            ]);
         }
 
         if (empty($emailFooter)) {
-            $emailFooter = View::make('email.template.footer', array(
+            $emailFooter = wpFluentForm('view')->make('email.template.footer', [
                 'form'         => $form,
                 'notification' => $notification,
-                'footerText'   => $this->getFooterText($form, $notification)
-            ));
+                'footerText'   => $this->getFooterText($form, $notification),
+            ]);
         }
 
-        $css = View::make('email.template.styles');
-        $css = apply_filters('fluentform_email_styles', $css, $form, $notification);
+        $css = wpFluentForm('view')->make('email.template.styles');
+        $css = apply_filters_deprecated(
+            'fluentform_email_styles',
+            [
+                $css,
+                $form,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_styles',
+            'Use fluentform/email_styles instead of fluentform_email_styles.'
+        );
+        $css = apply_filters('fluentform/email_styles', $css, $form, $notification);
         $emailBody = $emailHeader . $emailBody . $emailFooter;
 
         ob_start();
@@ -229,7 +345,6 @@ class EmailNotification
             $emogrifier = new Emogrifier($emailBody, $css);
             $emailBody = $emogrifier->emogrify();
         } catch (\Exception $e) {
-
         }
         $maybeError = ob_get_clean();
 
@@ -243,24 +358,35 @@ class EmailNotification
     private function getFooterText($form, $notification)
     {
         $option = get_option('_fluentform_global_form_settings');
-        if ($option && !empty($option['misc']['email_footer_text'])) {
+        if ($option && ! empty($option['misc']['email_footer_text'])) {
             $footerText = $option['misc']['email_footer_text'];
         } else {
             $footerText = '&copy; ' . get_bloginfo('name', 'display') . '.';
         }
-
-        return apply_filters('fluentform_email_template_footer_text', $footerText, $form, $notification);
+    
+        $footerText = apply_filters_deprecated(
+            'fluentform_email_template_footer_text',
+            [
+                $footerText,
+                $form,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_template_footer_text',
+            'Use fluentform/email_template_footer_text instead of fluentform_email_header.'
+        );
+        return apply_filters('fluentform/email_template_footer_text', $footerText, $form, $notification);
     }
 
     public function getHeaders($notification, $isSendAsPlain = false)
     {
         $headers = [
-            'Content-Type: text/html; charset=utf-8'
+            'Content-Type: text/html; charset=utf-8',
         ];
 
         $fromEmail = $notification['fromEmail'];
 
-        if (!is_email($fromEmail)) {
+        if (! is_email($fromEmail)) {
             $fromEmail = false;
         }
 
@@ -270,25 +396,36 @@ class EmailNotification
             $headers[] = "From: <{$fromEmail}>";
         }
 
-        if (!empty($notification['bcc'])) {
+        if (! empty($notification['bcc'])) {
             $bccEmail = $notification['bcc'];
             $headers[] = 'bcc: ' . $bccEmail;
         }
 
-        if (!empty($notification['cc'])) {
+        if (! empty($notification['cc'])) {
             $ccEmail = $notification['cc'];
             $headers[] = 'cc: ' . $ccEmail;
         }
 
         if ($notification['replyTo'] && is_email($notification['replyTo'])) {
-            $headers[] = "Reply-To: <" . $notification['replyTo'] . ">";
+            $headers[] = 'Reply-To: <' . $notification['replyTo'] . '>';
         }
-
+    
+        $headers = apply_filters_deprecated(
+            'fluenttform_email_header',
+            [
+                $headers,
+                $notification
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/email_template_header',
+            'Use fluentform/email_template_header instead of fluenttform_email_header.'
+        );
         $headers = $this->app->applyFilters(
-            'fluenttform_email_header', $headers, $notification
+            'fluentform/email_template_header',
+            $headers,
+            $notification
         );
 
         return $headers;
     }
-
 }

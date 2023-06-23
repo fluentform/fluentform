@@ -14,19 +14,19 @@
             <div @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
                 <div class="item-actions">
-                    <i class="icon icon-arrows"></i>
-                    <i @click="editSelected(index, item)" class="icon icon-pencil"></i>
-                    <i @click="duplicateSelected(index, item)" class="icon icon-clone"></i>
-                    <i @click="askRemoveConfirm(index)" class="icon icon-trash-o"></i>
+                    <i class="el-icon el-icon-rank"></i>
+                    <i @click="editSelected(index, item)" class="el-icon el-icon-edit"></i>
+                    <i @click="duplicateSelected(index, item)" class="el-icon el-icon-document-copy"></i>
+                    <i @click="askRemoveConfirm(index)" class="el-icon el-icon-delete"></i>
                     <i
-                        v-show="item.element == 'container' && item.columns.length > 1"
+                        v-if="item.element == 'container' && item.columns.length > 1"
                         @click="resetContainer()"
-                        class="icon ff-edit-repeat"
+                        class="el-icon el-icon-refresh-right"
                     />
                 </div>
             </div>
 
-            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element">+</i>
+            <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
 
             <div v-if="item.element == 'container'" class="item-container">
                 <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
@@ -46,10 +46,10 @@
                                         :drop="handleDrop"
                                         :horizontal="false">
 
-                                    <div v-show="!containerRow.fields.length" style="padding-top: 13px;"
+                                    <div v-show="!containerRow.fields.length" style="padding-top: 15px;"
                                         class="empty-dropzone-placeholder">
                                         <i @click.stop="editorInserterPopup(0, containerRow.fields)"
-                                        class="popup-search-element">+</i>
+                                        class="popup-search-element ff-icon ff-icon-plus"></i>
                                     </div>
                                     <list v-for="(field, list_index) in containerRow.fields"
                                         :key="field.uniqElKey"

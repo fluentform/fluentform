@@ -1,21 +1,19 @@
 <template>
 <div class="post_meta_plugins_mappings">
-    <div class="meta_fields_mapping">
-        <strong style="font-size: 18px;">{{ labels.section_title }}</strong>
+    <div class="meta_fields_mapping_head">
+        <h6>{{ labels.section_title }}</h6>
     </div>
-    <hr style="clear:both;margin:20px 0;">
-    <div>
-        <strong style="font-size: 14px;">{{ $t('General Fields') }}</strong>
+    <div class="meta_fields_mapping_head no_border">
+        <h6 class="fs-14">{{ $t('General Fields') }}</h6>
         <el-button
-            type="primary"
-            size="mini"
+            size="small"
             icon="el-icon-plus"
-            class="pull-right"
             @click="addMapping('general_settings')"
-        >{{ $t('Add Another General Field') }}
+        >
+            {{ $t('Add Another General Field') }}
         </el-button>
     </div>
-    <br />
+
     <table v-if="general_settings && general_settings.length" class="ff-table">
         <thead>
         <tr>
@@ -27,9 +25,12 @@
         <tbody>
         <tr v-for="(mapField,index) in general_settings" :key="index">
             <td>
-                <el-select v-model="mapField.field_key" size="mini" :placeholder="$t('Select Field')">
-                    <el-option v-for="(field, fieldKey) in general_fields" :key="fieldKey"
-                               :label="field.label" :value="fieldKey"></el-option>
+                <el-select class="w-100" v-model="mapField.field_key" :placeholder="$t('Select Field')">
+                    <el-option 
+                        v-for="(field, fieldKey) in general_fields" 
+                        :key="fieldKey"
+                        :label="field.label" 
+                        :value="fieldKey"></el-option>
                 </el-select>
             </td>
             <td>
@@ -41,10 +42,11 @@
             </td>
             <td>
                 <el-button
+                    class="el-button--icon"
                     type="danger"
                     size="mini"
                     icon="el-icon-close"
-                    style="margin-top:4px;"
+                    style="margin-top: 3px;"
                     @click="deleteMapping('general_settings',index)"
                 />
             </td>
@@ -56,60 +58,72 @@
     </div>
 
     <template>
-        <hr style="clear:both;margin:30px 0;">
-        <div>
-            <strong style="font-size: 14px;">{{ $t('Advanced Fields') }}</strong>
+        <hr class="mt-4 mb-4">
+        <div class="meta_fields_mapping_head no_border">
+            <h6 class="fs-14">{{ $t('Advanced Fields') }}</h6>
             <el-button
-                type="primary"
-                size="mini"
+                size="small"
                 icon="el-icon-plus"
-                class="pull-right"
                 @click="addAdvancedMetaFieldMapping()"
-            >{{ $t('Add Another Advanced Field') }}
+            >
+                {{ $t('Add Another Advanced Field') }}
             </el-button>
         </div>
-        <br />
+
         <table v-if="addAdvancedMetaFieldMapping && advanced_settings && advanced_settings.length" class="ff-table">
             <thead>
-            <tr>
-                <th>{{ labels.remote_label }}</th>
-                <th>{{ labels.local_label }}</th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>{{ labels.remote_label }}</th>
+                    <th>{{ labels.local_label }}</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="(mapField,index) in advanced_settings" :key="index">
-                <td>
-                    <el-select @change="mapField.field_value = ''" v-model="mapField.field_key"
-                               size="mini" :placeholder="$t('Select Field')">
-                        <el-option v-for="(field, fieldKey) in advanced_fields"
-                                   :key="fieldKey" :label="field.label" :value="fieldKey"></el-option>
-                    </el-select>
-                </td>
-                <td>
-                    <p v-if="!mapField.field_key">{{ $t('Select') }} {{ labels.remote_label }} First</p>
-                    <template v-else>
-                        <el-select v-model="mapField.field_value" :placeholder="$t('Select Form Field')"
-                                   clearable>
-                            <el-option
-                                v-for="(formField,fieldName) in getFilteredFields(mapField.field_key)"
-                                :key="fieldName" :value="fieldName"
-                                :label="formField.admin_label"></el-option>
+                <tr v-for="(mapField,index) in advanced_settings" :key="index">
+                    <td>
+                        <el-select 
+                            class="w-100" 
+                            @change="mapField.field_value = ''" 
+                            v-model="mapField.field_key" 
+                            :placeholder="$t('Select Field')"
+                        >
+                            <el-option 
+                                v-for="(field, fieldKey) in advanced_fields"
+                                :key="fieldKey" 
+                                :label="field.label" 
+                                :value="fieldKey"></el-option>
                         </el-select>
-                        <small v-if="advanced_fields[mapField.field_key]">{{advanced_fields[mapField.field_key].help_message}}</small>
-                    </template>
+                    </td>
+                    <td>
+                        <p v-if="!mapField.field_key">{{ $t('Select') }} {{ labels.remote_label }} First</p>
+                        <template v-else>
+                            <el-select 
+                                class="w-100" 
+                                v-model="mapField.field_value" 
+                                :placeholder="$t('Select Form Field')"
+                                clearable
+                            >
+                                <el-option
+                                    v-for="(formField,fieldName) in getFilteredFields(mapField.field_key)"
+                                    :key="fieldName" 
+                                    :value="fieldName"
+                                    :label="formField.admin_label"></el-option>
+                            </el-select>
+                            <small v-if="advanced_fields[mapField.field_key]">{{advanced_fields[mapField.field_key].help_message}}</small>
+                        </template>
 
-                </td>
-                <td>
-                    <el-button
-                        type="danger"
-                        size="mini"
-                        icon="el-icon-close"
-                        style="margin-top:4px;"
-                        @click="deleteMapping('advanced_settings', index)"
-                    />
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <el-button
+                            class="el-button--icon"
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-close"
+                            style="margin-top: 3px;"
+                            @click="deleteMapping('advanced_settings', index)"
+                        />
+                    </td>
+                </tr>
             </tbody>
         </table>
         <div v-else class="no-mapping-alert">

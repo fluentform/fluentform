@@ -1,122 +1,110 @@
 <template>
     <div>
-        <el-row>
+        <section-head size="sm">
+            <h1 class="ff_section_title">{{ $t('Forms') }}</h1>
+        </section-head>
+        <el-row class="ff_all_forms_action_row">
             <el-col :sm="12">
-                <div style="display: inline-block; margin-right: 20px; font-size: 23px;"
-                     class="wp-heading-inline">
-                    {{ $t('Forms') }}
-                </div>
-                <div style="display: inline-block;  padding-right: 20px;" class="ff_nav_sub_actions">
-                <el-select
-                    clearable
-                    size="mini"
-                    v-model="filter_by"
-                    :placeholder="$t('All Types')"
-                    @change="filterFormType()"
-                >
-                  <el-option
-                      v-for="(status, status_key) in form_statuses"
-                      :key="status_key"
-                      :value="status_key"
-                      :label="status"
-                  >
-                    {{status}}
-                  </el-option>
-                </el-select>
-              </div>
-
-                <el-dropdown
-                    v-if="hasPermission('fluentform_forms_manager')"
-                    split-button
-                    size="small"
-                    type="primary"
-                    trigger="click"
-                    style="display:inline-block; margin: 12px 0;"
-                    @click="showAddFormModal = true"
-                    @command="createForm"
-                >
-                    {{ $t('Add a New Form') }}
-
-                    <!-- The split dropdown for creating predefined forms easily -->
-                    <el-dropdown-menu slot="dropdown" style="top:25px !important;">
-                        <el-dropdown-item
-                            :command="{ key: 'conversational', form: { title:'Conversational Form', type: 'blank_conversational' }}">
-                            {{$t('Create Conversational Form')}}
-                        </el-dropdown-item>
-                        <el-dropdown-item
-                            v-if="has_post_feature"
-                            :key="key"
-                            :command="{key, form}"
-                            v-for="(form, key) in predefinedDropDownForms"
+                <btn-group as="div">
+                    <btn-group-item as="div">
+                        <el-select
+                            clearable
+                            v-model="filter_by"
+                            :placeholder="$t('All Types')"
+                            @change="filterFormType()"
+                            class="ff-input-s1 all-forms-select"
                         >
-                            {{$t('Create')}} {{ form.title }}
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                            <el-option
+                                v-for="(status, status_key) in form_statuses"
+                                :key="status_key"
+                                :value="status_key"
+                                :label="status"
+                            >
+                                {{status}}
+                            </el-option>
+                        </el-select>
+                    </btn-group-item>
+                    <btn-group-item as="div">
+                        <el-button
+                            v-if="hasPermission('fluentform_forms_manager')"
+                            type="primary"
+                            @click.prevent="showAddFormModal = true"
+                        >
+                            <i class="el-icon-plus el-icon-left el-icon"></i>
+                            <span>{{ $t('Add New Form') }}</span>
+                        </el-button>
+                    </btn-group-item>
+                </btn-group>
             </el-col>
-
             <el-col :sm="12">
-                <div class="text-right">
-                    <el-row>
-                        <el-col :sm="{ span: 14, offset: 10 }">
-                            <el-form @submit.native.prevent="searchForms" style="margin-bottom: 12px; ">
+                <div class="ff_filter_wrap ff_row justify-end">
+                    <btn-group as="div">
+                        <btn-group-item as="div">
+                            <el-form @submit.native.prevent="searchForms">
                                 <el-input
                                     clearable
                                     @clear="refetchItems"
-                                    size="small"
                                     v-model="searchFormsKeyWord"
                                     :placeholder="$t('Search Forms')"
+                                    prefix-icon="el-icon-search"
+                                    class="all-forms-search"
                                 >
-                                    <el-button native-type="submit" slot="append">{{$t('Search')}}</el-button>
                                 </el-input>
                             </el-form>
-                        </el-col>
-                        <el-col :sm="{span:12, offset:12}">
-                          <el-button @click="advancedFilter = true"  size="mini">{{$t('Advanced Filter')}}</el-button>
-                        </el-col>
-                    </el-row>
-                </div>
+                        </btn-group-item>
+                        <btn-group-item as="div">
+                            <div class="ff_advanced_filter_wrap">
+                                <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                                    <span>{{ $t('Filter') }}</span>
+                                    <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                                    <i v-else class="ff-icon ff-icon-filter"></i>
+                                </el-button>
+                                <div v-if="advancedFilter" class="ff_advanced_search">
+                                    <div class="ff_advanced_search_radios">
+                                        <el-radio-group v-model="radioOption" class="el-radio-group-column">
+                                            <el-radio label="all">{{$t('All')}}</el-radio>
+                                            <el-radio label="today">{{$t('Today')}}</el-radio>
+                                            <el-radio label="yesterday">{{$t('Yesterday')}}</el-radio>
+                                            <el-radio label="last-week">{{$t('Last Week')}}</el-radio>
+                                            <el-radio label="last-month">{{$t('Last Month')}}</el-radio>
+                                        </el-radio-group>
+                                    </div>
+                                    <div class="ff_advanced_search_date_range">
+                                        <p>{{$t('Select a Timeframe')}}</p>
+                                        <el-date-picker
+                                            v-model="filter_date_range"
+                                            type="daterange"
+                                            @change="filterDateRangedPicked"
+                                            :picker-options="pickerOptions"
+                                            format="dd MMM, yyyy"
+                                            value-format="yyyy-MM-dd"
+                                            range-separator="-"
+                                            start-placeholder="Start date"
+                                            end-placeholder="End date">
+                                        </el-date-picker>
+                                    </div>
+                                </div>
+                            </div><!-- .ff_advanced_filter_wrap -->
+                        </btn-group-item>
+                    </btn-group>
+                </div><!--.ff_row -->
             </el-col>
         </el-row>
-        <hr/>
-        <div v-loading="loading"
-             class="ff_forms_table"
-             element-loading-text="Loading Forms..."
-        >
-            <template v-if="app.formsCount > 0">
-                <div
-                    class="entries_table">
-                    <div class="tablenav top">
-                      <div v-if="advancedFilter" class="ff_nav_top ff_advanced_search">
-                        <div class="widget_title">
-                          {{$t('Filter By Date Range')}}
-                          <el-date-picker
-                              size="mini"
-                              v-model="filter_date_range"
-                              type="daterange"
-                              @change="fetchItems()"
-                              :picker-options="pickerOptions"
-                              format="dd MMM, yyyy"
-                              value-format="yyyy-MM-dd"
-                              range-separator="-"
-                              start-placeholder="Start date"
-                              end-placeholder="End date">
-                          </el-date-picker>
-                          <el-button @click="fetchItems()" size="mini" type="success">Search</el-button>
-                          <el-button @click="resetAdvancedFilter()" size="mini">Hide</el-button>
-                        </div>
-                      </div>
 
-                      <el-table
+        <div class="ff_forms_table mt-4">
+            <template v-if="app.formsCount > 0">
+                <div class="ff_table">
+                    <el-skeleton :loading="loading" animated :rows="10">
+                        <el-table
                             :data="items"
                             :stripe="true"
                             @sort-change="handleTableSort"
                             @selection-change="handleSelectionChange"
-                            :row-class-name="tableRowClass">
+                            :row-class-name="tableRowClass"
+                        >
+                            <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="40"></el-table-column>
 
-                            <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="60"></el-table-column>
-
-                            <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="230">
+                            <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="400">
                                 <template slot-scope="scope">
                                     <strong>
                                         {{ scope.row.title }}
@@ -124,78 +112,105 @@
                                     <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
                                     <div class="row-actions">
                                         <template v-if="hasPermission('fluentform_forms_manager')">
-                                            <span class="ff_edit">
-                                                <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a> |
+                                            <span class="row-actions-item ff_edit">
+                                                <a :href="scope.row.edit_url"> {{ $t('Edit') }}</a>
                                             </span>
-                                            <span class="ff_edit">
-                                                <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a> |
+                                            <span class="row-actions-item ff_edit">
+                                                <a :href="scope.row.settings_url"> {{ $t('Settings') }}</a>
                                             </span>
                                         </template>
-                                        <span v-if="hasPermission('fluentform_entries_viewer')" class="ff_entries">
-                                             <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a> |
+                                        <span v-if="hasPermission('fluentform_entries_viewer')" class="row-actions-item ff_entries">
+                                                <a :href="scope.row.entries_url"> {{ $t('Entries') }}</a>
                                         </span>
-                                        <span v-if="scope.row.conversion_preview" class="ff_entries">
-                                             <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a> |
+                                        <span v-if="scope.row.conversion_preview" class="row-actions-item ff_entries">
+                                                <a target="_blank" :href="scope.row.conversion_preview"> {{ $t('Conversational Preview') }}</a>
                                         </span>
-                                        <span class="ff_entries">
-                                             <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a> |
+                                        <span class="row-actions-item ff_entries">
+                                            <a target="_blank" :href="scope.row.preview_url"> {{ $t('Preview') }}</a>
                                         </span>
 
                                         <template v-if="hasPermission('fluentform_forms_manager')">
-                                            <span class="ff_duplicate">
+                                            <span class="row-actions-item ff_duplicate">
                                                 <a href="#" @click.prevent="duplicateForm(scope.row.id)"> {{
                                                         $t('Duplicate')
-                                                    }}</a> |
+                                                }}</a>
                                             </span>
-                                            <span class="trash">
+                                            <span class="row-actions-item ff_export">
+                                                <a href="#" @click.prevent="exportForm(scope.row.id)"> {{
+                                                        $t('Export')
+                                                    }}</a>
+                                            </span>
+                                            <span class="row-actions-item ">
+                                                <a href="#" @click.prevent="findShortCodeLocation(scope.row.id)"> {{
+                                                        $t('Find')
+                                                    }}
+                                                <i class="el-icon-loading" v-if="loadingLocations"></i></a>
+                                            </span>
+                                            <span class="row-actions-item trash">
                                                 <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                                    <a slot="icon">{{ $t('Delete') }}</a>
+                                                    <a href="#" @click.prevent>{{ $t('Delete') }}</a>
                                                 </remove>
-                                            </span> |
-                                            <el-switch 
-                                                active-color="#13ce66" 
+                                            </span>
+                                            <el-switch
+                                                class="el-switch--small"
                                                 :active-text="$t(scope.row.status === 'published' ? 'Active' : 'Inactive')"
-                                                @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)" 
-                                                size="mini" 
-                                                active-value="published" 
-                                                inactive-value="unpublished" 
-                                                v-model="scope.row.status" 
+                                                @change="toggleStatus(scope.row.id, scope.row.title, scope.row.status)"
+
+                                                active-value="published"
+                                                inactive-value="unpublished"
+                                                v-model="scope.row.status"
                                             />
 
                                         </template>
+                                        <div class="form-locations" v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length >= 1">
+                                            {{$t('Found in')}}
+                                            <ul class="ff_inline_list">
+                                                <li v-for="(location, index) in formLocations[scope.row.id] " :key="index">
+                                                    <a target="_blank" :href="location.edit_link">
+                                                        <code class="item ">{{location.title}}</code>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div v-if="Object.keys(formLocations).includes(scope.row.id) && formLocations[scope.row.id].length == 0 ">
+                                            {{$t('Could not find anywhere')}}
+                                        </div>
+
                                     </div>
                                 </template>
                             </el-table-column>
 
-                            <el-table-column :label="$t('Short Code')" width="280">
+                            <el-table-column :label="$t('ShortCode')" width="240">
                                 <template slot-scope="scope">
-                                    <el-tooltip class="item classic_shortcode shortcode_btn"
-                                                effect="dark"
-                                                :content="$t('Click to copy shortcode')"
-                                                :title="$t('Click to copy shortcode')"
-                                                placement="top">
-                                        <code class="copy"
-                                              :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
-                                            <i class="el-icon-document"></i> [fluentform id="{{ scope.row.id }}"]
+                                    <div class="ff_shortcode_wrap">
+                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform id="${scope.row.id}"]`'>
+                                            <span><i class="el-icon el-icon-document-copy"></i> [fluentform id="{{ scope.row.id }}"]</span>
                                         </code>
-                                    </el-tooltip>
-                                    <el-tooltip class="item conversational_shortcode shortcode_btn"
-                                                effect="dark"
-                                                :content="$t('Click to copy shortcode')"
-                                                :title="$t('Click to copy shortcode')"
-                                                v-if="scope.row.conversion_preview"
-                                                placement="top">
-                                        <code class="copy"
-                                              :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
-                                            <i class="el-icon-document"></i> [fluentform type="conversational" id="{{
-                                            scope.row.id }}"]
-                                        </code>
-                                    </el-tooltip>
-                                </template>
+                                    </div>
 
+                                    <div class="ff_shortcode_wrap ff_conversational_shortcode" v-if="scope.row.conversion_preview">
+                                        <code class="copy ff_shortcode_btn ff_shortcode_btn_thin" title="Click to copy" :data-clipboard-text='`[fluentform type="conversational" id="${scope.row.id}"]`'>
+                                            <span><i class="el-icon el-icon-document-copy"></i> [fluentform type="conversational" id="{{
+                                            scope.row.id }}"]</span>
+                                        </code>
+                                    </div>
+                                </template>
                             </el-table-column>
 
-                            <el-table-column width="150" :label="$t('Entries')">
+                            <el-table-column width="120" align="center">
+                                <template slot="header">
+                                    {{$t('Entries')}}
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <h6>{{ $t('Numbers of entries') }}</h6>
+                                            <p>
+                                                {{ $t('Unead / Total') }}
+                                            </p>
+                                        </div>
+
+                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                    </el-tooltip>
+                                </template>
                                 <template slot-scope="scope">
                                     <a :href="scope.row.entries_url"><span
                                         v-show="scope.row.unread_count">{{ scope.row.unread_count }} / </span>{{
@@ -204,94 +219,102 @@
                                 </template>
                             </el-table-column>
 
-                            <el-table-column v-if="!isDisabledAnalytics" width="80" :label="$t('Views')">
+                            <el-table-column v-if="!isDisabledAnalytics" :label="$t('Views')" width="60" align="center">
                                 <template slot-scope="scope">
                                     {{ scope.row.total_views }}
                                 </template>
                             </el-table-column>
 
-                            <el-table-column v-if="!isDisabledAnalytics" width="120" :label="$t('Conversion')">
+                            <el-table-column v-if="!isDisabledAnalytics" width="130" align="center">
+                                <template slot="header">
+                                    {{$t('Conversion')}}
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>{{ $t('Percentage of total submission and Total views') }}</p>
+                                        </div>
+
+                                        <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                    </el-tooltip>
+                                </template>
+
                                 <template slot-scope="scope">
                                     {{ scope.row.conversion }}%
                                 </template>
                             </el-table-column>
                         </el-table>
-
-                        <div class="tablenav bottom">
-                            <div class="pull-right">
-                                <el-pagination
-                                    @size-change="handleSizeChange"
-                                    @current-change="goToPage"
-                                    :current-page.sync="paginate.current_page"
-                                    :page-sizes="[5, 10, 20, 50, 100]"
-                                    :page-size="parseInt(paginate.per_page)"
-                                    layout="total, sizes, prev, pager, next, jumper"
-                                    :total="paginate.total">
-                                </el-pagination>
-                            </div>
-                        </div>
-                    </div>
+                    </el-skeleton>
+                </div>
+                <div class="ff_pagination_wrap text-right mt-4">
+                    <el-pagination
+                        class="ff_pagination"
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="goToPage"
+                        :current-page.sync="paginate.current_page"
+                        :page-sizes="[5, 10, 20, 50, 100]"
+                        :page-size="parseInt(paginate.per_page)"
+                        layout="total, sizes, prev, pager, next"
+                        :total="paginate.total">
+                    </el-pagination>
                 </div>
             </template>
-            <div v-else>
-                <div class="fluent_form_intro">
-                    <h1 class="text-center">Welcome to WP Fluent Froms</h1>
-                    <p class="text-center">Thank you for installing WP Fluent Froms - The Most Advanced Form Builder
-                        Plugin for WordPress</p>
-                    <div class="text-center">
-                        <el-button
-                            round
-                            type="primary"
-                            @click="showAddFormModal = true"
-                        >
-                          {{$t('Click Here to Create Your First Form')}}
-                        </el-button>
-                    </div>
-                </div>
-                <div class="fluent_form_intro_video">
-                    <h2>{{$t('Check the video intro')}}</h2>
-                    <div class="videoWrapper">
-                        <iframe width="1237" height="696" src="https://www.youtube.com/embed/AqVr0l1JrGE"
+            <template v-else>
+                <el-row :gutter="24">
+                    <el-col :lg="12">
+                        <card class="fluent_form_intro" style="height: 390px;">
+                            <card-body>
+                                <h2 class="mb-3">{{ $t('Welcome to WP Fluent Froms') }}</h2>
+                                <p class="mb-4 fs-17">{{ $t('Thank you for installing WP Fluent Froms - The Most Advanced Form Builder Plugin for WordPress.') }}
+                                </p>
+                                <el-button type="primary" size="large" @click="showAddFormModal = true">
+                                    {{$t('Click Here to Create Your First Form')}}
+                                </el-button>
+                            </card-body>
+                        </card>
+                    </el-col>
+                    <el-col :lg="12">
+                        <card class="fluent_form_intro_video">
+                            <h2 class="mb-4">{{$t('Check the Video Intro')}}</h2>
+                            <iframe src="https://www.youtube.com/embed/AqVr0l1JrGE"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
-                    </div>
-                </div>
-            </div>
+                        </card>
+                    </el-col>
+                </el-row>
+            </template>
         </div>
 
-        <predefinedFormsModal
+        <CreateNewFormModal
             v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
-            v-show="showAddFormModal"
-            :categories="categories"
-            :predefinedForms="predefinedForms"
             :visibility.sync="showAddFormModal"
-        />
-
-        <PostTypeSelectionModal
-            v-if="has_post_feature && hasPermission('fluentform_forms_manager')"
-            @on-post-type-selction-end="onPostTypeSelctionEnd"
-            :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
         />
     </div>
 </template>
 
 <script type="text/babel">
 import Clipboard from 'clipboard';
-import remove from '../components/confirmRemove'
-import AddFormModal from '../components/modals/AddFormModal';
-import predefinedFormsModal from '../components/modals/predefinedFormsModal';
-import PostTypeSelectionModal from '../components/modals/PostTypeSelectionModal';
+import remove from '@/admin/components/confirmRemove'
+import CreateNewFormModal from '@/admin/components/modals/CreateNewFormModal';
 import moment from "moment";
+import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
+import Card from '@/admin/components/Card/Card.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
+import {scrollTop} from '@/admin/helpers';
 
 export default {
     name: 'AllForms',
     components: {
-        predefinedFormsModal,
-        AddFormModal,
+        CreateNewFormModal,
         remove,
-        PostTypeSelectionModal
+        BtnGroup,
+        BtnGroupItem,
+        SectionHead,
+        Card,
+        CardBody
     },
     data() {
         return {
@@ -305,16 +328,13 @@ export default {
             },
             loading: true,
             items: [],
-            predefinedForms: {},
-            predefinedDropDownForms: false,
-            categories: [],
             search_string: '',
             selectAll: 0,
             showAddFormModal: false,
             checkedItems: [],
             showSelectFormModal: false,
             advancedFilter: false,
-            filter_date_range: ['', ''],
+            filter_date_range: null,
             pickerOptions: {
               disabledDate(time) {
                 return time.getTime() >= Date.now();
@@ -355,78 +375,82 @@ export default {
               ]
             },
             filter_by:'all',
-            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Step Form')},
+            form_statuses: {all: this.$t('All'), published: this.$t('Active'), unpublished: this.$t('Inactive'), is_payment: this.$t('Payment Form'), post: this.$t('Post Form'), conv_form: this.$t('Conversational Form'), step_form: this.$t('Multi-Step Form')},
             searchFormsKeyWord: '',
             clearingSearchKeyword: false,
             postTypeSelectionDialogVisibility: false,
             isDisabledAnalytics: !!window.FluentFormApp.isDisableAnalytics,
             sort_column: 'id',
-            sort_by: 'DESC'
+            sort_by: 'DESC',
+            formLocations: {},
+            loadingLocations: false,
+            radioOption: 'all'
         }
     },
     methods: {
-        toggleStatus(id,title,status){
+        toggleStatus(id, title, status) {
             this.loading = true;
-    
+
             let data = {
-                action: 'fluentform-form-update',
-                title: title,
-                formId: id,
-                status: status,
+                title,
+                status,
             };
-    
-            FluentFormsGlobal.$post(data)
+
+            const url = FluentFormsGlobal.$rest.route('updateForm', id);
+
+            FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
-                    this.$notify.success({
-                        title: 'Success!',
-                        message: response.message,
-                        offset: 30
-                    });
+                    this.$success(response.message);
                 })
-                .fail(error => {
-                    this.$message.error(this.$t('Something went wrong, please try again.'));
+                .catch(error => {
+                    this.$fail(error.message);
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
         goToPage(val) {
-            jQuery('html, body').animate({scrollTop: 0}, 300).promise().then(elements => {
-                this.fetchItems(
-                    this.paginate.current_page = val
-                );
+            scrollTop().then(_ => {
+                this.paginate.current_page = val
+                this.fetchItems();
             });
         },
         handleSizeChange(val) {
-            localStorage.setItem('formItemsPerPage', val);
-            this.paginate.per_page = val;
-            this.fetchItems();
+            scrollTop().then(_ => {
+                localStorage.setItem('formItemsPerPage', val);
+                this.paginate.per_page = val;
+                this.fetchItems();
+            })
         },
         fetchItems() {
+	        if (this.advancedFilter) {
+		        this.advancedFilter = false;
+	        }
             this.loading = true;
             let data = {
                 search: this.searchFormsKeyWord,
-                action: 'fluentform-forms',
                 filter_by: this.filter_by,
                 per_page: this.paginate.per_page,
                 page: this.paginate.current_page,
                 sort_column: this.sort_column,
                 sort_by: this.sort_by
             };
-            if (this.advancedFilter) {
+            if (this.hasEnabledDateFilter) {
               data.date_range = this.filter_date_range;
             }
-            FluentFormsGlobal.$get(data)
-                .done((response) => {
+
+            const url = FluentFormsGlobal.$rest.route('getForms');
+            FluentFormsGlobal.$rest.get(url, data)
+                .then((response) => {
                     this.items = response.data;
                     this.paginate.total = response.total;
                     this.paginate.current_page = response.current_page;
                     this.paginate.last_page = response.last_page;
                 })
-                .fail(error => {
-                    this.$message.error(this.$t('Something went wrong, please try again.'));
+                .catch(error => {
+                    this.$fail(this.$t('Something went wrong, please try again.'));
                 })
-                .always(() => {
+                .finally(() => {
                     this.loading = false;
                 });
         },
@@ -438,59 +462,32 @@ export default {
                 this.clearingSearchKeyword = false;
             });
         },
-        getPredefinedForms() {
-            this.loading = true;
-
-            FluentFormsGlobal.$get({
-                action: 'fluentform-predefined-forms'
-            }).done(res => {
-                this.predefinedForms = res.forms;
-                this.categories = res.categories;
-                this.predefinedDropDownForms = res.predefined_dropDown_forms;
-            }).fail(error => {
-                this.$message.error(this.$t('Something went wrong, please try again.'));
-            })
-                .always(() => {
-                    this.loading = false;
-                });
-        },
         removeForm(id, index) {
-            let data = {
-                action: 'fluentform-form-delete',
-                formId: id
-            }
-            FluentFormsGlobal.$get(data)
-                .done(res => {
+            const url = FluentFormsGlobal.$rest.route('deleteForm', id);
+
+            FluentFormsGlobal.$rest.delete(url)
+                .then(res => {
                     this.items.splice(index, 1);
-                    this.$notify.success({
-                        title: 'Congratulations!',
-                        message: res.message,
-                        offset: 30
-                    });
+                    this.$success(res.message);
                 })
-                .fail(_ => {
+                .catch(error => {
+                    this.$fail(error.message);
                 });
         },
         duplicateForm(id) {
-            let data = {
-                action: 'fluentform-form-duplicate',
-                formId: id
-            }
-            FluentFormsGlobal.$post(data)
+            const url = FluentFormsGlobal.$rest.route('duplicateForm', id);
+
+            FluentFormsGlobal.$rest.post(url)
                 .then(res => {
-                    this.$notify.success({
-                        title: 'Congratulations!',
-                        message: res.message,
-                        offset: 30
-                    });
+                    this.$success(res.message);
                     if (res.redirect) {
                         window.location.href = res.redirect;
                     } else {
-                        alert(this.$t('Something is wrong! Please try again'));
+                        this.$fail(this.$t('Something is wrong! Please try again'));
                     }
                 })
-                .fail(error => {
-                    alert(this.$t('Something is wrong! Please try again'));
+                .catch(error => {
+                    this.$fail(error.message);
                 });
         },
         handleTableSort(column) {
@@ -534,8 +531,13 @@ export default {
             }
         },
         resetAdvancedFilter() {
-          this.advancedFilter = false;
+		  this.radioOption = "";
+		  this.filter_date_range = null;
           this.fetchItems();
+        },
+	    filterDateRangedPicked() {
+		    this.radioOption = "";
+			this.fetchItems();
         },
         filterFormType() {
           this.search_string = '';
@@ -552,18 +554,49 @@ export default {
         },
         tableRowClass({row}) {
             return row.status == 'unpublished' ? 'inactive_form' : '';
+        },
+        findShortCodeLocation(formId){
+
+            this.loadingLocations = true;
+            const url = FluentFormsGlobal.$rest.route('findFormShortCodePage',formId);
+            FluentFormsGlobal.$rest.get(url)
+                .then(res => {
+                    console.log(res)
+                    if (res.status === true){
+                        this.$set(this.formLocations, formId, res.locations);
+                    }else{
+                        this.$set(this.formLocations, formId, []);
+                    }
+                })
+                .catch(error => {
+                    this.$fail(this.$t('Something went wrong, please try again.'));
+                })
+                .finally(()=>{
+                    this.loadingLocations = false;
+                })
+            ;
+        },
+        exportForm(id) {
+            const data = {
+	            action: 'fluentform-export-forms',
+                forms: [id],
+                format: 'json',
+	            fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
+            };
+	        location.href = ajaxurl + '?' + jQuery.param(data);
+        }
+    },
+    computed: {
+	    hasEnabledDateFilter() {
+		    return !!(this.radioOption && this.radioOption != 'all' ||
+			    (Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
+		    );
         }
     },
     mounted() {
         this.fetchItems();
-        this.getPredefinedForms();
-        this.filter_date_range = [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
-
         (new Clipboard('.copy')).on('success', event => {
-            this.$message({
-                message: this.$t('Copied to Clipboard!'),
-                type: 'success'
-            });
+            this.$copy();
         });
     },
     created() {
@@ -586,6 +619,8 @@ export default {
             this.showAddFormModal = false;
             this.showSelectFormModal = true;
         });
+
+
     },
     watch: {
         searchFormsKeyWord: function (newVal, oldVal) {
@@ -593,6 +628,36 @@ export default {
                 this.paginate.current_page = 1;
                 this.fetchItems();
             }
+        },
+        radioOption() {
+            const start = new Date();
+            const end = new Date();
+            let number = 1;
+            switch (this.radioOption) {
+                case 'today':
+					number = 0;
+					break;
+                case 'yesterday':
+                    end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
+                    break;
+                case 'last-week':
+                    number = 7;
+                    break;
+                case 'last-month':
+                    number = 30;
+                    break;
+                case 'all':
+                    this.filter_date_range = null;
+                    this.fetchItems();
+                    return;
+                default:
+                    return;
+            }
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+            const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
+            const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
+            this.filter_date_range = [startDate, endDate];
+            this.fetchItems();
         }
     }
 };

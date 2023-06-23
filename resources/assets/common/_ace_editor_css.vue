@@ -12,33 +12,34 @@
 <script type="text/babel">
     export default {
         name: 'ninja_ace_editor',
-        props: ['value', 'mode', 'editor_id'],
+        props: ['value', 'mode', 'editor_id', 'aceLoaded'],
         data() {
             return {
                 ace_path: window.FluentFormApp.ace_path_url,
                 editorError: '',
-                loading: true
+                loading: true,
+                editor: null
+            }
+        },
+
+        watch: {
+            aceLoaded(status) {
+                console.log('watcheraceeditcss')
+                if (status && !this.editor) {
+                    this.initEditor();
+                }
             }
         },
         methods: {
-            loadDependencies() {
-                if(typeof ace == 'undefined') {
-                    jQuery.get(this.ace_path + '/ace.min.js', () => {
-                        this.initAce();
-                    });
-                } else {
-                    this.initAce();
-                }
-            },
-            initAce() {
+            initEditor() {
                 ace.config.set("workerPath", this.ace_path);
                 ace.config.set("modePath", this.ace_path);
                 ace.config.set("themePath", this.ace_path);
-                let editor = ace.edit('ninja_custom_css');
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/"+this.mode);
-                editor.getSession().on("changeAnnotation", () => {
-                    var annot = editor.getSession().getAnnotations();
+                this.editor = ace.edit('ninja_custom_css');
+                this.editor.setTheme("ace/theme/monokai");
+                this.editor.session.setMode("ace/mode/"+this.mode);
+                this.editor.getSession().on("changeAnnotation", () => {
+                    var annot = this.editor.getSession().getAnnotations();
                     this.editorError = '';
                     for (var key in annot) {
                        if(annot[key].type == 'error') {
@@ -46,14 +47,16 @@
                        }
                     }
                 });
-                editor.getSession().on("change", () => {
-                    this.$emit('input', editor.getSession().getValue());
+                this.editor.getSession().on("change", () => {
+                    this.$emit('input', this.editor.getSession().getValue());
                 });
                 this.loading = false;
             }
         },
         mounted() {
-            this.loadDependencies();
+            if (this.aceLoaded) {
+                this.initEditor();
+            }
         }
     }
 </script>

@@ -35,7 +35,10 @@ import {
     Upload,
     Switch,
     InputNumber,
-    Card
+    Card,
+    Alert,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -76,6 +79,9 @@ Vue.use(Tooltip);
 Vue.use(Upload);
 Vue.use(Switch);
 Vue.use(InputNumber);
+Vue.use(Alert);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -116,7 +122,8 @@ new Vue({
                     disable_auto_focus: 'no',
                     enable_auto_slider: 'no',
                     enable_step_data_persistency: 'no',
-                    enable_step_page_resume: 'no'
+                    enable_step_page_resume: 'no',
+                    step_animation: 'slide',
                 },
                 editor_options: {
                     title: "Start Paging"
@@ -160,16 +167,16 @@ new Vue({
                 },
                 conditional_logics: [],
                 normal_styles: {
-                    'backgroundColor' : '#409EFF',
-                    'borderColor'     : '#409EFF',
+                    'backgroundColor' : '#1a7efb',
+                    'borderColor'     : '#1a7efb',
                     'color'           : '#ffffff',
                     'borderRadius'    : '',
                     'minWidth'        : ''
                 },
                 hover_styles: {
                     'backgroundColor' : '#ffffff',
-                    'borderColor'     : '#409EFF',
-                    'color'           : '#409EFF',
+                    'borderColor'     : '#1a7efb',
+                    'color'           : '#1a7efb',
                     'borderRadius'    : '',
                     'minWidth'        : ''
                 }
@@ -182,7 +189,7 @@ new Vue({
         form_saving: false
     },
     methods: {
-        ...mapActions(["loadEditorShortcodes"]),
+        ...mapActions(["loadResources"]),
 
         /**
          * Prepare the form for the dropzone
@@ -223,6 +230,10 @@ new Vue({
                     formData.stepsWrapper.stepStart.settings.enable_step_page_resume = 'no';
                 }
 
+                if(!formData.stepsWrapper.stepStart.settings.step_animation) {
+                    formData.stepsWrapper.stepStart.settings.step_animation = 'slide';
+                }
+
                 this.form.stepStart = formData.stepsWrapper.stepStart;
             }
 
@@ -248,35 +259,26 @@ new Vue({
             }
 
             let data = {
-                action: 'fluentform-form-update',
-                formId: this.form_id,
                 title: this.form.title,
-                formFields: JSON.stringify(formFields)
+                formFields: JSON.stringify(formFields),
             };
 
-            FluentFormsGlobal.$post(data)
-                .done(response => {
-                    this.$notify({
-                        title: "Success",
-                        message: response.message,
-                        type: "success",
-                        position: "bottom-right"
-                    });
+            const url = FluentFormsGlobal.$rest.route('updateForm', this.form_id);
+
+            FluentFormsGlobal.$rest.post(url, data)
+                .then(response => {
+                    this.$success(response.message);
                     this.form_saving = false;
                     FluentFormApp.isDirty = false;
 
                     const saveFormBtn = jQuery("#saveFormData");
-                    saveFormBtn.text(saveFormBtn.data("text"));
+                    saveFormBtn.html('<i class="el-icon-success"></i>' + saveFormBtn.data("text"));
 
                     // Update the hash now.
                     this.saveHash();
                 })
-                .error(error => {
-                    this.$notify.error({
-                        title: "Oops",
-                        message: error.responseJSON.title,
-                        offset: 30
-                    });
+                .catch(error => {
+                    this.$fail(error?.message || 'Saving failed');
                     this.form_saving = false;
                 });
         },
@@ -296,7 +298,7 @@ new Vue({
     },
     mounted() {
         this.prepareForm();
-        this.loadEditorShortcodes(this.form_id);
+        this.loadResources(this.form_id);
         if(this.is_conversion_form) {
             jQuery('#wpcontent').addClass('ff_conversion_editor');
         }

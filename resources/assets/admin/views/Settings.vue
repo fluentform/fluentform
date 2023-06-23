@@ -33,8 +33,9 @@
                         :route="{ name: 'google-api-settings' }"
                     >API Settings</el-menu-item>
                     
-                    <template v-for="extra_nav in extra_navs">
+                    <template v-for="(extra_nav, extra_nav_key) in extra_navs">
                         <el-menu-item
+                            :key="extra_nav_key"
                             :index="extra_nav.name"
                             :route="{ name: 'extra', query: { module: extra_nav.name } }"
                         >{{ extra_nav.label }}</el-menu-item>
@@ -64,16 +65,13 @@
         },
         methods: {
             fetchInputs() {
-                let data = {
-                    action: 'fluentform-form-inputs',
-                    formId: this.form.id
-                };
-
-                FluentFormsGlobal.$get(data)
-                    .done(response => {
+                const url = FluentFormsGlobal.$rest.route('getFormFields', this.form_id);
+                
+                FluentFormsGlobal.$rest.get(url)
+                    .then(response => {
                         console.log(response);
                     })
-                    .fail(e => {});
+                    .catch(e => {});
             },
             loadExtraSettings() {
                 let data = {
@@ -95,6 +93,7 @@
             }
         },
         mounted() {
+            console.log("This component never used.// Need to confirm");
             this.fetchInputs();
             jQuery('head title').text('Confirmation Settings - Fluent Forms');
         },

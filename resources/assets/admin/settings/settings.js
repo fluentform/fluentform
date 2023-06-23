@@ -2,7 +2,7 @@ import Vue from 'vue';
 import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
-import Settings from './Settings.vue';
+import GlobalSettings from './GlobalSettings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import turnstile from './turnstile.vue';
@@ -10,9 +10,12 @@ import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
+import License from './License.vue';
 
 import Errors from '@/common/Errors';
 global.Errors = Errors;
+
+import notifier from '@/admin/notifier';
 
 import {
     Button,
@@ -39,8 +42,12 @@ import {
     TableColumn,
     Tag,
     Popover,
-    Pagination
+    Pagination,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
+import e from 'jquery-datetimepicker';
+import { handleSidebarActiveLink } from '@/admin/helpers';
 
 locale.use(lang);
 Vue.use(Button);
@@ -67,6 +74,9 @@ Vue.use(TableColumn);
 Vue.use(Tag);
 Vue.use(Popover);
 Vue.use(Pagination);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
+
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
 
@@ -79,20 +89,24 @@ Vue.mixin({
             }
             return str;
         },
+
+        ...notifier
     }
 })
 
 new Vue({
     el: '#ff_global_settings_option_app',
     components: {
-        settings: Settings,
+        settings: GlobalSettings,
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,
         turnstile: turnstile,
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
         'double_optin_settings': DoubleOptinSettings,
-        managers: ManagersSettings
+        managers: ManagersSettings,
+        license: License
+
     },
     data: {
         component: 'settings',
@@ -100,33 +114,53 @@ new Vue({
         settings_key: ''
     },
     methods: {
-        setRoute(hash) {
+        setRoute($el, $originalEl = false) {
             // get component by hash
-            let $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']');
+            let hash = $el.data('hash');
             let component = hash;
             if ($el.data('component')) {
                 component = $el.data('component');
             }
-            
             if (this.$options.components[component]) {
-                jQuery('.ff_settings_list li').removeClass('active');
-                $el.parent().addClass('active');
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component = component;
+                // set route hash
+                location.hash = hash;
+            } else if ($originalEl &&
+                $originalEl.hasClass('ff-payment-settings-root')
+            ) {
+                location.href = $el.attr('href');
+                return 'redirected';
             }
+            return '';
+        },
+        maybeGetFirstSubLink($el) {
+            if (
+                $el.attr('href') === '#' &&
+                $el.parent().hasClass('has_sub_menu') &&
+                $el.parent().find('ul.ff_list_submenu li:first a').length
+            ) {
+                $el = $el.parent().find('ul.ff_list_submenu li:first a');
+            }
+            return $el;
         }
     },
     created() {
         let hash = location.hash.substr(1) || 'settings';
-        this.setRoute(hash);
-
+        let $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']').first();
+        if ($el.length) {
+            $el = this.maybeGetFirstSubLink($el);
+            this.setRoute($el);
+            handleSidebarActiveLink($el.parent(), true)
+        }
         const that = this;
-        jQuery('.ff_settings_list li a').on('click', function () {
-            let hash = jQuery(this).attr('data-hash');
-            if (hash) {
-                that.setRoute(hash);
+        jQuery('.ff_settings_list li a').on('click', function (e) {
+            $el = jQuery(this);
+            if($el.attr('href') === '#') e.preventDefault();
+            if (that.setRoute(that.maybeGetFirstSubLink($el), $el) === 'redirected') {
+                return;
             }
-            jQuery(this).parent().addClass('active');
+            handleSidebarActiveLink($el.parent())
         });
     }
 });

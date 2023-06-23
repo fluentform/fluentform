@@ -1,6 +1,6 @@
 <?php namespace FluentForm\App\Modules\Logger;
 
-use FluentForm\App\Databases\Migrations\FormLogs;
+use FluentForm\Database\Migrations\Logs;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
@@ -79,11 +79,10 @@ class DataLogger
         $data['created_at'] = current_time('mysql');
 
         if (!get_option('fluentform_db_fluentform_logs_added')) {
-            FormLogs::migrate();
+            Logs::migrate();
         }
 
-        return wpFluent()->table('fluentform_logs')
-            ->insert($data);
+        wpFluent()->table('fluentform_logs')->insert($data);
     }
 
     public function getLogsByEntry($entry_id, $log_type = 'logs', $sourceType = 'submission_item')
@@ -94,8 +93,19 @@ class DataLogger
                 ->where('source_type', $sourceType)
                 ->orderBy('id', 'DESC')
                 ->get();
+    
+            $logs = apply_filters_deprecated(
+                'fluentform_entry_logs',
+                [
+                    $logs,
+                    $entry_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_logs',
+                'Use fluentform/submission_logs instead of fluentform_entry_logs.'
+            );
 
-            $logs = apply_filters('fluentform_entry_logs', $logs, $entry_id);
+            $logs = apply_filters('fluentform/submission_logs', $logs, $entry_id);
         } else {
             $logs = wpFluent()->table('ff_scheduled_actions')
                 ->select([
@@ -108,8 +118,19 @@ class DataLogger
                 ->where('origin_id', $entry_id)
                 ->orderBy('id', 'DESC')
                 ->get();
+    
+            $logs = apply_filters_deprecated(
+                'fluentform_entry_api_logs',
+                [
+                    $logs,
+                    $entry_id
+                ],
+                FLUENTFORM_FRAMEWORK_UPGRADE,
+                'fluentform/submission_api_logs',
+                'Use fluentform/submission_api_logs instead of fluentform_entry_api_logs.'
+            );
 
-            $logs = apply_filters('fluentform_entry_api_logs', $logs, $entry_id);
+            $logs = apply_filters('fluentform/submission_api_logs', $logs, $entry_id);
         }
 
 
@@ -120,37 +141,37 @@ class DataLogger
 
     public function getAllLogs()
     {
-        $limit = intval($_REQUEST['per_page']);
-        $pageNumber = intval($_REQUEST['page_number']);
+        $limit = intval($this->app->request->get('per_page'));
+        $pageNumber = intval($this->app->request->get('page_number'));
 
         $skip = ($pageNumber - 1) * $limit;
 
         global $wpdb;
         $logsQuery = wpFluent()->table('fluentform_logs')
             ->select([
-                'fluentform_logs.*'
+                'fluentform_logs.*',
+                wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'),
+                wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'),
+                wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id')
             ])
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.parent_source_id as form_id'))
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_logs.source_id as entry_id'))
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_logs.parent_source_id')
             ->orderBy('fluentform_logs.id', 'DESC');
         // ->whereIn('fluentform_logs.source_type', ['submission_item', 'form_item']);
 
 
-        if ($parentSourceId = ArrayHelper::get($_REQUEST, 'parent_source_id')) {
+        if ($parentSourceId = $this->app->request->get('parent_source_id')) {
             $logsQuery = $logsQuery->where('fluentform_logs.parent_source_id', intval($parentSourceId));
         }
 
-        if ($status = ArrayHelper::get($_REQUEST, 'status')) {
+        if ($status = $this->app->request->get('status')) {
             $logsQuery = $logsQuery->where('fluentform_logs.status', sanitize_text_field($status));
         }
 
-        if ($component = ArrayHelper::get($_REQUEST, 'component')) {
+        if ($component = $this->app->request->get('component')) {
             $logsQuery = $logsQuery->where('fluentform_logs.component', sanitize_text_field($component));
         }
 
-        if ($formId = ArrayHelper::get($_REQUEST, 'form_id')) {
+        if ($formId = $this->app->request->get('form_id')) {
             $logsQuery = $logsQuery->where('fluentform_forms.id', intval($formId));
         }
 
@@ -165,8 +186,18 @@ class DataLogger
                 $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->entry_id);
             }
         }
+    
+        $logs = apply_filters_deprecated(
+            'fluentform_all_logs',
+            [
+                $logs
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/all_logs',
+            'Use fluentform/all_logs instead of fluentform_all_logs.'
+        );
 
-        $logs = apply_filters('fluentform_all_logs', $logs);
+        $logs = apply_filters('fluentform/all_logs', $logs);
 
         $total = $logsQueryMain->count();
 
@@ -180,8 +211,8 @@ class DataLogger
 
     public function getApiLogs()
     {
-        $limit = intval($_REQUEST['per_page']);
-        $pageNumber = intval($_REQUEST['page_number']);
+        $limit = intval($this->app->request->get('per_page'));
+        $pageNumber = intval($this->app->request->get('page_number'));
 
         $skip = ($pageNumber - 1) * $limit;
         global $wpdb;
@@ -194,21 +225,21 @@ class DataLogger
                 'ff_scheduled_actions.status',
                 'ff_scheduled_actions.note',
                 'ff_scheduled_actions.created_at',
+                wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title')
             ])
-            ->select(wpFluent()->raw($wpdb->prefix . 'fluentform_forms.title as form_title'))
             ->join('fluentform_forms', 'fluentform_forms.id', '=', 'ff_scheduled_actions.form_id')
             ->orderBy('ff_scheduled_actions.id', 'DESC');
 
 
-        if ($formId = ArrayHelper::get($_REQUEST, 'form_id')) {
+        if ($formId = $this->app->request->get('form_id')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.form_id', intval($formId));
         }
 
-        if ($status = ArrayHelper::get($_REQUEST, 'status')) {
+        if ($status = $this->app->request->get('status')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.status', $status);
         }
 
-        if ($component = ArrayHelper::get($_REQUEST, 'component')) {
+        if ($component = $this->app->request->get('component')) {
             $logsQuery = $logsQuery->where('ff_scheduled_actions.action', $component);
         }
 
@@ -217,8 +248,18 @@ class DataLogger
         $logs = $logsQuery->offset($skip)
             ->limit($limit)
             ->get();
+    
+        $logs = apply_filters_deprecated(
+            'fluentform_api_all_logs',
+            [
+                $logs
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/api_all_logs',
+            'Use fluentform/api_all_logs instead of fluentform_api_all_logs.'
+        );
 
-        $logs = apply_filters('fluentform_api_all_logs', $logs);
+        $logs = apply_filters('fluentform/api_all_logs', $logs);
 
         foreach ($logs as $log) {
             $log->submission_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $log->form_id . '#/entries/' . $log->origin_id);
@@ -236,7 +277,7 @@ class DataLogger
     public function deleteLogsByIds($ids = [])
     {
         if (!$ids) {
-            $ids = wp_unslash($_REQUEST['log_ids']);
+            $ids = wp_unslash($this->app->request->get('log_ids'));
         }
 
         if (!$ids) {
@@ -257,7 +298,7 @@ class DataLogger
     public function deleteApiLogsByIds($ids = [])
     {
         if (!$ids) {
-            $ids = wp_unslash($_REQUEST['log_ids']);
+            $ids = wp_unslash($this->app->request->get('log_ids'));
         }
 
         if (!$ids) {

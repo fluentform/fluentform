@@ -7,268 +7,322 @@
 use FluentForm\App\Modules\Acl\Acl;
 
 /**
+ * App instance
+ *
  * @var $app \FluentForm\Framework\Foundation\Application
  */
+$app->addAction('wp_ajax_nopriv_fluentform_submit', function () use ($app) {
+//    (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
+    (new \FluentForm\App\Http\Controllers\SubmissionHandlerController())->submit();
 
-$app->addPublicAjaxAction('fluentform_submit', function () use ($app) {
-    (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
 });
 
-$app->addAdminAjaxAction('fluentform_submit', function () use ($app) {
-    (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
+$app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
+//    (new \FluentForm\App\Modules\Form\FormHandler($app))->onSubmit();
+    (new \FluentForm\App\Http\Controllers\SubmissionHandlerController())->submit();
 });
 
-$app->addAdminAjaxAction('fluentform-global-settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-global-settings', function () use ($app) {
+    dd('wp_ajax_fluentform-global-settings');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Settings\Settings($app->request))->get();
 });
 
-$app->addAdminAjaxAction('fluentform-global-settings-store', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-global-settings-store', function () use ($app) {
+    dd('wp_ajax_fluentform-global-settings-store');
     Acl::verify('fluentform_settings_manager');
     (new \FluentForm\App\Modules\Settings\Settings($app->request))->store();
 });
 
-$app->addAdminAjaxAction('fluentform-forms', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-forms');
     Acl::verify('fluentform_dashboard_access');
     (new \FluentForm\App\Modules\Form\Form($app))->index();
 });
 
-$app->addAdminAjaxAction('fluentform-form-store', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-store', function () use ($app) {
+    dd('wp_ajax_fluentform-form-store');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->store();
 });
 
-$app->addAdminAjaxAction('fluentform-form-find', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-find', function () use ($app) {
+    //No usage found
     Acl::verify('fluentform_dashboard_access');
     (new \FluentForm\App\Modules\Form\Form($app))->find();
 });
 
-$app->addAdminAjaxAction('fluentform-form-update', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
+    dd('wp_ajax_fluentform-form-update');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->update();
 });
 
-$app->addAdminAjaxAction('fluentform-form-delete', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-delete', function () use ($app) {
+    dd('wp_ajax_fluentform-form-delete');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->delete();
 });
 
-$app->addAdminAjaxAction('fluentform-form-duplicate', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-duplicate', function () use ($app) {
+    dd('wp_ajax_fluentform-form-duplicate');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->duplicate();
 });
+$app->addAdminAjaxAction('fluentform-form-find-shortcode-locations', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    (new \FluentForm\App\Modules\Form\Form($app))->findFormLocations();
+});
 
-$app->addAdminAjaxAction('fluentform-convert-to-conversational', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-convert-to-conversational', function () use ($app) {
+    dd('wp_ajax_fluentform-convert-to-conversational');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Form($app))->convertToConversational();
 });
 
-$app->addAdminAjaxAction('fluentform_get_all_entries', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_all_entries', function () {
+    dd('wp_ajax_fluentform_get_all_entries');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getAllFormEntries();
 });
 
-$app->addAdminAjaxAction('fluentform_get_all_entries_report', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_all_entries_report', function () {
+    dd('wp_ajax_fluentform_get_all_entries_report');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntriesReport();
 });
 
-$app->addAdminAjaxAction('fluentform-form-inputs', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-inputs', function () use ($app) {
+    dd('wp_ajax_fluentform-form-inputs');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Inputs($app))->index();
 });
 
-$app->addAdminAjaxAction('fluentform-load-editor-shortcodes', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-load-editor-shortcodes', function () use ($app) {
+    dd('wp_ajax_fluentform-load-editor-shortcodes');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->getEditorShortcodes();
 });
 
-$app->addAdminAjaxAction('fluentform-load-all-editor-shortcodes', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-load-all-editor-shortcodes', function () use ($app) {
+    dd('wp_ajax_fluentform-load-all-editor-shortcodes');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->getAllEditorShortcodes();
 });
 
-$app->addAdminAjaxAction('fluentform-settings-formSettings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-settings-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->index();
 });
 
-$app->addAdminAjaxAction('fluentform-settings-general-formSettings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-settings-general-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-general-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->getGeneralSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-save-settings-general-formSettings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
+    dd('wp_ajax_fluentform-save-settings-general-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->saveGeneralSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-settings-formSettings-store', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-settings-formSettings-store', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings-store');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->store();
 });
 
-$app->addAdminAjaxAction('fluentform-settings-formSettings-remove', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-settings-formSettings-remove', function () use ($app) {
+    dd('wp_ajax_fluentform-settings-formSettings-remove');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->remove();
 });
 
-$app->addAdminAjaxAction('fluentform-get-form-custom_css_js', function () {
+$app->addAction('wp_ajax_fluentform-get-form-custom_css_js', function () {
+    dd('wp_ajax_fluentform-get-form-custom_css_js');
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\FormCssJs)->getSettingsAjax();
+    (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->getSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-save-form-custom_css_js', function () {
+$app->addAction('wp_ajax_fluentform-save-form-custom_css_js', function () {
+    dd('wp_ajax_fluentform-save-form-custom_css_js');
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\FormCssJs)->saveSettingsAjax();
+    (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->saveSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-save-form-entry_column_view_settings', function () {
+$app->addAction('wp_ajax_fluentform-save-form-entry_column_view_settings', function () {
+    dd('wp_ajax_fluentform-save-form-entry_column_view_settings');
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->saveVisibleColumnsAjax();
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->saveVisibleColumnsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-save-form-entry_column_order_settings', function () {
+$app->addAction('wp_ajax_fluentform-save-form-entry_column_order_settings', function () {
+    dd('wp_ajax_fluentform-save-form-entry_column_order_settings');
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->saveEntryColumnsOrderAjax();
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->saveEntryColumnsOrderAjax();
 });
 
-$app->addAdminAjaxAction('fluentform-reset-form-entry_column_order_settings', function () {
+$app->addAction('wp_ajax_fluentform-reset-form-entry_column_order_settings', function () {
+    dd('wp_ajax_fluentform-reset-form-entry_column_order_settings');
     Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings)->resetEntryDisplaySettings();
+    (new \FluentForm\App\Modules\Form\Settings\EntryColumnViewSettings())->resetEntryDisplaySettings();
 });
 
-$app->addAdminAjaxAction('fluentform-load-editor-components', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-load-editor-components', function () use ($app) {
+    dd('wp_ajax_fluentform-load-editor-components');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Component\Component($app))->index();
 });
 
-$app->addAdminAjaxAction('fluentform-form-entry-counts', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-entry-counts', function () {
+    dd('wp_ajax_fluentform-form-entry-counts');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntriesGroup();
 });
 
-$app->addAdminAjaxAction('fluentform-form-entries', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-entries', function () {
+    dd('wp_ajax_fluentform-form-entries');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntries();
 });
 
-$app->addAdminAjaxAction('fluentform-form-report', function () use ($app) {
-    $formId = intval($_REQUEST['form_id']);
+$app->addAction('wp_ajax_fluentform-form-report', function () use ($app) {
+    dd('wp_ajax_fluentform-form-report');
+    $formId = intval($app->request->get('form_id'));
     Acl::verify('fluentform_entries_viewer', $formId);
     (new \FluentForm\App\Modules\Entries\Report($app))->getReport($formId);
 });
 
-$app->addAdminAjaxAction('fluentform-form-entries-export', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Modules\Entries\Export($app))->index();
+    (new \FluentForm\App\Http\Controllers\TransferController)->exportEntries();
 });
 
-$app->addAdminAjaxAction('fluentform-get-entry', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-entry', function () {
+    //No usage found
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getEntry();
 });
 
-$app->addAdminAjaxAction('fluentform-update-entry-user', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-update-entry-user', function () {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->changeEntryUser();
 });
 
-$app->addAdminAjaxAction('fluentform-get-users', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-users', function () {
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getUsers();
 });
 
-$app->addAdminAjaxAction('fluentform-get-entry-notes', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-entry-notes', function () {
+    dd('wp_ajax_fluentform-get-entry-notes');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->getNotes();
 });
 
-$app->addAdminAjaxAction('fluentform-add-entry-note', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-add-entry-note', function () {
+    dd('wp_ajax_fluentform-add-entry-note');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->addNote();
 });
 
-$app->addAdminAjaxAction('fluentform-get-entry-logs', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-entry-logs', function () use ($app) {
+    dd('wp_ajax_fluentform-get-entry-logs');
     Acl::verify('fluentform_entries_viewer');
-    $entry_id = intval($_REQUEST['entry_id']);
-    $logType = sanitize_text_field($_REQUEST['log_type']);
+    $entry_id = intval($app->request->get('entry_id'));
+    $logType = sanitize_text_field($app->request->get('log_type'));
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getLogsByEntry($entry_id, $logType);
 });
 
-$app->addAdminAjaxAction('fluentform_get_activity_log_filters', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_activity_log_filters', function () use ($app) {
+    dd('wp_ajax_fluentform_get_activity_log_filters');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getLogFilters();
 });
 
-$app->addAdminAjaxAction('fluentform_get_activity_api_log_filters', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_activity_api_log_filters', function () use ($app) {
+    dd('wp_ajax_fluentform_get_activity_api_log_filters');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getApiLogFilters();
 });
 
-$app->addAdminAjaxAction('fluentform_get_all_logs', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_all_logs', function () use ($app) {
+    dd('wp_ajax_fluentform_get_all_logs');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getAllLogs();
 });
 
-$app->addAdminAjaxAction('fluentform_get_api_logs', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_api_logs', function () use ($app) {
+    dd('wp_ajax_fluentform_get_api_logs');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->getApiLogs();
 });
 
-$app->addAdminAjaxAction('fluentform_retry_api_action', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_retry_api_action', function () use ($app) {
+    // No usage found
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->retryApiAction();
 });
 
-$app->addAdminAjaxAction('fluentform_delete_logs_by_ids', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_delete_logs_by_ids', function () use ($app) {
+    dd('wp_ajax_fluentform_delete_logs_by_ids');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteLogsByIds();
 });
 
-$app->addAdminAjaxAction('fluentform_delete_api_logs_by_ids', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_delete_api_logs_by_ids', function () use ($app) {
+    dd('wp_ajax_fluentform_delete_api_logs_by_ids');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Logger\DataLogger($app))->deleteApiLogsByIds();
 });
 
-$app->addAdminAjaxAction('fluentform-reset-analytics', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-reset-analytics', function () use ($app) {
+    dd('wp_ajax_fluentform-reset-analytics');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Form\Analytics($app))->resetFormAnalytics();
 });
 
-$app->addAdminAjaxAction('fluentform-change-entry-status', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-change-entry-status', function () {
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Entries\Entries())->changeEntryStatus();
 });
 
-$app->addAdminAjaxAction('fluentform-delete-entry', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-delete-entry', function () {
+    dd('wp_ajax_fluentform-delete-entry');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Entries\Entries())->deleteEntry();
 });
 
-$app->addAdminAjaxAction('fluentform-change-entry-favorites', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-change-entry-favorites', function () {
+    dd('wp_ajax_fluentform-change-entry-favorites');
     Acl::verify('fluentform_entries_viewer');
     (new \FluentForm\App\Modules\Entries\Entries())->favoriteChange();
 });
 
-$app->addAdminAjaxAction('fluentform-do_entry_bulk_actions', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-do_entry_bulk_actions', function () {
+    dd('wp_ajax_fluentform-change-entry-favorites');
     Acl::verify('fluentform_manage_entries');
     (new \FluentForm\App\Modules\Entries\Entries())->handleBulkAction();
 });
 
-$app->addAdminAjaxAction('fluentform-get-extra-form-settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-extra-form-settings', function () use ($app) {
+    dd('fluentform-get-extra-form-settings'); // ajax call from resources/assets/admin/views/GlobalSettings.vue, that is never used
     Acl::verify('fluentform_forms_manager');
     (new FluentForm\App\Modules\Form\Settings\ExtraSettings($app))->getExtraSettingNavs();
 });
 
-$app->addAdminAjaxAction('fluentform-get-form-settings-extra-component', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-form-settings-extra-component', function () use ($app) {
+    dd('wp_ajax_fluentform-get-form-settings-extra-component');
     Acl::verify('fluentform_forms_manager');
     (new FluentForm\App\Modules\Form\Settings\ExtraSettings($app))->getExtraSettingsComponent();
 });
 
-$app->addAdminAjaxAction(
-    'fluentform-get-pages',
+$app->addAction(
+    'wp_ajax_fluentform-get-pages',
     function () {
+        dd('wp_ajax_fluentform-get-pages');
         Acl::verify('fluentform_forms_manager');
 
         $pages = get_pages();
@@ -278,51 +332,54 @@ $app->addAdminAjaxAction(
             $formattedPages[] = [
                 'ID'         => $page->ID,
                 'post_title' => $page->post_title,
-                'guid'       => $page->guid
+                'guid'       => $page->guid,
             ];
         }
 
         wp_send_json_success([
-            'pages' => $formattedPages
+            'pages' => $formattedPages,
         ], 200);
     }
 );
 
-$app->addAdminAjaxAction('fluentform_notice_action_track_yes', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_notice_action_track_yes', function () {
     Acl::hasAnyFormPermission();
     (new FluentForm\App\Modules\Track\TrackModule())->sendInitialInfo();
 });
 
-$app->addAdminAjaxAction('fluentform_install_fluentsmtp', function () {
+$app->addAction('wp_ajax_fluentform_install_fluentsmtp', function () {
     Acl::verify('fluentform_settings_manager');
     (new FluentForm\App\Modules\Track\SetupModule())->installPlugin('fluent-smtp');
 });
 
 // Export forms
-$app->addAdminAjaxAction('fluentform-export-forms', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-export-forms', function () use ($app) {
     Acl::verify('fluentform_settings_manager');
-    (new \FluentForm\App\Modules\Form\Transfer($app))->export();
+    (new \FluentForm\App\Http\Controllers\TransferController)->exportForms();
 });
 
 // Import forms
-$app->addAdminAjaxAction('fluentform-import-forms', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-import-forms', function () use ($app) {
     Acl::verify('fluentform_settings_manager');
-    (new \FluentForm\App\Modules\Form\Transfer($app))->import();
+    (new \FluentForm\App\Http\Controllers\TransferController)->importForms();
 });
 
-$app->addAdminAjaxAction('fluentform-get-all-forms', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-get-all-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-get-all-forms'); //Need to check this, could not find any use
     Acl::verify(['fluentform_settings_manager', 'fluentform_forms_manager']);
     (new \FluentForm\App\Modules\Form\Form($app))->getAllForms();
 });
 
 // Fetch simplified information for all predefined forms
-$app->addAdminAjaxAction('fluentform-predefined-forms', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-predefined-forms', function () use ($app) {
+    dd('wp_ajax_fluentform-predefined-forms');
     Acl::hasAnyFormPermission();
     (new \FluentForm\App\Modules\Form\Predefined($app))->all();
 });
 
 // Create a form by predefined data
-$app->addAdminAjaxAction('fluentform-predefined-create', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-predefined-create', function () use ($app) {
+    dd('wp_ajax_fluentform-predefined-create');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Predefined($app))->create();
 });
@@ -332,98 +389,109 @@ $app->addAdminAjaxAction('fluentform-predefined-create', function () use ($app) 
  * slack and mailchimp if the form was submitted.
  */
 
-
 // Permission settings
-$app->addAdminAjaxAction('fluentform_get_access_roles', function () {
+$app->addAction('wp_ajax_fluentform_get_access_roles', function () {
+    dd('wp_ajax_fluentform_get_access_roles');
     Acl::verify('fluentform_full_access');
     $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
     $roleManager->getRoles();
 });
 
-$app->addAdminAjaxAction('fluentform_set_access_roles', function () {
+$app->addAction('wp_ajax_fluentform_set_access_roles', function () {
+    dd('wp_ajax_fluentform_set_access_roles');
     Acl::verify('fluentform_full_access');
     $roleManager = new \FluentForm\App\Modules\Acl\RoleManager();
     $roleManager->setRoles();
 });
 
-$app->addAdminAjaxAction('fluentform_get_managers', function () {
+$app->addAction('wp_ajax_fluentform_get_managers', function () {
+    dd('wp_ajax_fluentform_get_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->get();
 });
 
-$app->addAdminAjaxAction('fluentform_set_managers', function () {
+$app->addAction('wp_ajax_fluentform_set_managers', function () {
+    dd('wp_ajax_fluentform_set_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->store();
 });
 
-$app->addAdminAjaxAction('fluentform_del_managers', function () {
+$app->addAction('wp_ajax_fluentform_del_managers', function () {
+    dd('wp_ajax_fluentform_del_managers');
     Acl::verify('fluentform_full_access');
     (new \FluentForm\App\Modules\Acl\Managers())->remove();
 });
 
-
 // General Integration Settings Here
-$app->addAdminAjaxAction('fluentform_get_global_integration_settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_global_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_settings_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getGlobalSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform_post_global_integration_settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_post_global_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->saveGlobalSettingsAjax();
 });
 
-$app->addAdminAjaxAction('fluentform_get_all-general-integration-feeds', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_all-general-integration-feeds', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getAllFormIntegrations();
 });
 
-$app->addAdminAjaxAction('fluentform_post_update_form_integration_status', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_post_update_form_integration_status', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->updateNotificationStatus();
 });
 
-$app->addAdminAjaxAction('fluentform_get_form_integration_settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_form_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getIntegrationSettings();
 });
-$app->addAdminAjaxAction('fluentform_post_form_integration_settings', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_post_form_integration_settings', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->saveIntegrationSettings();
 });
-$app->addAdminAjaxAction('fluentform-delete-general_integration_feed', function () use ($app) {
+$app->addAction('wp_ajax_fluentform-delete-general_integration_feed', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->deleteIntegrationFeed();
 });
 
-$app->addAdminAjaxAction('fluentform_get_form_integration_list', function () use ($app) {
+$app->addAction('wp_ajax_fluentform_get_form_integration_list', function () use ($app) {
+    vdd('x');
     Acl::verify('fluentform_forms_manager');
     $globalIntegrationManager = new \FluentForm\App\Services\Integrations\GlobalIntegrationManager($app);
     $globalIntegrationManager->getIntegrationList();
 });
 
-$app->addAdminAjaxAction('fluentform_update_modules', function () {
+$app->addAction('wp_ajax_fluentform_update_modules', function () {
+    vdd('rest-done, api endpoint "integrations/update-status"');
     Acl::verify('fluentform_settings_manager');
+
     return (new \FluentForm\App\Modules\AddOnModule())->updateAddOnsStatus();
 });
-
 
 /*
  * Background Process Receiver
  */
 
-$app->addAdminAjaxAction('fluentform_background_process', function () {
+$app->addAction('wp_ajax_fluentform_background_process', function () {
     $this->app['fluentFormAsyncRequest']->handleBackgroundCall();
 });
 
-$app->addPublicAjaxAction('fluentform_background_process', function () {
+$app->addAction('wp_ajax_nopriv_fluentform_background_process', function () {
     $this->app['fluentFormAsyncRequest']->handleBackgroundCall();
 });
-

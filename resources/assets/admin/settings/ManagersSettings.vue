@@ -1,51 +1,35 @@
 <template>
-    <!-- <div v-loading="loading"> -->
-    <div class="ff_managers_settings">
-        <div class="ff_manager_settings_wrapper">
-            <div class="ff_manager_settings_nav">
-                <ul>
-                    <li
-                        :class="{ ff_active: currentPage == 'roleBased' }"
-                        @click="currentPage = 'roleBased'"
-                    >
-                        {{ $t('Role Based') }}
-                    </li>
+    <card class="ff_managers_settings">
+        <card-head>
+            <h5 class="title">{{ $t('Managers') }}</h5>
+        </card-head>
+        <card-body>
 
-                    <li
-                        :class="{ ff_active: currentPage == 'advanced' }"
-                        @click="currentPage = 'advanced'"
-                    >
-                        {{ $t('Advanced') }}
-                    </li>
-                </ul>
-            </div>
+            <privacy/>
 
-            <privacy v-show="currentPage == 'roleBased'" />
+            <hr class="mt-5 mb-4">
 
-            <managers v-show="currentPage == 'advanced'">
-                {{ $t('Advanced form') }}
-            </managers>
-        </div>
-    </div>
+            <managers>{{ $t('Advanced form') }}</managers>
+
+        </card-body>
+    </card>
 </template>
 
 <script>
 import Privacy from "./Managers/Privacy.vue";
 import Managers from "./Managers/Managers.vue";
+import Card from '@/admin/components/Card/Card.vue';
+import CardHead from '@/admin/components/Card/CardHead.vue';
+import CardBody from '@/admin/components/Card/CardBody.vue';
 
 export default {
     name: "ManagersSettings",
-
     components: {
         Privacy,
-        Managers
-    },
-
-    data() {
-        return {
-            loading: true,
-            currentPage: "roleBased",
-        };
+        Managers,
+        Card,
+        CardHead,
+        CardBody
     }
 };
 </script>

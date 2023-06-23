@@ -56,15 +56,11 @@
 
                 FluentFormsGlobal.$post(data)
                     .then((response) => {
-                        this.$notify.success({
-                            title: 'Congratulations!',
-                            message: response.data.message,
-                            offset: 30
-                        });
+                        this.$success(response.data.message);
                         window.location.href = response.data.redirect_url;
                     })
                     .fail(error => {
-                        this.$message.error('Please Provide the form name');
+                        this.$fail(this.$t('Please Provide the form name'));
                     })
                     .always(() => {
                         this.loading = false;

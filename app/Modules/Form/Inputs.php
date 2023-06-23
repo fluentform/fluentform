@@ -2,7 +2,6 @@
 
 namespace FluentForm\App\Modules\Form;
 
-use FluentForm\App;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
@@ -11,12 +10,15 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 class Inputs
 {
     /**
+     * Request object
+     *
      * @var \FluentForm\Framework\Request\Request
      */
     private $request;
 
     /**
      * Build the class instance
+     *
      * @throws \Exception
      */
     public function __construct(Application $application)
@@ -32,9 +34,9 @@ class Inputs
         $formId = $this->request->get('formId');
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
-        
+
         $fields = FormFieldsParser::getShortCodeInputs($form, [
-            'admin_label', 'attributes', 'options'
+            'admin_label', 'attributes', 'options',
         ]);
 
         $fields = array_filter($fields, function ($field) {
@@ -66,22 +68,30 @@ class Inputs
             'input_hidden',
             'input_file',
             'input_image',
-            'subscription_payment_component'
+            'subscription_payment_component',
         ];
+    
+        $supportedConditionalFields = apply_filters_deprecated(
+            'fluentform_supported_conditional_fields',
+            [
+                $supportedConditionalFields
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/supported_conditional_fields',
+            'Use fluentform/supported_conditional_fields instead of fluentform_supported_conditional_fields.'
+        );
 
-        return apply_filters('fluentform_supported_conditional_fields', $supportedConditionalFields);
+        return apply_filters('fluentform/supported_conditional_fields', $supportedConditionalFields);
     }
 
     public function filterEditorFields($fields)
     {
         foreach ($fields as $index => $field) {
             $element = ArrayHelper::get($field, 'element');
-            if ($element == 'select_country') {
-                $fields[$index]['options'] = App::load(
-                    App::appPath('Services/FormBuilder/CountryNames.php')
-                );
-            } elseif ($element == 'gdpr-agreement' || $element == 'terms_and_condition') {
-                $fields[$index]['options'] = array('on' => 'Checked');
+            if ('select_country' == $element) {
+                $fields[$index]['options'] = getFluentFormCountryList();
+            } elseif ('gdpr-agreement' == $element || 'terms_and_condition' == $element) {
+                $fields[$index]['options'] = ['on' => 'Checked'];
             }
         }
 

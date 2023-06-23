@@ -13,16 +13,16 @@
     &_btn_style {
       cursor: pointer;
       display: inline-block;
-      font-weight: 400;
+      font-weight: 500;
       text-align: center;
       white-space: nowrap;
       vertical-align: middle;
       user-select: none;
       border: 1px solid transparent;
-      padding: 6px 12px;
+      padding: 8px 20px;
       font-size: 16px;
       line-height: 1.5;
-      border-radius: 4px;
+      border-radius: 7px;
       position: relative;
       transition: background-color 0.15s ease-in-out,
       border-color 0.15s ease-in-out,
@@ -36,11 +36,29 @@
     }
 
     &-btn {
+      &:not(.ff_btn_no_style) {
+        display: inline-block;
+        font-weight: 500;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        user-select: none;
+        border: 1px solid #dadbdd;
+        padding: 12px 20px;
+        font-size: 14px;
+        line-height: 1;
+        border-radius: 7px;
+        color: #1a7efb;
+        cursor: pointer;
+        background: #ecf5ff;
+        border-color: #b3d8ff;
+      }
+
       &.disabled {
         opacity: .65;
       }
       // button types
-      &-primary {
+      &-primary:not(.ff_btn_no_style) {
         color: #fff;
         background-color: #007bff;
         border-color: #007bff;
@@ -58,10 +76,10 @@
         }
       }
 
-      &-secondary {
+      &-secondary:not(.ff_btn_no_style) {
         color: #fff;
-        background-color: #868e96;
-        border-color: #868e96;
+        background-color: #606266;
+        border-color: #606266;
 
         &:hover {
           color: #fff;
@@ -155,24 +173,23 @@
     &-form-control {
       display: block;
       width: 100%;
-      padding: 6px 12px;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #495057;
+      padding: 11px 15px;
+      font-size: 14px;
+      line-height: 1;
+      color: $text-color;
       background-image: none;
       background-clip: padding-box;
-      border: 1px solid #ced4da;
-      border-radius: 0.25rem;
+      border: 1px solid #dadbdd;
+      border-radius: 7px;
       transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
       margin-bottom: 0;
       max-width: 100%;
-
+      font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
       &:focus {
-        color: #495057;
+        color: $text-color;
         background-color: #fff;
-        border-color: #80bdff;
+        border-color: $primary;
         outline: none;
-
         ~ .ff-el-help-message {
           display: block !important;
         }
@@ -222,9 +239,17 @@
       }
     }
   }
+  select.ff-el-form-control{
+    -webkit-appearance: none;
+    background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 12px top 55%;
+    background-size: 16px 16px;
+  }
 
   .mce-tinymce.mce-container.mce-panel {
     border: 1px solid #ced4da;
+  }
+  textarea{
+    min-height: 90px;
   }
 }
 
@@ -236,7 +261,7 @@
 select#{$el-prefix}-form-control {
   &:not([size]) {
     &:not([multiple]) {
-      height: 38px;
+      height: 42px;
     }
   }
 }
@@ -298,10 +323,14 @@ select#{$el-prefix}-form-control {
 .ff-el-section-break {
   .ff-el-section-title {
     margin-bottom: 5px;
+    font-weight: 600;
   }
 
   hr {
     margin-bottom: 10px;
+    height: 1px;
+    background-color: #dadbdd;
+    border: none;
   }
 }
 
@@ -318,12 +347,13 @@ table.ff_repeater_table {
 
   th {
     font-size: 90%;
+    padding: 0;
     text-align: left;
   }
 
   tr, th {
     border: 0;
-    padding: 0;
+    padding-top: 5px;
     background: transparent !important;
   }
 
@@ -332,6 +362,8 @@ table.ff_repeater_table {
     border: 0;
     text-align: left;
     background: transparent !important;
+    max-width: 100%;
+    width: 282px;
   }
 
   tbody tr:only-child td .repeat-minus {
@@ -346,7 +378,7 @@ table.ff_repeater_table {
   .repeat_btn {
     vertical-align: middle;
     padding-right: 0;
-
+    width: 30px;
     span.ff-icon {
       cursor: pointer;
       margin-right: 10px;
@@ -365,7 +397,10 @@ table.ff_repeater_table {
 }
 
 table.ff_flexible_table {
-  @media (max-width: 768px) {
+  &.ff-checkable-grids {
+    width: 100%;
+  }
+  @media (max-width: 767px) {
     border: 0;
 
     &.ff-checkable-grids {
@@ -415,6 +450,7 @@ table.ff_flexible_table {
         padding-top: 12px !important;
 
         td {
+          padding: 5px;
           display: block;
           margin-left: 8px;
           margin-right: 8px;
@@ -439,6 +475,85 @@ table.ff_flexible_table {
               float: none;
             }
           }
+        }
+      }
+    }
+  }
+}
+
+.ff_flexible_table{
+  &.mobile{
+    thead {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    tbody{
+      td{
+        display: block;
+        width: 100%;
+        padding: 10px;
+      }
+      tr{
+        display: block;
+        background: #fff;
+        position: relative;
+        border: 1px solid #ced4da;
+        border-top: 2px solid #ced4da;
+        border-bottom: 4px solid #ced4da;
+        margin: 16px 0 10px;
+      }
+    }
+  }
+}
+
+.ff_repeater_table{
+  &.mobile{
+    tbody{
+      td{
+        display: block;
+        width: 100%;
+        padding: 10px;
+        .ff-el-group{
+          margin-top: 6px;
+        }
+        &::before {
+          content: attr(data-label);
+          font-size: .875em;
+          letter-spacing: .5pt;
+          white-space: nowrap;
+          display: block;
+          clear: both;
+        }
+      }
+    }
+  }
+}
+
+.ff-checkable-grids {
+  &.mobile{
+    border: 0;
+    tbody {
+      tr {
+        padding-top: 0 !important;
+        &:nth-child(2n) > td {
+          background: transparent;
+        }
+      }
+      td{
+        text-align: left !important;
+        padding-left: 10px !important;
+        padding-left: 10px !important;
+        &.ff_grid_header {
+          background-color: #eeeeee !important;
+          margin: 0;
+        }
+        &::after {
+          padding-left: 10px;
+          content: attr(data-label);
+          letter-spacing: 0.5pt;
+          white-space: nowrap;
+          display: inline-block;
         }
       }
     }

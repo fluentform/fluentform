@@ -1,59 +1,69 @@
 <template>
     <div class="entry_info_box entry_submission_logs">
-        <div class="entry_info_header">
-            <div class="info_box_header">
-                {{$t('Submission Logs')}}
-            </div>
-            <div class="info_box_header_actions">
-                <el-radio-group fill="#409EFF" v-model="log_type" size="mini">
-                    <el-radio-button label="logs">{{$t('General')}}</el-radio-button>
-                    <el-radio-button label="api_calls">{{$t('API Calls')}}</el-radio-button>
-                </el-radio-group>
-            </div>
-        </div>
-        <div v-loading="loading" class="entry_info_body">
-            <div class="wpf_entry_details">
-                <template v-if="logs && logs.length && log_type == 'logs'">
-                    <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
-                        <div class="wpf_entry_label">
-                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
-                                class="entry_submission_log_component">{{log.component}} ({{log.title}})</span> {{ $t('at') }}
-                            {{log.created_at}}
-                            <span class="pull-right">
-                              <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
-                            </span>
-                        </div>
-                        <div class="entry_submission_log_des" v-html="log.description"></div>
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <div class="entry_info_box_title">
+                        {{$t('Submission Logs')}}
                     </div>
-                </template>
-                <template v-if="logs && logs.length && log_type == 'api_calls'">
-                    <div v-for="log in logs" class="entry_submission_log wpf_each_entry">
-                        <div class="wpf_entry_label">
-                            <span class="ff_tag" :class="'log_status_'+log.status">{{log.status}}</span> {{ $t('in') }} <span
-                                class="entry_submission_log_component">{{getReadableName(log.action)}}</span> {{ $t('at') }}
-                            {{log.created_at}}
-                            <span class="pull-right">
-                              <remove :plain="true" icon="el-icon-delete" @on-confirm="removeLog(log.id)"></remove>
-                            </span>
-                        </div>
-                        <div class="entry_submission_log_des" v-html="log.note"></div>
+                    <div class="entry_info_box_actions">
+                        <el-radio-group class="el-radio-group-info" v-model="log_type" size="medium">
+                            <el-radio-button label="logs">{{$t('General')}}</el-radio-button>
+                            <el-radio-button label="api_calls">{{$t('API Calls')}}</el-radio-button>
+                        </el-radio-group>
                     </div>
-                </template>
-                <template v-if="!logs || !logs.length">
-                    <h3>{{$t('No Logs found')}}</h3>
-                </template>
-            </div>
-        </div>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <div class="entry_info_body">
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <div class="wpf_entry_details">
+                            <template v-if="logs && logs.length">
+                                <div v-for="(log, logKey) in logs" class="entry_submission_log wpf_each_entry" :key="logKey">
+                                    <div class="wpf_entry_label">
+                                        <span class="ff_tag" :class="'log_status_' + log.status">{{log.status}}</span>
+                                        {{ $t('in') }} 
+                                        <span class="entry_submission_log_component">{{log.title}}</span> 
+                                        {{ $t('at') }}
+                                        {{log.created_at}}
+                                        <span class="wpf_entry_remove">
+                                            <remove :plain="true" @on-confirm="removeLog(log.id)">
+                                                <el-button
+                                                    class="el-button--icon el-button--soft"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </span>
+                                    </div>
+                                    <div class="entry_submission_log_des" v-html="log.description"></div>
+                                </div>
+                            </template>
+                            <p class="fs-17" v-else>{{$t('Sorry, No Logs found!')}}</p>
+                        </div>
+                    </el-skeleton>
+                </div>
+            </card-body>
+        </card>
     </div>
 </template>
 <script type="text/babel">
-  import remove from "../components/confirmRemove";
+    import remove from "@/admin/components/confirmRemove";
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
 
-  export default {
+    export default {
         name: 'submission_logs',
         props: ['entry_id'],
         components:{
           remove,
+                Card,
+                CardHead,
+                CardBody,
+                CardHeadGroup,
         },
         data() {
             return {
@@ -73,56 +83,37 @@
         methods: {
             fetchLogs() {
                 this.loading = true;
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-get-entry-logs',
-                    entry_id: this.entry_id,
+                
+                const url = FluentFormsGlobal.$rest.route('getSubmissionLogs', this.entry_id);
+                
+                FluentFormsGlobal.$rest.get(url, {
                     source_type: 'submission_item',
                     log_type: this.log_type
                 })
-                    .then(response => {
-                        this.logs = response.data.logs;
+                    .then(logs => {
+                        this.logs = logs;
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.loading = false;
                     });
             },
-            getReadableName(actionName) {
-                if (!actionName) {
-                    return 'n/a';
-                }
-                return actionName.replace('fluentform_integration_notify_', '')
-                    .replace('fluentform_', '')
-                    .replace('_notification_feed', '')
-                    .replace('_', ' ');
-
-            },
+            
             removeLog(logId) {
-                let action = '';
-                if (this.log_type === 'logs') {
-                  action = 'fluentform_delete_logs_by_ids';
-                } else if (this.log_type === 'api_calls') {
-                  action = 'fluentform_delete_api_logs_by_ids';
-                } else {
-                  return;
-                }
-                  let data = {
-                    action: action,
+                const url = FluentFormsGlobal.$rest.route('deleteSubmissionLogs', this.entry_id);
+                
+                let data = {
                     log_ids: [logId],
-                  };
+                    log_type: this.log_type
+                };
 
-                  FluentFormsGlobal.$post(data)
-                      .then(response => {
-                        this.$notify({
-                          title: 'Success',
-                          message: response.data.message,
-                          type: 'success',
-                          offset: 30
-                        });
+                FluentFormsGlobal.$rest.delete(url, data)
+                    .then(response => {
+                        this.$success(response.message);
                         this.fetchLogs();
-                      })
-                      .fail(error => {
+                    })
+                    .catch(error => {
                         console.log(error);
-                      });
+                    });
             },
         },
         mounted() {

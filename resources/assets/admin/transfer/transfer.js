@@ -16,7 +16,10 @@ import {
     Notification,
     Tabs,
     TabPane,
-    Loading
+    Loading,
+    Tag,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 Vue.use(Button);
@@ -33,6 +36,9 @@ Vue.use(Pagination);
 Vue.use(Popover);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Tag);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 
 Vue.prototype.$notify = Notification;
@@ -43,7 +49,7 @@ import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
-
+import notifier from '@/admin/notifier';
 import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
@@ -58,7 +64,8 @@ Vue.mixin({
                 return transString;
             }
             return str;
-        }
+        },
+        ...notifier
     }
 })
 new Vue({
@@ -87,7 +94,7 @@ new Vue({
         }
     },
     created() {
-        let currentRoute = location.hash.substr(1);
+        let currentRoute = location.hash.substring(1);
 
         if (currentRoute) {
             this.setRoute(currentRoute);

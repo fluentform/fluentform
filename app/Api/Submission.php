@@ -15,19 +15,18 @@ class Submission
             'form_ids'   => [],
             'sort_type'  => 'DESC',
             'entry_type' => 'all',
-            'user_id' => false
+            'user_id'    => false,
         ]);
 
         $offset = $args['per_page'] * ($args['page'] - 1);
-
-        $entryQuery = wpFluent()->table('fluentform_submissions')
-            ->orderBy('id', $args['sort_type'])
+    
+        $entryQuery = \FluentForm\App\Models\Submission::orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($args['sort_type']))
             ->limit($args['per_page'])
             ->offset($offset);
 
-        $type = $args['entry_type'];
+        $type = sanitize_text_field($args['entry_type']);
 
-        if ($type && $type != 'all') {
+        if ($type && 'all' != $type) {
             $entryQuery->where('status', $type);
         }
 
@@ -35,7 +34,7 @@ class Submission
             $entryQuery->whereIn('form_id', $args['form_ids']);
         }
 
-        if ($searchString = $args['search']) {
+        if ($searchString = sanitize_text_field($args['search'])) {
             $entryQuery->where(function ($q) use ($searchString) {
                 $q->where('id', 'LIKE', "%{$searchString}%")
                     ->orWhere('response', 'LIKE', "%{$searchString}%")
@@ -44,7 +43,7 @@ class Submission
             });
         }
 
-        if($args['user_id']) {
+        if ($args['user_id']) {
             $entryQuery->where('user_id', (int) $args['user_id']);
         }
 
@@ -57,7 +56,7 @@ class Submission
         $from = $dataCount > 0 ? ($args['page'] - 1) * $args['per_page'] + 1 : null;
 
         $to = $dataCount > 0 ? $from + $dataCount - 1 : null;
-        $lastPage = (int)ceil($count / $args['per_page']);
+        $lastPage = (int) ceil($count / $args['per_page']);
 
         foreach ($data as $datum) {
             $datum->response = json_decode($datum->response, true);
@@ -76,7 +75,7 @@ class Submission
 
     public function find($submissionId)
     {
-        $submission = wpFluent()->table('fluentform_submissions')->find($submissionId);
+        $submission = \FluentForm\App\Models\Submission::find($submissionId);
         $submission->response = json_decode($submission->response);
         return $submission;
     }
@@ -138,7 +137,6 @@ class Submission
 
         if ($withTransactions) {
             $subscription->transactions = $this->transactionsBySubscriptionId($subscription->id);
-
         }
 
         return $subscription;
@@ -166,7 +164,7 @@ class Submission
         $args = wp_parse_args($args, [
             'transaction_types' => [],
             'statuses'          => [],
-            'grouped'           => false
+            'grouped'           => false,
         ]);
 
         $query = wpFluent()->table('fluentform_transactions')
@@ -190,7 +188,6 @@ class Submission
         }
 
         return $query->get();
-
     }
 
     public function transactionsBySubscriptionId($subscriptionId)
@@ -237,11 +234,10 @@ class Submission
 
         $args = wp_parse_args($args, [
             'statuses'   => [],
-            'form_title' => false
+            'form_title' => false,
         ]);
 
-        $submissions = wpFluent()->table('fluentform_submissions')
-            ->select(['id', 'currency'])
+        $submissions = \FluentForm\App\Models\Submission::select(['id', 'currency'])
             ->where('user_id', $userId)
             ->where('payment_type', 'subscription')
             ->get();
@@ -267,7 +263,7 @@ class Submission
         }
 
         if ($args['form_title']) {
-            $query->select(['fluentform_forms.title'])
+            $query->addSelect(['fluentform_forms.title'])
                 ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', 'fluentform_subscriptions.form_id');
         }
 
@@ -277,5 +273,4 @@ class Submission
         }
         return $subscriptions;
     }
-
 }

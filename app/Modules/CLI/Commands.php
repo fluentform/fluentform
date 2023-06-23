@@ -2,6 +2,8 @@
 
 namespace FluentForm\App\Modules\CLI;
 
+use FluentForm\App\Models\Form;
+use FluentForm\App\Models\Submission;
 
 class Commands
 {
@@ -10,18 +12,17 @@ class Commands
         $overallStats = [
             [
                 'title' => __('All Forms', 'fluentform'),
-                'count' => wpFluent()->table('fluentform_forms')->count(),
+                'count' => Form::count(),
             ],
             [
                 'title' => __('All Submissions', 'fluentform'),
-                'count' => wpFluent()->table('fluentform_submissions')->count(),
+                'count' => Submission::count(),
             ],
             [
                 'title' => __('Unread Submissions', 'fluentform'),
-                'count' => wpFluent()->table('fluentform_submissions')
-                    ->where('status', 'unread')
+                'count' => Submission::where('status', 'unread')
                     ->count(),
-            ]
+            ],
         ];
 
         $format = \WP_CLI\Utils\get_flag_value($assoc_args, 'format', 'table');
@@ -56,7 +57,6 @@ class Commands
 
         $response = fluentFormProActivateLicense($licenseKey);
 
-
         if (is_wp_error($response)) {
             \WP_CLI::error($response->get_error_message());
             return;
@@ -71,7 +71,6 @@ class Commands
 
     public function license_status()
     {
-
         if (!defined('FLUENTFORMPRO')) {
             \WP_CLI::line('Fluent Forms pro is not available');
             return;
@@ -97,7 +96,6 @@ class Commands
             \WP_CLI::error('License key has not been set!');
             return;
         }
-
 
         \WP_CLI::line('Your License Status: ' . $response->license);
         \WP_CLI::line('Expires: ' . $response->expires);

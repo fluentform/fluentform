@@ -20,10 +20,10 @@
                     ></field-general>
                 </td>
                 <td>
-                    <el-button-group>
-                        <el-button size="mini" type="success" @click="addItemAfter(itemIndex)">+</el-button>
-                        <el-button size="mini" type="danger" :disabled="settings[field.key].length == 1" @click="removeItem(itemIndex)">-</el-button>
-                    </el-button-group>
+                    <action-btn>
+                        <action-btn-add @click="addItemAfter(itemIndex)"></action-btn-add>
+                        <action-btn-remove v-if="settings[field.key].length > 1" @click="removeItem(itemIndex)"></action-btn-remove>
+                    </action-btn>
                 </td>
             </tr>
             </tbody>
@@ -33,12 +33,18 @@
 
 <script type="text/babel">
     import FieldGeneral from './_FieldGeneral';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'dropdown_label_repeater',
         props: ['settings', 'field', 'inputs', 'errors', 'editorShortcodes'],
         components: {
-            FieldGeneral
+            FieldGeneral,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         data() {
           return {
@@ -47,7 +53,6 @@
         },
         methods: {
             addItemAfter(index) {
-                console.log(this.settings[this.field.key]);
                 this.loading = true;
                 this.settings[this.field.key].splice( index + 1, 0, {
                     item_value: '',

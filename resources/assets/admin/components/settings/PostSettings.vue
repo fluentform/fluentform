@@ -103,46 +103,41 @@
         },
         methods: {
             fetchSettings() {
-                FluentFormsGlobal.$get({
-                    action: 'fluentform-settings-formSettings',
-                    meta_key: 'formSettings',
-                    form_id: window.FluentFormApp.form_id
-                })
-                .done(response => {
-                    if (response.data.result[0] && response.data.result[0].value) {
-                        response.data.result[0].value.id = response.data.result[0].id;
-                        this.formSettings = response.data.result[0].value;
+                const url = FluentFormsGlobal.$rest.route('getFormSettings', window.FluentFormApp.form_id);
+            
+                FluentFormsGlobal.$rest.get(url, {meta_key: 'formSettings'})
+
+                .then(response => {
+                    if (response[0] && response[0].value) {
+                        response[0].value.id = response[0].id;
+                        this.formSettings = response[0].value;
                         this.mapFormFieldsWithPostFields();
                     }
                 })
-                .fail(e => {
+                .catch(e => {
                     console.log(e);
                 })
-                .always(() => {
+                .finally(() => {
                     // ...
                 });
             },
             saveSettings() {
                 this.saving = true;
-                FluentFormsGlobal.$post({
-                    action: 'fluentform-settings-formSettings-store',
+
+                const url = FluentFormsGlobal.$rest.route('storeFormSettings', window.FluentFormApp.form_id);
+            
+                FluentFormsGlobal.$rest.post(url, {
                     meta_key: 'formSettings',
-                    id: this.formSettings.id,
-                    form_id: window.FluentFormApp.form_id,
+                    meta_id: this.formSettings.id,
                     value: JSON.stringify(this.formSettings)
                 })
-                .done(response => {
-                    this.$notify({
-                        title: 'Success',
-                        message: response.data.message,
-                        type: 'success',
-                        offset: 32
-                    });
+                .then(response => {
+                    this.$success(response.message);
                 })
-                .fail(e => {
+                .catch(e => {
                     console.log(e);
                 })
-                .always(() => {
+                .finally(() => {
                     this.saving = false;
                 });
             },

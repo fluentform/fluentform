@@ -2,12 +2,15 @@
 
 namespace FluentForm\App\Modules\Acl;
 
-use FluentValidator\Validator;
 use FluentForm\Framework\Helpers\ArrayHelper;
-
+/**
+ * @deprecated deprecated use FluentForm\App\Http\Controllers\RoleManagerController
+ */
 class Managers
 {
     /**
+     * Request object
+     *
      * @var \FluentForm\Framework\Request\Request $request
      */
     protected $request;
@@ -27,7 +30,7 @@ class Managers
             'meta_value'   => 1,
             'meta_compare' => '=',
             'number'       => $limit,
-            'paged'        => $page
+            'paged'        => $page,
         ]);
 
         $managers = [];
@@ -38,16 +41,16 @@ class Managers
                 'first_name'  => $user->first_name,
                 'last_name'   => $user->last_name,
                 'email'       => $user->user_email,
-                'permissions' => Acl::getUserPermissions($user)
+                'permissions' => Acl::getUserPermissions($user),
             ];
         }
 
         wp_send_json([
             'managers' => [
                 'data'  => $managers,
-                'total' => $query->get_total()
+                'total' => $query->get_total(),
             ],
-            'permissions' => Acl::getReadablePermissions()
+            'permissions' => Acl::getReadablePermissions(),
         ], 200);
     }
 
@@ -66,7 +69,7 @@ class Managers
         update_user_meta($user->ID, '_fluent_forms_has_role', 1);
 
         wp_send_json([
-            'message' => __('Manager has been saved.', 'fluentform')
+            'message' => __('Manager has been saved.', 'fluentform'),
         ], 200);
     }
 
@@ -76,7 +79,7 @@ class Managers
 
         if (!$user) {
             return $this->sendError([
-                'message' => __('Associate user could not be found', 'fluentform')
+                'message' => __('Associate user could not be found', 'fluentform'),
             ]);
         }
 
@@ -85,7 +88,7 @@ class Managers
         delete_user_meta($user->ID, '_fluent_forms_has_role');
 
         wp_send_json([
-            'message' => __('Manager has been removed.', 'fluentform')
+            'message' => __('Manager has been removed.', 'fluentform'),
         ], 200);
     }
 
@@ -95,10 +98,10 @@ class Managers
 
         $rules = [
             'permissions' => 'required',
-            'email'       => 'required|email'
+            'email'       => 'required|email',
         ];
 
-        $validator = Validator::make($manager, $rules);
+        $validator = wpFluentForm('validator')->make($manager, $rules);
 
         $errors = null;
 
@@ -111,7 +114,7 @@ class Managers
 
             if (!$user) {
                 $errors['email'] = [
-                    'no_user' => __('We could not found any user with this email.', 'fluentform')
+                    'no_user' => __('We could not found any user with this email.', 'fluentform'),
                 ];
             }
         }
@@ -121,14 +124,14 @@ class Managers
 
             if ($message) {
                 $errors['permissions'] = [
-                    'dependency' => $message
+                    'dependency' => $message,
                 ];
             }
         }
 
         if ($errors) {
             $this->sendError([
-                'errors' => $errors
+                'errors' => $errors,
             ]);
         }
 

@@ -3,6 +3,8 @@ import locale from 'element-ui/lib/locale';
 import lang from 'element-ui/lib/locale/lang/en';
 
 import {
+    Row,
+    Col,
     Button,
     ButtonGroup,
     RadioGroup,
@@ -20,6 +22,8 @@ import {
     Message,
     Notification,
     DatePicker,
+    Skeleton,
+    SkeletonItem,
 } from 'element-ui';
 
 Vue.use(Loading.directive);
@@ -27,7 +31,8 @@ Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 
-
+Vue.use(Row);
+Vue.use(Col);
 Vue.use(Button);
 Vue.use(ButtonGroup);
 Vue.use(Input);
@@ -42,6 +47,8 @@ Vue.use(Radio);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 import App from './App.vue';
 locale.use(lang);

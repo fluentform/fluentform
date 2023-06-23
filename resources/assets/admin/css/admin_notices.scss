@@ -1,5 +1,16 @@
+@import "../styles/element_ui_var";
+
 .fluentform-admin-notice {
+  h3{
+    font-size: 16px;
+    margin: 16px 0;
+  }
+  p{
+    margin: 8px 0;
+    padding: 2px;
+  }
   display: block;
+  margin: 10px 0;
   .ff_logo_holder {
     max-width: 90px;
     display: inline-block;
@@ -28,5 +39,32 @@
         }
       }
     }
+    .text-button{
+      color: inherit;
+    }
   }
+}
+#ff_notice_review_query {
+  background: #fff;
+  margin: 8px 24px 0 24px;
+  border-left: 4px solid $--color-success;
+  border-radius: 4px;
+  box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+  p{
+    margin: 0 0 8px 0;
+    padding: 0;
+  }
+  .ff_notice_container{
+    width: 100%;
+    max-width: 100%;
+    .ff_temp_hide_nag{
+      top:35%;
+    }
+  }
+}
+
+#ff_notice_review_query + .ff_global_setting_wrap,
+#ff_notice_review_query + .ff_tools_wrap,
+.error_notice_ff_fluentform_pro_license + .ff_tools_wrap {
+  margin-top: 20px;
 }

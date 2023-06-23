@@ -1,117 +1,139 @@
 <template>
-    <div>
-        <el-row class="setting_header">
-            <el-col :md="12">
-                <h2>{{ $t('Zapier Integration') }}</h2>
-            </el-col>
+    <div class="ff_zapier_wrap">
+        <card>
+            <card-head>
+                <card-head-group class="justify-between">
+                    <h5 class="title">{{ $t('Zapier Integration') }}</h5>
+                    <btn-group>
+                        <btn-group-item>
+                            <el-button 
+                                v-if="selected" 
+                                @click="discard"
+                                icon="ff-icon ff-icon-arrow-left"
+                                type="info"
+                                class="el-button--soft"
+                                size="medium"
+                            >
+                                {{ $t('Back') }}
+                            </el-button>
+                            <el-button 
+                                v-else 
+                                @click="add" 
+                                type="info" 
+                                icon="ff-icon ff-icon-plus"
+                                size="medium"
+                            >
+                                {{ $t('Add Webhook') }}
+                            </el-button>
+                        </btn-group-item>
+                    </btn-group>
+                </card-head-group>
+            </card-head>
+            <card-body>
+                <!-- Notification Table: 1 -->
+                <div class="ff-table-wrap" v-if="!selected">
+                    <el-skeleton :loading="loading" animated :rows="6">
+                        <el-table class="ff_table_s2" :data="notifications">
+                            <el-table-column width="100">
+                                <template slot-scope="scope">
+                                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
+                                    active-value="true"
+                                    inactive-value="false"
+                                    v-model="scope.row.value.enabled"
+                                    ></el-switch>
+                                </template>
+                            </el-table-column>
 
-            <!--Save settings-->
-            <el-col :md="12" class="action-buttons clearfix mb15 text-right">
-                <el-button v-if="selected" @click="discard"
-                           class="pull-right" icon="el-icon-arrow-left" size="small"
-                >{{ $t('Back') }}
-                </el-button>
+                            <el-table-column width="300" prop="value.name" :label="$t('Name')"></el-table-column>
 
-                <el-button v-else @click="add" type="primary"
-                           size="small" icon="el-icon-plus"
-                >{{ $t('Add Webhook') }}
-                </el-button>
-            </el-col>
-        </el-row>
+                            <el-table-column prop="value.url" :label="$t('Webhook Url')"></el-table-column>
 
-        <!-- Notification Table: 1 -->
-        <el-table v-loading="loading"
-                  :element-loading-text="$t('Fetching Settings...')"
-                  v-if="!selected"
-                  :data="notifications"
-                  stripe
-                  class="el-fluid">
+                            <el-table-column width="160" label="Actions" class-name="action-buttons">
+                                <template slot-scope="scope">
+                                    <btn-group>
+                                        <btn-group-item>
+                                            <el-button
+                                                class="el-button--icon"
+                                                @click="edit(scope.$index)" 
+                                                type="primary"
+                                                icon="el-icon-setting" 
+                                                size="mini"
+                                            ></el-button>
+                                        </btn-group-item>
+                                        <btn-group-item>
+                                            <remove @on-confirm="remove(scope.$index, scope.row.id)" :plain="false">
+                                                <el-button
+                                                    class="el-button--icon"
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                />
+                                            </remove>
+                                        </btn-group-item>
+                                    </btn-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-skeleton>
+                </div>
+                <!-- Notification Editor -->
+                <el-form v-else label-position="top">
 
-            <el-table-column width="100">
-                <template slot-scope="scope">
-                    <el-switch active-color="#13ce66" @change="handleActive(scope.$index)"
-                       active-value="true"
-                       inactive-value="false"
-                       v-model="scope.row.value.enabled"
-                    ></el-switch>
-                </template>
-            </el-table-column>
+                    <!--Notification name-->
+                    <el-form-item class="ff-form-item" :label="$t('Name')">
+                        <el-input v-model="selected.value.name"></el-input>
+                        <ErrorView field="name" :errors="errors"/>
 
-            <el-table-column width="300" prop="value.name" :label="$t('Name')"></el-table-column>
+                    </el-form-item>
 
-            <el-table-column prop="value.url" :label="$t('Webhook Url')"></el-table-column>
+                    <!--Notification Url-->
+                    <el-form-item class="ff-form-item" :label="('Webhook Url')">
+                        <el-input v-model="selected.value.url"></el-input>
+                        <ErrorView field="url" :errors="errors"/>
+                    </el-form-item>
 
-            <el-table-column width="160" label="Actions" class-name="action-buttons">
-                <template slot-scope="scope">
-                    <el-button @click="edit(scope.$index)" type="primary"
-                               icon="el-icon-setting" size="mini"
-                    ></el-button>
+                    <!-- FilterFields -->
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Conditional Logics') }}
 
-                    <remove @on-confirm="remove(scope.$index, scope.row.id)" :plain="false"></remove>
-                </template>
-            </el-table-column>
-        </el-table>
+                            <el-tooltip class="item" placement="bottom-start">
+                                <div slot="content">
+                                    <p>{{ $t('Allow zapier webhook conditionally') }}</p>
+                                </div>
 
-        <!-- Notification Editor -->
-        <el-form v-else label-width="205px" label-position="left">
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
 
-            <!--Notification name-->
-            <el-form-item :label="$t('Name')">
-                <el-input v-model="selected.value.name"></el-input>
-                <ErrorView field="name" :errors="errors"/>
+                        <FilterFields
+                        :fields="inputs"
+                        :hasPro="has_pro"
+                        :conditionals="selected.value.conditionals"></FilterFields>
 
-            </el-form-item>
+                    </el-form-item>
 
-            <!--Notification Url-->
-            <el-form-item :label="('Webhook Url')">
-                <el-input v-model="selected.value.url"></el-input>
-                <ErrorView field="url" :errors="errors"/>
-            </el-form-item>
-
-            <!-- FilterFields -->
-            <el-form-item>
-                <template slot="label">
-                    {{ $t('Conditional Logics') }}
-
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>{{ $t('Conditional Logics') }}</h3>
-                            <p>{{ $t('Allow zapier webhook conditionally') }}</p>
-                        </div>
-
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </template>
-
-                <FilterFields
-                :fields="inputs"
-                :disabled="!has_pro"
-                :conditionals="selected.value.conditionals"></FilterFields>
-
-            </el-form-item>
-
-            <div class="text-right">
-
-                <el-button
-                    v-if="selected.id"
-                    :loading="verifying"
-                    @click="verifyEndpoint" 
-                    size="medium" 
-                    type="default"
-                >
-                    {{ ('Send Data Sample') }}
-                </el-button>
-
-                <el-button 
-                    :loading="loading"
-                    @click="store" 
-                    size="medium" 
-                    type="primary"
-                >
-                    {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Notification') }}
-                </el-button>
-            </div>
-        </el-form>
+                    <div class="mt-4">
+                        <el-button 
+                            :loading="loading"
+                            @click="store"
+                            type="primary"
+                            icon="el-icon-success"
+                        >
+                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Feed') }}
+                        </el-button>
+                        <el-button
+                            v-if="selected.id"
+                            :loading="verifying"
+                            @click="verifyEndpoint"
+                            type="default"
+                        >
+                            {{ ('Send Data Sample') }}
+                        </el-button>
+                    </div>
+                </el-form>
+            </card-body>
+        </card>
     </div>
 </template>
 
@@ -120,6 +142,12 @@
     import inputPopover from '../input-popover.vue';
     import FilterFields from './Includes/FilterFields.vue';
     import ErrorView from '../../../common/errorView.vue';
+    import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
+    import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import Card from '@/admin/components/Card/Card.vue';
+    import CardBody from '@/admin/components/Card/CardBody.vue';
+    import CardHead from '@/admin/components/Card/CardHead.vue';
+    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
 
     export default {
         name: 'Zapier',
@@ -129,6 +157,12 @@
             inputPopover,
             FilterFields,
             ErrorView,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
+            BtnGroup,
+            BtnGroupItem
         },
         data() {
             return {
@@ -190,11 +224,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .done(response => {
-                        this.$notify.success({
-                            offset: 30,
-                            title: 'Success',
-                            message: 'Notification ' + enabled + ' successfully!'
-                        });
+                        this.$success(this.$t('Notification ' + enabled + ' successfully!'));
                     })
                     .fail(e => console.log(e));
             },
@@ -205,11 +235,7 @@
                 })
                 .done(response => {
                     this.notifications.splice(index, 1);
-                    this.$notify.success({
-                        title: 'Success',
-                        message: 'Successfully removed the notification.',
-                        offset: 30
-                    });
+                    this.$success(this.$t('Successfully removed the notification.'));
                 })
                 .fail(e => console.log(e));
             },
@@ -245,11 +271,7 @@
                     this.selected.id = response.data.id;
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
                     
-                    this.$notify.success({
-                        offset: 30,
-                        title: 'Success',
-                        message: 'Notification saved successfully!'
-                    });
+                    this.$success(this.$t('Notification saved successfully!'));
 
                     // this.selected = this.selectedIndex = null;
                 })
@@ -265,17 +287,9 @@
                     zapier_hook_id: this.selected.id,
                     action: 'fluentform-verify-endpoint-zapier'
                 }).then(response => {
-                    this.$notify.success({
-                        offset: 30,
-                        title: 'Success!',
-                        message: response.data.message
-                    });
+                    this.$success(response.data.message);
                 }).fail(error => {
-                    this.$notify.error({
-                        offset: 30,
-                        title: 'Oops!',
-                        message: error.responseJSON.data.message
-                    });
+                    this.$fail(error.responseJSON.data.message);
                 }).always(r => {
                     this.verifying = false;
                 });

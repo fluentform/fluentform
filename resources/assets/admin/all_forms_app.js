@@ -28,7 +28,10 @@ import {
     DropdownMenu,
     DropdownItem,
     Switch,
-    DatePicker
+    DatePicker,
+    RadioButton,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -54,6 +57,9 @@ Vue.use(Input);
 Vue.use(Button);
 Vue.use(Switch);
 Vue.use(DatePicker);
+Vue.use(RadioButton);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
@@ -68,6 +74,7 @@ locale.use(lang);
 import Acl from '@/common/Acl';
 
 import AllForms from './views/AllForms.vue';
+import notifier from './notifier';
 
 Vue.mixin({
     methods: {
@@ -81,7 +88,9 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
-        }
+        },
+        
+        ...notifier
     },
     filters: {
         ucFirst(string) {
@@ -103,6 +112,6 @@ new Vue({
         this.$on('change-title', (module) => {
             jQuery('title').text(`${module} - FluentForm`);
         });
-        this.$emit('change-title', 'All Forms');
+        this.$emit('change-title', 'Forms');
     }
 });

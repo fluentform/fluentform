@@ -4,7 +4,7 @@
             <elLabel
                     slot="label"
                     :label="$t('Subscription Type')"
-                    helpText="$t('Select your subscription plan type')"
+                    :helpText="$t('Select your subscription plan type')"
             />
 
             <el-radio-group
@@ -49,33 +49,32 @@
             </strong>
         </p>
 
-        <div
-                class="subscription-field-options"
-                v-for="(item, index) in editItem.settings.subscription_options"
-        >
+        <div class="subscription-field-options" v-for="(item, index) in editItem.settings.subscription_options" :key="index">
             <div class="plan_header">
                 <div class="plan_label">
                     #{{ index + 1 }}: {{ item.name }}
                 </div>
 
                 <div class="plan_actions">
-                    <template v-if="editItem.attributes.type !== 'single'">
+                    <span v-if="editItem.attributes.type !== 'single'">
                         Default:
 
                         <el-switch
-                                v-model="item.is_default"
-                                active-value="yes"
-                                inactive-value="no"
-                                @change="changeDefaultItem(index)"
+                            class="mr-2"
+                            v-model="item.is_default"
+                            active-value="yes"
+                            inactive-value="no"
+                            @change="changeDefaultItem(index)"
                         />
-                    </template>
+                    </span>
 
                     <el-button
-                            size="mini"
-                            type="danger"
-                            icon="el-icon-delete"
-                            @click="deleteItem(index)"
-                            v-show="editItem.settings.subscription_options.length > 1"
+                        class="el-button--soft el-button--icon"
+                        size="mini"
+                        type="danger"
+                        icon="el-icon-delete"
+                        @click="deleteItem(index)"
+                        v-show="editItem.settings.subscription_options.length > 1"
                     />
                 </div>
             </div>
@@ -249,7 +248,7 @@
                             :placeholder="$t('times')"
                     />
 
-                    <p>
+                    <p class="text-note mt-1">
                         {{ $t('Keep blank or 0 for billing unlimited period of times') }}
                     </p>
                 </el-form-item>
@@ -261,9 +260,8 @@
         </div>
 
         <div
-                class="wpf_plan_actions"
-                style="text-align: right;"
-                v-if="editItem.attributes.type !== 'single'"
+            class="wpf_plan_actions"
+            v-if="editItem.attributes.type !== 'single'"
         >
             <el-button @click="add" size="mini">
                 {{ $t('Add New Plan') }}

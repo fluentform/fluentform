@@ -9,9 +9,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(item, itemIdex) in settings[field.key]" :key="'item_'+itemIdex">
+            <tr v-for="(item, itemIndex) in settings[field.key]" :key="'item_'+itemIndex">
                 <td>
-                    <el-select v-model="item.label">
+                    <el-select class="w-100" v-model="item.label">
                         <el-option
                             v-for="(optionLabel, optionValue) in field.options"
                             :key="optionValue"
@@ -27,10 +27,10 @@
                     ></field-general>
                 </td>
                 <td>
-                    <el-button-group>
-                        <el-button size="mini" type="success" @click="addItemAfter(itemIdex)">+</el-button>
-                        <el-button size="mini" type="danger" :disabled="settings[field.key].length == 1" @click="removeItem(itemIdex)">-</el-button>
-                    </el-button-group>
+                    <action-btn>
+                        <action-btn-add @click="addItemAfter(itemIndex)"></action-btn-add>
+                        <action-btn-remove v-if="settings[field.key].length > 1" @click="removeItem(itemIndex)"></action-btn-remove>
+                    </action-btn>
                 </td>
             </tr>
             </tbody>
@@ -40,6 +40,9 @@
 
 <script type="text/babel">
     import FieldGeneral from './_FieldGeneral';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
     export default {
         name: 'dropdown_many_fields',
@@ -59,7 +62,10 @@
             }
         },
         components: {
-            FieldGeneral
+            FieldGeneral,
+            ActionBtn,
+            ActionBtnAdd,
+            ActionBtnRemove
         },
         methods: {
             addItemAfter(index) {

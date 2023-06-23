@@ -1,30 +1,30 @@
 <template>
-<el-form :labelPosition="labelPosition" labelWidth="130px" class="el-form-nested">
+<el-form :labelPosition="labelPosition" :labelWidth="labelWidth" class="el-form-nested">
 
-    <template v-for="(repoItem, key) in editorRepo"
-              v-if="key in validation_rules">
-
-        <component :is="guessElTemplate(repoItem)"
+    <template v-for="(repoItem, key) in editorRepo">
+        <div v-if="key in validation_rules" :key="key">
+            <component :is="guessElTemplate(repoItem)"
                    v-model="validation_rules[key].value"
                    :editItem="editItem"
                    :listItem="repoItem">
-        </component>
+            </component>
 
-        <ff_inputRadio 
-            v-if="isTabularGrid"
-            v-model="validation_rules.required.per_row" 
-            :listItem="tabularGridRequiredRow" />
+            <ff_inputRadio 
+                v-if="isTabularGrid"
+                v-model="validation_rules.required.per_row" 
+                :listItem="tabularGridRequiredRow" />
 
-        <transition name="slide-fade">
-            <div v-if="validation_rules[key].value" style="max-height: 60px">
-            <el-form-item>
-                <elLabel slot="label" :label="$t('Error Message')"
-                         :helpText="`${$t('This message will be shown if validation fails for')} ${repoItem.label}`">
-                </elLabel>
-                <el-input v-model="validation_rules[key].message" type="text"></el-input>
-            </el-form-item>
-            </div>
-        </transition>
+            <transition name="slide-fade">
+                <div v-if="validation_rules[key].value">
+                    <el-form-item>
+                        <elLabel slot="label" :label="$t('Error Message')"
+                                :helpText="`${$t('This message will be shown if validation fails for')} ${repoItem.label}`">
+                        </elLabel>
+                        <el-input v-model="validation_rules[key].message" type="text"></el-input>
+                    </el-form-item>
+                </div>
+            </transition>
+        </div>
     </template>
 </el-form>
 </template>
@@ -56,7 +56,11 @@ export default {
         labelPosition: {
             type: String,
             default: 'top'
-        }
+        },
+        labelWidth: {
+            type: String,
+            default: ''
+        },
     },
     components: {
         elLabel,

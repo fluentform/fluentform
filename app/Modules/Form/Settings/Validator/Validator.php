@@ -14,11 +14,13 @@ class Validator
     {
         $key = ucwords($key);
 
-        $class = '\FluentForm\App\Modules\Form\Settings\Validator\\'.$key;
+        $class = '\FluentForm\App\Modules\Form\Settings\Validator\\' . $key;
 
         if (class_exists($class)) {
             /**
-             * @var $class Confirmations|MailChimps|Notifications
+             * Validator class
+             *
+             * @var $class Confirmations|MailChimps|Notifications|Pdfs
              */
             $class::validate($data);
         }

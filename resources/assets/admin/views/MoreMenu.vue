@@ -1,63 +1,65 @@
 <template>
     <div :class="{ ff_backdrop: visible }">
-        <el-dropdown v-if="!is_conversion_form" @command="handle">
-            <span class="el-dropdown-link">
-                <i 
-                    class="el-icon-more" 
-                    style="cursor: pointer; transform: rotate(90deg);font-size: 20px;margin-top: 2px;"
-                />
-            </span>
+        <div class="ff_more_menu">
+            <el-dropdown @command="handle" trigger="click">
+                <span class="el-dropdown-link">
+                    <i class="ff-icon ff-icon-more-vertical"/>
+                </span>
 
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="conversational">
-                    {{ $t("Convert to Conversational Forms") }}
-                </el-dropdown-item>
-            </el-dropdown-menu>
-        </el-dropdown>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="conversational">
+                        {{ convertBtnText }}
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
 
-        <el-dialog
-            :title="$t('Are you sure?')"
-            :visible.sync="visible"
-            :append-to-body="true"
-            width="40%"
-        >
-            <p>
-                <b>{{ $t('This process is irreversible.') }}</b>
-            </p>
+            <el-dialog
+                :visible.sync="visible"
+                :append-to-body="true"
+                width="60%"
+            >
+                <div slot="title">
+                    <h5 class="mb-2">{{$t('Confirmation')}}</h5>
+                    <p>{{ $t('Are you sure you want to convert this form?') }}</p>
+                </div>
+                
+                <template v-if="!is_conversion_form">
+                    <el-alert
+                        class="mt-4"
+                        title="Warning"
+                        type="warning"
+                        :description="$t('Conversational Forms currently doesn\'t support the following fields: You may also lose data of these fields.')"
+                        show-icon
+                        :closable="false"
+                    >
+                    </el-alert>
+                    <el-row :gutter="20" class="mt-5">
+                        <el-col :span="8" v-for="(field, i) in fields" :key="i">
+                            <div class="mb-3">
+                                <i class="el-icon el-icon-caret-right"></i>
+                                <span>{{ field }}</span>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </template>
 
-            <p>
-                {{
-                    $t('Conversational Forms currently doesn\'t support the following fields:')
-                }}
-            </p>
 
-            <el-row :gutter="20">
-                <el-col :span="8" v-for="(field, i) in fields" :key="i">
-                    <i class="el-icon-caret-right"></i> {{ field }}
-                </el-col>
-            </el-row>
-
-            <p>
-                {{ $t('You may also lose data of these fields.') }}
-            </p>
-
-            <span slot="footer" class="text-center dialog-footer">
-                <el-button @click="visible = false">
-                    {{ $t('Cancel') }}
-                </el-button>
-
-                <el-button type="primary" size="small" @click="confirm">
-                    {{ $t('Convert') }}
-                </el-button>
-            </span>
-        </el-dialog>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="visible = false" type="info" class="el-button--soft">
+                        {{ $t('Cancel') }}
+                    </el-button>
+                    <el-button type="primary" icon="el-icon-success" @click="confirm">
+                        {{ $t('Convert') }}
+                    </el-button>
+                </span>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     name: "MoreMenu",
-
     data() {
         return {
             form_id: window.FluentFormApp.form_id,
@@ -66,11 +68,9 @@ export default {
                 "Name Fields",
                 "Address Fields",
                 "Section Break",
-                "hCaptcha",
                 "Shortcode",
                 "Action Hook",
                 "Form Step",
-                "GDPR Agreement",
                 "Custom Submit Button",
                 "Range Slider Field",
                 "Net Promoter Score",
@@ -83,38 +83,31 @@ export default {
         };
     },
 
+    computed: {
+        convertBtnText() {
+            const text = this.is_conversion_form ? 'Convert to Regular Form' : 'Convert to Conversational Form';
+
+            return this.$t(text);
+        }
+    },
+
     methods: {
-        handle(command) {
-            // this.convert();
+        handle() {
             this.visible = !this.visible;
         },
 
         convert() {
-            let data = {
-                form_id: this.form_id,
-                action: "fluentform-convert-to-conversational"
-            };
+            const url = FluentFormsGlobal.$rest.route('convertForm', this.form_id);
 
-            FluentFormsGlobal.$post(data)
+            FluentFormsGlobal.$rest.post(url)
                 .then(response => {
-                    this.$notify.success({
-                        title: "Success",
-                        message: response.data.message,
-                        offset: 30
-                    });
-
+                    this.$success(response.message);
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);
                 })
-                .fail(error => {
-                    if (error.responseJSON.data.message) {
-                        this.$notify.error({
-                            title: "Error",
-                            message: error.responseJSON.data.message,
-                            offset: 30
-                        });
-                    }
+                .catch(error => {
+                    this.$fail(error.message);
                 });
         },
 

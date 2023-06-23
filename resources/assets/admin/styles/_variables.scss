@@ -1,0 +1,125 @@
+// import element ui variable
+@import './element_ui_var';
+
+// colors
+$white:       #ffffff;
+$base-color: #1E1F21;
+$base-text: #606266;
+$dark-800:    #353537;
+
+$primary: $--color-primary;
+$primary-soft: #E8F2FF;
+
+// primary button hover
+$primary-button-hover-bg: #1565C9;
+$primary-button-hover-border-color: $primary-button-hover-bg;
+
+
+$danger:    $--color-danger;
+
+$border-color: #ececec;
+
+$body-bg:     #F2F2F2;
+
+$bg-gray: #F5F5F3;
+
+$border-radius: 8px;
+
+$section-layout-sidebar-width: 280px;
+$section-layout-sidebar-width-sm: 230px;
+
+// list button
+$list-button-link-active-bg:            $--color-info;
+$list-button-link-active-color:         $white;
+
+$list-button-link-color:                $base-color;
+$list-button-link-hover-bg:           $bg-gray;
+$list-button-link-hover-color:          $base-color;
+
+// list button style 1
+$list-button-s1-link-color:               $base-text;
+$list-button-s1-link-active-bg:         $bg-gray;
+$list-button-s1-link-active-color:        $base-color;
+
+
+// payment badge 
+$payment-badge-border-color:             #b1b1b1;
+
+// submenu link
+$submenu-link-active-bg:                #efefef;
+$submenu-link-color:                      $base-text;
+$submenu-link-active-color:               $base-color;
+
+$submenu-link-active-hover-bg:           #efefef;
+
+// ff icon btn
+$icon-btn-dark-soft-bg:                    mix($base-color, $white, 10%);
+$icon-btn-dark-soft-color:                 $base-color;
+
+$icon-btn-dark-soft-hover-bg:              $base-color;
+$icon-btn-dark-soft-hover-color:           $white;
+
+// ff header
+$header-padding-y:                      10px;
+$header-padding-x:                      24px;
+
+// ff menu link
+$menu-link-padding-y:                    4px;
+$menu-link-padding-x:                    14px;
+$menu-link-color:                        $dark-800;
+$menu-link-hover-color:                  $--color-primary;
+
+// ff form name
+$form-name-color:                        $dark-800;
+
+// ff menu back
+$menu-back-link-color:                   $dark-800;
+
+// shortcode 
+$shortcode-bg:                            $--color-info-lighter;
+$shortcode-color:                         $dark-800;
+$shortcode-bg-thin:                       #f2f2f2;
+
+// input gray bg
+$input-gray-bg:                           #E7E6E6;
+$input-gray-border-color:                 #E7E6E6;
+
+$input-gray-light-bg:                      $bg-gray;
+$input-gray-light-border-color:            $bg-gray;
+
+// ff radio group
+$radio-group-bg:                            $bg-gray;
+$radio-group-button-hover-color:              $base-color;
+
+$radio-group-button-active-bg:                 $--color-info;
+$radio-group-button-active-color:              $--color-white;
+
+// predefined form sidebar
+$predefined-form-sidebar-width:                       240px;
+
+// btn element 
+$btn-element-color:                                   $base-color;
+$btn-element-bg:                                      $white;
+$btn-element-hover-bg:                                $--color-info;
+$btn-element-hover-color:                             $white;
+$btn-element-border-color:                             #dfdfdf;
+
+// form editor items action
+$editor-item-action-bg:                               $--color-info;
+
+// popup search icon
+$editor-popup-icon-bg:                               $--color-info;
+$editor-popup-icon-color:                            $white;
+
+// tab list
+$tab-link-bg:                                    $bg-gray;
+$tab-link-color:                                   $base-color;
+$tab-link-active-bg:                               $--color-info;
+$tab-link-active-color:                            $white;
+
+//editor inserter content item
+$editor-inserter-content-item-hover-bg:                  $bg-gray;
+$editor-inserter-content-item-hover-color:               $base-color;
+
+
+

@@ -1,42 +1,23 @@
 <template>
-    <el-row v-if="roles.length">
-        <div class="ninja_header">
-            <h2>{{ $t('Managers') }}</h2>
-        </div>
-        <div v-loading="loading" class="ninja_content">
-            <div class="ninja_block">
-                <p>
-                    {{ $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.') }}
-                </p>
-            </div>
-            <hr />
 
-            <div style="margin-bottom: 20px;" class="form-group">
-                <el-checkbox
-                    :indeterminate="isIndeterminate"
-                    v-model="checkAll"
-                    @change="handleCheckAllChange"
-                >
-                    {{ $t('Check all') }}
-                </el-checkbox>
-            </div>
-
-            <div style="margin-bottom: 20px;" class="form-group">
-                <el-checkbox-group
-                    v-model="capability"
-                    @change="handleCheckedCapabilitiesChange"
-                >
-                    <el-checkbox
-                        v-for="role in roles"
-                        :label="role.key"
-                        :key="role.key"
-                    >
+    <div class="ff_block_item" v-if="roles.length">
+        <el-skeleton :loading="loading" animated :rows="4">
+            <h6 class="ff_block_title mb-1">{{ $t('Role Based') }}</h6>
+            <p class="ff_block_text">{{ $t('Administrators have full access to Fluent Forms.By selecting additional roles bellow, you can give access to other user roles.') }}</p>
+            <div class="ff_block_item_body mt-3">
+                <div class="mb-3">
+                    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
+                        {{ $t('Check all') }}
+                    </el-checkbox>
+                </div>
+                <el-checkbox-group v-model="capability" @change="handleCheckedCapabilitiesChange">
+                    <el-checkbox v-for="role in roles" :label="role.key" :key="role.key">
                         {{ role.name }}
                     </el-checkbox>
                 </el-checkbox-group>
             </div>
-        </div>
-    </el-row>
+        </el-skeleton>
+    </div><!-- .ff_block_item -->
 </template>
 
 <script>
@@ -45,73 +26,94 @@ export default {
     data() {
         return {
             loading: false,
-            roles: [],
             checkAll: false,
+            isIndeterminate: false,
             capability: ["administrator"],
-            isIndeterminate: false
+            roles: [],
         };
     },
     methods: {
-        get() {
+        fetchRoles() {
             this.loading = true;
-            FluentFormsGlobal.$get({
-                action: "fluentform_get_access_roles"
-            })
+
+            const url = FluentFormsGlobal.$rest.route('getRoles');
+
+            FluentFormsGlobal.$rest.get(url)
                 .then(response => {
-                    let capability = response.data.capability;
-                    if (!capability || typeof capability != "object") {
-                        capability = ["administrator"];
-                    }
-                    this.capability = capability;
-                    this.roles = response.data.roles;
-                    this.handleCheckedCapabilitiesChange(this.capability, false);
+                    this.roles = response.roles;
+                    this.capability = response.capability;
                 })
-                .fail(e => {})
-                .always(() => {
+                .catch(e => {
+
+                })
+                .finally(() => {
                     this.loading = false;
                 });
+        },
+        handleFetchedData() {
+            let capability = this.capability;
+            if (!capability || typeof capability != "object") {
+                capability = ["administrator"];
+            }
+            this.handleCheckedCapabilitiesChange(this.capability, false);
         },
         store() {
             if (!this.roles.length) {
                 return;
             }
+
+            const url = FluentFormsGlobal.$rest.route('storeRoles');
             let data = {
-                action: "fluentform_set_access_roles",
                 capability: this.capability
             };
-            FluentFormsGlobal.$post(data)
+
+            FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
-                    this.$notify.success({
-                        title: "Great!",
-                        message: response.data.message,
-                        offset: 30
-                    });
+                    this.$success(response.message);
                 })
-                .fail(e => {
-                    this.$notify.error({
-                        message: e.responseJSON.data.message,
-                        offset: 30
-                    });
+                .catch(e => {
+                    this.$fail(e.message);
+                })
+                .finally(() => {
+
                 });
         },
         handleCheckAllChange(val) {
-            this.capability = val ? this.roles.map(item => item.key) : [];
+            const filteredCapability = val ? this.roles.map(item => item.key) : [];
             this.isIndeterminate = false;
-            this.store();
+            this.capability = filteredCapability;
+            this.$nextTick(function () {
+                this.store();
+            });
         },
         handleCheckedCapabilitiesChange(value, store = true) {
             let checkedCount = value.length;
-            this.checkAll = checkedCount === this.roles.length;
-            this.isIndeterminate =
-                checkedCount > 0 && checkedCount < this.roles.length;
-            
+            this.checkAll = checkedCount === this.roles?.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.roles.length;
             if (store) {
                 this.store();
             }
+        },
+        handleChange(value) {
+            let filteredCapability = this.capability;
+            const targetValue = event.target.value;
+
+            if (value) {
+                if (this.capability.indexOf(targetValue) === -1) {
+                    filteredCapability.push(targetValue);
+                }
+            } else {
+                filteredCapability = this.capability.filter(e => e !== targetValue);
+            }
+
+            this.capability = filteredCapability;
         }
     },
     mounted() {
-        this.get();
+        this.fetchRoles();
+    },
+    updated() {
+        this.handleFetchedData();
     }
 };
 </script>

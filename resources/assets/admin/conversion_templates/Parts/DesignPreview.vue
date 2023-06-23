@@ -139,6 +139,8 @@ export default {
                 css += `${prefix} .f-answer .StripeElement--focus { border-bottom: 2.5px solid ${settings.answer_color}; }`;
 
                 css += `${prefix} .ff_conv_input .f-info { color: ${settings.answer_color}; }`;
+
+                css += `${prefix} .f-answer .el-slider__runway {background-color: ${settings.answer_color};}`
             }
 
             if (settings.question_color) {

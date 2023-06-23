@@ -5,16 +5,17 @@
  * Returns an array of countries and codes.
  *
  * @author      WooThemes
+ *
  * @category    i18n
  * @package     fluentform/i18n
+ *
  * @version     2.5.0
  */
-
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-$country_names = array(
+$country_names = [
     'AF' => __('Afghanistan', 'fluentform'),
     'AX' => __('Aland Islands', 'fluentform'),
     'AL' => __('Albania', 'fluentform'),
@@ -265,10 +266,19 @@ $country_names = array(
     'YE' => __('Yemen', 'fluentform'),
     'ZM' => __('Zambia', 'fluentform'),
     'ZW' => __('Zimbabwe', 'fluentform'),
+];
+
+$country_names = apply_filters_deprecated(
+    'fluent_editor_countries',
+    [
+        $country_names
+    ],
+    FLUENTFORM_FRAMEWORK_UPGRADE,
+    'fluentform/editor_countries',
+    'Use fluentform/editor_countries instead of fluent_editor_countries.'
 );
 
-
-$country_names = apply_filters('fluent_editor_countries', $country_names);
+$country_names = apply_filters('fluentform/editor_countries', $country_names);
 
 asort($country_names);
 

@@ -7,10 +7,10 @@
         popper-class="el-dropdown-list-wrapper"
         trigger="click">
             <ul class="el-dropdown-menu el-dropdown-list">
-                <li v-for="item in data">
+                <li v-for="(item, item_index) in data" :key="item_index">
                     <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
                     <ul>
-                        <li v-for="(title, code) in item.shortcodes"
+                        <li v-for="(title, code, index) in item.shortcodes" :key="index"
                             @click="insertShortcode(code)"
                             class="el-dropdown-menu__item">
                             {{ title }}

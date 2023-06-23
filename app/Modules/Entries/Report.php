@@ -7,6 +7,12 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
+/**
+ *
+ * @deprecated  use FluentForm\App\Services\Report\ReportHelper
+ * all used method reference updated with new ReportHelper, except Fluentformpro
+ *
+ */
 class Report
 {
     private $app;
@@ -19,12 +25,14 @@ class Report
     }
 
     /**
+     * Get report
+     *
      * @param bool $formId
      */
     public function getReport($formId = false)
     {
         if (!$formId) {
-            $formId = intval($_REQUEST['form_id']);
+            $formId = intval($this->app->request->get('form_id'));
         }
 
         $this->maybeMigrateData($formId);
@@ -38,7 +46,6 @@ class Report
         wp_send_json_success($report);
     }
 
-
     public function generateReport($form, $statuses = [])
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'element', 'options']);
@@ -49,7 +56,7 @@ class Report
 
         foreach ($formInputs as $inputName => $input) {
             $elements[$inputName] = $input['element'];
-            if ($input['element'] == 'select_country') {
+            if ('select_country' == $input['element']) {
                 $formInputs[$inputName]['options'] = getFluentFormCountryList();
             }
         }
@@ -63,8 +70,8 @@ class Report
 
         if (!$formReportableInputs && !$formSubFieldInputs) {
             return [
-                'report_items'  => (object)[],
-                'total_entries' => 0
+                'report_items'  => (object) [],
+                'total_entries' => 0,
             ];
         }
 
@@ -84,7 +91,7 @@ class Report
         if ($statuses) {
             $whereClasuses['fluentform_submissions.status'] = [
                 'method' => 'whereIn',
-                'values' => $statuses
+                'values' => $statuses,
             ];
         }
 
@@ -110,7 +117,7 @@ class Report
 
     public function getInputReport($formId, $fieldNames, $whereClasuses)
     {
-        if(!$fieldNames) {
+        if (!$fieldNames) {
             return [];
         }
         global $wpdb;
@@ -118,9 +125,9 @@ class Report
             ->select([
                 'fluentform_entry_details.field_name',
                 'fluentform_entry_details.sub_field_name',
-                'fluentform_entry_details.field_value'
+                'fluentform_entry_details.field_value',
+                wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count')
             ])
-            ->select(wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count'))
             ->where('fluentform_entry_details.form_id', $formId)
             ->whereIn('fluentform_entry_details.field_name', $fieldNames)
             ->rightJoin('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_entry_details.submission_id');
@@ -149,7 +156,7 @@ class Report
 
     public function getSubFieldInputReport($formId, $fieldNames, $whereClasuses)
     {
-        if(!$fieldNames) {
+        if (!$fieldNames) {
             return [];
         }
 
@@ -158,9 +165,9 @@ class Report
             ->select([
                 'fluentform_entry_details.field_name',
                 'fluentform_entry_details.sub_field_name',
-                'fluentform_entry_details.field_value'
+                'fluentform_entry_details.field_value',
+                wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count')
             ])
-            ->select(wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_entry_details.field_name) as total_count'))
             ->where('fluentform_entry_details.form_id', $formId)
             ->whereIn('fluentform_entry_details.field_name', $fieldNames)
             ->leftJoin('fluentform_submissions', 'fluentform_submissions.id', '=', 'fluentform_entry_details.submission_id');
@@ -173,7 +180,6 @@ class Report
 
         $reports = $reportQuery->groupBy(['fluentform_entry_details.field_name', 'fluentform_entry_details.field_value', 'fluentform_entry_details.sub_field_name'])
             ->get();
-
 
         return $this->getFormattedReportsForSubInputs($reports, $formId, $whereClasuses);
     }
@@ -192,7 +198,9 @@ class Report
 
         foreach ($formattedReports as $fieldName => $val) {
             $formattedReports[$fieldName]['total_entry'] = $this->getEntryTotal(
-                $report->field_name, $formId, $whereClasuses
+                $report->field_name,
+                $formId,
+                $whereClasuses
             );
 
             $formattedReports[$fieldName]['reports'] = array_values(
@@ -248,7 +256,7 @@ class Report
     private function maybeMigrateData($formId)
     {
         // We have to check if we need to migrate the data
-        if (Helper::getFormMeta($formId, 'report_data_migrated') == 'yes') {
+        if ('yes' == Helper::getFormMeta($formId, 'report_data_migrated')) {
             return true;
         }
         global $wpdb;
@@ -257,7 +265,7 @@ class Report
             ->table('fluentform_submissions')
             ->select([
                 'fluentform_submissions.id',
-                'fluentform_submissions.response'
+                'fluentform_submissions.response',
             ])
             ->where('fluentform_submissions.form_id', $formId)
             ->where(wpFluent()->raw($wpdb->prefix . 'fluentform_submissions.id NOT IN (SELECT submission_id from ' . $wpdb->prefix . 'fluentform_entry_details)'))
@@ -274,7 +282,6 @@ class Report
         }
 
         return true;
-
     }
 
     private function getEntryCounts($formId, $statuses = false)
@@ -297,7 +304,7 @@ class Report
         $browserCounts = wpFluent()->table('fluentform_submissions')
             ->select([
                 wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_submissions.id) as total_count'),
-                'browser'
+                'browser',
             ])
             ->where('form_id', $formId);
         if ($statuses) {
@@ -315,7 +322,6 @@ class Report
         }
 
         return $formattedData;
-
     }
 
     private function getDeviceCounts($formId, $statuses)
@@ -324,7 +330,7 @@ class Report
         $deviceCounts = wpFluent()->table('fluentform_submissions')
             ->select([
                 wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_submissions.id) as total_count'),
-                'device'
+                'device',
             ])
             ->where('form_id', $formId);
         if ($statuses) {
@@ -342,6 +348,4 @@ class Report
         }
         return $formattedData;
     }
-    
-
 }

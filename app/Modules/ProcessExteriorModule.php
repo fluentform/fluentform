@@ -2,33 +2,41 @@
 
 namespace FluentForm\App\Modules;
 
+use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\Acl\Acl;
 
 class ProcessExteriorModule
 {
     public function handleExteriorPages()
     {
-        if(defined('CT_VERSION')) {
+        if (defined('CT_VERSION')) {
             // oxygen page compatibility
-            remove_action( 'wp_head', 'oxy_print_cached_css', 999999 );
+            remove_action('wp_head', 'oxy_print_cached_css', 999999);
         }
-
-        $this->renderFormPreview(intval($_GET['preview_id']));
+        wp_register_script(
+            'fluentform_editor_helper',
+            fluentFormMix('js/fluent_forms_editor_helper.js'),
+            array('jquery'),
+            FLUENTFORM_VERSION,
+            true
+        );
+        $this->renderFormPreview(intval(wpFluentForm('request')->get('preview_id')));
     }
 
     public function renderFormPreview($form_id)
     {
         if (Acl::hasAnyFormPermission($form_id)) {
-            add_filter('fluentform_is_form_renderable', function ($renderable) {
+            add_filter('fluentform/is_form_renderable', function ($renderable) {
                 $renderable['status'] = true;
                 return $renderable;
             });
-
-            $form = wpFluent()->table('fluentform_forms')->find($form_id);
+            
+            $form = Form::find($form_id);
             if ($form) {
-                \FluentForm\View::render('frameless.show_review', [
+                wp_enqueue_script('fluentform_editor_helper');
+                wpFluentForm('view')->render('frameless.show_preview', [
                     'form_id' => $form_id,
-                    'form' => $form
+                    'form'    => $form,
                 ]);
                 exit();
             }

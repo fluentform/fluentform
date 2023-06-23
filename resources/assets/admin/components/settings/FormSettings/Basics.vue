@@ -14,7 +14,7 @@
                         </p>
                     </div>
 
-                    <i class="el-icon-info el-text-info"></i>
+                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
                 </el-tooltip>
             </template>
 

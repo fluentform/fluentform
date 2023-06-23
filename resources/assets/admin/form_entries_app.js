@@ -35,7 +35,9 @@ import {
     Radio,
     CheckboxGroup,
     OptionGroup,
-    Alert
+    Alert,
+    Skeleton,
+    SkeletonItem
 } from 'element-ui';
 Vue.use(Vddl);
 Vue.use(Form);
@@ -65,6 +67,8 @@ Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
 Vue.use(Dropdown)
 Vue.use(Dialog)
+Vue.use(Skeleton)
+Vue.use(SkeletonItem)
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
@@ -81,6 +85,7 @@ import Acl from '@/common/Acl';
 import Entries from './views/Entries.vue';
 import Entry from './views/Entry.vue';
 import VisualReports from './views/Reports/VisualReports.vue';
+import notifier from './notifier';
 
 const routes = [
     {
@@ -210,7 +215,9 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
-        }
+        },
+
+        ...notifier
     },
     filters: {
         ucFirst(string) {

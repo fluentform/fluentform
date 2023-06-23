@@ -1,7 +1,6 @@
 <template>
     <div v-loading="loading" class="ff_chained_filter">
-
-        <el-select @change="handleCategoryChange()" clearable v-model="chained_settings.category" :placeholder="field.category_label">
+        <el-select :class="select_class" @change="handleCategoryChange()" clearable v-model="chained_settings.category" :placeholder="field.category_label">
             <el-option
                 v-for="item in categories"
                 :key="item.value"
@@ -10,7 +9,7 @@
             </el-option>
         </el-select>
 
-        <el-select v-show="chained_settings.category" v-model="chained_settings.sub_category" clearable :placeholder="field.subcategory_label">
+        <el-select :class="select_class" v-show="chained_settings.category" v-model="chained_settings.sub_category" clearable :placeholder="field.subcategory_label">
             <el-option
                 v-for="item in subcategories"
                 :key="item.value"
@@ -24,7 +23,7 @@
     import each from 'lodash/each';
     export default {
         name: 'ListSelectFilter',
-        props: ['settings', 'field', 'value'],
+        props: ['settings', 'field', 'value', 'select_class'],
         computed: {
             listItems() {
 
@@ -39,6 +38,7 @@
         },
         data() {
             return {
+                loading : false,
                 app_ready: false,
                 categories: [],
                 subcategories: [],

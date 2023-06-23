@@ -1,0 +1,50 @@
+// ff_subscription_data
+.ff_subscription_data{
+    display: flex;
+    justify-content: space-between;
+    &_item{
+      &_title{
+        font-size: 16px;
+        color: $base-color;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+      &_name{
+        font-size: 13px;
+      }
+      .ff_sub_id{
+        font-size: 13px;
+      }
+      &_payment{
+        font-size: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        .ff_badge{
+          margin-left: 5px;
+          i{
+            margin-right: 2px;
+          }
+        }
+      }
+      &_total{
+        font-weight: 500;
+        color: $base-color;
+        margin-bottom: 4px;
+      }
+    }
+}
+
+// payment details
+.ff_payment_detail_data_payment{
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  .ff_badge{
+    margin-left: 5px;
+    i{
+      margin-right: 2px;
+    }
+  }
+}

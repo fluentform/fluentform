@@ -54,8 +54,8 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             });
         });
     };
-
     var populateFormDataAndSetActiveStep = function ({response, step_completed}) {
+        let choiceJsInputs = [] ;
         jQuery.each(response, (key, value) => {
             if (!value) return;
 
@@ -119,7 +119,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 } else if ($el.prop('multiple')) {
                     if ($.isFunction(window.Choices)) {
                         let choiceJs  = $el.data('choicesjs');
-                        choiceJs.setValue(value).change();
+
+                        choiceJsInputs.push( {
+                            handler : choiceJs,
+                            values : value
+                        });
                     }else{
                         $el.val(value).change();
                     }
@@ -175,6 +179,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
             }
         });
+        // populate ChoiceJs Values separately as it breaks the loop
+        if (choiceJsInputs.length > 0 ){
+            for (let i = 0; i < choiceJsInputs.length ; i++) {
+                choiceJsInputs[i].handler.setValue(choiceJsInputs[i].values).change();
+            }
+        }
 
         isPopulatingStepData = true;
         // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
@@ -214,7 +224,55 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         stepProgressBarHandle({activeStep, totalSteps});
 
         registerStepNavigators(fluentFormVars.stepAnimationDuration);
+
+        registerClickableStepNav(stepTitles,formSteps);
     };
+
+    /**
+     * Register clickable step navigation
+     * @param  {object} stepTitlesNavs
+     * @param {object} formSteps
+     */
+    var registerClickableStepNav = function (stepTitlesNavs, formSteps) {
+        if (stepTitlesNavs.length === 0) {
+            return;
+        }
+        $.each(stepTitlesNavs, function (i, elm) {
+            $(elm).attr('data-step-number', i)
+        });
+        stepTitlesNavs.on('click', function (e) {
+            let formInstance = getFormInstance();
+            let $this = $(this);
+            let currentStep = 0;
+
+            try {
+                let targetStep = $this.data('step-number');
+                if (isNaN(targetStep)) {
+                    return;
+                }
+                //validate other steps before target step before next step
+                $.each(formSteps, (index, steps) => {
+                    currentStep = index
+                    if (index < targetStep) {
+                        const elements = $(steps).find(':input').not(':button').filter(function (i, el) {
+                            return !$(el).closest('.has-conditions').hasClass('ff_excluded');
+                        });
+                        elements.length && formInstance.validate(elements)
+                    }
+                });
+
+                updateSlider(targetStep, fluentFormVars.stepAnimationDuration, true);
+
+            } catch (e) {
+                if (!(e instanceof window.ffValidationError)) {
+                    throw e;
+                }
+                updateSlider(currentStep, fluentFormVars.stepAnimationDuration, true);
+                formInstance.showErrorMessages(e.messages);
+                formInstance.scrollToFirstError(350);
+            }
+        })
+    }
 
     /**
      * Action occurs on step change/form load
@@ -379,7 +437,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         };
 
         let inlineCssObj = {
-            left: -(activeStep * 100) + '%'
+            left: -(activeStep * 100) + '%',
         };
 
         if (isRtl) {
@@ -387,11 +445,40 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 right: -(activeStep * 100) + '%'
             };
         }
+        const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
+        switch (animationType) {
+            case 'slide':
+                //slide
+                stepsWrapper.animate(inlineCssObj, animDuration, () => {
+                    isScrollTop && scrollTop();
+                    stepsWrapper.css({width: wrapperWidth});
+                });
+                break;
+            case 'fade':
+                //fadeIn
+                stepsWrapper.css({opacity: 0})
+                stepsWrapper.animate(inlineCssObj, animDuration, () => {
+                    isScrollTop && scrollTop();
+                    stepsWrapper.css({width: wrapperWidth});
+                });
+                stepsWrapper.animate({
+                    opacity: 1,
+                }, animDuration);
+                break;
+            case 'slide_down':
+                //slideDown
+                stepsWrapper.hide();
+                stepsWrapper.css(inlineCssObj);
+                stepsWrapper.slideDown(animDuration);
+                break;
+            case 'none':
+                //fadeIn
+                stepsWrapper.css(inlineCssObj);
+                break;
+            default:
+                stepsWrapper.css(inlineCssObj);
 
-        stepsWrapper.animate(inlineCssObj, animDuration, () => {
-            isScrollTop && scrollTop();
-            stepsWrapper.css({width: wrapperWidth});
-        });
+        }
 
         //skip saving the last step
         let isLastStep = activeStep === 0;

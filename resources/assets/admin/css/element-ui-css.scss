@@ -1,62 +1,21 @@
 @import "../styles/var";
 @import "_element_icons.css";
-@import "~element-ui/lib/theme-chalk/input-number.css";
-@import "~element-ui/lib/theme-chalk/tag.css";
-@import "~element-ui/lib/theme-chalk/message-box.css";
-@import "~element-ui/lib/theme-chalk/rate.css";
-@import "~element-ui/lib/theme-chalk/tooltip.css";
-@import "~element-ui/lib/theme-chalk/upload.css";
-@import "~element-ui/lib/theme-chalk/card.css";
-@import "~element-ui/lib/theme-chalk/dropdown.css";
-@import "~element-ui/lib/theme-chalk/dropdown-menu.css";
-@import "~element-ui/lib/theme-chalk/dropdown-item.css";
-@import "~element-ui/lib/theme-chalk/row.css";
-@import "~element-ui/lib/theme-chalk/col.css";
-@import "~element-ui/lib/theme-chalk/table.css";
-@import "~element-ui/lib/theme-chalk/table-column.css";
-@import "~element-ui/lib/theme-chalk/pagination.css";
-@import "~element-ui/lib/theme-chalk/radio-group.css";
-@import "~element-ui/lib/theme-chalk/radio-button.css";
-@import "~element-ui/lib/theme-chalk/switch.css";
-@import "~element-ui/lib/theme-chalk/date-picker.css";
-@import "~element-ui/lib/theme-chalk/dialog.css";
-@import "~element-ui/lib/theme-chalk/form.css";
-@import "~element-ui/lib/theme-chalk/form-item.css";
-@import "~element-ui/lib/theme-chalk/radio.css";
-@import "~element-ui/lib/theme-chalk/checkbox-group.css";
-@import "~element-ui/lib/theme-chalk/alert.css";
-@import "~element-ui/lib/theme-chalk/tabs.css";
-@import "~element-ui/lib/theme-chalk/tab-pane.css";
-@import "~element-ui/lib/theme-chalk/color-picker.css";
-@import "~element-ui/lib/theme-chalk/button.css";
-@import "~element-ui/lib/theme-chalk/button-group.css";
-@import "~element-ui/lib/theme-chalk/input.css";
-@import "~element-ui/lib/theme-chalk/checkbox.css";
-@import "~element-ui/lib/theme-chalk/select.css";
-@import "~element-ui/lib/theme-chalk/option-group.css";
-@import "~element-ui/lib/theme-chalk/option.css";
-@import "~element-ui/lib/theme-chalk/collapse.css";
-@import "~element-ui/lib/theme-chalk/collapse-item.css";
-@import "~element-ui/lib/theme-chalk/popover.css";
-@import "~element-ui/lib/theme-chalk/slider.css";
-@import "~element-ui/lib/theme-chalk/loading.css";
-@import "~element-ui/lib/theme-chalk/message.css";
-@import "~element-ui/lib/theme-chalk/notification.css";
+@import "../styles/element_ui_var";
+// inclue element ui scss
+@import "~element-ui/packages/theme-chalk/src/index";
 
 .el-dropdown-list-wrapper {
   padding: 0;
-
   .group-title {
     display: block;
     padding: 5px 10px;
-    background-color: $info;
+    background-color: $--color-info;
     color: #fff;
   }
 }
 
 .input-textarea-value {
   position: relative;
-
   .icon {
     position: absolute;
     right: 0;
@@ -70,19 +29,7 @@
 }
 
 .el-text-danger {
-  color: #FF4949;
-}
-
-
-.el-dropdown-list-wrapper {
-  padding: 0;
-
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: $info;
-    color: #fff;
-  }
+  color: $--color-danger;
 }
 
 .input-textarea-value {
@@ -97,19 +44,23 @@
 
 .ff_condition_icon {
   position: absolute;
-  right: 17px;
+  right: 8px;
+  top:8px;
   color: #9ca1a7;
-  z-index: 99999999;
+  z-index: 1;
+}
+
+.ff_conv_section, .item-container {
+  &> .ff_condition_icon {
+    top: 12px;
+    right: 17px;
+    z-index: 2;
+  }
 }
 
 .search-element {
   padding: 0;
   margin: 10px 0;
-
-  input {
-    border: 0 !important;
-    border-radius: 0 !important;
-  }
 }
 
 .ff_filter_wrapper {
@@ -121,17 +72,6 @@
   display: inline-block;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.fluent_form_intro {
-  max-width: 700px;
-  margin: 0 auto;
-  background: white;
-  padding: 20px 30px 30px;
-}
-
 .ff_forms_table .el-loading-mask {
   z-index: 100;
 }
@@ -139,14 +79,23 @@
 .copy {
   cursor: context-menu;
 }
-
-.fluent_form_intro_video {
-  max-width: 700px;
-  margin: 20px auto;
+.fluent_form_intro{
   text-align: center;
-  padding: 20px 0 0;
+  display: flex;
+  align-items: center;
 }
-
+.fluent_form_intro_video{
+  iframe{
+    width: 100%; 
+    height: 292px; 
+    border-radius: 8px;
+  }
+}
+.wpns_preview_mce {
+  .el-form-item{
+    margin-bottom: 20px !important;
+  }
+}
 .wpns_button_preview {
   border: 1px solid #dde6ed !important;
   border-radius: .3rem !important;
@@ -154,12 +103,11 @@
   height: 100% !important;
   flex-direction: column !important;
   text-align: center;
-
   .preview_header {
     background-color: #f2f5f9 !important;
     color: #53657a !important;
+    padding: 6px 0;
   }
-
   .preview_body {
     align-items: center !important;
     height: 100%;
@@ -190,17 +138,14 @@
     text-align: left;
     color: white;
     border-radius: 3px;
-
     img {
       width: 64px;
       display: inline-block;
     }
-
     .photo_widget_btn {
       display: inline-block;
       vertical-align: top;
       color: black;
-
       span {
         font-size: 40px;
       }
@@ -209,7 +154,7 @@
 }
 
 .photo_widget_btn_clear {
-  color: red;
+  color: $--color-danger;
   position: absolute;
   top: 0;
   left: 0;
@@ -228,13 +173,11 @@
 }
 .wp_vue_editor_wrapper {
   position: relative;
-
   .popover-wrapper {
     z-index: 2;
     position: absolute;
     top: 0;
     right: 0;
-
     &-plaintext {
       left: auto;
       right: 0;
@@ -247,21 +190,24 @@
 }
 .mce-wpns_editor_btn {
   button {
-    font-size: 10px !important;
+    font-size: 14px !important;
     border: 1px solid gray;
-    margin-top: 3px;
+    margin-top: -1px;
+    padding: 3px 8px !important;
+    border-radius: 3px;
   }
   &:hover {
     border: 1px solid transparent !important;
   }
 }
-
-.is-error .el-input__inner {
-  border-color: #ff4949;
+.wp-core-ui .button, 
+.wp-core-ui .button-secondary{
+  border-color: gray;
+  color: #595959;
 }
 
-.el-form-item__error {
-  /*position: unset;*/
+.is-error .el-input__inner {
+  border-color: $--color-danger;
 }
 
 .el-form-item__error {
@@ -273,13 +219,6 @@
 }
 
 .el-dropdown-list-wrapper {
-  padding: 0;
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: gray;
-    color: #fff;
-  }
   &.el-popover {
     z-index: 9999999999999 !important;
   }
@@ -294,22 +233,24 @@
     cursor: pointer;
   }
 }
-.el_pop_data_group {
-  background: #6c757d;
-  overflow: hidden;
-  .el_pop_data_headings {
-    max-width: 150px;
-    float: left;
+// el_pop_data_group
+.el_pop_data {
+  &_group{
+    background: #fff;
+    overflow: hidden;
+    border-radius: 8px;
+    display: flex;
+    padding: 12px;
+  }
+  &_headings {
+    width: 175px;
+    background-color: #F2F2F2;
+    border-radius: 8px;
+    padding: 12px;
     ul {
       padding: 0;
       margin: 10px 0px;
       li {
-        color: white;
-        padding: 5px 10px 5px 10px;
-        display: block;
-        margin-bottom: 0px;
-        border-bottom: 1px solid #949393;
-        cursor: pointer;
         &.active_item_selected {
           background: whitesmoke;
           color: #6c757d;
@@ -318,54 +259,32 @@
       }
     }
   }
-
-  .el_pop_data_body {
-    float: left;
-    background: whitesmoke;
-    width: 350px;
-    max-height: 400px;
+  &_body {
+    margin-left: 20px;
+    max-height: 388px;
     overflow: auto;
-    ul {
-      padding: 10px 0;
-      margin: 0;
-      li {
-        color: black;
-        padding: 5px 10px 5px 10px;
-        display: block;
-        margin-bottom: 0px;
-        border-bottom: 1px dotted #dadada;
-        cursor: pointer;
-        text-align: left;
-        &:hover {
-          background: white;
-        }
-        span {
-          font-size: 11px;
-          color: #8e8f90;
-        }
-      }
+    width: 280px;
+  }
+}
+
+// input textarea value
+.input-textarea-value {
+  position: relative;
+  .icon {
+    position: absolute;
+    right: 0;
+    top: -30px;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    display: inline-block;
+    background-color: #F2F2F2;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    &:hover{
+      background-color: #e0e0e0;
     }
   }
 }
 
-.el-dropdown-list-wrapper {
-  padding: 0;
-
-  .group-title {
-    display: block;
-    padding: 5px 10px;
-    background-color: $info;
-    color: #fff;
-  }
-}
-
-.input-textarea-value {
-  position: relative;
-
-  .icon {
-    position: absolute;
-    right: 0;
-    top: -18px;
-    cursor: pointer;
-  }
-}

@@ -5,7 +5,6 @@ namespace FluentForm\App\Modules\Form;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
-
 class HoneyPot
 {
     private $app;
@@ -21,8 +20,9 @@ class HoneyPot
             return;
         }
         ?>
-        <span style="display: none !important;"><input type="checkbox" name="<?php echo esc_attr($this->getFieldName($form->id)); ?>" value="1"
-               style="display:none !important;" tabindex="-1"></span>
+        <span style="display: none !important;"><input type="checkbox"
+                name="<?php echo esc_attr($this->getFieldName($form->id)); ?>"
+                value="1" style="display:none !important;" tabindex="-1"></span>
         <?php
     }
 
@@ -36,9 +36,11 @@ class HoneyPot
         if (ArrayHelper::get($requestData, $this->getFieldName($formId))) {
             // It's a bot! Block him
             wp_send_json(
-                array(
-                    'errors' => 'Sorry! You can not submit this form at this moment!'
-                ), 422);
+                [
+                    'errors' => 'Sorry! You can not submit this form at this moment!',
+                ],
+                422
+            );
         }
 
         return;
@@ -47,13 +49,36 @@ class HoneyPot
     public function isEnabled($formId = false)
     {
         $option = get_option('_fluentform_global_form_settings');
-        $status = ArrayHelper::get($option, 'misc.honeypotStatus') == 'yes';
-        return apply_filters('fluentform_honeypot_status', $status, $formId);
+        $status = 'yes' == ArrayHelper::get($option, 'misc.honeypotStatus');
+    
+        $status = apply_filters_deprecated(
+            'fluentform_honeypot_status',
+            [
+                $status,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/honeypot_status',
+            'Use fluentform/honeypot_status instead of fluentform_honeypot_status.'
+        );
+
+        return apply_filters('fluentform/honeypot_status', $status, $formId);
     }
 
     private function getFieldName($formId)
     {
-        return apply_filters('fluentform_honeypot_name', 'item__' . $formId . '__fluent_checkme_', $formId);
-    }
+        $honeyPotName = 'item__' . $formId . '__fluent_checkme_';
+        $honeyPotName =  apply_filters_deprecated(
+            'fluentform_honeypot_name',
+            [
+                $honeyPotName,
+                $formId
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/honeypot_name',
+            'Use fluentform/honeypot_name instead of fluentform_honeypot_name.'
+        );
 
+        return apply_filters('fluentform/honeypot_name', $honeyPotName, $formId);
+    }
 }

@@ -1,4 +1,5 @@
-import {Bar, mixins} from 'vue-chartjs'
+const Bar = window.VueChartJs.Bar;
+const mixins = window.VueChartJs.mixins;
 
 const {reactiveProp} = mixins;
 
@@ -11,6 +12,14 @@ export default {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                legend: {
+                    display: false,
+                    labels: {
+                        fontColor: '#353537',
+                        boxWidth: 16,
+                        fontSize: 14
+                    }
+                },
                 scales: {
                     yAxes: [
                         {
@@ -18,7 +27,9 @@ export default {
                             type: 'linear',
                             position: 'left',
                             gridLines: {
-                                drawOnChartArea: true
+                                color: '#eee',
+                                drawOnChartArea: true,
+                                zeroLineColor: '#eee'
                             },
                             ticks: {
                                 beginAtZero: true,
@@ -34,7 +45,9 @@ export default {
                     xAxes: [
                         {
                             gridLines: {
-                                drawOnChartArea: true
+                                color: '#eee',
+                                drawOnChartArea: true,
+                                zeroLineColor: '#eee'
                             },
                             ticks: {
                                 beginAtZero: true,

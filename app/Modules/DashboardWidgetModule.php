@@ -2,13 +2,15 @@
 
 namespace FluentForm\App\Modules;
 
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Submission;
+
 class DashboardWidgetModule
 {
     public function showStat()
     {
         global $wpdb;
-        $stats = wpFluent()->table('fluentform_submissions')
-            ->select([
+        $stats = Submission::select([
                 'fluentform_forms.title',
                 'fluentform_submissions.form_id',
                 wpFluent()->raw('count(' . $wpdb->prefix . 'fluentform_submissions.id) as total'),
@@ -26,7 +28,7 @@ class DashboardWidgetModule
         }
 
         foreach ($stats as $stat) {
-            $stat->unreadCount = $this->getUnreadCount($stat->form_id);
+            $stat->unreadCount = Helper::unreadCount($stat->form_id);
         }
 
         $this->printStats($stats);
@@ -38,20 +40,22 @@ class DashboardWidgetModule
         ?>
         <ul class="ff_dashboard_stats">
             <?php foreach ($stats as $stat): ?>
-                <li>
-                    <a href="<?php echo admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . intval($stat->form_id)); ?>">
-                        <?php echo esc_html($stat->title); ?>
-                        <span class="ff_total"><?php echo esc_attr($stat->unreadCount); ?>/<?php echo esc_attr($stat->total); ?></span>
-                    </a>
-                </li>
+            <li>
+                <a
+                    href="<?php echo esc_url(admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $stat->form_id)); ?>">
+                    <?php echo esc_html($stat->title); ?>
+                    <span class="ff_total"><?php echo esc_attr($stat->unreadCount); ?>/<?php echo esc_attr($stat->total); ?></span>
+                </a>
+            </li>
             <?php endforeach; ?>
         </ul>
-        <?php if ( !defined('FLUENTCRM') && !defined('FLUENTFORMPRO') ) : ?>
-            <div class="ff_recommended_plugin">
-                Recommended Plugin: <b>FluentCRM - Email Marketing Automation For WordPress</b> <br />
-                <a href="<?php echo $this->getInstallUrl('fluent-crm'); ?>">Install</a>
-                | <a target="_blank" rel="noopener" href="https://wordpress.org/plugins/fluent-crm/">Learn More</a>
-            </div>
+        <?php if (!defined('FLUENTCRM') && !defined('FLUENTFORMPRO')) : ?>
+        <div class="ff_recommended_plugin">
+            Recommended Plugin: <b>FluentCRM - Email Marketing Automation For WordPress</b> <br />
+            <a
+                href="<?php echo esc_url($this->getInstallUrl('fluent-crm')); ?>">Install</a>
+            | <a target="_blank" rel="noopener" href="https://wordpress.org/plugins/fluent-crm/">Learn More</a>
+        </div>
         <?php endif; ?>
         <style>
             ul.ff_dashboard_stats {
@@ -94,6 +98,7 @@ class DashboardWidgetModule
             .ff_recommended_plugin {
                 padding: 15px 0px 0px;
             }
+            
             .ff_recommended_plugin a {
                 font-weight: bold;
                 font-size: 110%;
@@ -108,13 +113,5 @@ class DashboardWidgetModule
             self_admin_url('update.php?action=install-plugin&plugin=' . $plugin),
             'install-plugin_' . $plugin
         );
-    }
-
-    private function getUnreadCount($formId)
-    {
-        return wpFluent()->table('fluentform_submissions')
-            ->where('status', 'unread')
-            ->where('form_id', $formId)
-            ->count();
     }
 }

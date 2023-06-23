@@ -1,10 +1,15 @@
 <template>
     <el-dialog
-        :title="$t('Design Your Button')"
         :visible.sync="visibility"
         :show-close="false"
-        width="60%">
-        <div class="wpns_preview_mce">
+        width="60%"
+    >
+
+        <template slot="title">
+            <h4>{{$t('Design Your Button')}}</h4>
+        </template>
+
+        <div class="wpns_preview_mce mt-4">
             <el-row :gutter="20">
                 <el-col :span="14">
                     <el-form label-position="top">
@@ -27,7 +32,7 @@
                                     ></el-slider>
                                 </div>
                                 <template v-else-if="control.type == 'checkboxes'">
-                                    <el-checkbox-group v-model="control.value">
+                                    <el-checkbox-group v-model="control.value" class="ff_checkbox_group_col_2">
                                         <el-checkbox
                                             v-for="(optionLabel, optionValue) in control.options"
                                             :key="optionValue"
@@ -51,10 +56,10 @@
                 </el-col>
             </el-row>
         </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="close()">{{ $t('Cancel') }}</el-button>
+        <div slot="footer" class="dialog-footer mt-4">
+            <el-button @click="close()" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
             <el-button type="primary" @click="insert()">{{ $t('Insert') }}</el-button>
-        </span>
+        </div>
     </el-dialog>
 </template>
 

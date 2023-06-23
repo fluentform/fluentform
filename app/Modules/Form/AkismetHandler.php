@@ -15,7 +15,7 @@ class AkismetHandler
         }
 
         $settings = get_option('_fluentform_global_form_settings');
-        return $settings && ArrayHelper::get($settings, 'misc.akismet_status') == 'yes';
+        return $settings && 'yes' == ArrayHelper::get($settings, 'misc.akismet_status');
     }
 
     public static function isPluginEnabled()
@@ -31,9 +31,9 @@ class AkismetHandler
     {
         global $akismet_api_host, $akismet_api_port;
         $fields = self::getAkismetFields($formData, $form);
-        $response = \Akismet::http_post( $fields, 'comment-check' );
+        $response = \Akismet::http_post($fields, 'comment-check');
 
-        return ArrayHelper::get($response, 1) == 'true';
+        return 'true' == ArrayHelper::get($response, 1);
     }
 
     protected static function getAkismetFields($data, $form)
@@ -42,22 +42,22 @@ class AkismetHandler
         $ip = $app->request->getIp();
 
         $info = [
-            'comment_type' => 'contact-form',
-            'comment_author' => '',
+            'comment_type'         => 'contact-form',
+            'comment_author'       => '',
             'comment_author_email' => '',
-            'comment_content' => '',
+            'comment_content'      => '',
             'contact_form_subject' => $form->title,
-            'comment_author_IP' => $ip,
-            'permalink' => urlencode($data['_wp_http_referer']),
-            'user_ip' => preg_replace('/[^0-9., ]/', '', $ip),
-            'user_agent' => $app->request->header('USER_AGENT'),
-            'blog' => get_option('home')
+            'comment_author_IP'    => $ip,
+            'permalink'            => urlencode($data['_wp_http_referer']),
+            'user_ip'              => preg_replace('/[^0-9., ]/', '', $ip),
+            'user_agent'           => $app->request->header('USER_AGENT'),
+            'blog'                 => get_option('home'),
         ];
 
         $maps = [
-            'input_name' => 'comment_author',
+            'input_name'  => 'comment_author',
             'input_email' => 'comment_author_email',
-            'textarea' => 'comment_content'
+            'textarea'    => 'comment_content',
         ];
         $inputs = FormFieldsParser::getInputs($form, ['attributes']);
 
@@ -74,11 +74,21 @@ class AkismetHandler
                 }
             }
         }
+    
+        $info = apply_filters_deprecated(
+            'fluentform_akismet_fields',
+            [
+                $info,
+                $data,
+                $form
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/akismet_fields',
+            'Use fluentform/akismet_fields instead of fluentform_akismet_fields.'
+        );
 
-        $info = apply_filters('fluentform_akismet_fields', $info, $data, $form);
+        $info = apply_filters('fluentform/akismet_fields', $info, $data, $form);
 
         return http_build_query($info);
-
     }
-
 }

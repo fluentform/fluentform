@@ -1,8 +1,8 @@
 <template>
     <div class="ffc_design_elements">
-        <el-form label-position="left" label-width="220px" :data="design_settings">
+        <el-form label-position="left" :data="design_settings">
             <el-form-item class="fcc_label_top" :label="$t('Font')">
-                <el-select size="mini" style="width: 100%; margin-top: 10px; margin-bottom: 10px;" v-model="design_settings.font_family" clearable filterable :placeholder="$t('Use System Default')">
+                <el-select size="medium" v-model="design_settings.font_family" clearable filterable :placeholder="$t('Use System Default')">
                     <el-option-group
                         v-for="(groups, groupName) in fonts"
                         :key="groupName"
@@ -15,9 +15,9 @@
                         </el-option>
                     </el-option-group>
                 </el-select>
-                <p style="text-align: left; font-style: italic; " v-if="design_settings.font_family">{{
-                        $t('Select Font will apply only for landing page UI.')
-                    }}</p>
+                <p class="text-note" v-if="design_settings.font_family">
+                    {{$t('Selected Font will apply only for landing page UI.')}}
+                </p>
             </el-form-item>
             <el-form-item :label="$t('Questions')">
                 <el-color-picker :predefine="predefinedColors"
@@ -45,7 +45,7 @@
                                  color-format="hex" v-model="design_settings.background_color"></el-color-picker>
             </el-form-item>
 
-            <el-form-item :label="$t('Background Image')">
+            <el-form-item class="fcc_label_top" :label="$t('Background Image')">
                 <photo-uploader v-model="design_settings.background_image" design_mode="horizontal" enable_clear="yes"/>
             </el-form-item>
 

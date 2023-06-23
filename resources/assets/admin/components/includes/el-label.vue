@@ -1,8 +1,8 @@
 <template>
     <span>
         {{ $t(label) }}
-        <el-tooltip v-if="helpText" popper-class="sidebar-popper" effect="dark" placement="top">
-            <div slot="content" v-html="$t(helpText)"></div>
+        <el-tooltip v-if="helpText" popper-class="ff_tooltip_wrap" placement="top">
+            <div slot="content" v-html="helpText"></div>
             <i class="tooltip-icon" :class="iconClass"></i>
         </el-tooltip>
     </span>

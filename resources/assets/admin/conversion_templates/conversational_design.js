@@ -43,6 +43,7 @@ import locale from 'element-ui/lib/locale'
 locale.use(lang);
 
 import DesignSkeleton from './Parts/Skeleton.vue';
+import notifier from '@/admin/notifier'
 
 Vue.mixin({
     methods: {
@@ -52,7 +53,9 @@ Vue.mixin({
                 return transString;
             }
             return str;
-        }
+        },
+        
+        ...notifier
     },
     filters: {
         ucFirst(string) {
@@ -75,5 +78,10 @@ new Vue({
             jQuery('title').text(`${module} - FluentForm`);
         });
         this.$emit('change-title', 'Conversational Form Design');
+    },
+    mounted() {
+        (new ClipboardJS('.copy')).on('success', (e) => {
+            this.$copy();
+        });
     }
 });

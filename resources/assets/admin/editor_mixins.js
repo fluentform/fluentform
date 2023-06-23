@@ -1,3 +1,5 @@
+import notifier from './notifier';
+
 export default {
     methods: {
         /**
@@ -138,7 +140,9 @@ export default {
                     newItem.attributes.name = name;
                 }
             }
-        }
+        },
+
+        ...notifier
     },
     filters: {
         ucFirst(string) {

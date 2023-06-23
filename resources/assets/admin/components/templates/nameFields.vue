@@ -3,9 +3,11 @@
     <label v-if="item.settings.label" class="label-block" :class="item.settings.required ? 'is-required' : ''">{{ item.settings.label }}</label>
 
     <el-row :gutter="30">
-        <el-col v-for="(field, key) in item.fields" :key="key" :md="24 / columns" v-if="field.settings.visible" :class="'ff-el-form-'+item.settings.label_placement" class="address-field-wrapper">
-            <component :is="guessElTemplate(field)" :item="field"></component>
-        </el-col>
+        <template v-for="(field, key) in item.fields">
+            <el-col :key="key" :md="24 / columns" v-if="field.settings.visible" :class="'ff-el-form-'+item.settings.label_placement" class="address-field-wrapper">
+                <component :is="guessElTemplate(field)" :item="field"></component>
+            </el-col>
+        </template>
     </el-row>
 </div>
 </template>

@@ -1,9 +1,10 @@
 <?php
 
 namespace FluentForm\App\Api;
-use FluentForm\App\Modules\Entries\Report;
+
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\Report\ReportHelper;
 
 class Entry
 {
@@ -16,35 +17,34 @@ class Entry
 
     public function entries($atts = [], $includeFormats = false)
     {
-        if($includeFormats) {
+        if ($includeFormats) {
             if (!defined('FLUENTFORM_RENDERING_ENTRIES')) {
                 define('FLUENTFORM_RENDERING_ENTRIES', true);
             }
         }
 
         $atts = wp_parse_args($atts, [
-            'per_page' => 10,
-            'page' => 1,
-            'search' => '',
-            'sort_type' => 'DESC',
-            'entry_type' => 'all'
+            'per_page'   => 10,
+            'page'       => 1,
+            'search'     => '',
+            'sort_type'  => 'DESC',
+            'entry_type' => 'all',
         ]);
 
         $offset = $atts['per_page'] * ($atts['page'] - 1);
-
-        $entryQuery = wpFluent()->table('fluentform_submissions')
-                        ->where('form_id', $this->form->id)
-                        ->orderBy('id', $atts['sort_type'])
-                        ->limit($atts['per_page'])
-                        ->offset($offset);
+    
+        $entryQuery = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
+            ->orderBy('id', \FluentForm\App\Helpers\Helper::sanitizeOrderValue($atts['sort_type']))
+            ->limit($atts['per_page'])
+            ->offset($offset);
 
         $type = $atts['entry_type'];
 
-        if($type && $type != 'all') {
+        if ($type && 'all' != $type) {
             $entryQuery->where('status', $type);
         }
 
-        if ($searchString = $atts['search']) {
+        if ($searchString = sanitize_text_field($atts['search'])) {
             $entryQuery->where(function ($q) use ($searchString) {
                 $q->where('id', 'LIKE', "%{$searchString}%")
                     ->orWhere('response', 'LIKE', "%{$searchString}%")
@@ -61,10 +61,10 @@ class Entry
 
         $from = $dataCount > 0 ? ($atts['page'] - 1) * $atts['per_page'] + 1 : null;
 
-        $to =  $dataCount > 0 ? $from + $dataCount - 1 : null;
+        $to = $dataCount > 0 ? $from + $dataCount - 1 : null;
         $lastPage = (int) ceil($count / $atts['per_page']);
 
-        if($includeFormats) {
+        if ($includeFormats) {
             $data = FormDataParser::parseFormEntries($data, $this->form);
         }
 
@@ -73,34 +73,33 @@ class Entry
         }
 
         return [
-            'current_page'  => $atts['page'],
-            'per_page'      => $atts['per_page'],
-            'from'          => $from,
-            'to'            => $to,
-            'last_page'     => $lastPage,
-            'total'         => $count,
-            'data'          => $data,
+            'current_page' => $atts['page'],
+            'per_page'     => $atts['per_page'],
+            'from'         => $from,
+            'to'           => $to,
+            'last_page'    => $lastPage,
+            'total'        => $count,
+            'data'         => $data,
         ];
     }
 
     public function entry($entryId, $includeFormats = false)
     {
-        $submission = wpFluent()->table('fluentform_submissions')
-                    ->where('form_id', $this->form->id)
+        $submission = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
                     ->where('id', $entryId)
                     ->first();
 
-        if(!$submission) {
+        if (!$submission) {
             return null;
         }
 
         $inputs = FormFieldsParser::getEntryInputs($this->form);
         $submission = FormDataParser::parseFormEntry($submission, $this->form, $inputs, true);
 
-        if(!$includeFormats) {
+        if (!$includeFormats) {
             $submission->response = json_decode($submission->response, true);
             return [
-                'submission' => $submission
+                'submission' => $submission,
             ];
         }
 
@@ -110,12 +109,23 @@ class Entry
                 'name'      => $user->display_name,
                 'email'     => $user->user_email,
                 'ID'        => $user->ID,
-                'permalink' => get_edit_user_link($user->ID)
+                'permalink' => get_edit_user_link($user->ID),
             ];
             $submission->user = $user_data;
         }
+    
+        $submission= apply_filters_deprecated(
+            'fluentform_single_response_data',
+            [
+                $submission,
+                $this->form->id
+            ],
+            FLUENTFORM_FRAMEWORK_UPGRADE,
+            'fluentform/find_submission',
+            'Use fluentform/find_submission instead of fluentform_single_response_data.'
+        );
 
-        $submission = apply_filters('fluentform_single_response_data', $submission, $this->form->id);
+        $submission = apply_filters('fluentform/find_submission', $submission, $this->form->id);
 
         $submission->response = json_decode($submission->response);
 
@@ -123,14 +133,12 @@ class Entry
 
         return [
             'submission' => $submission,
-            'labels'     => $inputLabels
+            'labels'     => $inputLabels,
         ];
     }
 
     public function report($statuses = [])
     {
-        $reportClass = new Report(wpFluentForm());
-        return $reportClass->generateReport($this->form, $statuses);
+        return ReportHelper::generateReport($this->form, $statuses);
     }
-
 }

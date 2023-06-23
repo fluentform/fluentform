@@ -4,24 +4,27 @@
 
 /* new-elements */
 .new-elements .btn-element {
-  padding: 10px 5px;
-  background-color: white;
-  display: block;
-  color: #636a84;
+  padding: 12px 16px;
+  background-color: $btn-element-bg;
+  display: flex;
+  align-items: center;
+  color: $btn-element-color;
   cursor: move;
   font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   -webkit-transition: all 0.05s;
   transition: all 0.05s;
   text-align: center;
-  border-radius: 0;
-  box-shadow: 0 1px 2px 0 #d9d9da;
-
+  border-radius: $border-radius;
+  border: 1px solid $btn-element-border-color;
+  span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
   &:hover {
-    background-color: #636a84;
-    color: white;
+    background-color: $btn-element-hover-bg;
+    color: $btn-element-hover-color;
   }
 
   &:active {
@@ -33,8 +36,9 @@
 
   i {
     display: block;
-    text-align: center;
-    margin: 0 auto;
+    margin-right: 10px;
+    font-size: 16px;
+    padding-top: 2px;
   }
 
   &[draggable=false] {
@@ -109,75 +113,68 @@ footer {
 }
 
 .tooltip-icon {
-  color: #828f96;
+  color: #757D8A;
   vertical-align: middle !important;
+  margin-left: 3px;
+  &.el-icon-info{
+    transform: rotate(-14deg);
+  }
 }
 
 .option-fields-section {
-  border-bottom: 1px solid #dfdfdf;
-  background: white;
-
-  &:last-child {
-    margin-bottom: -5px;
-  }
-
-  &.option-fields-section_active {
-    background: #f3f4f5;
-  }
-
-  .option-fields-section--title {
-    background: white;
-    &.active {
-      border-top: 0;
-    }
-  }
-
+  background: $white;
+  border-radius: $border-radius;
+  margin-bottom: 12px;
   &--title {
-    padding: 14px 20px;
-    margin: 0;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    overflow: hidden;
+    font-size: 14px;
+    font-weight: 500;
     position: relative;
-
+    padding: 12px 20px;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
     &:after {
-      content: "\e025";
+      content: "\e6df";
       position: absolute;
-      right: 20px;
-      font-family: "fluentform";
+      right: 16px;
+      font-family: "element-icons";
       vertical-align: middle;
+      font-size: 16px;
+      transition: 0.2s;
+      font-weight: 600;
     }
-
     &.active {
-      font-weight: bold;
+      color: $--color-primary;
+      border-bottom-color: $border-color;
+      font-weight: 600;
       &:after {
-        content: "\e026";
+        transform: rotate(-180deg);
       }
     }
   }
-
   &--icon {
     float: right;
     vertical-align: middle;
     margin-top: 3px;
   }
-
   &--content {
     max-height: 1050vh;
-    padding: 15px 20px;
+    padding: 16px;
+    .el-form-item{
+      margin-bottom: 14px;
+    }
   }
 }
 
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  overflow: hidden;
-  transition: all .2s ease-in-out;
-}
-
-.slide-fade-enter,
-.slide-fade-leave-to {
-  max-height: 0 !important;
-  opacity: 0.2;
-  transform: translateY(-11px);
+.slide-fade{
+  &-enter-active,
+  &-leave-active {
+    overflow: hidden;
+    transition: all .2s ease-in-out;
+  }
+  &-enter,
+  &-leave-to {
+    max-height: 0 !important;
+    opacity: 0.2;
+    transform: translateY(-11px);
+  }
 }

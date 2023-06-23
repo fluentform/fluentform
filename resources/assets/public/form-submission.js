@@ -244,41 +244,48 @@ jQuery(document).ready(function () {
 
                 var sendData = function ($theForm, formData) {
                     function addParameterToURL(param) {
-                        let _url = fluentFormVars.ajaxUrl;
+                        const route = 'form-submit';
+                        let _url = `${window.fluentFormVars.ajaxUrl}`;
                         _url += (_url.split('?')[1] ? '&' : '?') + param;
                         return _url;
                     }
 
-                    const ajaxRequestUrl = addParameterToURL('t=' + Date.now());
+                    var ajaxRequestUrl = addParameterToURL('t=' + Date.now());
 
                     if (this.isSending) {
                         return;
                     }
 
                     var that = this;
+                    var oldResponse;    //For Payment Handling Using Old System
 
                     this.isSending = true;
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
-                            if (!res || !res.data || !res.data.result) {
+                            if (res?.data){
+
+                                oldResponse = res;
+                                res = res?.data
+                            }
+                            if (!res || !res || !res.result) {
                                 // This is an error
                                 $theForm.trigger('fluentform_submission_failed', {
                                     form: $theForm,
-                                    response: res
+                                    response: oldResponse
                                 });
                                 showErrorMessages(res);
                                 return;
                             }
 
-                            if (res.data.append_data) {
-                                addHiddenData(res.data.append_data);
+                            if (res.append_data) {
+                                addHiddenData(res.append_data);
                             }
 
-                            if (res.data.nextAction) {
-                                $theForm.trigger('fluentform_next_action_' + res.data.nextAction, {
+                            if (res.nextAction) {
+                                $theForm.trigger('fluentform_next_action_' + res.nextAction, {
                                     form: $theForm,
-                                    response: res
+                                    response: oldResponse
                                 });
                                 return;
                             }
@@ -286,27 +293,27 @@ jQuery(document).ready(function () {
                             $theForm.triggerHandler('fluentform_submission_success', {
                                 form: $theForm,
                                 config: form,
-                                response: res
+                                response: oldResponse
                             });
 
                             jQuery(document.body).trigger('fluentform_submission_success', {
                                 form: $theForm,
                                 config: form,
-                                response: res
+                                response: oldResponse
                             });
 
-                            if ('redirectUrl' in res.data.result) {
-                                if (res.data.result.message) {
+                            if ('redirectUrl' in res.result) {
+                                if (res.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
                                         'class': 'ff-message-success'
                                     })
-                                        .html(res.data.result.message)
+                                        .html(res.result.message)
                                         .insertAfter($theForm);
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
-                                location.href = res.data.result.redirectUrl;
+                                location.href = res.result.redirectUrl;
                                 return;
                             } else {
                                 const successMsgId = formId + '_success';
@@ -318,12 +325,12 @@ jQuery(document).ready(function () {
                                     'id': successMsgId,
                                     'class': 'ff-message-success'
                                 })
-                                    .html(res.data.result.message)
+                                    .html(res.result.message)
                                     .insertAfter($theForm);
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
-                                if (res.data.result.action == 'hide_form') {
+                                if (res.result.action == 'hide_form') {
                                     $theForm.hide().addClass('ff_force_hide');
                                     $theForm[0].reset();
                                 } else {
@@ -428,6 +435,19 @@ jQuery(document).ready(function () {
                         .find('.ff-el-repeat-buttons')
                         .not(':first')
                         .remove();
+
+                    // reset image type checkbox and radio field
+                    let checkedTypeInputs = $this.find('input[type=checkbox],input[type=radio]');
+                    if (checkedTypeInputs.length) {
+                        checkedTypeInputs.each((index, el) => {
+                            el = $(el);
+                            if (!el.prop('defaultChecked')) {
+                                el.closest('.ff-el-form-check.ff_item_selected').removeClass('ff_item_selected');
+                            } else {
+                                el.closest('.ff-el-form-check').addClass('ff_item_selected');
+                            }
+                        })
+                    }
 
                     $this.find('input[type=file]').closest('div').find('.ff-uploaded-list').html('')
                         .end().closest('div')
@@ -682,6 +702,7 @@ jQuery(document).ready(function () {
                                 'data-name': getElement(elementName).attr('name'),
                                 html: errorString
                             });
+                            errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
                             errorStack.append(errorHtml).show();
                         });
@@ -689,6 +710,7 @@ jQuery(document).ready(function () {
                         var element = getElement(elementName);
                         if (element) {
                             var name = element.attr('name');
+                            element.attr('aria-invalid', 'true');
                             var el = $('[name=\'' + name + '\']').first();
                             if (el) {
                                 el.closest('.ff-el-group').addClass('ff-el-is-error');
@@ -728,25 +750,28 @@ jQuery(document).ready(function () {
                         showErrorInStack([message]);
                         return;
                     }
-
+                    el.attr('aria-invalid', 'true');
                     div = $('<div/>', {class: 'error text-danger'});
+                    div.attr('role', 'alert');
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     el.closest('.ff-el-input--content').find('div.error').remove();
                     el.closest('.ff-el-input--content').append(div.text(message));
                 };
 
                 var initInlineErrorItems = function () {
-                    var errorSetting = form['settings']['layout']['errorMessagePlacement'];
-                    if (!errorSetting || errorSetting == 'stackToBottom') {
-                        return;  // It's on bottom so We don't need to do anything
-                    }
                     $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select,textarea', function () {
                         if (window.ff_disable_error_clear) {
                             return;
                         }
-                        var $parent = $(this).closest('.ff-el-group');
-                        if ($parent.hasClass('ff-el-is-error')) {
-                            $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
+
+                        $(this).attr('aria-invalid', 'false');
+
+                        var errorSetting = form['settings']['layout']['errorMessagePlacement'];
+                        if (errorSetting || errorSetting != 'stackToBottom') {
+                            var $parent = $(this).closest('.ff-el-group');
+                            if ($parent.hasClass('ff-el-is-error')) {
+                                $parent.removeClass('ff-el-is-error').find('.error.text-danger').remove();
+                            }
                         }
                     });
                 };
@@ -1109,6 +1134,10 @@ jQuery(document).ready(function () {
                             .find('.ff-upload-preview[data-src]')
                             .length;
                     } else {
+                        //solution for range slider required
+                        if (el.attr('is-changed') == 'false') {
+                            return '';
+                        }
                         return String($.trim(el.val())).length;
                     }
                 };
@@ -1317,7 +1346,7 @@ jQuery(document).ready(function () {
                 return false;
             }
             formInstance.reinitExtras();
-           
+
             if (window.hcaptcha) {
                 hcaptcha.reset(); //two recapthca on same page creates conflicts
             }

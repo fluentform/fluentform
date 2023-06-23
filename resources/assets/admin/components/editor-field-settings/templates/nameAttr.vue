@@ -1,32 +1,34 @@
 <template>
     <div>
-    <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        <el-input
-                :disabled="isDisabled"
-                :value="value"
-                :type="listItem.type"
-                ref="nameAttribute"
-                @input="modify"
-                @blur="onBlur"
-        >
-            <el-button  v-if="(isDisabled === true || this.maybeDisableEdit()) && !this.isCaptcha() "  slot="append" type="warning" icon="el-icon-edit" @click=" isDisabled = !isDisabled"></el-button>
-        </el-input>
-    </el-form-item>
-    <el-form-item>
-        <div v-if="isDisabled === false && this.maybeDisableEdit()" role="alert"
-             class="el-alert el-alert--warning is-light">
-            <i class="el-alert__icon el-icon-warning"></i>
-            <div class="el-alert__content">
-                <span class="el-alert__title">{{ $t('Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.') }}</span>
-            </div>
-        </div>
-    </el-form-item>
+        <el-form-item>
+            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+            <el-input
+                    :disabled="isDisabled"
+                    :value="value"
+                    :type="listItem.type"
+                    ref="nameAttribute"
+                    @input="modify"
+                    @blur="onBlur"
+            >
+                <el-button  v-if="(isDisabled === true || this.maybeDisableEdit()) && !this.isCaptcha() "  slot="append" type="warning" icon="el-icon-edit" @click=" isDisabled = !isDisabled"></el-button>
+            </el-input>
+        </el-form-item>
+        <el-form-item v-if="isDisabled === false && this.maybeDisableEdit()">
+            <notice type="danger">
+                <div class="ff_alert_group">
+                    <i class="ff_alert_icon el-icon-warning"></i>
+                    <div class="ff_alert_content">
+                        <span>{{ $t('Please note that it is recommended to not change name attributes, doing so will break conditional & integrations field mapping.You will need to recreate these with the new value.') }}</span>
+                    </div>
+                </div>
+            </notice>
+        </el-form-item>
     </div>
 </template>
 
 <script>
 import elLabel from '../../includes/el-label.vue'
+import Notice from '../../Notice/Notice.vue';
 
 export default {
     name: 'nameAttribute',
@@ -38,7 +40,8 @@ export default {
         }
     },
     components: {
-        elLabel
+        elLabel,
+        Notice
     },
     methods: {
         modify(value) {

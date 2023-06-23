@@ -1,14 +1,14 @@
 <template>
     <div class="edit_entry_view">
-        <el-form v-if="has_pro" :data="entry">
+        <el-form v-if="has_pro" :data="entry" label-position="top">
             <template v-for="(field, fieldKey) in parsedFields">
-                <el-form-item :label="labels[fieldKey]">
+                <el-form-item :label="labels[fieldKey]" :key="fieldKey">
                     <component
                         v-if="field.component"
                         v-model="entry[fieldKey]"
                         :type="field.type"
                         :field="field.field"
-                        v-bind:is="field.component">
+                        :is="field.component">
                     </component>
                     <div v-else>
                         <p>{{field.field.admin_label}} {{ $t('is Not Editable') }}</p>
@@ -16,30 +16,31 @@
                 </el-form-item>
             </template>
 
-            <div class="el-dialog__footer">
+            <div class="el-dialog__footer text-left mt-3">
                 <span class="dialog-footer">
-                    <el-button @click="closeModel()" size="small" type="info">
-                        {{ $t('Cancel') }}
-                    </el-button>
-                    <el-button v-loading="saving" @click="updateEntry()" size="small" type="success">
+                    <el-button v-loading="saving" @click="updateEntry()" type="primary">
                         {{ $t('Update Entry') }}
+                    </el-button>
+                    <el-button @click="closeModel()" type="text" class="el-button--text-light">
+                        {{ $t('Cancel') }}
                     </el-button>
                 </span>
             </div>
         </el-form>
-        <div style="text-align:center" v-else>
-            <h3>{{ $t('Entry editor is available on pro version.Please upgrade to pro') }}</h3>
-            <a rel="nofollow" target="_blank"
-               :href="upgrade_url"
-               class="el-button el-button--danger">
-                {{ $t('Buy Pro Now') }}
+
+        <notice class="ff_alert_between mt-4" type="danger-soft" v-else>
+            <div>
+                <h6 class="title">{{$t('This is a Pro Feature')}}</h6> 
+                <p class="text">{{$t('Please upgrade to pro to unlock this feature.')}}</p>
+            </div>
+            <a target="_blank" :href="upgrade_url" class="el-button el-button--danger el-button--small">
+                {{$t('Upgrade to Pro')}}
             </a>
-        </div>
+        </notice>
     </div>
 </template>
 
 <script type="text/babel">
-
     import each from 'lodash/each';
 
     import MultiTextLine from './EntryEditor/MultiText';
@@ -51,6 +52,7 @@
     import TermsField from './EntryEditor/TermsField';
     import RepeatField from './EntryEditor/RepeatField';
     import MultiFile from './EntryEditor/MultiFile';
+    import Notice from '@/admin/components/Notice/Notice.vue';
 
     export default {
         name: 'edit_entry',
@@ -64,7 +66,8 @@
             CheckboxField,
             TermsField,
             RepeatField,
-            MultiFile
+            MultiFile,
+            Notice
         },
         data() {
             return {

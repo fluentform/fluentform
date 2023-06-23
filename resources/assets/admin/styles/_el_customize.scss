@@ -1,33 +1,7 @@
 @import "./var";
 
-.el-text-primary {
-    color: #20A0FF;
-}
-
-.el-text-info {
-    color: #58B7FF;
-}
-
-.el-text-success {
-    color: #13CE66;
-}
-
-.el-text-warning {
-    color: #F7BA2A;
-}
-
-.el-text-danger {
-    color: #FF4949;
-}
-
 .el-notification__content {
     text-align: left;
-}
-
-.el-input-group--append {
-    .el-input-group__append {
-        left: -2px;
-    }
 }
 
 .action-buttons {
@@ -92,11 +66,18 @@
 }
 
 .el-collapse-settings {
-    margin-bottom: 15px;
-
+    border: 0;
     .el-collapse-item__header {
-        background: #f1f1f1;
+        background: #F5F5F3;
         padding-left: 20px;
+        padding-right: 10px;
+        border-radius: $border-radius;
+        border: 0;
+        font-size: 16px;
+        .el-collapse-item__arrow{
+            font-weight: 500;
+            font-size: 16px;
+        }
     }
 
     .el-collapse-item__content {
@@ -107,6 +88,11 @@
     .el-collapse-item__arrow {
         line-height: 48px;
     }
+    .el-collapse-item__wrap{
+        overflow: inherit;
+        background-color: transparent;
+        border-bottom: 0;
+    }
 }
 
 .el-popover {
@@ -115,19 +101,10 @@
 
 // SIDEBAR OPTIONS
 .option-fields-section--content {
-    .el-form-item {
-        margin-bottom: 10px;
-    }
-
     .el-form-item__label {
-        padding-bottom: 5px;
-        font-size: 13px;
+        padding-bottom: 10px;
         line-height: 1;
-    }
-
-    .el-input__inner {
-        height: 30px;
-        padding: 0 8px;
+        color: $base-color;
     }
 
     .el-form-item__content {
@@ -138,11 +115,15 @@
     .el-input-number--mini {
         line-height: 28px;
     }
+    strong{
+        font-weight: 600;
+        color: $base-color;
+    }
 }
 
 .el-dropdown-list {
     border: 0;
-    margin: 5px 0;
+    margin: 0;
     box-shadow: none;
     padding: 0;
     z-index: 10;
@@ -163,6 +144,9 @@
     }
 }
 
+.el-popper[x-placement^=bottom] .popper__arrow{
+    top: -7px;
+}
 .el-form-nested {
     &.el-form--label-left {
         .el-form-item__label {
@@ -176,8 +160,218 @@
     top: 40px;
 }
 
+// el tabs border card
+.el-tabs--border-card{
+    border-radius: 6px;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.05);
+    border-color: $border-color;
+    .el-tabs__header{
+        padding: 10px 14px;
+        background-color: transparent;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        .el-tabs__item{
+            margin-top: 0;
+            border: 0;
+            border-radius: 6px;
+            line-height: 34px;
+            height: 34px;
+            font-size: 13px;
+            padding-right: 16px;
+            padding-left: 16px;
+            &:first-child{
+                margin-left: 0;
+            }
+            &.is-active{
+                background-color: $--color-primary-light-8;
+                color: $--color-primary;
+                &:hover{
+                    color: $--color-primary;
+                }
+            }
+        }
+    }
+}
+
+// el button
 .el-button {
-    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: 0.3s;
+    .el-loading-mask{
+        border-radius: 7px;
+        .el-loading-spinner {
+            margin-top: -12px;
+            .circular{
+                width: 24px;
+                height: 24px;
+            }
+        }
+    }
+    span{
+        display: inline-flex;
+        align-items: center;
+    }
+    &-group{
+        .el-button{
+            span{
+                display: inline-block;
+            }
+        }
+    }
+    &--block{
+        width: 100%;
+        justify-content: center;
+    }
+    &--small{
+        .ff-icon{
+            font-size: 14px;
+        }
+    }
+    &--large{
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    &--soft {
+        &.el-button{
+            &--blue {
+                background-color: $--color-blue-lighter;
+                border-color: $--color-blue-lighter;
+                color: $--color-blue;
+                &:hover{
+                    background-color: $--color-blue;
+                    border-color: $--color-blue;
+                    color: $--color-white;
+                }
+            }
+            &--primary {
+                background-color: $--color-primary-light-9;
+                border-color: $--color-primary-light-9;
+                color: $--color-primary;
+                &:hover{
+                    background-color: $--color-primary;
+                    border-color: $--color-primary;
+                    color: $--color-white;
+                }
+            }
+            &--danger {
+                background-color: $--color-danger-lighter;
+                border-color: $--color-danger-lighter;
+                color: $--color-danger;
+                &:hover{
+                    background-color: $--color-danger;
+                    border-color: $--color-danger;
+                    color: $--color-white;
+                }
+            }
+            &--success{
+                background-color: $--color-success-lighter;
+                border-color: $--color-success-lighter;
+                color: $--color-success;
+                &:hover{
+                  background-color: $--color-success;
+                  border-color: $--color-success;
+                  color: $--color-white;
+                }
+              }
+              &--warning{
+                background-color: $--color-warning-lighter;
+                border-color: $--color-warning-lighter;
+                color: $--color-warning;
+                &:hover{
+                  background-color: $--color-warning;
+                  border-color: $--color-warning;
+                  color: $--color-white;
+                }
+              }
+              &--info{
+                background-color: $--color-info-lighter;
+                border-color: $--color-info-lighter;
+                color: $--color-info;
+                &:hover{
+                  background-color: $--color-info;
+                  border-color: $--color-info;
+                  color: $--color-white;
+                }
+            }
+            &--cyan{
+                background-color: $--color-cyan-lighter;
+                border-color: $--color-cyan-lighter;
+                color: $--color-cyan;
+                &:hover{
+                  background-color: $--color-cyan;
+                  border-color: $--color-cyan;
+                  color: $--color-white;
+                }
+            }
+            &--dark{
+                background-color: $--color-dark-lighter;
+                border-color: $--color-dark-lighter;
+                color: $--color-dark;
+                &:hover{
+                  background-color: $--color-dark;
+                  border-color: $--color-dark;
+                  color: $--color-white;
+                }
+            }
+        }
+        &-2{
+            &.el-button{
+                &--primary {
+                    background-color: #D1E5FE;
+                    border-color: #D1E5FE;
+                    color: $--color-primary;
+                    &:hover{
+                        background-color: $--color-primary;
+                        border-color: $--color-primary;
+                        color: $--color-white;
+                    }
+                }
+            }
+        }
+    }
+    &--icon.el-button{
+        &--mini {
+            padding: 7px;
+            border-radius: 4px;
+        }
+        &--small{
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        &--medium{
+            padding: 10px;
+            border-radius: 6px;
+        }
+    }
+    &--text-light{
+        color: $base-text;
+    }
+    &--info.is-plain{
+        border-color: $--color-info-lighter;
+    }
+    &--dark{
+        background-color: $--color-dark;
+        color: $--color-white;
+        border-color: $--color-dark;
+        &:focus,
+        &:hover{
+            background-color: #3a3a40;
+            border-color: #3a3a40;
+            color: $--color-white;
+        }
+    }
+    &--primary{
+        &:hover{
+            background-color: $primary-button-hover-bg;
+            border-color: $primary-button-hover-border-color;
+        }
+    }
+}
+
+.el-pager li{
+    font-weight: 600;
 }
 
 .form-editor-elements {
@@ -195,8 +389,6 @@
 }
 
 .el-dialog__wrapper {
-    left: 160px;
-
     .data-lost-msg {
         margin-top: 10px;
     }
@@ -276,16 +468,6 @@
     }
 }
 
-.ff_backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999999999;
-}
-
 .compact th>.cell,
 .compact td>.cell {
     white-space: nowrap;
@@ -301,4 +483,262 @@
 
 .el-dropdown-menu {
     left: unset;
+    max-width: 270px;
+}
+
+.el-dropdown-link{
+    cursor: pointer;
+    &-lg{
+        font-size: 24px;
+        font-weight: 600;
+        color: $base-color;
+        .el-icon{
+            font-size: 20px;
+        }
+    }
+}
+
+.el-switch{
+    &--small{
+        .el-switch__core{
+            width: 28px !important;
+            height: 16px;
+            &::after{
+                width: 12px;
+                height: 12px;
+            }
+        }
+        &.is-checked .el-switch__core::after {
+            margin-left: -13px;
+        }
+        .el-switch__label *{
+            font-size: 13px;
+            font-weight: 500;
+        }
+    }
+}
+
+.el-message-box__title{
+    font-weight: 500;
+    color: $base-color;
+}
+// el input group
+.el-input-group{
+    &--append{
+        position: relative;
+        .el-input__inner {
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+    }
+    &__append,
+    &__prepend{
+        text-align: center;
+        background-color: #F2F2F2;
+        padding: 0;
+        width: 30px;
+        position: absolute;
+        top: 5px;
+        height: 30px;
+        display: grid;
+        border: 0;
+        border-radius: 5px;
+        &:hover{
+            background-color: #e0e0e0;
+        }
+        .el-icon-more {
+            transform: rotate(90deg);
+        }
+        .el-button{
+            padding: 0;
+            margin: 0;
+        }
+    }
+    &__append{
+        right: 4px;
+    }
+    &__prepend{
+        left: 4px;
+    }
+}
+
+.el-table__fixed, 
+.el-table__fixed-right{
+    background-color: $white;
+    &::before{
+        display: none;
+    }
+}
+
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    box-shadow: none;
+}
+
+// input with select
+.input-with-select{
+    display: flex;
+    align-items: center;
+    &.el-input-group--append{
+        .el-input__inner{
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+    .el-select{
+        background-color: #fff;
+        margin: 0;
+        border: 1px solid $--border-color-base;
+        height: 40px;
+        .el-input__inner{
+            border: 0;
+        }
+    }
+    .el-input-group__prepend,
+    .el-input-group__append {
+      width: auto;
+      height: auto;
+      top: 0;
+      left: 0;
+      border-radius: 0;
+      position: inherit;
+      flex: 1;
+      &:hover{
+        background-color: transparent;
+      }
+    }
+    .el-input-group{
+        &__prepend{
+            .el-select{
+                border-top-left-radius: $border-radius;
+                border-bottom-left-radius: $border-radius;
+                border-right: 0;
+            }
+        }
+        &__append{
+            .el-select{
+                border-top-right-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+                border-left: 0;
+            }
+        }
+    }
+    
+}
+
+.chain-select-upload-button {
+    .el-input-group__append,
+    .el-input-group__prepend {
+        width: 70px;
+    }
+}
+
+// dark radio
+.el-radio-group{
+    &-dark{
+        .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+            background-color: $--color-dark;
+            border-color: $--color-dark;
+        }
+    }
+    &-info{
+        .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+            background-color: $--color-info;
+            border-color: $--color-info;
+        }
+    }
+}
+
+.el-table{
+    thead{
+        .cell{
+            color: $base-color;
+            font-weight: 500;
+        }
+    }
+    &--border{
+        border-radius: 6px;
+    }
+}
+
+// ff input
+.ff-input-s1{
+    .el-input {
+        .el-select__caret{
+            color: $base-color;
+        }
+        .el-icon-arrow-up{
+            &::before{
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+.el-radio-button--small{
+    &:first-child .el-radio-button__inner {
+        border-radius: 4px 0 0 4px;
+    }
+    &:last-child .el-radio-button__inner {
+        border-radius: 0 4px 4px 0;
+    }
+}
+
+// input sizes
+.el-input{
+    &--mini{
+        .el-input__inner{
+            border-radius: 4px;
+        }
+    }
+    &--large{
+        .el-input__inner{
+            height: 48px;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 16px;
+        }
+    }
+    &-number{
+        &--mini{
+            line-height: 28px;
+            .el-input-number__decrease {
+                left: 1px;
+                border-radius: 4px 0 0 4px;
+            }
+            .el-input-number__increase {
+                border-radius: 0 4px 4px 0;
+            }
+        }
+        &__increase, 
+        &__decrease {
+            background-color: #F2F2F2;
+        }
+    }
+}
+
+// el dialog header
+.el-dialog__header{
+    .title + .text{
+        margin-top: 6px;
+    }
+    .text{
+        margin-bottom: 0;
+    }
+    &_group{
+        display: flex;
+        align-items: center;
+    }
+}
+
+.el-checkbox-horizontal {
+    .el-checkbox{
+        display: flex;
+        &__input{
+            padding-top: 3px;
+            align-self: flex-start;
+        }
+    }
+}
+.el-skeleton__item{
+    border-radius: 4px;
 }

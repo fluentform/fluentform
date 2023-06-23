@@ -1,26 +1,28 @@
 <template>
     <!--confirmation settings form-->
-    <div>
+    <div class="ff-add-confirmation-wrap">
         <!--Confirmation Type-->
-        <el-form-item>
+        <el-form-item class="ff-form-item">
             <template slot="label">
                 {{ $t('Confirmation Type') }}
 
-                <el-tooltip class="item" placement="bottom-start" effect="light">
+                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                     <div slot="content">
-                        <h3>{{ $t('Confirmation Type') }}</h3>
-
                         <p>
-                            {{ $t('After submit, where the page will redirect to.') }}
+                            {{ $t('Choose the type of redirection after form submission.') }}
                         </p>
                     </div>
 
-                    <i class="el-icon-info el-text-info" />
+                    <i class="ff-icon ff-icon-info-filled text-primary" />
                 </el-tooltip>
             </template>
 
-            <el-radio v-for="(redirectOption, optionName) in redirectToOptions"
-                      v-model="confirmation.redirectTo" :label="optionName" border :key="optionName"
+            <el-radio 
+                v-for="(redirectOption, optionName) in redirectToOptions"
+                v-model="confirmation.redirectTo" 
+                :label="optionName" 
+                border 
+                :key="optionName"
             >
                 {{ redirectOption }}
             </el-radio>
@@ -30,23 +32,20 @@
 
         <!--Additional fields based on the redirect to selection-->
         <!--Same page-->
-        <div v-if="confirmation.redirectTo === 'samePage'" class="conditional-items">
+        <template v-if="confirmation.redirectTo === 'samePage'">
             <!--Message to show-->
-            <el-form-item>
+            <el-form-item class="ff-form-item">
                 <template slot="label">
                     {{ $t('Message to show') }}
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
-                            <h3>{{ $t('Confirmation Message Text') }}</h3>
-
                             <p>
-                                {{ $t('Enter the text you would like the user to ') }}<br>
-                                {{ $t('see on the confirmation page of this form.') }}
+                                {{ $t('Enter the text you would like the user to see on the confirmation page of this form.') }}
                             </p>
                         </div>
 
-                        <i class="el-icon-info el-text-info" />
+                        <i class="ff-icon ff-icon-info-filled text-primary" />
                     </el-tooltip>
                 </template>
 
@@ -54,21 +53,18 @@
             </el-form-item>
 
             <!--After form submisssion behavior-->
-            <el-form-item>
+            <el-form-item class="ff-form-item">
                 <template slot="label">
                     {{ $t('After Form Submission') }}
 
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
-                            <h3>{{ $t('After Form Submission Behavior') }}</h3>
-
                             <p>
-                                S{{ $t('Select the behavior after form submission, ')}}<br>
-                                {{ $t('whether you want to hide or reset the form.') }}
+                                {{ $t('Select the behavior after form submission, whether you want to hide or reset the form.')}}
                             </p>
                         </div>
 
-                        <i class="el-icon-info el-text-info"></i>
+                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
                     </el-tooltip>
                 </template>
 
@@ -80,30 +76,29 @@
                             label="reset_form" border>{{ $t('Reset Form') }}
                 </el-radio>
             </el-form-item>
-        </div>
+        </template>
 
         <!--Custom page-->
-        <el-form-item v-else-if="confirmation.redirectTo === 'customPage'"
-                      class="conditional-items" :class="errors.has('customPage') ? 'is-error' : ''"
+        <el-form-item 
+            v-else-if="confirmation.redirectTo === 'customPage'"
+            class="conditional-items ff-form-item" 
+            :class="errors.has('customPage') ? 'is-error' : ''"
         >
             <template slot="label">
                 {{ $t('Select Page') }}
 
-                <el-tooltip class="item" placement="bottom-start" effect="light">
+                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                     <div slot="content">
-                        <h3>{{ ('Redirect Form to Page') }}</h3>
-
                         <p>
-                            {{ $t('Select the page you would like the user to be ') }}<br>
-                            {{ $t('redirected to after they have submitted the form.') }}
+                            {{ $t('Select the page you would like the user to be redirected to after they have submitted the form.') }}
                         </p>
                     </div>
 
-                    <i class="el-icon-info el-text-info" />
+                    <i class="ff-icon ff-icon-info-filled text-primary" />
                 </el-tooltip>
             </template>
 
-            <el-select v-model="confirmation.customPage" filterable placeholder="Select">
+            <el-select class="w-100" v-model="confirmation.customPage" filterable placeholder="Select">
                 <el-option
                     v-for="page in pages"
                     :key="page.ID"
@@ -116,29 +111,30 @@
         </el-form-item>
 
         <!--Custom URL-->
-        <el-form-item class="conditional-items" :class="errors.has('customUrl') ? 'is-error' : ''" v-else-if="confirmation.redirectTo === 'customUrl'">
+        <el-form-item 
+            class="conditional-items ff-form-item" 
+            :class="errors.has('customUrl') ? 'is-error' : ''" 
+            v-else-if="confirmation.redirectTo === 'customUrl'"
+        >
             <template slot="label">
                 {{ $t('Custom URL') }}
 
-                <el-tooltip class="item" placement="bottom-start" effect="light">
+                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                     <div slot="content">
-                        <h3>{{ $t('Redirect Form to URL') }}</h3>
-
                         <p>
-                            {{ $t('Enter the URL of the webpage you would ')}}<br>
-                            {{ $t('like the user to be redirected to after ')}}<br>
-                            {{ $t('they have submitted the form.') }}
+                            {{ $t('Enter the URL of the webpage you would like the user to be redirected to after they have submitted the form.')}}
                         </p>
                     </div>
 
-                    <i class="el-icon-info el-text-info" />
+                    <i class="ff-icon ff-icon-info-filled text-primary" />
                 </el-tooltip>
             </template>
 
-            <input-popover fieldType="text"
-                            :placeholder="$t('Redirect URL')"
-                            v-model="confirmation.customUrl"
-                            :data="inputsFirstShortcodes"
+            <input-popover 
+                fieldType="text"
+                :placeholder="$t('Redirect URL')"
+                v-model="confirmation.customUrl"
+                :data="inputsFirstShortcodes"
             ></input-popover>
 
             <error-view field="customUrl" :errors="errors" />
@@ -148,34 +144,32 @@
         <!-- Redirection Message to show-->
 
         <template v-if="confirmation.redirectTo === 'customPage' || confirmation.redirectTo === 'customUrl'">
-            <el-form-item :label="$t('Redirect Query String')" class="conditional-items">
+            <el-form-item :label="$t('Redirect Query String')" class="conditional-items ff-form-item">
                 <el-checkbox v-model="confirmation.enable_query_string" true-label="yes" false-label="no">
                     {{ $t('Pass Field Data Via Query String') }}
                 </el-checkbox>
-                <template v-if="confirmation.enable_query_string == 'yes'">
+                <div class="mt-3" v-if="confirmation.enable_query_string == 'yes'">
                     <input-popover
                         fieldType="text"
                         :placeholder="$t('Redirect Query String')"
                         v-model="confirmation.query_strings"
                         :data="inputsFirstShortcodes"
                     ></input-popover>
-                    <p><em>Sample: phone={inputs.phone}&email={inputs.email}</em></p>
-                </template>
+                    <p class="mt-1 fs-14"><em>Sample: phone={inputs.phone}&email={inputs.email}</em></p>
+                </div>
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item class="ff-form-item">
                 <template slot="label">
                     {{ $t('Redirection Message') }}
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
-                            <h3>{{ $t('Redirection Confirmation Message Text') }}</h3>
                             <p>
-                                {{ $t('Enter the text you would like the user to ')}}<br>
-                                {{ $t('see on the confirmation page when redirecting.') }}
+                                {{ $t('Enter the text you would like the user to see on the confirmation page when redirecting.')}}
                             </p>
                         </div>
 
-                        <i class="el-icon-info el-text-info" />
+                        <i class="ff-icon ff-icon-info-filled text-primary" />
                     </el-tooltip>
                 </template>
 

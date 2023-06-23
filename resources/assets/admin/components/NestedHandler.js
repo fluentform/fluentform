@@ -104,7 +104,7 @@ export default {
          * To check if element template is registered.
          */
         hasRegistered(item) {
-            if (!item || !item.editor_options) {
+            if(!item || !item.editor_options) {
                 return false;
             }
             const dynamicComponent = 'ff_' + item.editor_options.template;
@@ -115,7 +115,7 @@ export default {
 
         maybeConditionIcon(settings) {
             let status = settings && settings.conditional_logics && settings.conditional_logics.status;
-            if (status) {
+            if(status) {
                 return '<i class="el-icon el-icon-guide"></i>';
             }
             return '';

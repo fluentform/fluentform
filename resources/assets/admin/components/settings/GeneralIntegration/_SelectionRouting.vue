@@ -26,7 +26,7 @@
                 :editorShortcodes="editorShortcodes"
                 v-model="settings[field.key]"
             />
-            <p v-if="settings[field.routing_key] == 'simple' && field.inline_tip">{{field.inline_tip}}</p>
+            <p class="mt-1 fs-14" v-if="settings[field.routing_key] == 'simple' && field.inline_tip">{{field.inline_tip}}</p>
         </template>
         <el-checkbox v-model="settings[field.routing_key]" true-label="routing" false-label="simple">{{field.labels.choice_label}}</el-checkbox>
 

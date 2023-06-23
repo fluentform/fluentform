@@ -1,40 +1,41 @@
 <template>
-    <div v-loading="loading" class="ff_feed_editor">
-        <el-tabs  type="border-card">
+    <div v-loading="loading" class="ff_feed_editor ff_full_width_feed">
+        <el-tabs type="border-card">
             <el-tab-pane :label="$t('PDF Contents')">
-                <el-form v-if="feed.settings" label-position="left" label-width="205px">
+                <el-form v-if="feed.settings" label-position="top">
                     <field-mapper
-                            :field="{ component: 'value_text', label: 'Feed Title', placeholder: 'Feed Title' }"
-                            :editorShortcodes="editorShortcodes"
-                            :errors="errors"
-                            v-model="feed.name"
+                        :field="{ component: 'value_text', label: 'Feed Title', placeholder: 'Feed Title' }"
+                        :editorShortcodes="editorShortcodes"
+                        :errors="errors"
+                        v-model="feed.name"
                     >
                     </field-mapper>
 
                     <!-- form iteration loop -->
                     <field-mapper
-                            v-for="field in settings_fields"
-                            :key="field.key"
-                            :field="field"
-                            :errors="errors"
-                            :editorShortcodes="editorShortcodes"
-                            v-model="feed.settings[field.key]"
+                        v-for="field in settings_fields"
+                        :key="field.key"
+                        :field="field"
+                        :errors="errors"
+                        :editorShortcodes="editorShortcodes"
+                        v-model="feed.settings[field.key]"
                      />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
             </el-tab-pane>
+
             <el-tab-pane :label="$t('Appearance')">
-                <el-form v-if="feed.appearance" label-position="left" label-width="205px">
+                <el-form v-if="feed.appearance" label-position="top">
                     <field-mapper
-                            v-for="field in appearance_fields"
-                            :key="field.key"
-                            :field="field"
-                            :errors="errors"
-                            :editorShortcodes="editorShortcodes"
-                            v-model="feed.appearance[field.key]"
+                        v-for="field in appearance_fields"
+                        :key="field.key"
+                        :field="field"
+                        :errors="errors"
+                        :editorShortcodes="editorShortcodes"
+                        v-model="feed.appearance[field.key]"
                     />
                 </el-form>
-                <el-button v-loading="saving" @click="saveFeed()" type="success">{{ $t('Save Feed Settings') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -90,15 +91,10 @@
                     feed: this.feed
                 })
                     .then(response => {
-                        this.$notify.success({
-                            message: response.data.message
-                        });
+                        this.$success(response.data.message);
                     })
                     .fail((error) => {
-                        this.$notify.error({
-                            message: error.responseJSON.data.message
-                        });
-                        console.log(error);
+                        this.$fail(error.responseJSON.data.message);
                     })
                     .always(() => {
                         this.saving = false;

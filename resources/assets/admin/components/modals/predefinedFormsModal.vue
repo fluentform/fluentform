@@ -197,11 +197,7 @@
                 let selectedFormType = 'form';
                 if (form) {
                     if (form.is_pro && !window.FluentFormApp.hasPro) {
-                        return this.$notify.error({
-                            title: 'Pro Required!',
-                            message: 'This form required pro add-on of fluentform. Please install pro add-on',
-                            offset: 30
-                        });
+                        return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
                     }
                     selectedFormType = form.type;
                 }
@@ -225,19 +221,20 @@
                 this.postTypeSelectionDialogVisibility = true;
             },
             doCreateForm(data) {
-                FluentFormsGlobal.$get(data)
-                    .done((response) => {
-                        this.$notify.success({
-                            title: 'Congratulations!',
-                            message: response.data.message,
-                            offset: 30
-                        });
-                        window.location.href = response.data.redirect_url;
+                const url = FluentFormsGlobal.$rest.route('getForms');
+                
+                FluentFormsGlobal.$rest.post(url, data)
+                    .then((response) => {
+                        this.$success(response.message);
+
+                        if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        }
                     })
-                    .fail(error => {
-                        this.$message.error(error.responseJSON.data.message);
+                    .catch(error => {
+                        this.$fail(error.message);
                     })
-                    .always(() => {
+                    .finally(() => {
                         this.creatingForm = false;
                     });
             },
