@@ -295,3 +295,4 @@ if(defined('WP_FUSION_VERSION')) {
         return $integrations;
     });
 }
+
