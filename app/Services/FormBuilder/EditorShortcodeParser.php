@@ -143,7 +143,7 @@ class EditorShortcodeParser
             if (count($handlerArray) > 1) {
                 // it's a grouped handler
                 $group = array_shift($handlerArray);
-                $parsedValue = apply_filters_deprecated('fluentform_editor_shortcode_callback_group_' . $group, '{' . $handler . '}', $form, $handlerArray);
+                $parsedValue = apply_filters('fluentform_editor_shortcode_callback_group_' . $group, '{' . $handler . '}', $form, $handlerArray);
                 return apply_filters('fluentform/editor_shortcode_callback_group_' . $group, $parsedValue, $form, $handlerArray);
             }
 
