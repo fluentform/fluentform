@@ -152,7 +152,7 @@ class Helper
         $grid = apply_filters_deprecated(
             'fluentform_subfield_reportable_inputs',
             [
-                'tabular_grid'
+                ['tabular_grid']
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/subfield_reportable_inputs',
