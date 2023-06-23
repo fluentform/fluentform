@@ -31,7 +31,15 @@ class BaseComponent
             }
             $elementName = $data['attributes']['name'];
             $elementName = str_replace(['[', ']', ' '], '_', $elementName);
-            return 'ff_' . esc_attr($form->id) . '_' . $formInstance . '_' . esc_attr($elementName) . '';
+
+            $suffix = esc_attr($form->id);
+            if($formInstance > 1) {
+                $suffix = $suffix.'_'.$formInstance;
+            }
+
+            $suffix .= '_'.$elementName;
+
+            return 'ff_' . esc_attr($suffix);
         }
     }
 
