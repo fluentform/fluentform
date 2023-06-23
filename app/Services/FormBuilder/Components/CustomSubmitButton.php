@@ -141,7 +141,7 @@ class CustomSubmitButton extends BaseFieldManager
         $align = 'ff-el-group ff-text-' . @$data['settings']['align'];
 
         $btnClasses = [
-            'ff-btn-submit',
+            'ff-btn ff-btn-submit',
             $oldBtnType,
             $btnSize,
             $data['attributes']['class'],
@@ -150,7 +150,7 @@ class CustomSubmitButton extends BaseFieldManager
         if ('no_style' == $btnStyle) {
             $btnClasses[] = 'ff_btn_no_style';
         } else {
-            $btnClasses[] = 'ff-btn ff_btn_style';
+            $btnClasses[] = 'ff_btn_style';
         }
 
         $data['attributes']['class'] = trim(implode(' ', array_filter($btnClasses)));
