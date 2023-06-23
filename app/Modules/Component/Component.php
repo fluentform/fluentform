@@ -1097,9 +1097,11 @@ class Component
      */
     private function limitNumberOfEntries($restrictions, $form, &$isRenderable)
     {
+
         if (!$restrictions['enabled'] || !isset($restrictions['period']) || !isset($restrictions['numberOfEntries'])) {
             return true;
         }
+
 
         $col = 'created_at';
         $period = $restrictions['period'];
@@ -1117,17 +1119,17 @@ class Component
             $year = "YEAR(`{$col}`) = YEAR(NOW())";
             $month = "MONTH(`{$col}`) = MONTH(NOW())";
             $day = "DAY(`{$col}`) = DAY(NOW())";
-            $query->where(wpFluent()->raw("{$year} AND {$month} AND {$day}"));
+            $query->whereRaw(wpFluent()->raw("{$year} AND {$month} AND {$day}"));
         } elseif ('week' == $period) {
-            $query->where(
+            $query->whereRaw(
                 wpFluent()->raw("YEARWEEK(`{$col}`, 1) = YEARWEEK(CURDATE(), 1)")
             );
         } elseif ('month' == $period) {
             $year = "YEAR(`{$col}`) = YEAR(NOW())";
             $month = "MONTH(`{$col}`) = MONTH(NOW())";
-            $query->where(wpFluent()->raw("{$year} AND {$month}"));
+            $query->whereRaw(wpFluent()->raw("{$year} AND {$month}"));
         } elseif ('year' == $period) {
-            $query->where(wpFluent()->raw("YEAR(`{$col}`) = YEAR(NOW())"));
+            $query->whereRaw(wpFluent()->raw("YEAR(`{$col}`) = YEAR(NOW())"));
         } elseif ('per_user_ip' == $period) {
             $ip = $this->app->request->getIp();
             $query->where('ip', $ip);
