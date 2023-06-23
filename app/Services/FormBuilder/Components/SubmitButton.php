@@ -64,7 +64,7 @@ class SubmitButton extends BaseComponent
         $oldBtnType = isset($data['settings']['button_style']) ? '' : ' ff-btn-primary ';
 
         $btnClasses = [
-            'ff-btn ff-btn-submit',
+            'ff-btn-submit',
             $oldBtnType,
             $btnSize,
             $data['attributes']['class'],
@@ -73,7 +73,7 @@ class SubmitButton extends BaseComponent
         if ('no_style' == $btnStyle) {
             $btnClasses[] = 'ff_btn_no_style';
         } else {
-            $btnClasses[] = 'ff_btn_style';
+            $btnClasses[] = 'ff-btn ff_btn_style';
         }
 
         $align = 'ff-el-group ff-text-' . @$data['settings']['align'];
