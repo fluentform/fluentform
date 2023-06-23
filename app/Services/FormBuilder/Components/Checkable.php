@@ -122,7 +122,7 @@ class Checkable extends BaseComponent
                 $ariaRequired = 'true';
             }
 
-            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}' aria-label='{$ariaLabel}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
+            $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$atts} id='{$id}' aria-label='{$ariaLabel}' aria-invalid='false' aria-required={$ariaRequired}> <span class='ff_span'>" . $label . '</span></label>';
             $elMarkup .= '</div>';
         }
 
