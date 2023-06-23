@@ -10,7 +10,7 @@ return function ($file) {
     add_action('plugins_loaded', function () {
         $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.0.0', '<');
         if ($isNotCompatible) {
-            $message = '<div><h3>Fluent Forms Pro is not working. Update required!</h3><p>Current version of the pro plugin is not compatible with the latest version of Core Plugin. <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all') . '">' . __('Please update Fluent Forms Pro to latest version', 'fluentform') . '</a>.</p></div>';
+            $message = '<div><h3>Fluent Forms Pro is not working. Update required!</h3><p>Current version of the pro plugin is not compatible with the latest version of Core Plugin. <a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __('Please update Fluent Forms Pro to latest version', 'fluentform') . '</a>.</p></div>';
             $actions = [
                 'fluentform/global_menu',
                 'fluentform/after_form_menu',

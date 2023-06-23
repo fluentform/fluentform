@@ -177,7 +177,9 @@ class SubmissionHandlerService
                 $formData,
                 $form
             );
+
             Helper::setSubmissionMeta($insertId, 'is_form_action_fired', 'yes');
+
             do_action_deprecated(
                 'fluentform_submission_inserted_' . $form->type . '_form',
                 [
