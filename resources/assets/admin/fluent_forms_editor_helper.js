@@ -72,9 +72,7 @@ function initFFPreviewHelper($) {
             type = 'input';
         } else if (isCheckable) {
             type = 'checkable';
-        } else if (isSubmitBtn) {
-            type = 'submitBtn';
-        } else if (isSectionBreak) {
+        }  else if (isSectionBreak) {
             type = 'sectionBrk';
         }
         if (type != '') {
