@@ -33,7 +33,7 @@ class Form
 
     public function pushDesignTab($menuItems, $formId)
     {
-        if (! Helper::isConversionForm($formId)) {
+        if (!Helper::isConversionForm($formId)) {
             return $menuItems;
         }
 
@@ -41,12 +41,12 @@ class Form
 
         if (Acl::hasPermission('fluentform_forms_manager')) {
             $newItems = array_slice($menuItems, 0, 1, true) + [
-                'conversational_design' => [
-                    'slug'  => 'conversational_design',
-                    'title' => __('Design', 'fluentform'),
-                    'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=conversational_design'),
-                ],
-            ] + array_slice($menuItems, 1, count($menuItems) - 1, true);
+                    'conversational_design' => [
+                        'slug'  => 'conversational_design',
+                        'title' => __('Design', 'fluentform'),
+                        'url'   => admin_url('admin.php?page=fluent_forms&form_id=' . $formId . '&route=conversational_design'),
+                    ],
+                ] + array_slice($menuItems, 1, count($menuItems) - 1, true);
         }
 
         return $newItems;
@@ -54,7 +54,7 @@ class Form
 
     public function renderDesignSettings($formId)
     {
-        if (! Helper::isConversionForm($formId)) {
+        if (!Helper::isConversionForm($formId)) {
             echo 'Sorry! This is not a conversational form';
 
             return;
@@ -122,7 +122,7 @@ class Form
             'disable_branding'      => 'no',
             'hide_media_on_mobile'  => 'no',
             'key_hint'              => 'yes',
-            'asteriskPlacement'        => $this->getAsteriskPlacement($formId)
+            'asteriskPlacement'     => $this->getAsteriskPlacement($formId)
         ];
 
         return wp_parse_args($settings, $defaults);
@@ -157,12 +157,12 @@ class Form
             ],
         ];
 
-        if ($settings && ! isset($settings['i18n']['key_hint_text'])) {
+        if ($settings && !isset($settings['i18n']['key_hint_text'])) {
             $settings['i18n']['key_hint_text'] = $defaults['i18n']['key_hint_text'];
             $settings['i18n']['key_hint_tooltip'] = $defaults['i18n']['key_hint_tooltip'];
         }
 
-        if (! $settings || empty($settings['title'])) {
+        if (!$settings || empty($settings['title'])) {
             $form = wpFluent()->table('fluentform_forms')->find($formId);
             $settings['title'] = $form->title;
         }
@@ -203,7 +203,7 @@ class Form
 
         $request = wpFluentForm('request')->get();
 
-        if ((isset($request[$paramKey])) && ! wp_doing_ajax()) {
+        if ((isset($request[$paramKey])) && !wp_doing_ajax()) {
             $formId = intval(ArrayHelper::get($request, $paramKey));
             $shareKey = ArrayHelper::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
@@ -216,7 +216,7 @@ class Form
 
         $addOn = ArrayHelper::get($globalModules, $this->addOnKey);
 
-        if (! $addOn || 'yes' == $addOn) {
+        if (!$addOn || 'yes' == $addOn) {
             return true;
         }
 
@@ -234,7 +234,7 @@ class Form
             $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
             $activeStates = '';
             foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
-                if (! $styleValue) {
+                if (!$styleValue) {
                     continue;
                 }
                 if ('borderRadius' == $styleAtr) {
@@ -247,7 +247,7 @@ class Form
             }
             $hoverStates = '';
             foreach ($buttonHoverStyles as $styleAtr => $styleValue) {
-                if (! $styleValue) {
+                if (!$styleValue) {
                     continue;
                 }
                 if ('borderRadius' == $styleAtr) {
@@ -273,7 +273,7 @@ class Form
 
     public function filterAcceptedFields($components, $formId)
     {
-        if (! Helper::isConversionForm($formId)) {
+        if (!Helper::isConversionForm($formId)) {
             return $components;
         }
 
@@ -364,7 +364,7 @@ class Form
                 }
             }
         }
-    
+
         $elements = apply_filters_deprecated(
             'fluent_conversational_editor_elements',
             [
@@ -419,7 +419,7 @@ class Form
     private function getRegisteredScripts()
     {
         global $wp_scripts;
-        if (! $wp_scripts) {
+        if (!$wp_scripts) {
             return [];
         }
 
@@ -436,12 +436,12 @@ class Form
             $item = $wp_scripts->registered[$script];
             $src = $wp_scripts->registered[$script]->src;
 
-            if (false === ! strpos($src, $pluginUrl)) {
+            if (false === !strpos($src, $pluginUrl)) {
                 continue;
             }
 
             foreach ($item->deps as $dep) {
-                if (! isset($items[$dep])) {
+                if (!isset($items[$dep])) {
                     $child = $wp_scripts->registered[$dep];
                     if ($child->src) {
                         $jsScripts[$dep] = $child;
@@ -466,7 +466,7 @@ class Form
     private function getRegisteredStyles()
     {
         $wp_styles = wp_styles();
-        if (! $wp_styles) {
+        if (!$wp_styles) {
             return [];
         }
 
@@ -475,36 +475,40 @@ class Form
         $pluginUrl = plugins_url() . '/fluentform';
 
         foreach ($wp_styles->queue as $style) {
+
+            if (!isset($wp_styles->registered[$style])) {
+                continue;
+            }
+
             $item = $wp_styles->registered[$style];
             $src = $wp_styles->registered[$style]->src;
 
-            if (false === ! strpos($src, $pluginUrl)) {
+            if (false === !strpos($src, $pluginUrl)) {
                 continue;
             }
 
-            if(!$item->deps) {
-                continue;
-            }
-
-            foreach ($item->deps as $dep) {
-                if (! isset($items[$dep])) {
-                    $child = $wp_styles->registered[$dep];
-                    if ($child->src) {
-                        $cssStyles[$dep] = $child;
-                    } else {
-                        // this core file maybe
-                        $childDependencies = $child->deps;
-                        if($childDependencies && is_array($childDependencies)) {
-                            foreach ($childDependencies as $childDependency) {
-                                $childX = $wp_styles->registered[$childDependency];
-                                if ($childX->src) {
-                                    $cssStyles[$childDependency] = $childX;
+            if ($item->deps) {
+                foreach ($item->deps as $dep) {
+                    if (!isset($items[$dep])) {
+                        $child = $wp_styles->registered[$dep];
+                        if ($child->src) {
+                            $cssStyles[$dep] = $child;
+                        } else {
+                            // this core file maybe
+                            $childDependencies = $child->deps;
+                            if ($childDependencies && is_array($childDependencies)) {
+                                foreach ($childDependencies as $childDependency) {
+                                    $childX = $wp_styles->registered[$childDependency];
+                                    if ($childX->src) {
+                                        $cssStyles[$childDependency] = $childX;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
             $cssStyles[$style] = $item;
         }
 
@@ -531,22 +535,22 @@ class Form
                 'questions'      => $form->questions,
                 'image_preloads' => $form->image_preloads,
                 'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool) $form->has_payment,
-                'hasCalculation' => (bool) $form->hasCalculation,
+                'hasPayment'     => (bool)$form->has_payment,
+                'hasCalculation' => (bool)$form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
             ],
-            'assetBaseUrl'         => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
-            'i18n'                 => $metaSettings['i18n'],
-            'form_id'              => $form->id,
-            'hasPro'               => defined('FLUENTFORMPRO'),
-            'is_inline_form'       => true,
-            'design'               => $designSettings,
-            'extra_inputs'         => $this->getExtraHiddenInputs($formId),
-            'uploading_txt'        => __('Uploading', 'fluentform'),
-            'upload_completed_txt' => __('100% Completed', 'fluentform'),
-            'paymentConfig'        => $this->getPaymentConfig($form),
-            'date_i18n'            => \FluentForm\App\Modules\Component\Component::getDatei18n()
+            'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
+            'i18n'                     => $metaSettings['i18n'],
+            'form_id'                  => $form->id,
+            'hasPro'                   => defined('FLUENTFORMPRO'),
+            'is_inline_form'           => true,
+            'design'                   => $designSettings,
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId),
+            'uploading_txt'            => __('Uploading', 'fluentform'),
+            'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'paymentConfig'            => $this->getPaymentConfig($form),
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
 
         $disableAnalytics = apply_filters_deprecated(
@@ -559,10 +563,10 @@ class Form
             'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
         );
 
-        if (! apply_filters('fluentform/disabled_analytics', $disableAnalytics)) {
-            if (! Acl::hasAnyFormPermission($form->id)) {
+        if (!apply_filters('fluentform/disabled_analytics', $disableAnalytics)) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
                 (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
-    
+
             }
         }
 
@@ -580,7 +584,7 @@ class Form
 
     public function maybeAlterPlacement($placements, $form)
     {
-        if (! Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
+        if (!Helper::isConversionForm($form->id) || empty($placements['terms_and_condition'])) {
             return $placements;
         }
 
@@ -593,7 +597,7 @@ class Form
         ];
 
         $placements['terms_and_condition']['generalExtras'] = [
-            'tc_agree_text' => [
+            'tc_agree_text'     => [
                 'template' => 'inputText',
                 'label'    => 'Agree Button Text',
             ],
@@ -624,7 +628,7 @@ class Form
     {
         $form = wpFluent()->table('fluentform_forms')->find($formId);
 
-        if (! $form) {
+        if (!$form) {
             return '';
         }
 
@@ -650,11 +654,11 @@ class Form
 
         $shareKey = ArrayHelper::get($metaSettings, 'share_key');
         if ($shareKey) {
-            if ($providedKey != $shareKey && ! Acl::hasAnyFormPermission($formId)) {
+            if ($providedKey != $shareKey && !Acl::hasAnyFormPermission($formId)) {
                 return '';
             }
         }
-    
+
         $form = apply_filters_deprecated(
             'fluentform_rendering_form',
             [
@@ -674,7 +678,7 @@ class Form
             ->where('meta_key', 'formSettings')
             ->first();
 
-        if (! $formSettings) {
+        if (!$formSettings) {
             return '';
         }
 
@@ -694,22 +698,22 @@ class Form
                 'questions'      => $form->questions,
                 'image_preloads' => $form->image_preloads,
                 'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool) $form->has_payment,
-                'hasCalculation' => (bool) $form->hasCalculation,
+                'hasPayment'     => (bool)$form->has_payment,
+                'hasCalculation' => (bool)$form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
             ],
-            'form_id'              => $form->id,
-            'assetBaseUrl'         => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
-            'i18n'                 => $metaSettings['i18n'],
-            'design'               => $designSettings,
-            'hasPro'               => defined('FLUENTFORMPRO'),
-            'extra_inputs'         => $this->getExtraHiddenInputs($formId),
-            'uploading_txt'        => __('Uploading', 'fluentform'),
-            'upload_completed_txt' => __('100% Completed', 'fluentform'),
-            'paymentConfig'        => $this->getPaymentConfig($form),
-            'date_i18n'            => \FluentForm\App\Modules\Component\Component::getDatei18n(),
-            'rest'                 => Helper::getRestInfo()
+            'form_id'                  => $form->id,
+            'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
+            'i18n'                     => $metaSettings['i18n'],
+            'design'                   => $designSettings,
+            'hasPro'                   => defined('FLUENTFORMPRO'),
+            'extra_inputs'             => $this->getExtraHiddenInputs($formId),
+            'uploading_txt'            => __('Uploading', 'fluentform'),
+            'upload_completed_txt'     => __('100% Completed', 'fluentform'),
+            'paymentConfig'            => $this->getPaymentConfig($form),
+            'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
+            'rest'                     => Helper::getRestInfo()
         ]);
 
         $this->printLoadedScripts();
@@ -718,7 +722,7 @@ class Form
             'status'  => true,
             'message' => '',
         ];
-    
+
         $isRenderable = apply_filters_deprecated(
             'fluentform_is_form_renderable',
             [
@@ -732,13 +736,13 @@ class Form
 
         $isRenderable = apply_filters('fluentform/is_form_renderable', $isRenderable, $form);
 
-        if (is_array($isRenderable) && ! $isRenderable['status']) {
-            if (! Acl::hasAnyFormPermission($form->id)) {
+        if (is_array($isRenderable) && !$isRenderable['status']) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
                 echo "<h1 style='width: 600px; margin: 200px auto; text-align: center;' id='ff_form_{$form->id}' class='ff_form_not_render'>" . wp_kses_post($isRenderable['message']) . '</h1>';
                 exit();
             }
         }
-    
+
         $status = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
@@ -749,8 +753,8 @@ class Form
             'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
         );
 
-        if (! apply_filters('fluentform/disabled_analytics', $status)) {
-            if (! Acl::hasAnyFormPermission($form->id)) {
+        if (!apply_filters('fluentform/disabled_analytics', $status)) {
+            if (!Acl::hasAnyFormPermission($form->id)) {
                 (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
             }
         }
@@ -827,13 +831,13 @@ class Form
                     'publishable_key' => $publishableKey,
                     'inlineConfig'    => \FluentFormPro\Payments\PaymentHelper::getStripeInlineConfig($form->id),
                 ],
-                'stripe_app_info' => [
+                'stripe_app_info'   => [
                     'name'       => 'Fluent Forms',
                     'version'    => FLUENTFORMPRO_VERSION,
                     'url'        => site_url(),
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d',
                 ],
-                'i18n' => [
+                'i18n'              => [
                     'item'            => __('Item', 'fluentformpro'),
                     'price'           => __('Price', 'fluentformpro'),
                     'qty'             => __('Qty', 'fluentformpro'),
@@ -862,7 +866,7 @@ class Form
             ->where('meta_key', 'formSettings')
             ->first();
 
-        if (! $formSettings) {
+        if (!$formSettings) {
             return '';
         }
 
