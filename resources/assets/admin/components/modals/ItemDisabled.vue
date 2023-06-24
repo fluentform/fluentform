@@ -38,9 +38,9 @@
                             </div>
                             <h3 class="mb-3 title">{{ modal.title }}</h3>
                             <p class="text">{{ modal.description }}</p>
-                            <el-button class="mt-2" type="primary" v-if="!modal.hidePro" target="_blank" :href="campaignUrl">
+                            <a class="el-button mt-2 el-button--primary" v-if="!modal.hidePro" target="_blank" :href="campaignUrl">
                                 {{ $t('Upgrade to PRO') }}
-                            </el-button>
+                            </a>
                         </div>
                     </el-col>
                 </el-row>
