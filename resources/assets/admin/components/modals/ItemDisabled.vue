@@ -66,7 +66,7 @@
                         <p>{{ $t('Accept Payment online as part of the Forms submission process.With Fluent Forms Powerful payment integration, you can easily accept and process payments in your Fluent Forms via Stripe / PayPal.Payment Module is available on Pro Version.') }}</p>
                         <a  target="_blank"
                             class="el-button el-button--danger"
-                            :href="pay_campaignUrl" >
+                            :href="campaignUrl" >
                             {{ $t('Upgrade to Pro Now') }}
                         </a>
                     </div>
