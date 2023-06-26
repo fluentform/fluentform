@@ -375,7 +375,7 @@ class SubmissionService
 
     public function getNotes($submissionId, $attributes)
     {
-        $formId = intval(Arr::get($attributes, 'form_id'));
+        $formId = (int) Arr::get($attributes, 'form_id');
         $apiLog = 'yes' === sanitize_text_field(Arr::get($attributes, 'api_log'));
 
         $metaKeys = ['_notes'];
@@ -423,7 +423,7 @@ class SubmissionService
 
     public function storeNote($submissionId, $attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'form_id'));
+        $formId = (int) Arr::get($attributes, 'form_id');
 
         $content = sanitize_textarea_field($attributes['note']['content']);
         $status = sanitize_text_field($attributes['note']['status']);

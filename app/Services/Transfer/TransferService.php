@@ -1,4 +1,5 @@
 <?php
+
 namespace FluentForm\App\Services\Transfer;
 
 use Exception;
@@ -17,8 +18,8 @@ class TransferService
     public static function exportForms($formIds)
     {
         $result = Form::with(['formMeta'])
-                      ->whereIn('id', $formIds)
-                      ->get();
+            ->whereIn('id', $formIds)
+            ->get();
 
         $forms = [];
         foreach ($result as $item) {
@@ -124,13 +125,13 @@ class TransferService
         if (!defined('FLUENTFORM_EXPORTING_ENTRIES')) {
             define('FLUENTFORM_EXPORTING_ENTRIES', true);
         }
-        $formId = intval(Arr::get($args, 'form_id'));
+        $formId = (int)Arr::get($args, 'form_id');
         try {
             $form = Form::findOrFail($formId);
         } catch (Exception $e) {
             exit('No Form Found');
         }
-        $type = sanitize_key(Arr::get($args,'format', 'csv'));
+        $type = sanitize_key(Arr::get($args, 'format', 'csv'));
         if (!in_array($type, ['csv', 'ods', 'xlsx', 'json'])) {
             exit('Invalid requested format');
         }
@@ -167,7 +168,7 @@ class TransferService
 
             $temp[] = @$submission->id;
             $temp[] = @$submission->status;
-            $temp[] = (string) @$submission->created_at;
+            $temp[] = (string)@$submission->created_at;
             $exportData[] = $temp;
         }
 

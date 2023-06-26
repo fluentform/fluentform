@@ -13,7 +13,7 @@ class SettingsService
     {
         $metaKey = sanitize_text_field(Arr::get($attributes, 'meta_key'));
 
-        $formId = intval(Arr::get($attributes, 'form_id'));
+        $formId = (int) Arr::get($attributes, 'form_id');
 
         $result = FormMeta::where(['meta_key' => $metaKey, 'form_id' => $formId])->get();
 
@@ -45,9 +45,7 @@ class SettingsService
             'Use fluentform/get_meta_key_settings_response instead of fluentform_get_meta_key_settings_response'
         );
 
-        $result = apply_filters('fluentform/get_meta_key_settings_response', $result, $formId, $metaKey);
-
-        return $result;
+        return apply_filters('fluentform/get_meta_key_settings_response', $result, $formId, $metaKey);
     }
 
     public function general($formId)

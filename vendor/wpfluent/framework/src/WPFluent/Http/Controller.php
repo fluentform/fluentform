@@ -61,16 +61,19 @@ abstract class Controller
 
     public function send($data = null, $code = 200)
     {
+        nocache_headers();
         return $this->response->send($data, $code);
     }
 
     public function sendSuccess($data = null, $code = 200)
     {
+        nocache_headers();
         return $this->response->sendSuccess($data, $code);
     }
 
     public function sendError($data = null, $code = null)
     {
+        nocache_headers();
         return $this->response->sendError($data, $code);
     }
 
