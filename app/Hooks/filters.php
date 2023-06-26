@@ -280,19 +280,3 @@ $app->addFilter('fluentform/response_render_input_number', function ($response, 
     return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
 }, 10, 4);
 
-
-if(defined('WP_FUSION_VERSION')) {
-
-// Support for wp-fusion integration
-// Before includes Fluent Forms integration wp-fusion plugin checks 'FluentForm\Framework\Foundation\Bootstrap' dependency class exist.
-// In Fluent Forms 5.0.0 'FluentForm\Framework\Foundation\Bootstrap' no longer exist.
-// We will replace 'FluentForm\Framework\Foundation\Bootstrap' to  'FluentForm\Framework\Foundation\Application' by respective filter hook provide by wp-fusion.
-// @todo - notify them for updating name also fluentforms hook they are used. If they confirm with update, remove bellow add_filter.
-    add_filter('wpf_integrations', function($integrations) {
-        if (is_array($integrations) && isset($integrations['fluent-forms'])) {
-            $integrations['fluent-forms'] = 'FluentForm\Framework\Foundation\Application';
-        }
-        return $integrations;
-    });
-}
-
