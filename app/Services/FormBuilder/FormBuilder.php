@@ -546,8 +546,7 @@ class FormBuilder
      */
     private function fieldsetHtml($form)
     {
-        return '<fieldset style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;
-                                 box-shadow: none!important;outline: none!important; min-inline-size: auto;">
+        return '<fieldset style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;">
                     <legend class="ff_screen_reader_title" style="display: block; margin: 0!important;padding: 0!important;height: 0!important;text-indent: -999999px;width: 0!important;">'
                             .$form->title.
                     '</legend>';
