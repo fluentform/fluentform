@@ -61,6 +61,8 @@ abstract class Controller
 
     public function send($data = null, $code = 200)
     {
+        do_action( 'litespeed_control_set_nocache', 'fluentform api request' );
+
         nocache_headers();
         return $this->response->send($data, $code);
     }
@@ -68,12 +70,16 @@ abstract class Controller
     public function sendSuccess($data = null, $code = 200)
     {
         nocache_headers();
+        do_action( 'litespeed_control_set_nocache', 'fluentform api request' );
+
         return $this->response->sendSuccess($data, $code);
     }
 
     public function sendError($data = null, $code = null)
     {
         nocache_headers();
+        do_action( 'litespeed_control_set_nocache', 'fluentform api request' );
+
         return $this->response->sendError($data, $code);
     }
 
@@ -89,6 +95,9 @@ abstract class Controller
 
     public function response($data, $code = 200)
     {
+        do_action( 'litespeed_control_set_nocache', 'fluentform api request' );
+        nocache_headers();
+
         return new WP_REST_Response($data, $code);
     }
 }
