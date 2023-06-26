@@ -1046,12 +1046,15 @@ class Menu
 
         $this->app->view->render('admin.tools.index');
     }
-
+    
     public function addPreviewButton($formId)
     {
-        $previewText = __('Preview', 'fluentform');
         $previewUrl = Helper::getPreviewUrl($formId);
-
+        $previewText = __('Preview & Design', 'fluentform');
+        $formId = (int)$formId;
+        if (Helper::isConversionForm($formId)) {
+            $previewText = __('Preview', 'fluentform');
+        }
         echo '<a target="_blank" class="el-button el-button--info is-plain" href="' . esc_url($previewUrl) . '">' . '<i class="ff-icon ff-icon-eye-filled fs-15"></i> ' . '<span>' . esc_attr($previewText) . '</span>' . '</a>';
     }
 
