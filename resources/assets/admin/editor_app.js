@@ -261,11 +261,13 @@ new Vue({
             let data = {
                 title: this.form.title,
                 formFields: JSON.stringify(formFields),
+                form_id: this.form_id,
+                action: 'fluentform-form-update'
             };
 
             const url = FluentFormsGlobal.$rest.route('updateForm', this.form_id);
 
-            FluentFormsGlobal.$rest.post(url, data)
+            FluentFormsGlobal.$post(data)
                 .then(response => {
                     this.$success(response.message);
                     this.form_saving = false;

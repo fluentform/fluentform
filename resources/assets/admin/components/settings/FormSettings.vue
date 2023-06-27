@@ -731,26 +731,26 @@
             saveSettings() {
                 this.loading = true;
 
-                let data = {
+                const data = {
+                    action: 'fluentform-save-settings-general-formSettings',
+                    form_id: this.form_id,
                     formSettings: JSON.stringify(this.formSettings),
                     advancedValidationSettings: JSON.stringify(this.advancedValidationSettings),
                     double_optin: JSON.stringify(this.double_optin),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
-                };
+                }
 
-                const url = FluentFormsGlobal.$rest.route('storeGeneralFormSettings', this.form_id);
-            
-                FluentFormsGlobal.$rest.post(url, data)
+                FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$success(response.message);
                     })
                     .catch(error => {
                         this.errors.record(error);
                     })
-                    .finally(() => {
+                    .always(() => {
                         this.loading = false;
                     });
-            },
+            }
         },
         mounted() {
             this.fetchSettings();

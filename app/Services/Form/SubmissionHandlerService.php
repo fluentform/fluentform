@@ -284,6 +284,9 @@ class SubmissionHandlerService
                 true
             );
             $message = $message ? $message : __('The form has been successfully submitted.', 'fluentform');
+
+            $message = fluentform_sanitize_html($message);
+
             $returnData = [
                 'message' => do_shortcode($message),
                 'action'  => $confirmation['samePageFormBehavior'],
@@ -357,7 +360,7 @@ class SubmissionHandlerService
             
             $returnData = [
                 'redirectUrl' => wp_sanitize_redirect(urldecode($redirectUrl)),
-                'message'     => $message,
+                'message'     => fluentform_sanitize_html($message),
             ];
         }
     

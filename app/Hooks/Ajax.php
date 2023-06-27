@@ -22,6 +22,43 @@ $app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
     (new \FluentForm\App\Http\Controllers\SubmissionHandlerController())->submit();
 });
 
+/*
+ * We are using this ajax call for updating form fields
+ * REST API seems not working for some servers with Mod Security Enabled
+ */
+$app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    try {
+        $formService = new \FluentForm\App\Services\Form\FormService();
+        $formService->update($app->request->all());
+        wp_send_json([
+            'message' => __('The form is successfully updated.', 'fluentform'),
+        ], 200);
+    } catch (\Exception $exception) {
+        wp_send_json([
+            'message' => $exception->getMessage(),
+        ], 422);
+    }
+});
+
+/*
+ * This ajax endpoint is used to update form general settings
+ * Mod-Security also block this request
+ */
+$app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    try {
+        $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
+        $settingsService->saveGeneral($app->request->all());
+        wp_send_json([
+            'message' => __('Settings has been saved.', 'fluentform'),
+        ]);
+    } catch (\FluentForm\Framework\Validator\ValidationException $exception) {
+        wp_send_json($exception->errors(), 423);
+    }
+});
+
+
 $app->addAction('wp_ajax_fluentform-global-settings', function () use ($app) {
     dd('wp_ajax_fluentform-global-settings');
     Acl::verify('fluentform_settings_manager');
@@ -50,12 +87,6 @@ $app->addAction('wp_ajax_fluentform-form-find', function () use ($app) {
     //No usage found
     Acl::verify('fluentform_dashboard_access');
     (new \FluentForm\App\Modules\Form\Form($app))->find();
-});
-
-$app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
-    dd('wp_ajax_fluentform-form-update');
-    Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Form($app))->update();
 });
 
 $app->addAction('wp_ajax_fluentform-form-delete', function () use ($app) {
@@ -120,12 +151,6 @@ $app->addAction('wp_ajax_fluentform-settings-general-formSettings', function () 
     dd('wp_ajax_fluentform-settings-general-formSettings');
     Acl::verify('fluentform_forms_manager');
     (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->getGeneralSettingsAjax();
-});
-
-$app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', function () use ($app) {
-    dd('wp_ajax_fluentform-save-settings-general-formSettings');
-    Acl::verify('fluentform_forms_manager');
-    (new \FluentForm\App\Modules\Form\Settings\FormSettings($app))->saveGeneralSettingsAjax();
 });
 
 $app->addAction('wp_ajax_fluentform-settings-formSettings-store', function () use ($app) {

@@ -403,6 +403,7 @@ function fluentform_sanitize_html($html)
         'fluentform/allowed_html_tags',
         'Use fluentform/allowed_html_tags instead of fluentform_allowed_html_tags'
     );
+
     $tags = apply_filters('fluentform/allowed_html_tags', $tags);
 
     return wp_kses($html, $tags);
@@ -423,29 +424,19 @@ function fluentform_kses_js($content)
  */
 function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
 {
+    $originalValues = $inputs;
     foreach ($inputs as $key => &$value) {
         if (is_array($value)) {
             $value = fluentform_backend_sanitizer($value, $sanitizeMap);
         } else {
             $method = ArrayHelper::get($sanitizeMap, $key);
-
             if (is_callable($method)) {
                 $value = call_user_func($method, $value);
             }
         }
     }
-    
-    $inputs = apply_filters_deprecated(
-        'fluent_backend_sanitized_values',
-        [
-            $inputs
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/backend_sanitized_values',
-        'Use fluentform/backend_sanitized_values instead of fluent_backend_sanitized_values'
-    );
 
-    return apply_filters('fluentform/backend_sanitized_values', $inputs);
+    return apply_filters('fluentform/backend_sanitized_values', $inputs, $originalValues);
 }
 
 /**
@@ -460,17 +451,7 @@ function fluentformSanitizeCSS($css)
 
 function fluentformCanUnfilteredHTML()
 {
-    $status = apply_filters_deprecated(
-        'fluent_form_disable_fields_sanitize',
-        [
-            false
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/disable_fields_sanitize',
-        'Use fluentform/disable_fields_sanitize instead of fluent_form_disable_fields_sanitize'
-    );
-
-    return current_user_can('unfiltered_html') || apply_filters('fluentform/disable_fields_sanitize', $status);
+    return current_user_can('unfiltered_html') || apply_filters('fluentform/disable_fields_sanitize', false);
 }
 
 function fluentformLoadFile($path)

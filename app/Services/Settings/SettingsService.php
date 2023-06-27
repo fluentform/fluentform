@@ -73,7 +73,7 @@ class SettingsService
 
     public function saveGeneral($attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'form_id'));
+        $formId = (int) Arr::get($attributes, 'form_id');
 
         $formSettings = json_decode(Arr::get($attributes, 'formSettings'), true);
 
@@ -162,11 +162,10 @@ class SettingsService
             'replyTo'                    => 'sanitize_text_field',
             'bcc'                        => 'sanitize_text_field',
             'subject'                    => 'sanitize_text_field',
-            'message'                    => 'wp_kses_post',
+            'message'                    => 'fluentform_sanitize_html',
             'url'                        => 'sanitize_url',
             'webhook'                    => 'sanitize_url',
             'textTitle'                  => 'sanitize_text_field',
-
         ];
 
         return fluentform_backend_sanitizer($settings, $sanitizerMap);

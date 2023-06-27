@@ -796,7 +796,7 @@ class Menu
 
     private function enqueueEditorAssets()
     {
-        $formId = intval($this->app->request->get('form_id'));
+        $formId = (int) $this->app->request->get('form_id');
 
         $form = wpFluent()->table('fluentform_forms')->find($formId);
 

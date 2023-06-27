@@ -247,7 +247,7 @@ class Form extends Model
                 ->delete();
 
             wpFluent()->table('fluentform_subscriptions')
-                ->whereIn('form_id', $formId)
+                ->where('form_id', $formId)
                 ->delete();
         }
     }
