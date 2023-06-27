@@ -173,7 +173,7 @@ class SettingsService
 
     public function store($attributes = [])
     {
-        $formId = intval(Arr::get($attributes, 'form_id'));
+        $formId = (int) Arr::get($attributes, 'form_id');
 
         $value = Arr::get($attributes, 'value', '');
 
@@ -207,15 +207,16 @@ class SettingsService
         // If the request has an valid id field it's safe to assume
         // that the user wants to update an existing settings.
         // So, we'll proceed to do so by finding it first.
-        $id = intval(Arr::get($attributes, 'meta_id'));
+        $id = (int) Arr::get($attributes, 'meta_id');
 
         $settingsQuery = FormMeta::where('form_id', $formId);
 
+        $settings = null;
         if ($id) {
             $settings = $settingsQuery->find($id);
         }
 
-        if (isset($settings)) {
+        if (!empty($settings)) {
             $settingsQuery->where('id', $settings->id)->update($data);
             $insertId = $settings->id;
         } else {

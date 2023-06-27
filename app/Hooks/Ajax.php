@@ -58,6 +58,26 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
     }
 });
 
+/*
+ * This ajax endpoint is used to update form email notifications settings
+ * Mod-Security also block this request
+ */
+$app->addAction('wp_ajax_fluentform-save-form-email-notification', function () use ($app) {
+    Acl::verify('fluentform_forms_manager');
+    try {
+        $settingsService = new \FluentForm\App\Services\Settings\SettingsService();
+        [$settingsId, $settings] = $settingsService->store($app->request->all());
+
+        wp_send_json([
+            'message'  => __('Settings has been saved.', 'fluentform'),
+            'id'       => $settingsId,
+            'settings' => $settings,
+        ]);
+    } catch (\FluentForm\Framework\Validator\ValidationException $exception) {
+        wp_send_json($exception->errors(), 423);
+    }
+});
+
 
 $app->addAction('wp_ajax_fluentform-global-settings', function () use ($app) {
     dd('wp_ajax_fluentform-global-settings');
