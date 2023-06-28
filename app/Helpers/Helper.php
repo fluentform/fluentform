@@ -295,6 +295,11 @@ class Helper
                 $result = shortcode_parse_atts($parsedCode);
 
                 if (!empty($result[$selector])) {
+
+                    if($tag == 'fluentform' && !empty($result['type']) && $result['type'] == 'conversational') {
+                        continue;
+                    }
+
                     $ids[$result[$selector]] = $result[$selector];
                 }
             }

@@ -56,7 +56,6 @@ class Form
     {
         if (!Helper::isConversionForm($formId)) {
             echo 'Sorry! This is not a conversational form';
-
             return;
         }
 
@@ -197,14 +196,19 @@ class Form
         );
 
         $paramKey = apply_filters('fluentform/conversational_url_slug', $paramKey);
+
         if ('form' == $paramKey) {
             $paramKey = $slug;
+        }
+
+        if(!isset($_REQUEST[$paramKey])) {
+            return;
         }
 
         $request = wpFluentForm('request')->get();
 
         if ((isset($request[$paramKey])) && !wp_doing_ajax()) {
-            $formId = intval(ArrayHelper::get($request, $paramKey));
+            $formId = (int) ArrayHelper::get($request, $paramKey);
             $shareKey = ArrayHelper::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
@@ -650,6 +654,10 @@ class Form
 
         $form->settings = json_decode($formSettings->value, true);
 
+        if($form->status == 'unpublished' && !Acl::hasAnyFormPermission($formId)) {
+            return '';
+        }
+
         $metaSettings = $this->getMetaSettings($formId);
 
         $shareKey = ArrayHelper::get($metaSettings, 'share_key');
@@ -657,6 +665,16 @@ class Form
             if ($providedKey != $shareKey && !Acl::hasAnyFormPermission($formId)) {
                 return '';
             }
+        }
+
+        $isRenderable = apply_filters('fluentform/is_form_renderable', [
+            'status'  => true,
+            'message' => '',
+        ], $form);
+
+        if (is_array($isRenderable) && !$isRenderable['status']) {
+            echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
+            exit(200);
         }
 
         $form = apply_filters_deprecated(
