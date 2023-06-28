@@ -103,7 +103,7 @@ class Helper
             'read'      => 'Read',
             'favorites' => 'Favorites',
         ];
-    
+
         $statuses = apply_filters_deprecated(
             'fluentform_entry_statuses_core',
             [
@@ -169,10 +169,10 @@ class Helper
 
     public static function setFormMeta($formId, $metaKey, $value)
     {
-       if ($meta = FormMeta::persist($formId, $metaKey, $value)) {
-           return $meta->id;
-       }
-       return null;
+        if ($meta = FormMeta::persist($formId, $metaKey, $value)) {
+            return $meta->id;
+        }
+        return null;
     }
 
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
@@ -182,10 +182,10 @@ class Helper
 
     public static function setSubmissionMeta($submissionId, $metaKey, $value, $formId = false)
     {
-      if ($meta = SubmissionMeta::persist($submissionId, $metaKey, $value, $formId)) {
-          return $meta->id;
-      }
-      return null;
+        if ($meta = SubmissionMeta::persist($submissionId, $metaKey, $value, $formId)) {
+            return $meta->id;
+        }
+        return null;
     }
 
     public static function isEntryAutoDeleteEnabled($formId)
@@ -303,6 +303,34 @@ class Helper
         return $ids;
     }
 
+    public static function getFormsIdsFromBlocks($content)
+    {
+        $ids = [];
+
+        if (!function_exists('parse_blocks')) {
+            return $ids;
+        }
+
+        $has_block = false !== strpos($content, '<!-- wp:fluentfom/guten-block' . ' ');
+
+        if (!$has_block) {
+            return $ids;
+        }
+
+        $parsedBlocks = parse_blocks($content);
+        foreach ($parsedBlocks as $block) {
+            if (!ArrayHelper::exists($block, 'blockName') || ArrayHelper::exists($block, 'attrs.formId')) {
+                continue;
+            }
+            $hasBlock = strpos($block['blockName'], 'fluentfom/guten-block') === 0;
+            if ($hasBlock) {
+                $ids[] = (int) $block['attrs']['formId'];
+            }
+        }
+
+        return $ids;
+    }
+
     public static function isTabIndexEnabled()
     {
         if ('na' == static::$tabIndexStatus) {
@@ -368,11 +396,11 @@ class Helper
     public static function getNumericFormatters()
     {
         $data = [
-            'none' => [
+            'none'                 => [
                 'value' => '',
                 'label' => 'None',
             ],
-            'comma_dot_style' => [
+            'comma_dot_style'      => [
                 'value'    => 'comma_dot_style',
                 'label'    => __('US Style with Decimal (EX: 123,456.00)', 'fluentform'),
                 'settings' => [
@@ -392,7 +420,7 @@ class Helper
                     'symbol'    => '',
                 ],
             ],
-            'dot_comma_style' => [
+            'dot_comma_style'      => [
                 'value'    => 'dot_comma_style',
                 'label'    => __('EU Style with Decimal (Ex: 123.456,00)', 'fluentform'),
                 'settings' => [
@@ -634,13 +662,13 @@ class Helper
 
         return $content;
     }
-    
+
     public static function sanitizeOrderValue($orderType = '')
     {
         $orderBys = ['ASC', 'DESC'];
-        
+
         $orderType = trim(strtoupper($orderType));
-        
+
         return in_array($orderType, $orderBys) ? $orderType : 'DESC';
     }
 
@@ -663,11 +691,11 @@ class Helper
         );
 
         return apply_filters('fluentform/truncate_password_values', $isTruncate, $formId) &&
-        (
-            (defined('FLUENTFORM_RENDERING_ENTRIES') && FLUENTFORM_RENDERING_ENTRIES) ||
-            (defined('FLUENTFORM_RENDERING_ENTRY') && FLUENTFORM_RENDERING_ENTRY) ||
-            (defined('FLUENTFORM_EXPORTING_ENTRIES') && FLUENTFORM_EXPORTING_ENTRIES)
-        );
+            (
+                (defined('FLUENTFORM_RENDERING_ENTRIES') && FLUENTFORM_RENDERING_ENTRIES) ||
+                (defined('FLUENTFORM_RENDERING_ENTRY') && FLUENTFORM_RENDERING_ENTRY) ||
+                (defined('FLUENTFORM_EXPORTING_ENTRIES') && FLUENTFORM_EXPORTING_ENTRIES)
+            );
     }
 
     // make tabular-grid value markdown format

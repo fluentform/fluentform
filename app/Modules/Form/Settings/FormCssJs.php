@@ -22,15 +22,15 @@ class FormCssJs
     {
         $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId);
         do_action('fluentform/adding_custom_styler_css_js', $formId, $metas);
-        $stylerCss = $selectedStyle = '';
+        $stylerCss = $selectedStyle = $customCss = '';
+
         foreach ($metas as $metaKey => $metaValue) {
             if ($metaValue) {
                 switch ($metaKey) {
                     case 'css':
                         $css = $metaValue;
                         $css = str_replace('{form_id}', $formId, $css);
-                        $css = str_replace('FF_ID', $formId, $css);
-                        $this->addCss($formId, $css, 'fluentform_custom_css_' . $formId);
+                        $customCss = str_replace('FF_ID', $formId, $css);
                         break;
                     case 'styler':
                         $stylerCss = $metaValue;
@@ -46,20 +46,14 @@ class FormCssJs
         }
         // Add styler css if a preset is selected
         if ($selectedStyle) {
-            do_action_deprecated(
-                'fluentform_init_custom_stylesheet',
-                [
-                    $selectedStyle,
-                    $formId
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/init_custom_stylesheet',
-                'Use fluentform/init_custom_stylesheet instead of fluentform_init_custom_stylesheet.'
-            );
             do_action('fluentform/init_custom_stylesheet', $selectedStyle, $formId);
             if (defined('FLUENTFORMPRO')) {
                 $this->addCss($formId, $stylerCss, 'fluentform_styler_css_' . $formId);
             }
+        }
+
+        if($customCss) {
+            $this->addCss($formId, $customCss, 'fluentform_custom_css_' . $formId);
         }
     }
 
@@ -97,19 +91,26 @@ class FormCssJs
     public function addCss($formId, $css, $cssId = 'fluentform_custom_css')
     {
         if ($css) {
-            if (!did_action('wp_head')) {
-                add_action('wp_head', function () use ($css, $formId, $cssId) {
-                    ?>
 
+            $action = false;
+
+            if(!did_action('wp_head')) {
+                $action = 'wp_head';
+            } else if(!did_action('wp_footer')) {
+                $action = 'wp_footer';
+            }
+
+            if($action) {
+                add_action($action, function () use ($css, $formId, $cssId) {
+                    ?>
                     <style id="<?php echo esc_attr($cssId); ?>" type="text/css">
                         <?php echo fluentformSanitizeCSS($css); ?>
                     </style>
 
                     <?php
-                }, 10);
+                }, 99);
             } else {
                 ?>
-
                 <style id="<?php echo esc_attr($cssId); ?>" type="text/css">
                     <?php echo fluentformSanitizeCSS($css); ?>
                 </style>

@@ -166,7 +166,7 @@ add_action('enqueue_block_editor_assets', function () {
         ->orderBy('id', 'DESC')
         ->get();
 
-    array_unshift($forms, (object) [
+    array_unshift($forms, (object)[
         'id'    => '',
         'title' => __('-- Select a form --', 'fluentform'),
     ]);
@@ -188,7 +188,7 @@ add_action('wp_print_scripts', function () {
         if (\FluentForm\App\Helpers\Helper::isFluentAdminPage()) {
             $option = get_option('_fluentform_global_form_settings');
             $isSkip = 'no' == \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.noConflictStatus');
-    
+
             $isSkip = apply_filters_deprecated(
                 'fluentform_skip_no_conflict',
                 [
@@ -467,7 +467,7 @@ $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use 
     }
 
     $app->view->render('admin.addons.pdf_promo', [
-        'public_url' => fluentFormMix(),
+        'public_url'   => fluentFormMix(),
         'install_url'  => $url,
         'is_installed' => defined('FLUENTFORM_PDF_VERSION'),
     ]);
@@ -492,6 +492,11 @@ if (defined('WP_ROCKET_VERSION')) {
 
 // from Common.php
 add_action('save_post', function ($post_id) use ($app) {
+
+    if (!is_post_type_viewable(get_post_type($post_id))) {
+        return;
+    }
+    
     $post_content = $app->request->get('post_content');
     if ($post_content) {
         $post_content = wp_kses_post(wp_unslash($post_content));
@@ -512,9 +517,17 @@ add_action('save_post', function ($post_id) use ($app) {
         'form_id'
     );
 
+    $gutenbergIds = Helper::getFormsIdsFromBlocks($post_content);
+
     if ($shortcodeModalIds) {
         $shortcodeIds = array_merge($shortcodeIds, $shortcodeModalIds);
     }
+
+    if ($gutenbergIds) {
+        $shortcodeIds = array_merge($shortcodeIds, $gutenbergIds);
+    }
+
+    $shortcodeIds = array_unique($shortcodeIds);
 
     if ($shortcodeIds) {
         update_post_meta($post_id, '_has_fluentform', $shortcodeIds);
@@ -635,7 +648,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 {
     try {
         $isDev = 'production' != wpFluentForm()->getEnv();
-    
+
         $isDev = apply_filters_deprecated(
             'fluentform_api_failed_log',
             [
@@ -685,7 +698,6 @@ $app->addAction('fluentform/load_form_assets', function ($formId) {
     if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
         (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId);
         \FluentForm\App\Helpers\Helper::$loadedForms[] = $formId;
-       
     }
 });
 
@@ -886,8 +898,8 @@ if (function_exists('register_block_type')) {
 
             return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"  type="' . $type . '"]');
         },
-        'attributes' => [
-            'formId' => [
+        'attributes'      => [
+            'formId'    => [
                 'type' => 'string',
             ],
             'className' => [
