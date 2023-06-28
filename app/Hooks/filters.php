@@ -280,3 +280,8 @@ $app->addFilter('fluentform/response_render_input_number', function ($response, 
     return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
 }, 10, 4);
 
+
+/*
+ * Remove this after WP Fusion Update their plugin
+ */
+add_filter('fluentform/is_integration_enabled_wpfusion', '__return_true');

@@ -61,7 +61,9 @@ class GlobalIntegrationService
     public function isEnabled($integrationKey)
     {
         $globalModules = get_option('fluentform_global_modules_status');
-        return $globalModules && isset($globalModules[$integrationKey]) && 'yes' == $globalModules[$integrationKey];
+        $isEnabled = $globalModules && isset($globalModules[$integrationKey]) && 'yes' == $globalModules[$integrationKey];
+
+        return apply_filters('fluentform/is_integration_enabled_'.$integrationKey, $isEnabled);
     }
 
     /**
