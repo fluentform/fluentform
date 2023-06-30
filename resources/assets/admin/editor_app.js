@@ -265,8 +265,6 @@ new Vue({
                 action: 'fluentform-form-update'
             };
 
-            const url = FluentFormsGlobal.$rest.route('updateForm', this.form_id);
-
             FluentFormsGlobal.$post(data)
                 .then(response => {
                     this.$success(response.message);
@@ -280,7 +278,8 @@ new Vue({
                     this.saveHash();
                 })
                 .catch(error => {
-                    this.$fail(error?.message || 'Saving failed');
+                    console.log(error);
+                    this.$fail(error?.responseJSON.message || 'Saving failed');
                     this.form_saving = false;
                 });
         },

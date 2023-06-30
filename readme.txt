@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.2.2
 Requires PHP: 7.1
-Stable tag: 5.0.4
+Stable tag: 5.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -384,6 +384,9 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.0.5 (Date: June 28, 2023) =
+ - Fixed Form Editor Update Error due to Old API
 
 = 5.0.4 (Date: June 28, 2023) =
  - Styling Improvement for Gutenberg Editor

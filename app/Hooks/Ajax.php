@@ -29,10 +29,20 @@ $app->addAction('wp_ajax_fluentform_submit', function () use ($app) {
 $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
     Acl::verify('fluentform_forms_manager');
     try {
+        $data = $app->request->all();
+        $isValidJson = (!empty($data['formFields'])) && json_decode($data['formFields'], true);
+
+        if(!$isValidJson) {
+            wp_send_json([
+                'message' => 'Looks like the provided JSON is invalid. Please try again or contact support',
+                'reason' => 'formFields JSON validation failed'
+            ], 423);
+        }
+
         $formService = new \FluentForm\App\Services\Form\FormService();
-        $formService->update($app->request->all());
+        $form = $formService->update($data);
         wp_send_json([
-            'message' => __('The form is successfully updated.', 'fluentform'),
+            'message' => __('The form is successfully updated.', 'fluentform')
         ], 200);
     } catch (\Exception $exception) {
         wp_send_json([
