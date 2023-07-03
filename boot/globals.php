@@ -382,6 +382,11 @@ function fluentform_sanitize_html($html)
                 'width'           => true,
                 'height'          => true,
                 'viewbox'         => true,
+                'fill'            => true,
+                'stroke'          => true,
+                'stroke-width'    => true,
+                'stroke-linecap'  => true,
+                'stroke-linejoin' => true
             ],
             'g'     => ['fill' => true],
             'title' => ['title' => true],
@@ -390,6 +395,9 @@ function fluentform_sanitize_html($html)
                 'fill'      => true,
                 'transform' => true,
             ],
+            'polyline' => [
+                'points' => true
+            ]
         ];
         $tags = array_merge($tags, $svg_args);
     }
