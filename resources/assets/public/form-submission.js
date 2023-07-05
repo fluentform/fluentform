@@ -263,10 +263,11 @@ jQuery(document).ready(function () {
 
                     $.post(ajaxRequestUrl, formData)
                         .then(function (res) {
-                            if (res?.data){
-
+                            if (res) {
                                 oldResponse = res;
-                                res = res?.data
+                                if (res?.data) {
+                                    res = res.data;
+                                }
                             }
                             if (!res || !res || !res.result) {
                                 // This is an error
