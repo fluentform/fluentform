@@ -130,7 +130,7 @@ class MailChimpIntegration extends IntegrationManager
             'logo'                  => $this->logo,
             'is_active'             => $this->isConfigured(),
             'configure_title'       => __('Configuration required!', 'fluentform'),
-            'global_configure_url'  => admin_url('admin.php?page=fluent_forms_settings#mailchimp'),
+            'global_configure_url'  => admin_url('admin.php?page=fluent_forms_settings#general-mailchimp-settings'),
             'configure_message'     => __('Mailchimp is not configured yet! Please configure your mailchimp api first', 'fluentform'),
             'configure_button_text' => __('Set Mailchimp API', 'fluentform'),
         ];
