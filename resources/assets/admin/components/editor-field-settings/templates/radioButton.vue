@@ -35,7 +35,7 @@ export default {
         }
     },
     mounted() {
-        if (this.$attrs.editItem?.settings && ('label' in this.$attrs.editItem.settings && !this.$attrs.editItem.settings.label)) {
+        if ('label' in this.$attrs.editItem.settings && !this.$attrs.editItem.settings.label) {
           this.show = false;
           this.$emit('input', '');
         }

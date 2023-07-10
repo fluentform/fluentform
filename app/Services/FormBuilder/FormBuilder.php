@@ -389,18 +389,6 @@ class FormBuilder
                 }
                 $this->extractValidationRule($innerItem);
             }
-        } elseif('multi_select_date' == $item['element']){
-            if('multiple' == $item['settings']['date_type']){
-                $rootName = $item['attributes']['name'];
-                foreach ($item['multi_field']['fields'] as $key => $innerItem) {
-                    $itemName = $innerItem['attributes']['name'];
-                    $innerItem['attributes']['name'] = $rootName . '[' . $itemName . ']';
-                    $this->extractValidationRule($innerItem);
-                }
-            }
-            else{
-                $this->extractValidationRule($item['single_field']);
-            }
         } elseif ('tabular_grid' == $item['element']) {
             $gridName = $item['attributes']['name'];
             $gridRows = $item['settings']['grid_rows'];
