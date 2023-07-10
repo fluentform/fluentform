@@ -512,17 +512,15 @@ class Component
 
         $this->app->addShortCode('fluentform_info', function ($atts) {
             $data = [
-                [
-                    'id'                 => null, // This is the form id
-                    'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
-                    'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
-                    'with_trashed'       => 'no', // yes | no
-                    'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
-                    'hide_on_zero'       => 'no',
-                    'payment_status'     => 'all', // it can be all / specific payment status
-                    'currency_formatted' => 'yes',
-                    'date_format'        => '',
-                ]
+                'id'                 => null, // This is the form id
+                'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
+                'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
+                'with_trashed'       => 'no', // yes | no
+                'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
+                'hide_on_zero'       => 'no',
+                'payment_status'     => 'all', // it can be all / specific payment status
+                'currency_formatted' => 'yes',
+                'date_format'        => '',
             ];
     
             $data = apply_filters_deprecated(
