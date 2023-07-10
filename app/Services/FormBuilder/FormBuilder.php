@@ -242,8 +242,8 @@ class FormBuilder
                     $form
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform_render_item_' . $item['element'],
-                'Use fluentform_render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
+                'fluentform/render_item_' . $item['element'],
+                'Use fluentform/render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
             );
 
             do_action('fluentform/render_item_' . $item['element'], $item, $form);
