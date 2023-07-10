@@ -491,17 +491,8 @@ class Component
                 'type'               => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ];
-    
-            $data = apply_filters_deprecated(
-                'fluentform_shortcode_defaults',
-                [
-                    $data,
-                    $atts
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/shortcode_defaults',
-                'Use fluentform/shortcode_defaults instead of fluentform_shortcode_defaults.'
-            );
+            /* This filter is deprecated, will be removed soon */
+            $data = apply_filters('fluentform_shortcode_defaults', $data, $atts );
 
             $shortcodeDefaults = apply_filters('fluentform/shortcode_defaults', $data, $atts);
 
@@ -522,19 +513,9 @@ class Component
                 'currency_formatted' => 'yes',
                 'date_format'        => '',
             ];
-    
-            $data = apply_filters_deprecated(
-                'fluentform_info_shortcode_defaults',
-                [
-                    $data,
-                    $atts
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/info_shortcode_defaults',
-                'Use fluentform/info_shortcode_defaults instead of fluentform_info_shortcode_defaults.'
-            );
-
-
+            /* This filter is deprecated, will be removed soon */
+            $data = apply_filters('fluentform_info_shortcode_defaults', $data, $atts );
+            
             $shortcodeDefaults = apply_filters('fluentform/info_shortcode_defaults', $data, $atts);
 
             $atts = shortcode_atts($shortcodeDefaults, $atts);
