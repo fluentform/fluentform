@@ -919,7 +919,7 @@
                     payment_statuses: this.selectedPaymentStatuses,
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
-                if (this.advancedFilter) {
+                if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
