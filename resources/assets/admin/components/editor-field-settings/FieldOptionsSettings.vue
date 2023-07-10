@@ -88,6 +88,7 @@ import inputCalculationSettings from './templates/inputCalculationSettings.vue';
 import inputNumber from './templates/inputNumber.vue';
 import customMask from './templates/customMask.vue';
 import nameFields from './templates/nameFields.vue';
+import dateFields from './templates/dateFields.vue';
 import inputValue from './templates/inputValue.vue';
 import inputColor from './templates/inputColor.vue';
 import inputRadio from './templates/inputRadio.vue';
@@ -139,6 +140,7 @@ export default {
         ff_customMask: customMask,
         ff_inputValue: inputValue,
         ff_nameFields: nameFields,
+        ff_dateFields: dateFields,
         ff_inputColor: inputColor,
         ff_radioButton: radioButton,
         ff_gridRowCols: gridRowCols,
