@@ -252,7 +252,7 @@ $app->addAction('wp_ajax_fluentform-form-report', function () use ($app) {
 
 $app->addAction('wp_ajax_fluentform-form-entries-export', function () use ($app) {
     Acl::verify('fluentform_entries_viewer');
-    (new \FluentForm\App\Http\Controllers\TransferController)->exportEntries();
+    (new \FluentForm\App\Modules\Transfer\Transfer())->exportEntries();
 });
 
 $app->addAction('wp_ajax_fluentform-get-entry', function () {
@@ -410,13 +410,13 @@ $app->addAction('wp_ajax_fluentform_install_fluentsmtp', function () {
 // Export forms
 $app->addAction('wp_ajax_fluentform-export-forms', function () use ($app) {
     Acl::verify('fluentform_settings_manager');
-    (new \FluentForm\App\Http\Controllers\TransferController)->exportForms();
+    (new \FluentForm\App\Modules\Transfer\Transfer())->exportForms();
 });
 
 // Import forms
 $app->addAction('wp_ajax_fluentform-import-forms', function () use ($app) {
     Acl::verify('fluentform_settings_manager');
-    (new \FluentForm\App\Http\Controllers\TransferController)->importForms();
+    (new \FluentForm\App\Modules\Transfer\Transfer())->importForms();
 });
 
 $app->addAction('wp_ajax_fluentform-get-all-forms', function () use ($app) {
