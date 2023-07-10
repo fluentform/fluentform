@@ -278,7 +278,8 @@ ol{
     color: #909399;
   }
   &_inner {
-    width: 890px;
+    width: auto;
+    max-width: 890px;
     margin: 0 auto;
     display: flex;
   }
