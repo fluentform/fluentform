@@ -186,7 +186,7 @@ class BaseComponent
         $requiredClass = $this->getRequiredClass(ArrayHelper::get($data, 'settings.validation_rules', []));
         $classes = trim('ff-el-input--label ' . $requiredClass . $this->getAsteriskPlacement($form));
 
-        return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($this->filterAriaLabel($label)) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
+        return "<div class='" . esc_attr($classes) . "'><label aria-label='" . esc_attr($this->removeShortcode($label)) . "' for='" . esc_attr($id) . "'>" . fluentform_sanitize_html($label) . '</label>' . $helpMessage . '</div>';
     }
 
     /**
@@ -256,7 +256,7 @@ class BaseComponent
                 '<div class="%1$s"><label %2$s aria-label="%3$s">%4$s</label>%5$s</div>',
                 esc_attr($labelClass),
                 $forStr,
-                esc_attr($this->filterAriaLabel($label)),
+                esc_attr($this->removeShortcode($label)),
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
             );
@@ -322,15 +322,18 @@ class BaseComponent
     }
 
     /**
-     * A helper method for remove any type of shortcode from aria label
+     * A helper method for remove shortcode from aria label
      *
      * @param string $label
      *
      * @return string $label
      */
-    protected function filterAriaLabel($label)
+    protected function removeShortcode($label)
     {
+        // Find all occurrences of text enclosed in curly braces.
         preg_match_all('/{(.*?)}/', $label, $matches);
+    
+        // If there are matches, remove them from the label.
         if ($matches[0]) {
             $label = trim(str_replace($matches[0], '', $label));
         }
