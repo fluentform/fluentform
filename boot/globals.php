@@ -233,20 +233,18 @@ function fluentform_mb_strpos($haystack, $needle)
 
 function fluentFormHandleScheduledTasks()
 {
-    // Let's run the feed actions
-    $handler = new \FluentForm\App\Services\WPAsync\FluentFormAsyncRequest(wpFluentForm());
-    $handler->processActions();
+    $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
+
+    if ($failedActions) {
+        $scheduler = wpFluentForm('fluentFormAsyncRequest');
+
+        foreach ($failedActions as $action) {
+            $scheduler->process($action);
+        }
+    }
 
     $rand = mt_rand(1, 10);
-    if ($rand >= 7) {
-        do_action_deprecated(
-            'fluentform_maybe_scheduled_jobs',
-            [
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/maybe_scheduled_jobs',
-            'Use fluentform/maybe_scheduled_jobs instead of fluentform_maybe_scheduled_jobs.'
-        );
+    if ($rand >= 5) {
         do_action('fluentform/maybe_scheduled_jobs');
     }
 }
