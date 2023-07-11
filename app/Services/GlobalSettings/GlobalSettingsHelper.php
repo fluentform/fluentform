@@ -294,8 +294,8 @@ class GlobalSettingsHelper
         update_option('_fluentform_email_report_summary', $settings);
 
         $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
-        if (!wp_next_scheduled($emailReportHookName)) {
-            wp_schedule_event(time(), 'daily', $emailReportHookName);
+        if (false === as_has_scheduled_action($emailReportHookName)) {
+            as_schedule_recurring_action(time(), 'daily', $emailReportHookName);
         }
 
         return true;
