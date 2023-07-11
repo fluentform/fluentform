@@ -190,13 +190,14 @@ class ActivationHandler
 
 
         $hookName = 'fluentform_do_scheduled_tasks';
-        if (false === as_has_scheduled_action($hookName)) {
-            as_schedule_recurring_action(time(), 'ff_every_five_minutes', $hookName, [], 'fluentform');
+        if (!wp_next_scheduled($hookName)) {
+            wp_schedule_event(time(), 'ff_every_five_minutes', $hookName);
         }
 
         $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
-        if (false === as_has_scheduled_action($emailReportHookName)) {
-            as_schedule_recurring_action(time(), 'daily', $emailReportHookName, [], 'fluentform');
+        if (!wp_next_scheduled($emailReportHookName)) {
+            wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
+
     }
 }
