@@ -191,12 +191,12 @@ class ActivationHandler
 
         $hookName = 'fluentform_do_scheduled_tasks';
         if (false === as_has_scheduled_action($hookName)) {
-            as_schedule_recurring_action(time(), 'ff_every_five_minutes', $hookName);
+            as_schedule_recurring_action(time(), 'ff_every_five_minutes', $hookName, [], 'fluentform');
         }
 
         $emailReportHookName = 'fluentform_do_email_report_scheduled_tasks';
         if (false === as_has_scheduled_action($emailReportHookName)) {
-            as_schedule_recurring_action(time(), 'daily', $emailReportHookName);
+            as_schedule_recurring_action(time(), 'daily', $emailReportHookName, [], 'fluentform');
         }
     }
 }
