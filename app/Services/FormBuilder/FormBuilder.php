@@ -157,17 +157,10 @@ class FormBuilder
         if ($isAccessible) {
             echo $this->fieldsetHtml($form);
         }
-
-        do_action_deprecated(
-            'fluentform_form_element_start',
-            [
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/form_element_start',
-            'Use fluentform/form_element_start instead of fluentform_form_element_start.'
-        );
-
+        
+        /* This hook is deprecated & will be removed soon */
+        do_action('fluentform_form_element_start', $form);
+        
         do_action('fluentform/form_element_start', $form);
 
         echo "<input type='hidden' name='__fluent_form_embded_post_id' value='" . get_the_ID() . "' />";
