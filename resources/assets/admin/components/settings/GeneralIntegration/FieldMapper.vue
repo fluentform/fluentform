@@ -20,7 +20,7 @@
             </template>
 
             <template v-else-if="field.component == 'pdf-builder'">
-                <pdf-builder v-model="model" :editorShortcodes="editorShortcodes" :editor_id="field.key" />
+                <pdf-builder v-model="model" :editorShortcodes="editorShortcodes" :editor_id="field.key" :height="600" />
             </template>
 
             <template v-else-if="field.component == 'value_text'">
