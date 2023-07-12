@@ -59,21 +59,15 @@ class FluentFormAsyncRequest
 
     public function dispatchAjax($data = [])
     {
-        apply_filters_deprecated(
-            'fluentform_https_local_ssl_verify',
-            [
-                false
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/https_local_ssl_verify',
-            'Use fluentform/https_local_ssl_verify instead of fluentform_https_local_ssl_verify.'
-        );
+        /* This hook is deprecated and will be removed soon */
+        $sslVerify = apply_filters('fluentform_https_local_ssl_verify', false);
+        
         $args = array(
             'timeout' => 0.1,
             'blocking' => false,
             'body' => $data,
             'cookies' => wpFluentForm('request')->cookie(),
-            'sslverify' => apply_filters('fluentform/https_local_ssl_verify', false),
+            'sslverify' => apply_filters('fluentform/https_local_ssl_verify', $sslVerify),
         );
 
         $queryArgs = array(
@@ -149,16 +143,9 @@ class FluentFormAsyncRequest
         }
 
         if($originId && !empty($form) && !empty($submission)) {
-            do_action_deprecated(
-                'fluentform_global_notify_completed',
-                [
-                    $submission->id,
-                    $form
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/global_notify_completed',
-                'Use fluentform/global_notify_completed instead of fluentform_global_notify_completed.'
-            );
+            /* This hook is deprecated and will be removed soon */
+            do_action('fluentform_global_notify_completed', $submission->id, $form);
+            
             do_action('fluentform/global_notify_completed', $submission->id, $form);
         }
     }
@@ -170,7 +157,7 @@ class FluentFormAsyncRequest
     }
 
     public function process($queue)
-    {        
+    {
         if (is_numeric($queue)) {
             $queue = wpFluent()->table($this->table)->where('status', 'pending')->find($queue);
         }
