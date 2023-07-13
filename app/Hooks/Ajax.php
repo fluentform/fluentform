@@ -549,3 +549,18 @@ $app->addAction('wp_ajax_fluentform_background_process', function () {
 $app->addAction('wp_ajax_nopriv_fluentform_background_process', function () {
     $this->app['fluentFormAsyncRequest']->handleBackgroundCall();
 });
+
+/*
+ * For REST API Nonce Renewal
+ */
+$app->addAction('wp_ajax_fluentform_renew_rest_nonce', function () {
+    if (!Acl::getCurrentUserPermissions()) {
+        wp_send_json([
+            'error' => 'You do not have permission to do this',
+        ], 403);
+    }
+    
+    wp_send_json([
+        'nonce' => wp_create_nonce('wp_rest'),
+    ], 200);
+});
