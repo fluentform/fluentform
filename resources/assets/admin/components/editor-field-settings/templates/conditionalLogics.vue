@@ -7,7 +7,7 @@
             <el-radio v-model="conditional_logics.status" :label="false">{{ $t('No') }}</el-radio>
         </el-form-item>
 
-        <template v-if="conditional_logics.status">
+        <div class="ff_conditions_warp" v-if="conditional_logics.status">
             <el-form-item>
                 <elLabel slot="label" :label="$t('Condition Match')"
                          :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')"></elLabel>
@@ -77,7 +77,7 @@
                     <action-btn-remove @click="decreaseLogic(i)" size="mini"></action-btn-remove>
                 </action-btn>
             </div>
-        </template>
+        </div>
 
         <el-dialog
                 width="30%"

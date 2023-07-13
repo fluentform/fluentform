@@ -67,6 +67,8 @@ return function ($file) {
     });
 
     fluentformLoadFile('Services/FluentConversational/plugin.php');
+    fluentformLoadFile('Services/Libraries/action-scheduler/action-scheduler.php');
+    
     (new FluentConversational)->boot();
     (new FormsMigrator())->boot();
 };
