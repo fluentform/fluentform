@@ -37,20 +37,21 @@
 
     &-btn {
       &:not(.ff_btn_no_style,.ff_upload_btn) {
-        display: inline-block;
-        font-weight: 500;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        user-select: none;
-        border: 1px solid #dadbdd;
-        padding: 12px 20px;
-        line-height: 1;
-        border-radius: 7px;
-        color: #1a7efb;
-        cursor: pointer;
-        background: #ecf5ff;
-        border-color: #b3d8ff;
+        //todo: remove this in next version
+        //display: inline-block;
+        //font-weight: 500;
+        //text-align: center;
+        //white-space: nowrap;
+        //vertical-align: middle;
+        //user-select: none;
+        //border: 1px solid #dadbdd;
+        //padding: 12px 20px;
+        //line-height: 1;
+        //border-radius: 7px;
+        //color: #1a7efb;
+        //cursor: pointer;
+        //background: #ecf5ff;
+        //border-color: #b3d8ff;
       }
 
       &.disabled {
