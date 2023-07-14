@@ -25,7 +25,7 @@ class SubmissionHandler
             $response = (new SubmissionHandlerService())->handleSubmission($data, $formId);
             return wp_send_json_success($response);
         } catch (ValidationException $e) {
-            return wp_send_json_error($e->errors(), $e->getCode());
+            return wp_send_json($e->errors(), $e->getCode());
         }
     }
 }
