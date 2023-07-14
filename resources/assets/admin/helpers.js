@@ -73,24 +73,3 @@ export const handleSidebarActiveLink = ($link, init = false) => {
         $link.siblings().find('.ff_list_submenu').slideUp();
     }
 }
-
-// Determines _ shorthand form lodash or not
-export const underscoreFromLodash = () => {
-    let isLodash = false;
-    
-    // If _ is defined and the function _.forEach exists then we know underscore OR lodash are in place
-    if ('undefined' != typeof (_) && 'function' == typeof (_.forEach)) {
-        
-        // A small sample of some functions that exist in lodash but not underscore
-        const funcs = ['get', 'set', 'at', 'cloneDeep'];
-        
-        // Simplest if assume exists to start
-        isLodash = true;
-        
-        funcs.forEach(function(func) {
-            // If just one of the functions do not exist, then not lodash
-            isLodash = ('function' != typeof (_[func])) ? false : isLodash;
-        });
-    }
-    return isLodash;
-};
