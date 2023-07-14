@@ -10,6 +10,7 @@ import juice from 'juice';
 import grapesjs from 'grapesjs';
 import blocksPlugin from 'grapesjs-blocks-basic';
 import shortcodePlugin from './plugins/shortcode';
+import loadComponents from './components';
 
 let borderColor = '#eee';
 
@@ -67,7 +68,6 @@ export default {
                 plugins: [
                     (editor) => blocksPlugin(editor, {
                         blocks: ['text', 'link', 'image'],
-                        flexGrid: true,
                     }),
                     editor => shortcodePlugin(editor, {
                         shortcodes: this.editorShortcodes,
@@ -89,37 +89,9 @@ export default {
                 `,
             });
             const panelManager = this.editor.Panels;
-
-            // Components manager
             const cmp = this.editor.Components;
-            const header = cmp.addComponent({
-                tagName: 'header',
-                components: this.value.header,
-                draggable: false,
-                removable: false,
-                copyable: false,
-                attributes: { class: 'ffp-header', id: 'ffp-header' }
-            });
 
-            // body 
-            const body = cmp.addComponent({
-                tagName: 'main',
-                components: this.value.body,
-                draggable: false,
-                removable: false,
-                copyable: false,
-                attributes: { class: 'ffp-body', id: 'ffp-body' },
-            });
-
-            // footer
-            const footer = cmp.addComponent({
-                tagName: 'footer',
-                components: this.value.footer,
-                draggable: false,
-                removable: false,
-                copyable: false,
-                attributes: { class: 'ffp-footer', id: 'ffp-footer', 'data-attr-footer': true },
-            });
+            const { header, body, footer } = loadComponents(cmp, this.value);
 
             var wrapper = cmp.getWrapper();
             // do not allow to drop components inside the body directly
@@ -129,6 +101,8 @@ export default {
                 // turn off default outline
                 this.editor.Commands.stop('core:component-outline');
                 panelManager.getButton('options', 'sw-visibility').set('active', false);
+                // set block view active by default
+                panelManager.getButton('views', 'open-blocks').set('active', true)
                 // turn off preview mode
                 panelManager.removeButton('options', 'preview');
                 // turn off view code
