@@ -48,7 +48,7 @@ function initFFPreviewHelper($) {
         let copyText = copy.text();
         let temp = $("<input>");
         body.append(temp);
-        temp.val(copyText).select();
+        temp.val(copyText.trim()).select();
         document.execCommand("copy");
         temp.remove();
         body.append(alertElem);
