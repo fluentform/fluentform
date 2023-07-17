@@ -84,7 +84,12 @@ class TransferService
 
                     if (isset($formItem['metas'])) {
                         foreach ($formItem['metas'] as $metaData) {
-                            FormMeta::persist($formId, Arr::get($metaData, 'meta_key'), Arr::get($metaData, 'value'));
+                            $settings = [
+                                'form_id'  => $formId,
+                                'meta_key' => Arr::get($metaData, 'meta_key'),
+                                'value'    => Arr::get($metaData, 'value'),
+                            ];
+                            FormMeta::insert($settings);
                         }
                     } else {
                         $oldKeys = [
