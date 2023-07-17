@@ -1,3 +1,43 @@
+@media (min-width: 1281px){
+  .ff_screen_editor{
+    .form_internal_menu_inner{
+      flex-direction: row;
+      .ff_menu{
+        margin-left: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .ff_screen_editor,
+  .ff_screen_settings,
+  .ff_screen_entries,
+  .ff_screen_msformentries,
+  .ff_screen_conversational_design {
+  .ff_menu_back{
+      display: flex;
+    }
+  }
+
+  .option-fields-section--content{
+    .v-row{
+      flex-direction: row;
+    }
+    .v-col--50{
+      width: 50%;
+      padding-bottom: 0;
+    }
+  }
+
+  .form-editor--body{
+    width: 65%;
+    padding: 50px;
+  }
+  .form-editor--sidebar{
+    width: 35%;
+  }
+
+}
 
 // tablet device
 @media (min-width: 769px) {
@@ -64,9 +104,6 @@
     width: 100%;
     left: 0 !important;
     top: 44px !important;
-    .ff-navigation-right {
-      display: none;
-    }
     ul.ff_setting_menu {
       float: right;
       padding-right: 10px !important;
@@ -74,9 +111,8 @@
         padding: 10px 3px !important;
       }
     }
-    .ff_form_name {
-      padding: 10px 5px !important;
-      max-width: 120px !important;
+    .ff_form_name_inner{
+      max-width: 100px;
     }
   }
   .ff_nav_action {
@@ -115,18 +151,15 @@
   .wpf_each_entry a {
     word-break: break-all;
   }
-  div#js-form-editor--body {
-    padding: 20px 0px;
-    .form-editor__body-content {
-      padding: 60px 0px !important;
-    }
-  }
 
   .wrap.ff_form_wrap.ff_screen_editor .form_internal_menu {
     top: 0 !important;
     .ff-navigation-right {
       display: block;
     }
+  }
+  .v-row{
+    flex-direction: row;
   }
 }
 

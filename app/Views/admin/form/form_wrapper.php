@@ -22,54 +22,58 @@
             </div>
         <?php endif; ?>
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
-			<span class="ml-1"><?php echo esc_html($form->title); ?></span>
+			<div class="ff_form_name_inner">
+                <?php echo esc_html($form->title); ?>
+            </div>
 		</div>
         <?php
             $extra_menu_class = 'normal_form_editor';
             if (\FluentForm\App\Helpers\Helper::hasPartialEntries($form->id)) $extra_menu_class = "partial_entries_form_editor";
         ?>
 
-		<ul class="ff_menu <?php echo esc_attr($extra_menu_class)?>">
-			<?php foreach ($menu_items as $menu_index => $menu_item): ?>
-				<li class="<?php if ($route == $menu_item['slug']) echo "active"; ?>">
-                    <a class="ff_menu_link" href="<?php echo esc_url($menu_item['url']); ?><?php if (isset($menu_item['hash'])) echo "#". esc_attr($menu_item['hash']); ?>">
-                        <?php echo esc_html($menu_item['title']); ?>
-                    </a>
-                </li>
-			<?php endforeach; ?>
-		</ul>
-		
-		<div class="ff-navigation-right">
-			<?php
+        <div class="form_internal_menu_inner">
+            <ul class="ff_menu <?php echo esc_attr($extra_menu_class)?>">
+                <?php foreach ($menu_items as $menu_index => $menu_item): ?>
+                    <li class="<?php if ($route == $menu_item['slug']) echo "active"; ?>">
+                        <a class="ff_menu_link" href="<?php echo esc_url($menu_item['url']); ?><?php if (isset($menu_item['hash'])) echo "#". esc_attr($menu_item['hash']); ?>">
+                            <?php echo esc_html($menu_item['title']); ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            
+            <div class="ff-navigation-right">
+                <?php
+                    do_action_deprecated(
+                        'fluentform_after_form_navigation',
+                        [
+                            $form_id,
+                            $route
+                        ],
+                        FLUENTFORM_FRAMEWORK_UPGRADE,
+                        'fluentform/after_form_navigation',
+                        'Use fluentform/after_form_navigation instead of fluentform_after_form_navigation.'
+                    );
+                    do_action('fluentform/after_form_navigation', $form_id, $route);
+                ?>
+                <?php
                 do_action_deprecated(
-                    'fluentform_after_form_navigation',
+                    'fluentform_after_form_navigation_' . $route,
                     [
-                        $form_id,
-                        $route
+                        $form_id
                     ],
                     FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform/after_form_navigation',
-                    'Use fluentform/after_form_navigation instead of fluentform_after_form_navigation.'
+                    'fluentform/after_form_navigation_' . $route,
+                    'Use fluentform/after_form_navigation_' . $route . ' instead of fluentform_after_form_navigation_' . $route
                 );
-                do_action('fluentform/after_form_navigation', $form_id, $route);
-            ?>
-			<?php
-            do_action_deprecated(
-                'fluentform_after_form_navigation_' . $route,
-                [
-                    $form_id
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/after_form_navigation_' . $route,
-                'Use fluentform/after_form_navigation_' . $route . ' instead of fluentform_after_form_navigation_' . $route
-            );
-                do_action('fluentform/after_form_navigation_' . $route, $form_id);
-            ?>
+                    do_action('fluentform/after_form_navigation_' . $route, $form_id);
+                ?>
 
-			<div id="more-menu">
-				<more-menu />
-			</div>
-		</div>
+                <div id="more-menu">
+                    <more-menu />
+                </div>
+            </div>
+        </div>
 	</div>
     <?php
         do_action('fluentform/after_form_menu');

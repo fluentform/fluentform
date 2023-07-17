@@ -64,6 +64,10 @@
   padding-left: 20px;
   padding-right: 20px;
   display: flex;
+  &_inner{
+    display: flex;
+    width: 100%;
+  }
   .ff_setting_menu {
     display: inline-block;
     list-style: none;
@@ -950,17 +954,25 @@ body.ff_full_screen {
 
 // form name
 .ff_form_name {
-  padding-right: 20px;
-  padding-top: 16px;
-  padding-bottom: 18px;
+  padding-right: 10px;
   border-right: 1px solid $border-color;
-  text-overflow: ellipsis;
-  max-width: 160px;
-  white-space: nowrap;
-  overflow: hidden;
   font-size: 15px;
   color: $form-name-color;
   font-weight: 500;
+  position: relative;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  .el-icon-edit{
+    position: absolute;
+    left: 10px;
+  }
+  &_inner{
+    text-overflow: ellipsis;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }
 
 // editor setting
@@ -970,15 +982,16 @@ body.ff_full_screen {
 .ff_screen_msformentries,
 .ff_screen_conversational_design {
   .ff_menu {
-    padding-left: 20px;
-    padding-right: 20px;
+    display: flex;
+    margin-top: 0;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .ff_menu_back{
-    display: flex;
+    display: none;
     align-items: center;
     border-right: 1px solid $border-color;
-    padding-right: 16px;
-    margin-right: 16px;
+    padding-right: 10px;
     .el-icon{
       font-weight: 700;
     }
@@ -986,6 +999,9 @@ body.ff_full_screen {
       padding: 0;
       color: $menu-back-link-color;
     }
+  }
+  .ff-navigation-right{
+    display: flex;
   }
 }
 
@@ -997,6 +1013,23 @@ body.ff_full_screen {
     padding-top: 9px;
     padding-bottom: 9px;
     font-size: 14px;
+  }
+}
+
+.form_internal_menu_inner{
+  padding: 10px 10px 6px 10px;
+}
+
+.ff_screen_editor{
+  .ff_form_name{
+    padding-left: 30px;
+  }
+  .form_internal_menu_inner{
+    flex-direction: column;
+    .ff_menu{
+      margin-left: auto;
+      padding-bottom: 5px;
+    }
   }
 }
 
