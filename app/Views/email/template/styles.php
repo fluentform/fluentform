@@ -244,3 +244,9 @@ text-align: center !important;
 display: block !important;
 margin: 0 auto !important;
 }
+
+/* CSS styles for iOS devices - compensates for overly small font size on ios devices */
+@media screen and (max-device-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+*{font-size:28px;}
+*{line-height:1.3em;}
+}
