@@ -74,9 +74,21 @@
                 </div>
             </div>
         </div>
+        <span class="ff_menu_toggle">
+            <i class="ff-icon ff-icon-menu"></i>
+        </span>
 	</div>
+    
     <?php
         do_action('fluentform/after_form_menu');
+
+        wp_add_inline_script('fluent_forms_global', "
+            //for mobile nav
+            let targetElem = jQuery('.form_internal_menu_inner');
+            jQuery('.ff_menu_toggle').on('click', function() {
+                targetElem.toggleClass('active');
+            });
+        ");
     ?>
 
 	<div class="ff_form_application_container">
