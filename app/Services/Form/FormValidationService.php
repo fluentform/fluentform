@@ -378,7 +378,7 @@ class FormValidationService
     public function handleSpamError()
     {
         $settings = get_option('_fluentform_global_form_settings');
-        if (!$settings || 'validation_failed' != ArrayHelper::get($settings, 'misc.akismet_validation')) {
+        if (!$settings || 'validation_failed' != Arr::get($settings, 'misc.akismet_validation')) {
             return;
         }
         
