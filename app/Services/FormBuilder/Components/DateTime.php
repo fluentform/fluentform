@@ -31,7 +31,8 @@ class DateTime extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $html = '';
-        if (isset($data['settings']['date_type']) && $data['settings']['date_type'] === 'multiple') {
+        $dateType = ArrayHelper::get($data, 'settings.date_type');
+        if ('multiple' === $dateType) {
             $html = (new SelectDate())->buildHtml($data, $form);
         } else {
             $html = $this->buildHtml($data, $form);
@@ -55,10 +56,7 @@ class DateTime extends BaseComponent
     protected function buildHtml($data, $form)
     {
         $data['attributes']['id'] = $this->makeElementId($data, $form);
-        $defautlValue = ArrayHelper::get($data, 'settings.date_default_value');
-        if (empty($data['attributes']['value'])) {
-            $data['attributes']['value'] = $defautlValue;
-        }
+        $data['attributes']['value'] = ArrayHelper::get($data, 'settings.date_default_value');
         
         $data['attributes']['class'] = trim(
             'ff-el-form-control f-el-datepicker ' . $data['attributes']['class']
@@ -74,10 +72,10 @@ class DateTime extends BaseComponent
         $atts = $this->buildAttributes($data['attributes']);
         
         // Merged parent settings with field settings
-        $data['single_field']['attributes']['id'] = $data['attributes']['id'];
-        $data['single_field']['settings']['help_message'] = $data['settings']['help_message'];
-        $data['single_field']['settings']['container_class'] = $data['settings']['container_class'];
-        $data['single_field']['settings']['conditional_logics'] = $data['settings']['conditional_logics'];
+        $data['single_field']['attributes']['id'] = ArrayHelper::get($data, 'attributes.id');
+        $data['single_field']['settings']['help_message'] = ArrayHelper::get($data, 'settings.help_message');
+        $data['single_field']['settings']['container_class'] = ArrayHelper::get($data, 'settings.container_class');
+        $data['single_field']['settings']['conditional_logics'] = ArrayHelper::get($data, 'settings.conditional_logics');
         
         $ariaRequired = 'false';
         if (ArrayHelper::get($data, 'single_field.settings.validation_rules.required.value')) {

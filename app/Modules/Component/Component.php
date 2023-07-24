@@ -1007,7 +1007,6 @@ class Component
             'Name@compile'          => ['fluentform/render_item_input_name'],
             'TextArea@compile'      => ['fluentform/render_item_textarea'],
             'DateTime@compile'      => ['fluentform/render_item_input_date'],
-            'SelectDate@compile'    => ['fluentform/render_item_select_date'],
             'Recaptcha@compile'     => ['fluentform/render_item_recaptcha'],
             'Hcaptcha@compile'      => ['fluentform/render_item_hcaptcha'],
             'Turnstile@compile'     => ['fluentform/render_item_turnstile'],

@@ -358,8 +358,7 @@ class Extractor
                 // it to the extract field method to extract it's data.
                 $this->extractField($customField);
             }
-        }
-        elseif ($customField) {
+        } elseif ($customField) {
             // Extract parent element, settings, and attributes
             $parentElement = Arr::get($this->field, 'element');
             $parentSettings = Arr::get($this->field, 'settings');

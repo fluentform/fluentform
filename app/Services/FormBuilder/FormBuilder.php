@@ -374,7 +374,7 @@ class FormBuilder
         } elseif (isset($item['fields'])) {
             $rootName = $item['attributes']['name'];
             foreach ($item['fields'] as $key => $innerItem) {
-                if ('address' == $item['element'] || 'input_name' == $item['element'] || 'input_date' == $item['element']) {
+                if ('address' == $item['element'] || 'input_name' == $item['element']) {
                     $itemName = $innerItem['attributes']['name'];
                     $innerItem['attributes']['name'] = $rootName . '[' . $itemName . ']';
                 } else {
@@ -407,6 +407,20 @@ class FormBuilder
             foreach ($item['settings']['data_source']['headers'] as $select) {
                 $item['attributes']['name'] = $chainedSelectName . '[' . $select . ']';
                 $this->extractValidationRule($item);
+            }
+        } elseif (isset($item['settings']['date_type'])) {
+            if ('single' === $item['settings']['date_type']) {
+                $fieldValidation = ArrayHelper::get($item, 'single_field.settings.validation_rules');
+                $item['settings']['validation_rules'] = $fieldValidation;
+                $this->extractValidationRule($item);
+            } elseif ('multiple' === $item['settings']['date_type']) {
+                $rootName = $item['attributes']['name'];
+                $items = ArrayHelper::get($item, 'multi_field.fields');
+                foreach ($items as $key => $innerItem) {
+                    $itemName = $innerItem['attributes']['name'];
+                    $innerItem['attributes']['name'] = $rootName . '[' . $itemName . ']';
+                    $this->extractValidationRule($innerItem);
+                }
             }
         } else {
             $this->extractValidationRule($item);

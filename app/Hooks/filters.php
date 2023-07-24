@@ -71,18 +71,10 @@ add_action('fluentform/before_form_validation',function (){
 });
 
 $app->addFilter('fluentform/before_render_item', function($item) {
-    if ('input_date' === $item['element']) {
-        if (isset($item['settings']['date_type'])) {
-            if ('single' === $item['settings']['date_type']) {
-                $fieldValidation = \FluentForm\Framework\Helpers\ArrayHelper::get($item, 'single_field.settings.validation_rules');
-                $item['settings']['validation_rules'] = $fieldValidation;
-            } elseif ('multiple' === $item['settings']['date_type']) {
-                $item['fields'] = $item['multi_field']['fields'];
-            }
-        } else {
-            $item['single_field']['attributes'] = $item['attributes'];
-            $item['single_field']['settings'] = $item['settings'];
-        }
+    if ('input_date' === $item['element'] && !isset($item['settings']['date_type'])) {
+        $item['single_field']['attributes'] = $item['attributes'];
+        $item['single_field']['settings'] = $item['settings'];
+        $item['settings']['date_default_value'] = $item['attributes']['value'];
     }
     return $item;
 }, 10, 1);

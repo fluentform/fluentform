@@ -76,9 +76,9 @@
         </div>
     
     </el-form>
-    </template>
+</template>
     
-    <script type="text/babel">
+<script type="text/babel">
     
     import select from './templates/select.vue';
     import nameAttr from './templates/nameAttr.vue';
@@ -300,5 +300,5 @@
             }
         },
     };
-    </script>
+</script>
     

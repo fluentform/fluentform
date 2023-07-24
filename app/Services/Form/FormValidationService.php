@@ -52,6 +52,7 @@ class FormValidationService
         $this->validateReCaptcha();
         $this->validateHCaptcha();
         $this->validateTurnstile();
+        
         foreach ($fields as $fieldName => $field) {
             if (isset($formData[$fieldName])) {
                 $element = $field['element'];

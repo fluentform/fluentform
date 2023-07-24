@@ -102,7 +102,7 @@ export default {
             const customFormat = this.editItem.multi_field?.settings?.custom_format;
             if (!this.isFormatAvailable(customFormat)) {
                 return {
-                    message: 'Invalid format',
+                    message: 'Format not available',
                 };
             }
             return false;
