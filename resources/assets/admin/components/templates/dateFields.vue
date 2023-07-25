@@ -17,57 +17,57 @@
 </template>
     
 <script type="text/babel">
-    import inputDate from './inputDate.vue';
-    import select from './select.vue';
-    
-    export default {
-        name: 'dateFields',
-        props: ['item'],
-        components: {
-            'ff_inputDate': inputDate,
-            'ff_select': select
-        },
-        data() {
-            return {
-                columns: 0,
-                fieldSettings: this.item.multi_field?.settings,
-                formatMapping: FluentFormApp.element_customization_settings.custom_format.format_mapping,
-            }
-        },
-        computed: {
-            label() {
-                return this.item.multi_field?.settings?.label;
-            },
-            labelPlacement() {
-                return this.item.multi_field?.settings?.label_placement;
-            },
-            required() {
-                return this.item.multi_field?.settings?.validation_rules?.required?.value;
-            },
-            getOrderFields() {
-                const orderFields = [];
-                let dateFormat = this.item.multi_field?.settings?.date_format;
-                let customFormat = this.item.multi_field?.settings?.custom_format;
+import inputDate from './inputDate.vue';
+import select from './select.vue';
 
-                if (dateFormat === 'custom') {
-                    dateFormat = customFormat;
-                }
-                const dateOrder = this.getDateOrder(dateFormat);
-                dateOrder?.forEach((field) => {
-                    orderFields.push(field);
-                });
-                this.$set(this.fieldSettings, 'field_order', dateOrder);
-                this.columns = orderFields.length;
-                return orderFields;
-            }
-        },
-        methods: {
-            getField(field) {
-                return this.item.multi_field.fields[field];
-            },
-            getDateOrder(dateFormat) {
-                return this.formatMapping[dateFormat] || ['year'];
-            },
+export default {
+    name: 'dateFields',
+    props: ['item'],
+    components: {
+        'ff_inputDate': inputDate,
+        'ff_select': select
+    },
+    data() {
+        return {
+            columns: 0,
+            fieldSettings: this.item.multi_field?.settings,
+            formatMapping: FluentFormApp.element_customization_settings.custom_format.format_mapping,
         }
+    },
+    computed: {
+        label() {
+            return this.item.multi_field?.settings?.label;
+        },
+        labelPlacement() {
+            return this.item.multi_field?.settings?.label_placement;
+        },
+        required() {
+            return this.item.multi_field?.settings?.validation_rules?.required?.value;
+        },
+        getOrderFields() {
+            const orderFields = [];
+            let dateFormat = this.item.multi_field?.settings?.date_format;
+            let customFormat = this.item.multi_field?.settings?.custom_format;
+
+            if (dateFormat === 'custom') {
+                dateFormat = customFormat;
+            }
+            const dateOrder = this.getDateOrder(dateFormat);
+            dateOrder?.forEach((field) => {
+                orderFields.push(field);
+            });
+            this.$set(this.fieldSettings, 'field_order', dateOrder);
+            this.columns = orderFields.length;
+            return orderFields;
+        }
+    },
+    methods: {
+        getField(field) {
+            return this.item.multi_field.fields[field];
+        },
+        getDateOrder(dateFormat) {
+            return this.formatMapping[dateFormat] || ['year'];
+        },
     }
+}
 </script>

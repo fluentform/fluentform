@@ -13,6 +13,11 @@
                 <fieldOptionSettings
                     :field="field"
                 />
+                <inputText
+                    v-if="isMinute(i)"
+                    v-model="field.settings.interval"
+                    :listItem="{type: 'number', label: 'Minute Interval'}"
+                />
             </div>
         </div>
     </div>
@@ -20,12 +25,14 @@
 
 <script>
 import fieldOptionSettings from './fieldOptionSettings.vue';
+import inputText from './inputText.vue';
 
 export default {
     name: 'dateFieldSettings',
     props: ['format', 'label', 'fields'],
     components: {
         fieldOptionSettings,
+        inputText,
     },
     computed: {
         isFormatAvailable() {
@@ -44,6 +51,11 @@ export default {
                     case 'year':
                         return /y|Y/.test(this.format);
                 }
+            };
+        },
+        isMinute() {
+            return (key) => {
+                return key === 'minute';
             };
         }
     },

@@ -39,14 +39,12 @@ class SelectDate extends Select
         }
 
         // Merge parent settings with multi field settings
-        $data['multi_field']['attributes']['id'] = $data['attributes']['id'];
-        $data['multi_field']['settings']['help_message'] = $data['settings']['help_message'];
+        $data['multi_field']['attributes']['id'] = ArrayHelper::get($data, 'attributes.id');
+        $data['multi_field']['settings']['help_message'] = ArrayHelper::get($data, 'settings.help_message');
         $html .= $this->buildElementLabel($data['multi_field'], $form);
         
         $html .= "<div class='ff-t-container'>";
         
-        $startYear    = ArrayHelper::get($data, 'multi_field.fields.year.settings.validation_rules.min.value');
-        $endYear      = ArrayHelper::get($data, 'multi_field.fields.year.settings.validation_rules.max.value');
         $fields       = ArrayHelper::get($data, 'multi_field.fields');
         $fieldOrder   = ArrayHelper::get($data, 'multi_field.settings.field_order');
         $dateFormat   = ArrayHelper::get($data, 'multi_field.settings.date_format');
@@ -68,7 +66,7 @@ class SelectDate extends Select
                 $field['attributes']['tabindex'] = $tabIndex;
             }
 
-            $field['settings']['advanced_options'] = $this->getOptions($fieldName, $dateFormat, $startYear, $endYear);
+            $field['settings']['advanced_options'] = $this->getOptions($fieldName, $dateFormat, $field);
 
             $field['attributes']['id'] = $this->makeElementId($field, $form);
             $atts = $this->buildAttributes($field['attributes']);
@@ -107,10 +105,12 @@ class SelectDate extends Select
         return $options;
     }
 
-    protected function getMinuteOptions()
+    protected function getMinuteOptions($dateFormat, $field)
     {
+        $interval = ArrayHelper::get($field, 'settings.interval') ?: 1 ;
+
         $options = [];
-        for ($i = 0; $i <= 59; $i++) {
+        for ($i = 0; $i <= 59; $i += $interval) {
             $minuteValue = sprintf('%02d', $i);
             $options[] = [
                 'label' => $minuteValue,
@@ -177,8 +177,11 @@ class SelectDate extends Select
         return $options;
     }
 
-    protected function getYearOptions($dateFormat, $startYear, $endYear)
+    protected function getYearOptions($dateFormat, $field)
     {
+        $startYear = ArrayHelper::get($field, 'settings.validation_rules.min.value');
+        $endYear = ArrayHelper::get($field, 'settings.validation_rules.max.value');
+
         // Get the max and min year
         $minYear = min($startYear, $endYear);
         $maxYear = max($startYear, $endYear);
@@ -193,7 +196,7 @@ class SelectDate extends Select
         return $options;
     }
 
-    protected function getOptions($fieldName, $dateFormat, $startYear, $endYear)
+    protected function getOptions($fieldName, $dateFormat, $field)
     {
         $optionMethods = [
             'ampm' => 'getTimePeriodOptions',
@@ -208,11 +211,7 @@ class SelectDate extends Select
         // Check the map and call the corresponding method
         if (isset($optionMethods[$fieldName])) {
             $method = $optionMethods[$fieldName];
-            if ('year' === $fieldName) {
-                $options = $this->$method($dateFormat, $startYear, $endYear);
-                return $options;
-            }
-            $options = $this->$method($dateFormat);
+            $options = $this->$method($dateFormat, $field);
         }
         return $options;
     }

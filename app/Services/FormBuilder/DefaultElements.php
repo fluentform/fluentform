@@ -944,6 +944,7 @@ $defaultElements = [
                             'title'                 => __('Hour', 'fluentform'),
                             'help_message'          => '',
                             'container_class'       => '',
+                            'interval'              => 1,
                             'validation_rules'      => [
                                 'required' => [
                                     'value'   => false,
