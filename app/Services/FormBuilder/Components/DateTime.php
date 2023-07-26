@@ -30,8 +30,8 @@ class DateTime extends BaseComponent
         );
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        wp_enqueue_script('flatpickr');
-        wp_enqueue_style('flatpickr');
+        wp_enqueue_script('ff-flatpickr');
+        wp_enqueue_style('ff-flatpickr');
 
         $data['attributes']['class'] = trim(
             'ff-el-form-control ff-el-datepicker ' . $data['attributes']['class']
