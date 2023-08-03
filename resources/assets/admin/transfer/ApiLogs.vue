@@ -126,7 +126,7 @@
             </div><!-- .ff_card_body -->
 
         </div><!-- .ff_card -->
-    
+
     </div>
 </template>
 
@@ -137,6 +137,7 @@
 
   export default {
         name: 'ApiLogs',
+        props: ['app'],
         components:{
           remove
         },
@@ -162,9 +163,8 @@
         methods: {
             getLogs() {
                 this.loading = true;
-                
-                const url = FluentFormsGlobal.$rest.route('getLogs');
 
+                const url = FluentFormsGlobal.$rest.route('getLogs');
                 FluentFormsGlobal.$rest.get(url, {
                     page: this.paginate.current_page,
                     per_page: this.paginate.per_page,
@@ -262,6 +262,14 @@
         mounted() {
             this.getLogs();
             this.getAvailableFilters();
+        },
+        created() {
+            if (this.app.status_query != ''){
+                this.selected_status = this.app.status_query;
+            }
+            if (this.app.source_query != ''){
+                this.selected_component = this.app.source_query;
+            }
         }
-    }
+  }
 </script>

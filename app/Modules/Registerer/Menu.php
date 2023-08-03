@@ -1043,6 +1043,8 @@ class Menu
             'upgrade_url'  => fluentform_upgrade_url(),
             'hasPro'       => defined('FLUENTFORMPRO'),
             'transfer_str' => TranslationString::getTransferModuleI18n(),
+            'source_query' => sanitize_text_field($this->app->request->get('source')),
+            'status_query' => sanitize_text_field($this->app->request->get('status')),
         ]);
 
         $this->app->view->render('admin.tools.index');

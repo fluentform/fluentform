@@ -802,8 +802,9 @@ add_action('fluentform/integration_action_result', function ($feed, $status, $no
     wpFluent()->table('ff_scheduled_actions')
         ->where('id', $actionId)
         ->update([
-            'status' => $status,
-            'note'   => $note,
+            'status'     => $status,
+            'note'       => $note,
+            'updated_at' => current_time('mysql'),
         ]);
 }, 10, 3);
 
