@@ -993,7 +993,7 @@ export default {
          */
         formRenameSuccess(title) {
             this.form.title = title;
-            jQuery('#js-ff-nav-title').find('span').text(title);
+            jQuery('#js-ff-nav-title').find('div').text(title);
         }
     },
     created() {
