@@ -1102,7 +1102,8 @@ class TranslationString
             'Clear Data Source' => __('Clear Data Source', 'fluentform'),
             'Download Sample CSV' => __('Download Sample CSV', 'fluentform'),
             'No Active Payment Method Found.Please configure from Fluent Forms Settings' => __('No Active Payment Method Found. Please configure from Fluent Forms Settings', 'fluentform'),
-            'Layout Type' => __('Layout Type', 'fluentform')
+            'Layout Type' => __('Layout Type', 'fluentform'),
+            'Captcha has been enabled globally' => __('Captcha has been enabled globally', 'fluentform'),
         );
 
         return apply_filters('fluentform/editor_i18n', $i18n);

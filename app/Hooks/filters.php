@@ -110,6 +110,9 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     // place recaptcha below custom submit button
     $hasCustomSubmit = false;
     foreach ($form->fields['fields'] as $index => $field) {
+        if (in_array($field['element'], ['recaptcha', 'hcaptcha', 'turnstile'])) {
+            \FluentForm\Framework\Helpers\ArrayHelper::forget($form->fields['fields'], $index);
+        }
         if ('custom_submit_button' == $field['element']) {
             $hasCustomSubmit = true;
             array_splice($form->fields['fields'], $index, 0, [$captcha]);

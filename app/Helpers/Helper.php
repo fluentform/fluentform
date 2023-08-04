@@ -792,4 +792,8 @@ class Helper
 
         return $title;
     }
+
+    public static function isAutoloadCaptchaEnabled() {
+        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
+    }
 }
