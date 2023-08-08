@@ -25,8 +25,6 @@ class FormFieldsParser
 
     protected static $formsWith = [];
 
-    protected static $formFields = [];
-
     public static function maybeResetForm($form, $with)
     {
         if (!is_object($form) && is_numeric($form)) {
@@ -82,16 +80,10 @@ class FormFieldsParser
             static::$forms[$form->id] = [];
         }
 
-        $fieldsKeys = array_keys($fields);
-        $hasCache = isset(static::$forms[$form->id]['admin_labels']);
-        $shouldParse = !$hasCache || ($hasCache && array_diff(static::$formFields[$form->id], $fieldsKeys));
-
-        if ($shouldParse) {
+        if (!isset(static::$forms[$form->id]['admin_labels'])) {
             $parser = new FormParser($form);
             static::$forms[$form->id]['admin_labels'] = $parser->getAdminLabels($fields);
         }
-
-        static::$formFields[$form->id] = $fieldsKeys;
 
         return static::$forms[$form->id]['admin_labels'];
     }
