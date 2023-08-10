@@ -1821,6 +1821,15 @@ label.el-radio, label.el-checkbox {
 	}
 }
 
+.ff_chained_ajax_field {
+  display: flex;
+  flex: auto;
+  gap: 10px;
+  .el-select {
+    flex-basis: 100%;
+  }
+}
+
 @keyframes down {
 	0% {
     -webkit-transform: translate(0,-14px);
