@@ -55,7 +55,7 @@ if ($notices) {
     foreach ($notices as $noticeKey => $notice) :
         ?>
         <div class="ff_global_notice ff_notice_<?php echo esc_attr($notice['type']); ?>">
-            <?php echo esc_html($notice['message']); ?>
+            <?php echo wp_kses_post( $notice['message']); ?>
         </div>
     <?php
     endforeach;
