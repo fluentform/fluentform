@@ -166,7 +166,6 @@ input[type=checkbox]:disabled {
 .ff{
   &-select {
     -webkit-appearance: none !important;
-    background-color: $white !important;
     border-radius: $--input-border-radius !important;
     border: $--input-border !important;
     -webkit-box-sizing: border-box !important;
@@ -221,8 +220,7 @@ p {
   font: normal normal normal 14px/1 ultimateform;
   display: inline-block;
 }
-.el-input--prefix
-.el-input__inner {
+.el-input--prefix .el-input__inner {
   padding-left: 38px;
 }
 .el-input__prefix{
@@ -1848,7 +1846,7 @@ label.el-radio, label.el-checkbox {
 }
 
 100% {
-    -webkit-transform: translate(0,14);
+    -webkit-transform: translate(0, 14px);
     opacity: 0
 }
 }
