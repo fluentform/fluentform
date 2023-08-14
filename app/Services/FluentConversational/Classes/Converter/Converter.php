@@ -75,8 +75,75 @@ class Converter
                     $imagePreloads[] = $media;
                 }
             }
+            if ('address' === $field['element']) {
+                if ($order = ArrayHelper::get($field, 'settings.field_order')) {
+                    $order = array_values(array_column($order, 'value'));
+                    $fields = ArrayHelper::get($field, 'fields');
+                    $field['fields'] = array_merge(array_flip($order), $fields);
+                }
+                $googleAutoComplete = 'yes' === ArrayHelper::get($field, 'settings.enable_g_autocomplete');
+                if ($googleAutoComplete) {
+                    $question['ff_map_autocomplete'] = true;
+                    $question['ff_with_g_map'] = 'yes' == ArrayHelper::get($field, 'settings.enable_g_map');
+                    $question['ff_with_auto_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', false);
+                    $question['GmapApiKey'] = apply_filters('fluentform/conversational_form_address_gmap_api_key', '');
+                }
 
-            if ('input_text' === $field['element']) {
+                foreach ($field['fields'] as $item) {
+                    if ($item['settings']['visible']) {
+                        $itemQuestion = [
+                            'title'           => ArrayHelper::get($item, 'settings.label'),
+                            'container_class' => ArrayHelper::get($item, 'settings.container_class'),
+                            'required'        => ArrayHelper::get($item, 'settings.validation_rules.required.value'),
+                            'requiredMsg'     => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
+                            'errorMessage'    => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
+                            'validationRules' => ArrayHelper::get($item, 'settings.validation_rules'),
+                            'conditional_logics'   => self::parseConditionalLogic($item),
+                        ];
+                        if ('select_country' === $item['element']) {
+                            $countryComponent = new \FluentForm\App\Services\FormBuilder\Components\SelectCountry();
+                            $item = $countryComponent->loadCountries($item);
+                            $activeList = ArrayHelper::get($item, 'settings.country_list.active_list');
+                            if ('priority_based' == $activeList) {
+                                $selectCountries = ArrayHelper::get($item, 'settings.country_list.priority_based', []);
+                                $priorityCountries = $countryComponent->getSelectedCountries($selectCountries);
+                                $item['options'] = array_merge($priorityCountries, $item['options']);
+                            }
+
+                            if ('visible_list' === $activeList && $googleAutoComplete) {
+                                $restrictionCountries = (array) ArrayHelper::get($item, 'attributes.value', []);
+                                $restrictionCountries = array_unique(
+                                    array_merge(
+                                        $restrictionCountries,
+                                        ArrayHelper::get($item, 'settings.country_list.visible_list', [])
+                                    )
+                                );
+                                $question['autocomplete_restrictions'] = array_filter($restrictionCountries);
+                            }
+
+                            $options = [];
+                            $countries = $item['options'];
+                            foreach ($countries as $key => $value) {
+                                $options[] = [
+                                    'label' => $value,
+                                    'value' => $key,
+                                ];
+                            }
+                            $item['type'] = 'FlowFormTextType';
+                            $item['options'] = $options;
+                        }
+                        if ($itemQuestion['required']) {
+                            $question['requiredFields'][] = [
+                                "name"         => ArrayHelper::get($item, 'attributes.name', ''),
+                                'requiredMessage'  => ArrayHelper::get($item, 'settings.validation_rules.required.message')
+                            ];
+                            $question['required'] = true;
+                        }
+
+                        $question['fields'][] = wp_parse_args($itemQuestion, $item);
+                    }
+                }
+            } elseif ('input_text' === $field['element']) {
                 $mask = ArrayHelper::get($field, 'settings.temp_mask');
 
                 $mask = 'custom' === $mask ? ArrayHelper::get($field, 'attributes.data-mask') : $mask;
@@ -546,6 +613,7 @@ class Converter
             'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
             'recaptcha'             => 'FlowFormReCaptchaType',
             'hcaptcha'              => 'FlowFormHCaptchaType',
+            'address'               => 'FlowFormAddressType',
         ];
 
         if (defined('FLUENTFORMPRO')) {
