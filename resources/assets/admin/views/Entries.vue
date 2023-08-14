@@ -141,7 +141,7 @@
                         >
                         </el-input>
                     </btn-group-item>
-                    
+
                     <btn-group-item as="div">
                         <el-dropdown trigger="click" class="current_form_name_column" :hide-on-click="false">
                             <el-button>
@@ -228,6 +228,7 @@
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="6">
                     <el-table
+                         :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
                         :class="{'compact': isCompact}"
