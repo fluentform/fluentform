@@ -134,7 +134,8 @@
 
 // screen entries
 .ff_screen_entries,
-.ff_screen_msformentries {
+.ff_screen_msformentries,
+.ff_screen_inventory_list {
   .ff_form_application_container {
     padding: 24px;
   }
@@ -213,7 +214,7 @@
     transition: all .3s;
     max-height: 100vh;
   }
-  &-enter, 
+  &-enter,
   &-leave-to {
     max-height: 0;
   }
@@ -225,7 +226,7 @@
   transition: opacity 0.25s ease-out;
 }
 
-.fade-enter, 
+.fade-enter,
 .fade-leave-to{
   opacity: 0;
 }
@@ -239,7 +240,7 @@
   transition: all .25s cubic-bezier(0.25, 0.46, 0.45, 0.94); //ease-out-quad
 }
 
-.flip-enter, 
+.flip-enter,
 .flip-leave-to {
   transform: scaleY(0) translateZ(0);
   opacity: 0;
@@ -258,7 +259,7 @@
       }
     }
   }
-  &-date-editor 
+  &-date-editor
   .el-range-separator {
     width: 22px;
   }
@@ -702,7 +703,7 @@ table.ff_routing_table tr {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .ff-control-title, 
+    .ff-control-title,
     .ff-type-value {
       display: inline-block;
       color: $base-color;
@@ -984,6 +985,7 @@ body.ff_full_screen {
 .ff_screen_settings,
 .ff_screen_entries,
 .ff_screen_msformentries,
+.ff_screen_inventory_list,
 .ff_screen_conversational_design {
   .ff_menu {
     display: flex;
@@ -1228,6 +1230,15 @@ span + .ff_payment_badge{
 
 .el-tooltip__popper{
   max-width: 300px;
+}
+
+.ff_inventory_list{
+  .list_container{
+    border-radius: 8px;
+    box-shadow: 0px 1px 3px rgba(30, 31, 33, 0.08);
+    padding: 20px 24px;
+    background-color: #ffffff;
+  }
 }
 
 @import "../styles/responsive";

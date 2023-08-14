@@ -13,6 +13,7 @@
   .ff_screen_settings,
   .ff_screen_entries,
   .ff_screen_msformentries,
+  .ff_screen_inventory_list,
   .ff_screen_conversational_design {
   .ff_menu_back{
       display: flex;
@@ -59,13 +60,14 @@
     padding-left: 24px;
     padding-right: 24px;
   }
-  .ff_global_setting_wrap, 
-  .ff_tools_wrap, 
-  .ff_screen_settings, 
-  .ff_screen_entries, 
-  .ff_screen_conversational_design, 
+  .ff_global_setting_wrap,
+  .ff_tools_wrap,
+  .ff_screen_settings,
+  .ff_screen_entries,
+  .ff_screen_conversational_design,
   .ff_screen_msformentries,
-  .ff_screen_editor {
+  .ff_screen_editor,
+  .ff_screen_inventory_list {
     padding: 0;
   }
   .ff_form_editor_entries_actions{
@@ -212,10 +214,11 @@
     bottom: 0;
     transform: translateY(0);
   }
-  .ff_screen_editor .ff_menu, 
-  .ff_screen_settings .ff_menu, 
-  .ff_screen_entries .ff_menu, 
-  .ff_screen_msformentries .ff_menu, 
+  .ff_screen_editor .ff_menu,
+  .ff_screen_settings .ff_menu,
+  .ff_screen_entries .ff_menu,
+  .ff_screen_msformentries .ff_menu,
+  .ff_screen_inventory_list .ff_menu,
   .ff_screen_conversational_design .ff_menu{
     padding-right: 0;
     padding-left: 0;

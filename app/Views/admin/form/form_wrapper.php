@@ -14,13 +14,17 @@
     ?>
 	
 	<div class="form_internal_menu">
-        <?php if (isset($_SERVER['HTTP_REFERER'])): ?>
-            <div class="ff_menu_back">
-                <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
-                    <i class="el-icon el-icon-back"></i> Back
-                </a>
-            </div>
-        <?php endif; ?>
+        <?php
+        if ( is_array($menu_items) && count($menu_items) < 5){
+            if (isset($_SERVER['HTTP_REFERER'])): ?>
+                <div class="ff_menu_back">
+                    <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
+                        <i class="el-icon el-icon-back"></i> Back
+                    </a>
+                </div>
+            <?php endif;
+        }
+        ?>
         <div title="<?php echo esc_html($form->title); ?>" class="ff_form_name" id="js-ff-nav-title">
 			<div class="ff_form_name_inner">
                 <?php echo esc_html($form->title); ?>
