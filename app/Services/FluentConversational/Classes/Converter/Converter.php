@@ -140,6 +140,9 @@ class Converter
                             $question['required'] = true;
                         }
 
+                        if ($defaultValue = self::setDefaultValue(ArrayHelper::get($item, 'attributes.value'), $item, $form)) {
+                            $item['attributes']['value'] = $defaultValue;
+                        }
                         $question['fields'][] = wp_parse_args($itemQuestion, $item);
                     }
                 }
