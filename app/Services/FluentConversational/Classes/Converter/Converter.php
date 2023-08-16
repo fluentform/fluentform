@@ -82,7 +82,7 @@ class Converter
                     $field['fields'] = array_merge(array_flip($order), $fields);
                 }
                 $googleAutoComplete = 'yes' === ArrayHelper::get($field, 'settings.enable_g_autocomplete');
-                if ($googleAutoComplete) {
+                if (defined('FLUENTFORMPRO') && $googleAutoComplete) {
                     $question['ff_map_autocomplete'] = true;
                     $question['ff_with_g_map'] = 'yes' == ArrayHelper::get($field, 'settings.enable_g_map');
                     $question['ff_with_auto_locate'] = ArrayHelper::get($field, 'settings.enable_auto_locate', false);
