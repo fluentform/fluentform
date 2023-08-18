@@ -74,7 +74,7 @@ class TranslationString
             'Submission Logs' => __('Submission Logs', 'fluentform'),
             'General' => __('General', 'fluentform'),
             'API Calls' => __('API Calls', 'fluentform'),
-            'No Logs found' => __('No Logs found', 'fluen`tform'),
+            'No Logs found' => __('No Logs found', 'fluentform'),
             'Add Note' => __('Add Note', 'fluentform'),
             'Start date' => __('Start date', 'fluentform'),
             'End date' => __('End date', 'fluentform'),
