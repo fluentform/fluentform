@@ -644,9 +644,9 @@ export default {
             const saveBtn = jQuery('#saveFormData');
             if (this.form_saving) {
                 this.clearEditableObject(); // Empty {editItem} after form saved
-                saveBtn.html('<i class="el-icon-loading mr-1"></i> Save');
+                saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
             } else {
-                saveBtn.html('<i class="el-icon-success mr-1"></i> Save');
+                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form');
             }
         },
 
@@ -916,7 +916,7 @@ export default {
             var saveButton = jQuery('<button />', {
                 id: 'saveFormData',
                 class: 'el-button el-button--primary',
-                html: '<i class="el-icon-success mr-1"></i> Save'
+                html: '<i class="el-icon-success mr-1"></i> Save Form'
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
