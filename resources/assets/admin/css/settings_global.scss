@@ -1239,6 +1239,9 @@ span + .ff_payment_badge{
     padding: 20px 24px;
     background-color: #ffffff;
   }
+  .el-table__footer-wrapper tbody td.el-table__cell {
+    background-color: #e8f2ff;
+  }
 }
 
 @import "../styles/responsive";
