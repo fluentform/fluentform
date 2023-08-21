@@ -10,7 +10,7 @@
             <card-body>
                 <div class="ff_migrator_navigation">
                     <el-skeleton :loading="loading" animated :rows="8">
-                        <el-tabs v-model="currentFormType" @tab-click="getForms">
+                        <el-tabs v-if="migratorData.length" v-model="currentFormType" @tab-click="getForms">
                             <el-tab-pane 
                                 :label="migrators.name" 
                                 v-for="(migrators,index) in migratorData" 
@@ -147,6 +147,10 @@
                             </div>
                         
                         </el-tabs>
+                        <p v-else>
+                          <b>{{ $t('Please active any of the following: Caldera Forms, Gravity Forms, Ninja Forms or WPForms to start migrating to Fluent Forms.') }}</b>
+                          <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
+                        </p>
                     </el-skeleton>
                 </div>
             </card-body>

@@ -1283,6 +1283,8 @@ class TranslationString
             'Total Bills: ' => __('Total Bills', 'fluentform'),
             'No entry found.' => __('No entry found.', 'fluentform'),
             'Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.' => __('Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.', 'fluentform'),
+            'Please active any of the following: Caldera Forms, Gravity Forms, Ninja Forms or WPForms to start migrating to Fluent Forms.' => __('Please active any of the following: Caldera Forms, Gravity Forms, Ninja Forms or WPForms to start migrating to Fluent Forms.', 'fluentform'),
+            'Learn More' => __('Learn More', 'fluentform'),
 
             //pro step form entries
             'Partial Entries' => __('Partial Entries', 'fluentform'),
