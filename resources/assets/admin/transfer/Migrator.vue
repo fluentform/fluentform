@@ -148,7 +148,7 @@
                         
                         </el-tabs>
                         <p v-else>
-                          <b>{{ $t('Please active any of the following: Caldera Forms, Gravity Forms, Ninja Forms or WPForms to start migrating to Fluent Forms.') }}</b>
+                          <b>{{ $t('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.') }}</b>
                           <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
                         </p>
                     </el-skeleton>
