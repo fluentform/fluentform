@@ -106,7 +106,9 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     } elseif ('turnstile' == $type) {
         $captcha = $turnstile;
     }
-
+    if (!isset($captcha)) {
+        return $form;
+    }
     // place recaptcha below custom submit button
     $hasCustomSubmit = false;
     foreach ($form->fields['fields'] as $index => $field) {
