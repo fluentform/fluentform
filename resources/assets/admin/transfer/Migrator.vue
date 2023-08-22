@@ -11,15 +11,15 @@
                 <div class="ff_migrator_navigation">
                     <el-skeleton :loading="loading" animated :rows="8">
                         <el-tabs v-if="migratorData.length" v-model="currentFormType" @tab-click="getForms">
-                            <el-tab-pane 
-                                :label="migrators.name" 
-                                v-for="(migrators,index) in migratorData" 
+                            <el-tab-pane
+                                :label="migrators.name"
+                                v-for="(migrators,index) in migratorData"
                                 :key="index"
                                 :name="migrators.key"
                             >
                                 <div class="ff_migrator_navigation_header mt-1 mb-2">
                                     <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
-                                    <el-button v-if="forms.length" size="small" type="info" @click="importForms()"> 
+                                    <el-button v-if="forms.length" size="small" type="info" @click="importForms()">
                                         {{ $t('Import All Forms') }}
                                     </el-button>
                                 </div>
@@ -39,7 +39,7 @@
                                         min-width="140"
                                         :label="$t('Form Name')">
                                     </el-table-column>
-                                    
+
                                     <el-table-column
                                         :label="$t('Imported')"
                                         width="120"
@@ -53,7 +53,7 @@
                                             </span>
                                         </template>
                                     </el-table-column>
-                                    
+
                                     <el-table-column
                                         v-if="entryImportSupported"
                                         align="right"
@@ -61,10 +61,10 @@
                                         label=""
                                     >
                                         <template slot-scope="props">
-                                            <el-button 
-                                                v-if="entryImportSupported && props.row.imported_ff_id" 
+                                            <el-button
+                                                v-if="entryImportSupported && props.row.imported_ff_id"
                                                 class="el-button--soft"
-                                                size="mini" 
+                                                size="mini"
                                                 type="success"
                                                 @click="importEntries( props.row.imported_ff_id, props.row.id )"
                                             >
@@ -72,12 +72,12 @@
                                             </el-button>
                                         </template>
                                     </el-table-column>
-                                    
+
                                     <el-table-column width="160" :label="$t('Action')" align="right">
                                         <template slot-scope="props">
-                                            <el-button 
+                                            <el-button
                                                 class="el-button--soft"
-                                                size="mini" 
+                                                size="mini"
                                                 type="info"
                                                 @click="importForms([props.row.id])"
                                             >
@@ -88,14 +88,20 @@
                                 </el-table>
                             </div>
                             <div v-else>
-                                {{$t('No Forms Found')}}
+                                <span v-if="has_plugin">
+                                    {{$t('No Forms Found')}}
+                                </span>
+                                <span v-else>
+                                    <b>{{this.plugin_name}}</b> Plugin Not found
+                                </span>
+
                             </div>
 
                             <div class="ff_between_wrap mt-3">
                                 <el-button
                                     v-if="multipleSelection.length"
-                                    size="small" 
-                                    type="info" 
+                                    size="small"
+                                    type="info"
                                     icon="el-icon-success"
                                     @click="importForms(multipleSelection)"
                                 >
@@ -111,9 +117,9 @@
                                         :total="total">
                                     </el-pagination>
                                 </div>
-                                
+
                             </div>
-                        
+
                             <div v-if="migratedForms.length">
                                 <h5 class="mb-2 mt-5" style="border-top: 1px solid #ececec; padding-top: 20px;">{{ $t('Imported Forms') }}</h5>
                                 <div class="ff-table-container">
@@ -122,12 +128,12 @@
                                         :data="migratedForms"
                                         class="ff_migrator_response_table"
                                     >
-                                        
+
                                         <el-table-column
                                             prop="title"
                                             :label="$t('Imported Form')">
                                         </el-table-column>
-                                        
+
                                         <el-table-column width="120" prop="edit_url" label="" align="right">
                                             <template slot-scope="props">
                                                 <a :href="props.row.edit_url"> {{ $t('Edit Form') }}</a>
@@ -145,7 +151,7 @@
                                 <h4>{{ $t('Imported Form Entries') }}</h4>
                                 <a :href="entryPageUrl"> {{ $t('View Entries') }}</a>
                             </div>
-                        
+
                         </el-tabs>
                         <p v-else>
                           <b>{{ $t('Please active any of the following: Caldera Forms, Gravity Forms, Ninja Forms or WPForms to start migrating to Fluent Forms.') }}</b>
@@ -154,7 +160,7 @@
                     </el-skeleton>
                 </div>
             </card-body>
-        </card>    
+        </card>
     </div>
 </template>
 
@@ -166,9 +172,9 @@
     export default {
         name: "Migrator",
         components:{
-            Card, 
-            CardHead, 
-            CardBody 
+            Card,
+            CardHead,
+            CardBody
         },
         data() {
             return {
@@ -183,6 +189,8 @@
                 multipleSelection: [],
                 entryPageUrl : false,
                 unSupportedFields: [],
+                has_plugin : false,
+                plugin_name : ''
             }
         },
         methods: {
@@ -211,6 +219,13 @@
                     });
             },
             getForms() {
+                const selectedPlugin  = this.getSelectPlugin(this.currentFormType)
+                this.has_plugin = selectedPlugin.has_plugin
+                this.plugin_name = selectedPlugin.name
+                if (this.has_plugin == false){
+                    this.forms = [];
+                    return ;
+                }
                 this.loading = true;
                 this.multipleSelection = [];
                 FluentFormsGlobal.$post({
@@ -228,18 +243,18 @@
                     .always(() => {
                         this.loading = false;
                     });
-                
+
             },
             importForms(formIds = []) {
                 this.loading = true;
-                
+
                 FluentFormsGlobal.$post({
                     action: 'fluentform-migrator-import-forms',
                     form_ids: formIds,
                     form_type: this.currentFormType,
                 })
                     .then(response => {
-                        
+
                         if (response.status == true) {
                             this.migratedForms = response.inserted_forms;
                             this.unSupportedFields = response.unsupported_fields
@@ -249,14 +264,14 @@
                                 offset: 30
                             });
                             return;
-                            
+
                         }
                         this.$notify.error({
                             title: 'Error',
                             message: response.message,
                             offset: 30
                         });
-                        
+
                     })
                     .fail(error => {
                         this.$showAjaxError(error)
@@ -275,9 +290,9 @@
                     form_type: this.currentFormType,
                 })
                     .then(response => {
-                        
+
                         if (response.status == true) {
-                            
+
                             this.entryPageUrl = response.entries_page_url;
                             this.$notify.success({
                                 title: 'Success',
@@ -285,14 +300,14 @@
                                 offset: 30
                             });
                             return;
-                            
+
                         }
                         this.$notify.error({
                             title: 'Error',
                             message: response.message,
                             offset: 30
                         });
-                        
+
                     })
                     .fail(error => {
                         this.$showAjaxError(error)
@@ -310,7 +325,7 @@
                 return forms.slice(from, to);
             },
             handleSelectionChange(val) {
-                
+
                 let selectedIds = [];
                 for (let key in val) {
                     if (val[key].id) {
@@ -322,6 +337,7 @@
             setActiveTab() {
                 if (this.currentFormType == '0' && this.migratorData[0]) {
                     this.currentFormType = this.migratorData[0].key;
+                    this.has_plugin = this.migratorData[0].has_plugin;
                 }
             },
             $showAjaxError(error) {
@@ -338,6 +354,10 @@
                     message: message,
                     offset: 30
                 });
+            },
+            getSelectPlugin(key) {
+                const plugin = this.migratorData.find(plugin => plugin.key === key);
+                return plugin ? plugin : "";
             }
         },
         computed: {
@@ -348,6 +368,7 @@
                 let supported = ['caldera', 'ninja_forms', 'gravityform', 'wpforms'];
                 return supported.indexOf(this.currentFormType) !== -1
             },
+
         },
         mounted() {
             this.getMigratorData();
