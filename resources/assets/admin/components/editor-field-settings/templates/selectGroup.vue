@@ -44,6 +44,7 @@
 
                 FluentFormsGlobal.$post({
                     name: this.editItem.attributes.name,
+                    element: this.editItem.element,
                     form_id: window.FluentFormApp.form.id,
                     action: 'fluentform_select_group_ajax_data',
                 }).then(response => {
