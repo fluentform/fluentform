@@ -408,6 +408,19 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
        max-width: 100%;
      }
   }
+  .el-form-item__content .ff-el-calendar-wrapper{
+    text-align: center;
+    img{
+      max-height: 300px;
+    }
+  }
+  .ff-group-select .el-loading-spinner{
+    background-color: #f0f8ff;
+    border-radius: 7px;
+    .el-loading-text{
+      margin: 10px 0;
+    }
+  }
 }
 
 #wpwrap {

@@ -564,3 +564,12 @@ $app->addAction('wp_ajax_fluentform_renew_rest_nonce', function () {
         'nonce' => wp_create_nonce('wp_rest'),
     ], 200);
 });
+/*
+ * For selectGroup Component Grouped Options
+ * Use this filter to pass data to component
+ */
+
+add_action('wp_ajax_fluentform_select_group_ajax_data', function () {
+    $ajaxList = apply_filters('fluentform/select_group_component_ajax_options', []);
+    wp_send_json_success($ajaxList);
+});
