@@ -21,28 +21,34 @@ class Bootstrap
 
     public function availableMigrations()
     {
-        return [
-            [
-                'name'     => 'Caldera Forms',
-                'key'      => 'caldera',
-                'has_plugin' => (new CalderaMigrator())->exist(),
-            ],
-            [
-                'name'     => 'Ninja Forms',
-                'key'      => 'ninja_forms',
-                'has_plugin' => (new NinjaFormsMigrator())->exist()
-            ],
-            [
-                'name'     => 'Gravity Forms',
-                'key'      => 'gravityform',
-                'has_plugin' => (new GravityFormsMigrator())->exist(),
-            ],
-            [
-                'name'     => 'WPForms',
-                'key'      => 'wpforms',
-                'has_plugin' => (new WpFormsMigrator())->exist()
-            ]
-        ];
+        $migratorLinks = [];
+
+        if ((new CalderaMigrator())->exist()) {
+            $migratorLinks[] = [
+                'name' => 'Caldera Forms',
+                'key'  => 'caldera',
+            ];
+        }
+        if ((new NinjaFormsMigrator())->exist()) {
+            $migratorLinks[] = [
+                'name' => 'Ninja Forms',
+                'key'  => 'ninja_forms',
+            ];
+        }
+        if ((new GravityFormsMigrator())->exist()) {
+            $migratorLinks[] = [
+                'name' => 'Gravity Forms',
+                'key'  => 'gravityform',
+            ];
+        }
+        if ((new WpFormsMigrator())->exist()) {
+            $migratorLinks[] = [
+                'name' => 'WPForms',
+                'key'  => 'wpforms',
+            ];
+        }
+        return $migratorLinks;
+
     }
 
     public function setImporterType()
