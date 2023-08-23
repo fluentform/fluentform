@@ -440,16 +440,28 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
+= 5.0.8 (Date: Wed 23, 2023) =
+ - Adds address field in conversational form with Google Map Support
+ - Adds entries sort by column
+ - Fixes integration other’s field add or remove behaviour
+ - Fixes {all_data} and {all_data_without_hidden_fields} shortcode using together
+ - Fixes global enabled captcha issue in conversational Form
+ - Fixes form title update
+ - Fixes Slack integration toggle
+ - Adds Plugin Meta links
+ - Fixes forms submission next & preview order
+
+
 = 5.0.7 (Date: July 18, 2023) =
-- Fixes LiteSpeed caching issue
-- Fixes dynamic shortcode bug
-- Fixes style issues
-- Fixes PDF issue for checkbox field
-- Fixes post update issue for block themes
-- Fixes conditional issue for payment items
-- Fixes Double Opt-In save issue
-- Fixes entry export filter issue
-- Improves email on iOS devices
+ - Fixes LiteSpeed caching issue
+ - Fixes dynamic shortcode bug
+ - Fixes style issues
+ - Fixes PDF issue for checkbox field
+ - Fixes post update issue for block themes
+ - Fixes conditional issue for payment items
+ - Fixes Double Opt-In save issue
+ - Fixes entry export filter issue
+ - Improves email on iOS devices
 
 = 5.0.5 (Date: June 28, 2023) =
  - Fixed Form Editor Update Error due to Old API

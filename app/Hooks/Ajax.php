@@ -570,6 +570,7 @@ $app->addAction('wp_ajax_fluentform_renew_rest_nonce', function () {
  */
 
 add_action('wp_ajax_fluentform_select_group_ajax_data', function () {
-    $ajaxList = apply_filters('fluentform/select_group_component_ajax_options', []);
+    $requestData = wpFluentForm('request')->all();
+    $ajaxList = apply_filters('fluentform/select_group_component_ajax_options', [], $requestData);
     wp_send_json_success($ajaxList);
 });
