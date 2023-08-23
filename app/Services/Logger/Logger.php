@@ -14,27 +14,27 @@ class Logger
 {
     public function get($attributes = [])
     {
-        $status = Arr::get($attributes, 'status');
-        $formId = Arr::get($attributes, 'form_id');
-        $component = Arr::get($attributes, 'component');
+        $statuses = Arr::get($attributes, 'status');
+        $formIds = Arr::get($attributes, 'form_id');
+        $components = Arr::get($attributes, 'component');
         $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
         $type = Arr::get($attributes, 'type', 'log');
 
         [$table, $model, $columns, $join, $componentColumn] = $this->getBases($type);
-
+    
         $logsQuery = $model->select($columns)
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', $join)
             ->orderBy($table . '.id', $sortBy)
-            ->when($formId, function ($q) use ($formId) {
-                return $q->where('fluentform_forms.id', intval($formId));
+            ->when($formIds, function ($q) use ($formIds) {
+                return $q->whereIn('fluentform_forms.id', array_map('intval', $formIds));
             })
-            ->when($status, function ($q) use ($status, $table) {
-                return $q->where($table . '.status', sanitize_text_field($status));
+            ->when($statuses, function ($q) use ($statuses, $table) {
+                return $q->whereIn($table . '.status', array_map('sanitize_text_field', $statuses));
             })
-            ->when($component, function ($q) use ($component, $componentColumn) {
-                return $q->where($componentColumn, sanitize_text_field($component));
+            ->when($components, function ($q) use ($components, $componentColumn) {
+                return $q->whereIn($componentColumn, array_map('sanitize_text_field', $components));
             });
-
+    
         $logs = $logsQuery->paginate();
 
         $logItems = $logs->items();

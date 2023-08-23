@@ -1045,6 +1045,8 @@ class Menu
             'transfer_str' => TranslationString::getTransferModuleI18n(),
             'source_query' => sanitize_text_field($this->app->request->get('source')),
             'status_query' => sanitize_text_field($this->app->request->get('status')),
+            'date_start_query' => sanitize_text_field($this->app->request->get('start_date')),
+            'date_end_query' => sanitize_text_field($this->app->request->get('end_date')),
         ]);
 
         $this->app->view->render('admin.tools.index');

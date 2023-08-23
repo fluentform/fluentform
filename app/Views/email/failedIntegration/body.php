@@ -150,10 +150,10 @@
                                             <tbody>
                                                 <?php
                                                 /** @var Failed integration feeds $failed_feeds */
-                                                $i = 1;
+                                                $i = 0;
                                                 foreach ($failed_feeds as $feed) {
                                                     $i ++;
-                                                    if($i == 10){
+                                                    if ($i > 10) {
                                                         break;
                                                     }
                                                     ?>
