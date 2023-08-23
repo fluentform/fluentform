@@ -37,8 +37,13 @@ class Logger
                 return $q->whereIn($componentColumn, array_map('sanitize_text_field', $components));
             })
             ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $table) {
-                $startDate .= ' 00:00:01';
-                $endDate .= ' 23:59:59';
+                // Concatenate time if not time included on start/end date string
+                if ($startDate != date("Y-m-d H:i:s", strtotime($startDate))) {
+                    $startDate .= ' 00:00:01';
+                }
+                if ($endDate != date("Y-m-d H:i:s", strtotime($endDate))) {
+                    $endDate .= ' 23:59:59';
+                }
                 return $q->where($table . '.created_at', '>=', $startDate)
                     ->where($table . '.created_at', '<=', $endDate);
             });
