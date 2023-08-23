@@ -4,7 +4,7 @@
             <div class="ff_card_head">
                 <h5 class="title">{{$t('Api Logs')}}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{ $t('All the external CRM / API call logs and you can see and track if there has any issue with any of your API configuration. (Last 2 months data only)') }}
+                    {{ $t('Get external CRM and API call logs here. Track api logs activity. (Last 2 months logs)') }}
                 </p>
             </div><!-- .ff_card_head -->
             <div class="ff_card_body">
@@ -109,7 +109,7 @@
                                     <div>{{getReadableName(props.row.component)}}</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
+                            <el-table-column prop="updated_at" :label="$t('Date')" width="180"></el-table-column>
                             <el-table-column width="70" :label="$t('Action')">
                                 <template slot-scope="props">
                                     <remove :plain="true" @on-confirm="deleteItems(props.row.id)">

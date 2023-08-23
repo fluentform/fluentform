@@ -4,7 +4,7 @@
             <card-head>
                 <h5 class="title">{{ $t('Activity Logs') }}</h5>
                 <p class="text">
-                    {{ ('All the form submission & General internal logs. You can see and track if there has any issue with any of your Form.') }}
+                    {{ ('Get all form submissions and general activity logs here. Track activity of your forms.') }}
                 </p>
             </card-head>
             <card-body>
@@ -76,7 +76,7 @@
                                 </button>
                             </remove>
                         </div>
-                        
+
                         <el-table
                             :data="logs"
                             stripe
@@ -162,9 +162,9 @@
 	    props: ['app'],
         components:{
             remove,
-            Card, 
-            CardHead, 
-            CardBody 
+            Card,
+            CardHead,
+            CardBody
         },
         data() {
             return {

@@ -161,7 +161,7 @@
                                                     <td><?php echo $feed->integration_name ?></td>
                                                     <td><?php echo $feed->form->title ?></td>
                                                     <td><?php echo $feed->note ?></td>
-                                                    <td> <a href="<?php echo $feed->api_log_link?>"><?php _e('View','fluentform')?></a></td>
+                                                    <td> <a href="<?php echo $feed->submission_link?>"><?php _e('View','fluentform')?></a></td>
                                                 </tr>
                                             <?php } ?>
                                             </tbody>
@@ -178,8 +178,8 @@
                                         <?php
                                         if (count($failed_feeds) > 10) {
                                             $viewAllApiLogs = sprintf(
-                                                __('To view all API logs please click this link %1$s%2$s%3$s.', 'fluentform'),
-                                                '<a href="' . admin_url('admin.php?page=fluent_forms_transfer#apilogs') . '">',
+                                                __('There are more error logs. To view all error API logs please click this link %1$s%2$s%3$s.', 'fluentform'),
+                                                '<a href="' . admin_url('admin.php?page=fluent_forms_transfer&start_date='.$first_item_time.'&end_date='.$last_item_time.'&#apilogs') . '">',
                                                 __('View', 'fluentform'),
                                                 '</a>'
                                             );

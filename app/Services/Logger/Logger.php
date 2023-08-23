@@ -39,8 +39,8 @@ class Logger
             ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $table) {
                 $startDate .= ' 00:00:01';
                 $endDate .= ' 23:59:59';
-                return $q->where($table . '.created_at', '>=', $startDate)
-                    ->where($table . '.created_at', '<=', $endDate);
+                return $q->where($table . '.updated_at', '>=', $startDate)
+                    ->where($table . '.updated_at', '<=', $endDate);
             });
     
         $logs = $logsQuery->paginate();
@@ -99,7 +99,7 @@ class Logger
                 'ff_scheduled_actions.origin_id as submission_id',
                 'ff_scheduled_actions.status',
                 'ff_scheduled_actions.note',
-                'ff_scheduled_actions.created_at',
+                'ff_scheduled_actions.updated_at',
                 'fluentform_forms.title as form_title',
             ];
             $join = 'ff_scheduled_actions.form_id';
