@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form-item v-if="isInventoryEnabled">
+        <el-form-item>
             <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
 
             <div v-if="optionsToRender.length" class="ff_advnced_options_wrap">
@@ -53,18 +53,6 @@
                 } else {
                     return 'advanced_options';
                 }
-            },
-            isSingleInput(){
-                if (this.editItem.element == 'multi_payment_component' && this.editItem.attribute.type == 'single'){
-                    return true;
-                }
-                return  false;
-            },
-            isInventoryEnabled(){
-                if ( this.editItem.settings.inventory_type != false){
-                    return true;
-                }
-                return  false;
             }
         },
         mounted() {

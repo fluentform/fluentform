@@ -68,6 +68,7 @@
     import inputText from './inputText.vue'
     import InputYesNoCheckBox from "./inputYesNoCheckbox";
     import InputRadio from "./inputRadio";
+    import { dependencyPass } from '@/admin/helpers';
 
     export default {
         name: 'paymentMethodConfig',
@@ -128,28 +129,9 @@
             },
             dependancyPass(listItem, settings) {
                 if (listItem.dependency) {
-                    let optionPaths = listItem.dependency.depends_on.split('/');
-
-                    let dependencyVal = optionPaths.reduce((obj, prop) => {
-                        return obj[prop]
-                    }, settings);
-
-                    if ( this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal) ) {
-                        return true;
-                    }
-                    return false;
+                    return dependencyPass(listItem.dependency, settings);
                 }
                 return true;
-            },
-            compare(operand1, operator, operand2) {
-                switch(operator) {
-                    case '==':
-                        return operand1 == operand2
-                        break;
-                    case '!=':
-                        return operand1 != operand2
-                        break;
-                }
             }
         }
     };

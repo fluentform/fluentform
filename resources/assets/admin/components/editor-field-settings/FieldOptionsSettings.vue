@@ -121,6 +121,7 @@ import ConversionStylePref from "../../conversion_templates/ConversionStylePref"
 import ContainerWidth from "./templates/containerWidth";
 import inventoryStock from "./templates/inventoryStock";
 import selectGroup from "./templates/selectGroup.vue";
+import { dependencyPass } from '@/admin/helpers';
 
 export default {
     name: 'FieldOptionsSettings',
@@ -238,38 +239,13 @@ export default {
         },
 
         /**
-        * Helper function for show/hide dependent elements
-        & @return {Boolean}
-         */
-        compare(operand1, operator, operand2) {
-            switch(operator) {
-                case '==':
-                    return operand1 == operand2
-                    break;
-                case '!=':
-                    return operand1 != operand2
-                    break;
-            }
-        },
-
-        /**
          * Checks if a prop is dependent on another
          * @param listItem
          * @return {boolean}
          */
-        // @todo add multiple dependency support
         dependancyPass(listItem) {
             if (listItem.dependency) {
-                let optionPaths = listItem.dependency.depends_on.split('/');
-
-                let dependencyVal = optionPaths.reduce((obj, prop) => {
-                    return obj[prop]
-                }, this.editItem);
-
-                if ( this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal) ) {
-                    return true;
-                }
-                return false;
+                return dependencyPass(listItem.dependency, this.editItem);
             }
             return true;
         },

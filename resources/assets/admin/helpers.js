@@ -73,3 +73,39 @@ export const handleSidebarActiveLink = ($link, init = false) => {
         $link.siblings().find('.ff_list_submenu').slideUp();
     }
 }
+
+/**
+ * Helper function for show/hide dependent elements
+ & @return {Boolean}
+ */
+export function dependencyPass(dependency, targetObj) {
+    if (Array.isArray(dependency)) {
+        for (let i = 0; i < dependency.length; i++) {
+            if (!isDependencyPass(dependency[i], targetObj)) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return isDependencyPass(dependency, targetObj);
+    }
+}
+
+function isDependencyPass(dependency, targetObj) {
+    let optionPaths = dependency.depends_on.split('/');
+    let dependencyVal = optionPaths.reduce((obj, prop) => {
+        return obj[prop]
+    }, targetObj);
+    return compare(dependency.value, dependency.operator, dependencyVal);
+}
+
+function compare(operand1, operator, operand2) {
+    switch(operator) {
+        case '==':
+            return operand1 == operand2;
+        case '!=':
+            return operand1 != operand2;
+        default:
+            return false;
+    }
+}
