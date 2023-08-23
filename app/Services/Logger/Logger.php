@@ -19,7 +19,9 @@ class Logger
         $components = Arr::get($attributes, 'component');
         $sortBy = Arr::get($attributes, 'sort_by', 'DESC');
         $type = Arr::get($attributes, 'type', 'log');
-
+        $dateRange = Arr::get($attributes, 'date_range', []);
+        $startDate = Arr::get($dateRange, 0);
+        $endDate = Arr::get($dateRange, 1);
         [$table, $model, $columns, $join, $componentColumn] = $this->getBases($type);
     
         $logsQuery = $model->select($columns)
@@ -33,6 +35,12 @@ class Logger
             })
             ->when($components, function ($q) use ($components, $componentColumn) {
                 return $q->whereIn($componentColumn, array_map('sanitize_text_field', $components));
+            })
+            ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $table) {
+                $startDate .= ' 00:00:01';
+                $endDate .= ' 23:59:59';
+                return $q->where($table . '.created_at', '>=', $startDate)
+                    ->where($table . '.created_at', '<=', $endDate);
             });
     
         $logs = $logsQuery->paginate();

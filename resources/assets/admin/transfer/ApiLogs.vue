@@ -56,6 +56,7 @@
                             <el-date-picker
                                     v-model="filter_date_range"
                                     type="daterange"
+                                    @change="getLogs()"
                                     :picker-options="pickerOptions"
                                     format="dd MMM, yyyy"
                                     value-format="yyyy-MM-dd"
@@ -226,7 +227,7 @@
                     form_id: this.selected_form,
                     status: this.selected_status,
                     component: this.selected_component,
-                    date : this.filter_date_range,
+                    date_range : this.filter_date_range,
                     type: 'api',
                 })
                     .then(response => {
