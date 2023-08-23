@@ -257,6 +257,7 @@ export default {
          * @param listItem
          * @return {boolean}
          */
+        // @todo add multiple dependency support
         dependancyPass(listItem) {
             if (listItem.dependency) {
                 let optionPaths = listItem.dependency.depends_on.split('/');

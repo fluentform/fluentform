@@ -10,7 +10,7 @@ import elLabel from '../../includes/el-label.vue'
 
 export default {
     name: 'inputText',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'editItem', 'value'],
     components: {
         elLabel
     },
@@ -25,12 +25,13 @@ export default {
         }
     },
     computed: {
-        // checking if the field is a single_inventory_stock field
+        // @todo after adding multiple dependency support remove this method
+        // checking if the field is a single_inventory_stock field to show inventory quantity for single payment item
         isSingleInventoryStockField() {
-            const isInventoryInput = this.$attrs?.editItem?.settings?.inventory_type === false;
-            const dependencyOperator = this.listItem?.dependency?.operator === '==';
+            const isInventoryInput = this.editItem?.settings?.inventory_type === false;
+            const isSinglePaymentField = this.editItem?.element === 'multi_payment_component' && this.editItem?.attributes?.type === 'single';
 
-            return !(isInventoryInput && dependencyOperator);
+            return !(isInventoryInput && isSinglePaymentField);
         }
     }
 }
