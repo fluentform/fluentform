@@ -22,7 +22,7 @@ class Logger
         $dateRange = Arr::get($attributes, 'date_range', []);
         $startDate = Arr::get($dateRange, 0);
         $endDate = Arr::get($dateRange, 1);
-        [$table, $model, $columns, $join, $componentColumn] = $this->getBases($type);
+        [$table, $model, $columns, $join, $componentColumn, $dateColumn] = $this->getBases($type);
     
         $logsQuery = $model->select($columns)
             ->leftJoin('fluentform_forms', 'fluentform_forms.id', '=', $join)
@@ -36,7 +36,7 @@ class Logger
             ->when($components, function ($q) use ($components, $componentColumn) {
                 return $q->whereIn($componentColumn, array_map('sanitize_text_field', $components));
             })
-            ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $table) {
+            ->when($startDate && $endDate, function ($q) use ($startDate, $endDate, $dateColumn) {
                 // Concatenate time if not time included on start/end date string
                 if ($startDate != date("Y-m-d H:i:s", strtotime($startDate))) {
                     $startDate .= ' 00:00:01';
@@ -44,8 +44,8 @@ class Logger
                 if ($endDate != date("Y-m-d H:i:s", strtotime($endDate))) {
                     $endDate .= ' 23:59:59';
                 }
-                return $q->where($table . '.updated_at', '>=', $startDate)
-                    ->where($table . '.updated_at', '<=', $endDate);
+                return $q->where($dateColumn, '>=', $startDate)
+                    ->where($dateColumn, '<=', $endDate);
             });
     
         $logs = $logsQuery->paginate();
@@ -94,6 +94,7 @@ class Logger
             ];
             $join = 'fluentform_logs.parent_source_id';
             $componentColumn = 'fluentform_logs.component';
+            $dateColumn = 'fluentform_logs.created_at';
         } else {
             $table = 'ff_scheduled_actions';
             $model = Scheduler::query();
@@ -109,9 +110,10 @@ class Logger
             ];
             $join = 'ff_scheduled_actions.form_id';
             $componentColumn = 'ff_scheduled_actions.action';
+            $dateColumn = 'ff_scheduled_actions.updated_at';
         }
 
-        return [$table, $model, $columns, $join, $componentColumn];
+        return [$table, $model, $columns, $join, $componentColumn, $dateColumn];
     }
 
     public function getFilters($attributes = [])

@@ -53,11 +53,12 @@
 			                <h6 class="fs-15 mb-3">Date</h6>
 			                <el-date-picker
 				                v-model="filter_date_range"
-				                type="daterange"
+				                type="datetimerange"
 				                @change="getLogs()"
 				                :picker-options="pickerOptions"
-				                format="dd MMM, yyyy"
-				                value-format="yyyy-MM-dd"
+				                format="dd MMM yyyy HH:mm:ss"
+				                value-format="yyyy-MM-dd HH:mm:ss"
+				                :default-time="['00:00:01', '23:59:59']"
 				                range-separator="-"
 				                :start-placeholder="$t('Start date')"
 				                :end-placeholder="$t('End date')">
@@ -192,8 +193,9 @@
 			            {
 				            text: 'Today',
 				            onClick(picker) {
-					            const start = new Date();
-					            picker.$emit('pick', [start, start]);
+					            const todayStart = new Date(new Date().setHours(0, 0, 1, 0))
+					            const todayEnd = new Date(new Date().setHours(23, 59, 59, 999))
+					            picker.$emit('pick', [todayStart, todayEnd]);
 				            }
 			            },
 			            {
@@ -201,7 +203,9 @@
 				            onClick(picker) {
 					            const start = new Date();
 					            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-					            picker.$emit('pick', [start, start]);
+					            const yesterStart = new Date(start.setHours(0, 0, 1, 0))
+					            const yesterEnd = new Date(start.setHours(23, 59, 59, 999))
+					            picker.$emit('pick', [yesterStart, yesterEnd]);
 				            }
 			            },
 			            {
@@ -210,7 +214,9 @@
 					            const end = new Date();
 					            const start = new Date();
 					            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-					            picker.$emit('pick', [start, end]);
+					            const lastWeedStart = new Date(start.setHours(0, 0, 1, 0))
+					            const lastWeedEnd = new Date(end.setHours(23, 59, 59, 999))
+					            picker.$emit('pick', [lastWeedStart, lastWeedEnd]);
 				            }
 			            }, {
 				            text: 'Last month',
@@ -218,7 +224,9 @@
 					            const end = new Date();
 					            const start = new Date();
 					            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-					            picker.$emit('pick', [start, end]);
+					            const lastMonthStart = new Date(start.setHours(0, 0, 1, 0))
+					            const lastMonthEnd = new Date(end.setHours(23, 59, 59, 999))
+					            picker.$emit('pick', [lastMonthStart, lastMonthEnd]);
 				            }
 			            }
 		            ]
