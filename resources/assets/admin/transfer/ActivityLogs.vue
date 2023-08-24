@@ -60,6 +60,7 @@
 				                value-format="yyyy-MM-dd HH:mm:ss"
 				                :default-time="['00:00:01', '23:59:59']"
 				                range-separator="-"
+                                align="right"
 				                :start-placeholder="$t('Start date')"
 				                :end-placeholder="$t('End date')">
 			                </el-date-picker>

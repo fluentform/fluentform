@@ -61,6 +61,7 @@
                                     format="dd MMM yyyy HH:mm:ss"
                                     value-format="yyyy-MM-dd HH:mm:ss"
                                     range-separator="-"
+                                    align="right"
                                     :default-time="['00:00:01', '23:59:59']"
                                     :start-placeholder="$t('Start date')"
                                     :end-placeholder="$t('End date')">

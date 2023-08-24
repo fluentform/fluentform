@@ -117,7 +117,7 @@
                         <td class="alert alert-warning"
                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #b7a13a; margin: 0; padding: 20px;"
                             align="center" bgcolor="#FF9F00" valign="top">
-                            <?php _e('Failed Integrations Notification', 'fluentform'); ?>
+                            <?php _e('Failed Integrations', 'fluentform'); ?>
                         </td>
                     </tr>
                     <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -130,8 +130,7 @@
                                     <td class="content-block"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
-                                        <b><?php _e('Hello There,', 'fluentform'); ?></b><br/>
-                                        <?php _e('Here are integrations to review that did not run successfully in the previous attempt.', 'fluentform'); ?>
+                                        <?php _e('You have some integrations that did not run successfully! Please take necessary steps.', 'fluentform'); ?>
                                     </td>
                                 </tr>
                                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -141,10 +140,10 @@
                                         <table class="failed_notifications_summary">
                                             <thead>
                                             <tr>
-                                                <th><?php _e('Title', 'fluentform'); ?></th>
+                                                <th><?php _e('Feed', 'fluentform'); ?></th>
                                                 <th><?php _e('Form', 'fluentform'); ?></th>
-                                                <th><?php _e('Description', 'fluentform'); ?></th>
-                                                <th><?php _e('Submission', 'fluentform'); ?></th>
+                                                <th><?php _e('Log', 'fluentform'); ?></th>
+                                                <th><?php _e('Link', 'fluentform'); ?></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -178,9 +177,9 @@
                                         <?php
                                         if (count($failed_feeds) > 10) {
                                             $viewAllApiLogs = sprintf(
-                                                __('There are more error logs generated during the last hour. To access and review all of the error API logs please click this link %1$s%2$s%3$s.', 'fluentform'),
+                                                __('You have more error logs, please click %1$s%2$s%3$s to review.', 'fluentform'),
                                                 '<a href="' . admin_url('admin.php?page=fluent_forms_transfer&status=failed&start_date='.$first_item_time.'&end_date='.$last_item_time.'&#apilogs') . '">',
-                                                __('View', 'fluentform'),
+                                                __('here', 'fluentform'),
                                                 '</a>'
                                             );
     
@@ -190,17 +189,6 @@
                                             echo wp_kses_post($viewAllApiLogs);
                                         }
                                         ?>
-                                        <?php
-                                        $generateText = sprintf(
-                                            __('This email has been generated from Fluent Forms at %1$s%2$s%3$s.', 'fluentform'),
-                                            '<a href="' .  site_url() . '">',
-                                            get_bloginfo('name'),
-                                            '</a>'
-                                        );
-                                     
-                                        $generateText = apply_filters('fluentform/email_summary_body_text', $generateText);
-                                        ?>
-                                        <?php echo wp_kses_post($generateText); ?>
                                     </td>
                                 </tr>
                             </table>
@@ -217,7 +205,7 @@
                                 align="center" valign="top">
                                 <?php
                                 $footerText = sprintf(
-                                    __('This email has been sent from %1$syour website%2$s via Fluent Forms. You can disable this email %3$syour website%4$s', 'fluentform'),
+                                    __('This email has been sent from %1$syour website%2$s via Fluent Forms. You can disable this email from %3$shere%4$s', 'fluentform'),
                                     '<a href="' .  site_url() . '">',
                                     '</a>',
                                     '<a href="' .  admin_url('admin.php?page=fluent_forms_settings') . '">',
