@@ -440,7 +440,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.0.8 (Date: Wed 23, 2023) =
+= 5.0.8 (Date: August 24, 2023) =
  - Adds address field in conversational form with Google Map Support
  - Adds entries sort by column
  - Fixes integration other’s field add or remove behaviour
@@ -448,9 +448,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
  - Fixes global enabled captcha issue in conversational Form
  - Fixes form title update
  - Fixes Slack integration toggle
- - Adds Plugin Meta links
  - Fixes forms submission next & preview order
-
 
 = 5.0.7 (Date: July 18, 2023) =
  - Fixes LiteSpeed caching issue
