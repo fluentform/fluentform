@@ -44,8 +44,8 @@ class Logger
                 if ($endDate != date("Y-m-d H:i:s", strtotime($endDate))) {
                     $endDate .= ' 23:59:59';
                 }
-                return $q->where($table . '.created_at', '>=', $startDate)
-                    ->where($table . '.created_at', '<=', $endDate);
+                return $q->where($table . '.updated_at', '>=', $startDate)
+                    ->where($table . '.updated_at', '<=', $endDate);
             });
     
         $logs = $logsQuery->paginate();
