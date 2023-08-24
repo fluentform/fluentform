@@ -137,7 +137,7 @@
                             <div class="ff_media_body ml-4">
                                 <h3 class="mb-2"><?php _e('Facing An Issue Or Problem?', 'fluentform') ?></h3>
                                 <p class="text mb-4">
-                                    <?php _e('Please report us and we promise we will fix that as soon as humanly possible Report An Issue', 'fluentform') ?>
+                                    <?php _e('Please report us and we promise we will fix that as soon as humanly possible.', 'fluentform') ?>
                                 </p>
                                 <a target="_blank" class="el-button el-button--warning el-button--soft" href="https://github.com/fluentform/fluentform/issues">
                                     <?php _e('Report An Issue', 'fluentform') ?>
