@@ -131,7 +131,7 @@
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
                                         <b><?php _e('Hello There,', 'fluentform'); ?></b><br/>
-                                        <?php _e('Here are some integration you can check, that did not run successfully last time.', 'fluentform'); ?>
+                                        <?php _e('Here are integrations to review that did not run successfully in the previous attempt.', 'fluentform'); ?>
                                     </td>
                                 </tr>
                                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -178,8 +178,8 @@
                                         <?php
                                         if (count($failed_feeds) > 10) {
                                             $viewAllApiLogs = sprintf(
-                                                __('There are more error logs. To view all error API logs please click this link %1$s%2$s%3$s.', 'fluentform'),
-                                                '<a href="' . admin_url('admin.php?page=fluent_forms_transfer&start_date='.$first_item_time.'&end_date='.$last_item_time.'&#apilogs') . '">',
+                                                __('There are more error logs generated during the last hour. To access and review all of the error API logs please click this link %1$s%2$s%3$s.', 'fluentform'),
+                                                '<a href="' . admin_url('admin.php?page=fluent_forms_transfer&status=failed&start_date='.$first_item_time.'&end_date='.$last_item_time.'&#apilogs') . '">',
                                                 __('View', 'fluentform'),
                                                 '</a>'
                                             );
