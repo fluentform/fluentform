@@ -139,7 +139,7 @@
                                 <p class="text mb-4">
                                     <?php _e('Please report us and we promise we will fix that as soon as humanly possible.', 'fluentform') ?>
                                 </p>
-                                <a target="_blank" class="el-button el-button--warning el-button--soft" href="https://github.com/fluentform/fluentform/issues">
+                                <a target="_blank" class="el-button el-button--warning el-button--soft" href="https://wpmanageninja.com/support-tickets/">
                                     <?php _e('Report An Issue', 'fluentform') ?>
                                 </a>
                             </div>
@@ -199,7 +199,7 @@
                                 <p class="text mb-4">
                                     <?php _e('If you need any feature on fluentform, then please request a feature to us with your requirement.', 'fluentform') ?>
                                 </p>
-                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://wpmanageninja.com/support-tickets/">
+                                <a target="_blank" class="el-button el-button--cyan el-button--soft" href="https://github.com/fluentform/fluentform/issues">
                                     <?php _e('Request Now', 'fluentform') ?>
                                 </a>
                             </div>
