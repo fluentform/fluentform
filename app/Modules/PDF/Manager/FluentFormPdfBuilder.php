@@ -8,8 +8,8 @@ use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentFormPdf\Support\Arr;
 use FluentFormPdf\Classes\Controller\AvailableOptions;
 use FluentFormPdf\Classes\Controller\FontDownloader;
-use FluentFormPdf\Classes\PdfBuilder;
 use FluentFormPdf\Classes\Controller\Activator;
+use FluentFormPdf\API\Pdf;
 
 class FluentFormPdfBuilder
 {
@@ -120,7 +120,7 @@ class FluentFormPdfBuilder
     public function getGlobalSettingsAjax()
     {
         wp_send_json_success([
-            'settings' => $this->getConfig()->globalSettings(),
+            'settings' => Pdf::getGlobalConfig(),
             'fields' => $this->getGlobalFields()
         ]);
     }
@@ -204,7 +204,7 @@ class FluentFormPdfBuilder
             'name' => $template['name'],
             'template_key' => $templateName,
             'settings' => $defaultSettings,
-            'appearance' => $this->getConfig()->globalSettings()
+            'appearance' => Pdf::getGlobalConfig()
         ];
 
         $insertId = wpFluent()->table('fluentform_form_meta')
@@ -633,7 +633,7 @@ class FluentFormPdfBuilder
             $globalSettingsUrl = admin_url('admin.php?page=fluent_forms_settings#pdf_settings');
 
             if (!get_option($this->optionKey)) {
-                update_option($this->optionKey, $this->getConfig()->globalSettings(), 'no');
+                update_option($this->optionKey, Pdf::getGlobalConfig(), 'no');
             }
         }
 

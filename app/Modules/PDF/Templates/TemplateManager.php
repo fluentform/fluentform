@@ -180,8 +180,8 @@ abstract class TemplateManager
                 'footer'=> $footer, 
                 'body' => $content
             ], 
-            $fileName, 
-            $outPut, 
+            $fileName,
+            $outPut,
             $mpdfConfig, 
             $mpdfExtraConfig
         );

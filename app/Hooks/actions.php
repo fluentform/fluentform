@@ -921,6 +921,7 @@ if (defined('WP_CLI') && WP_CLI) {
 }
 
 //Pdf generator initiated
+add_filter('fluent_pdf_hide_menu', '__return_true');
 add_action('fluent_pdf_loaded', function () {
    new FluentForm\App\Modules\PDF\Manager\FluentFormPdfBuilder();
 });
