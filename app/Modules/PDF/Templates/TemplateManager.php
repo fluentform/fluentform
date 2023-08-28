@@ -125,14 +125,17 @@ abstract class TemplateManager
             $footer .= '<p style="text-align: center;">Powered By <a target="_blank" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/">Fluent Forms</a></p>';
         }
 
+        $mpdfExtraConfig = [];
+
         $pdfGenerator = $this->getGenerator($mpdfConfig);
         if (Arr::get($appearance, 'security_pass')) {
             $password = Arr::get($appearance, 'security_pass');
-            $pdfGenerator->SetProtection(array(), $password, $password);
+            $mpdfExtraConfig['password'] = $password;
         }
 
         if (Arr::get($appearance, 'language_direction') == 'rtl') {
-            $pdfGenerator->SetDirectionality('rtl');
+
+            $mpdfExtraConfig['direction'] = 'rtl';
             $body = '<div class="ff_rtl">' . $body . '</div>';
             if ($footer) {
                 $footer = '<div class="ff_rtl">' . $footer . '</div>';
@@ -142,8 +145,9 @@ abstract class TemplateManager
             }
         }
         if ($this->headerHtml) {
+            
             $this->headerHtml = $this->applyInlineCssStyles($this->headerHtml, $appearance);
-            $pdfGenerator->SetHTMLHeader($this->headerHtml);
+            $mpdfExtraConfig['htmlHeader'] = $this->headerHtml;
         }
 
         $body = $this->applyInlineCssStyles($body, $appearance, true);
@@ -155,29 +159,33 @@ abstract class TemplateManager
             $alpha = $alpha / 100;
 
             if (!empty($appearance['watermark_image'])) {
+                $mpdfExtraConfig['watermark_image'] = [
+                    'image' => $appearance['watermark_image'],
+                    'alpha' => $alpha,
+                    'behind' => Arr::isTrue($appearance, 'watermark_img_behind')
+                ];
 
-                $pdfGenerator->SetWatermarkImage($appearance['watermark_image'], $alpha);
-
-                if (Arr::isTrue($appearance, 'watermark_img_behind')) {
-                    $pdfGenerator->watermarkImgBehind = true;
-                }
-
-                $pdfGenerator->showWatermarkImage = true;
             } else {
-                $pdfGenerator->SetWatermarkText($appearance['watermark_text'], $alpha);
-                $pdfGenerator->showWatermarkText = true;
+                $mpdfExtraConfig['watermark_text'] = [
+                    'text' => $appearance['watermark_text'],
+                    'alpha' => $alpha,
+                ];
             }
         }
         $footer = $this->applyInlineCssStyles($footer, $appearance);
+        
+        $content = '<div class="ff_pdf_wrapper">' . $body . '</div>';
 
-        $pdfGenerator->SetHTMLFooter($footer);
-        $pdfGenerator->WriteHTML('<div class="ff_pdf_wrapper">' . $body . '</div>', \Mpdf\HTMLParserMode::HTML_BODY);
-
-        if ($outPut == 'S') {
-            return $pdfGenerator->Output($fileName . '.pdf', $outPut);;
-        }
-
-        $pdfGenerator->Output($fileName . '.pdf', $outPut);
+        do_action('fluent_pdf_make', [
+                'footer'=> $footer, 
+                'body' => $content
+            ], 
+            $fileName, 
+            $outPut, 
+            $mpdfConfig, 
+            $mpdfExtraConfig
+        );
+        return ;
     }
 
     public function getPdfCss($appearance)

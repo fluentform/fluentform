@@ -11,7 +11,7 @@ use FluentFormPdf\Classes\Controller\FontDownloader;
 use FluentFormPdf\Classes\PdfBuilder;
 use FluentFormPdf\Classes\Controller\Activator;
 
-class FluentFormPdfBuilder extends PdfBuilder
+class FluentFormPdfBuilder
 {
     protected $optionKey = '_fluentform_pdf_settings';
 
@@ -489,6 +489,7 @@ class FluentFormPdfBuilder extends PdfBuilder
     public function pushPdfButtons($widgets, $data, $submission)
     {
         $formId = $submission->form->id;
+
         $feeds = $this->getFeeds($formId);
         if (!$feeds) {
             return $widgets;

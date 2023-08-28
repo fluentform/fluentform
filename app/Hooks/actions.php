@@ -920,6 +920,7 @@ if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');
 }
 
+//Pdf generator initiated
 add_action('fluent_pdf_loaded', function () {
-   new FluentForm\App\Modules\PDF\Manager\Module();
+   new FluentForm\App\Modules\PDF\Manager\FluentFormPdfBuilder();
 });
