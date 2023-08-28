@@ -360,6 +360,9 @@ class ShortCodeParser
             return static::getUserAgent()->getBrowser();
         } elseif (in_array($key, ['all_data', 'all_data_without_hidden_fields'])) {
             $formFields = FormFieldsParser::getEntryInputs(static::getForm());
+            $inputLabels = FormFieldsParser::getAdminLabels(static::getForm(), $formFields);
+            $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
+
             $status = apply_filters_deprecated(
                 'fluentform_all_data_skip_password_field',
                 [
@@ -373,7 +376,7 @@ class ShortCodeParser
             if (apply_filters('fluentform/all_data_skip_password_field', $status)) {
                 $passwords = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_password']);
                 if (is_array($passwords) && ! empty($passwords)) {
-                    ArrayHelper::forget($formFields, array_keys($passwords));
+                    ArrayHelper::forget($response->user_inputs, array_keys($passwords));
                 }
             }
 
@@ -393,12 +396,9 @@ class ShortCodeParser
             if ($skipHiddenFields) {
                 $hiddenFields = FormFieldsParser::getInputsByElementTypes(static::getForm(), ['input_hidden']);
                 if (is_array($hiddenFields) && ! empty($hiddenFields)) {
-                    ArrayHelper::forget($formFields, array_keys($hiddenFields));
+                    ArrayHelper::forget($response->user_inputs, array_keys($hiddenFields));
                 }
             }
-
-            $inputLabels = FormFieldsParser::getAdminLabels(static::getForm(), $formFields);
-            $response = FormDataParser::parseFormSubmission(static::getEntry(), static::getForm(), $formFields, true);
 
             $html = '<table class="ff_all_data" width="600" cellpadding="0" cellspacing="0"><tbody>';
             foreach ($inputLabels as $inputKey => $label) {

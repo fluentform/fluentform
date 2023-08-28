@@ -399,6 +399,14 @@ class AddOnModule
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'wp_core',
             ],
+            'notion' => [
+                'title'        => __('Notion', 'fluentform'),
+                'description'  => __('Capture Fluent Forms Submission to your Notion workspaces — and do it exactly the way you want.', 'fluentform'),
+                'logo'         => fluentformMix('img/integrations/notion.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm',
+            ],
         ];
     }
 }

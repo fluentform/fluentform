@@ -157,17 +157,10 @@ class FormBuilder
         if ($isAccessible) {
             echo $this->fieldsetHtml($form);
         }
-
-        do_action_deprecated(
-            'fluentform_form_element_start',
-            [
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/form_element_start',
-            'Use fluentform/form_element_start instead of fluentform_form_element_start.'
-        );
-
+        
+        /* This hook is deprecated & will be removed soon */
+        do_action('fluentform_form_element_start', $form);
+        
         do_action('fluentform/form_element_start', $form);
 
         echo "<input type='hidden' name='__fluent_form_embded_post_id' value='" . get_the_ID() . "' />";
@@ -242,8 +235,8 @@ class FormBuilder
                     $form
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform_render_item_' . $item['element'],
-                'Use fluentform_render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
+                'fluentform/render_item_' . $item['element'],
+                'Use fluentform/render_item_' . $item['element'] . ' instead of fluentform_render_item_' . $item['element']
             );
 
             do_action('fluentform/render_item_' . $item['element'], $item, $form);
@@ -547,7 +540,7 @@ class FormBuilder
     private function fieldsetHtml($form)
     {
         return '<fieldset style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;">
-                    <legend class="ff_screen_reader_title" style="display: block; margin: 0!important;padding: 0!important;height: 0!important;text-indent: -999999px;width: 0!important;">'
+                    <legend class="ff_screen_reader_title" style="display: block; margin: 0!important;padding: 0!important;height: 0!important;text-indent: -999999px;width: 0!important;overflow:hidden;">'
                             .$form->title.
                     '</legend>';
     }

@@ -106,10 +106,15 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     } elseif ('turnstile' == $type) {
         $captcha = $turnstile;
     }
-
+    if (!isset($captcha)) {
+        return $form;
+    }
     // place recaptcha below custom submit button
     $hasCustomSubmit = false;
     foreach ($form->fields['fields'] as $index => $field) {
+        if (in_array($field['element'], ['recaptcha', 'hcaptcha', 'turnstile'])) {
+            \FluentForm\Framework\Helpers\ArrayHelper::forget($form->fields['fields'], $index);
+        }
         if ('custom_submit_button' == $field['element']) {
             $hasCustomSubmit = true;
             array_splice($form->fields['fields'], $index, 0, [$captcha]);
@@ -253,7 +258,7 @@ $app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\H
 $app->addFilter('fluentform/will_return_html', function ($result, $integration, $key) {
     $dictionary = [
         'notifications' => ['message'],
-        'pdfFeed'       => ['body'],
+        'pdfFeed'       => apply_filters('fluentform/pdf_html_format', [])
     ];
 
     if (!isset($dictionary[$integration])) {

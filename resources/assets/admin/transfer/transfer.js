@@ -19,7 +19,8 @@ import {
     Loading,
     Tag,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    DatePicker
 } from 'element-ui';
 
 Vue.use(Button);
@@ -39,6 +40,7 @@ Vue.use(TabPane);
 Vue.use(Tag);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
+Vue.use(DatePicker);
 
 
 Vue.prototype.$notify = Notification;

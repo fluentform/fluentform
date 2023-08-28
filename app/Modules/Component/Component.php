@@ -491,17 +491,8 @@ class Component
                 'type'               => 'classic',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ];
-    
-            $data = apply_filters_deprecated(
-                'fluentform_shortcode_defaults',
-                [
-                    $data,
-                    $atts
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/shortcode_defaults',
-                'Use fluentform/shortcode_defaults instead of fluentform_shortcode_defaults.'
-            );
+            /* This filter is deprecated, will be removed soon */
+            $data = apply_filters('fluentform_shortcode_defaults', $data, $atts );
 
             $shortcodeDefaults = apply_filters('fluentform/shortcode_defaults', $data, $atts);
 
@@ -512,31 +503,19 @@ class Component
 
         $this->app->addShortCode('fluentform_info', function ($atts) {
             $data = [
-                [
-                    'id'                 => null, // This is the form id
-                    'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
-                    'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
-                    'with_trashed'       => 'no', // yes | no
-                    'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
-                    'hide_on_zero'       => 'no',
-                    'payment_status'     => 'all', // it can be all / specific payment status
-                    'currency_formatted' => 'yes',
-                    'date_format'        => '',
-                ]
+                'id'                 => null, // This is the form id
+                'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
+                'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
+                'with_trashed'       => 'no', // yes | no
+                'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
+                'hide_on_zero'       => 'no',
+                'payment_status'     => 'all', // it can be all / specific payment status
+                'currency_formatted' => 'yes',
+                'date_format'        => '',
             ];
-    
-            $data = apply_filters_deprecated(
-                'fluentform_info_shortcode_defaults',
-                [
-                    $data,
-                    $atts
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
-                'fluentform/info_shortcode_defaults',
-                'Use fluentform/info_shortcode_defaults instead of fluentform_info_shortcode_defaults.'
-            );
-
-
+            /* This filter is deprecated, will be removed soon */
+            $data = apply_filters('fluentform_info_shortcode_defaults', $data, $atts );
+            
             $shortcodeDefaults = apply_filters('fluentform/info_shortcode_defaults', $data, $atts);
 
             $atts = shortcode_atts($shortcodeDefaults, $atts);
@@ -712,7 +691,7 @@ class Component
             $feedText = apply_filters('fluentform/shortcode_feed_text', $feedText, $form);
             return $feedText;
         }
-
+        
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
             ->where('form_id', $form_id)
@@ -742,23 +721,13 @@ class Component
         );
 
         $form = $this->app->applyFilters('fluentform/rendering_form', $form);
-
         $isRenderable = [
             'status'  => true,
             'message' => '',
         ];
-    
-        $isRenderable = apply_filters_deprecated(
-            'fluentform_is_form_renderable',
-            [
-                $isRenderable,
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/is_form_renderable',
-            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
-        );
-
+        /* This filter is deprecated and will be removed soon */
+        $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
+        
         $isRenderable = $this->app->applyFilters('fluentform/is_form_renderable', $isRenderable, $form);
 
         if (is_array($isRenderable) && !$isRenderable['status']) {
@@ -933,7 +902,7 @@ class Component
 
         if (!$this->app->applyFilters('fluentform/disabled_analytics', $disableAnalytics)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
+                (new \FluentForm\App\Services\Analytics\AnalyticsService())->store($form->id);
             }
         }
 

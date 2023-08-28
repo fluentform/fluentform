@@ -120,6 +120,7 @@ import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
 import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
 import ContainerWidth from "./templates/containerWidth";
 import inventoryStock from "./templates/inventoryStock";
+import selectGroup from "./templates/selectGroup.vue";
 
 export default {
     name: 'FieldOptionsSettings',
@@ -170,6 +171,7 @@ export default {
         ConversionStylePref,
         ff_containerWidth: ContainerWidth,
         ff_inventoryStock: inventoryStock,
+        ff_selectGroup: selectGroup,
     },
     data() {
         return {
@@ -255,6 +257,7 @@ export default {
          * @param listItem
          * @return {boolean}
          */
+        // @todo add multiple dependency support
         dependancyPass(listItem) {
             if (listItem.dependency) {
                 let optionPaths = listItem.dependency.depends_on.split('/');
