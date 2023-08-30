@@ -308,7 +308,7 @@
                         <!--Restriction settings form-->
                         <div class="ff_settings_section">
                             <div class="ff_settings_body">
-                                <form_restriction :data="formSettings.restrictions"></form_restriction>
+                                <form_restriction :data="formSettings.restrictions" :has-pro="hasPro"></form_restriction>
                             </div>
                         </div>
                     </card-body>
@@ -658,6 +658,28 @@
                         denyEmptySubmission: {
                             enabled: false,
                             message: 'Sorry, you cannot submit an empty form. Let\'s hear what you wanna say.'
+                        },
+                        restrictForm: {
+                            enabled: false,
+                            fields: {
+                                ip: {
+                                    status: false,
+                                    values: '',
+                                    message: 'Sorry! You can\'t submit a form from your IP address.',
+                                    validation_type: 'fail_on_condition_met'
+                                },
+                                country: {
+                                    status: false,
+                                    values: [],
+                                    message: 'Sorry! You can\'t submit a form the country you are residing.',
+                                    validation_type: 'fail_on_condition_met'
+                                },
+                                keywords: {
+                                    status: false,
+                                    values: '',
+                                    message: 'Sorry! Your submission contains some restricted keywords.'
+                                }
+                            },
                         }
                     },
                     layout: {
@@ -692,6 +714,9 @@
 
                             if (!settings.restrictions.denyEmptySubmission)
                                 settings.restrictions.denyEmptySubmission = {};
+
+                            if (!settings.restrictions.restrictForm)
+                                settings.restrictions.restrictForm = {};
 
                             if (!settings.appendSurveyResult) {
                                 settings.appendSurveyResult = {

@@ -285,6 +285,37 @@ $app->addFilter('fluentform/response_render_input_number', function ($response, 
     return \FluentForm\App\Helpers\Helper::getNumericFormatted($response, $formatter);
 }, 10, 4);
 
+$app->addFilter(
+    'fluentform/create_default_settings',
+    function($defaultSettings) {
+        if (!isset($defaultSettings['restrictions']['restrictForm'])) {
+            $defaultSettings['restrictions']['restrictForm'] = [
+                'enabled' => false,
+                'fields' =>  [
+                    'ip' => [
+                        'status' => false,
+                        'values' => '',
+                        'message' => __('Sorry! You can\'t submit a form from your IP address.', 'fluentform'),
+                        'validation_type' => 'fail_on_condition_met'
+                    ],
+                    'country' => [
+                        'status' => false,
+                        'values' => [],
+                        'message' => __('Sorry! You can\'t submit a form the country you are residing.', 'fluentform'),
+                        'validation_type' => 'fail_on_condition_met'
+                    ],
+                    'keywords' => [
+                        'status' => false,
+                        'values' => '',
+                        'message' => __('Sorry! Your submission contains some restricted keywords.', 'fluentform')
+                    ],
+                ]
+            ];
+        }
+        return $defaultSettings;
+    }
+);
+
 
 /*
  * Remove this after WP Fusion Update their plugin

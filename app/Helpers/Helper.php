@@ -792,8 +792,14 @@ class Helper
 
         return $title;
     }
-
-    public static function isAutoloadCaptchaEnabled() {
+    
+    public static function getIpinfo()
+    {
+        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
+    }
+    
+    public static function isAutoloadCaptchaEnabled()
+    {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
 
@@ -806,5 +812,15 @@ class Helper
             $url = str_replace($match[0], Protector::decrypt($match[0]), $url);
         }
         return $url;
+    }
+    public static function arrayFilterRecursive($arrayItems)
+    {
+        foreach ($arrayItems as $key => $item) {
+            is_array($item) && $arrayItems[$key] = self::arrayFilterRecursive($item);
+            if (empty($arrayItems[$key])) {
+                unset($arrayItems[$key]);
+            }
+        }
+        return $arrayItems;
     }
 }

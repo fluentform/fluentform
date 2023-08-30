@@ -734,6 +734,8 @@ class Menu
                 'list_url'    => fluentform_integrations_url(),
                 'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform'),
             ],
+            'countries'            => getFluentFormCountryList(),
+            'getIpInfo'            => Helper::getIpinfo(),
         ]);
 
         $this->app->view->render('admin.form.settings', [
