@@ -291,6 +291,7 @@ class Form
             'select',
             'ratings',
             'textarea',
+            'address',
             'input_url',
             'input_text',
             'input_date',
@@ -556,21 +557,13 @@ class Form
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
-
-        $disableAnalytics = apply_filters_deprecated(
-            'fluentform-disabled_analytics',
-            [
-                false
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/disabled_analytics',
-            'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
-        );
+    
+        /* This filter is deprecated and will be removed soon */
+        $disableAnalytics = apply_filters('fluentform-disabled_analytics', false);
 
         if (!apply_filters('fluentform/disabled_analytics', $disableAnalytics)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
-
+                (new \FluentForm\App\Services\Analytics\AnalyticsService())->store($formId);
             }
         }
 
@@ -676,16 +669,8 @@ class Form
             echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
             exit(200);
         }
-
-        $form = apply_filters_deprecated(
-            'fluentform_rendering_form',
-            [
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/rendering_form',
-            'Use fluentform/rendering_form instead of fluentform_rendering_form.'
-        );
+        /* This filter is deprecated and will be removed soon */
+        $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
         $form = Converter::convert($form);
@@ -740,18 +725,11 @@ class Form
             'status'  => true,
             'message' => '',
         ];
-
-        $isRenderable = apply_filters_deprecated(
-            'fluentform_is_form_renderable',
-            [
-                $isRenderable,
-                $form
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/is_form_renderable',
-            'Use fluentform/is_form_renderable instead of fluentform_is_form_renderable.'
-        );
-
+    
+        /* This filter is deprecated and will be removed soon */
+        $isRenderable = apply_filters('fluentform_is_form_renderable', $isRenderable, $form);
+    
+    
         $isRenderable = apply_filters('fluentform/is_form_renderable', $isRenderable, $form);
 
         if (is_array($isRenderable) && !$isRenderable['status']) {
@@ -760,20 +738,12 @@ class Form
                 exit();
             }
         }
-
-        $status = apply_filters_deprecated(
-            'fluentform-disabled_analytics',
-            [
-                false
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/disabled_analytics',
-            'Use fluentform/disabled_analytics instead of fluentform-disabled_analytics.'
-        );
+        /* This filter is deprecated and will be removed soon */
+        $status = apply_filters('fluentform-disabled_analytics', false);
 
         if (!apply_filters('fluentform/disabled_analytics', $status)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
-                (new \FluentForm\App\Http\Controllers\AnalyticsController())->store($form->id);
+                (new \FluentForm\App\Services\Analytics\AnalyticsService())->store($form->id);
             }
         }
         wpFluentForm('view')->render('public.conversational-form', [

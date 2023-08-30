@@ -132,6 +132,8 @@ class FormDataParser
         if (is_string($values)) {
             return $values;
         }
+    
+        $isHtml = apply_filters('fluentform/render_field_as_html', $isHtml, $values, $isHtml, $form_id);
 
         if (!$isHtml) {
             return fluentImplodeRecursive(', ', array_filter(array_values((array) $values)));

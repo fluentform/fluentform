@@ -108,15 +108,8 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
 function fluentFormEditorShortCodes()
 {
     $generalShortCodes = [EditorShortCode::getGeneralShortCodes()];
-    $generalShortCodes = apply_filters_deprecated(
-        'fluentform_editor_shortcodes',
-        [
-            $generalShortCodes
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/editor_shortcodes',
-        'Use fluentform/editor_shortcodes instead of fluentform_editor_shortcodes'
-    );
+    /* This filter is  deprecated, will be removed soon. */
+    $generalShortCodes = apply_filters('fluentform_editor_shortcodes', $generalShortCodes);
 
     return apply_filters('fluentform/editor_shortcodes', $generalShortCodes);
 }
@@ -124,17 +117,12 @@ function fluentFormEditorShortCodes()
 function fluentFormGetAllEditorShortCodes($form)
 {
     $editorShortCodes = EditorShortCode::getShortCodes($form);
-    $editorShortCodes = apply_filters_deprecated(
+    /* This filter is deprecated and will be removed soon */
+    $editorShortCodes = apply_filters(
         'fluentform_all_editor_shortcodes',
-        [
-            $editorShortCodes,
-            $form
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/all_editor_shortcodes',
-        'Use fluentform/all_editor_shortcodes instead of fluentform_all_editor_shortcodes'
+        $editorShortCodes,
+        $form
     );
-
     return apply_filters(
         'fluentform/all_editor_shortcodes',
         $editorShortCodes,
@@ -233,20 +221,18 @@ function fluentform_mb_strpos($haystack, $needle)
 
 function fluentFormHandleScheduledTasks()
 {
-    // Let's run the feed actions
-    $handler = new \FluentForm\App\Services\WPAsync\FluentFormAsyncRequest(wpFluentForm());
-    $handler->processActions();
+    $failedActions = wpFluent()->table('ff_scheduled_actions')->where('status', 'failed')->where('retry_count', '<', 4)->get();
+
+    if ($failedActions) {
+        $scheduler = wpFluentForm('fluentFormAsyncRequest');
+
+        foreach ($failedActions as $action) {
+            $scheduler->process($action);
+        }
+    }
 
     $rand = mt_rand(1, 10);
-    if ($rand >= 7) {
-        do_action_deprecated(
-            'fluentform_maybe_scheduled_jobs',
-            [
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/maybe_scheduled_jobs',
-            'Use fluentform/maybe_scheduled_jobs instead of fluentform_maybe_scheduled_jobs.'
-        );
+    if ($rand >= 5) {
         do_action('fluentform/maybe_scheduled_jobs');
     }
 }
@@ -382,6 +368,11 @@ function fluentform_sanitize_html($html)
                 'width'           => true,
                 'height'          => true,
                 'viewbox'         => true,
+                'fill'            => true,
+                'stroke'          => true,
+                'stroke-width'    => true,
+                'stroke-linecap'  => true,
+                'stroke-linejoin' => true
             ],
             'g'     => ['fill' => true],
             'title' => ['title' => true],
@@ -390,6 +381,9 @@ function fluentform_sanitize_html($html)
                 'fill'      => true,
                 'transform' => true,
             ],
+            'polyline' => [
+                'points' => true
+            ]
         ];
         $tags = array_merge($tags, $svg_args);
     }

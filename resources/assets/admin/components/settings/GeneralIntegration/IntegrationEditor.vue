@@ -228,10 +228,9 @@
                                     </notice>
                                 </template>
 
-                                <template v-else-if="field.component == 'chained-ajax-fields'">
+                                <div class="ff_chained_ajax_field" v-else-if="field.component == 'chained-ajax-fields'">
                                     <template v-for="(optionValue, optionKey) in field.options_labels">
                                         <el-select
-                                                class="w-100"
                                                 v-loading="loading_list"
                                                 @change="chainedAjax(optionKey)"
                                                 v-model="settings.chained_config[optionKey]"
@@ -246,7 +245,7 @@
                                             ></el-option>
                                         </el-select>
                                     </template>
-                                </template>
+                                </div>
 
                                 <template v-else-if="field.component == 'chained_select'">
                                     <chained-selects
@@ -467,6 +466,9 @@
                     if (this.settings.chained_config[key] == '') {
                         return;
                     }
+                }
+                if (key == 'base_id') {
+                    this.settings.chained_config['table_id'] = '';
                 }
                 this.fromChainedAjax = true;
                 this.loadIntegrationSettings();

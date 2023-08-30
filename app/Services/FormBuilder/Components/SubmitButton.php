@@ -46,15 +46,10 @@ class SubmitButton extends BaseComponent
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
         $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
-        $noStyle = apply_filters_deprecated(
-            'fluentform_submit_button_force_no_style',
-            [
-                false
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/submit_button_force_no_style',
-            'Use fluentform/submit_button_force_no_style instead of fluentform_submit_button_force_no_style'
-        );
+        
+        /* This filter is deprecated and will be removed soon */
+        $noStyle = apply_filters('fluentform_submit_button_force_no_style', false);
+        
         if (apply_filters('fluentform/submit_button_force_no_style', $noStyle)) {
             $btnStyle = 'no_style';
         }
@@ -117,7 +112,7 @@ class SubmitButton extends BaseComponent
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } elseif ('no_style' != $btnStyle) {
-            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn.ff-btn-submit { background-color: ' . esc_attr(ArrayHelper::get($data, 'settings.background_color')) . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
+            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . esc_attr(ArrayHelper::get($data, 'settings.background_color')) . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);

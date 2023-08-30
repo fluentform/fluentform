@@ -141,7 +141,7 @@
                         >
                         </el-input>
                     </btn-group-item>
-                    
+
                     <btn-group-item as="div">
                         <el-dropdown trigger="click" class="current_form_name_column" :hide-on-click="false">
                             <el-button>
@@ -228,6 +228,7 @@
             <div class="ff_table">
                 <el-skeleton :loading="loading" animated :rows="6">
                     <el-table
+                         :size="isCompact? 'mini':''"
                         :data="entries"
                         :stripe="true"
                         :class="{'compact': isCompact}"
@@ -236,7 +237,7 @@
                     >
 
                         <el-table-column type="selection" width="30"></el-table-column>
-                        <el-table-column label="#" sortable="custom" prop="id" width="100px">
+                        <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
                             <template slot-scope="scope">
                                 <div class="has_hover_item">
                                     <router-link :to="{
@@ -291,6 +292,8 @@
                                 :label="column.label"
                                 :show-overflow-tooltip="isCompact"
                                 min-width="200"
+                                sortable="custom"
+                                :prop="'user_inputs_column_field-' + column.field"
                                 :key="index">
                             <template slot-scope="scope">
                                 <span v-html="scope.row.user_inputs[column.field]"></span>
@@ -299,6 +302,8 @@
 
                         <el-table-column
                                 label="Entry Status"
+                                sortable
+                                prop="status"
                                 width="120px">
                             <template slot-scope="scope">
                                 {{ getStatusName(scope.row.status) }}
@@ -308,6 +313,8 @@
                         <template v-if="has_payment">
                             <el-table-column
                                     :label="$t('Amount')"
+                                    sortable="custom"
+                                    prop="payment_total"
                                     min-width="120px">
                                 <template slot-scope="scope">
                                     <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
@@ -315,7 +322,9 @@
                             </el-table-column>
                             <el-table-column
                                     :label="$t('Payment Status')"
-                                    min-width="120px">
+                                    sortable
+                                    prop="payment_status"
+                                    min-width="140px">
                                 <template slot-scope="scope">
                                     <span class="ff_badge"
                                         :class="'ff_badge_'+scope.row.payment_status"
@@ -327,7 +336,9 @@
                             </el-table-column>
                             <el-table-column
                                     :label="$t('Payment Method')"
-                                    min-width="120px">
+                                    sortable
+                                    prop="payment_method"
+                                    min-width="140px">
                                 <template slot-scope="scope">
                                     <span class="ff_badge" v-if="scope.row.payment_method"
                                         :class="`ff_badge_${
@@ -344,6 +355,8 @@
 
                         <el-table-column
                                 :label="$t('Submitted at')"
+                                sortable
+                                prop="created_at"
                                 width="120px">
                             <template slot-scope="scope">
                                 {{ dateFormat(scope.row.created_at) }}
@@ -499,6 +512,7 @@
                 entrySelections: [],
                 columns: [],
                 bulkAction: '',
+	            idShortByClassName: '',
                 paginate: {
                     total: 0,
                     current_page: parseInt(this.$route.query.page) || 1,
@@ -718,6 +732,7 @@
                         this.entries = response.data;
                         this.setPaginate(response);
                         this.resetUrlParams();
+	                    this.idShortByClassName = this.sort_by === 'ASC' ? 'ascending' : 'descending';
                     })
                     .catch((error) => {
 
@@ -732,8 +747,42 @@
                     if (column.prop === 'id') {
                         this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
                         this.getData();
+                    } else if (column.prop.includes('user_inputs_column_field-')) {
+						let field = column.prop.split('user_inputs_column_field-')[1];
+	                    this.entries.sort((a, b) => {
+		                    a = a.user_inputs[field] || "";
+		                    b = b.user_inputs[field] || "";
+		                    return this.getSortOrder(a, b, column.order);
+	                    });
+						this.idShortByClassName = '';
+                    } else if (column.prop === 'payment_total') {
+	                    this.entries.sort((a, b) => {
+		                    return this.getSortOrder(a.payment_total, b.payment_total, column.order);
+	                    });
+	                    this.idShortByClassName = '';
                     }
                 }
+            },
+
+            getSortOrder(a, b, sortBy) {
+                let order;
+				try {
+					a = a.toString();
+					b = b.toString();
+					const isNumber = (a !== '' && !isNaN(a)) && (b !== '' && !isNaN(b));
+					if (isNumber) {
+						order = Number(a) - Number(b);
+					} else {
+						order = a.localeCompare(b);
+                    }
+					if (sortBy === 'descending') {
+						order ||= -1;
+						order *= -1;
+					}
+                } catch (e) {
+                    order = 0;
+				}
+	            return order;
             },
             handleSelectionChange(val) {
                 this.entrySelections = val;
@@ -919,7 +968,7 @@
                     payment_statuses: this.selectedPaymentStatuses,
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
-                if (this.advancedFilter) {
+                if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
