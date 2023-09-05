@@ -418,7 +418,7 @@
                                 :entry_ids="selection_ids"
                                 :form_id="form_id">
                         </email-resend>
-                        <el-checkbox class="compact_input" v-model="isCompact">{{ $t('Compact View') }}</el-checkbox>
+                        <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
                     </div>
                 </el-col>
                 <el-col :span="12">
@@ -1026,6 +1026,9 @@
             refreshColumnsOrder(columnsOrder) {
                 this.columnsOrder = columnsOrder ? [...columnsOrder] : null;
                 this.visibleColReorderModal = false;
+            },
+            handleCompactView() {
+                localStorage.setItem('compactView', this.isCompact);
             }
         },
         mounted() {
@@ -1033,6 +1036,7 @@
             (new ClipboardJS('.copy')).on('success', (e) => {
                 this.$copy();
             });
+            this.isCompact = localStorage.getItem('compactView') === 'true' ? true : false;
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
