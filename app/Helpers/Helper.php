@@ -375,6 +375,18 @@ class Helper
                     ->where('field_name', $fieldName)
                     ->where('field_value', $inputValue)
                     ->exists();
+
+                // if form has pending payment then the value doesn't exist in EntryDetails table
+                // further checking on Submission table if the value exists
+                if (!$exist && $form->has_payment) {
+                    $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
+
+                    foreach($allSubmission as $submission) {
+                        $response = json_decode(ArrayHelper::get($submission, 'response'), true);
+                        $exist = $inputValue == ArrayHelper::get($response, $fieldName);
+                    }
+                }
+
                 if ($exist) {
                     return [
                         'unique' => ArrayHelper::get($field, 'raw.settings.unique_validation_message'),
