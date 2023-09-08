@@ -150,6 +150,8 @@ class TransferService
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
         $selectedLabels = Arr::get($args,'fields_to_export');
+        $selectedLabels = fluentFormSanitizer($selectedLabels);
+       
         //filter out unselected fields
         foreach ($inputLabels as $key => $value) {
             if (!in_array($key,$selectedLabels) && isset($inputLabels[$key])) {
@@ -181,6 +183,7 @@ class TransferService
             }
     
             if($selectedShortcodes = Arr::get($args,'shortcodes_to_export')){
+                $selectedShortcodes = fluentFormSanitizer($selectedShortcodes);
                 $parsedShortCodes = ShortCodeParser::parse(
                     $selectedShortcodes,
                     $submission->id,

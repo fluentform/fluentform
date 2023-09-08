@@ -1013,9 +1013,14 @@
                 this.input_selection_visibility  = false;
             },
             selectFieldsToExport(format = 'csv'){
-                this.input_selection_visibility  = true;
                 this.selectExportFormat = format;
 
+                if (format == 'json'){
+                    //@todo add json column selection support
+                    this.exportEntries();
+                }else{
+                    this.input_selection_visibility  = true;
+                }
             },
             exportEntries() {
 
@@ -1133,9 +1138,7 @@
             });
             this.isCompact = localStorage.getItem('compactView') === 'true' ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
-            if (!this.has_pro){
-                this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
-            }
+            this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
         },
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
