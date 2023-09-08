@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.3
+Tested up to: 6.3.1
 Requires PHP: 7.1
-Stable tag: 5.0.8
+Stable tag: 5.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,10 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.0.9 (Date: Sept 8, 2023) =
+ - Fixed security issue (In active form submission prevented)
+ - Fixed compact mode entries view
 
 = 5.0.8 (Date: August 24, 2023) =
  - Adds address field in conversational form with Google Map Support

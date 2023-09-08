@@ -450,7 +450,7 @@
                 >
                     <template slot="title">
                         <div class="el-dialog__header_group">
-                            <h4 class="mr-3">{{ $t('Select Fields for export') }}</h4>
+                            <h4 class="mr-3">{{ $t('Select fields for export') }}</h4>
                         </div>
                     </template>
 
