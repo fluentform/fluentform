@@ -204,7 +204,7 @@
                                         <div slot="content">
                                             <h6>{{ $t('Numbers of entries') }}</h6>
                                             <p>
-                                                {{ $t('Unead / Total') }}
+                                                {{ $t('Unread / Total Entries') }}
                                             </p>
                                         </div>
 

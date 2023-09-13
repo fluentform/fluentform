@@ -19,7 +19,7 @@
             if (isset($_SERVER['HTTP_REFERER'])): ?>
                 <div class="ff_menu_back">
                     <a class="ff_menu_link" href="<?php echo sanitize_url($_SERVER['HTTP_REFERER']) ;?>">
-                        <i class="el-icon el-icon-back"></i> Back
+                        <span class="el-icon-arrow-left"></span>
                     </a>
                 </div>
             <?php endif;
