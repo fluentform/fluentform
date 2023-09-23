@@ -9,6 +9,7 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
@@ -148,50 +149,66 @@ class TransferService
         }
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
+        $selectedLabels = Arr::get($args,'fields_to_export');
+        $selectedLabels = fluentFormSanitizer($selectedLabels);
+       
+        //filter out unselected fields
+        foreach ($inputLabels as $key => $value) {
+            if (!in_array($key,$selectedLabels) && isset($inputLabels[$key])) {
+                unset($inputLabels[$key]); // Remove the element with the specified key
+            }
+        }
+    
         $submissions = self::getSubmissions($args);
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
+        $parsedShortCodes = [];
         $exportData = [];
         foreach ($submissions as $submission) {
+
             $submission->response = json_decode($submission->response, true);
+           
             $temp = [];
             foreach ($inputLabels as $field => $label) {
+                
                 //format tabular grid data for CSV/XLSV/ODS export
                 if (isset($formInputs[$field]['element']) && "tabular_grid" === $formInputs[$field]['element']) {
                     $gridRawData = Arr::get($submission->response, $field);
                     $content = Helper::getTabularGridFormatValue($gridRawData, Arr::get($formInputs, $field), ' | ');
                 } else {
-                    $content = trim(
-                        wp_strip_all_tags(
-                            FormDataParser::formatValue(
-                                Arr::get($submission->user_inputs, $field)
-                            )
-                        )
+                    $content = trim(wp_strip_all_tags(FormDataParser::formatValue(
+                                Arr::get($submission->user_inputs, $field)))
                     );
                 }
                 $temp[] = Helper::sanitizeForCSV($content);
             }
-
-            if ($form->has_payment) {
-                $temp[] = round($submission->payment_total / 100, 2);
-                $temp[] = $submission->payment_status;
-                $temp[] = $submission->currency;
+    
+            if($selectedShortcodes = Arr::get($args,'shortcodes_to_export')){
+                $selectedShortcodes = fluentFormSanitizer($selectedShortcodes);
+                $parsedShortCodes = ShortCodeParser::parse(
+                    $selectedShortcodes,
+                    $submission->id,
+                    $submission->response,
+                    $form,
+                    false,
+                    true
+                );
+                if(!empty($parsedShortCodes)){
+                    foreach ($parsedShortCodes as $code){
+                        $temp[] = Arr::get($code,'value');
+                    }
+                }
             }
-
-            $temp[] = @$submission->id;
-            $temp[] = @$submission->status;
-            $temp[] = (string)@$submission->created_at;
+            
             $exportData[] = $temp;
         }
 
         $extraLabels = [];
-        if ($form->has_payment) {
-            $extraLabels[] = 'payment_total';
-            $extraLabels[] = 'payment_status';
-            $extraLabels[] = 'currency';
+
+        if(!empty($parsedShortCodes)){
+            foreach ($parsedShortCodes as $code){
+                $extraLabels[] = Arr::get($code,'label');
+            }
         }
-        $extraLabels[] = 'entry_id';
-        $extraLabels[] = 'entry_status';
-        $extraLabels[] = 'created_at';
         $inputLabels = array_merge($inputLabels, $extraLabels);
         $data = array_merge([array_values($inputLabels)], $exportData);
         $data = apply_filters_deprecated(

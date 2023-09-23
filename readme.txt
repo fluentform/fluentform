@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.3
+Tested up to: 6.3.1
 Requires PHP: 7.1
-Stable tag: 5.0.8
+Stable tag: 5.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,7 +103,7 @@ Whereas, in most of the Contact Form Plugins available, this Conditional Logic i
 Along with Conditional Logics, we have introduced Conditional Confirmations (pro) as well. It allows admins to convey to users customized messages if they do not comply with specific logics, or fail to achieve certain values while filling out forms. For example, you are looking for a value of equal to or more than 2 in a certain field of your form. But what if they put 0 or 1 in that field? In that case, using a conditional confirmation feature, you can let your users know of what went wrong and how to fix it. Remember, this is an entirely different feature than the usual error messages.
 
 == CALCULATOR FOR ADVANCED FORM BUILDING ==
-Fluent Forms Numeric Fields and advanced features give you the power to create incredible calculators, simplifying everyday tasks. Whether it's a car loan calculator, BMI calculator, simple mortgage calculator, or tax calculator, creating these tools is a no-brainer with just a few clicks. No coding skills are required, thanks to Fluent Forms' amazing mathematical functions. You can even build payment forms using calculated values. You can do with Fluent Forms -
+Fluent Forms Numeric Fields and advanced features give you the power to create incredible calculators, simplifying everyday calculation tasks. Whether it's a car loan calculator, BMI calculator, simple mortgage calculator, or tax calculator, creating these tools is a no-brainer with just a few clicks. No coding skills are required, thanks to Fluent Forms' amazing mathematical calculation functions. You can even build payment forms use calculation on your input fields. You can do with Fluent Forms -
 
 * Seamlessly integrate a Loan Calculator to make informed financial decisions
 * Use a dedicated Car Loan Calculator for hassle-free auto financing
@@ -439,6 +439,10 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.0.9 (Date: Sept 8, 2023) =
+ - Fixed security issue (In active form submission prevented)
+ - Fixed compact mode entries view
 
 = 5.0.8 (Date: August 24, 2023) =
  - Adds address field in conversational form with Google Map Support
