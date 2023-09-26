@@ -396,3 +396,20 @@ ol{
     }
   }
 }
+
+// ff global search
+@import "../admin/styles/global_search";
+.global-search-wrapper  {
+  .global-search-container input {
+    border: 1px solid #dadbdd;
+    border-radius: 7px;
+    padding: 9px 35px;
+    background-color: #ffffff;
+    box-shadow: none;
+    color: #606266;
+    &:focus {
+      border-color: #1A7EFB !important;
+      outline: none;
+    }
+  }
+}

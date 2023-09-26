@@ -162,6 +162,14 @@ class Menu
         );
 
         wp_register_script(
+            'fluentform-docs',
+            fluentFormMix('js/docs.js'),
+            ['jquery'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        wp_register_script(
             'fluentform_form_entries',
             fluentFormMix('js/form_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
@@ -250,6 +258,7 @@ class Menu
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'admin_i18n'               => TranslationString::getAdminI18n(),
+            'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
             'payments_str'             => TranslationString::getPaymentsI18n(),
             'permissions'              => Acl::getCurrentUserPermissions(),
             'rest'                     => Helper::getRestInfo(),

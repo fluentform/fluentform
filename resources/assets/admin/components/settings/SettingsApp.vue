@@ -11,14 +11,18 @@
                 :editorShortcodes="editorShortcodes"
             ></router-view>
         </el-skeleton>
+	    <global-search/>
     </div>
 </template>
 
 <script type="text/babel">
     import { scrollTop, handleSidebarActiveLink } from '@/admin/helpers';
-
+	import globalSearch from '../../global_search'
     export default {
         name: 'settings_app',
+	    components: {
+			globalSearch
+	    },
         data() {
             return {
                 app_ready: false,

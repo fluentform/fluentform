@@ -44,6 +44,7 @@ mix
     .js('resources/assets/admin/copier.js', `assets/js/copier.js`)
     .js('resources/assets/admin/admin_notices.js', `assets/js/admin_notices.js`)
     .js('resources/assets/admin/modules.js', `assets/js/modules.js`)
+    .js('resources/assets/admin/documentation.js', `assets/js/docs.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
     .vue({

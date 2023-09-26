@@ -11,6 +11,7 @@ import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
 import License from './License.vue';
+import globalSearch from '../global_search'
 
 import Errors from '@/common/Errors';
 global.Errors = Errors;
@@ -97,6 +98,7 @@ Vue.mixin({
 new Vue({
     el: '#ff_global_settings_option_app',
     components: {
+        globalSearch,
         settings: GlobalSettings,
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,

@@ -17,6 +17,7 @@
         :current_component="component"
         :app="App"
     ></component>
+    <global-search></global-search>
 </div>
 
 <?php

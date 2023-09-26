@@ -434,6 +434,45 @@ a.lead-text{
         height: 100%;
       }
     }
+  .global-search-menu-button {
+    //color: #9A9FA5;
+    color: #3c3c3cb3;
+    background-color: transparent;
+    padding: 0 5px;
+    display: inline-block;
+    font-size: 15px;
+    font-weight: normal;
+    border-radius: 6px;
+    line-height: 1.6;
+    transition:all 0.3s;
+    margin: 0 0 0 auto;
+    border: 0;
+    cursor: pointer;
+    .el-icon-search{
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .shortcut{
+      transition:all 0.3s;
+      //border: 1px solid #9A9FA5;
+      border-radius: 4px;
+      letter-spacing: 3px;
+      padding: 5px 8px;
+      font-size: 12px;
+      box-shadow: 0 2px 3px 0 rgba(32, 33, 36, 0.15);
+    }
+    &:hover {
+      color: #353537;
+      .shortcut {
+        color: #1A7EFB;
+        border-color:#1A7EFB ;
+      }
+    }
+
+    span {
+      margin-left:5px;
+    }
+  }
 }
 // ff_row
 .ff_row{
@@ -1800,6 +1839,10 @@ label.el-radio, label.el-checkbox {
     margin: 0 0 20px 0;
   }
 }
+
+// ff global search
+@import "global_search";
+
 
 .scroll {
 	position: relative;
