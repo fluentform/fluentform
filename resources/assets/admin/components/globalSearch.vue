@@ -139,7 +139,8 @@ export default {
 			return false;
 		},
 		listener(e) {
-			if (e.ctrlKey || e.metaKey && e.keyCode === 75) {
+			const isMac = window?.navigator.userAgent?.toUpperCase().includes('MAC');
+			if ((isMac ? e.metaKey : e.ctrlKey) && e.keyCode === 75) {
 				e.preventDefault && e.preventDefault();
 				if (!this.showSearch) {
 					this.showSearch = true;
