@@ -157,7 +157,7 @@
                                 </li>
                                 <li>
                                     <div class="lead-title">{{$t('Source URL')}}:</div>
-                                    <a class="lead-text truncate" target="_blank" :href="entry.source_url">
+                                    <a class="lead-text lead-url" target="_blank" :href="entry.source_url">
                                         {{ entry.source_url }}
                                     </a>
                                 </li>

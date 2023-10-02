@@ -796,4 +796,15 @@ class Helper
     public static function isAutoloadCaptchaEnabled() {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
+
+    public static function maybeDecryptUrl($url)
+    {
+        $uploadDir = str_replace('/', '\/', FLUENTFORM_UPLOAD_DIR . '/temp');
+        $pattern = "/(?<={$uploadDir}\/).*$/";
+        preg_match($pattern, $url, $match);
+        if (!empty($match)) {
+            $url = str_replace($match[0], Protector::decrypt($match[0]), $url);
+        }
+        return $url;
+    }
 }
