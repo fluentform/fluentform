@@ -32,14 +32,14 @@ use FluentForm\Framework\Helpers\ArrayHelper;
             ?>
             <div class="ff_settings_sidebar ff_layout_section_sidebar">
                 <ul class="ff_settings_list ff_list_button">
-                    <li class="ff_list_button_item has_sub_menu">
-                        <a 
+                    <li class="ff_list_button_item has_sub_menu ">
+                        <a
                             class="ff_list_button_link"
                             href="#">
                             <?php echo __('General'); ?>
                         </a>
-                        <ul class="ff_list_submenu">
-                            <li>
+                        <ul class="ff_list_submenu" >
+                            <li >
                                 <a class="ff-page-scroll"
                                     data-section-id="#settings"
                                     data-hash="settings"

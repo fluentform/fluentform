@@ -657,9 +657,7 @@ class Menu
             ];
         }
 
-        $settingsMenus = apply_filters_deprecated(
-            'fluentform_form_settings_menu',
-            [
+        $settingsMenus = apply_filters_deprecated('fluentform_form_settings_menu', [
                 $settingsMenus,
                 $form_id
             ],
@@ -993,16 +991,15 @@ class Menu
         // N.B. native 'components' will always use
         // 'settings' as their current component.
         $currentComponent =  $this->app->request->get('component', 'settings');
-        $currentComponent = apply_filters_deprecated(
-            'fluentform_global_settings_current_component',
-            [
+      
+        $currentComponent = apply_filters_deprecated('fluentform_global_settings_current_component', [
                 $currentComponent
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/global_settings_current_component',
             'Use fluentform/global_settings_current_component instead of fluentform_global_settings_current_component.'
         );
-
+        
         $currentComponent = apply_filters(
             'fluentform/global_settings_current_component',
             $currentComponent
@@ -1010,17 +1007,16 @@ class Menu
 
         $currentComponent = sanitize_key($currentComponent);
         $components = [];
-        $components = apply_filters_deprecated(
-            'fluentform_global_settings_components',
-            [
+        $components = apply_filters_deprecated('fluentform_global_settings_components', [
                 $components
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/global_settings_components',
             'Use fluentform/global_settings_components instead of fluentform_global_settings_components.'
         );
-
+        
         $components = apply_filters('fluentform/global_settings_components', $components);
+    
 
         $components['reCAPTCHA'] = [
             'hash'  => 're_captcha',
@@ -1036,8 +1032,10 @@ class Menu
             'hash'  => 'turnstile',
             'title' => 'Turnstile (Beta)',
         ];
-
-        $this->app->view->render('admin.settings.index', [
+    
+    
+        
+        $this->app->view->render('admin.globalSettings.menu', [
             'components'       => $components,
             'currentComponent' => $currentComponent,
         ]);
@@ -1122,9 +1120,7 @@ class Menu
                 $showPayment = $formCount > 2;
             }
         }
-        $showPaymentEntry = apply_filters_deprecated(
-            'fluentform_show_payment_entries',
-            [
+        $showPaymentEntry = apply_filters_deprecated('fluentform_show_payment_entries', [
                 false
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
@@ -1142,10 +1138,7 @@ class Menu
     public function renderPaymentEntries()
     {
         do_action_deprecated(
-            'flunetform_render_payment_entries',
-            [
-
-            ],
+            'flunetform_render_payment_entries', [],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/render_payment_entries',
             'Use fluentform/render_payment_entries instead of flunetform/render_payment_entries'

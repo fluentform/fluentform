@@ -153,7 +153,7 @@ new Vue({
         if ($el.length) {
             $el = this.maybeGetFirstSubLink($el);
             this.setRoute($el);
-            handleSidebarActiveLink($el.parent(), true)
+            handleSidebarActiveLink($el.parent(), true , true);
         }
         const that = this;
         jQuery('.ff_settings_list li a').on('click', function (e) {

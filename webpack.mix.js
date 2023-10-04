@@ -30,7 +30,7 @@ mix.webpackConfig({
 
 mix
     .js('resources/assets/admin/fluent_forms_global.js', `assets/js/fluent_forms_global.js`)
-    .js('resources/assets/admin/settings/settings.js', `assets/js/fluentform-global-settings.js`)
+    .js('resources/assets/admin/settings/global_settings.js', `assets/js/fluentform-global-settings.js`)
     .js('resources/assets/admin/transfer/transfer.js', `assets/js/fluentform-transfer.js`)
     .js('resources/assets/admin/form_settings_app.js', `assets/js/form_settings_app.js`)
     .js('resources/assets/admin/editor_app.js', `assets/js/fluent-forms-editor.js`)
