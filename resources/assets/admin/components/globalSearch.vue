@@ -1,7 +1,7 @@
 <template>
     <div v-if="showSearch" class="global-search-wrapper" @click="reset">
         <div class="global-search-container " v-loading="loading" @click.stop="">
-            <div class="global-search-body ">
+            <div class="global-search-body " ref="searchBody">
                 <div class="el-input el-input--prefix">
                     <input ref="searchInput"
                            prefix-icon="el-icon-search"
@@ -149,7 +149,7 @@ export default {
 					return;
 				}
 				setTimeout(() => {
-					this.$refs.searchInput && this.$refs.searchInput.focus();
+					this.$refs.searchInput?.focus();
 				}, 500);
 				if (!this.links.length) {
 					this.getSearchData()
@@ -166,7 +166,7 @@ export default {
 				} else if (e.keyCode === 9) {
 					// Tab key for focus input el
 					e.preventDefault();
-					this.$refs.searchInput && this.$refs.searchInput.focus();
+					this.$refs.searchInput?.focus();
 					this.linkFocusIndex = 0;
 				}
 			}
@@ -179,7 +179,8 @@ export default {
 					this.linkFocusIndex += 1;
 				}
 				if (this.linkFocusIndex > this.filteredLinks.length || this.linkFocusIndex <= 0) {
-					this.$refs.searchInput && this.$refs.searchInput.focus();
+					this.$refs.searchInput?.focus();
+					this.$refs.searchBody?.scroll?.({top:0});
 					this.linkFocusIndex = 0;
 					return;
 				}
