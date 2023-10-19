@@ -322,6 +322,12 @@ class Form
             'rangeslider'
         ];
 
+        $acceptedFieldElements = apply_filters(
+            'fluentform/conversational_accepted_field_elements',
+            $acceptedFieldElements,
+            $formId
+        );
+
         $elements = [];
 
         $allFields = [

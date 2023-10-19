@@ -552,6 +552,8 @@ class Converter
                 );
             }
 
+            do_action('fluentform/conversational_question', $question, $field, $form);
+
             if ($question['type']) {
                 $questions[] = $question;
             }
@@ -617,6 +619,7 @@ class Converter
             'recaptcha'             => 'FlowFormReCaptchaType',
             'hcaptcha'              => 'FlowFormHCaptchaType',
             'address'               => 'FlowFormAddressType',
+            'ffc_custom'            => 'FlowFormCustomType',
         ];
 
         if (defined('FLUENTFORMPRO')) {
@@ -636,7 +639,7 @@ class Converter
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
         }
 
-        return $fieldTypes;
+        return apply_filters('fluentform/conversational_field_types', $fieldTypes);
     }
 
     public static function hasPictureMode($field, $question)
