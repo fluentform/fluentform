@@ -64,7 +64,10 @@ class SubmitButton extends BaseComponent
             $btnSize,
             $data['attributes']['class'],
         ];
-
+        $loadDefaultFluentStyle = Helper::getFormMeta($form->id, '_ff_selected_style') != 'ffs_inherit_theme';
+        if(!$loadDefaultFluentStyle){
+            $btnStyle = 'no_style';
+        }
         if ('no_style' == $btnStyle) {
             $btnClasses[] = 'ff_btn_no_style';
         } else {

@@ -809,9 +809,8 @@ class Helper
     {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
     }
-    
-    public static function isAutoloadCaptchaEnabled()
-    {
+
+    public static function isAutoloadCaptchaEnabled() {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
 
@@ -825,6 +824,7 @@ class Helper
         }
         return $url;
     }
+
     public static function arrayFilterRecursive($arrayItems)
     {
         foreach ($arrayItems as $key => $item) {
@@ -834,5 +834,10 @@ class Helper
             }
         }
         return $arrayItems;
+    }
+    
+    public static function isBlockEditor()
+    {
+       return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
     }
 }

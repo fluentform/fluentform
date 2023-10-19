@@ -229,7 +229,10 @@ class Converter
                 $question['min'] = is_numeric($question['min']) ? $question['min'] : null;
                 $question['max'] = is_numeric($question['max']) ? $question['max'] : null;
                 $question['is_calculable'] = true;
-                $form->hasCalculation = static::hasFormula($question);
+
+                if (!$form->hasCalculation) {
+                    $form->hasCalculation = static::hasFormula($question);
+                }
 
                 do_action_deprecated(
                     'ff_rendering_calculation_form',
@@ -431,7 +434,10 @@ class Converter
 
                 $question['is_payment_field'] = true;
                 $question['is_calculable'] = true;
-                $form->hasCalculation = static::hasFormula($question);
+
+                if (!$form->hasCalculation) {
+                    $form->hasCalculation = static::hasFormula($question);
+                }
 
                 do_action_deprecated(
                     'ff_rendering_calculation_form',

@@ -153,7 +153,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
 
                     var fileName = $('<div/>', {
                         class: 'ff-upload-filename',
-                        html: data.files[0].name
+                        text: data.files[0].name
                     });
 
                     var removeBtn = $('<span/>', {

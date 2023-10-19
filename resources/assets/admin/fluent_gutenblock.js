@@ -1,8 +1,20 @@
 const {__} = wp.i18n;
 const {registerBlockType} = wp.blocks;
+const { InspectorControls } = wp.blockEditor;
+const { serverSideRender: ServerSideRender = wp.components.ServerSideRender } = wp;
+const { apiFetch } = window.wp;
+
 const {
-    SelectControl
+    SelectControl,
+    PanelBody
 } = wp.components;
+
+const getFormMeta = async (formId, metaKey) => {
+    const path = `${window.fluentform_block_vars.rest.namespace}/${window.fluentform_block_vars.rest.version}/forms/${formId}`;
+    const response = await apiFetch({ path });
+    const foundObject = response.form_meta.find(item => item.meta_key === metaKey);
+    return foundObject ? foundObject.value : false;
+};
 
 const fluentLogo = wp.element.createElement('svg',
     {
@@ -31,27 +43,129 @@ registerBlockType('fluentfom/guten-block', {
         formId: {
             type: 'string'
         },
+        themeStyle: {
+            type: 'string'
+        },
         className: {
             type: 'string'
+        },
+        isConversationalForm: {
+            type: 'string',
+            default: false
+        },
+        isThemeChange : {
+            type: 'boolean',
+            default: false
         }
     },
     edit({attributes, setAttributes}) {
+
+        React.useEffect( () => {
+            async function syncBlockAttrWithFormMeta() {
+                try {
+                    const selectedStyleMeta = await getFormMeta(attributes.formId, '_ff_selected_style');
+                    if (selectedStyleMeta && selectedStyleMeta !== attributes.themeStyle) {
+                        setAttributes({themeStyle : selectedStyleMeta});
+                    }
+                } catch (e) {}
+
+
+            }
+            syncBlockAttrWithFormMeta();
+
+        }, [attributes.formId])
+
+        async function checkIfConversationalForm(formId) {
+            setAttributes({formId})
+            try {
+                const isConversationalForm = await getFormMeta(formId, 'is_conversion_form');
+                setAttributes({isConversationalForm: isConversationalForm === 'yes', isThemeChange: true})
+                setTimeout(() => {
+                    setAttributes({isThemeChange: false});
+                }, 1500);
+            } catch (e) {
+                setAttributes({isConversationalForm: false})
+            }
+        }
         const config = window.fluentform_block_vars;
-        return (
-            <div className="flueform-guten-wrapper">
+        const transformedArray = Object.entries(config.style_presets).map(([value, label]) => {
+            if (value === 'ffs_custom') {
+                return {value, label, disabled: true};
+            }
+            return {value, label};
+        });
+        let settings;
+        const blockContent = (
+            <div className="flueform-guten-wrapper" key='ff-form-sub-wrapper'>
                 <div className="fluentform-logo">
                     <img src={config.logo} alt="Fluent Forms Logo"/>
                 </div>
+                {settings}
+            </div>
+        )
+        settings = [
+            <InspectorControls key='ff-select-form'>
+                <PanelBody title='Select your Fluent Forms'>
+                    <SelectControl
+                        label={__("Select a Form")}
+                        value={attributes.formId}
+                        options={config.forms.map(form => ({
+                            value: form.id,
+                            label: form.title
+                        }))}
+                        onChange={checkIfConversationalForm}
+                        key="sub_select_form"
+                    />
+                    {attributes.hasOwnProperty('isConversationalForm') && attributes.isConversationalForm != true && <SelectControl
+                        label={__("Select a Theme Style")}
+                        value={attributes.themeStyle}
+                        options={transformedArray}
+                        onChange={themeStyle => {
+                            setAttributes({themeStyle, isThemeChange: true});
+                            setTimeout(() => {
+                                setAttributes({isThemeChange: false});
+                            }, 1500);
+                        }}
+                        key="ff-sub_select_theme"
+                    />}
+                </PanelBody>
+            </InspectorControls>
+        ]
 
-                <SelectControl
-                    label={__("Select a Form")}
-                    value={attributes.formId}
-                    options={config.forms.map(form => ({
-                        value: form.id,
-                        label: form.title
-                    }))}
-                    onChange={formId => setAttributes({formId})}
-                />
+        if (attributes.formId) {
+            if (attributes.isConversationalForm == true) {
+                settings.push(
+                    <div  className="conv-demo" key='ff-conv-sub-wrapper'>
+                        <img  src={config.conversational_demo_img} alt="Fluent Forms Conversational Form"/>
+                    </div>
+                )
+
+            } else {
+                settings.push(
+                    <ServerSideRender
+                        key='ff-preview'
+                        block="fluentfom/guten-block"
+                        attributes={attributes}
+                    />
+                )
+            }
+
+        } else {
+            settings.push(blockContent)
+            settings.push(<SelectControl
+                label={__("Select a Form")}
+                value=''
+                options={config.forms.map(form => ({
+                    value: form.id,
+                    label: form.title
+                }))}
+                onChange={formId => setAttributes({formId})}
+                key='ff-main-select-form'
+            />);
+        }
+        return (
+            <div className="flueform-guten-wrapper">
+                {settings}
             </div>
         )
     },
