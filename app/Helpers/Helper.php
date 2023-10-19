@@ -796,4 +796,31 @@ class Helper
     public static function isAutoloadCaptchaEnabled() {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
+
+    public static function maybeDecryptUrl($url)
+    {
+        $uploadDir = str_replace('/', '\/', FLUENTFORM_UPLOAD_DIR . '/temp');
+        $pattern = "/(?<={$uploadDir}\/).*$/";
+        preg_match($pattern, $url, $match);
+        if (!empty($match)) {
+            $url = str_replace($match[0], Protector::decrypt($match[0]), $url);
+        }
+        return $url;
+    }
+    
+    public static function arrayFilterRecursive($arrayItems)
+    {
+        foreach ($arrayItems as $key => $item) {
+            is_array($item) && $arrayItems[$key] = self::arrayFilterRecursive($item);
+            if (empty($arrayItems[$key])) {
+                unset($arrayItems[$key]);
+            }
+        }
+        return $arrayItems;
+    }
+    
+    public static function isBlockEditor()
+    {
+       return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
+    }
 }

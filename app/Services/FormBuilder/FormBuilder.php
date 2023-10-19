@@ -121,10 +121,24 @@ class FormBuilder
         $formAttributes = apply_filters('fluentform/html_attributes', $data, $form);
 
         $formAtts = $this->buildAttributes($formAttributes);
+        $stylerCss = false;
+        if (Helper::isBlockEditor()){
+            $stylerCss = Helper::getFormMeta($form->id,'_ff_form_styler_css');
+            
+        }
+        // Do not load ff style '.ff-default' when style set to inherit from theme
+        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
+        $loadThemeStyle = Helper::getFormMeta($form->id, '_ff_selected_style') === 'ffs_inherit_theme';
 
+        if ($loadThemeStyle) {
+            $wrapperClasses = str_replace("ff-default", " ", $wrapperClasses);
+        }
+        $wrapperClasses = apply_filters('fluentform/form_wrapper_classes', $wrapperClasses, $form);
         ob_start();
 
-        $wrapperClasses = trim('fluentform fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
+        if($stylerCss){
+            echo " <style id=\"" . 'fluentform_styler_css_' . $form->id . "\" type=\"text/css\">" . fluentformSanitizeCSS($stylerCss) . "</style>";
+        }
 
         echo "<div class='" . esc_attr($wrapperClasses) . "'>";
 
@@ -139,7 +153,7 @@ class FormBuilder
         );
 
         do_action('fluentform/before_form_render', $form);
-
+       
         echo '<form ' . $formAtts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $formAtts is escaped before being passed in.
     
         $isAccessible = apply_filters_deprecated(
@@ -539,7 +553,7 @@ class FormBuilder
      */
     private function fieldsetHtml($form)
     {
-        return '<fieldset style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;">
+        return '<fieldset  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;">
                     <legend class="ff_screen_reader_title" style="display: block; margin: 0!important;padding: 0!important;height: 0!important;text-indent: -999999px;width: 0!important;overflow:hidden;">'
                             .$form->title.
                     '</legend>';

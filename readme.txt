@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.3.1
+Tested up to: 6.3.2
 Requires PHP: 7.1
-Stable tag: 5.0.9
+Stable tag: 5.0.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,8 +440,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
+= 5.0.12 (Date: October 19, 2023) =
+- Fixes theme selection bug
+
+= 5.0.10 (Date: October 18, 2023) =
+ - Adds form preview in Gutenberg block
+ - Adds form theme change support in Gutenberg block
+ - Adds theme style inherit option
+ - Fixed Form finder
+
 = 5.0.9 (Date: Sept 8, 2023) =
- - Fixed security issue (In active form submission prevented)
+ - In active form submission prevented
  - Fixed compact mode entries view
 
 = 5.0.8 (Date: August 24, 2023) =
