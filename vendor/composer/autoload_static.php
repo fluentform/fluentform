@@ -45,6 +45,7 @@ class ComposerStaticInitb99e07d253bf4705bf50ef1db90791ef
         'FluentForm\\App\\Helpers\\IntegrationManagerHelper' => __DIR__ . '/../..' . '/app/Helpers/IntegrationManagerHelper.php',
         'FluentForm\\App\\Helpers\\Protector' => __DIR__ . '/../..' . '/app/Helpers/Protector.php',
         'FluentForm\\App\\Helpers\\Str' => __DIR__ . '/../..' . '/app/Helpers/Str.php',
+        'FluentForm\\App\\Helpers\\Traits\\GlobalDefaultMessages' => __DIR__ . '/../..' . '/app/Helpers/Traits/GlobalDefaultMessages.php',
         'FluentForm\\App\\Hooks\\Handlers\\ActivationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/ActivationHandler.php',
         'FluentForm\\App\\Hooks\\Handlers\\DeactivationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/DeactivationHandler.php',
         'FluentForm\\App\\Hooks\\Handlers\\GlobalNotificationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/GlobalNotificationHandler.php',

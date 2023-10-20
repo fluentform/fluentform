@@ -201,7 +201,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (empty($field['settings']['label_placement'])) {
             $field['settings']['label_placement'] = '';
         }
-
         return $field;
     });
 
@@ -211,7 +210,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         'select_country',
         'input_checkbox',
     ];
-
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement) {
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
@@ -289,7 +287,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             if (!isset($element['settings']['file_location_type'])) {
                 $element['settings']['file_location_type'] = 'follow_global_settings';
             }
-
             return $element;
         });
     }
@@ -298,7 +295,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
         }
-
         return $element;
     });
 
@@ -306,7 +302,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
-
         return $element;
     });
 
@@ -314,7 +309,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
-
         return $element;
     });
 
@@ -322,9 +316,9 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['date_config'])) {
             $item['settings']['date_config'] = '';
         }
-
         return $item;
     });
+
 
     add_filter('fluentform/editor_init_element_container', function ($item) {
         if (!isset($item['settings']['conditional_logics'])) {
@@ -361,7 +355,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
 
@@ -378,9 +371,9 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
+
 
     add_filter('fluentform/editor_init_element_input_text', function ($item) {
         if (isset($item['attributes']['data-mask'])) {
@@ -405,25 +398,30 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
 
+    if ($inputs = \FluentForm\App\Modules\Form\FormFieldsParser::getInputs($form, ['element'])) {
+        foreach ($inputs as $input) {
+            add_filter('fluentform/editor_init_element_'. $input['element'], function ($field) {
+                Helper::resolveValidationRulesGlobalOption($field);
+                return $field;
+            });
+        }
+    }
+
     add_filter('fluentform/editor_init_element_recaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'g-recaptcha-response';
-
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_hcaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'h-captcha-response';
-
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_turnstile', function ($item, $form) {
         $item['attributes']['name'] = 'cf-turnstile-response';
-
         return $item;
     }, 10, 2);
 }, 10);

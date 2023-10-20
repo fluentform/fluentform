@@ -37,6 +37,18 @@ class Converter
             );
 
             $field = apply_filters('fluentform/rendering_field_data_' . $field['element'], $field, $form);
+            
+            $validationsRules = ArrayHelper::get($field, 'settings.validation_rules', []);
+            if ($validationsRules) {
+                foreach ($validationsRules as $ruleName => $rule) {
+                    if (isset($rule['message'])) {
+                        if (isset($rule['global']) && $rule['global']) {
+                            $rule['message'] = "";
+                        }
+                        $validationsRules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $ruleName, $rule['message'], $field);
+                    }
+                }
+            }
 
             $question = [
                 'id'              => ArrayHelper::get($field, 'uniqElKey'),
@@ -47,10 +59,10 @@ class Converter
                 'container_class' => ArrayHelper::get($field, 'settings.container_class'),
                 'placeholder'     => ArrayHelper::get($field, 'attributes.placeholder'),
                 'maxLength'       => ArrayHelper::get($field, 'attributes.maxlength'),
-                'required'        => ArrayHelper::get($field, 'settings.validation_rules.required.value'),
-                'requiredMsg'     => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
-                'errorMessage'    => ArrayHelper::get($field, 'settings.validation_rules.required.message'),
-                'validationRules' => ArrayHelper::get($field, 'settings.validation_rules'),
+                'required'        => ArrayHelper::get($validationsRules, 'required.value'),
+                'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
+                'errorMessage'    => ArrayHelper::get($validationsRules, 'required.message'),
+                'validationRules' => $validationsRules,
                 'tagline'         => ArrayHelper::get($field, 'settings.help_message'),
                 'style_pref'      => ArrayHelper::get($field, 'style_pref', [
                     'layout'           => 'default',

@@ -17,6 +17,7 @@ return array(
     'FluentForm\\App\\Helpers\\IntegrationManagerHelper' => $baseDir . '/app/Helpers/IntegrationManagerHelper.php',
     'FluentForm\\App\\Helpers\\Protector' => $baseDir . '/app/Helpers/Protector.php',
     'FluentForm\\App\\Helpers\\Str' => $baseDir . '/app/Helpers/Str.php',
+    'FluentForm\\App\\Helpers\\Traits\\GlobalDefaultMessages' => $baseDir . '/app/Helpers/Traits/GlobalDefaultMessages.php',
     'FluentForm\\App\\Hooks\\Handlers\\ActivationHandler' => $baseDir . '/app/Hooks/Handlers/ActivationHandler.php',
     'FluentForm\\App\\Hooks\\Handlers\\DeactivationHandler' => $baseDir . '/app/Hooks/Handlers/DeactivationHandler.php',
     'FluentForm\\App\\Hooks\\Handlers\\GlobalNotificationHandler' => $baseDir . '/app/Hooks/Handlers/GlobalNotificationHandler.php',

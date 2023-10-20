@@ -8,9 +8,12 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
 
 class Helper
 {
+    use GlobalDefaultMessages;
+
     public static $tabIndex = 0;
 
     public static $formInstance = 0;
@@ -388,8 +391,9 @@ class Helper
                 }
 
                 if ($exist) {
+                    $typeName = ArrayHelper::get($field, 'element', 'input_text');
                     return [
-                        'unique' => ArrayHelper::get($field, 'raw.settings.unique_validation_message'),
+                        'unique' => apply_filters('fluentform/validation_message_unique_'. $typeName, ArrayHelper::get($field, 'raw.settings.unique_validation_message'), $field),
                     ];
                 }
             }
@@ -810,7 +814,8 @@ class Helper
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
     }
 
-    public static function isAutoloadCaptchaEnabled() {
+    public static function isAutoloadCaptchaEnabled()
+    {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
 
@@ -839,5 +844,22 @@ class Helper
     public static function isBlockEditor()
     {
        return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
+    }
+    public static function resolveValidationRulesGlobalOption(&$field)
+    {
+        if (isset($field['fields']) && is_array($field['fields'])) {
+            foreach ($field['fields'] as &$subField) {
+                static::resolveValidationRulesGlobalOption($subField);
+            }
+        } else {
+            if (ArrayHelper::get($field, 'settings.validation_rules')) {
+                foreach ($field['settings']['validation_rules'] as $key => &$rule) {
+                    if(!isset($rule['global'])) {
+                        $rule['global'] = false;
+                    }
+                    $rule['global_message'] = static::getGlobalDefaultMessage($key);
+                }
+            }
+        }
     }
 }

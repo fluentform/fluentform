@@ -120,6 +120,19 @@
       overflow-y: auto;
       margin-bottom: 10px;
     }
+    .ff_validation_rule_warp {
+      background: #f2f2f2;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px -10px;
+    }
+    .ff_validation_rule_error_choice {
+      padding-left: 10px;
+      border-left: 1px dotted #dcdfe6;
+      .el-form-item {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__body {
