@@ -1328,6 +1328,7 @@ class Component
                 __('PM', 'fluentform'),
             ],
             'yearAriaLabel' => __('Year', 'fluentform'),
+            'firstDayOfWeek' => (int) get_option('start_of_week'),
         ];
 
         return apply_filters('fluentform/date_i18n', $i18n);
