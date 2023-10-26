@@ -12,16 +12,22 @@ trait GlobalDefaultMessages
         if (isset(static::$globalDefaultMessages[$key])) {
             return static::$globalDefaultMessages[$key];
         }
-        $message = '';
         $globalSettings = get_option('_fluentform_global_form_settings');
-        if ($globalSettings && !$message = Arr::get($globalSettings, 'default_messages.' . $key, '')) {
-            $message = Arr::get(static::globalDefaultMessageSettingFields(), $key . '.value', '');
+        if (!$globalSettings || !Arr::get($globalSettings, 'default_messages')) {
+            static::setGlobalDefaultMessages();
+        } else if ($message = Arr::get($globalSettings, 'default_messages.' . $key, '')) {
+            static::$globalDefaultMessages[$key] = $message;
         }
-        static::$globalDefaultMessages[$key] = apply_filters('fluentform/global_default_message', $message, $key);
-        return static::$globalDefaultMessages[$key];
+        return apply_filters('fluentform/global_default_message', Arr::get(static::$globalDefaultMessages, $key , ''), $key);
     }
 
     public static function getAllGlobalDefaultMessages()
+    {
+        static::setGlobalDefaultMessages();
+        return static::$globalDefaultMessages;
+    }
+
+    private static function setGlobalDefaultMessages()
     {
         $default_messages = [];
         foreach (static::globalDefaultMessageSettingFields() as $key => $field) {
@@ -32,7 +38,6 @@ trait GlobalDefaultMessages
             $default_messages = array_merge($default_messages, $messages);
         }
         static::$globalDefaultMessages = apply_filters('fluentform/global_default_messages', $default_messages);
-        return static::$globalDefaultMessages;
     }
 
     public static function globalDefaultMessageSettingFields()
