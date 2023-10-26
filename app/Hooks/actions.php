@@ -949,8 +949,6 @@ if (function_exists('register_block_type')) {
             } else {
                 $themeStyle = \FluentForm\App\Helpers\Helper::getFormMeta($formId, '_ff_selected_style', '');
             }
-    
-            $themeStyle = apply_filters('fluentform/form_theme_style',$themeStyle);
             
             if (defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\FormStyler')) {
                 $formStyler = new \FluentFormPro\classes\FormStyler();

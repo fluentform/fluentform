@@ -128,13 +128,11 @@ class FormBuilder
         }
         // Do not load ff style '.ff-default' when style set to inherit from theme
         $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
-    
-        $loadThemeStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
-        $loadThemeStyle = apply_filters('fluentform/form_theme_style', $loadThemeStyle);
-        if ($loadThemeStyle === 'ffs_inherit_theme') {
-            $wrapperClasses = str_replace("ff-default", "ff-inherit-theme-style", $wrapperClasses);
+        $loadThemeStyle = Helper::getFormMeta($form->id, '_ff_selected_style') === 'ffs_inherit_theme';
+
+        if ($loadThemeStyle) {
+            $wrapperClasses = str_replace("ff-default", " ", $wrapperClasses);
         }
-        
         $wrapperClasses = apply_filters('fluentform/form_wrapper_classes', $wrapperClasses, $form);
         ob_start();
 
