@@ -39,7 +39,7 @@ class Converter
             $field = apply_filters('fluentform/rendering_field_data_' . $field['element'], $field, $form);
 
             $question = [
-                'id'              => ArrayHelper::get($field, 'uniqElKey'),
+                'id'              => ArrayHelper::get($field, 'attributes.name'),
                 'name'            => ArrayHelper::get($field, 'attributes.name'),
                 'title'           => ArrayHelper::get($field, 'settings.label'),
                 'type'            => ArrayHelper::get($allowedFields, $field['element']),
