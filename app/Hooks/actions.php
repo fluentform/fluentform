@@ -944,10 +944,15 @@ if (function_exists('register_block_type')) {
                     }
                 }
             }
-            if (\FluentForm\Framework\Helpers\ArrayHelper::isTrue($atts, 'isThemeChange')) {
-                $themeStyle = sanitize_text_field(\FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'themeStyle'));
-            } else {
-                $themeStyle = \FluentForm\App\Helpers\Helper::getFormMeta($formId, '_ff_selected_style', '');
+
+            $themeStyle = sanitize_text_field(\FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'themeStyle'));
+
+            if (!$themeStyle) {
+                $loadThemeStyle = apply_filters('fluentform/inherit_theme_style', false);
+
+                if ($loadThemeStyle) {
+                    $themeStyle = 'ffs_inherit_theme';
+                }
             }
             
             if (defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\FormStyler')) {
@@ -959,11 +964,6 @@ if (function_exists('register_block_type')) {
             } else {
                 \FluentForm\App\Helpers\Helper::setFormMeta($formId, '_ff_selected_style', $themeStyle);
             }
-            
-            if (\FluentForm\App\Helpers\Helper::isBlockEditor() && \FluentForm\App\Helpers\Helper::isConversionForm($formId)) {
-                return '<div class="conv-demo"><img src=' . fluentformMix('img/conversational-form-demo.png') . ' alt="Fluent Forms Conversational Form" /><p><strong>' . __("This is a demo! The actual Conversational Form may look different in live pages.",'fluentform') .'</strong></p></div>';
-            }
-            
             
             $type = \FluentForm\App\Helpers\Helper::isConversionForm($formId) ? 'conversational' : '';
             return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
@@ -980,7 +980,7 @@ if (function_exists('register_block_type')) {
                 'default' => '',
             ],
             'isConversationalForm' => [
-                'type'    => 'string',
+                'type'    => 'boolean',
                 'default' => false,
             ],
             'isThemeChange'        => [

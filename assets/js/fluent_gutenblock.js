@@ -4189,22 +4189,25 @@ var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody;
 var getFormMeta = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(formId, metaKey) {
-    var path, response, foundObject;
+    var path, response;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/forms/").concat(formId);
-          _context.next = 3;
+          if (formId) {
+            _context.next = 2;
+            break;
+          }
+          return _context.abrupt("return");
+        case 2:
+          path = "".concat(window.fluentform_block_vars.rest.namespace, "/").concat(window.fluentform_block_vars.rest.version, "/settings/").concat(formId, "?meta_key=").concat(metaKey);
+          _context.next = 5;
           return apiFetch({
             path: path
           });
-        case 3:
+        case 5:
           response = _context.sent;
-          foundObject = response.form_meta.find(function (item) {
-            return item.meta_key === metaKey;
-          });
-          return _context.abrupt("return", foundObject ? foundObject.value : false);
-        case 6:
+          return _context.abrupt("return", response.length && response[0].value || false);
+        case 7:
         case "end":
           return _context.stop();
       }
@@ -4214,122 +4217,130 @@ var getFormMeta = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
-var fluentLogo = wp.element.createElement('svg', {
+var fluentLogo = wp.element.createElement("svg", {
   width: 20,
   height: 20
-}, wp.element.createElement('path', {
+}, wp.element.createElement("path", {
   d: "M15.57,0H4.43A4.43,4.43,0,0,0,0,4.43V15.57A4.43,4.43,0,0,0,4.43,20H15.57A4.43,4.43,0,0,0,20,15.57V4.43A4.43,4.43,0,0,0,15.57,0ZM12.82,14a2.36,2.36,0,0,1-1.66.68H6.5A2.31,2.31,0,0,1,7.18,13a2.36,2.36,0,0,1,1.66-.68l4.66,0A2.34,2.34,0,0,1,12.82,14Zm3.3-3.46a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,10.53Zm0-3.73a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,6.81Z"
 }));
-registerBlockType('fluentfom/guten-block', {
-  title: __('Fluent Forms'),
+registerBlockType("fluentfom/guten-block", {
+  title: __("Fluent Forms"),
   icon: fluentLogo,
-  category: 'formatting',
-  keywords: [__('Contact Form'), __('Fluent Forms'), __('Forms'), __('Advanced Forms'), __('fluentforms-gutenberg-block')],
+  category: "formatting",
+  keywords: [__("Contact Form"), __("Fluent Forms"), __("Forms"), __("Advanced Forms"), __("fluentforms-gutenberg-block")],
   attributes: {
     formId: {
-      type: 'string'
+      type: "string"
     },
     themeStyle: {
-      type: 'string'
+      type: "string"
     },
     className: {
-      type: 'string'
+      type: "string"
     },
     isConversationalForm: {
-      type: 'string',
+      type: "boolean",
       "default": false
     },
     isThemeChange: {
-      type: 'boolean',
+      type: "boolean",
       "default": false
     }
   },
   edit: function edit(_ref2) {
     var attributes = _ref2.attributes,
       setAttributes = _ref2.setAttributes;
-    React.useEffect(function () {
-      function syncBlockAttrWithFormMeta() {
-        return _syncBlockAttrWithFormMeta.apply(this, arguments);
-      }
-      function _syncBlockAttrWithFormMeta() {
-        _syncBlockAttrWithFormMeta = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-          var selectedStyleMeta;
-          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-            while (1) switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.prev = 0;
-                _context2.next = 3;
-                return getFormMeta(attributes.formId, '_ff_selected_style');
-              case 3:
-                selectedStyleMeta = _context2.sent;
-                if (selectedStyleMeta && selectedStyleMeta !== attributes.themeStyle) {
-                  setAttributes({
-                    themeStyle: selectedStyleMeta
-                  });
-                }
-                _context2.next = 9;
-                break;
-              case 7:
-                _context2.prev = 7;
-                _context2.t0 = _context2["catch"](0);
-              case 9:
-              case "end":
-                return _context2.stop();
-            }
-          }, _callee2, null, [[0, 7]]);
-        }));
-        return _syncBlockAttrWithFormMeta.apply(this, arguments);
-      }
-      syncBlockAttrWithFormMeta();
-    }, [attributes.formId]);
-    function checkIfConversationalForm(_x3) {
-      return _checkIfConversationalForm.apply(this, arguments);
+    function syncBlockAttrWithFormMeta(_x3) {
+      return _syncBlockAttrWithFormMeta.apply(this, arguments);
     }
-    function _checkIfConversationalForm() {
-      _checkIfConversationalForm = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formId) {
-        var isConversationalForm;
+    function _syncBlockAttrWithFormMeta() {
+      _syncBlockAttrWithFormMeta = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formId) {
+        var selectedStyleMeta;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              setAttributes({
-                formId: formId
-              });
-              _context3.prev = 1;
+              if (formId) {
+                _context3.next = 2;
+                break;
+              }
+              return _context3.abrupt("return");
+            case 2:
               _context3.next = 4;
-              return getFormMeta(formId, 'is_conversion_form');
+              return getFormMeta(formId, "_ff_selected_style");
             case 4:
-              isConversationalForm = _context3.sent;
+              selectedStyleMeta = _context3.sent;
               setAttributes({
-                isConversationalForm: isConversationalForm === 'yes',
-                isThemeChange: true
+                themeStyle: selectedStyleMeta
               });
-              setTimeout(function () {
-                setAttributes({
-                  isThemeChange: false
-                });
-              }, 1500);
-              _context3.next = 12;
-              break;
-            case 9:
-              _context3.prev = 9;
-              _context3.t0 = _context3["catch"](1);
-              setAttributes({
-                isConversationalForm: false
-              });
-            case 12:
+            case 6:
             case "end":
               return _context3.stop();
           }
-        }, _callee3, null, [[1, 9]]);
+        }, _callee3);
+      }));
+      return _syncBlockAttrWithFormMeta.apply(this, arguments);
+    }
+    function checkIfConversationalForm(_x4) {
+      return _checkIfConversationalForm.apply(this, arguments);
+    }
+    function _checkIfConversationalForm() {
+      _checkIfConversationalForm = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formId) {
+        var isConversationalForm;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              if (formId) {
+                _context4.next = 2;
+                break;
+              }
+              return _context4.abrupt("return");
+            case 2:
+              _context4.next = 4;
+              return getFormMeta(formId, "is_conversion_form");
+            case 4:
+              isConversationalForm = _context4.sent;
+              setAttributes({
+                isConversationalForm: isConversationalForm === "yes"
+              });
+            case 6:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
       }));
       return _checkIfConversationalForm.apply(this, arguments);
     }
+    function handleFormChange(formId) {
+      setAttributes({
+        formId: formId
+      });
+      if (!formId) {
+        setAttributes({
+          themeStyle: "",
+          isThemeChange: false,
+          isConversationalForm: false
+        });
+      } else {
+        setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                checkIfConversationalForm(formId);
+                syncBlockAttrWithFormMeta(formId);
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2);
+        })), 300);
+      }
+    }
     var config = window.fluentform_block_vars;
-    var transformedArray = Object.entries(config.style_presets).map(function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 2),
-        value = _ref4[0],
-        label = _ref4[1];
-      if (value === 'ffs_custom') {
+    var transformedArray = Object.entries(config.style_presets).map(function (_ref4) {
+      var _ref5 = _slicedToArray(_ref4, 2),
+        value = _ref5[0],
+        label = _ref5[1];
+      if (value === "ffs_custom") {
         return {
           value: value,
           label: label,
@@ -4351,7 +4362,7 @@ registerBlockType('fluentfom/guten-block', {
           alt: "Fluent Forms Logo"
         })
       }), settings]
-    }, 'ff-form-sub-wrapper');
+    }, "ff-form-sub-wrapper");
     settings = [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(InspectorControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
         title: "Select your Fluent Forms",
@@ -4364,39 +4375,39 @@ registerBlockType('fluentfom/guten-block', {
               label: form.title
             };
           }),
-          onChange: checkIfConversationalForm
-        }, "sub_select_form"), attributes.hasOwnProperty('isConversationalForm') && attributes.isConversationalForm != true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+          onChange: handleFormChange
+        }, "sub_select_form"), attributes.formId && attributes.hasOwnProperty("isConversationalForm") && attributes.isConversationalForm != true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
           label: __("Select a Theme Style"),
           value: attributes.themeStyle,
           options: transformedArray,
           onChange: function onChange(themeStyle) {
+            console.log("themeStyle", themeStyle);
             setAttributes({
               themeStyle: themeStyle,
               isThemeChange: true
             });
-            setTimeout(function () {
-              setAttributes({
-                isThemeChange: false
-              });
-            }, 1500);
           }
         }, "ff-sub_select_theme")]
       })
-    }, 'ff-select-form')];
+    }, "ff-select-form")];
     if (attributes.formId) {
       if (attributes.isConversationalForm == true) {
-        settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
           className: "conv-demo",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
             src: config.conversational_demo_img,
             alt: "Fluent Forms Conversational Form"
-          })
-        }, 'ff-conv-sub-wrapper'));
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("strong", {
+              children: __('This is a demo! The actual Conversational Form may look different in live pages.')
+            })
+          })]
+        }, "ff-conv-sub-wrapper"));
       } else {
         settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ServerSideRender, {
           block: "fluentfom/guten-block",
           attributes: attributes
-        }, 'ff-preview'));
+        }, "ff-preview"));
       }
     } else {
       settings.push(blockContent);
@@ -4409,21 +4420,13 @@ registerBlockType('fluentfom/guten-block', {
             label: form.title
           };
         }),
-        onChange: function onChange(formId) {
-          return setAttributes({
-            formId: formId
-          });
-        }
-      }, 'ff-main-select-form'));
+        onChange: handleFormChange
+      }, "ff-main-select-form"));
     }
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
       className: "flueform-guten-wrapper",
       children: settings
     });
-  },
-  save: function save(_ref5) {
-    var attributes = _ref5.attributes;
-    return null;
   }
 });
 })();
