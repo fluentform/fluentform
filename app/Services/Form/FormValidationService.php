@@ -591,7 +591,7 @@ class FormValidationService
      * @return bool
      */
     public static function containsRestrictedKeywords($value, $providedKeywords) {
-        preg_match_all('/\b(?:\p{L}+[\p{Pd}\p{Mn}\p{Pc}]*)+\b/u', $value, $matches);
+        preg_match_all('/\b[\p{L}\d\s]+\b/u', $value, $matches);
         $words = $matches[0] ?? [];
 
         foreach ($providedKeywords as $keyword) {
@@ -650,7 +650,7 @@ class FormValidationService
         }
         
         $providedKeywords = explode(',', Arr::get($settings, 'fields.keywords.values'));
-        $providedKeywords =  array_map('trim',$providedKeywords);
+        $providedKeywords =  array_map('trim', $providedKeywords);
         $inputSubmission = array_intersect_key(
             $this->formData,
             array_flip(
