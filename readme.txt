@@ -440,7 +440,6 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-
 = 5.0.12 (Date: October 19, 2023) =
  - Fixes theme selection bug
 
