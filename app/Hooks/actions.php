@@ -917,7 +917,7 @@ add_action('enqueue_block_editor_assets', function () {
         ],
     ];
 
-    $presets = apply_filters('fluentofrm/block_editor_style_presets', $presets);
+    $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
    
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
         'logo'                    => fluentFormMix('img/fluent_icon.png'),
