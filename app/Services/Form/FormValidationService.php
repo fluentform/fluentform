@@ -661,17 +661,20 @@ class FormValidationService
         );
         $defaultMessage = __('Sorry! Your submission contains some restricted keywords.', 'fluentform');
         $message = Arr::get($settings, 'fields.keywords.message', $defaultMessage);
-        
+
+        self::checkKeywordsMatching($inputSubmission, $message, $providedKeywords);
+    }
+
+    private static function checkKeywordsMatching($inputSubmission, $message, $providedKeywords)
+    {
         foreach ($inputSubmission as $value) {
             if (!empty($value)) {
                 if (is_array($value)) {
-                    foreach ($value as $innerValue) {
-                        if (self::containsRestrictedKeywords($innerValue, $providedKeywords)) {
-                            self::throwValidationException($message);
-                        }
+                    self::checkKeywordsMatching($value, $message, $providedKeywords);
+                } else {
+                    if (self::containsRestrictedKeywords($value, $providedKeywords)) {
+                        self::throwValidationException($message);
                     }
-                } elseif (self::containsRestrictedKeywords($value, $providedKeywords)) {
-                    self::throwValidationException($message);
                 }
             }
         }
