@@ -442,19 +442,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 = 5.1.0 (Date: November 1, 2023) =
 - Adds Global Search
-- Adds Global Default Message
+- Adds Global Default Validation Messages
 - Adds support for Fluent Booking in Conversational Form
 - Adds theme style inherit option.
 - Adds Form submission restriction based on Keyword
-- Added a refresh button on form entries
-- Improved WPForms and Gravity Forms migration support for conditional logic mapping
-- Updated country names in the country input field
-- Fixed URL cut-off on the Entries page
-- Fixed pagination in Forms and Entries pages
-- Fixed attachment preview in email notification
-- Removed total views from exported forms
-- Fixed multiple numeric calculations in conversational forms
-- Form submission restriction based on Keywords
+- Adds a refresh button on form entries
+- Improves WPForms and Gravity Forms migration support for conditional logic mapping
+- Fixes URL cut-off on the Entries page
+- Fixes pagination in Forms and Entries pages
+- Fixes attachment preview in email notification
+- Fixes multiple numeric calculations in conversational forms
+- Removes total views from exported forms
 
 = 5.0.12 (Date: October 19, 2023) =
  - Fixes theme selection bug
