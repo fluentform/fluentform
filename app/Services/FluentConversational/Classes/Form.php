@@ -103,7 +103,7 @@ class Form
             FLUENTFORM_VERSION
         );
 
-        echo '<div id="ff_conversation_form_design_app"><design-skeleton><h1 style="text-align: center; margin: 60px 0px;">Loading App Please wait....</h1></design-skeleton></div>';
+        echo '<div id="ff_conversation_form_design_app"><design-skeleton><h1 style="text-align: center; margin: 60px 0px;">Loading App Please wait....</h1></design-skeleton><global-search></global-search></div>';
     }
 
     public function getDesignSettings($formId)

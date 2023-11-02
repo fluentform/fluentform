@@ -198,6 +198,11 @@
                             </div>
                         </div><!-- .ff_advanced_filter_wrap -->
                     </btn-group-item>
+	                <btn-group-item as="div">
+		                <el-button @click="getData">
+			                <i class="ff-icon el-icon-refresh"></i>
+		                </el-button>
+	                </btn-group-item>
                 </btn-group>
             </section-head-content>
         </section-head>

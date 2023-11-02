@@ -8,9 +8,12 @@ use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
 
 class Helper
 {
+    use GlobalDefaultMessages;
+
     public static $tabIndex = 0;
 
     public static $formInstance = 0;
@@ -286,6 +289,7 @@ class Helper
         }
 
         $ids = [];
+        $attributes = [];
 
         foreach ($matches as $shortcode) {
             if (count($shortcode) >= 2 && $tag === $shortcode[2]) {
@@ -301,8 +305,21 @@ class Helper
                     }
 
                     $ids[$result[$selector]] = $result[$selector];
+
+                    $theme = ArrayHelper::get($result, 'theme');
+
+                    if ($theme) {
+                        $attributes[] = [
+                            'formId' => $result[$selector],
+                            'theme'  => $theme
+                        ];
+                    }
                 }
             }
+        }
+
+        if ($attributes) {
+            $ids['attributes'] = $attributes;
         }
 
         return $ids;
@@ -311,6 +328,7 @@ class Helper
     public static function getFormsIdsFromBlocks($content)
     {
         $ids = [];
+        $attributes = [];
 
         if (!function_exists('parse_blocks')) {
             return $ids;
@@ -324,13 +342,29 @@ class Helper
 
         $parsedBlocks = parse_blocks($content);
         foreach ($parsedBlocks as $block) {
-            if (!ArrayHelper::exists($block, 'blockName') || ArrayHelper::exists($block, 'attrs.formId')) {
+            if (!ArrayHelper::exists($block, 'blockName') || !ArrayHelper::get($block, 'attrs.formId')) {
                 continue;
             }
+
             $hasBlock = strpos($block['blockName'], 'fluentfom/guten-block') === 0;
             if ($hasBlock) {
-                $ids[] = (int) $block['attrs']['formId'];
+                $formId = (int) $block['attrs']['formId'];
+                
+                $ids[] = $formId;
+
+                $theme = ArrayHelper::get($block, 'attrs.themeStyle');
+
+                if ($theme) {
+                    $attributes[] = [
+                        'formId' => $formId,
+                        'theme'  => $theme
+                    ];
+                }
             }
+        }
+
+        if ($attributes) {
+            $ids['attributes'] = $attributes;
         }
 
         return $ids;
@@ -375,9 +409,22 @@ class Helper
                     ->where('field_name', $fieldName)
                     ->where('field_value', $inputValue)
                     ->exists();
+
+                // if form has pending payment then the value doesn't exist in EntryDetails table
+                // further checking on Submission table if the value exists
+                if (!$exist && $form->has_payment) {
+                    $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
+
+                    foreach($allSubmission as $submission) {
+                        $response = json_decode(ArrayHelper::get($submission, 'response'), true);
+                        $exist = $inputValue == ArrayHelper::get($response, $fieldName);
+                    }
+                }
+
                 if ($exist) {
+                    $typeName = ArrayHelper::get($field, 'element', 'input_text');
                     return [
-                        'unique' => ArrayHelper::get($field, 'raw.settings.unique_validation_message'),
+                        'unique' => apply_filters('fluentform/validation_message_unique_'. $typeName, ArrayHelper::get($field, 'raw.settings.unique_validation_message'), $field),
                     ];
                 }
             }
@@ -792,8 +839,14 @@ class Helper
 
         return $title;
     }
-
-    public static function isAutoloadCaptchaEnabled() {
+    
+    public static function getIpinfo()
+    {
+        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
+    }
+    
+    public static function isAutoloadCaptchaEnabled()
+    {
         return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
 
@@ -822,5 +875,22 @@ class Helper
     public static function isBlockEditor()
     {
        return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
+    }
+    public static function resolveValidationRulesGlobalOption(&$field)
+    {
+        if (isset($field['fields']) && is_array($field['fields'])) {
+            foreach ($field['fields'] as &$subField) {
+                static::resolveValidationRulesGlobalOption($subField);
+            }
+        } else {
+            if (ArrayHelper::get($field, 'settings.validation_rules')) {
+                foreach ($field['settings']['validation_rules'] as $key => &$rule) {
+                    if(!isset($rule['global'])) {
+                        $rule['global'] = false;
+                    }
+                    $rule['global_message'] = static::getGlobalDefaultMessage($key);
+                }
+            }
+        }
     }
 }

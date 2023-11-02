@@ -230,7 +230,7 @@ export default {
             selectedPaymentStatuses: [],
             paginate: {
                 total: 0,
-                current_page: 1,
+                current_page: +(localStorage.getItem('entriesCurrentPage') || 1),
                 last_page: 1,
                 per_page: localStorage.getItem('entriesPerPage') || 10
             },
@@ -276,7 +276,7 @@ export default {
         setPaginate(data = {}) {
             this.paginate = {
                 total: data.total || 0,
-                current_page: data.current_page || 1,
+                current_page: data.current_page || +(localStorage.getItem('entriesCurrentPage') || 1),
                 last_page: data.last_page || 1,
                 per_page: data.per_page || localStorage.getItem('entriesPerPage') || 20,
             }
@@ -284,6 +284,7 @@ export default {
         goToPage(value) {
             let top = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
             scrollTop(top).then((_) => {
+	            localStorage.setItem('entriesCurrentPage', value);
                 this.paginate.current_page = value;
                 this.fetchEntries();
             })

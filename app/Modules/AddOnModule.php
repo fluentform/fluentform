@@ -96,17 +96,7 @@ class AddOnModule
 
         wpFluentForm('view')->render('admin.addons.list', []);
     }
-
-    public function updateAddOnsStatus()
-    {
-        $addons = wp_unslash(wpFluentForm('request')->get('addons'));
-        update_option('fluentform_global_modules_status', $addons, 'no');
-
-        wp_send_json_success([
-            'message' => 'Status successfully updated',
-        ], 200);
-    }
-
+    
     public function getPremiumAddOns()
     {
         $purchaseUrl = fluentform_upgrade_url();

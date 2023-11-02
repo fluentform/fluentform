@@ -102,6 +102,8 @@ class Route {
 
     noticeAction = 'notice';
 
+    globalSearch = 'global-search';
+
 }
 
 export default new Route();
