@@ -825,3 +825,54 @@
     cursor: pointer;
   }
 }
+
+#{$prefix}-chat-reply-container {
+  div {
+    p {
+      border-radius: 6px;
+      padding: 20px 16px;
+      margin-top: 12px;
+    }
+
+    .skeleton {
+      animation: skeleton-loading 2s linear infinite alternate;
+      padding: 24px;
+    }
+
+    @keyframes skeleton-loading {
+      0% {
+        background-color: #E3E6E8;
+      }
+      100% {
+        background-color: #F0F3F5;
+      }
+    }
+  }
+}
+
+.ff-el-chat-container {
+  position: relative;
+
+  textarea {
+    position: relative;
+    resize: none;
+    outline: none;
+  }
+
+  .ff_btn_chat_style {
+    position: absolute;
+    top: 38%;
+    right: 10px;
+    background: transparent;
+    border: none;
+    svg {
+      &:hover {
+        cursor: pointer;
+        outline: 0;
+        text-decoration: none;
+        opacity: 0.8;
+        transition: 0.4s all;
+      }
+    }
+  }
+}

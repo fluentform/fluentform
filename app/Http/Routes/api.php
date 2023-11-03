@@ -148,3 +148,8 @@ $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) 
 */
 $router->post('notice', 'AdminNoticeController@noticeActions')->withPolicy('FormPolicy');
 
+/*
+* Global Query
+*/
+$router->get('global-search', 'GlobalSearchController@index')->withPolicy('FormPolicy');
+

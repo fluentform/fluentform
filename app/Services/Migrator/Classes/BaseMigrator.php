@@ -1707,4 +1707,34 @@ abstract class BaseMigrator
         return $values;
     }
 
+    protected function getResolveOperator($key)
+    {
+        return ArrayHelper::get([
+            'equal'            => '=',
+            'is'               => '=',
+            '=='               => '=',
+            'e'                => '=',
+            'not_equal'        => '!=',
+            'isnot'            => '!=',
+            '!='               => '!=',
+            '!e'               => '!=',
+            'greater_than'     => '>',
+            '>'                => '>',
+            'greater_or_equal' => '>=',
+            '>='               => '>=',
+            'less_than'        => '<',
+            '<'                => '<',
+            'less_or_equal'    => '<=',
+            '<='               => '<=',
+            'starts_with'      => 'startsWith',
+            '^'                => 'startsWith',
+            'ends_with'        => 'endsWith',
+            '~'                => 'endsWith',
+            'contains'         => 'contains',
+            'c'                => 'contains',
+            '!c'               => 'doNotContains',
+            'not_contains'     => 'doNotContains'
+        ], $key);
+    }
+
 }

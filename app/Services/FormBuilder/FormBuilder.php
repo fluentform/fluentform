@@ -75,6 +75,20 @@ class FormBuilder
             $formClass .= ' ' . $extraFormClass;
         }
 
+        $themeStyle = ArrayHelper::get($atts, 'theme');
+
+        if (!$themeStyle) {
+            $selectedStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
+
+            if ($selectedStyle) {
+                $themeStyle = $selectedStyle;
+
+                $atts['theme'] = $selectedStyle;
+            }
+        }
+
+        $form->theme = $themeStyle;
+
         $formBody = $this->buildFormBody($form);
 
         if (strpos($formBody, '{dynamic.')) {
@@ -99,6 +113,10 @@ class FormBuilder
             $formClass .= ' fluentform_has_payment';
         }
 
+        if ($themeStyle) {
+            $formClass .= ' ' . $themeStyle;
+        }
+
         $data = [
             'data-form_id'       => $form->id,
             'id'                 => 'fluentform_' . $form->id,
@@ -121,24 +139,18 @@ class FormBuilder
         $formAttributes = apply_filters('fluentform/html_attributes', $data, $form);
 
         $formAtts = $this->buildAttributes($formAttributes);
-        $stylerCss = false;
-        if (Helper::isBlockEditor()){
-            $stylerCss = Helper::getFormMeta($form->id,'_ff_form_styler_css');
-            
-        }
-        // Do not load ff style '.ff-default' when style set to inherit from theme
-        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
-        $loadThemeStyle = Helper::getFormMeta($form->id, '_ff_selected_style') === 'ffs_inherit_theme';
+      
 
-        if ($loadThemeStyle) {
-            $wrapperClasses = str_replace("ff-default", " ", $wrapperClasses);
+        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
+
+        if ($themeStyle === 'ffs_inherit_theme') {
+            $wrapperClasses = str_replace("ff-default", "ff-inherit-theme-style", $wrapperClasses);
+        } else if ($themeStyle) {
+            $wrapperClasses .= ' ' . $themeStyle . '_wrap';
         }
+
         $wrapperClasses = apply_filters('fluentform/form_wrapper_classes', $wrapperClasses, $form);
         ob_start();
-
-        if($stylerCss){
-            echo " <style id=\"" . 'fluentform_styler_css_' . $form->id . "\" type=\"text/css\">" . fluentformSanitizeCSS($stylerCss) . "</style>";
-        }
 
         echo "<div class='" . esc_attr($wrapperClasses) . "'>";
 
@@ -151,9 +163,8 @@ class FormBuilder
             'fluentform/before_form_render',
             'Use fluentform/before_form_render instead of fluentform_before_form_render.'
         );
-
-        do_action('fluentform/before_form_render', $form);
-       
+        
+        do_action('fluentform/before_form_render', $form, $atts);
         echo '<form ' . $formAtts . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $formAtts is escaped before being passed in.
     
         $isAccessible = apply_filters_deprecated(
@@ -433,6 +444,9 @@ class FormBuilder
             $rules = $item['settings']['validation_rules'];
             foreach ($rules as $ruleName => $rule) {
                 if (isset($rule['message'])) {
+                    if (isset($rule['global']) && $rule['global']) {
+                        $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);
+                    }
                     $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $ruleName,
                         [
@@ -445,17 +459,17 @@ class FormBuilder
                     );
                     $rules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $ruleName, $rule['message'], $item);
 
-                    apply_filters_deprecated(
+                    $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $item['element'] . '_' . $ruleName,
                         [
-                            $rule['message'],
+                            $rules[$ruleName]['message'],
                             $item
                         ],
                         FLUENTFORM_FRAMEWORK_UPGRADE,
                         'fluentform/validation_message_' . $item['element'] . '_' . $ruleName,
                         'Use fluentform/validation_message_' . $item['element'] . '_' . $ruleName . ' instead of fluentform_validation_message_' . $item['element'] . '_' . $ruleName
                     );
-                    $rules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $item['element'] . '_' . $ruleName, $rule['message'], $item);
+                    $rules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $item['element'] . '_' . $ruleName, $rules[$ruleName]['message'], $item);
                 }
             }
     

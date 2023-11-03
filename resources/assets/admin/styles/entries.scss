@@ -353,6 +353,7 @@ table.editor_table, .ff_entry_table_field, .ff-table {
     &_value {
       margin-top: 8px;
       white-space: pre-line;
+      word-break: break-all;
     }
     &_remove{
       position: absolute;
@@ -363,8 +364,7 @@ table.editor_table, .ff_entry_table_field, .ff-table {
 }
 
 .entry_info_body.narrow_items {
-  padding: 15px;
-  padding: 0px 15px 15px;
+  padding: 0 15px 15px;
   .wpf_each_entry {
     * {
       word-break: break-all;

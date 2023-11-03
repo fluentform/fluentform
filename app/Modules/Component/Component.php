@@ -489,6 +489,7 @@ class Component
                 'css_classes'        => '',
                 'permission'         => '',
                 'type'               => 'classic',
+                'theme'        => '',
                 'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform')
             ];
             /* This filter is deprecated, will be removed soon */
@@ -1328,6 +1329,7 @@ class Component
                 __('PM', 'fluentform'),
             ],
             'yearAriaLabel' => __('Year', 'fluentform'),
+            'firstDayOfWeek' => (int) get_option('start_of_week'),
         ];
 
         return apply_filters('fluentform/date_i18n', $i18n);

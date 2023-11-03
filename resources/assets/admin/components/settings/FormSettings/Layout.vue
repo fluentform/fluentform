@@ -87,7 +87,7 @@
         <card id="email-summaries">
             <card-head>
                 <h5 class="title">{{ $t('Email Summaries') }}</h5>
-                <p class="text" style="max-width: 650px;">
+                <p class="text">
                     {{$t('Would you like to receive a weekly report showing how your forms are performing? Enable Email Summaries option and you will get a report every week to the provided email address')}}
                 </p>
             </card-head>
@@ -189,7 +189,7 @@
         <card id="integration-failure-notification">
             <card-head>
                 <h5 class="title">{{ $t('Integration Failure Email Notification') }}</h5>
-                <p class="text" style="max-width: 700px;">
+                <p class="text">
                     {{$t('Enable Integration Failure Notification and you will get an email when any of your integration fails to run.')}}
                 </p>
             </card-head>
@@ -244,6 +244,48 @@
                                         v-model="integration_failure_notification.custom_recipients"></el-input>
                             <p class="fs-14 mt-1">{{ $t('For multiple email addresses, use comma to separate them') }}</p>
                         </div>
+                    </el-form-item>
+                </template>
+            </card-body>
+        </card>
+
+        <!-- Default Messages -->
+        <card id="default-messages">
+            <card-head>
+                <h5 class="title">{{$t('Validation Messages') }}</h5>
+                <p class="text">
+                    {{
+                        $t("These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom.")
+                    }}
+                </p>
+            </card-head>
+            <card-body>
+                <template v-for="(field, fieldKey) in default_message_setting_fields">
+                    <el-form-item>
+                        <template slot="label">
+                            {{ field.label }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ field.help_text }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+
+                        <el-input
+                            v-if="field.type === 'textarea'"
+                            type="textarea"
+                            :row="field.row ? field.row : 3"
+                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            v-model="default_messages[fieldKey]"
+                        />
+                        <el-input
+                            v-else
+                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            v-model="default_messages[fieldKey]"
+                        />
                     </el-form-item>
                 </template>
             </card-body>
@@ -621,7 +663,10 @@
             },
             captcha_status: {
                 required: true
-            }
+            },
+	        default_message_setting_fields: {
+		        required: true
+	        },
         },
         data() {
             return {
@@ -641,6 +686,7 @@
                 akismet_available: window.FluentFormApp.akismet_activated,
                 layout: {},
                 misc: {},
+	            default_messages: {},
                 sending_days: {
                     Mon: 'Monday',
                     Tue: 'Tuesday',
@@ -700,6 +746,13 @@
             this.scrollTo();
 
             this.layout = this.data.layout;
+
+	        for (const fieldKey in this.default_message_setting_fields) {
+		        if (!(fieldKey in this.data.default_messages)) {
+			        this.$set(this.data.default_messages, fieldKey, this.default_message_setting_fields[fieldKey].value);
+		        }
+	        }
+	        this.default_messages = this.data.default_messages
 
             if (!this.data.misc.akismet_validation) {
                 this.$set(this.data.misc, 'akismet_validation', 'mark_as_spam');

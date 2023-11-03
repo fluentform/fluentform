@@ -164,6 +164,16 @@ export default {
         },
 
         /**
+         * Action for clicking up down from an element
+         * @param index
+         * @param delta up/down index
+         */
+        handleUpDown(index, delta) {
+            const [firstIndex, lastIndex] = [index, index + delta].sort();
+            this.wrapper.splice(firstIndex, 2, this.wrapper[lastIndex], this.wrapper[firstIndex]);
+        },
+
+        /**
          * Action for clicking on trash icon
          * from an element
          * @param index
