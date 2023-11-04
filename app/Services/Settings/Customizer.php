@@ -8,12 +8,8 @@ use FluentForm\Framework\Support\Arr;
 
 class Customizer
 {
-    public function get($formId, $metaKeys = [])
+    public function get($formId, $metaKeys = ['_custom_form_css', '_custom_form_js'])
     {
-        $defaultMetaKeys = ['_custom_form_css', '_custom_form_js', '_ff_form_styler_css', '_ff_selected_style'];
-        
-        $metaKeys = array_merge($defaultMetaKeys, $metaKeys);
-
         return FormMeta::where('form_id', $formId)
             ->whereIn('meta_key', $metaKeys)
             ->get()

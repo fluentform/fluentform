@@ -80,11 +80,11 @@ class FormBuilder
         if (!$themeStyle) {
             $selectedStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
 
-            if ($selectedStyle) {
-                $themeStyle = $selectedStyle;
+            $selectedStyle = $selectedStyle ? $selectedStyle : 'ffs_default';
 
-                $atts['theme'] = $selectedStyle;
-            }
+            $themeStyle = $selectedStyle;
+
+            $atts['theme'] = $selectedStyle;
         }
 
         $form->theme = $themeStyle;
