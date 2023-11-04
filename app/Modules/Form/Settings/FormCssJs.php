@@ -19,11 +19,17 @@ class FormCssJs
         $this->request = wpFluentForm('request');
     }
 
-    public function addCssJs($formId, $styles = [])
+    public function addCustomCssJs($formId)
     {
-        $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId, $styles);
-        do_action('fluentform/adding_custom_styler_css_js', $formId, $metas);
-        $customCss = '';
+        if (did_action('fluentform/adding_custom_css_js_' . $formId)) {
+            return;
+        }
+
+        do_action('fluentform/adding_custom_css_js_' . $formId, $formId);
+
+        $metaKeys = ['_custom_form_css', '_custom_form_js'];
+
+        $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId, $metaKeys);
 
         foreach ($metas as $metaKey => $metaValue) {
             if ($metaValue) {
@@ -32,6 +38,10 @@ class FormCssJs
                         $css = $metaValue;
                         $css = str_replace('{form_id}', $formId, $css);
                         $customCss = str_replace('FF_ID', $formId, $css);
+
+                        if ($customCss) {
+                            $this->addCss($formId, $customCss, 'fluentform_custom_css_' . $formId);
+                        }
                         break;
                     case 'js':
                         $this->addJs($formId, $metaValue);
@@ -39,6 +49,16 @@ class FormCssJs
                 }
             }
         }
+    }
+
+    public function addStylerCSS($formId, $styles = [])
+    {
+        $metaKeys = array_merge(
+            ['_ff_form_styler_css', '_ff_selected_style'],
+            $styles
+        );
+
+        $metas = (new \FluentForm\App\Services\Settings\Customizer())->get($formId, $metaKeys);
 
         foreach ($styles as $style) {
             if (!$style) {
@@ -70,10 +90,6 @@ class FormCssJs
                 
                 do_action('fluent_form/loaded_styler_' . $formId . '_' . $style);
             }
-        }
-
-        if ($customCss) {
-            $this->addCss($formId, $customCss, 'fluentform_custom_css_' . $formId);
         }
     }
 

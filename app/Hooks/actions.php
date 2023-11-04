@@ -690,6 +690,10 @@ $app->addAction('fluentform/before_form_render', function ($form, $atts) {
 }, 10, 2);
 
 add_action('fluentform/load_form_assets', function ($formId, $styles = []) {
+    $formAssetLoader = (new \FluentForm\App\Modules\Form\Settings\FormCssJs());
+
+    $formAssetLoader->addCustomCssJs($formId);
+
     $notLoadedStyles = [];
 
     foreach ($styles as $style) {
@@ -700,7 +704,7 @@ add_action('fluentform/load_form_assets', function ($formId, $styles = []) {
 
     // check if already loaded
     if ($notLoadedStyles) {
-        (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId, $notLoadedStyles);
+        $formAssetLoader->addStylerCSS($formId, $notLoadedStyles);
     }
 }, 10, 2);
 
