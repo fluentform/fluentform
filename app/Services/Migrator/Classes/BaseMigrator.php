@@ -1636,6 +1636,16 @@ abstract class BaseMigrator
                 'created_at'    => $created_at ?: current_time('mysql'),
                 'updated_at'    => $updated_at ?: current_time('mysql')
             ];
+
+            if ($is_favourite = ArrayHelper::get($entry, 'is_favourite')) {
+                $insertData['is_favourite'] = $is_favourite;
+                ArrayHelper::forget($entry, 'is_favourite');
+            }
+            if ($status = ArrayHelper::get($entry, 'status')) {
+                $insertData['status'] = $status;
+                ArrayHelper::forget($entry, 'status');
+            }
+
             $insertId = wpFluent()->table('fluentform_submissions')->insertGetId($insertData);
 
             $uidHash = md5(wp_generate_uuid4() . $insertId);

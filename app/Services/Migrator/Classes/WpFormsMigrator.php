@@ -235,6 +235,12 @@ class WpFormsMigrator extends BaseMigrator
             if ($submission->date_modified) {
                 $entry['updated_at'] = $submission->date_modified;
             }
+            if ($submission->starred) {
+                $entry['is_favourite'] = $submission->starred;
+            }
+            if ($submission->viewed) {
+                $entry['status'] = 'read';
+            }
             $entries[] = $entry;
         }
         return $entries;
