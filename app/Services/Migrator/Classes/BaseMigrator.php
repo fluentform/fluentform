@@ -1469,6 +1469,19 @@ abstract class BaseMigrator
                 }
                 unset($metas['confirmations']);
             }
+
+            //when have webhooks
+            if ($webhooks = ArrayHelper::get($metas, 'webhooks')) {
+                \FluentForm\App\Models\FormMeta::remove($formId, 'fluentform_webhook_feed');
+                foreach ($webhooks as $webhook) {
+                    \FluentForm\App\Models\FormMeta::create([
+                        'form_id'  => $formId,
+                        'meta_key' => 'fluentform_webhook_feed',
+                        'value'    => json_encode($webhook)
+                    ]);
+                }
+                unset($metas['webhooks']);
+            }
             foreach ($metas as $metaKey => $metaData) {
                 (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->updateMeta($formId, $metaKey, $metaData);
             }
