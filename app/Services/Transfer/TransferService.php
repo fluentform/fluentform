@@ -87,10 +87,15 @@ class TransferService
 
                     if (isset($formItem['metas'])) {
                         foreach ($formItem['metas'] as $metaData) {
+                            $metaKey = Arr::get($metaData, 'meta_key');
+                            $metaValue = Arr::get($metaData, 'value');
+                            if ("ffc_form_settings_generated_css" == $metaKey || "ffc_form_settings_meta" == $metaKey) {
+                                $metaValue = str_replace('ff_conv_app_' . Arr::get($formItem, 'id'), 'ff_conv_app_' . $formId, $metaValue);
+                            }
                             $settings = [
                                 'form_id'  => $formId,
-                                'meta_key' => Arr::get($metaData, 'meta_key'),
-                                'value'    => Arr::get($metaData, 'value'),
+                                'meta_key' => $metaKey,
+                                'value'    => $metaValue,
                             ];
                             FormMeta::insert($settings);
                         }
