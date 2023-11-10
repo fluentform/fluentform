@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.3.2
+Tested up to: 6.4.1
 Requires PHP: 7.1
-Stable tag: 5.1.1
+Stable tag: 5.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,6 +440,12 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
+= 5.1.2 (Date: November 9, 2023) =
+- Maintenance updates for WP 6.4
+- Improves data escaping for URL params
+- Fixes composer class autoloading
+- Fixes HTTP status code issues
+
 = 5.1.1 (Date: November 4, 2023) =
 - Improves custom CSS & JS loading
 
@@ -468,7 +474,8 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 = 5.0.9 (Date: Sept 8, 2023) =
  - In active form submission prevented
- - Fixed compact mode entries view
+ - Fixes Broken Access Control vulnerability
+ - Fixes compact mode entries view
 
 = 5.0.8 (Date: August 24, 2023) =
  - Adds address field in conversational form with Google Map Support
@@ -519,11 +526,12 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
  - Revamped UI and better UX
  - Global Styler Improvement
  - The new framework for faster response
- - Fixed issue with repeater field not appearing correctly on PDF
- - Fixed issue with WPForm Migrator not properly transferring text fields to text input fields with correct maximum text length
- - Fixed issue with entry migration
- - Fixed number format in PDF files
- - Fixed radio field label issue
+ - Fixes SQL Injection vulnerability
+ - Fixes issue with repeater field not appearing correctly on PDF
+ - Fixes issue with WPForm Migrator not properly transferring text fields to text input fields with correct maximum text length
+ - Fixes issue with entry migration
+ - Fixes number format in PDF files
+ - Fixes radio field label issue
  - Updated Ajax routes to Rest Routes
  - Updated filter & action hooks naming convention with older hooks support
  - Updated translation strings
