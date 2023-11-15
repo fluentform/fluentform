@@ -625,6 +625,21 @@ jQuery(document).ready(function () {
 
                 };
 
+                var addFieldValidationRule = function (elName, ruleName, rule) {
+                    if (!form.rules[elName]) {
+                        form.rules[elName] = {};
+                    }
+                    form.rules[elName][ruleName] = rule;
+                }
+                var removeFieldValidationRule = function (elName, ruleName) {
+                    if (!(elName in form.rules)) {
+                        return;
+                    }
+                    if (ruleName in form.rules[elName]) {
+                        delete form.rules[elName][ruleName];
+                    }
+                }
+
                 /**
                  * Show form validation errors
                  * @param  {object} errors
@@ -886,6 +901,8 @@ jQuery(document).ready(function () {
                     addGlobalValidator,
                     config: form,
                     showFormSubmissionProgress,
+                    addFieldValidationRule,
+                    removeFieldValidationRule,
                     hideFormSubmissionProgress
                 }
 
@@ -1251,6 +1268,15 @@ jQuery(document).ready(function () {
 
                 this.allowed_image_types = function () {
                     return true;
+                };
+
+                /**
+                 * Validates for force failed
+                 *
+                 * @return true
+                 */
+                this.force_failed = function () {
+                    return false;
                 };
 
                 /**
