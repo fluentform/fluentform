@@ -289,9 +289,6 @@ $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\
 
 $app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
 
-$app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
-
-
 $app->addFilter('fluentform/will_return_html', function ($result, $integration, $key) {
     $dictionary = [
         'notifications' => ['message'],
