@@ -7,6 +7,7 @@ use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
+use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
 
@@ -432,7 +433,9 @@ class Helper
 
         return $validation;
     }
+    
 
+    
     public static function hasPartialEntries($formId)
     {
         static $cache = [];
@@ -892,5 +895,22 @@ class Helper
                 }
             }
         }
+    }
+
+    public static function getWhiteListedFields($formId)
+    {
+        $whiteListedFields = [
+            '__fluent_form_embded_post_id',
+            '_fluentform_' . $formId . '_fluentformnonce',
+            '_wp_http_referer',
+            'g-recaptcha-response',
+            'h-captcha-response',
+            'cf-turnstile-response',
+            '__stripe_payment_method_id',
+            '__ff_all_applied_coupons',
+            '__entry_intermediate_hash',
+        ];
+
+        return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
     }
 }
