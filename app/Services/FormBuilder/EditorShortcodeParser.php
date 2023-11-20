@@ -42,7 +42,7 @@ class EditorShortcodeParser
         'browser.name'     => 'parseBrowserProperties',
         'browser.platform' => 'parseBrowserProperties',
 
-        'get.param_name'           => 'parseQueryParam',
+        'get.param_name'           => 'parseRequestParam',
         'random_string.param_name' => 'parseRandomString',
     ];
 
@@ -75,7 +75,7 @@ class EditorShortcodeParser
             }
 
             if (false !== strpos($handler, 'get.')) {
-                return static::parseQueryParam($handler);
+                return static::parseRequestParam($handler);
             }
             if (false !== strpos($handler, 'random_string.')) {
                 return static::parseRandomString($handler);
@@ -152,6 +152,31 @@ class EditorShortcodeParser
         }
 
         return $filteredValue;
+    }
+
+    /**
+     * Parse request query param.
+     *
+     * @param string    $value
+     * @param \stdClass $form
+     *
+     * @return string
+     */
+    public static function parseRequestParam($value)
+    {
+        $exploded = explode('.', $value);
+        $param = array_pop($exploded);
+        $value = wpFluentForm('request')->get($param);
+
+        if (! $value) {
+            return '';
+        }
+
+        if (is_array($value)) {
+            return esc_attr(implode(', ', $value));
+        }
+
+        return esc_attr($value);
     }
 
     /**

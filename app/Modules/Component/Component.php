@@ -501,150 +501,8 @@ class Component
 
             return $this->renderForm($atts);
         });
-
-        $this->app->addShortCode('fluentform_info', function ($atts) {
-            $data = [
-                'id'                 => null, // This is the form id
-                'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
-                'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
-                'with_trashed'       => 'no', // yes | no
-                'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
-                'hide_on_zero'       => 'no',
-                'payment_status'     => 'all', // it can be all / specific payment status
-                'currency_formatted' => 'yes',
-                'date_format'        => '',
-            ];
-            /* This filter is deprecated, will be removed soon */
-            $data = apply_filters('fluentform_info_shortcode_defaults', $data, $atts );
-            
-            $shortcodeDefaults = apply_filters('fluentform/info_shortcode_defaults', $data, $atts);
-
-            $atts = shortcode_atts($shortcodeDefaults, $atts);
-            $formId = $atts['id'];
-            $form = wpFluent()->table('fluentform_forms')->find($formId);
-
-            if (!$form) {
-                return '';
-            }
-
-            if ('submission_count' == $atts['info']) {
-                $countQuery = wpFluent()->table('fluentform_submissions')
-                    ->where('form_id', $formId);
-
-                if ('trashed' != $atts['status'] && 'no' == $atts['with_trashed']) {
-                    $countQuery = $countQuery->where('status', '!=', 'trashed');
-                }
-
-                if ('all' == $atts['status']) {
-                    // ...
-                } elseif ('favourites' == $atts['status']) {
-                    $countQuery = $countQuery->where('is_favourite', '=', 1);
-                } else {
-                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
-                }
-                if ($atts['payment_status'] && defined('FLUENTFORMPRO') && 'all' != $atts['payment_status']) {
-                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
-                }
-
-                $total = $countQuery->count();
-
-                if ($atts['substract_from']) {
-                    $total = intval($atts['substract_from']) - $total;
-                }
-
-                if ('yes' == $atts['hide_on_zero'] && !$total || $total < 0) {
-                    return '';
-                }
-
-                return $total;
-            } elseif ('created_at' == $atts['info']) {
-                if ($atts['date_format']) {
-                    $dateFormat = $atts['date_format'];
-                } else {
-                    $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
-                }
-                return date($dateFormat, strtotime($form->created_at));
-            } elseif ('updated_at' == $atts['info']) {
-                if ($atts['date_format']) {
-                    $dateFormat = $atts['date_format'];
-                } else {
-                    $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
-                }
-                return date($dateFormat, strtotime($form->updated_at));
-            } elseif ('payment_total' == $atts['info']) {
-                if (!defined('FLUENTFORMPRO')) {
-                    return '';
-                }
-
-                global $wpdb;
-                $countQuery = wpFluent()
-                    ->table('fluentform_submissions')
-                    ->select(wpFluent()->raw('SUM(payment_total) as payment_total'))
-                    ->where('form_id', $formId);
-
-                if ('trashed' != $atts['status'] && 'no' == $atts['with_trashed']) {
-                    $countQuery = $countQuery->where('status', '!=', 'trashed');
-                }
-
-                if ('all' == $atts['status']) {
-                    // ...
-                } elseif ('favourites' == $atts['status']) {
-                    $countQuery = $countQuery->where('is_favourite', '=', 1);
-                } else {
-                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
-                }
-
-                if ('all' == $atts['payment_status']) {
-                    // ...
-                } elseif ($atts['payment_status']) {
-                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
-                }
-
-                $row = $countQuery->first();
-
-                $total = 0;
-                if ($row) {
-                    $total = $row->payment_total;
-                }
-
-                if ($atts['substract_from']) {
-                    $total = intval($atts['substract_from'] * 100) - $total;
-                }
-
-                if ('yes' == $atts['hide_on_zero'] && !$total) {
-                    return '';
-                }
-
-                if ('yes' == $atts['currency_formatted']) {
-                    $currency = \FluentFormPro\Payments\PaymentHelper::getFormCurrency($formId);
-                    return \FluentFormPro\Payments\PaymentHelper::formatMoney($total, $currency);
-                }
-
-                if (!$total) {
-                    return 0;
-                }
-
-                return $total / 100;
-            }
-
-            return '';
-        });
-
-        $this->app->addShortCode('ff_get', function ($atts) {
-            $atts = shortcode_atts([
-                'param' => '',
-            ], $atts);
-            
-            $value = $this->app->request->get($atts['param']);
-
-            if ($atts['param'] && $value) {
-                if (is_array($value)) {
-                    return implode(', ', $value);
-                }
-                return esc_html($value);
-            }
-            return '';
-        });
+        
+        $this->registerHelperShortCodes();
     }
 
     public function renderForm($atts)
@@ -1366,5 +1224,154 @@ class Component
             return $value;
         }
         return Helper::getNumericValue($value, $formatter);
+    }
+
+
+    public function registerHelperShortCodes()
+    {
+        $this->app->addShortCode('fluentform_info', function ($atts) {
+            $data = [
+                'id'                 => null, // This is the form id
+                'info'               => 'submission_count', // submission_count | created_at | updated_at | payment_total
+                'status'             => 'all', // get submission cound of a particular entry status favourites | unread | read
+                'with_trashed'       => 'no', // yes | no
+                'substract_from'     => 0, // [fluentform_info id="2" info="submission_count" substract_from="20"]
+                'hide_on_zero'       => 'no',
+                'payment_status'     => 'all', // it can be all / specific payment status
+                'currency_formatted' => 'yes',
+                'date_format'        => '',
+            ];
+            /* This filter is deprecated, will be removed soon */
+            $data = apply_filters('fluentform_info_shortcode_defaults', $data, $atts );
+            
+            $shortcodeDefaults = apply_filters('fluentform/info_shortcode_defaults', $data, $atts);
+
+            $atts = shortcode_atts($shortcodeDefaults, $atts);
+            $formId = $atts['id'];
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+
+            if (!$form) {
+                return '';
+            }
+
+            if ('submission_count' == $atts['info']) {
+                $countQuery = wpFluent()->table('fluentform_submissions')
+                    ->where('form_id', $formId);
+
+                if ('trashed' != $atts['status'] && 'no' == $atts['with_trashed']) {
+                    $countQuery = $countQuery->where('status', '!=', 'trashed');
+                }
+
+                if ('all' == $atts['status']) {
+                    // ...
+                } elseif ('favourites' == $atts['status']) {
+                    $countQuery = $countQuery->where('is_favourite', '=', 1);
+                } else {
+                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
+                }
+                if ($atts['payment_status'] && defined('FLUENTFORMPRO') && 'all' != $atts['payment_status']) {
+                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
+                }
+
+                $total = $countQuery->count();
+
+                if ($atts['substract_from']) {
+                    $total = intval($atts['substract_from']) - $total;
+                }
+
+                if ('yes' == $atts['hide_on_zero'] && !$total || $total < 0) {
+                    return '';
+                }
+
+                return $total;
+            } elseif ('created_at' == $atts['info']) {
+                if ($atts['date_format']) {
+                    $dateFormat = $atts['date_format'];
+                } else {
+                    $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
+                }
+                return date($dateFormat, strtotime($form->created_at));
+            } elseif ('updated_at' == $atts['info']) {
+                if ($atts['date_format']) {
+                    $dateFormat = $atts['date_format'];
+                } else {
+                    $dateFormat = get_option('date_format') . ' ' . get_option('time_format');
+                }
+                return date($dateFormat, strtotime($form->updated_at));
+            } elseif ('payment_total' == $atts['info']) {
+                if (!defined('FLUENTFORMPRO')) {
+                    return '';
+                }
+
+                global $wpdb;
+                $countQuery = wpFluent()
+                    ->table('fluentform_submissions')
+                    ->select(wpFluent()->raw('SUM(payment_total) as payment_total'))
+                    ->where('form_id', $formId);
+
+                if ('trashed' != $atts['status'] && 'no' == $atts['with_trashed']) {
+                    $countQuery = $countQuery->where('status', '!=', 'trashed');
+                }
+
+                if ('all' == $atts['status']) {
+                    // ...
+                } elseif ('favourites' == $atts['status']) {
+                    $countQuery = $countQuery->where('is_favourite', '=', 1);
+                } else {
+                    $countQuery = $countQuery->where('status', '=', sanitize_key($atts['status']));
+                }
+
+                if ('all' == $atts['payment_status']) {
+                    // ...
+                } elseif ($atts['payment_status']) {
+                    $countQuery = $countQuery->where('payment_status', '=', sanitize_key($atts['payment_status']));
+                }
+
+                $row = $countQuery->first();
+
+                $total = 0;
+                if ($row) {
+                    $total = $row->payment_total;
+                }
+
+                if ($atts['substract_from']) {
+                    $total = intval($atts['substract_from'] * 100) - $total;
+                }
+
+                if ('yes' == $atts['hide_on_zero'] && !$total) {
+                    return '';
+                }
+
+                if ('yes' == $atts['currency_formatted']) {
+                    $currency = \FluentFormPro\Payments\PaymentHelper::getFormCurrency($formId);
+                    return \FluentFormPro\Payments\PaymentHelper::formatMoney($total, $currency);
+                }
+
+                if (!$total) {
+                    return 0;
+                }
+
+                return $total / 100;
+            }
+
+            return '';
+        });
+
+        $this->app->addShortCode('ff_get', function ($atts) {
+            $atts = shortcode_atts([
+                'param' => '',
+            ], $atts);
+            
+            $value = $this->app->request->get($atts['param']);
+
+            if ($atts['param'] && $value) {
+                if (is_array($value)) {
+                    return implode(', ', $value);
+                }
+                return esc_html($value);
+            }
+            return '';
+        });
+
     }
 }

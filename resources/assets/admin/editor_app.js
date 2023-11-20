@@ -303,20 +303,23 @@ window.fluentFormEditorApp = new Vue({
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         }
     },
-    mounted() {
-        this.prepareForm();
-        this.loadResources(this.form_id);
-        if(this.is_conversion_form) {
-            jQuery('#wpcontent').addClass('ff_conversion_editor');
-        }
-    },
+
     beforeCreate() {
         // Event listener for page title updater
         this.$on("change-title", module => {
             jQuery("title").text(`${module} - Fluentform`);
         });
         this.$emit("change-title", "Editor");
-    }
+    },
+
+    mounted() {
+        this.prepareForm();
+        this.loadResources(this.form_id);
+
+        if (this.is_conversion_form) {
+            jQuery('#wpcontent').addClass('ff_conversion_editor');
+        }
+    },
 });
 
 // More menus app

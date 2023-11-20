@@ -35,7 +35,7 @@ $app->addAction('wp_ajax_fluentform-form-update', function () use ($app) {
             wp_send_json([
                 'message' => 'Looks like the provided JSON is invalid. Please try again or contact support',
                 'reason' => 'formFields JSON validation failed'
-            ], 423);
+            ], 422);
         }
 
         $formService = new \FluentForm\App\Services\Form\FormService();
@@ -63,7 +63,7 @@ $app->addAction('wp_ajax_fluentform-save-settings-general-formSettings', functio
             'message' => __('Settings has been saved.', 'fluentform'),
         ]);
     } catch (\FluentForm\Framework\Validator\ValidationException $exception) {
-        wp_send_json($exception->errors(), 423);
+        wp_send_json($exception->errors(), 422);
     }
 });
 
@@ -83,7 +83,7 @@ $app->addAction('wp_ajax_fluentform-save-form-email-notification', function () u
             'settings' => $settings,
         ]);
     } catch (\FluentForm\Framework\Validator\ValidationException $exception) {
-        wp_send_json($exception->errors(), 423);
+        wp_send_json($exception->errors(), 422);
     }
 });
 
