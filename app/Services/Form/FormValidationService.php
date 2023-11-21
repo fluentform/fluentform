@@ -303,7 +303,7 @@ class FormValidationService
                     $dateObject = \DateTime::createFromFormat($format, $inputValue);
                     if (!$dateObject) {
                         $isValid = false;
-                    } elseif ($dateObject->format($format) == $inputValue) {
+                    } elseif ($dateObject->format($format) != $inputValue) {
                         $isValid = false;
                     }
                     break;
