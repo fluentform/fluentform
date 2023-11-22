@@ -272,8 +272,10 @@ class FormValidationService
                     }
                     break;
                 case 'select_country':
-                    $data = (new SelectCountry())->loadCountries($field);
-                    $validCountries = Arr::get($data, 'raw.settings.country_list.visible_list');
+                    $fieldData = Arr::get($field, 'raw');
+                    $data = (new SelectCountry())->loadCountries($fieldData);
+                    $validCountries = Arr::get($fieldData, 'settings.country_list.priority_based', []);
+                    $validCountries = array_merge($validCountries,array_keys(Arr::get($data, 'options')));
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
