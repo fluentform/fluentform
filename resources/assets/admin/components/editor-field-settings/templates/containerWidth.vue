@@ -5,6 +5,12 @@
                 <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
             </el-form-item>
 
+            <el-form-item>
+                <elLabel slot="label" :label="$t('Disable Width Auto Calculation')"></elLabel>
+                <el-radio v-model="isAutoCalc" :label="true">{{ $t('Yes') }}</el-radio>
+                <el-radio v-model="isAutoCalc" :label="false">{{ $t('No') }}</el-radio>
+            </el-form-item>
+
             <template v-for="(column, i) in columns">
                 <el-form-item :label="'Column ' + (i + 1)" :key="i">
                     <el-input
@@ -35,7 +41,8 @@
         data() {
             return {
                 columns: JSON.parse(JSON.stringify(this.editItem.columns)),
-                minWidth: 10
+                minWidth: 10,
+                isAutoCalc: false
             }
         },
 
@@ -58,13 +65,17 @@
 
                 const editingColumn = this.editItem.columns[index];
                 const targetColumn = index ? this.editItem.columns[index - 1] : this.editItem.columns[1];
-                const availableWdith = targetColumn.width + editingColumn.width;
-                const breakingPoint = this.getNumber(availableWdith - this.minWidth);
-                
-                value = value >= breakingPoint ? breakingPoint : value;
+
+                if (this.isAutoCalc) {
+                    const availableWdith = targetColumn.width + editingColumn.width;
+                    const breakingPoint = this.getNumber(availableWdith - this.minWidth);
+
+                    value = value >= breakingPoint ? breakingPoint : value;
+
+                    targetColumn.width = this.getNumber(availableWdith - value);
+                }
 
                 editingColumn.width = value;
-                targetColumn.width = this.getNumber(availableWdith - value);
                 this.columns[index].width = value;
             },
 
