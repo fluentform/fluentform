@@ -329,6 +329,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             $item['settings']['container_width'] = '';
         }
 
+        if (!isset($item['settings']['is_width_auto_calc'])) {
+            $item['settings']['is_width_auto_calc'] = false;
+        }
+
         $shouldSetWidth = !empty($item['columns']) && (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
 
         if ($shouldSetWidth) {

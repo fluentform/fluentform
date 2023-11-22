@@ -7,8 +7,8 @@
 
             <el-form-item>
                 <elLabel slot="label" :label="$t('Disable Width Auto Calculation')"></elLabel>
-                <el-radio v-model="isAutoCalc" :label="true">{{ $t('Yes') }}</el-radio>
-                <el-radio v-model="isAutoCalc" :label="false">{{ $t('No') }}</el-radio>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="true">{{ $t('Yes') }}</el-radio>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="false">{{ $t('No') }}</el-radio>
             </el-form-item>
 
             <template v-for="(column, i) in columns">
@@ -42,7 +42,6 @@
             return {
                 columns: JSON.parse(JSON.stringify(this.editItem.columns)),
                 minWidth: 10,
-                isAutoCalc: false
             }
         },
 
@@ -66,7 +65,7 @@
                 const editingColumn = this.editItem.columns[index];
                 const targetColumn = index ? this.editItem.columns[index - 1] : this.editItem.columns[1];
 
-                if (this.isAutoCalc) {
+                if (!this.editItem.settings.is_width_auto_calc) {
                     const availableWdith = targetColumn.width + editingColumn.width;
                     const breakingPoint = this.getNumber(availableWdith - this.minWidth);
 
