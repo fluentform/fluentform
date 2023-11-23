@@ -241,7 +241,7 @@ class FormValidationService
             }
 
             if ($options) {
-                $options = array_map('trim', $options);
+                $options = array_map('sanitize_text_field', $options);
             }
 
             $isValid = true;
@@ -275,7 +275,7 @@ class FormValidationService
                     $fieldData = Arr::get($field, 'raw');
                     $data = (new SelectCountry())->loadCountries($fieldData);
                     $validCountries = Arr::get($fieldData, 'settings.country_list.priority_based', []);
-                    $validCountries = array_merge($validCountries,array_keys(Arr::get($data, 'options')));
+                    $validCountries = array_merge($validCountries, array_keys(Arr::get($data, 'options')));
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
