@@ -299,16 +299,6 @@ class FormValidationService
                         $isValid = empty($colDiff);
                     }
                     break;
-                case 'input_date':
-                    $format = Arr::get($rawField, 'settings.date_format');
-                    $format = str_replace(['AM', 'PM', 'K'], 'A', $format);
-                    $dateObject = \DateTime::createFromFormat($format, $inputValue);
-                    if (!$dateObject) {
-                        $isValid = false;
-                    } elseif ($dateObject->format($format) != $inputValue) {
-                        $isValid = false;
-                    }
-                    break;
                 default:
                     break;
             }
