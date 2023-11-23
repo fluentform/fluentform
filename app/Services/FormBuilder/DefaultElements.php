@@ -1342,7 +1342,7 @@ $defaultElements = [
             'settings'   => [
                 'container_class'    => '',
                 'conditional_logics' => [],
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => '', 'left' => '', 'fields' => []],
@@ -1360,7 +1360,7 @@ $defaultElements = [
                 'container_class'    => '',
                 'conditional_logics' => [],
                 'container_width'    => '',
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => 50, 'fields' => []],
@@ -1379,7 +1379,7 @@ $defaultElements = [
                 'container_class'    => '',
                 'conditional_logics' => [],
                 'container_width'    => '',
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => 33.33, 'fields' => []],
@@ -1399,7 +1399,7 @@ $defaultElements = [
                 'container_class'    => '',
                 'conditional_logics' => [],
                 'container_width'    => '',
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => 25, 'fields' => []],
@@ -1420,7 +1420,7 @@ $defaultElements = [
                 'container_class'    => '',
                 'conditional_logics' => [],
                 'container_width'    => '',
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => 20, 'fields' => []],
@@ -1442,7 +1442,7 @@ $defaultElements = [
                 'container_class'    => '',
                 'conditional_logics' => [],
                 'container_width'    => '',
-                'is_width_auto_calc' => false,
+                'is_width_auto_calc' => true,
             ],
             'columns' => [
                 ['width' => 16.67, 'fields' => []],

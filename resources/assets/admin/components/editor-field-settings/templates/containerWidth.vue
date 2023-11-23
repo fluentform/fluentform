@@ -5,12 +5,6 @@
                 <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
             </el-form-item>
 
-            <el-form-item>
-                <elLabel slot="label" :label="$t('Disable Width Auto Calculation')"></elLabel>
-                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="true">{{ $t('Yes') }}</el-radio>
-                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="false">{{ $t('No') }}</el-radio>
-            </el-form-item>
-
             <template v-for="(column, i) in columns">
                 <el-form-item :label="'Column ' + (i + 1)" :key="i">
                     <el-input
@@ -24,6 +18,12 @@
             </template>
 
            <p>{{ listItem.width_limitation_msg }}</p>
+
+           <el-form-item>
+                <elLabel slot="label" :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></elLabel>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="true">{{ $t('Yes') }}</el-radio>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="false">{{ $t('No') }}</el-radio>
+            </el-form-item>
         </template>
     </div>
 </template>

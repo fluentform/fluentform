@@ -442,9 +442,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.1.3 (Date: November 22, 2023) =
-- Fix conversational form design style duplication and import
+- Improves container width auto calculation
 - Improves PHP 8.2 support
-- Adds support for disable auto calculation in container width
+- Improves backend performance
+- Fixes GDPR field required message
+- Fixes BuddyPress User Blog plugin conflict
+- Fixes WPForms & Gravity Forms migration issues
+- Fixes conversational form design duplication and import
 
 = 5.1.2 (Date: November 9, 2023) =
 - Maintenance updates for WP 6.4
