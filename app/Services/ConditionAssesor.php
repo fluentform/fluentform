@@ -23,9 +23,13 @@ class ConditionAssesor
 
             foreach ($conditionals as $conditional) {
 
+                if (!Arr::get($conditional, 'field')) {
+                    continue;
+                }
+
                 $hasConditionMet = static::assess($conditional, $inputs);
 
-                if($hasConditionMet && $toMatch == 'any') {
+                if ($hasConditionMet && $toMatch == 'any') {
                     return true;
                 }
 
