@@ -594,6 +594,12 @@ class Converter
 
         if (is_array($fields) && ! empty($fields)) {
             foreach ($fields as $field) {
+                $element = ArrayHelper::get($field, 'element');
+                $allowedFields = array_keys(static::fieldTypes());
+                if (!in_array($element, $allowedFields)) {
+                    continue;
+                }
+                
                 if (! ArrayHelper::exists($field, 'style_pref')) {
                     $field['style_pref'] = [
                         'layout'           => 'default',

@@ -61,7 +61,16 @@ class SubmissionHandlerService
         
         // Parse the form and get the flat inputs with validations.
         $this->fields = FormFieldsParser::getEssentialInputs($this->form, $formDataRaw, ['rules', 'raw']);
-        
+    
+        // @todo Remove this after few version as we are doing it during conversation now
+        // Removing left out fields during conversation which causes validation issues
+        $isConversationalForm = Helper::isConversionForm($formId);
+        if ($isConversationalForm) {
+            $conversationalForm = $this->form;
+            $conversationalForm->form_fields = \FluentForm\App\Services\FluentConversational\Classes\Converter\Converter::convertExistingForm($this->form);
+            $conversationalFields = FormFieldsParser::getInputs($conversationalForm);
+            $this->fields = array_intersect_key($this->fields, $conversationalFields);
+        }
         $formData = fluentFormSanitizer($formDataRaw, null, $this->fields);
 
         $acceptedFieldKeys = array_merge($this->fields, array_flip(Helper::getWhiteListedFields($formId)));
