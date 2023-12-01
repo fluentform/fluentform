@@ -316,6 +316,22 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['date_config'])) {
             $item['settings']['date_config'] = '';
         }
+
+        if (!isset($item['settings']['date_type'])) {
+            // Load default elements
+            $defaultElements = fluentformLoadFile('Services/FormBuilder/DefaultElements.php');
+            $defaultDate = $defaultElements['general']['input_date'];
+            $item['single_field'] = $defaultDate['single_field'];
+            $item['multi_field'] = $defaultDate['multi_field'];
+            $item['editor_options'] = $defaultDate['editor_options'];
+            $item['settings']['date_fields'] = '';
+            $item['settings']['date_type'] = 'single';
+            
+            // Convert old settings data to new format
+            $item['single_field']['settings'] = $item['settings'];
+            $item['settings']['date_default_value'] = $item['attributes']['value'];
+        }
+
         return $item;
     });
 

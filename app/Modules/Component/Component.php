@@ -724,7 +724,6 @@ class Component
             );
             do_action('fluentform/rendering_payment_form', $form);
         }
-
         $otherScripts = '';
         ob_start();
         ?>
