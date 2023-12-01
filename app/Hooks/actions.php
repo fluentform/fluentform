@@ -1,7 +1,8 @@
 <?php
 
-use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Component\Component;
+use FluentForm\App\Helpers\Helper;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 /**
  * All registered action's handlers should be in app\Hooks\Handlers,
@@ -153,36 +154,6 @@ add_action('admin_init', function () {
     }
 });
 
-add_action('enqueue_block_editor_assets', function () {
-    wp_enqueue_script(
-        'fluentform-gutenberg-block',
-        fluentFormMix('js/fluent_gutenblock.js'),
-        ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components'],
-        FLUENTFORM_VERSION
-    );
-
-    $forms = wpFluent()->table('fluentform_forms')
-        ->select(['id', 'title'])
-        ->orderBy('id', 'DESC')
-        ->get();
-
-    array_unshift($forms, (object)[
-        'id'    => '',
-        'title' => __('-- Select a form --', 'fluentform'),
-    ]);
-
-    wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
-        'logo'  => fluentFormMix('img/fluent_icon.png'),
-        'forms' => $forms,
-    ]);
-
-    wp_enqueue_style(
-        'fluentform-gutenberg-block',
-        fluentFormMix('css/fluent_gutenblock.css'),
-        ['wp-edit-blocks']
-    );
-});
-
 add_action('wp_print_scripts', function () {
     if (is_admin()) {
         if (\FluentForm\App\Helpers\Helper::isFluentAdminPage()) {
@@ -230,7 +201,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (empty($field['settings']['label_placement'])) {
             $field['settings']['label_placement'] = '';
         }
-
         return $field;
     });
 
@@ -240,7 +210,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         'select_country',
         'input_checkbox',
     ];
-
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement) {
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
@@ -318,7 +287,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             if (!isset($element['settings']['file_location_type'])) {
                 $element['settings']['file_location_type'] = 'follow_global_settings';
             }
-
             return $element;
         });
     }
@@ -327,7 +295,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['settings']['required_field_message'])) {
             $element['settings']['required_field_message'] = '';
         }
-
         return $element;
     });
 
@@ -335,7 +302,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
-
         return $element;
     });
 
@@ -343,7 +309,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($element['attributes']['maxlength'])) {
             $element['attributes']['maxlength'] = '';
         }
-
         return $element;
     });
 
@@ -369,6 +334,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
 
         return $item;
     });
+
 
     add_filter('fluentform/editor_init_element_container', function ($item) {
         if (!isset($item['settings']['conditional_logics'])) {
@@ -405,7 +371,6 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
 
@@ -422,9 +387,9 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
+
 
     add_filter('fluentform/editor_init_element_input_text', function ($item) {
         if (isset($item['attributes']['data-mask'])) {
@@ -449,25 +414,30 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
         if (!isset($item['settings']['suffix_label'])) {
             $item['settings']['suffix_label'] = '';
         }
-
         return $item;
     });
 
+    if ($inputs = \FluentForm\App\Modules\Form\FormFieldsParser::getInputs($form, ['element'])) {
+        foreach ($inputs as $input) {
+            add_filter('fluentform/editor_init_element_'. $input['element'], function ($field) {
+                Helper::resolveValidationRulesGlobalOption($field);
+                return $field;
+            });
+        }
+    }
+
     add_filter('fluentform/editor_init_element_recaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'g-recaptcha-response';
-
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_hcaptcha', function ($item, $form) {
         $item['attributes']['name'] = 'h-captcha-response';
-
         return $item;
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_turnstile', function ($item, $form) {
         $item['attributes']['name'] = 'cf-turnstile-response';
-
         return $item;
     }, 10, 2);
 }, 10);
@@ -526,6 +496,9 @@ add_action('save_post', function ($post_id) use ($app) {
         'id'
     );
 
+    $attributes = ArrayHelper::get($shortcodeIds, 'attributes', []);
+    ArrayHelper::forget($shortcodeIds, 'attributes');
+    
     $shortcodeModalIds = Helper::getShortCodeIds(
         $post_content,
         'fluentform_modal',
@@ -535,14 +508,38 @@ add_action('save_post', function ($post_id) use ($app) {
     $gutenbergIds = Helper::getFormsIdsFromBlocks($post_content);
 
     if ($shortcodeModalIds) {
+        $modalAttributes = ArrayHelper::get($shortcodeModalIds, 'attributes', []);
+        ArrayHelper::forget($shortcodeModalIds, 'attributes');
+
         $shortcodeIds = array_merge($shortcodeIds, $shortcodeModalIds);
+
+        if ($modalAttributes) {
+            $attributes = array_merge($attributes, $modalAttributes);
+        }
     }
 
     if ($gutenbergIds) {
+        $blockAttributes = ArrayHelper::get($gutenbergIds, 'attributes', []);
+        ArrayHelper::forget($gutenbergIds, 'attributes');
+
         $shortcodeIds = array_merge($shortcodeIds, $gutenbergIds);
+
+        if ($blockAttributes) {
+            $attributes = array_merge($attributes, $blockAttributes);
+        }
     }
 
     $shortcodeIds = array_unique($shortcodeIds);
+
+    if ($attributes) {
+        $data = [];
+
+        foreach ($attributes as $attribute) {
+            $data[$attribute['formId']]['themes'][] = $attribute['theme'];
+        }
+
+        $shortcodeIds['attributes'] = $data;
+    }
 
     if ($shortcodeIds) {
         update_post_meta($post_id, '_has_fluentform', $shortcodeIds);
@@ -577,6 +574,7 @@ add_action('wp', function () use ($app) {
             wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
                 'ajaxurl'                  => admin_url('admin-ajax.php'),
+                'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
                 'rest'                     => Helper::getRestInfo()
             ]);
             wp_enqueue_style('fluent-form-styles');
@@ -695,26 +693,36 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
     }
 }
 
-$app->addAction('fluentform/before_form_render', function ($form) {
-    do_action_deprecated(
-        'fluentform_load_form_assets',
-        [
-            $form->id
-        ],
-        FLUENTFORM_FRAMEWORK_UPGRADE,
-        'fluentform/load_form_assets',
-        'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
-    );
-    do_action('fluentform/load_form_assets', $form->id);
-});
+$app->addAction('fluentform/before_form_render', function ($form, $atts) {
+    $theme = ArrayHelper::get($atts, 'theme');
+    
+    $styles = $theme ? [$theme] : [];
 
-$app->addAction('fluentform/load_form_assets', function ($formId) {
-    // check if alreaded loaded
-    if (!in_array($formId, \FluentForm\App\Helpers\Helper::$loadedForms)) {
-        (new \FluentForm\App\Modules\Form\Settings\FormCssJs())->addCssJs($formId);
-        \FluentForm\App\Helpers\Helper::$loadedForms[] = $formId;
+    do_action(
+        'fluentform/load_form_assets',
+        $form->id,
+        $styles
+    );
+}, 10, 2);
+
+add_action('fluentform/load_form_assets', function ($formId, $styles = []) {
+    $formAssetLoader = (new \FluentForm\App\Modules\Form\Settings\FormCssJs());
+
+    $formAssetLoader->addCustomCssJs($formId);
+
+    $notLoadedStyles = [];
+
+    foreach ($styles as $style) {
+        if (!did_action('fluent_form/loaded_styler_' . $formId . '_' . $style)) {
+            $notLoadedStyles[] = $style;
+        }
     }
-});
+
+    // check if already loaded
+    if ($notLoadedStyles) {
+        $formAssetLoader->addStylerCSS($formId, $notLoadedStyles);
+    }
+}, 10, 2);
 
 $app->addAction('fluentform/submission_inserted', function ($insertId, $formData, $form) use ($app) {
     $notificationManager = new \FluentForm\App\Hooks\Handlers\GlobalNotificationHandler($app);
@@ -766,21 +774,21 @@ add_action('wp', function () {
     if (!is_a($post, 'WP_Post')) {
         return;
     }
-
+    
     $fluentFormIds = get_post_meta($post->ID, '_has_fluentform', true);
+    $attributes = ArrayHelper::get($fluentFormIds, 'attributes', []);
+
+    if (isset($fluentFormIds['attributes'])) {
+        unset($fluentFormIds['attributes']);
+    }
 
     if ($fluentFormIds && is_array($fluentFormIds)) {
         foreach ($fluentFormIds as $formId) {
-            do_action_deprecated(
-                'fluentform_load_form_assets',
-                [
-                    $formId
-                ],
-                FLUENTFORM_FRAMEWORK_UPGRADE,
+            do_action(
                 'fluentform/load_form_assets',
-                'Use fluentform/load_form_assets instead of fluentform_load_form_assets.'
+                $formId,
+                array_unique(ArrayHelper::get($attributes, $formId . '.themes', []))
             );
-            do_action('fluentform/load_form_assets', $formId);
         }
     }
 });
@@ -898,37 +906,126 @@ add_action('init', function () {
 
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
+add_action('enqueue_block_editor_assets', function () {
+    
+    wp_enqueue_script(
+        'fluentform-gutenberg-block',
+        fluentFormMix('js/fluent_gutenblock.js'),
+        ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
+        FLUENTFORM_VERSION
+    );
+    
+    
+    $forms = wpFluent()->table('fluentform_forms')
+        ->select(['id', 'title'])
+        ->orderBy('id', 'DESC')
+        ->get();
+    
+    array_unshift($forms, (object) [
+        'id'    => '',
+        'title' => __('-- Select a form --', 'fluentform'),
+    ]);
+
+    $presets = [
+        [
+            'label' => __('Default (Form Styler)', 'fluentform'),
+            'value' => '',
+        ],
+        [
+            'label' => __('Inherit Theme Style', 'fluentform'),
+            'value' => 'ffs_inherit_theme'
+        ],
+    ];
+
+    $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
+   
+    wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
+        'logo'                    => fluentFormMix('img/fluent_icon.png'),
+        'forms'                   => $forms,
+        'style_presets'           => $presets,
+        'theme_style'             => apply_filters('fluentform/load_theme_style', false) ? 'ffs_inherit_theme' : '',
+        'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
+        'rest'                    => Helper::getRestInfo()
+    ]);
+    
+    wp_enqueue_style(
+        'fluentform-gutenberg-block',
+        fluentFormMix('css/fluent_gutenblock.css'),
+        ['wp-edit-blocks']
+    );
+    $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
+    $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
+    
+    if (is_rtl()) {
+        $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
+        $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
+    }
+    
+    wp_enqueue_style(
+        'fluent-form-styles',
+        $fluentFormPublicCss,
+        [],
+        FLUENTFORM_VERSION
+    );
+    
+    wp_enqueue_style(
+        'fluentform-public-default',
+        $fluentFormPublicDefaultCss,
+        [],
+        FLUENTFORM_VERSION
+    );
+});
+
+
 if (function_exists('register_block_type')) {
-    register_block_type('fluentfom/guten-block', [
-        'render_callback' => function ($atts) {
-            if (empty($atts['formId'])) {
-                return '';
-            }
-
-            $className = \FluentForm\Framework\Helpers\ArrayHelper::get($atts, 'className');
-
-            if ($className) {
-                $classes = explode(' ', $className);
-                $className = '';
-                if (!empty($classes)) {
-                    foreach ($classes as $class) {
-                        $className .= sanitize_html_class($class) . ' ';
+    add_action('init', function () {
+        register_block_type('fluentfom/guten-block', [
+            'render_callback' => function ($atts) {
+                $formId = ArrayHelper::get($atts, 'formId');
+                
+                if (empty($formId)) {
+                    return '';
+                }
+                
+                $className = ArrayHelper::get($atts, 'className');
+                
+                if ($className) {
+                    $classes = explode(' ', $className);
+                    $className = '';
+                    if (!empty($classes)) {
+                        foreach ($classes as $class) {
+                            $className .= sanitize_html_class($class) . ' ';
+                        }
                     }
                 }
-            }
-            $type = \FluentForm\App\Helpers\Helper::isConversionForm($atts['formId']) ? 'conversational' : '';
-
-            return do_shortcode('[fluentform css_classes="' . $className . ' ff_guten_block" id="' . $atts['formId'] . '"  type="' . $type . '"]');
-        },
-        'attributes'      => [
-            'formId'    => [
-                'type' => 'string',
+    
+                $themeStyle = sanitize_text_field(ArrayHelper::get($atts, 'themeStyle'));
+                
+                $type = Helper::isConversionForm($formId) ? 'conversational' : '';
+                
+                return do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
+            },
+            'attributes'      => [
+                'formId'               => [
+                    'type' => 'string',
+                ],
+                'className'            => [
+                    'type' => 'string',
+                ],
+                'themeStyle'           => [
+                    'type'    => 'string',
+                ],
+                'isConversationalForm' => [
+                    'type'    => 'boolean',
+                    'default' => false,
+                ],
+                'isThemeChange'        => [
+                    'type'    => 'boolean',
+                    'default' => false,
+                ],
             ],
-            'className' => [
-                'type' => 'string',
-            ],
-        ],
-    ]);
+        ]);
+    });
 }
 
 // require the CLI

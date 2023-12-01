@@ -83,6 +83,7 @@ use FluentForm\App\Helpers\Helper;
             ?>
             <div class="ff_transfer" id="ff_transfer_app">
                 <component :is="component" :app="App"></component>
+                <global-search></global-search>
             </div>
             <?php
                 do_action_deprecated(

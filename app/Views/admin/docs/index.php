@@ -9,7 +9,7 @@
     );
     do_action('fluentform/global_menu');
 ?>
-<div class="ff_form_wrap">
+<div class="ff_form_wrap" id="ff_documentation_app">
     <div class="ff_form_wrap_area">
         <div class="ff_documentaion_wrapper">
             <?php
@@ -246,4 +246,5 @@
 
         </div>
     </div>
+    <global-search></global-search>
 </div>

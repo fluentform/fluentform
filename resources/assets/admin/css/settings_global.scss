@@ -1248,4 +1248,10 @@ span + .ff_payment_badge{
   }
 }
 
+.ff_2_col_items * label {
+  display: inline-block;
+  margin: 0;
+  width: 50%;
+  margin-bottom: 10px;
+}
 @import "../styles/responsive";

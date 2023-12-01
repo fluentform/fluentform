@@ -847,6 +847,25 @@ class TranslationString
             'Upgrade to Pro' => __('Upgrade to Pro', 'fluentform'),
             'Admin Top Navigation' => __('Admin Top Navigation', 'fluentform'),
             'Toggle Admin Top Navigation on or off and Save the Settings. Please reload the page after changing this option.' => __('Toggle Admin Top Navigation on or off and Save the Settings. Please reload the page after changing this option.', 'fluentform'),
+            'Enabling this restrict or allow users to submit forms depends on selection.' => __('Enabling this restrict or allow users to submit forms depends on selection.', 'fluentform'),
+            'IP Based Restriction' => __('IP Based Restriction', 'fluentform'),
+            'Country Based Restriction' => __('Country Based Restriction', 'fluentform'),
+            'Keyword Based Restriction' => __('Keyword Based Restriction', 'fluentform'),
+            'Add IP Address' => __('Add IP Address', 'fluentform'),
+            'Add multiple IP address separated by comma to restrict submission.' => __('Add multiple IP address separated by comma to restrict submission.', 'fluentform'),
+            'IP Address Restricted Error Message' => __('IP Address Error Message', 'fluentform'),
+            'Set error message when IP address is invalid.' => __('Set error message when IP address is invalid.', 'fluentform'),
+            'Please setup your geolocation IP token from global settings.' => __('Please setup your geolocation IP token from global settings.', 'fluentform'),
+            'Select Country' => __('Select Country', 'fluentform'),
+            'Select country to set restriction.' => __('Select country to set restriction.', 'fluentform'),
+            'Country Restricted Error Message' => __('Country Error Message', 'fluentform'),
+            'Set error message when selected country is restricted.' => __('Set error message when selected country is restricted.', 'fluentform'),
+            'Add Keywords' => __('Add Keywords', 'fluentform'),
+            'Add multiple keywords separated by comma to restrict submission.' => __('Add multiple keywords separated by comma to restrict submission.', 'fluentform'),
+            'Keywords Restriction Error Message' => __('Keywords Restriction Error Message', 'fluentform'),
+            'Set error message when keywords are invalid.' => __('Set error message when keywords are invalid.', 'fluentform'),
+            'Fail the submission if match' => __('Fail the submission if match', 'fluentform'),
+            'Allow the submission if match' => __('Allow the submission if match', 'fluentform')
         );
 
         return apply_filters('fluentform/admin_i18n', $i18n);

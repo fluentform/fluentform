@@ -170,22 +170,31 @@ class Entries extends EntryQuery
         }
 
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
-
+        $submissionShortcodes = \FluentForm\App\Services\FormBuilder\EditorShortCode::getSubmissionShortcodes();
+        $submissionShortcodes['shortcodes']['{ip}'] = 'IP';
+        if ($form->has_payment) {
+            $submissionShortcodes['shortcodes']['{payment.payment_status}'] = __('Payment Status','fluentform');
+            $submissionShortcodes['shortcodes']['{payment.payment_total}'] = __('Payment Total','fluentform');
+        }
+        $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
+        $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
         $data = [
-            'all_forms_url'       => admin_url('admin.php?page=fluent_forms'),
-            'forms'               => $forms,
-            'form_id'             => $form->id,
-            'enabled_auto_delete' => Helper::isEntryAutoDeleteEnabled($form_id),
-            'current_form_title'  => $form->title,
-            'entry_statuses'      => Helper::getEntryStatuses($form_id),
-            'entries_url_base'    => admin_url('admin.php?page=fluent_forms&route=entries&form_id='),
-            'no_found_text'       => __('Sorry! No entries found. All your entries will be shown here once you start getting form submissions', 'fluentform'),
-            'has_pro'             => defined('FLUENTFORMPRO'),
-            'printStyles'         => [fluentformMix('css/settings_global.css')],
-            'email_notifications' => $formattedNotification,
-            'available_countries' => getFluentFormCountryList(),
-            'upgrade_url'      => fluentform_upgrade_url(),
-            'form_entries_str' => TranslationString::getEntriesI18n(),
+            'all_forms_url'         => admin_url('admin.php?page=fluent_forms'),
+            'forms'                 => $forms,
+            'form_id'               => $form->id,
+            'enabled_auto_delete'   => Helper::isEntryAutoDeleteEnabled($form_id),
+            'current_form_title'    => $form->title,
+            'entry_statuses'        => Helper::getEntryStatuses($form_id),
+            'entries_url_base'      => admin_url('admin.php?page=fluent_forms&route=entries&form_id='),
+            'no_found_text'         => __('Sorry! No entries found. All your entries will be shown here once you start getting form submissions', 'fluentform'),
+            'has_pro'               => defined('FLUENTFORMPRO'),
+            'printStyles'           => [fluentformMix('css/settings_global.css')],
+            'email_notifications'   => $formattedNotification,
+            'available_countries'   => getFluentFormCountryList(),
+            'upgrade_url'           => fluentform_upgrade_url(),
+            'form_entries_str'      => TranslationString::getEntriesI18n(),
+            'editor_shortcodes'     =>  $submissionShortcodes['shortcodes'],
+            'input_labels'          =>  $inputLabels,
         ];
     
         $data = apply_filters_deprecated(

@@ -24,6 +24,7 @@
         ?>
         <div class="ff_all_forms" id="ff_all_forms_app">
             <ff_all_forms_table></ff_all_forms_table>
+            <global-search></global-search>
         </div>
         <?php
         do_action_deprecated(
