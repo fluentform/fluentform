@@ -122,7 +122,9 @@ div.updated{
 .ff_screen_settings,
 .ff_screen_entries,
 .ff_screen_conversational_design,
-.ff_screen_msformentries {
+.ff_screen_msformentries,
+.ff_screen_inventory_list
+{
   padding: 0;
 }
 
@@ -166,7 +168,6 @@ input[type=checkbox]:disabled {
 .ff{
   &-select {
     -webkit-appearance: none !important;
-    background-color: $white !important;
     border-radius: $--input-border-radius !important;
     border: $--input-border !important;
     -webkit-box-sizing: border-box !important;
@@ -221,8 +222,7 @@ p {
   font: normal normal normal 14px/1 ultimateform;
   display: inline-block;
 }
-.el-input--prefix
-.el-input__inner {
+.el-input--prefix .el-input__inner {
   padding-left: 38px;
 }
 .el-input__prefix{
@@ -1821,6 +1821,15 @@ label.el-radio, label.el-checkbox {
 	}
 }
 
+.ff_chained_ajax_field {
+  display: flex;
+  flex: auto;
+  gap: 10px;
+  .el-select {
+    flex-basis: 100%;
+  }
+}
+
 @keyframes down {
 	0% {
     -webkit-transform: translate(0,-14px);
@@ -1848,7 +1857,7 @@ label.el-radio, label.el-checkbox {
 }
 
 100% {
-    -webkit-transform: translate(0,14);
+    -webkit-transform: translate(0, 14px);
     opacity: 0
 }
 }

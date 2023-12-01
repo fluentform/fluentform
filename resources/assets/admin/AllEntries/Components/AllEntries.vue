@@ -110,7 +110,7 @@
                 <div class="ff_table">
                     <el-skeleton :loading="loading" animated :rows="10">
                         <el-table :data="entries">
-                            <el-table-column width="200" :label="$t('Submission ID')">
+                            <el-table-column width="200" prop="id" sortable :label="$t('Submission ID')">
                                 <template slot-scope="scope">
                                     <a :href="scope.row.entry_url" >
                                         <span>#{{scope.row.id}}</span>
@@ -118,8 +118,8 @@
                                     </a>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('Form')" prop="form.title" width="400"></el-table-column>
-                            <el-table-column width="150" :label="$t('Status')">
+                            <el-table-column :label="$t('Form')" sortable prop="form.title" width="400"></el-table-column>
+                            <el-table-column width="150" prop="status" sortable :label="$t('Status')">
                                 <template slot-scope="scope">
                                     <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
                                     <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>

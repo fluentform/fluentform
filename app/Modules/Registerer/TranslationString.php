@@ -74,7 +74,7 @@ class TranslationString
             'Submission Logs' => __('Submission Logs', 'fluentform'),
             'General' => __('General', 'fluentform'),
             'API Calls' => __('API Calls', 'fluentform'),
-            'No Logs found' => __('No Logs found', 'fluen`tform'),
+            'No Logs found' => __('No Logs found', 'fluentform'),
             'Add Note' => __('Add Note', 'fluentform'),
             'Start date' => __('Start date', 'fluentform'),
             'End date' => __('End date', 'fluentform'),
@@ -997,7 +997,6 @@ class TranslationString
             'Hide these' => __('Hide these', 'fluentform'),
             'Only show these' => __('Only show these', 'fluentform'),
             'Priority Based' => __('Priority Based', 'fluentform'),
-            'Select' => __('Select', 'fluentform'),
             'You can use smart code for payment specific dynamic data:' => __('You can use smart code for payment specific dynamic data:', 'fluentform'),
             ': to show the cart summary' => __(': to show the cart summary', 'fluentform'),
             ': to display total payment amount' => __(': to display the total payment amount', 'fluentform'),
@@ -1019,10 +1018,10 @@ class TranslationString
             'Please provide the value as LABEL:VALUE as each line or select from predefined data sets' => __('Please provide the value as LABEL:VALUE as each line or select from predefined data sets', 'fluentform'),
             'Product Display Type' => __('Product Display Type', 'fluentform'),
             'Select which display type you want for your payment item. Please provide valid number only' => __('Select which display type you want for your payment item. Please provide valid number only', 'fluentform'),
-            'Single Item' => __('Single Item', 'fluentform'),
-            'Radio Selection' => __('Radio Selection', 'fluentform'),
-            'Checkbox Selections' => __('Checkbox Selections', 'fluentform'),
-            'Select Fields' => __('Select Fields', 'fluentform'),
+            'Single' => __('Single', 'fluentform'),
+            'Radio' => __('Radio', 'fluentform'),
+            'Checkbox' => __('Checkbox', 'fluentform'),
+            'Select' => __('Select', 'fluentform'),
             'Payment Amount' => __('Payment Amount', 'fluentform'),
             'Please Provide the payment amount. Max 2 decimal point is excepted' => __('Please provide the payment amount. Max 2 decimal point is excepted', 'fluentform'),
             'Amount Label' => __('Amount Label', 'fluentform'),
@@ -1103,7 +1102,8 @@ class TranslationString
             'Clear Data Source' => __('Clear Data Source', 'fluentform'),
             'Download Sample CSV' => __('Download Sample CSV', 'fluentform'),
             'No Active Payment Method Found.Please configure from Fluent Forms Settings' => __('No Active Payment Method Found. Please configure from Fluent Forms Settings', 'fluentform'),
-            'Layout Type' => __('Layout Type', 'fluentform')
+            'Layout Type' => __('Layout Type', 'fluentform'),
+            'Captcha has been enabled globally' => __('Captcha has been enabled globally', 'fluentform'),
         );
 
         return apply_filters('fluentform/editor_i18n', $i18n);
@@ -1283,6 +1283,8 @@ class TranslationString
             'Total Bills: ' => __('Total Bills', 'fluentform'),
             'No entry found.' => __('No entry found.', 'fluentform'),
             'Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.' => __('Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.', 'fluentform'),
+            'Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.' => __('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.', 'fluentform'),
+            'Learn More' => __('Learn More', 'fluentform'),
 
             //pro step form entries
             'Partial Entries' => __('Partial Entries', 'fluentform'),

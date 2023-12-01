@@ -58,45 +58,47 @@
                                 </card-head-group>
                             </card-head>
                             <card-body>
-                                <div v-if="entry.serial_number">
-                                    <div v-show="!view_as_json" class="wpf_entry_details">
-                                        <div
-                                            v-for="(label, label_index) in labels"
-                                            :key="label_index"
-                                            v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
-                                            class="wpf_each_entry"
-                                        >
+                                <el-skeleton :loading="resources_loading" animated :rows="6">
+                                    <div v-if="entry.serial_number">
+                                        <div v-show="!view_as_json" class="wpf_entry_details">
+                                            <div
+                                                v-for="(label, label_index) in labels"
+                                                :key="label_index"
+                                                v-show="show_empty == 'yes' || entry.user_inputs[label_index]"
+                                                class="wpf_each_entry"
+                                            >
 
-                                            <div class="wpf_entry_label">
-                                                {{label}}
-                                            </div>
-
-                                            <template v-if="formFields[label_index]['element'] == 'input_email'">
-                                                <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
-                                                    <a :href="'mailto:'+entry.user_inputs[label_index]">{{
-                                                        entry.user_inputs[label_index] }}</a>
+                                                <div class="wpf_entry_label">
+                                                    {{label}}
                                                 </div>
-                                            </template>
-                                            <template v-else-if="formFields[label_index]['element'] == 'input_file'">
-                                                <entry-file-list :itemKey="label_index" :dataItems="original_data"></entry-file-list>
-                                            </template>
-                                            <template
-                                                v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) != -1">
-                                                <entry-image-list :itemKey="label_index" :dataItems="original_data"></entry-image-list>
-                                            </template>
-                                            <template
-                                                v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
-                                                <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
-                                            </template>
-                                            <template v-else>
-                                                <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
-                                            </template>
+
+                                                <template v-if="formFields[label_index]['element'] == 'input_email'">
+                                                    <div v-show="entry.user_inputs[label_index]" class="wpf_entry_value">
+                                                        <a :href="'mailto:'+entry.user_inputs[label_index]">{{
+                                                            entry.user_inputs[label_index] }}</a>
+                                                    </div>
+                                                </template>
+                                                <template v-else-if="formFields[label_index]['element'] == 'input_file'">
+                                                    <entry-file-list :itemKey="label_index" :dataItems="original_data"></entry-file-list>
+                                                </template>
+                                                <template
+                                                    v-else-if="['input_image', 'signature'].indexOf(formFields[label_index]['element']) != -1">
+                                                    <entry-image-list :itemKey="label_index" :dataItems="original_data"></entry-image-list>
+                                                </template>
+                                                <template
+                                                    v-else-if="['input_checkbox', 'select'].indexOf(formFields[label_index]['element']) != -1">
+                                                    <div class="wpf_entry_value" v-html="maybeExtractCommaArrayInfo(entry.user_inputs[label_index], formFields[label_index]['raw'])"></div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="wpf_entry_value" v-html="entry.user_inputs[label_index]"></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div v-show="view_as_json">
+                                            <textarea class="show_code" readonly :value="prettifyJson(entry)"></textarea>
                                         </div>
                                     </div>
-                                    <div v-show="view_as_json">
-                                        <textarea class="show_code" readonly :value="prettifyJson(entry)"></textarea>
-                                    </div>
-                                </div>
+                                </el-skeleton>
                             </card-body>
                         </card>
 
@@ -327,6 +329,7 @@
                 extraCards :{},
                 entry_changing_next : false,
                 entry_changing_prev : false,
+                resources_loading : false,
             }
         },
         computed: {
@@ -478,6 +481,7 @@
                 return JSON.stringify(data, null, 8);
             },
             getEntryResources() {
+                this.resources_loading = true;
                 let data = {
                     form_id: this.form_id,
                     entry_id: this.entry_id,
@@ -502,9 +506,13 @@
 
                         this.nextId = response.next && response.next.id;
                         this.prevId = response.previous && response.previous.id;
+
                     })
                     .catch((error) => {
                         this.$fail(error.message);
+                    })
+                    .finally(() => {
+                        this.resources_loading = false;
                     });
             },
         },

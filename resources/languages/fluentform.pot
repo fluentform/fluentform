@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Forms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-22 13:06+0000\n"
+"POT-Creation-Date: 2023-08-24 10:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid " API keys"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1100
+#: app/Modules/Registerer/TranslationString.php:1099
 msgid " click to upload"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgstr ""
 msgid " days "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1411
+#: app/Modules/Registerer/TranslationString.php:1413
 msgid " for advanced shorcode usage"
 msgstr ""
 
@@ -44,7 +44,7 @@ msgstr ""
 msgid " List is required"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1297
+#: app/Modules/Registerer/TranslationString.php:1299
 msgid " Previous"
 msgstr ""
 
@@ -64,7 +64,7 @@ msgstr ""
 msgid " the feed"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1347
+#: app/Modules/Component/Component.php:1318
 msgid " to "
 msgstr ""
 
@@ -85,9 +85,9 @@ msgstr ""
 msgid "(Conditional)"
 msgstr ""
 
-#: app/Hooks/filters.php:216
-#: app/Services/Integrations/GlobalNotificationManager.php:238
+#: app/Hooks/filters.php:221
 #: app/Services/Integrations/GlobalNotificationService.php:62
+#: app/Services/Integrations/GlobalNotificationManager.php:238
 msgid "(truncated)"
 msgstr ""
 
@@ -99,18 +99,18 @@ msgstr ""
 msgid "-Select-"
 msgstr ""
 
-#: app/Modules/Form/FormDataParser.php:166
-#: app/Modules/Form/FormDataParser.php:217
+#: app/Modules/Form/FormDataParser.php:168
+#: app/Modules/Form/FormDataParser.php:219
 msgid "...."
 msgstr ""
 
-#: app/Modules/Component/Component.php:837
+#: app/Modules/Component/Component.php:806
 msgid "0% Completed"
 msgstr ""
 
-#: app/Modules/Component/Component.php:836
-#: app/Services/FluentConversational/Classes/Form.php:536
-#: app/Services/FluentConversational/Classes/Form.php:698
+#: app/Modules/Component/Component.php:805
+#: app/Services/FluentConversational/Classes/Form.php:556
+#: app/Services/FluentConversational/Classes/Form.php:716
 msgid "100% Completed"
 msgstr ""
 
@@ -126,15 +126,15 @@ msgstr ""
 msgid "23:59:59"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1003
+#: app/Modules/Registerer/TranslationString.php:1002
 msgid ": to display the total payment amount"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1002
+#: app/Modules/Registerer/TranslationString.php:1001
 msgid ": to show the cart summary"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1005
+#: app/Modules/Registerer/TranslationString.php:1004
 msgid ": to show the data from any input"
 msgstr ""
 
@@ -174,11 +174,11 @@ msgstr ""
 msgid "Accept Payments via stripe as a part of your form submission"
 msgstr ""
 
-#: app/Hooks/filters.php:158
+#: app/Hooks/filters.php:163
 msgid "Accepted"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1502
+#: app/Modules/Registerer/TranslationString.php:1504
 msgid "account dashboard"
 msgstr ""
 
@@ -191,18 +191,18 @@ msgid "ACF Plugin Mapping"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1205
-#: app/Modules/Registerer/TranslationString.php:1344
+#: app/Modules/Registerer/TranslationString.php:1346
 msgid "Action"
 msgstr ""
 
-#: app/Modules/Component/Component.php:280
 #: app/Services/Form/FormService.php:366
 #: app/Services/FormBuilder/DefaultElements.php:1266
+#: app/Modules/Component/Component.php:280
 msgid "Action Hook"
 msgstr ""
 
-#: app/Modules/Component/Component.php:281
 #: app/Services/Form/FormService.php:367
+#: app/Modules/Component/Component.php:281
 msgid ""
 "Action Hook is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -226,12 +226,12 @@ msgstr ""
 msgid "ActiveCampaign"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1334
-#: app/Views/admin/tools/index.php:61
+#: app/Modules/Registerer/TranslationString.php:1336
+#: app/Views/admin/tools/index.php:59
 msgid "Activity Logs"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1432
+#: app/Modules/Registerer/TranslationString.php:1434
 msgid "Add a new Coupon"
 msgstr ""
 
@@ -280,7 +280,7 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1429
+#: app/Modules/Registerer/TranslationString.php:1431
 msgid "Add New Coupon"
 msgstr ""
 
@@ -288,7 +288,7 @@ msgstr ""
 msgid "Add New Integration"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1055
+#: app/Modules/Registerer/TranslationString.php:1054
 msgid "Add New Plan"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgstr ""
 msgid "Add Row"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1417
+#: app/Modules/Registerer/TranslationString.php:1419
 msgid "Add shortcode "
 msgstr ""
 
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Admin Top Navigation"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1404
+#: app/Modules/Registerer/TranslationString.php:1406
 msgid "Administrator(Owner)"
 msgstr ""
 
@@ -528,12 +528,12 @@ msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:35
 #: app/Modules/Registerer/TranslationString.php:68
-#: app/Modules/Registerer/TranslationString.php:1318
+#: app/Modules/Registerer/TranslationString.php:1320
 msgid "All"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1081
-#: app/Modules/Registerer/TranslationString.php:1315
+#: app/Modules/Registerer/TranslationString.php:1080
+#: app/Modules/Registerer/TranslationString.php:1317
 msgid "all"
 msgstr ""
 
@@ -575,13 +575,13 @@ msgstr ""
 msgid "All Submissions"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1350
+#: app/Modules/Registerer/TranslationString.php:1352
 msgid ""
 "All the external CRM / API call logs and you can see and track if there has "
 "any issue with any of your API configuration. (Last 2 months data only)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1335
+#: app/Modules/Registerer/TranslationString.php:1337
 msgid ""
 "All the form submission & General internal logs.You can see and track if "
 "there has any issue with any of your Form."
@@ -631,7 +631,7 @@ msgstr ""
 msgid "Allows notification to be sent to different email "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1412
+#: app/Modules/Registerer/TranslationString.php:1414
 msgid "Also please check the documentation"
 msgstr ""
 
@@ -641,7 +641,7 @@ msgid ""
 "visual impairment. This label is not visible in your frontend"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1352
+#: app/Modules/Component/Component.php:1323
 msgid "AM"
 msgstr ""
 
@@ -658,11 +658,11 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1028
+#: app/Modules/Registerer/TranslationString.php:1027
 msgid "Amount Label"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1072
+#: app/Modules/Registerer/TranslationString.php:1071
 msgid ""
 "An option for developers to add dynamic elements they want. It provides the "
 "chance to add whatever input type you want to add in this form. This way, "
@@ -698,11 +698,11 @@ msgstr ""
 msgid "Antigua and Barbuda"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1082
+#: app/Modules/Registerer/TranslationString.php:1081
 msgid "Any"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1080
+#: app/Modules/Registerer/TranslationString.php:1079
 msgid "any"
 msgstr ""
 
@@ -711,11 +711,11 @@ msgstr ""
 msgid "API Calls"
 msgstr ""
 
-#: app/Views/admin/tools/index.php:68
+#: app/Views/admin/tools/index.php:66
 msgid "API Logs"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1349
+#: app/Modules/Registerer/TranslationString.php:1351
 msgid "Api Logs"
 msgstr ""
 
@@ -731,7 +731,7 @@ msgstr ""
 msgid "Append Survey Result"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1451
+#: app/Modules/Registerer/TranslationString.php:1453
 msgid "Applicable Forms"
 msgstr ""
 
@@ -747,11 +747,11 @@ msgstr ""
 msgid "Apply styles provided here"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1288
+#: app/Modules/Component/Component.php:1259
 msgid "Apr"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1302
+#: app/Modules/Component/Component.php:1273
 msgid "April"
 msgstr ""
 
@@ -763,7 +763,7 @@ msgstr ""
 msgid "Are you sure to delete this?"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1406
+#: app/Modules/Registerer/TranslationString.php:1408
 msgid "Are you sure to disconnect this account?"
 msgstr ""
 
@@ -787,8 +787,8 @@ msgstr ""
 msgid "Aruba"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:177
 #: app/Services/FormBuilder/ElementCustomization.php:657
+#: app/Modules/Registerer/TranslationString.php:177
 msgid "As Per Global Settings"
 msgstr ""
 
@@ -809,7 +809,7 @@ msgid ""
 "created as a single tag."
 msgstr ""
 
-#: app/Modules/Acl/Managers.php:82 app/Services/Manager/ManagerService.php:87
+#: app/Services/Manager/ManagerService.php:87 app/Modules/Acl/Managers.php:82
 msgid "Associate user could not be found"
 msgstr ""
 
@@ -839,11 +839,11 @@ msgstr ""
 msgid "Audio (mp3, wav, ogg, oga, wma, mka, m4a, ra, mid, midi)"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1292
+#: app/Modules/Component/Component.php:1263
 msgid "Aug"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1306
+#: app/Modules/Component/Component.php:1277
 msgid "August"
 msgstr ""
 
@@ -886,7 +886,7 @@ msgstr ""
 msgid "Automizy"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1428
+#: app/Modules/Registerer/TranslationString.php:1430
 msgid "Available Coupons"
 msgstr ""
 
@@ -910,7 +910,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1295
+#: app/Modules/Registerer/TranslationString.php:1297
 msgid "Back to All"
 msgstr ""
 
@@ -928,7 +928,8 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1061
+#: app/Services/FormBuilder/ElementCustomization.php:420
+#: app/Modules/Registerer/TranslationString.php:1060
 #: app/Modules/Widgets/OxyFluentFormWidget.php:72
 #: app/Modules/Widgets/OxyFluentFormWidget.php:821
 #: app/Modules/Widgets/OxyFluentFormWidget.php:910
@@ -943,7 +944,6 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:2136
 #: app/Modules/Widgets/FluentFormWidget.php:2242
 #: app/Modules/Widgets/FluentFormWidget.php:2295
-#: app/Services/FormBuilder/ElementCustomization.php:420
 msgid "Background Color"
 msgstr ""
 
@@ -1060,7 +1060,7 @@ msgstr ""
 msgid "Billing Email"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1043
+#: app/Modules/Registerer/TranslationString.php:1042
 msgid "Billing Interval"
 msgstr ""
 
@@ -1072,7 +1072,7 @@ msgstr ""
 msgid "Blind Carbon Copy Addresses"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1515
+#: app/Modules/Registerer/TranslationString.php:1517
 msgid "Blur"
 msgstr ""
 
@@ -1101,7 +1101,7 @@ msgstr ""
 msgid "Border"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1065
+#: app/Modules/Registerer/TranslationString.php:1064
 #: app/Modules/Widgets/FluentFormWidget.php:1063
 #: app/Modules/Widgets/FluentFormWidget.php:1157
 #: app/Modules/Widgets/FluentFormWidget.php:1665
@@ -1128,7 +1128,7 @@ msgstr ""
 msgid "Border Radius"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1067
+#: app/Modules/Registerer/TranslationString.php:1066
 msgid "Border Radius (px)"
 msgstr ""
 
@@ -1140,7 +1140,7 @@ msgstr ""
 msgid "Border Size - Selected State"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1511
+#: app/Modules/Registerer/TranslationString.php:1513
 msgid "Border Type"
 msgstr ""
 
@@ -1156,8 +1156,8 @@ msgstr ""
 msgid "Botswana"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1510
 #: app/Services/FormBuilder/ElementCustomization.php:67
+#: app/Modules/Registerer/TranslationString.php:1512
 msgid "Bottom"
 msgstr ""
 
@@ -1212,16 +1212,16 @@ msgstr ""
 msgid "Bulgaria"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1289
-#: app/Modules/Registerer/TranslationString.php:1386
+#: app/Modules/Registerer/TranslationString.php:1291
+#: app/Modules/Registerer/TranslationString.php:1388
 msgid "Bulk Actions"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1008
+#: app/Modules/Registerer/TranslationString.php:1007
 msgid "Bulk Edit"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1018
+#: app/Modules/Registerer/TranslationString.php:1017
 msgid "Bulk Edit / Predefined Data Sets"
 msgstr ""
 
@@ -1237,15 +1237,15 @@ msgstr ""
 msgid "Burundi"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1459
+#: app/Modules/Registerer/TranslationString.php:1461
 msgid "Business Address"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1462
+#: app/Modules/Registerer/TranslationString.php:1464
 msgid "Business Logo"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1457
+#: app/Modules/Registerer/TranslationString.php:1459
 msgid "Business Name"
 msgstr ""
 
@@ -1254,7 +1254,7 @@ msgstr ""
 msgid "Button"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1062
+#: app/Modules/Registerer/TranslationString.php:1061
 msgid "Button Background Color"
 msgstr ""
 
@@ -1262,11 +1262,11 @@ msgstr ""
 msgid "Button Border"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1066
+#: app/Modules/Registerer/TranslationString.php:1065
 msgid "Button Border Color"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1068
+#: app/Modules/Registerer/TranslationString.php:1067
 msgid "Button Border Radius"
 msgstr ""
 
@@ -1282,7 +1282,7 @@ msgstr ""
 msgid "Button Hover Box Shadow"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1070
+#: app/Modules/Registerer/TranslationString.php:1069
 msgid "Button Min-Width (Keep blank/0 for auto)"
 msgstr ""
 
@@ -1294,18 +1294,18 @@ msgstr ""
 msgid "Button Size"
 msgstr ""
 
-#: app/Modules/Widgets/OxyFluentFormWidget.php:730
 #: app/Services/FormBuilder/ElementCustomization.php:81
+#: app/Modules/Widgets/OxyFluentFormWidget.php:730
 msgid "Button Style"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:102
 #: app/Services/FormBuilder/ElementCustomization.php:200
 #: app/Services/FormBuilder/ElementSettingsPlacement.php:424
+#: app/Modules/Registerer/TranslationString.php:102
 msgid "Button Text"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1064
+#: app/Modules/Registerer/TranslationString.php:1063
 msgid "Button Text Color"
 msgstr ""
 
@@ -1321,11 +1321,11 @@ msgstr ""
 msgid "Buy Pro Now"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1017
+#: app/Modules/Registerer/TranslationString.php:1016
 msgid "calc value"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1013
+#: app/Modules/Registerer/TranslationString.php:1012
 msgid "Calc Values"
 msgstr ""
 
@@ -1341,7 +1341,7 @@ msgstr ""
 msgid "Campaign Monitor"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1446
+#: app/Modules/Registerer/TranslationString.php:1448
 msgid "Can this coupon code can be used with other coupon code"
 msgstr ""
 
@@ -1370,6 +1370,16 @@ msgstr ""
 msgid "Captcha Autoload"
 msgstr ""
 
+#: app/Modules/Registerer/TranslationString.php:1106
+msgid "Captcha has been enabled globally"
+msgstr ""
+
+#: app/Modules/AddOnModule.php:404
+msgid ""
+"Capture Fluent Forms Submission to your Notion workspaces — and do it "
+"exactly the way you want."
+msgstr ""
+
 #: app/Modules/Registerer/TranslationString.php:481
 msgid "Carbon Copy Addresses"
 msgstr ""
@@ -1394,13 +1404,13 @@ msgstr ""
 msgid "Cell Typography"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:219
 #: app/Modules/Widgets/FluentFormWidget.php:219
 #: app/Modules/Widgets/FluentFormWidget.php:458
 #: app/Modules/Widgets/FluentFormWidget.php:580
 #: app/Modules/Widgets/FluentFormWidget.php:872
 #: app/Modules/Widgets/FluentFormWidget.php:1306
 #: app/Modules/Widgets/FluentFormWidget.php:2073
-#: app/Services/FormBuilder/ElementCustomization.php:219
 msgid "Center"
 msgstr ""
 
@@ -1416,13 +1426,13 @@ msgstr ""
 msgid "Chained Select"
 msgstr ""
 
-#: app/Modules/Component/Component.php:311
 #: app/Services/Form/FormService.php:397
+#: app/Modules/Component/Component.php:311
 msgid "Chained Select Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:312
 #: app/Services/Form/FormService.php:398
+#: app/Modules/Component/Component.php:312
 msgid ""
 "Chained Select Field is not available with the free version. Please upgrade "
 "to pro to get all the advanced features."
@@ -1441,7 +1451,7 @@ msgstr ""
 msgid "Change Submitter"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1392
+#: app/Modules/Registerer/TranslationString.php:1394
 msgid "Charge"
 msgstr ""
 
@@ -1467,9 +1477,9 @@ msgstr ""
 msgid "Check this option to require a user to be "
 msgstr ""
 
-#: app/Modules/Component/Component.php:304
 #: app/Services/Form/FormService.php:390
 #: app/Services/FormBuilder/DefaultElements.php:1051
+#: app/Modules/Component/Component.php:304
 msgid "Checkable Grid"
 msgstr ""
 
@@ -1477,15 +1487,16 @@ msgstr ""
 msgid "Checkable Grid Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:305
 #: app/Services/Form/FormService.php:391
+#: app/Modules/Component/Component.php:305
 msgid ""
 "Checkable Grid is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Widgets/FluentFormWidget.php:1078
 #: app/Services/FormBuilder/ElementCustomization.php:515
+#: app/Modules/Registerer/TranslationString.php:1023
+#: app/Modules/Widgets/FluentFormWidget.php:1078
 msgid "Checkbox"
 msgstr ""
 
@@ -1497,13 +1508,9 @@ msgstr ""
 msgid "Checkbox Field"
 msgstr ""
 
-#: app/Modules/Widgets/FluentFormWidget.php:1326
 #: app/Services/FormBuilder/DefaultElements.php:1030
+#: app/Modules/Widgets/FluentFormWidget.php:1326
 msgid "Checkbox Grid"
-msgstr ""
-
-#: app/Modules/Registerer/TranslationString.php:1024
-msgid "Checkbox Selections"
 msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:598
@@ -1564,7 +1571,7 @@ msgstr ""
 msgid "Classic Editor Button"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1103
+#: app/Modules/Registerer/TranslationString.php:1102
 msgid "Clear Data Source"
 msgstr ""
 
@@ -1600,7 +1607,7 @@ msgstr ""
 msgid "Click Here to Create Your First Form"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1360
+#: app/Modules/Registerer/TranslationString.php:1362
 msgid "Click the Choose File button to upload a"
 msgstr ""
 
@@ -1612,7 +1619,7 @@ msgstr ""
 msgid "Click to copy shortcode"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1350
+#: app/Modules/Component/Component.php:1321
 msgid "Click to toggle"
 msgstr ""
 
@@ -1636,7 +1643,7 @@ msgstr ""
 msgid "Cocos (Keeling) Islands"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1430
+#: app/Modules/Registerer/TranslationString.php:1432
 msgid "Code"
 msgstr ""
 
@@ -1644,7 +1651,7 @@ msgstr ""
 msgid "Colombia"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1512
+#: app/Modules/Registerer/TranslationString.php:1514
 #: app/Modules/Widgets/OxyFluentFormWidget.php:335
 #: app/Modules/Widgets/OxyFluentFormWidget.php:816
 #: app/Modules/Widgets/OxyFluentFormWidget.php:893
@@ -1661,14 +1668,14 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: app/Modules/Component/Component.php:374
 #: app/Services/Form/FormService.php:460
 #: app/Services/FormBuilder/DefaultElements.php:1506
+#: app/Modules/Component/Component.php:374
 msgid "Color Picker"
 msgstr ""
 
-#: app/Modules/Component/Component.php:375
 #: app/Services/Form/FormService.php:461
+#: app/Modules/Component/Component.php:375
 msgid ""
 "Color Picker is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
@@ -1678,12 +1685,12 @@ msgstr ""
 msgid "Column Width %"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1119
 #: app/Services/FormBuilder/ElementCustomization.php:125
+#: app/Modules/Registerer/TranslationString.php:1119
 msgid "Columns"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1471
+#: app/Modules/Registerer/TranslationString.php:1473
 msgid "Comma as Thousand and Dot as Decimal (EG: 12,000.00)"
 msgstr ""
 
@@ -1708,7 +1715,7 @@ msgstr ""
 msgid "Compliance Settings is available in the pro version"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1343
+#: app/Modules/Registerer/TranslationString.php:1345
 msgid "Component"
 msgstr ""
 
@@ -1716,7 +1723,7 @@ msgstr ""
 msgid "Condition"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1078
+#: app/Modules/Registerer/TranslationString.php:1077
 msgid "Condition Match"
 msgstr ""
 
@@ -1724,8 +1731,8 @@ msgstr ""
 msgid "Conditional Confirmations"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:423
 #: app/Services/FormBuilder/ElementCustomization.php:415
+#: app/Modules/Registerer/TranslationString.php:423
 msgid "Conditional Logic"
 msgstr ""
 
@@ -1768,7 +1775,7 @@ msgstr ""
 msgid "Configure Routing"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1012
+#: app/Modules/Registerer/TranslationString.php:1011
 #: app/Modules/Registerer/TranslationString.php:1268
 msgid "Confirm"
 msgstr ""
@@ -1856,7 +1863,7 @@ msgid ""
 "submitted."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1402
+#: app/Modules/Registerer/TranslationString.php:1404
 msgid "Connect With Stripe"
 msgstr ""
 
@@ -1870,7 +1877,7 @@ msgstr ""
 msgid "Connect your Fluent Forms with MailerLite and add subscribers easily."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1401
+#: app/Modules/Registerer/TranslationString.php:1403
 msgid "Connect Your Stripe Account to your website to accept Payments"
 msgstr ""
 
@@ -1984,28 +1991,28 @@ msgstr ""
 msgid "Country List"
 msgstr ""
 
-#: app/Modules/Component/Component.php:429
 #: app/Services/Form/FormService.php:515
 #: app/Services/FormBuilder/DefaultElements.php:1586
+#: app/Modules/Component/Component.php:429
 msgid "Coupon"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1435
+#: app/Modules/Registerer/TranslationString.php:1437
 msgid "Coupon Code"
 msgstr ""
 
-#: app/Modules/Component/Component.php:430
 #: app/Services/Form/FormService.php:516
+#: app/Modules/Component/Component.php:430
 msgid ""
 "Coupon is not available with the free version. Please upgrade to pro to get "
 "all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1433
+#: app/Modules/Registerer/TranslationString.php:1435
 msgid "Coupon Title"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1399
+#: app/Modules/Registerer/TranslationString.php:1401
 msgid "Coupons "
 msgstr ""
 
@@ -2021,7 +2028,7 @@ msgstr ""
 msgid "create a blank form"
 msgstr ""
 
-#: app/Helpers/Helper.php:603
+#: app/Helpers/Helper.php:636
 msgid "Create a Form First"
 msgstr ""
 
@@ -2107,11 +2114,11 @@ msgstr ""
 msgid "Creating Form..."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1316
+#: app/Modules/Registerer/TranslationString.php:1318
 msgid "crm"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1319
+#: app/Modules/Registerer/TranslationString.php:1321
 msgid "CRM & SASS Integrations"
 msgstr ""
 
@@ -2143,25 +2150,25 @@ msgstr ""
 msgid "Currency "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1470
+#: app/Modules/Registerer/TranslationString.php:1472
 msgid "Currency Separators"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1466
+#: app/Modules/Registerer/TranslationString.php:1468
 msgid "Currency Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1469
+#: app/Modules/Registerer/TranslationString.php:1471
 msgid "Currency Sign Position"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1323
+#: app/Modules/Registerer/TranslationString.php:1325
 msgid "Currently"
 msgstr ""
 
-#: app/Modules/Widgets/FluentFormWidget.php:2097
 #: app/Services/FormBuilder/ElementCustomization.php:494
 #: app/Services/FormBuilder/ElementCustomization.php:661
+#: app/Modules/Widgets/FluentFormWidget.php:2097
 msgid "Custom"
 msgstr ""
 
@@ -2177,7 +2184,7 @@ msgstr ""
 msgid "Custom CSS & JS successfully saved."
 msgstr ""
 
-#: app/Modules/Form/Settings/FormCssJs.php:177
+#: app/Modules/Form/Settings/FormCssJs.php:178
 msgid "Custom CSS & JS successfully updated"
 msgstr ""
 
@@ -2214,8 +2221,8 @@ msgstr ""
 msgid "Custom Payment Amount"
 msgstr ""
 
-#: app/Modules/Component/Component.php:391
 #: app/Services/Form/FormService.php:477
+#: app/Modules/Component/Component.php:391
 msgid ""
 "Custom Payment Amount is not available with the free version. Please upgrade "
 "to pro to get all the advanced features."
@@ -2249,7 +2256,7 @@ msgstr ""
 msgid "Custom URL"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1394
+#: app/Modules/Registerer/TranslationString.php:1396
 msgid "Customer"
 msgstr ""
 
@@ -2306,30 +2313,30 @@ msgstr ""
 msgid "Date Format"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1463
+#: app/Modules/Registerer/TranslationString.php:1465
 msgid "Debug Log"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1296
+#: app/Modules/Component/Component.php:1267
 msgid "Dec"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1310
+#: app/Modules/Component/Component.php:1281
 msgid "December"
 msgstr ""
 
-#: app/Hooks/filters.php:160
+#: app/Hooks/filters.php:165
 msgid "Declined"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1056
-#: app/Modules/Widgets/FluentFormWidget.php:450
 #: app/Services/FormBuilder/ElementCustomization.php:55
 #: app/Services/FormBuilder/ElementCustomization.php:611
+#: app/Modules/Registerer/TranslationString.php:1055
+#: app/Modules/Widgets/FluentFormWidget.php:450
 msgid "Default"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1047
+#: app/Modules/Registerer/TranslationString.php:1046
 msgid "Default Amount"
 msgstr ""
 
@@ -2337,7 +2344,7 @@ msgstr ""
 msgid "Default Category"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1467
+#: app/Modules/Registerer/TranslationString.php:1469
 msgid "Default Currency"
 msgstr ""
 
@@ -2377,7 +2384,7 @@ msgstr ""
 msgid "Delete Permanently"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1339
+#: app/Modules/Registerer/TranslationString.php:1341
 msgid "Delete Selected Logs"
 msgstr ""
 
@@ -2389,12 +2396,12 @@ msgstr ""
 msgid "Deny empty submission"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:195
+#: app/Services/FormBuilder/ElementSettingsPlacement.php:494
 #: app/Modules/Registerer/TranslationString.php:367
 #: app/Modules/Widgets/FluentFormWidget.php:135
 #: app/Modules/Widgets/FluentFormWidget.php:314
 #: app/Modules/Widgets/FluentFormWidget.php:1243
-#: app/Services/FormBuilder/ElementCustomization.php:195
-#: app/Services/FormBuilder/ElementSettingsPlacement.php:494
 msgid "Description"
 msgstr ""
 
@@ -2425,6 +2432,10 @@ msgstr ""
 msgid ""
 "Determine the position of label title where the user will see this. By "
 "choosing \"Default\", global label placement setting will be applied."
+msgstr ""
+
+#: boot/app.php:85
+msgid "Developer Docs"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:55
@@ -2476,11 +2487,11 @@ msgstr ""
 msgid "Disable Payment Receipt Email by Stripe(no recommended)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1483
+#: app/Modules/Registerer/TranslationString.php:1485
 msgid "Disable PayPal IPN Verification"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1096
+#: app/Modules/Registerer/TranslationString.php:1095
 msgid "Disable Quantity"
 msgstr ""
 
@@ -2489,7 +2500,7 @@ msgid "Disable Scroll to Next"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:384
-#: app/Modules/Registerer/TranslationString.php:1325
+#: app/Modules/Registerer/TranslationString.php:1327
 msgid "Disabled"
 msgstr ""
 
@@ -2497,7 +2508,7 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1407
+#: app/Modules/Registerer/TranslationString.php:1409
 msgid "Disconnect"
 msgstr ""
 
@@ -2513,11 +2524,11 @@ msgstr ""
 msgid "Discount"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1437
+#: app/Modules/Registerer/TranslationString.php:1439
 msgid "Discount Amount / Percent"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1439
+#: app/Modules/Registerer/TranslationString.php:1441
 msgid "Discount Type"
 msgstr ""
 
@@ -2541,7 +2552,7 @@ msgstr ""
 msgid "Do you want to show vote count when displaying survey result?"
 msgstr ""
 
-#: app/Services/FormBuilder/ValidationRuleSettings.php:191
+#: boot/app.php:83 app/Services/FormBuilder/ValidationRuleSettings.php:191
 msgid "Docs"
 msgstr ""
 
@@ -2571,12 +2582,12 @@ msgstr ""
 msgid "Donations"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1472
+#: app/Modules/Registerer/TranslationString.php:1474
 msgid "Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )"
 msgstr ""
 
-#: app/Views/admin/settings/index.php:166
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:242
+#: app/Views/admin/settings/index.php:166
 msgid "Double Opt-in"
 msgstr ""
 
@@ -2596,7 +2607,7 @@ msgstr ""
 msgid "Double Optin Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1104
+#: app/Modules/Registerer/TranslationString.php:1103
 msgid "Download Sample CSV"
 msgstr ""
 
@@ -2608,7 +2619,7 @@ msgstr ""
 msgid "Drip"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1099
+#: app/Modules/Registerer/TranslationString.php:1098
 msgid "Drop file here or"
 msgstr ""
 
@@ -2629,7 +2640,7 @@ msgstr ""
 msgid "Dynamic Default Value"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1004
+#: app/Modules/Registerer/TranslationString.php:1003
 msgid "Dynamic SmartCodes"
 msgstr ""
 
@@ -2642,7 +2653,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1431
+#: app/Modules/Registerer/TranslationString.php:1433
 msgid "Edit Coupon"
 msgstr ""
 
@@ -2650,7 +2661,7 @@ msgstr ""
 msgid "Edit Entry Data"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1363
+#: app/Modules/Registerer/TranslationString.php:1365
 msgid "Edit Form"
 msgstr ""
 
@@ -2662,7 +2673,7 @@ msgstr ""
 msgid "Edit Transaction"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1009
+#: app/Modules/Registerer/TranslationString.php:1008
 msgid "Edit your options"
 msgstr ""
 
@@ -2760,8 +2771,8 @@ msgstr ""
 msgid "email from available email form fields."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:426
 #: app/Modules/Registerer/Menu.php:624
+#: app/Modules/Registerer/TranslationString.php:426
 msgid "Email Notifications"
 msgstr ""
 
@@ -2781,7 +2792,7 @@ msgstr ""
 msgid "Email Summaries"
 msgstr ""
 
-#: app/Services/Scheduler/Scheduler.php:162
+#: app/Services/Scheduler/Scheduler.php:161
 #, php-format
 msgid "Email Summary of Your Forms (Last %d Days)"
 msgstr ""
@@ -2842,7 +2853,7 @@ msgstr ""
 msgid "Enable Autocomplete(Google Map)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1465
+#: app/Modules/Registerer/TranslationString.php:1467
 msgid "Enable Debug Log(Recommended for debug purpose only)"
 msgstr ""
 
@@ -2866,11 +2877,11 @@ msgstr ""
 msgid "Enable Email Summaries Weekly Delivery"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1427
+#: app/Modules/Registerer/TranslationString.php:1429
 msgid "Enable Fluent Forms Coupon Module"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1397
+#: app/Modules/Registerer/TranslationString.php:1399
 msgid "Enable Fluent Forms Payment Module"
 msgstr ""
 
@@ -2914,15 +2925,15 @@ msgstr ""
 msgid "Enable No-Conflict Mode"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1509
+#: app/Modules/Registerer/TranslationString.php:1511
 msgid "Enable Offline / Test Payment Method"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1456
+#: app/Modules/Registerer/TranslationString.php:1458
 msgid "Enable Payment Module"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1477
+#: app/Modules/Registerer/TranslationString.php:1479
 msgid "Enable PayPal Payment Method"
 msgstr ""
 
@@ -2946,7 +2957,7 @@ msgstr ""
 msgid "Enable Smart UI"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1493
+#: app/Modules/Registerer/TranslationString.php:1495
 msgid "Enable Stripe Payment Method"
 msgstr ""
 
@@ -2963,7 +2974,7 @@ msgstr ""
 msgid "Enable this feed conditionally"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1464
+#: app/Modules/Registerer/TranslationString.php:1466
 msgid ""
 "Enable this only for test purpose, then FluentForm will log IPN and Payment "
 "errors in the log"
@@ -2989,18 +3000,18 @@ msgstr ""
 msgid "Enable this to switch between form fields using Tab."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1042
+#: app/Modules/Registerer/TranslationString.php:1041
 msgid "Enable User Input Amount"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1426
+#: app/Modules/Registerer/TranslationString.php:1428
 msgid ""
 "Enable your users to apply coupon / discount code while purchasing something "
 "using Fluent Forms Payment Module.Just activate this module and setup your "
 "your coupons."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1396
+#: app/Modules/Registerer/TranslationString.php:1398
 msgid ""
 "Enable your users to pay online as part of the Forms submission process.With "
 "Fluent Forms Powerful payment integration, you can easily accept and process "
@@ -3009,7 +3020,7 @@ msgid ""
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:383
-#: app/Modules/Registerer/TranslationString.php:1324
+#: app/Modules/Registerer/TranslationString.php:1326
 msgid "Enabled"
 msgstr ""
 
@@ -3031,7 +3042,7 @@ msgid "Enabling this won't allow users to submit empty"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1231
-#: app/Modules/Registerer/TranslationString.php:1449
+#: app/Modules/Registerer/TranslationString.php:1451
 msgid "End Date"
 msgstr ""
 
@@ -3048,11 +3059,11 @@ msgstr ""
 msgid "End of page"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1092
+#: app/Modules/Registerer/TranslationString.php:1091
 msgid "ends with"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1436
+#: app/Modules/Registerer/TranslationString.php:1438
 msgid ""
 "Enter a code for this discount, such as 10PERCENT.Only alphanumeric "
 "characters are allowed."
@@ -3126,7 +3137,7 @@ msgstr ""
 msgid "Enter the content you would like the user to "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1438
+#: app/Modules/Registerer/TranslationString.php:1440
 msgid "Enter the discount percentage. 10 = 10 %"
 msgstr ""
 
@@ -3142,7 +3153,7 @@ msgstr ""
 msgid "Enter the email address you would like to be "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1450
+#: app/Modules/Registerer/TranslationString.php:1452
 msgid ""
 "Enter the expiration date for this discount code in the format of yyyy - mm -"
 " dd. For no expiration, leave blank"
@@ -3156,7 +3167,7 @@ msgstr ""
 msgid "Enter the name you would like the notification email sent from"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1448
+#: app/Modules/Registerer/TranslationString.php:1450
 msgid ""
 "Enter the start date for this discount code in the format of yyyy - mm - dd. "
 "For no start date, leave blank."
@@ -3210,14 +3221,14 @@ msgstr ""
 msgid "Entity ID"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1299
+#: app/Modules/Registerer/TranslationString.php:1301
 msgid "Entity ID: "
 msgstr ""
 
+#: app/Views/admin/global_menu.php:25 app/Modules/Registerer/AdminBar.php:119
+#: app/Modules/Registerer/Menu.php:408 app/Modules/Registerer/Menu.php:585
 #: app/Modules/Registerer/TranslationString.php:18
 #: app/Modules/Registerer/TranslationString.php:1115
-#: app/Modules/Registerer/Menu.php:408 app/Modules/Registerer/Menu.php:585
-#: app/Modules/Registerer/AdminBar.php:113 app/Views/admin/global_menu.php:25
 #: app/Views/email/report/body.php:148
 msgid "Entries"
 msgstr ""
@@ -3251,7 +3262,7 @@ msgstr ""
 msgid "Entry Details"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1298
+#: app/Modules/Registerer/TranslationString.php:1300
 msgid "Entry Details - Partial #"
 msgstr ""
 
@@ -3267,7 +3278,7 @@ msgstr ""
 msgid "Equal"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1083
+#: app/Modules/Registerer/TranslationString.php:1082
 msgid "equal"
 msgstr ""
 
@@ -3283,7 +3294,7 @@ msgstr ""
 msgid "Eritrea"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1073
+#: app/Modules/Registerer/TranslationString.php:1072
 #: app/Modules/Widgets/FluentFormWidget.php:2342
 msgid "Error Message"
 msgstr ""
@@ -3324,11 +3335,11 @@ msgstr ""
 msgid "Ethiopia"
 msgstr ""
 
-#: app/Helpers/Helper.php:397
+#: app/Helpers/Helper.php:430
 msgid "EU Style with Decimal (Ex: 123.456,00)"
 msgstr ""
 
-#: app/Helpers/Helper.php:407
+#: app/Helpers/Helper.php:440
 msgid "EU Style without Decimal (EX: 123.456.789)"
 msgstr ""
 
@@ -3336,15 +3347,15 @@ msgstr ""
 msgid "Every 5 Minutes (FluentForm)"
 msgstr ""
 
-#: app/Hooks/actions.php:758
+#: app/Hooks/actions.php:776
 msgid "Every 5 minutes (FluentForm)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1071
+#: app/Modules/Registerer/TranslationString.php:1070
 msgid "ex: 100%"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1045
+#: app/Modules/Registerer/TranslationString.php:1044
 msgid "ex: Please Provide amount/interval"
 msgstr ""
 
@@ -3361,7 +3372,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1290
+#: app/Modules/Registerer/TranslationString.php:1292
 msgid "Export "
 msgstr ""
 
@@ -3370,15 +3381,15 @@ msgstr ""
 msgid "Export as"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1291
+#: app/Modules/Registerer/TranslationString.php:1293
 msgid "Export as CSV"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1292
+#: app/Modules/Registerer/TranslationString.php:1294
 msgid "Export as Excel(xlsv)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1293
+#: app/Modules/Registerer/TranslationString.php:1295
 msgid "Export as ODS"
 msgstr ""
 
@@ -3386,12 +3397,12 @@ msgstr ""
 msgid "Export error, please try again."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1352
+#: app/Modules/Registerer/TranslationString.php:1354
 #: app/Views/admin/tools/index.php:37
 msgid "Export Forms"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1355
+#: app/Modules/Registerer/TranslationString.php:1357
 msgid "Export Selected Forms"
 msgstr ""
 
@@ -3419,8 +3430,12 @@ msgstr ""
 msgid "Fail the submission if conditions met"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1348
+#: app/Modules/Registerer/TranslationString.php:1350
 msgid "failed"
+msgstr ""
+
+#: app/Views/email/failedIntegration/body.php:120
+msgid "Failed Integrations"
 msgstr ""
 
 #: app/Services/FormBuilder/CountryNames.php:91
@@ -3444,15 +3459,16 @@ msgstr ""
 msgid "Featured Image will be shown in social media share preview "
 msgstr ""
 
-#: app/Modules/Component/Component.php:1286
+#: app/Modules/Component/Component.php:1257
 msgid "Feb"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1300
+#: app/Modules/Component/Component.php:1271
 msgid "February"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:550
+#: app/Views/email/failedIntegration/body.php:143
 msgid "Feed"
 msgstr ""
 
@@ -3472,7 +3488,7 @@ msgstr ""
 msgid "Feed name is required."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1102
+#: app/Modules/Registerer/TranslationString.php:1101
 msgid "Fetch"
 msgstr ""
 
@@ -3488,7 +3504,7 @@ msgstr ""
 msgid "Fetching Settings..."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1508
+#: app/Modules/Registerer/TranslationString.php:1510
 msgid "Fetching settings.Please wait..."
 msgstr ""
 
@@ -3508,9 +3524,9 @@ msgstr ""
 msgid "Field Selection is a pro feature."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1095
 #: app/Services/FormBuilder/ElementCustomization.php:510
 #: app/Services/FormBuilder/ElementCustomization.php:511
+#: app/Modules/Registerer/TranslationString.php:1094
 msgid "Field Type"
 msgstr ""
 
@@ -3530,11 +3546,11 @@ msgstr ""
 msgid "File Location Type"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1097
-#: app/Modules/Component/Component.php:266
 #: app/Services/Form/FormService.php:352
 #: app/Services/FormBuilder/DefaultElements.php:876
 #: app/Services/FormBuilder/DefaultElements.php:905
+#: app/Modules/Registerer/TranslationString.php:1096
+#: app/Modules/Component/Component.php:266
 #: app/Services/Migrator/Classes/BaseMigrator.php:876
 msgid "File Upload"
 msgstr ""
@@ -3543,8 +3559,8 @@ msgstr ""
 msgid "File Upload Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:267
 #: app/Services/Form/FormService.php:353
+#: app/Modules/Component/Component.php:267
 msgid ""
 "File Upload is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -3597,7 +3613,7 @@ msgstr ""
 msgid "Five Column Container"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1441
+#: app/Modules/Registerer/TranslationString.php:1443
 msgid "Fixed Discount"
 msgstr ""
 
@@ -3606,7 +3622,7 @@ msgid "Fluent Form"
 msgstr ""
 
 #. Name of the plugin
-#: app/Modules/Registerer/Menu.php:370 app/Modules/Registerer/AdminBar.php:107
+#: app/Modules/Registerer/AdminBar.php:112 app/Modules/Registerer/Menu.php:370
 #: app/Modules/Widgets/OxygenWidget.php:39
 #: app/Modules/Widgets/FluentFormWidget.php:28
 #: app/Modules/Widgets/FluentFormWidget.php:93
@@ -3620,8 +3636,8 @@ msgid ""
 "signup forms in WordPress, so you can grow your email list."
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:601
 #: app/Services/Submission/SubmissionService.php:400
+#: app/Modules/Entries/Entries.php:601
 msgid "Fluent Forms Bot"
 msgstr ""
 
@@ -3631,11 +3647,11 @@ msgid ""
 "newsletter signup forms in WordPress, so you can grow your email list."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1425
+#: app/Modules/Registerer/TranslationString.php:1427
 msgid "Fluent Forms Coupon Module"
 msgstr ""
 
-#: app/Helpers/Helper.php:564
+#: app/Helpers/Helper.php:597
 msgid "Fluent Forms Default"
 msgstr ""
 
@@ -3645,7 +3661,7 @@ msgid ""
 "you can grow your email list."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1361
+#: app/Modules/Registerer/TranslationString.php:1363
 msgid "Fluent Forms export file from your computer."
 msgstr ""
 
@@ -3679,15 +3695,15 @@ msgid ""
 "signup forms in WordPress"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1364
+#: app/Modules/Registerer/TranslationString.php:1366
 msgid "Fluent Forms Migrator"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1313
+#: app/Modules/Registerer/TranslationString.php:1315
 msgid "Fluent Forms Modules"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1395
+#: app/Modules/Registerer/TranslationString.php:1397
 msgid "Fluent Forms Payment Module"
 msgstr ""
 
@@ -3695,7 +3711,7 @@ msgstr ""
 msgid "Fluent Forms PDF"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:368 app/Modules/Registerer/AdminBar.php:105
+#: app/Modules/Registerer/AdminBar.php:110 app/Modules/Registerer/Menu.php:368
 msgid "Fluent Forms Pro"
 msgstr ""
 
@@ -3727,7 +3743,7 @@ msgstr ""
 msgid "Fluent Forms Widget"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1409
+#: app/Modules/Registerer/TranslationString.php:1411
 msgid ""
 "FluentForms uses the pages below for handling the display of payment history "
 "and payment receipt.Please select the pages and add the instructed "
@@ -3758,15 +3774,15 @@ msgstr ""
 msgid "Font color of the element"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1518
+#: app/Modules/Registerer/TranslationString.php:1520
 msgid "Font Size"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1521
+#: app/Modules/Registerer/TranslationString.php:1523
 msgid "Font Style"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1519
+#: app/Modules/Registerer/TranslationString.php:1521
 msgid "Font Weight"
 msgstr ""
 
@@ -3801,12 +3817,13 @@ msgid "For your social sharing preview Image"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:39
+#: app/Views/email/failedIntegration/body.php:144
 #: app/Views/email/report/body.php:147 app/Views/email/report/body.php:172
 msgid "Form"
 msgstr ""
 
 #: app/Services/Analytics/AnalyticsService.php:19
-msgid "Form Analytics has been successfully resetted"
+msgid "Form Analytics has been successfully reset"
 msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:64
@@ -3839,11 +3856,11 @@ msgstr ""
 msgid "Form Fields"
 msgstr ""
 
-#: app/Modules/Form/Form.php:701
+#: app/Modules/Form/Form.php:702
 msgid "Form has been successfully converted."
 msgstr ""
 
-#: app/Http/Controllers/FormController.php:54 app/Modules/Form/Form.php:644
+#: app/Http/Controllers/FormController.php:54 app/Modules/Form/Form.php:645
 msgid "Form has been successfully duplicated."
 msgstr ""
 
@@ -3868,11 +3885,11 @@ msgstr ""
 msgid "Form Messages"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1368
+#: app/Modules/Registerer/TranslationString.php:1370
 msgid "Form Name"
 msgstr ""
 
-#: app/Modules/Form/Form.php:680
+#: app/Modules/Form/Form.php:681
 msgid "Form Not Found! Try Again."
 msgstr ""
 
@@ -3884,19 +3901,19 @@ msgstr ""
 msgid "Form Scheduling"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:160
 #: app/Modules/Registerer/Menu.php:618
+#: app/Modules/Registerer/TranslationString.php:160
 msgid "Form Settings"
 msgstr ""
 
-#: app/Modules/Component/Component.php:287
 #: app/Services/Form/FormService.php:373
 #: app/Services/FormBuilder/DefaultElements.php:1126
+#: app/Modules/Component/Component.php:287
 msgid "Form Step"
 msgstr ""
 
-#: app/Modules/Component/Component.php:288
 #: app/Services/Form/FormService.php:374
+#: app/Modules/Component/Component.php:288
 msgid ""
 "Form Step is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -3933,12 +3950,12 @@ msgstr ""
 msgid "form will become inactive when that number is reached."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1341
+#: app/Modules/Registerer/TranslationString.php:1343
 msgid "Form/Source"
 msgstr ""
 
+#: app/Views/admin/global_menu.php:19 app/Modules/Registerer/AdminBar.php:135
 #: app/Modules/Registerer/Menu.php:391 app/Modules/Registerer/Menu.php:392
-#: app/Modules/Registerer/AdminBar.php:129 app/Views/admin/global_menu.php:19
 msgid "Forms"
 msgstr ""
 
@@ -3966,12 +3983,12 @@ msgstr ""
 msgid "French Southern Territories"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1329
+#: app/Modules/Component/Component.php:1300
 msgid "Fri"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:717
-#: app/Modules/Component/Component.php:1320
+#: app/Modules/Component/Component.php:1291
 msgid "Friday"
 msgstr ""
 
@@ -3991,11 +4008,11 @@ msgstr ""
 msgid "From Subscriptions"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:289
+#: app/Modules/Acl/Acl.php:278
 msgid "Full Access"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1461
+#: app/Modules/Registerer/TranslationString.php:1463
 msgid "Full Business Address"
 msgstr ""
 
@@ -4040,7 +4057,7 @@ msgstr ""
 msgid "General Fields"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1342
+#: app/Modules/Registerer/TranslationString.php:1344
 msgid "General Log"
 msgstr ""
 
@@ -4048,7 +4065,7 @@ msgstr ""
 msgid "General Operators"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1398
+#: app/Modules/Registerer/TranslationString.php:1400
 msgid "General Settings"
 msgstr ""
 
@@ -4094,6 +4111,10 @@ msgstr ""
 
 #: app/Views/admin/docs/index.php:46
 msgid "Get Started with Fluent Form Wordpress Plugin"
+msgstr ""
+
+#: boot/app.php:84
+msgid "Get Support"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:374
@@ -4158,8 +4179,8 @@ msgstr ""
 msgid "Global PDF Settings"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:454 app/Modules/Registerer/Menu.php:455
-#: app/Views/admin/global_menu.php:39
+#: app/Views/admin/global_menu.php:39 app/Modules/Registerer/Menu.php:454
+#: app/Modules/Registerer/Menu.php:455
 msgid "Global Settings"
 msgstr ""
 
@@ -4195,11 +4216,11 @@ msgstr ""
 msgid "Grade System"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1085
+#: app/Modules/Registerer/TranslationString.php:1084
 msgid "greater than"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1087
+#: app/Modules/Registerer/TranslationString.php:1086
 msgid "greater than or equal"
 msgstr ""
 
@@ -4276,18 +4297,18 @@ msgstr ""
 msgid "has been refunded via"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1048
+#: app/Modules/Registerer/TranslationString.php:1047
 msgid "Has Signup Fee?"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1050
+#: app/Modules/Registerer/TranslationString.php:1049
 msgid "Has Trial Days? (in days)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:704
-#: app/Modules/Component/Component.php:247
 #: app/Services/Form/FormService.php:333
 #: app/Services/FormBuilder/DefaultElements.php:1215
+#: app/Modules/Registerer/TranslationString.php:704
+#: app/Modules/Component/Component.php:247
 msgid "hCaptcha"
 msgstr ""
 
@@ -4307,8 +4328,8 @@ msgstr ""
 msgid "hCaptcha Site Key"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:755
-#: app/Services/Form/FormValidationService.php:505
+#: app/Services/Form/FormValidationService.php:493
+#: app/Modules/Form/FormHandler.php:747
 msgid "hCaptcha verification failed, please try again."
 msgstr ""
 
@@ -4359,7 +4380,11 @@ msgstr ""
 msgid "Help messages can be placed beside"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1314
+#: app/Views/email/failedIntegration/body.php:182
+msgid "here"
+msgstr ""
+
+#: app/Modules/Registerer/TranslationString.php:1316
 msgid ""
 "Here is the list of all Fluent Forms modules.You can enable or disable the "
 "modules based on your need."
@@ -4384,7 +4409,7 @@ msgstr ""
 msgid "Hide Chart"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1473
+#: app/Modules/Registerer/TranslationString.php:1475
 msgid "Hide decimal points for rounded numbers"
 msgstr ""
 
@@ -4428,7 +4453,7 @@ msgstr ""
 msgid "Hook Name"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1513
+#: app/Modules/Registerer/TranslationString.php:1515
 msgid "Horizontal"
 msgstr ""
 
@@ -4457,7 +4482,7 @@ msgstr ""
 msgid "Hover Color"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1060
+#: app/Modules/Registerer/TranslationString.php:1059
 msgid "Hover State"
 msgstr ""
 
@@ -4513,7 +4538,7 @@ msgstr ""
 msgid "Hungary"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:343
+#: app/Services/FluentConversational/Classes/Form.php:348
 msgid "I accept"
 msgstr ""
 
@@ -4523,7 +4548,7 @@ msgid ""
 "respond to my inquiry"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Form.php:345
+#: app/Services/FluentConversational/Classes/Form.php:350
 msgid "I don't accept"
 msgstr ""
 
@@ -4555,14 +4580,14 @@ msgstr ""
 msgid "If validation failed then it will show this message"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1484
+#: app/Modules/Registerer/TranslationString.php:1486
 msgid ""
 "If you are unable to use Payment Data Transfer and payments are not getting "
 "marked as   complete, then check this box.This forces the site to use a "
 "slightly less secure method of verifying purchases."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1455
+#: app/Modules/Registerer/TranslationString.php:1457
 msgid ""
 "If you disable this then all the payment related functions will be disabled."
 "If you want to process / accept payment using fluent forms.You should enable "
@@ -4642,23 +4667,23 @@ msgstr ""
 msgid "If you would like to pre-populate the value of a field, enter it here."
 msgstr ""
 
-#: app/Modules/Component/Component.php:259
-#: app/Modules/Widgets/FluentFormWidget.php:1552
 #: app/Services/Form/FormService.php:345
 #: app/Services/FormBuilder/DefaultElements.php:830
 #: app/Services/FormBuilder/DefaultElements.php:859
+#: app/Modules/Component/Component.php:259
+#: app/Modules/Widgets/FluentFormWidget.php:1552
 msgid "Image Upload"
 msgstr ""
 
-#: app/Modules/Component/Component.php:260
 #: app/Services/Form/FormService.php:346
+#: app/Modules/Component/Component.php:260
 msgid ""
 "Image Upload is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1057
 #: app/Services/FormBuilder/ValidationRuleSettings.php:162
+#: app/Modules/Registerer/TranslationString.php:1056
 msgid "Images"
 msgstr ""
 
@@ -4666,40 +4691,40 @@ msgstr ""
 msgid "Images (jpg, jpeg, gif, png, bmp)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1362
+#: app/Modules/Registerer/TranslationString.php:1364
 msgid "Import"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1366
+#: app/Modules/Registerer/TranslationString.php:1368
 msgid "Import "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1367
+#: app/Modules/Registerer/TranslationString.php:1369
 msgid "Import All Forms"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1370
+#: app/Modules/Registerer/TranslationString.php:1372
 msgid "Import Form"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1357
+#: app/Modules/Registerer/TranslationString.php:1359
 #: app/Views/admin/tools/index.php:44
 msgid "Import Forms"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1369
+#: app/Modules/Registerer/TranslationString.php:1371
 msgid "Imported"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1373
+#: app/Modules/Registerer/TranslationString.php:1375
 msgid "Imported Form"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1375
+#: app/Modules/Registerer/TranslationString.php:1377
 msgid "Imported Form Entries"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1372
+#: app/Modules/Registerer/TranslationString.php:1374
 msgid "Imported Forms"
 msgstr ""
 
@@ -4707,13 +4732,13 @@ msgstr ""
 msgid "in"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1501
+#: app/Modules/Registerer/TranslationString.php:1503
 msgid ""
 "In order for Stripe to function completely for subscription / recurring "
 "payments, you must configure your Stripe webhooks. Visit your "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1487
+#: app/Modules/Registerer/TranslationString.php:1489
 msgid ""
 "In order to function completely for subscription / recurring payments, you "
 "must configure your PayPal IPN."
@@ -4725,11 +4750,11 @@ msgid ""
 "verification."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1421
+#: app/Modules/Registerer/TranslationString.php:1423
 msgid "in the selected page."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1418
+#: app/Modules/Registerer/TranslationString.php:1420
 msgid ""
 "in the selected page. This shortcode will show single and subscriptions to "
 "the logged - in user"
@@ -4739,7 +4764,7 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1089
+#: app/Modules/Registerer/TranslationString.php:1088
 msgid "includes"
 msgstr ""
 
@@ -4826,8 +4851,8 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:484 app/Modules/Registerer/Menu.php:485
-#: app/Views/admin/global_menu.php:49
+#: app/Views/admin/global_menu.php:49 app/Modules/Registerer/Menu.php:484
+#: app/Modules/Registerer/Menu.php:485
 msgid "Integrations"
 msgstr ""
 
@@ -4848,8 +4873,8 @@ msgstr ""
 msgid "Invalid Prompt"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:1067
 #: app/Services/Submission/SubmissionService.php:484
+#: app/Modules/Entries/Entries.php:1067
 msgid "Invalid Request"
 msgstr ""
 
@@ -4857,7 +4882,7 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1488
+#: app/Modules/Registerer/TranslationString.php:1490
 msgid "IPN URL "
 msgstr ""
 
@@ -4929,20 +4954,20 @@ msgstr ""
 msgid "Item has been removed from favorites"
 msgstr ""
 
-#: app/Modules/Component/Component.php:406
 #: app/Services/Form/FormService.php:492
 #: app/Services/FormBuilder/DefaultElements.php:1553
+#: app/Modules/Component/Component.php:406
 msgid "Item Quantity"
 msgstr ""
 
-#: app/Modules/Component/Component.php:407
 #: app/Services/Form/FormService.php:493
+#: app/Modules/Component/Component.php:407
 msgid ""
 "Item Quantity is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1031
+#: app/Modules/Registerer/TranslationString.php:1030
 msgid "Item Short Description"
 msgstr ""
 
@@ -4958,11 +4983,11 @@ msgstr ""
 msgid "Jamaica"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1285
+#: app/Modules/Component/Component.php:1256
 msgid "Jan"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1299
+#: app/Modules/Component/Component.php:1270
 msgid "January"
 msgstr ""
 
@@ -4991,19 +5016,19 @@ msgstr ""
 msgid "JPG"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1291
+#: app/Modules/Component/Component.php:1262
 msgid "Jul"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1305
+#: app/Modules/Component/Component.php:1276
 msgid "July"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1290
+#: app/Modules/Component/Component.php:1261
 msgid "Jun"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1304
+#: app/Modules/Component/Component.php:1275
 msgid "June"
 msgstr ""
 
@@ -5011,7 +5036,7 @@ msgstr ""
 msgid "Kazakhstan"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1054
+#: app/Modules/Registerer/TranslationString.php:1053
 msgid "Keep blank or 0 for billing unlimited period of times"
 msgstr ""
 
@@ -5057,7 +5082,7 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1015
+#: app/Modules/Registerer/TranslationString.php:1014
 msgid "label"
 msgstr ""
 
@@ -5074,8 +5099,8 @@ msgstr ""
 msgid "Label Color"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:918
 #: app/Services/FormBuilder/ElementCustomization.php:50
+#: app/Modules/Registerer/TranslationString.php:918
 msgid "Label Placement"
 msgstr ""
 
@@ -5124,11 +5149,12 @@ msgid "Layout Settings"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:846
-#: app/Modules/Registerer/TranslationString.php:1106
+#: app/Modules/Registerer/TranslationString.php:1105
 msgid "Layout Type"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:193
+#: app/Modules/Registerer/TranslationString.php:1287
 msgid "Learn More"
 msgstr ""
 
@@ -5140,7 +5166,7 @@ msgstr ""
 msgid "Leave a Review"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1452
+#: app/Modules/Registerer/TranslationString.php:1454
 msgid "Leave blank for applicable for all payments forms"
 msgstr ""
 
@@ -5148,6 +5174,8 @@ msgstr ""
 msgid "Lebanon"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:71
+#: app/Services/FormBuilder/ElementCustomization.php:215
 #: app/Modules/Registerer/TranslationString.php:748
 #: app/Modules/Widgets/FluentFormWidget.php:215
 #: app/Modules/Widgets/FluentFormWidget.php:454
@@ -5155,8 +5183,6 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:868
 #: app/Modules/Widgets/FluentFormWidget.php:1302
 #: app/Modules/Widgets/FluentFormWidget.php:2069
-#: app/Services/FormBuilder/ElementCustomization.php:71
-#: app/Services/FormBuilder/ElementCustomization.php:215
 msgid "Left"
 msgstr ""
 
@@ -5180,11 +5206,11 @@ msgstr ""
 msgid "Lesotho"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1086
+#: app/Modules/Registerer/TranslationString.php:1085
 msgid "less than"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1088
+#: app/Modules/Registerer/TranslationString.php:1087
 msgid "less than or equal"
 msgstr ""
 
@@ -5201,7 +5227,7 @@ msgstr ""
 msgid "Let's see how your forms performed in the last %d days."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1524
+#: app/Modules/Registerer/TranslationString.php:1526
 msgid "Letter Spacing"
 msgstr ""
 
@@ -5221,8 +5247,12 @@ msgstr ""
 msgid "like the user to be redirected to after "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1523
+#: app/Modules/Registerer/TranslationString.php:1525
 msgid "Line Height"
+msgstr ""
+
+#: app/Views/email/failedIntegration/body.php:146
+msgid "Link"
 msgstr ""
 
 #: app/Modules/Widgets/OxyFluentFormWidget.php:402
@@ -5247,7 +5277,7 @@ msgstr ""
 msgid "Live Mode"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1498
+#: app/Modules/Registerer/TranslationString.php:1500
 msgid "Live Publishable key"
 msgstr ""
 
@@ -5279,9 +5309,13 @@ msgstr ""
 msgid "Loading Settings..."
 msgstr ""
 
-#: app/Modules/Component/Component.php:841
 #: app/Views/public/conversational-form.php:128
+#: app/Modules/Component/Component.php:810
 msgid "Loading..."
+msgstr ""
+
+#: app/Views/email/failedIntegration/body.php:145
+msgid "Log"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:257
@@ -5411,27 +5445,27 @@ msgstr ""
 msgid "Malta"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:266
+#: app/Modules/Acl/Acl.php:255
 msgid "Manage Entries"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:254
+#: app/Modules/Acl/Acl.php:243
 msgid "Manage Forms"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:279
+#: app/Modules/Acl/Acl.php:268
 msgid "Manage Payments"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:285
+#: app/Modules/Acl/Acl.php:274
 msgid "Manage Settings"
 msgstr ""
 
-#: app/Modules/Acl/Managers.php:91 app/Services/Manager/ManagerService.php:104
+#: app/Services/Manager/ManagerService.php:104 app/Modules/Acl/Managers.php:91
 msgid "Manager has been removed."
 msgstr ""
 
-#: app/Modules/Acl/Managers.php:72 app/Services/Manager/ManagerService.php:75
+#: app/Services/Manager/ManagerService.php:75 app/Modules/Acl/Managers.php:72
 msgid "Manager has been saved."
 msgstr ""
 
@@ -5447,11 +5481,11 @@ msgstr ""
 msgid "Map Fields"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1287
+#: app/Modules/Component/Component.php:1258
 msgid "Mar"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1301
+#: app/Modules/Component/Component.php:1272
 msgid "March"
 msgstr ""
 
@@ -5595,8 +5629,8 @@ msgstr ""
 msgid "Maximum value is "
 msgstr ""
 
-#: app/Modules/Component/Component.php:1289
-#: app/Modules/Component/Component.php:1303
+#: app/Modules/Component/Component.php:1260
+#: app/Modules/Component/Component.php:1274
 msgid "May"
 msgstr ""
 
@@ -5624,7 +5658,7 @@ msgstr ""
 msgid "Media Horizontal Position"
 msgstr ""
 
-#: app/Helpers/Helper.php:568
+#: app/Helpers/Helper.php:601
 msgid "Media Library"
 msgstr ""
 
@@ -5704,17 +5738,23 @@ msgid ""
 "previously imported forms and entries will be reset and updated again."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1365
+#: app/Modules/Registerer/TranslationString.php:1367
 msgid ""
 "Migrate other plugins' forms into Fluent Forms with ease. Please note that "
 "previously imported forms and entries will be reset and updated again."
 msgstr ""
 
-#: app/Views/admin/tools/index.php:52
+#: app/Modules/Registerer/TranslationString.php:1286
+msgid ""
+"Migration tools only works if you have any other contact form plugin already "
+"installed along with Fluent Forms."
+msgstr ""
+
+#: app/Views/admin/tools/index.php:51
 msgid "Migrator"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1443
+#: app/Modules/Registerer/TranslationString.php:1445
 msgid "Min Purchase Amount"
 msgstr ""
 
@@ -5723,11 +5763,11 @@ msgstr ""
 msgid "Min Value"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1069
+#: app/Modules/Registerer/TranslationString.php:1068
 msgid "Min-Width"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1046
+#: app/Modules/Registerer/TranslationString.php:1045
 msgid "Minimum Amount"
 msgstr ""
 
@@ -5751,7 +5791,7 @@ msgstr ""
 msgid "Missing required fields."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1400
+#: app/Modules/Registerer/TranslationString.php:1402
 msgid "mode"
 msgstr ""
 
@@ -5759,7 +5799,7 @@ msgstr ""
 msgid "Moldova"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1325
+#: app/Modules/Component/Component.php:1296
 msgid "Mon"
 msgstr ""
 
@@ -5768,7 +5808,7 @@ msgid "Monaco"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:713
-#: app/Modules/Component/Component.php:1316
+#: app/Modules/Component/Component.php:1287
 msgid "Monday"
 msgstr ""
 
@@ -5809,7 +5849,7 @@ msgstr ""
 msgid "Multiple Choice"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1035
+#: app/Modules/Registerer/TranslationString.php:1034
 msgid "Multiple Pricing Plans"
 msgstr ""
 
@@ -5850,14 +5890,14 @@ msgstr ""
 msgid "Nepal"
 msgstr ""
 
-#: app/Modules/Component/Component.php:353
 #: app/Services/Form/FormService.php:439
 #: app/Services/FormBuilder/DefaultElements.php:1411
+#: app/Modules/Component/Component.php:353
 msgid "Net Promoter Score"
 msgstr ""
 
-#: app/Modules/Component/Component.php:354
 #: app/Services/Form/FormService.php:440
+#: app/Modules/Component/Component.php:354
 msgid ""
 "Net Promoter Score is not available with the free version. Please upgrade to "
 "pro to get all the advanced features."
@@ -5875,8 +5915,8 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:401 app/Modules/Registerer/Menu.php:402
-#: app/Modules/Registerer/AdminBar.php:137
+#: app/Modules/Registerer/AdminBar.php:143 app/Modules/Registerer/Menu.php:401
+#: app/Modules/Registerer/Menu.php:402
 msgid "New Form"
 msgstr ""
 
@@ -5892,13 +5932,13 @@ msgstr ""
 msgid "New Zealand"
 msgstr ""
 
+#: app/Services/FormBuilder/DefaultElements.php:1121
 #: app/Modules/Registerer/TranslationString.php:47
 #: app/Modules/Registerer/TranslationString.php:1171
-#: app/Services/FormBuilder/DefaultElements.php:1121
 msgid "Next"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1296
+#: app/Modules/Registerer/TranslationString.php:1298
 msgid "Next "
 msgstr ""
 
@@ -5906,7 +5946,7 @@ msgstr ""
 msgid "Next Button"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1282
+#: app/Modules/Component/Component.php:1253
 msgid "Next Month"
 msgstr ""
 
@@ -5930,15 +5970,15 @@ msgstr ""
 msgid "Niue"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1077
-#: app/Modules/Widgets/FluentFormWidget.php:114
-#: app/Modules/Widgets/FluentFormWidget.php:953
 #: app/Services/FormBuilder/ElementCustomization.php:243
 #: app/Services/FormBuilder/ElementCustomization.php:584
 #: app/Services/FormBuilder/ValidationRuleSettings.php:78
 #: app/Services/FormBuilder/ValidationRuleSettings.php:93
 #: app/Services/FormBuilder/ValidationRuleSettings.php:108
 #: app/Services/FormBuilder/ValidationRuleSettings.php:123
+#: app/Modules/Registerer/TranslationString.php:1076
+#: app/Modules/Widgets/FluentFormWidget.php:114
+#: app/Modules/Widgets/FluentFormWidget.php:953
 msgid "No"
 msgstr ""
 
@@ -5946,12 +5986,12 @@ msgstr ""
 msgid "No - Conflict Mode"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1105
+#: app/Modules/Registerer/TranslationString.php:1104
 msgid ""
 "No Active Payment Method Found. Please configure from Fluent Forms Settings"
 msgstr ""
 
-#: app/Modules/Component/Component.php:842
+#: app/Modules/Component/Component.php:811
 msgid "No choices to choose from"
 msgstr ""
 
@@ -5965,7 +6005,7 @@ msgstr ""
 msgid "No entry found."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1371
+#: app/Modules/Registerer/TranslationString.php:1373
 msgid "No Forms Found"
 msgstr ""
 
@@ -5977,6 +6017,7 @@ msgstr ""
 msgid "No Headers"
 msgstr ""
 
+#: app/Modules/Registerer/TranslationString.php:77
 #: app/Modules/Registerer/TranslationString.php:1201
 msgid "No Logs found"
 msgstr ""
@@ -5986,11 +6027,11 @@ msgstr ""
 msgid "No Notes found"
 msgstr ""
 
-#: app/Modules/Component/Component.php:840
+#: app/Modules/Component/Component.php:809
 msgid "No results found"
 msgstr ""
 
-#: app/Services/Logger/Logger.php:230
+#: app/Services/Logger/Logger.php:245
 msgid "No selections found"
 msgstr ""
 
@@ -6000,19 +6041,19 @@ msgid ""
 "Forms"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1405
+#: app/Modules/Registerer/TranslationString.php:1407
 msgid "No, Thanks"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:623 app/Modules/Acl/Acl.php:226
-#: app/Services/Form/FormValidationService.php:373
+#: app/Services/Form/FormValidationService.php:361
+#: app/Modules/Form/FormHandler.php:615 app/Modules/Acl/Acl.php:226
 msgid "Nonce verification failed, please try again."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:995
 #: app/Services/FormBuilder/ElementCustomization.php:292
 #: app/Services/FormBuilder/ElementCustomization.php:315
 #: app/Services/FormBuilder/ElementCustomization.php:470
+#: app/Modules/Registerer/TranslationString.php:995
 msgid "None"
 msgstr ""
 
@@ -6034,7 +6075,7 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1059
+#: app/Modules/Registerer/TranslationString.php:1058
 msgid "Normal State"
 msgstr ""
 
@@ -6050,7 +6091,7 @@ msgstr ""
 msgid "Norway"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1084
+#: app/Modules/Registerer/TranslationString.php:1083
 msgid "not equal"
 msgstr ""
 
@@ -6058,7 +6099,7 @@ msgstr ""
 msgid "Not Includes"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1090
+#: app/Modules/Registerer/TranslationString.php:1089
 msgid "not includes"
 msgstr ""
 
@@ -6067,8 +6108,8 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:678
 #: app/Services/Submission/SubmissionService.php:468
+#: app/Modules/Entries/Entries.php:678
 msgid "Note has been successfully added"
 msgstr ""
 
@@ -6095,11 +6136,15 @@ msgstr ""
 msgid "notification email sent from."
 msgstr ""
 
-#: app/Modules/Component/Component.php:1295
+#: app/Modules/AddOnModule.php:403
+msgid "Notion"
+msgstr ""
+
+#: app/Modules/Component/Component.php:1266
 msgid "Nov"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1309
+#: app/Modules/Component/Component.php:1280
 msgid "November"
 msgstr ""
 
@@ -6117,11 +6162,11 @@ msgstr ""
 msgid "Numeric Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1294
+#: app/Modules/Component/Component.php:1265
 msgid "Oct"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1308
+#: app/Modules/Component/Component.php:1279
 msgid "October"
 msgstr ""
 
@@ -6129,7 +6174,7 @@ msgstr ""
 msgid "Odd Item Background Color"
 msgstr ""
 
-#: app/Services/FormBuilder/ShortCodeParser.php:329
+#: app/Services/FormBuilder/ShortCodeParser.php:330
 msgid "Offline"
 msgstr ""
 
@@ -6149,7 +6194,7 @@ msgstr ""
 msgid "One Column Container"
 msgstr ""
 
-#: app/Modules/Component/Component.php:844
+#: app/Modules/Component/Component.php:813
 #, php-format
 msgid "Only %%maxItemCount%% options can be added"
 msgstr ""
@@ -6206,7 +6251,7 @@ msgstr ""
 msgid "Other Confirmations"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1007
+#: app/Modules/Registerer/TranslationString.php:1006
 msgid "Other Countries Label"
 msgstr ""
 
@@ -6269,11 +6314,11 @@ msgstr ""
 msgid "Page Load"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1408
+#: app/Modules/Registerer/TranslationString.php:1410
 msgid "Page Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1454
+#: app/Modules/Registerer/TranslationString.php:1456
 msgid "Pages & Subscription Management"
 msgstr ""
 
@@ -6313,7 +6358,7 @@ msgstr ""
 msgid "Paraguay"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1288
+#: app/Modules/Registerer/TranslationString.php:1290
 msgid "Partial Entries"
 msgstr ""
 
@@ -6334,8 +6379,8 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1026
 #: app/Services/FormBuilder/EditorShortCode.php:82
+#: app/Modules/Registerer/TranslationString.php:1025
 msgid "Payment Amount"
 msgstr ""
 
@@ -6343,13 +6388,13 @@ msgstr ""
 msgid "Payment Details"
 msgstr ""
 
-#: app/Modules/Component/Component.php:382
 #: app/Services/Form/FormService.php:468
+#: app/Modules/Component/Component.php:382
 msgid "Payment Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:383
 #: app/Services/Form/FormService.php:469
+#: app/Modules/Component/Component.php:383
 msgid ""
 "Payment Field is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
@@ -6375,27 +6420,27 @@ msgstr ""
 msgid "Payment Items"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1415
+#: app/Modules/Registerer/TranslationString.php:1417
 msgid "Payment Management Page"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1146
-#: app/Modules/Component/Component.php:414
 #: app/Services/Form/FormService.php:500
 #: app/Services/FormBuilder/EditorShortCode.php:79
 #: app/Services/FormBuilder/EditorShortCode.php:102
 #: app/Services/FormBuilder/DefaultElements.php:1564
+#: app/Modules/Registerer/TranslationString.php:1146
+#: app/Modules/Component/Component.php:414
 msgid "Payment Method"
 msgstr ""
 
-#: app/Modules/Component/Component.php:415
 #: app/Services/Form/FormService.php:501
+#: app/Modules/Component/Component.php:415
 msgid ""
 "Payment Method is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1388
+#: app/Modules/Registerer/TranslationString.php:1390
 msgid "Payment Methods"
 msgstr ""
 
@@ -6403,7 +6448,7 @@ msgstr ""
 msgid "Payment Mode"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1474
+#: app/Modules/Registerer/TranslationString.php:1476
 msgid ""
 "Payment Module has been disabled currently.No Payments will be processed and "
 "associate functions will be disabled"
@@ -6413,7 +6458,7 @@ msgstr ""
 msgid "Payment Receipt"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1419
+#: app/Modules/Registerer/TranslationString.php:1421
 msgid "Payment Receipt Page"
 msgstr ""
 
@@ -6421,35 +6466,35 @@ msgstr ""
 msgid "Payment Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1145
 #: app/Services/FormBuilder/EditorShortCode.php:80
 #: app/Services/FormBuilder/EditorShortCode.php:100
+#: app/Modules/Registerer/TranslationString.php:1145
 msgid "Payment Status"
 msgstr ""
 
-#: app/Modules/Component/Component.php:422
 #: app/Services/Form/FormService.php:508
 #: app/Services/FormBuilder/EditorShortCode.php:98
 #: app/Services/FormBuilder/DefaultElements.php:1575
+#: app/Modules/Component/Component.php:422
 msgid "Payment Summary"
 msgstr ""
 
-#: app/Modules/Component/Component.php:423
 #: app/Services/Form/FormService.php:509
+#: app/Modules/Component/Component.php:423
 msgid ""
 "Payment Summary is not available with the free version. Please upgrade to "
 "pro to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1258
 #: app/Services/FormBuilder/EditorShortCode.php:101
+#: app/Modules/Registerer/TranslationString.php:1258
 #: app/Views/email/report/body.php:173
 msgid "Payment Total"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:443 app/Modules/Registerer/Menu.php:444
-#: app/Modules/Registerer/AdminBar.php:160 app/Views/admin/global_menu.php:32
-#: app/Views/admin/global_menu.php:56 app/Views/email/report/body.php:168
+#: app/Views/admin/global_menu.php:32 app/Views/admin/global_menu.php:56
+#: app/Modules/Registerer/AdminBar.php:166 app/Modules/Registerer/Menu.php:443
+#: app/Modules/Registerer/Menu.php:444 app/Views/email/report/body.php:168
 msgid "Payments"
 msgstr ""
 
@@ -6461,23 +6506,23 @@ msgstr ""
 msgid "PayPal Account"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1481
+#: app/Modules/Registerer/TranslationString.php:1483
 msgid "PayPal Email"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1482
+#: app/Modules/Registerer/TranslationString.php:1484
 msgid "Paypal Email Address"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1491
+#: app/Modules/Registerer/TranslationString.php:1493
 msgid "PayPal IPN"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1486
+#: app/Modules/Registerer/TranslationString.php:1488
 msgid "PayPal IPN Settings(Recommended for Subscription Payment)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1478
+#: app/Modules/Registerer/TranslationString.php:1480
 msgid "PayPal Payment Mode"
 msgstr ""
 
@@ -6505,7 +6550,7 @@ msgstr ""
 msgid "PDF Feeds"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1345
+#: app/Modules/Registerer/TranslationString.php:1347
 msgid "pending"
 msgstr ""
 
@@ -6533,7 +6578,7 @@ msgstr ""
 msgid "Per Year"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1440
+#: app/Modules/Registerer/TranslationString.php:1442
 msgid "Percent based discount"
 msgstr ""
 
@@ -6565,8 +6610,8 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: app/Modules/Component/Component.php:319
 #: app/Services/Form/FormService.php:405
+#: app/Modules/Component/Component.php:319
 msgid ""
 "Phone Field is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -6576,7 +6621,7 @@ msgstr ""
 msgid "Phone number is not valid"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1014
+#: app/Modules/Registerer/TranslationString.php:1013
 msgid "Photo"
 msgstr ""
 
@@ -6584,18 +6629,18 @@ msgstr ""
 msgid "Pitcairn"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:105
 #: app/Modules/Registerer/TranslationString.php:984
 #: app/Modules/Widgets/FluentFormWidget.php:159
 #: app/Modules/Widgets/FluentFormWidget.php:912
-#: app/Services/FormBuilder/ElementCustomization.php:105
 msgid "Placeholder"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1036
+#: app/Modules/Registerer/TranslationString.php:1035
 msgid "Plan Display Type"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1041
+#: app/Modules/Registerer/TranslationString.php:1040
 msgid "Plan Name"
 msgstr ""
 
@@ -6620,11 +6665,11 @@ msgstr ""
 msgid "Please don't include "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1506
+#: app/Modules/Registerer/TranslationString.php:1508
 msgid "Please enable the following Webhook events for this URL:"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1423
+#: app/Modules/Registerer/TranslationString.php:1425
 msgid ""
 "Please enable this if you enable users to manage their own subscriptions "
 "like cancel an active subscription."
@@ -6634,23 +6679,23 @@ msgstr ""
 msgid "Please enter a valid API key on FluentForms->Settings"
 msgstr ""
 
+#: app/Services/Form/FormService.php:334
 #: app/Modules/Registerer/TranslationString.php:971
 #: app/Modules/Component/Component.php:248
-#: app/Services/Form/FormService.php:334
 msgid "Please enter a valid API key on FluentForms->Settings->hCaptcha"
 msgstr ""
 
-#: app/Modules/Component/Component.php:242
 #: app/Services/Form/FormService.php:328
+#: app/Modules/Component/Component.php:242
 msgid "Please enter a valid API key on FluentForms->Settings->reCaptcha"
 msgstr ""
 
-#: app/Modules/Component/Component.php:254
 #: app/Services/Form/FormService.php:340
+#: app/Modules/Component/Component.php:254
 msgid "Please enter a valid API key on FluentForms->Settings->Turnstile"
 msgstr ""
 
-#: app/Services/FluentConversational/Classes/Converter/Converter.php:389
+#: app/Services/FluentConversational/Classes/Converter/Converter.php:457
 msgid ""
 "Please enter a valid value. The two nearest valid values are {lower_value} "
 "and {upper_value}"
@@ -6668,7 +6713,7 @@ msgstr ""
 msgid "Please generate API key and API secret using reCAPTCHA"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1101
+#: app/Modules/Registerer/TranslationString.php:1100
 msgid "Please input a remote csv url..."
 msgstr ""
 
@@ -6735,15 +6780,15 @@ msgid ""
 "floating value"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1029
+#: app/Modules/Registerer/TranslationString.php:1028
 msgid "Please Provide the Amount Label"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1027
+#: app/Modules/Registerer/TranslationString.php:1026
 msgid "Please provide the payment amount. Max 2 decimal point is excepted"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1019
+#: app/Modules/Registerer/TranslationString.php:1018
 msgid ""
 "Please provide the value as LABEL:VALUE as each line or select from "
 "predefined data sets"
@@ -6753,13 +6798,13 @@ msgstr ""
 msgid "Please provide your "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1458
+#: app/Modules/Registerer/TranslationString.php:1460
 msgid ""
 "Please provide your business name.It will be used to paypal's business name "
 "when redirect to checkout."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1460
+#: app/Modules/Registerer/TranslationString.php:1462
 msgid ""
 "Please provide your full business address including street, city, zip, state "
 "and country."
@@ -6770,30 +6815,29 @@ msgid ""
 "Please provide your raw html that you want to show at the side of the form"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1010
+#: app/Modules/Registerer/TranslationString.php:1009
 msgid "Please provider the value as LABEL:VALUE as each line."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1410
+#: app/Modules/Registerer/TranslationString.php:1412
 msgid "Please read the documentation"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1489
+#: app/Modules/Registerer/TranslationString.php:1491
 msgid "Please read the documentation "
 msgstr ""
 
 #: app/Views/admin/docs/index.php:140
 msgid ""
-"Please report us and we promise we will fix that as soon as humanly possible "
-"Report An Issue"
+"Please report us and we promise we will fix that as soon as humanly possible."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:558
 msgid "Please Select a Template"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:877
 #: app/Services/Submission/SubmissionService.php:247
+#: app/Modules/Entries/Entries.php:877
 msgid "Please select entries first"
 msgstr ""
 
@@ -6848,18 +6892,18 @@ msgstr ""
 msgid "Please update Fluent Forms Pro to latest version"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:216
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:126
+#: app/Modules/Settings/Settings.php:216
 msgid "Please validate your hCaptcha first and then hit save."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:153
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:63
+#: app/Modules/Settings/Settings.php:153
 msgid "Please validate your reCAPTCHA first and then hit save."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:283
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:193
+#: app/Modules/Settings/Settings.php:283
 msgid "Please validate your Turnstile first and then hit save."
 msgstr ""
 
@@ -6867,7 +6911,7 @@ msgstr ""
 msgid "Please write the error message if the form submission get invalid."
 msgstr ""
 
-#: app/Modules/Component/Component.php:1353
+#: app/Modules/Component/Component.php:1324
 msgid "PM"
 msgstr ""
 
@@ -6884,7 +6928,7 @@ msgstr ""
 msgid "Portugal"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1517
+#: app/Modules/Registerer/TranslationString.php:1519
 msgid "Position"
 msgstr ""
 
@@ -6920,14 +6964,14 @@ msgstr ""
 msgid "Post Type"
 msgstr ""
 
-#: app/Modules/Component/Component.php:339
 #: app/Services/Form/FormService.php:425
 #: app/Services/FormBuilder/DefaultElements.php:1435
+#: app/Modules/Component/Component.php:339
 msgid "Post/CPT Selection"
 msgstr ""
 
-#: app/Modules/Component/Component.php:340
 #: app/Services/Form/FormService.php:426
+#: app/Modules/Component/Component.php:340
 msgid ""
 "Post/CPT Selection is not available with the free version. Please upgrade to "
 "pro to get all the advanced features."
@@ -6945,22 +6989,26 @@ msgstr ""
 msgid "press "
 msgstr ""
 
-#: app/Modules/Component/Component.php:843
+#: app/Modules/Component/Component.php:812
 msgid "Press to select"
 msgstr ""
 
+#: app/Modules/Registerer/Menu.php:1061
 #: app/Modules/Registerer/TranslationString.php:20
-#: app/Modules/Registerer/Menu.php:1052
 msgid "Preview"
+msgstr ""
+
+#: app/Modules/Registerer/Menu.php:1058
+msgid "Preview & Design"
 msgstr ""
 
 #: app/Views/frameless/edit-entry.php:8 app/Views/frameless/show_preview.php:8
 msgid "Preview Form"
 msgstr ""
 
+#: app/Services/FormBuilder/DefaultElements.php:1116
 #: app/Modules/Registerer/TranslationString.php:46
 #: app/Modules/Registerer/TranslationString.php:1172
-#: app/Services/FormBuilder/DefaultElements.php:1116
 msgid "Previous"
 msgstr ""
 
@@ -6968,11 +7016,11 @@ msgstr ""
 msgid "Previous Button"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1281
+#: app/Modules/Component/Component.php:1252
 msgid "Previous Month"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1030
+#: app/Modules/Registerer/TranslationString.php:1029
 #: app/Modules/Registerer/TranslationString.php:1245
 msgid "Price"
 msgstr ""
@@ -6981,11 +7029,11 @@ msgstr ""
 msgid "Price: $"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1040
+#: app/Modules/Registerer/TranslationString.php:1039
 msgid "Pricing Plans"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1006
+#: app/Modules/Registerer/TranslationString.php:1005
 msgid "Primary Countries Label"
 msgstr ""
 
@@ -7005,7 +7053,7 @@ msgstr ""
 msgid "Proceed/Fail form submission if"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1346
+#: app/Modules/Registerer/TranslationString.php:1348
 msgid "processing"
 msgstr ""
 
@@ -7017,7 +7065,7 @@ msgstr ""
 msgid "product"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1020
+#: app/Modules/Registerer/TranslationString.php:1019
 msgid "Product Display Type"
 msgstr ""
 
@@ -7025,8 +7073,8 @@ msgstr ""
 msgid "Products / Services"
 msgstr ""
 
-#: app/Modules/Widgets/OxyFluentFormWidget.php:771
 #: app/Services/FormBuilder/ElementCustomization.php:284
+#: app/Modules/Widgets/OxyFluentFormWidget.php:771
 msgid "Progress Bar"
 msgstr ""
 
@@ -7066,7 +7114,7 @@ msgid ""
 "will be set.(Contains between 5 and 22 characters)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1468
+#: app/Modules/Registerer/TranslationString.php:1470
 msgid ""
 "Provide your default currency.You can also change your currency to each form "
 "in form's payment settings"
@@ -7104,14 +7152,14 @@ msgstr ""
 msgid "Quiz Questions"
 msgstr ""
 
-#: app/Modules/Component/Component.php:346
 #: app/Services/Form/FormService.php:432
 #: app/Services/FormBuilder/DefaultElements.php:1423
+#: app/Modules/Component/Component.php:346
 msgid "Quiz Score"
 msgstr ""
 
-#: app/Modules/Component/Component.php:347
 #: app/Services/Form/FormService.php:433
+#: app/Modules/Component/Component.php:347
 msgid ""
 "Quiz Score is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -7122,6 +7170,7 @@ msgid "Quiz Settings"
 msgstr ""
 
 #: app/Services/FormBuilder/ElementCustomization.php:519
+#: app/Modules/Registerer/TranslationString.php:1022
 msgid "Radio"
 msgstr ""
 
@@ -7139,41 +7188,37 @@ msgstr ""
 msgid "Radio Field"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1038
+#: app/Modules/Registerer/TranslationString.php:1037
 msgid "Radio input field"
-msgstr ""
-
-#: app/Modules/Registerer/TranslationString.php:1023
-msgid "Radio Selection"
 msgstr ""
 
 #: app/Services/FormBuilder/EditorShortCode.php:32
 msgid "Random String with Prefix"
 msgstr ""
 
-#: app/Modules/Component/Component.php:367
 #: app/Services/Form/FormService.php:453
 #: app/Services/FormBuilder/DefaultElements.php:1495
+#: app/Modules/Component/Component.php:367
 msgid "Range Slider"
 msgstr ""
 
-#: app/Modules/Component/Component.php:368
 #: app/Services/Form/FormService.php:454
+#: app/Modules/Component/Component.php:368
 msgid ""
 "Range Slider is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Component/Component.php:297
 #: app/Services/Form/FormService.php:383
 #: app/Services/FormBuilder/DefaultElements.php:976
 #: app/Services/FormBuilder/DefaultElements.php:998
+#: app/Modules/Component/Component.php:297
 #: app/Services/Migrator/Classes/BaseMigrator.php:977
 msgid "Ratings"
 msgstr ""
 
-#: app/Modules/Component/Component.php:298
 #: app/Services/Form/FormService.php:384
+#: app/Modules/Component/Component.php:298
 msgid ""
 "Ratings is not available with the free version. Please upgrade to pro to get "
 "all the advanced features."
@@ -7199,9 +7244,9 @@ msgstr ""
 msgid "Read Only"
 msgstr ""
 
-#: app/Modules/Component/Component.php:241
 #: app/Services/Form/FormService.php:327
 #: app/Services/FormBuilder/DefaultElements.php:1199
+#: app/Modules/Component/Component.php:241
 #: app/Services/Migrator/Classes/BaseMigrator.php:1115
 msgid "reCaptcha"
 msgstr ""
@@ -7218,8 +7263,8 @@ msgstr ""
 msgid "reCAPTCHA Site Key"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:720
-#: app/Services/Form/FormValidationService.php:471
+#: app/Services/Form/FormValidationService.php:459
+#: app/Modules/Form/FormHandler.php:712
 msgid "reCaptcha verification failed, please try again."
 msgstr ""
 
@@ -7243,7 +7288,7 @@ msgstr ""
 msgid "Recommended settings: Enabled"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1414
+#: app/Modules/Registerer/TranslationString.php:1416
 msgid "Recurring Payments"
 msgstr ""
 
@@ -7284,7 +7329,7 @@ msgid "Reference ID"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1261
-#: app/Modules/Registerer/TranslationString.php:1391
+#: app/Modules/Registerer/TranslationString.php:1393
 msgid "Refund"
 msgstr ""
 
@@ -7296,7 +7341,7 @@ msgstr ""
 msgid "Regex Match"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1093
+#: app/Modules/Registerer/TranslationString.php:1092
 msgid "Regex match"
 msgstr ""
 
@@ -7304,7 +7349,7 @@ msgstr ""
 msgid "Related Payments"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1098
+#: app/Modules/Registerer/TranslationString.php:1097
 msgid "Remote URL"
 msgstr ""
 
@@ -7333,14 +7378,14 @@ msgstr ""
 msgid "Reorder Column"
 msgstr ""
 
-#: app/Modules/Component/Component.php:360
 #: app/Services/Form/FormService.php:446
 #: app/Services/FormBuilder/DefaultElements.php:1484
+#: app/Modules/Component/Component.php:360
 msgid "Repeat Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:361
 #: app/Services/Form/FormService.php:447
+#: app/Modules/Component/Component.php:361
 msgid ""
 "Repeat Field is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
@@ -7466,20 +7511,22 @@ msgstr ""
 msgid "Reunion"
 msgstr ""
 
-#: app/Modules/Component/Component.php:325
 #: app/Services/Form/FormService.php:411
 #: app/Services/FormBuilder/DefaultElements.php:1460
+#: app/Modules/Component/Component.php:325
 #: app/Services/Migrator/Classes/BaseMigrator.php:1387
 msgid "Rich Text Input"
 msgstr ""
 
-#: app/Modules/Component/Component.php:326
 #: app/Services/Form/FormService.php:412
+#: app/Modules/Component/Component.php:326
 msgid ""
 "Rich Text Input is not available with the free version. Please upgrade to "
 "pro to get all the advanced features."
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:63
+#: app/Services/FormBuilder/ElementCustomization.php:223
 #: app/Modules/Registerer/TranslationString.php:749
 #: app/Modules/Widgets/FluentFormWidget.php:223
 #: app/Modules/Widgets/FluentFormWidget.php:462
@@ -7487,8 +7534,6 @@ msgstr ""
 #: app/Modules/Widgets/FluentFormWidget.php:876
 #: app/Modules/Widgets/FluentFormWidget.php:1310
 #: app/Modules/Widgets/FluentFormWidget.php:2077
-#: app/Services/FormBuilder/ElementCustomization.php:63
-#: app/Services/FormBuilder/ElementCustomization.php:223
 msgid "Right"
 msgstr ""
 
@@ -7586,16 +7631,16 @@ msgstr ""
 msgid "San Marino"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1480
+#: app/Modules/Registerer/TranslationString.php:1482
 msgid "Sandbox Mode"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1330
+#: app/Modules/Component/Component.php:1301
 msgid "Sat"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:718
-#: app/Modules/Component/Component.php:1321
+#: app/Modules/Component/Component.php:1292
 msgid "Saturday"
 msgstr ""
 
@@ -7609,20 +7654,20 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/Modules/Component/Component.php:332
 #: app/Services/Form/FormService.php:418
 #: app/Services/FormBuilder/DefaultElements.php:1448
+#: app/Modules/Component/Component.php:332
 msgid "Save & Resume"
 msgstr ""
 
-#: app/Modules/Component/Component.php:333
 #: app/Services/Form/FormService.php:419
+#: app/Modules/Component/Component.php:333
 msgid ""
 "Save & Resume is not available with the free version. Please upgrade to pro "
 "to get all the advanced features."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1453
+#: app/Modules/Registerer/TranslationString.php:1455
 msgid "Save Coupon"
 msgstr ""
 
@@ -7642,19 +7687,19 @@ msgstr ""
 msgid "Save Notification"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1485
+#: app/Modules/Registerer/TranslationString.php:1487
 msgid "Save PayPal Settings"
 msgstr ""
 
+#: app/Services/Integrations/GlobalIntegrationService.php:44
+#: app/Services/Integrations/GlobalIntegrationManager.php:60
 #: app/Modules/Registerer/TranslationString.php:627
 #: app/Modules/Registerer/TranslationString.php:897
-#: app/Services/Integrations/GlobalIntegrationManager.php:60
-#: app/Services/Integrations/GlobalIntegrationService.php:44
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:48
 msgid "Save Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1499
+#: app/Modules/Registerer/TranslationString.php:1501
 msgid "Save Stripe Settings"
 msgstr ""
 
@@ -7679,7 +7724,7 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1349
+#: app/Modules/Component/Component.php:1320
 msgid "Scroll to increment"
 msgstr ""
 
@@ -7712,7 +7757,7 @@ msgstr ""
 msgid "Search Integration"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1321
+#: app/Modules/Registerer/TranslationString.php:1323
 msgid "Search Modules"
 msgstr ""
 
@@ -7728,10 +7773,10 @@ msgstr ""
 msgid "Secret key"
 msgstr ""
 
-#: app/Modules/Widgets/OxyFluentFormWidget.php:414
-#: app/Modules/Widgets/FluentFormWidget.php:1181
 #: app/Services/FormBuilder/DefaultElements.php:1064
 #: app/Services/FormBuilder/DefaultElements.php:1070
+#: app/Modules/Widgets/OxyFluentFormWidget.php:414
+#: app/Modules/Widgets/FluentFormWidget.php:1181
 #: app/Services/Migrator/Classes/BaseMigrator.php:912
 msgid "Section Break"
 msgstr ""
@@ -7760,7 +7805,7 @@ msgstr ""
 msgid "see on the confirmation page when redirecting."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1000
+#: app/Modules/Registerer/TranslationString.php:1024
 msgid "Select"
 msgstr ""
 
@@ -7776,7 +7821,7 @@ msgstr ""
 msgid "Select a Field or Type Custom value"
 msgstr ""
 
-#: app/Helpers/Helper.php:598
+#: app/Helpers/Helper.php:631
 msgid "Select a Fluent Forms"
 msgstr ""
 
@@ -7819,11 +7864,11 @@ msgid ""
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1125
-#: app/Modules/Registerer/TranslationString.php:1377
+#: app/Modules/Registerer/TranslationString.php:1379
 msgid "Select bulk action"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1337
+#: app/Modules/Registerer/TranslationString.php:1339
 msgid "Select Component"
 msgstr ""
 
@@ -7848,8 +7893,8 @@ msgstr ""
 msgid "Select date and time"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1058
 #: app/Services/FormBuilder/ElementCustomization.php:113
+#: app/Modules/Registerer/TranslationString.php:1057
 msgid "Select Date Format"
 msgstr ""
 
@@ -7861,11 +7906,7 @@ msgstr ""
 msgid "Select Field"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1025
-msgid "Select Fields"
-msgstr ""
-
-#: app/Modules/Registerer/TranslationString.php:1359
+#: app/Modules/Registerer/TranslationString.php:1361
 msgid "Select File"
 msgstr ""
 
@@ -7873,7 +7914,7 @@ msgstr ""
 msgid "Select Font will apply only for landing page UI."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1387
+#: app/Modules/Registerer/TranslationString.php:1389
 msgid "Select Form"
 msgstr ""
 
@@ -7885,7 +7926,7 @@ msgstr ""
 msgid "Select Form Field"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1354
+#: app/Modules/Registerer/TranslationString.php:1356
 msgid "Select Forms"
 msgstr ""
 
@@ -7893,7 +7934,7 @@ msgstr ""
 msgid "Select Header"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1037
+#: app/Modules/Registerer/TranslationString.php:1036
 msgid "Select how you want to display the plan options"
 msgstr ""
 
@@ -7903,7 +7944,7 @@ msgid ""
 "request."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1039
+#: app/Modules/Registerer/TranslationString.php:1038
 msgid "Select input field"
 msgstr ""
 
@@ -7919,7 +7960,7 @@ msgstr ""
 msgid "Select Mailchimp List"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1389
+#: app/Modules/Registerer/TranslationString.php:1391
 msgid "Select Method"
 msgstr ""
 
@@ -7935,7 +7976,7 @@ msgstr ""
 msgid "Select Post Type"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1338
+#: app/Modules/Registerer/TranslationString.php:1340
 msgid "Select Status"
 msgstr ""
 
@@ -7967,7 +8008,7 @@ msgstr ""
 msgid "Select the default label placement.Labels can be"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1358
+#: app/Modules/Registerer/TranslationString.php:1360
 msgid ""
 "Select the Fluent Forms export file(.json) you would like to import. When "
 "you click the import button below, Fluent Forms will import the forms."
@@ -7983,11 +8024,11 @@ msgid ""
 "option to use a comma or a dot as the decimal separator."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1356
+#: app/Modules/Registerer/TranslationString.php:1358
 msgid "Select the forms you would like to export."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1353
+#: app/Modules/Registerer/TranslationString.php:1355
 msgid ""
 "Select the forms you would like to export. When you click the download "
 "button below, Fluent Forms will create a JSON file for you to save to your "
@@ -8025,7 +8066,7 @@ msgid ""
 "otherwise select Live mode."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1479
+#: app/Modules/Registerer/TranslationString.php:1481
 msgid ""
 "Select the payment mode.for testing purposes you should select Sandbox Mode "
 "otherwise select Live mode."
@@ -8045,7 +8086,7 @@ msgstr ""
 msgid "Select the placement of help message."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1079
+#: app/Modules/Registerer/TranslationString.php:1078
 msgid ""
 "Select to match whether all rules are required or any. if the match success "
 "then the field will be shown"
@@ -8087,7 +8128,7 @@ msgstr ""
 msgid "Select whether to validate this field as URL or not"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1021
+#: app/Modules/Registerer/TranslationString.php:1020
 msgid ""
 "Select which display type you want for your payment item. Please provide "
 "valid number only"
@@ -8098,22 +8139,22 @@ msgid ""
 "Select with headers if any headers should be sent with the webhook request."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1033
+#: app/Modules/Registerer/TranslationString.php:1032
 msgid "Select your subscription plan type"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:903
 #: app/Services/Submission/SubmissionService.php:266
+#: app/Modules/Entries/Entries.php:903
 msgid "Selected entries successfully deleted"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:908
 #: app/Services/Submission/SubmissionService.php:272
+#: app/Modules/Entries/Entries.php:908
 msgid "Selected entries successfully marked as favorites"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:913
 #: app/Services/Submission/SubmissionService.php:278
+#: app/Modules/Entries/Entries.php:913
 msgid "Selected entries successfully removed from favorites"
 msgstr ""
 
@@ -8125,8 +8166,8 @@ msgstr ""
 msgid "Selected integration feed successfully deleted"
 msgstr ""
 
-#: app/Modules/Logger/DataLogger.php:294 app/Modules/Logger/DataLogger.php:315
-#: app/Services/Logger/Logger.php:241
+#: app/Services/Logger/Logger.php:256 app/Modules/Logger/DataLogger.php:294
+#: app/Modules/Logger/DataLogger.php:315
 msgid "Selected log(s) successfully deleted"
 msgstr ""
 
@@ -8134,8 +8175,8 @@ msgstr ""
 msgid "Selected submission successfully deleted Permanently"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:1113
 #: app/Services/Submission/SubmissionService.php:526
+#: app/Modules/Entries/Entries.php:1113
 msgid "Selected user has been successfully assigned to this submission"
 msgstr ""
 
@@ -8206,11 +8247,11 @@ msgstr ""
 msgid "sent from, or select the name from available name fields."
 msgstr ""
 
-#: app/Modules/Component/Component.php:1293
+#: app/Modules/Component/Component.php:1264
 msgid "Sep"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1307
+#: app/Modules/Component/Component.php:1278
 msgid "September"
 msgstr ""
 
@@ -8268,6 +8309,7 @@ msgstr ""
 msgid "Settings & Integrations"
 msgstr ""
 
+#: app/Hooks/Ajax.php:63 app/Hooks/Ajax.php:81
 #: app/Http/Controllers/FormSettingsController.php:33
 #: app/Http/Controllers/FormSettingsController.php:46
 #: app/Modules/Form/Settings/FormSettings.php:193
@@ -8325,11 +8367,11 @@ msgstr ""
 msgid "Short Code"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:375
-#: app/Modules/Component/Component.php:273
 #: app/Services/Form/FormService.php:359
 #: app/Services/FormBuilder/ElementCustomization.php:229
 #: app/Services/FormBuilder/DefaultElements.php:1249
+#: app/Modules/Registerer/TranslationString.php:375
+#: app/Modules/Component/Component.php:273
 msgid "Shortcode"
 msgstr ""
 
@@ -8341,8 +8383,8 @@ msgstr ""
 msgid "Shortcode for Conversational Form"
 msgstr ""
 
-#: app/Modules/Component/Component.php:274
 #: app/Services/Form/FormService.php:360
+#: app/Modules/Component/Component.php:274
 msgid ""
 "Shortcode is not available with the free version. Please upgrade to pro to "
 "get all the advanced features."
@@ -8438,7 +8480,7 @@ msgstr ""
 msgid "Sierra Leone"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1049
+#: app/Modules/Registerer/TranslationString.php:1048
 msgid "Signup Fee"
 msgstr ""
 
@@ -8450,11 +8492,11 @@ msgstr ""
 msgid "Singapore"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1022
-msgid "Single Item"
+#: app/Modules/Registerer/TranslationString.php:1021
+msgid "Single"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1034
+#: app/Modules/Registerer/TranslationString.php:1033
 msgid "Single Recurring Plan"
 msgstr ""
 
@@ -8564,8 +8606,7 @@ msgstr ""
 
 #: app/Http/Controllers/LogController.php:18
 #: app/Http/Controllers/LogController.php:32
-#: app/Http/Controllers/AnalyticsController.php:30
-#: app/Http/Controllers/AnalyticsController.php:44
+#: app/Http/Controllers/AnalyticsController.php:20
 msgid "Something went wrong, please try again!"
 msgstr ""
 
@@ -8583,13 +8624,13 @@ msgid ""
 "getting form submissions"
 msgstr ""
 
-#: app/Services/Integrations/GlobalIntegrationManager.php:55
 #: app/Services/Integrations/GlobalIntegrationService.php:34
+#: app/Services/Integrations/GlobalIntegrationManager.php:55
 msgid "Sorry! No integration failed found with: "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1492
-#: app/Modules/Registerer/TranslationString.php:1507
+#: app/Modules/Registerer/TranslationString.php:1494
+#: app/Modules/Registerer/TranslationString.php:1509
 msgid "Sorry! No settings found.Maybe your payment module is disabled!"
 msgstr ""
 
@@ -8597,12 +8638,12 @@ msgstr ""
 msgid "Sorry! you do not have permission to install plugin"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1326
+#: app/Modules/Registerer/TranslationString.php:1328
 msgid "Sorry!No modules found based on your filter"
 msgstr ""
 
-#: app/Http/Controllers/GlobalIntegrationController.php:54
 #: app/Services/Integrations/GlobalIntegrationManager.php:94
+#: app/Http/Controllers/GlobalIntegrationController.php:54
 msgid ""
 "Sorry, no Integration found. Please make sure that latest version of Fluent "
 "Forms pro installed"
@@ -8612,11 +8653,11 @@ msgstr ""
 msgid "Sorry, you are not allowed to access this page."
 msgstr ""
 
-#: app/Modules/Acl/RoleManager.php:52 app/Services/Roles/RolesService.php:40
+#: app/Services/Roles/RolesService.php:40 app/Modules/Acl/RoleManager.php:52
 msgid "Sorry, you can not give access to the Subscriber role."
 msgstr ""
 
-#: app/Modules/Acl/RoleManager.php:63 app/Services/Roles/RolesService.php:52
+#: app/Services/Roles/RolesService.php:52 app/Modules/Acl/RoleManager.php:63
 msgid ""
 "Sorry, You can not update permissions. Only administrators can update "
 "permissions"
@@ -8627,36 +8668,36 @@ msgstr ""
 msgid "Sorry, you cannot submit an empty form. Let's hear what you wanna say."
 msgstr ""
 
-#: boot/globals.php:305 app/Modules/Component/Component.php:492
+#: boot/globals.php:291 app/Modules/Component/Component.php:492
 msgid "Sorry, You do not have permission to view this form"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:213
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:123
+#: app/Modules/Settings/Settings.php:213
 msgid "Sorry, Your hCaptcha is not valid, Please try again"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:150
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:60
+#: app/Modules/Settings/Settings.php:150
 msgid "Sorry, Your reCAPTCHA is not valid. Please try again"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:279
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:189
+#: app/Modules/Settings/Settings.php:279
 msgid "Sorry, Your Turnstile Keys are not valid. Please try again!"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1336
+#: app/Modules/Registerer/TranslationString.php:1338
 msgid "Source"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1340
+#: app/Modules/Registerer/TranslationString.php:1342
 msgid "Source ID"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1179
-#: app/Modules/Registerer/TranslationString.php:1301
 #: app/Services/FormBuilder/EditorShortCode.php:66
+#: app/Modules/Registerer/TranslationString.php:1179
+#: app/Modules/Registerer/TranslationString.php:1303
 msgid "Source URL"
 msgstr ""
 
@@ -8699,7 +8740,7 @@ msgstr ""
 msgid "Specify the recipient of the weekly report. "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1516
+#: app/Modules/Registerer/TranslationString.php:1518
 msgid "Spread"
 msgstr ""
 
@@ -8707,7 +8748,7 @@ msgstr ""
 msgid "Sri Lanka"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1445
+#: app/Modules/Registerer/TranslationString.php:1447
 msgid "Stackable"
 msgstr ""
 
@@ -8716,7 +8757,7 @@ msgid "Stacked after Form"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1230
-#: app/Modules/Registerer/TranslationString.php:1447
+#: app/Modules/Registerer/TranslationString.php:1449
 msgid "Start Date"
 msgstr ""
 
@@ -8725,7 +8766,7 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1091
+#: app/Modules/Registerer/TranslationString.php:1090
 msgid "starts with"
 msgstr ""
 
@@ -8749,16 +8790,16 @@ msgstr ""
 msgid "Status successfully updated"
 msgstr ""
 
-#: app/Services/Integrations/GlobalIntegrationService.php:76
+#: app/Services/Integrations/GlobalIntegrationService.php:78
 msgid "Status updated failed. Not valid module or status"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1075
 #: app/Services/FormBuilder/ElementCustomization.php:555
+#: app/Modules/Registerer/TranslationString.php:1074
 msgid "Step"
 msgstr ""
 
-#: app/Modules/Component/Component.php:812
+#: app/Modules/Component/Component.php:781
 msgid "Step %activeStep% of %totalStep% - %stepTitle%"
 msgstr ""
 
@@ -8766,7 +8807,7 @@ msgstr ""
 msgid "Step Button"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1294
+#: app/Modules/Registerer/TranslationString.php:1296
 msgid "Step Completed"
 msgstr ""
 
@@ -8787,7 +8828,7 @@ msgid "Steps"
 msgstr ""
 
 #: app/Modules/AddOnModule.php:123
-#: app/Modules/Registerer/TranslationString.php:1475
+#: app/Modules/Registerer/TranslationString.php:1477
 msgid "Stripe"
 msgstr ""
 
@@ -8799,11 +8840,11 @@ msgstr ""
 msgid "Stripe Dashboard"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1505
+#: app/Modules/Registerer/TranslationString.php:1507
 msgid "Stripe IPN"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1497
+#: app/Modules/Registerer/TranslationString.php:1499
 msgid "Stripe Live API Keys"
 msgstr ""
 
@@ -8819,11 +8860,11 @@ msgstr ""
 msgid "Stripe Settings"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1494
+#: app/Modules/Registerer/TranslationString.php:1496
 msgid "Stripe Test API Keys"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1500
+#: app/Modules/Registerer/TranslationString.php:1502
 msgid "Stripe Webhook(Recommended for Recurring Payments)"
 msgstr ""
 
@@ -8843,7 +8884,7 @@ msgstr ""
 msgid "Subject Line"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1393
+#: app/Modules/Registerer/TranslationString.php:1395
 msgid "Submission"
 msgstr ""
 
@@ -8859,17 +8900,17 @@ msgstr ""
 msgid "Submission Ends"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:38
 #: app/Services/FormBuilder/EditorShortCode.php:64
+#: app/Modules/Registerer/TranslationString.php:38
 msgid "Submission ID"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1351
+#: app/Modules/Registerer/TranslationString.php:1353
 msgid "Submission Id"
 msgstr ""
 
-#: app/Modules/Entries/Entries.php:1057
 #: app/Services/Submission/SubmissionService.php:477
+#: app/Modules/Entries/Entries.php:1057
 msgid "Submission ID and User ID is required"
 msgstr ""
 
@@ -8883,8 +8924,8 @@ msgstr ""
 msgid "Submission Logs"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:645
-#: app/Services/Form/FormValidationService.php:398
+#: app/Services/Form/FormValidationService.php:386
+#: app/Modules/Form/FormHandler.php:637
 msgid "Submission marked as spammed. Please try again"
 msgstr ""
 
@@ -8913,9 +8954,9 @@ msgstr ""
 msgid "Submission Type"
 msgstr ""
 
+#: app/Services/FormBuilder/ElementCustomization.php:205
 #: app/Modules/Widgets/OxyFluentFormWidget.php:807
 #: app/Modules/Widgets/FluentFormWidget.php:2057
-#: app/Services/FormBuilder/ElementCustomization.php:205
 msgid "Submit Button"
 msgstr ""
 
@@ -8933,7 +8974,7 @@ msgstr ""
 msgid "Submitted On"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1304
+#: app/Modules/Registerer/TranslationString.php:1306
 msgid "Submitted On: "
 msgstr ""
 
@@ -8949,13 +8990,13 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
-#: app/Modules/Component/Component.php:398
 #: app/Services/Form/FormService.php:484
+#: app/Modules/Component/Component.php:398
 msgid "Subscription Field"
 msgstr ""
 
-#: app/Modules/Component/Component.php:399
 #: app/Services/Form/FormService.php:485
+#: app/Modules/Component/Component.php:399
 msgid ""
 "Subscription Field is not available with the free version. Please upgrade to "
 "pro to get all the advanced features."
@@ -8965,11 +9006,11 @@ msgstr ""
 msgid "Subscription Items"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1422
+#: app/Modules/Registerer/TranslationString.php:1424
 msgid "Subscription Management"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1032
+#: app/Modules/Registerer/TranslationString.php:1031
 msgid "Subscription Type"
 msgstr ""
 
@@ -8977,7 +9018,7 @@ msgstr ""
 msgid "Subscriptions (Recurring Payments)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1347
+#: app/Modules/Registerer/TranslationString.php:1349
 msgid "success"
 msgstr ""
 
@@ -9018,7 +9059,7 @@ msgstr ""
 msgid "Successfully saved the confirmation."
 msgstr ""
 
-#: app/Modules/Acl/RoleManager.php:59 app/Services/Roles/RolesService.php:48
+#: app/Services/Roles/RolesService.php:48 app/Modules/Acl/RoleManager.php:59
 msgid "Successfully saved the role(s)."
 msgstr ""
 
@@ -9030,17 +9071,17 @@ msgstr ""
 msgid "Suffix Label"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1324
+#: app/Modules/Component/Component.php:1295
 msgid "Sun"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:719
-#: app/Modules/Component/Component.php:1315
+#: app/Modules/Component/Component.php:1286
 msgid "Sunday"
 msgstr ""
 
+#: boot/app.php:84 app/Views/admin/global_menu.php:67
 #: app/Modules/Registerer/Menu.php:495 app/Modules/Registerer/Menu.php:496
-#: app/Views/admin/global_menu.php:67
 msgid "Support"
 msgstr ""
 
@@ -9152,15 +9193,15 @@ msgstr ""
 msgid "Test Mode"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1476
+#: app/Modules/Registerer/TranslationString.php:1478
 msgid "Test Payment"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1495
+#: app/Modules/Registerer/TranslationString.php:1497
 msgid "Test Publishable key"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1496
+#: app/Modules/Registerer/TranslationString.php:1498
 msgid "Test Secret key"
 msgstr ""
 
@@ -9168,7 +9209,7 @@ msgstr ""
 msgid "Text Area"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1063
+#: app/Modules/Registerer/TranslationString.php:1062
 #: app/Modules/Widgets/OxyFluentFormWidget.php:133
 #: app/Modules/Widgets/OxyFluentFormWidget.php:397
 #: app/Modules/Widgets/OxyFluentFormWidget.php:424
@@ -9187,7 +9228,7 @@ msgstr ""
 msgid "Text Color"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1522
+#: app/Modules/Registerer/TranslationString.php:1524
 msgid "Text Decoration"
 msgstr ""
 
@@ -9266,7 +9307,7 @@ msgstr ""
 msgid "The file size limit uploaded by the user."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1374
+#: app/Modules/Registerer/TranslationString.php:1376
 msgid "The following fields are not supported, please create them manually."
 msgstr ""
 
@@ -9274,7 +9315,7 @@ msgstr ""
 msgid "The Following Javascript variables are available that you can use "
 msgstr ""
 
-#: app/Modules/Component/Component.php:699
+#: app/Modules/Component/Component.php:678
 #, php-format
 msgid "The form can be filled in the actual <a href=\"%s\">website url</a>."
 msgstr ""
@@ -9284,7 +9325,7 @@ msgstr ""
 msgid "The form couldn't be found."
 msgstr ""
 
-#: app/Services/Form/SubmissionHandlerService.php:284
+#: app/Services/Form/SubmissionHandlerService.php:286
 msgid "The form has been successfully submitted."
 msgstr ""
 
@@ -9292,7 +9333,8 @@ msgstr ""
 msgid "The form is successfully converted."
 msgstr ""
 
-#: app/Http/Controllers/FormController.php:103 app/Modules/Form/Form.php:399
+#: app/Hooks/Ajax.php:44 app/Http/Controllers/FormController.php:103
+#: app/Modules/Form/Form.php:399
 msgid "The form is successfully updated."
 msgstr ""
 
@@ -9300,7 +9342,7 @@ msgstr ""
 msgid "The Javascript(jQuery) DOM object of the Form"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1442
+#: app/Modules/Registerer/TranslationString.php:1444
 msgid "The kind of discount to apply for this discount."
 msgstr ""
 
@@ -9308,7 +9350,7 @@ msgstr ""
 msgid "The maximum number of characters the input should accept"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1444
+#: app/Modules/Registerer/TranslationString.php:1446
 msgid ""
 "The minimum amount that must be purchased before this discount can be used. "
 "Leave blank for no minimum."
@@ -9318,7 +9360,7 @@ msgstr ""
 msgid "The minimum column width is 10%"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1434
+#: app/Modules/Registerer/TranslationString.php:1436
 msgid "The name of this discount"
 msgstr ""
 
@@ -9353,6 +9395,10 @@ msgstr ""
 msgid "The Redirect URL format is invalid."
 msgstr ""
 
+#: app/Models/Traits/PredefinedForms.php:16 app/Modules/Form/Predefined.php:919
+msgid "The selected template couldn't be found."
+msgstr ""
+
 #: app/Modules/Registerer/TranslationString.php:416
 msgid "There is no advanced field mapping for this section."
 msgstr ""
@@ -9383,6 +9429,13 @@ msgstr ""
 msgid ""
 "This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
 "disable this email %3$syour website%4$s"
+msgstr ""
+
+#: app/Views/email/failedIntegration/body.php:208
+#, php-format
+msgid ""
+"This email has been sent from %1$syour website%2$s via Fluent Forms. You can "
+"disable this email from %3$shere%4$s"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1219
@@ -9439,6 +9492,9 @@ msgstr ""
 #: app/Services/FormBuilder/DefaultElements.php:1095
 #: app/Services/FormBuilder/DefaultElements.php:1148
 #: app/Services/FormBuilder/DefaultElements.php:1177
+#: app/Services/FluentConversational/Classes/Form.php:361
+#: app/Services/Migrator/Classes/GravityFormsMigrator.php:328
+#: app/Services/Migrator/Classes/GravityFormsMigrator.php:348
 #: app/Services/Migrator/Classes/BaseMigrator.php:215
 #: app/Services/Migrator/Classes/BaseMigrator.php:245
 #: app/Services/Migrator/Classes/BaseMigrator.php:275
@@ -9459,9 +9515,6 @@ msgstr ""
 #: app/Services/Migrator/Classes/BaseMigrator.php:1270
 #: app/Services/Migrator/Classes/BaseMigrator.php:1300
 #: app/Services/Migrator/Classes/BaseMigrator.php:1329
-#: app/Services/Migrator/Classes/GravityFormsMigrator.php:328
-#: app/Services/Migrator/Classes/GravityFormsMigrator.php:348
-#: app/Services/FluentConversational/Classes/Form.php:356
 msgid "This field is required"
 msgstr ""
 
@@ -9546,13 +9599,13 @@ msgstr ""
 msgid "This is very useful feature for preventing spam / bot submissions."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1420
+#: app/Modules/Registerer/TranslationString.php:1422
 msgid ""
 "This is where user can view their payment receipt and manage single "
 "subscription payment."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1416
+#: app/Modules/Registerer/TranslationString.php:1418
 msgid "This is where user can view their single payments and subscriptions."
 msgstr ""
 
@@ -9560,7 +9613,7 @@ msgstr ""
 msgid "This message will be shown after the intial form submission"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1074
+#: app/Modules/Registerer/TranslationString.php:1073
 msgid "This message will be shown if validation fails for"
 msgstr ""
 
@@ -9592,12 +9645,12 @@ msgstr ""
 msgid "Three Column Container"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1328
+#: app/Modules/Component/Component.php:1299
 msgid "Thu"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:716
-#: app/Modules/Component/Component.php:1319
+#: app/Modules/Component/Component.php:1290
 msgid "Thursday"
 msgstr ""
 
@@ -9605,7 +9658,7 @@ msgstr ""
 msgid "Time & Date"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1053
+#: app/Modules/Registerer/TranslationString.php:1052
 msgid "times"
 msgstr ""
 
@@ -9635,15 +9688,15 @@ msgstr ""
 msgid "To a Page"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1503
+#: app/Modules/Registerer/TranslationString.php:1505
 msgid "to configure them.Please add a webhook endpoint for the URL below."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1413
+#: app/Modules/Registerer/TranslationString.php:1415
 msgid "to learn how to accept "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1490
+#: app/Modules/Registerer/TranslationString.php:1492
 msgid "to learn how to setup "
 msgstr ""
 
@@ -9673,13 +9726,13 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
-#: app/Modules/Registerer/Menu.php:464 app/Modules/Registerer/Menu.php:465
-#: app/Views/admin/global_menu.php:44
+#: app/Views/admin/global_menu.php:44 app/Modules/Registerer/Menu.php:464
+#: app/Modules/Registerer/Menu.php:465
 msgid "Tools"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:747
 #: app/Services/FormBuilder/ElementCustomization.php:59
+#: app/Modules/Registerer/TranslationString.php:747
 msgid "Top"
 msgstr ""
 
@@ -9699,7 +9752,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1052
+#: app/Modules/Registerer/TranslationString.php:1051
 msgid "Total Billing times"
 msgstr ""
 
@@ -9724,7 +9777,7 @@ msgstr ""
 msgid "Transaction Type"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1520
+#: app/Modules/Registerer/TranslationString.php:1522
 msgid "Transform"
 msgstr ""
 
@@ -9733,7 +9786,7 @@ msgstr ""
 msgid "Trello"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1051
+#: app/Modules/Registerer/TranslationString.php:1050
 msgid "Trial Days"
 msgstr ""
 
@@ -9741,12 +9794,12 @@ msgstr ""
 msgid "Trinidad and Tobago"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1326
+#: app/Modules/Component/Component.php:1297
 msgid "Tue"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:714
-#: app/Modules/Component/Component.php:1317
+#: app/Modules/Component/Component.php:1288
 msgid "Tuesday"
 msgstr ""
 
@@ -9766,15 +9819,15 @@ msgstr ""
 msgid "Turks and Caicos Islands"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:705
-#: app/Modules/Component/Component.php:253
 #: app/Services/Form/FormService.php:339
 #: app/Services/FormBuilder/DefaultElements.php:1231
+#: app/Modules/Registerer/TranslationString.php:705
+#: app/Modules/Component/Component.php:253
 msgid "Turnstile"
 msgstr ""
 
-#: app/Modules/Form/FormHandler.php:789
-#: app/Services/Form/FormValidationService.php:539
+#: app/Services/Form/FormValidationService.php:527
+#: app/Modules/Form/FormHandler.php:781
 msgid "Turnstile verification failed, please try again."
 msgstr ""
 
@@ -9786,7 +9839,7 @@ msgstr ""
 msgid "Two Column Container"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1390
+#: app/Modules/Registerer/TranslationString.php:1392
 msgid "Type"
 msgstr ""
 
@@ -9887,12 +9940,12 @@ msgid "Upgrade to get access to all the advanced features."
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:840
-#: app/Modules/Registerer/TranslationString.php:1322
+#: app/Modules/Registerer/TranslationString.php:1324
 msgid "Upgrade To Pro"
 msgstr ""
 
+#: boot/app.php:88 app/Views/admin/global_menu.php:73
 #: app/Modules/Registerer/TranslationString.php:847
-#: app/Views/admin/global_menu.php:73
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -9904,9 +9957,9 @@ msgstr ""
 msgid "Uploaded files can be stored in media library or your server or both."
 msgstr ""
 
-#: app/Modules/Component/Component.php:838
-#: app/Services/FluentConversational/Classes/Form.php:535
-#: app/Services/FluentConversational/Classes/Form.php:697
+#: app/Modules/Component/Component.php:807
+#: app/Services/FluentConversational/Classes/Form.php:555
+#: app/Services/FluentConversational/Classes/Form.php:715
 msgid "Uploading"
 msgstr ""
 
@@ -9918,11 +9971,11 @@ msgstr ""
 msgid "Uruguay"
 msgstr ""
 
-#: app/Helpers/Helper.php:377
+#: app/Helpers/Helper.php:410
 msgid "US Style with Decimal (EX: 123,456.00)"
 msgstr ""
 
-#: app/Helpers/Helper.php:387
+#: app/Helpers/Helper.php:420
 msgid "US Style without Decimal (Ex: 123,456,789)"
 msgstr ""
 
@@ -9976,8 +10029,8 @@ msgstr ""
 msgid "User Display Name"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:862
 #: app/Services/FormBuilder/EditorShortCode.php:28
+#: app/Modules/Registerer/TranslationString.php:862
 msgid "User Email"
 msgstr ""
 
@@ -10001,7 +10054,7 @@ msgstr ""
 msgid "User Id"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1044
+#: app/Modules/Registerer/TranslationString.php:1043
 msgid "User Input Amount label"
 msgstr ""
 
@@ -10010,7 +10063,7 @@ msgstr ""
 msgid "User IP"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1300
+#: app/Modules/Registerer/TranslationString.php:1302
 msgid "User IP: "
 msgstr ""
 
@@ -10030,15 +10083,15 @@ msgstr ""
 msgid "User Username"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1302
+#: app/Modules/Registerer/TranslationString.php:1304
 msgid "User: "
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1303
+#: app/Modules/Registerer/TranslationString.php:1305
 msgid "User: Guest"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1424
+#: app/Modules/Registerer/TranslationString.php:1426
 msgid ""
 "Users can manage their own payment subscriptions(only available on Stripe)"
 msgstr ""
@@ -10088,7 +10141,7 @@ msgstr ""
 msgid "Validation Type"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1016
+#: app/Modules/Registerer/TranslationString.php:1015
 msgid "value"
 msgstr ""
 
@@ -10116,7 +10169,7 @@ msgstr ""
 msgid "Version 3(Invisible reCAPTCHA)"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1514
+#: app/Modules/Registerer/TranslationString.php:1516
 msgid "Vertical"
 msgstr ""
 
@@ -10145,6 +10198,7 @@ msgid "Vietnam"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:1262
+#: app/Views/email/failedIntegration/body.php:163
 msgid "View"
 msgstr ""
 
@@ -10160,12 +10214,16 @@ msgstr ""
 msgid "View Documentations"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1376
-#: app/Modules/Acl/Acl.php:260
+#: app/Modules/Registerer/TranslationString.php:1378
+#: app/Modules/Acl/Acl.php:249
 msgid "View Entries"
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:250
+#: boot/app.php:83
+msgid "View Fluent Form Documentation"
+msgstr ""
+
+#: app/Modules/Acl/Acl.php:239
 msgid "View Forms"
 msgstr ""
 
@@ -10173,7 +10231,7 @@ msgstr ""
 msgid "View More information about "
 msgstr ""
 
-#: app/Modules/Acl/Acl.php:272
+#: app/Modules/Acl/Acl.php:261
 msgid "View Payments"
 msgstr ""
 
@@ -10223,7 +10281,7 @@ msgid ""
 "WordPress ? Use the following code"
 msgstr ""
 
-#: app/Modules/Acl/Managers.php:117 app/Services/Manager/ManagerService.php:130
+#: app/Services/Manager/ManagerService.php:130 app/Modules/Acl/Managers.php:117
 msgid "We could not found any user with this email."
 msgstr ""
 
@@ -10250,7 +10308,7 @@ msgid "WebHook URL"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:329
-#: app/Modules/Registerer/TranslationString.php:1504
+#: app/Modules/Registerer/TranslationString.php:1506
 msgid "Webhook URL"
 msgstr ""
 
@@ -10271,12 +10329,12 @@ msgstr ""
 msgid "Website URL"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1327
+#: app/Modules/Component/Component.php:1298
 msgid "Wed"
 msgstr ""
 
 #: app/Modules/Registerer/TranslationString.php:715
-#: app/Modules/Component/Component.php:1318
+#: app/Modules/Component/Component.php:1289
 msgid "Wednesday"
 msgstr ""
 
@@ -10365,7 +10423,7 @@ msgid ""
 " fractions, or percentages"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1348
+#: app/Modules/Component/Component.php:1319
 msgid "Wk"
 msgstr ""
 
@@ -10384,11 +10442,11 @@ msgid ""
 "week to the provided email address"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1320
+#: app/Modules/Registerer/TranslationString.php:1322
 msgid "WP Core Modules"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1317
+#: app/Modules/Registerer/TranslationString.php:1319
 msgid "wp_core"
 msgstr ""
 
@@ -10406,7 +10464,7 @@ msgstr ""
 msgid "Write your own mask for this input"
 msgstr ""
 
-#: app/Modules/Component/Component.php:1355
+#: app/Modules/Component/Component.php:1326
 msgid "Year"
 msgstr ""
 
@@ -10414,15 +10472,15 @@ msgstr ""
 msgid "Yemen"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1076
-#: app/Modules/Widgets/FluentFormWidget.php:113
-#: app/Modules/Widgets/FluentFormWidget.php:952
 #: app/Services/FormBuilder/ElementCustomization.php:239
 #: app/Services/FormBuilder/ElementCustomization.php:580
 #: app/Services/FormBuilder/ValidationRuleSettings.php:74
 #: app/Services/FormBuilder/ValidationRuleSettings.php:89
 #: app/Services/FormBuilder/ValidationRuleSettings.php:104
 #: app/Services/FormBuilder/ValidationRuleSettings.php:119
+#: app/Modules/Registerer/TranslationString.php:1075
+#: app/Modules/Widgets/FluentFormWidget.php:113
+#: app/Modules/Widgets/FluentFormWidget.php:952
 msgid "Yes"
 msgstr ""
 
@@ -10494,7 +10552,7 @@ msgid ""
 "the form submission."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1011
+#: app/Modules/Registerer/TranslationString.php:1010
 msgid ""
 "You can simply give value only the system will convert the label as value"
 msgstr ""
@@ -10511,7 +10569,7 @@ msgstr ""
 msgid "You can use any smart code in the email subject"
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1001
+#: app/Modules/Registerer/TranslationString.php:1000
 msgid "You can use smart code for payment specific dynamic data:"
 msgstr ""
 
@@ -10541,18 +10599,29 @@ msgid ""
 "modules and enable and configured from 30 + available modules"
 msgstr ""
 
+#: app/Services/Transfer/TransferService.php:120
 #: app/Modules/Form/Transfer.php:156
-#: app/Services/Transfer/TransferService.php:114
 msgid "You form has been successfully imported."
 msgstr ""
 
+#: app/Services/Transfer/TransferService.php:59
+#: app/Services/Transfer/TransferService.php:125
 #: app/Modules/Form/Transfer.php:85 app/Modules/Form/Transfer.php:163
-#: app/Services/Transfer/TransferService.php:58
-#: app/Services/Transfer/TransferService.php:119
 msgid "You have a faulty JSON file, please export the Fluent Forms again."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1094
+#: app/Views/email/failedIntegration/body.php:180
+#, php-format
+msgid "You have more error logs, please click %1$s%2$s%3$s to review."
+msgstr ""
+
+#: app/Views/email/failedIntegration/body.php:133
+msgid ""
+"You have some integrations that did not run successfully! Please take "
+"necessary steps."
+msgstr ""
+
+#: app/Modules/Registerer/TranslationString.php:1093
 msgid "You have to have at least one item here."
 msgstr ""
 
@@ -10579,7 +10648,7 @@ msgid "You must be logged in to submit the form."
 msgstr ""
 
 #: app/Services/Settings/Customizer.php:43
-#: app/Modules/Form/Settings/FormCssJs.php:164
+#: app/Modules/Form/Settings/FormCssJs.php:165
 msgid "You need unfiltered_html permission to save Custom CSS & JS"
 msgstr ""
 
@@ -10602,13 +10671,13 @@ msgid ""
 "valid javascript code.Invalid JS code may break the Form."
 msgstr ""
 
-#: app/Services/Integrations/GlobalIntegrationManager.php:68
 #: app/Services/Integrations/GlobalIntegrationService.php:52
+#: app/Services/Integrations/GlobalIntegrationManager.php:68
 msgid "Your API Key is not valid"
 msgstr ""
 
-#: app/Services/Integrations/GlobalIntegrationManager.php:64
 #: app/Services/Integrations/GlobalIntegrationService.php:48
+#: app/Services/Integrations/GlobalIntegrationManager.php:64
 msgid "Your API Key is valid"
 msgstr ""
 
@@ -10630,8 +10699,8 @@ msgstr ""
 msgid "Your Form Title"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:222
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:132
+#: app/Modules/Settings/Settings.php:222
 msgid "Your hCaptcha details are already valid, So no need to save again."
 msgstr ""
 
@@ -10639,13 +10708,13 @@ msgstr ""
 msgid "Your hCaptcha is valid"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:209
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:119
+#: app/Modules/Settings/Settings.php:209
 msgid "Your hCaptcha is valid and saved."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:179
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:89
+#: app/Modules/Settings/Settings.php:179
 msgid "Your hCaptcha settings are deleted."
 msgstr ""
 
@@ -10653,8 +10722,8 @@ msgstr ""
 msgid "Your Mailchimp API integration is up and running"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:365
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:275
+#: app/Modules/Settings/Settings.php:365
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:121
 msgid "Your mailchimp api key has been verfied and successfully set"
 msgstr ""
@@ -10667,8 +10736,8 @@ msgstr ""
 msgid "Your Mailchimp API Key is valid"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:159
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:69
+#: app/Modules/Settings/Settings.php:159
 msgid "Your reCAPTCHA details are already valid. So no need to save again."
 msgstr ""
 
@@ -10676,18 +10745,18 @@ msgstr ""
 msgid "Your reCAPTCHA is valid"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:146
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:56
+#: app/Modules/Settings/Settings.php:146
 msgid "Your reCAPTCHA is valid and saved."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:113
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:23
+#: app/Modules/Settings/Settings.php:113
 msgid "Your reCAPTCHA settings are deleted."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:336
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:246
+#: app/Modules/Settings/Settings.php:336
 msgid "Your settings has been updated"
 msgstr ""
 
@@ -10699,22 +10768,22 @@ msgstr ""
 msgid "Your shortcode to render desired content in current place."
 msgstr ""
 
-#: app/Modules/Registerer/TranslationString.php:1403
+#: app/Modules/Registerer/TranslationString.php:1405
 msgid "Your Stripe Account is connected"
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:274
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:184
+#: app/Modules/Settings/Settings.php:274
 msgid "Your Turnstile Keys are valid."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:242
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:152
+#: app/Modules/Settings/Settings.php:242
 msgid "Your Turnstile settings are deleted."
 msgstr ""
 
-#: app/Modules/Settings/Settings.php:290
 #: app/Services/GlobalSettings/GlobalSettingsHelper.php:200
+#: app/Modules/Settings/Settings.php:290
 msgid "Your Turnstile settings is saved."
 msgstr ""
 

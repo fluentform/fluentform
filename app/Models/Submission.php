@@ -188,9 +188,9 @@ class Submission extends Model
 
         $direction = Arr::get($attributes, 'direction', 'next');
 
-        $operator = 'ASC' === $sortBy && 'next' === $direction ? '>' : '<';
+        $operator = 'ASC' === $sortBy && 'previous' === $direction ? '>' : '<';
 
-        if ('next' === $direction) {
+        if ('previous' === $direction) {
             $operator = 'ASC' === $sortBy ? '>' : '<';
         } else {
             $operator = 'ASC' === $sortBy ? '<' : '>';

@@ -39,7 +39,8 @@ import {
     Link,
     Alert,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    OptionGroup,
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -84,6 +85,7 @@ Vue.use(Link);
 Vue.use(Alert);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
+Vue.use(OptionGroup);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -99,7 +101,9 @@ Vue.mixin(mixins);
 
 global.Errors = Errors;
 
-new Vue({
+window.ffEditorOptionsCustomComponents = window.ffEditorOptionsCustomComponents || {};
+
+window.fluentFormEditorApp = new Vue({
     el: "#ff_form_editor_app",
     store,
     components: {
@@ -219,7 +223,7 @@ new Vue({
                 if(!formData.stepsWrapper.stepStart.settings.disable_auto_focus) {
                     formData.stepsWrapper.stepStart.settings.disable_auto_focus = 'no';
                 }
-                
+
                 if(!formData.stepsWrapper.stepStart.settings.enable_auto_slider) {
                     formData.stepsWrapper.stepStart.settings.enable_auto_slider = 'no';
                 }

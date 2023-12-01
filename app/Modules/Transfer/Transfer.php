@@ -1,12 +1,27 @@
 <?php
-
-namespace FluentForm\App\Http\Controllers;
+namespace FluentForm\App\Modules\Transfer;
 
 use Exception;
 use FluentForm\App\Services\Transfer\TransferService;
+use FluentForm\Framework\Foundation\App;
 
-class TransferController extends Controller
+class Transfer
 {
+
+    /**
+     * Request object
+     *
+     * @var \FluentForm\Framework\Request\Request $request
+     */
+    protected $request = null;
+
+
+    public function __construct()
+    {
+        $this->request = App::getInstance()->make('request');
+    }
+
+
     /**
      * Export forms as JSON.
      */
@@ -16,12 +31,12 @@ class TransferController extends Controller
             $formIds = $this->request->get('forms');
             TransferService::exportForms($formIds);
         } catch (Exception $exception) {
-            $this->json([
+            wp_send_json([
                 'message' => $exception->getMessage()
             ], 424);
         }
     }
-    
+
     /**
      * Import forms from a previously exported JSON file.
      */
@@ -29,9 +44,9 @@ class TransferController extends Controller
     {
         try {
             $file = $this->request->file('file');
-            $this->json(TransferService::importForms($file), 200);
+            wp_send_json(TransferService::importForms($file), 200);
         } catch (Exception $exception) {
-            $this->json([
+            wp_send_json([
                 'message' => $exception->getMessage()
             ], 424);
         }
@@ -41,9 +56,10 @@ class TransferController extends Controller
         try {
             TransferService::exportEntries($this->request->get());
         } catch (Exception $exception) {
-            $this->json([
+            wp_send_json([
                 'message' => $exception->getMessage()
             ], 424);
         }
     }
+
 }
