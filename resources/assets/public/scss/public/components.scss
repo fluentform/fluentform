@@ -67,13 +67,18 @@
           }
         }
 
-        label {
-          margin-bottom: 0;
-          display: inline-block;
-          font-weight: 500;
-          line-height: inherit;
-        }
+        // label {
+        //   margin-bottom: 0;
+        //   display: inline-block;
+        //   font-weight: 500;
+        //   line-height: inherit;
+        // }
       }
+    }
+
+    &-form-control {
+      display: block;
+      width: 100%;
     }
 
     &-ratings {
@@ -298,6 +303,11 @@
       }
     }
   }
+  // step form button
+  .ff-float-right {
+    float: right;
+  }
+
 }
 
 
@@ -649,6 +659,123 @@
     visibility: hidden;
     opacity: 0;
   }
+
+  // aditional styles
+  input[type="checkbox"],
+  input[type="radio"] {
+    display: inline-block;
+    margin: 0;
+  }
+  input[type=checkbox] {
+    -webkit-appearance: checkbox;
+  }
+
+  input[type=radio] {
+    -webkit-appearance: radio;
+  }
+  .text-danger {
+    color: $danger;
+  }
+  .iti {
+    width: 100%;
+  }
+  .iti__selected-flag {
+    background: rgba(0, 0, 0, .1);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+  .ff_gdpr_field {
+    margin-right: 5px;
+  }
+  form.ff-form-has-steps {
+    .ff-btn-submit {
+      display: none;
+    }
+
+    .ff_submit_btn_wrapper {
+      text-align: right;
+    }
+  }
+  textarea {
+    max-width: 100%;
+  }
+  .ff-el-form-check {
+    margin-bottom: 5px;
+    span.ff_span {
+      margin-left: 6px;
+    }
+  }
+  // .ff-el-form-check label.ff-el-form-check-label {
+  //   margin-bottom: 7px;
+  //   cursor: pointer;
+  //   > span:before, > span:after {
+  //     content: none;
+  //   }
+  // }
+  .ff-el-form-check-label {
+    .ff-el-form-check-input {
+      position: relative;
+      vertical-align: middle;
+      top: -2px;
+    }
+  }
+
+  .ff-inline-block {
+    display: inline-block;
+    + .ff-inline-block {
+      margin-left: 10px;
+    }
+  }
+
+  // Text alignment
+  .ff-text{
+    &-left {
+      text-align: left;
+    }
+
+    &-center {
+      text-align: center;
+    }
+
+    &-right {
+      text-align: right;
+    }
+  }
+
+  .ff-el-form-control {
+    &:focus {
+      ~ .ff-el-help-message {
+        display: block !important;
+      }
+    }
+    &::-webkit-input-placeholder {
+      color: #868e96;
+      opacity: 1;
+    }
+
+    &::-ms-input-placeholder {
+      color: #868e96;
+      opacity: 1;
+    }
+
+    &:-ms-input-placeholder {
+      color: #868e96;
+      opacity: 1;
+    }
+
+    &::placeholder {
+      color: #868e96;
+      opacity: 1;
+    }
+
+    &:disabled,
+    &[readonly]:not(.flatpickr-input) {
+      background-color: #e9ecef;
+      opacity: 1;
+    }
+  }
+
+
 }
 
 .fluentform-step {
@@ -696,5 +823,56 @@
     margin-left: 5px;
     padding: 0 5px;
     cursor: pointer;
+  }
+}
+
+#{$prefix}-chat-reply-container {
+  div {
+    p {
+      border-radius: 6px;
+      padding: 20px 16px;
+      margin-top: 12px;
+    }
+
+    .skeleton {
+      animation: skeleton-loading 2s linear infinite alternate;
+      padding: 24px;
+    }
+
+    @keyframes skeleton-loading {
+      0% {
+        background-color: #E3E6E8;
+      }
+      100% {
+        background-color: #F0F3F5;
+      }
+    }
+  }
+}
+
+.ff-el-chat-container {
+  position: relative;
+
+  textarea {
+    position: relative;
+    resize: none;
+    outline: none;
+  }
+
+  .ff_btn_chat_style {
+    position: absolute;
+    top: 38%;
+    right: 10px;
+    background: transparent;
+    border: none;
+    svg {
+      &:hover {
+        cursor: pointer;
+        outline: 0;
+        text-decoration: none;
+        opacity: 0.8;
+        transition: 0.4s all;
+      }
+    }
   }
 }

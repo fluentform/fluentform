@@ -45,6 +45,7 @@ import {
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
 import mixins from './editor_mixins';
+import globalSearch from './global_search'
 // Global error handling...
 import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
@@ -105,6 +106,7 @@ window.fluentFormEditorApp = new Vue({
     el: "#ff_form_editor_app",
     store,
     components: {
+        globalSearch,
         ff_form_editor: FormEditor
     },
     data: {
@@ -301,20 +303,23 @@ window.fluentFormEditorApp = new Vue({
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         }
     },
-    mounted() {
-        this.prepareForm();
-        this.loadResources(this.form_id);
-        if(this.is_conversion_form) {
-            jQuery('#wpcontent').addClass('ff_conversion_editor');
-        }
-    },
+
     beforeCreate() {
         // Event listener for page title updater
         this.$on("change-title", module => {
             jQuery("title").text(`${module} - Fluentform`);
         });
         this.$emit("change-title", "Editor");
-    }
+    },
+
+    mounted() {
+        this.prepareForm();
+        this.loadResources(this.form_id);
+
+        if (this.is_conversion_form) {
+            jQuery('#wpcontent').addClass('ff_conversion_editor');
+        }
+    },
 });
 
 // More menus app

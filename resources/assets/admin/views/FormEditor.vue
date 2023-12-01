@@ -996,6 +996,7 @@ export default {
             jQuery('#js-ff-nav-title').find('div').text(title);
         }
     },
+
     created() {
         /**
          * Event: To clear editor inserter dependency
@@ -1024,9 +1025,9 @@ export default {
             this.editorInserterInContainer = true;
         });
     },
+
     mounted() {
         this.fetchSettings();
-
 
         this.garbageCleaner();
         this.initSaveBtn();
