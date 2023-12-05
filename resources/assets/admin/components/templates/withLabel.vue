@@ -16,7 +16,7 @@ export default {
     },
     computed: {
         required() {
-            return this.item.settings.validation_rules && this.item.settings.validation_rules.required && this.item.settings.validation_rules.required.value;
+            return this.item.settings?.validation_rules?.required?.value;
         }
     },
 }

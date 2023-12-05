@@ -30,34 +30,13 @@ class DateTime extends BaseComponent
         );
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        wp_enqueue_script('flatpickr');
-        wp_enqueue_style('flatpickr');
-
-        $data['attributes']['class'] = trim(
-            'ff-el-form-control ff-el-datepicker ' . $data['attributes']['class']
-        );
-        $dateFormat = $data['settings']['date_format'];
-
-        $data['attributes']['id'] = $this->makeElementId($data, $form);
-
-        if ($tabIndex = Helper::getNextTabIndex()) {
-            $data['attributes']['tabindex'] = $tabIndex;
+        $html = '';
+        $dateType = ArrayHelper::get($data, 'settings.date_type');
+        if ('multiple' === $dateType) {
+            $html = (new SelectDate())->buildHtml($data, $form);
+        } else {
+            $html = $this->buildHtml($data, $form);
         }
-
-        $atts = $this->buildAttributes($data['attributes']);
-
-        $ariaRequired = 'false';
-        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
-            $ariaRequired = 'true';
-        }
-
-        $elMarkup = "<input data-type-datepicker data-format='" . esc_attr($dateFormat) . "' " . $atts . " aria-invalid='false' aria-required={$ariaRequired}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
-
-        $config = $this->getDateFormatConfigJSON($data['settings'], $form);
-        $customConfig = $this->getCustomConfig($data['settings']);
-        $this->loadToFooter($config, $customConfig, $form, $data['attributes']['id']);
-
-        $html = $this->buildElementMarkup($elMarkup, $data, $form);
 
         $html = apply_filters_deprecated(
             'fluentform_rendering_field_html_' . $elementName,
@@ -72,6 +51,45 @@ class DateTime extends BaseComponent
         );
 
         $this->printContent('fluentform/rendering_field_html_' . $elementName, $html, $data, $form);
+    }
+
+    protected function buildHtml($data, $form)
+    {
+        $data['attributes']['id'] = $this->makeElementId($data, $form);
+        $data['attributes']['value'] = ArrayHelper::get($data, 'settings.date_default_value');
+        
+        $data['attributes']['class'] = trim(
+            'ff-el-form-control f-el-datepicker ' . $data['attributes']['class']
+        );
+
+        wp_enqueue_script('flatpickr');
+        wp_enqueue_style('flatpickr');
+        
+        if ($tabIndex = Helper::getNextTabIndex()) {
+            $data['attributes']['tabindex'] = $tabIndex;
+        }
+        
+        $atts = $this->buildAttributes($data['attributes']);
+        
+        // Merged parent settings with field settings
+        $data['single_field']['attributes']['id'] = ArrayHelper::get($data, 'attributes.id');
+        $data['single_field']['settings']['help_message'] = ArrayHelper::get($data, 'settings.help_message');
+        $data['single_field']['settings']['container_class'] = ArrayHelper::get($data, 'settings.container_class');
+        $data['single_field']['settings']['conditional_logics'] = ArrayHelper::get($data, 'settings.conditional_logics');
+        
+        $ariaRequired = 'false';
+        if (ArrayHelper::get($data, 'single_field.settings.validation_rules.required.value')) {
+            $ariaRequired = 'true';
+        }
+        
+        $dateFormat = ArrayHelper::get($data, 'single_field.settings.date_format');
+        $elMarkup = "<input data-type-datepicker data-format='" . esc_attr($dateFormat) . "' " . $atts . " aria-invalid='false' aria-required={$ariaRequired}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
+        
+        $config = $this->getDateFormatConfigJSON($data['settings'], $form);
+        $customConfig = $this->getCustomConfig($data['settings']);
+        $this->loadToFooter($config, $customConfig, $form, $data['attributes']['id']);
+        
+        return $this->buildElementMarkup($elMarkup, $data['single_field'], $form);
     }
 
     public function getAvailableDateFormats()

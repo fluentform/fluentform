@@ -1,85 +1,85 @@
 <template>
-<el-form label-position="top" label-width="120px">
-    <div :class="optionFieldsSection == 'generalEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <h5 @click="toggleFieldsSection('generalEditOptions')"
-            :class="optionFieldsSection == 'generalEditOptions' ? 'active' : ''"
-            class="option-fields-section--title">
-            {{ editItem.editor_options.title }}
-        </h5>
-
-        <transition name="slide-fade">
-            <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section--content">
-                <template v-for="(listItem, key, i) in generalEditOptions">
-                    <component
-                        v-if="willShow(key, listItem)"
-                        :is="guessElTemplate(listItem)"
-                        v-model="vModelFinder(key)[key]"
-                        :editItem="editItem"
-                        :prop="key"
-                        :form_items="form_items"
-                        :listItem="listItem"
-                        :key="i">
-                    </component>
-                </template>
-            </div>
-        </transition>
-    </div>
-
-    <div :class="optionFieldsSection == 'advancedEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <template v-if="haveSettings(advancedEditOptions)">
-            <h5 @click="toggleFieldsSection('advancedEditOptions')"
-                :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
+    <el-form label-position="top" label-width="120px">
+        <div :class="optionFieldsSection == 'generalEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+            <h5 @click="toggleFieldsSection('generalEditOptions')"
+                :class="optionFieldsSection == 'generalEditOptions' ? 'active' : ''"
                 class="option-fields-section--title">
-                {{ $t('Advanced Options') }}
+                {{ editItem.editor_options.title }}
             </h5>
-
+    
             <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section--content">
-                    <template v-for="(listItem, key, i) in advancedEditOptions">
+                <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section--content">
+                    <template v-for="(listItem, key, i) in generalEditOptions">
                         <component
                             v-if="willShow(key, listItem)"
                             :is="guessElTemplate(listItem)"
                             v-model="vModelFinder(key)[key]"
-                            :form_items="form_items"
                             :editItem="editItem"
+                            :prop="key"
+                            :form_items="form_items"
                             :listItem="listItem"
                             :key="i">
                         </component>
                     </template>
-                    <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
-                        {{
-                            $t('Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro')
-                        }}
-                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
-                                $t('Get Fluent Forms Pro')
-                            }}</a>
+                </div>
+            </transition>
+        </div>
+    
+        <div :class="optionFieldsSection == 'advancedEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+            <template v-if="haveSettings(advancedEditOptions)">
+                <h5 @click="toggleFieldsSection('advancedEditOptions')"
+                    :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
+                    class="option-fields-section--title">
+                    {{ $t('Advanced Options') }}
+                </h5>
+    
+                <transition name="slide-fade">
+                    <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section--content">
+                        <template v-for="(listItem, key, i) in advancedEditOptions">
+                            <component
+                                v-if="willShow(key, listItem)"
+                                :is="guessElTemplate(listItem)"
+                                v-model="vModelFinder(key)[key]"
+                                :form_items="form_items"
+                                :editItem="editItem"
+                                :listItem="listItem"
+                                :key="i">
+                            </component>
+                        </template>
+                        <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
+                            {{
+                                $t('Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro')
+                            }}
+                            <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
+                                    $t('Get Fluent Forms Pro')
+                                }}</a>
+                        </div>
                     </div>
-                </div>
-            </transition>
-        </template>
-    </div>
-
-    <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <template v-if="editItem.style_pref">
-            <h5 @click="toggleFieldsSection('layoutOptions')"
-                :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
-                class="option-fields-section--title">
-                {{ $t('Layout Settings') }}
-            </h5>
-
-            <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section--content">
-                    <conversion-style-pref :pref="editItem.style_pref" />
-                </div>
-            </transition>
-        </template>
-    </div>
-
-</el-form>
+                </transition>
+            </template>
+        </div>
+    
+        <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
+            <template v-if="editItem.style_pref">
+                <h5 @click="toggleFieldsSection('layoutOptions')"
+                    :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
+                    class="option-fields-section--title">
+                    {{ $t('Layout Settings') }}
+                </h5>
+    
+                <transition name="slide-fade">
+                    <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section--content">
+                        <conversion-style-pref :pref="editItem.style_pref" />
+                    </div>
+                </transition>
+            </template>
+        </div>
+    
+    </el-form>
 </template>
-
+    
 <script type="text/babel">
-
+    
 import select from './templates/select.vue';
 import nameAttr from './templates/nameAttr.vue';
 import infoBlock from './templates/infoBlock.vue';
@@ -88,6 +88,7 @@ import inputCalculationSettings from './templates/inputCalculationSettings.vue';
 import inputNumber from './templates/inputNumber.vue';
 import customMask from './templates/customMask.vue';
 import nameFields from './templates/nameFields.vue';
+import dateFields from './templates/dateFields.vue';
 import inputValue from './templates/inputValue.vue';
 import inputColor from './templates/inputColor.vue';
 import inputRadio from './templates/inputRadio.vue';
@@ -141,6 +142,7 @@ export default {
         ff_customMask: customMask,
         ff_inputValue: inputValue,
         ff_nameFields: nameFields,
+        ff_dateFields: dateFields,
         ff_inputColor: inputColor,
         ff_radioButton: radioButton,
         ff_gridRowCols: gridRowCols,
@@ -242,7 +244,7 @@ export default {
         /**
         * Helper function for show/hide dependent elements
         & @return {Boolean}
-         */
+            */
         compare(operand1, operator, operand2) {
             switch(operator) {
                 case '==':
@@ -304,3 +306,4 @@ export default {
     },
 };
 </script>
+    

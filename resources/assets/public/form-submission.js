@@ -1211,7 +1211,7 @@ jQuery(document).ready(function () {
                 this.min = function (el, rule) {
                     var val = window.ff_helper.numericVal(el);
                     val = val.toString();
-                    if (!rule.value || !val.length) {
+                    if (!rule.value || !val.length || !el.val()) {
                         return true;
                     }
 
@@ -1229,7 +1229,7 @@ jQuery(document).ready(function () {
                     var val = window.ff_helper.numericVal(el);
                     val = val.toString();
 
-                    if (!rule.value || !val.length) {
+                    if (!rule.value || !val.length || !el.val()) {
                         return true;
                     }
 
