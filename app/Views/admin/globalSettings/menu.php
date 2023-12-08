@@ -181,6 +181,21 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 <?php echo __('Double Opt-in', 'fluentform'); ?>
                             </a>
                         </li>
+                        <?php
+                        if (ArrayHelper::exists($components, 'InventoryManager')) { ?>
+                            <li class="<?php echo esc_attr(Helper::getHtmlElementClass('inventory', $currentComponent)); ?> ff_list_button_item">
+                                <a
+                                        class="ff_list_button_link"
+                                        data-hash="inventory_manager"
+                                        href="<?php
+                                        echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                            'hash' => 'inventory_manager'
+                                        ])); ?>">
+                                    <?php
+                                    echo __('Inventory Managers', 'fluentform'); ?>
+                                </a>
+                            </li>
+                        <?php } ?>
                         
                         <li class="ff_list_button_item has_sub_menu">
                             <a class="ff_list_button_link" href="#">
