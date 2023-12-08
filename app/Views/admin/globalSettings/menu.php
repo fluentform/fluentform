@@ -170,7 +170,21 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 <?php echo __('Managers'); ?>
                             </a>
                         </li>
-                        
+                        <?php if ( ArrayHelper::get($components, 'admin_approval')) :?>
+
+                            <li class="<?php echo esc_attr(Helper::getHtmlElementClass('admin_approval', $currentComponent)); ?> ff_list_button_item">
+                                <a
+                                        class="ff_list_button_link"
+                                        data-hash="admin_approval"
+                                        data-settings_key="ff_admin_approval"
+                                        data-component="general-integration-settings"
+                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                            'hash' => 'admin_approval'
+                                        ])); ?>">
+                                    <?php echo __('Admin approval', 'fluentform'); ?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('double_optin_settings', $currentComponent)); ?> ff_list_button_item">
                             <a
                                 class="ff_list_button_link"
