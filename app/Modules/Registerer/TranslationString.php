@@ -919,7 +919,7 @@ class TranslationString
             'Advanced' => __('Advanced', 'fluentform'),
             'Advanced form' => __('Advanced form', 'fluentform'),
             'Global PDF Settings' => __('Global PDF Settings', 'fluentform'),
-            'This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed' => __('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed', 'fluentform'),
+            'This global settings will be set as default for your new PDF feed for any form. Then you can customize for a specific PDF generator feed' => __('This global settings will be set as default for your new PDF feed for any form.Then you can customize for a specific PDF generator feed', 'fluentform'),
             'Google reCAPTCHA Settings' => __('Google reCAPTCHA Settings', 'fluentform'),
             'Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.' => __('Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.', 'fluentform'),
             'Read more about reCAPTCHA.' => __('Read more about reCAPTCHA.', 'fluentform'),
