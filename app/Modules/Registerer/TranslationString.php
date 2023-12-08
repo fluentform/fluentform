@@ -1397,7 +1397,6 @@ class TranslationString
             'Imported Forms' => __('Imported Forms', 'fluentform'),
             'Imported Form' => __('Imported Form', 'fluentform'),
             'The following fields are not supported, please create them manually.' => __('The following fields are not supported, please create them manually.', 'fluentform'),
-            'Imported Form Entries' => __('Imported Form Entries', 'fluentform'),
             'View Entries' => __('View Entries', 'fluentform'),
             'Select bulk action' => __('Select bulk action', 'fluentform'),
             'Import Entries' => __('Import Entries', 'fluentform'),
@@ -1419,6 +1418,9 @@ class TranslationString
             'Csv Delimiter' => __('Csv Delimiter', 'fluentform'),
             'Select your csv file delimiter' => __('Select your csv file delimiter', 'fluentform'),
             'Please make sure your csv file delimiter is correct and has unique headers. Otherwise, it may fail to import' => __('Please make sure your csv file delimiter is correct and has unique headers. Otherwise, it may fail to import', 'fluentform'),
+            "It's take some times. Please wail..." => __("It's take some times. Please wail...", 'fluentform'),
+            "Maximum execution time error, due to lot's of entries. Maybe fail importing some of entries. Please increase server maximum executing time and try again." => __("Maximum execution time error, due to lot's of entries. Maybe fail importing some of entries. Please increase server maximum executing time and try again.", 'fluentform'),
+            "Unknown Error" => __("Unknown Error", 'fluentform'),
         );
 
         return apply_filters('fluentform/transfer_i18n', $i18n);

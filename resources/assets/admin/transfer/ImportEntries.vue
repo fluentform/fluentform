@@ -84,17 +84,16 @@
 								<input type="file" ref="fileButton" id="fileButton" class="file-input w-100"
 								       @click="clear">
 							</el-form-item>
-							<el-button type="primary" icon="el-icon-success" @click="goForMapFields"
+							<el-button :type="is_imported ? 'success' : 'primary'" :icon="is_imported ? 'el-icon-success' : 'el-icon-right'" :disabled="is_imported" @click="goForMapFields"
 							           :loading="loading_map_columns">
-								{{ $t('Next [Map Columns]') }}
+								{{ is_imported ? $t('Imported') : $t('Next [Map Columns]')}}
 							</el-button>
 						</el-col>
 					</el-row>
 
 					<!-- Entries page url -->
-					<div class="mt-4" v-if="entries_page_url">
-						<h5 class="mb-2">{{ $t('Imported Form Entries') }}</h5>
-						<a :href="entries_page_url"> {{ $t('View Entries') }}</a>
+					<div class="mt-4" v-if="is_imported">
+						<h5 class="mb-2"><a :href="entries_page_url"> {{ $t('View Entries') }}</a></h5>
 					</div>
 
 					<!-- Modal for mapping fields -->
@@ -177,18 +176,30 @@
 									<hr/>
 								</template>
 							</div>
-							<el-checkbox v-model="delete_existing_submissions">
-								{{ $t('Delete Existing Submissions') }}
-							</el-checkbox>
-							<span slot="footer" class="dialog-footer">
-		                        <el-button @click="closeInputSelection" type="info" class="el-button--soft">
-		                            {{ $t('Cancel') }}
-		                        </el-button>
-		                        <el-button type="primary" :loading="loading_import_entries" icon="el-icon-success"
-		                                   @click="importEntries">
-		                            {{ $t('Import') }}
-		                        </el-button>
-		                    </span>
+
+							<div slot="footer">
+								<el-row :gutter="24">
+									<el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
+										<el-checkbox v-model="delete_existing_submissions">
+											{{ $t('Delete Existing Submissions') }}
+										</el-checkbox>
+									</el-col>
+									<el-col :lg="12" :sm="24">
+										<el-button @click="closeInputSelection" type="info" class="el-button--soft">
+											{{ $t('Cancel') }}
+										</el-button>
+										<el-button type="primary" :loading="loading_import_entries" icon="el-icon-success"
+										           @click="importEntries">
+											{{ $t('Import') }}
+										</el-button>
+									</el-col>
+									<el-col :span="24" v-if="loading_import_entries && has_lots_of_entries">
+										<p>
+											{{ $t("It's take some times. Please wail...") }}
+										</p>
+									</el-col>
+								</el-row>
+		                    </div>
 						</el-dialog>
 					</div>
 				</el-form>
@@ -229,6 +240,8 @@ export default {
 			csv_delimiter: 'auto_guess',
 			file_type: 'json',
 			entries_page_url: '',
+			has_lots_of_entries: false,
+			submission_imported : false,
 			loading_map_columns: false,
 			loading_import_entries: false,
 			map_submission_info_fields: false,
@@ -253,6 +266,7 @@ export default {
 		clear() {
 			this.loading_map_columns = false;
 			this.loading_import_entries = false;
+			this.has_lots_of_entries = false;
 			this.submission_info_fields = null;
 			this.form_fields = null;
 			this.mapping_fields = null;
@@ -291,6 +305,7 @@ export default {
 					success: (response) => {
 						this.loading_map_columns = false;
 						this.form_fields = response.data.form_fields;
+						this.has_lots_of_entries = response.data.has_lots_of_entries;
 						this.submission_info_fields = response.data.submission_info_fields;
 						this.mapping_fields = response.data.mapping_fields;
 						this.show_mapping_dialog = true;
@@ -333,8 +348,15 @@ export default {
 						this.clear();
 					},
 					error: (error) => {
-						const errorMessage = error?.message || error?.responseJSON?.message;
-						errorMessage && this.$fail(errorMessage);
+						let errorMessage = error?.message || error?.responseJSON?.message;
+						if (!errorMessage) {
+							if (this.has_lots_of_entries) {
+								errorMessage = this.$t("Maximum execution time error, due to lot's of entries. Maybe fail importing some of entries. Please increase server maximum executing time and try again.");
+							} else {
+								errorMessage = this.$t("Unknown Error");
+							}
+						}
+						this.$fail(errorMessage);
 						this.clear();
 					}
 				});
@@ -350,6 +372,9 @@ export default {
 		},
 		file_upload_info() {
 			return this.is_csv_file_type ? this.$t('Please make sure your csv file delimiter is correct and has unique headers. Otherwise, it may fail to import') : this.$t('Select the FluentForms exported entries (.json) file. Otherwise, it may fail to import');
+		},
+		is_imported() {
+			return !!this.entries_page_url;
 		}
 	},
 	mounted() {
