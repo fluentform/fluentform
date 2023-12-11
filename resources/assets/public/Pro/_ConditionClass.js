@@ -85,8 +85,8 @@ class ConditionApp {
 
             return val == item.value;
         } else if (item.operator == '!=') {
-            if (val !== null && typeof val == 'object') {
-                return val.indexOf(item.value) == -1;
+            if (typeof val == 'object') {
+                return val !== null && val.indexOf(item.value) == -1;
             }
             
             if ($el.hasClass('ff_numeric') ) {
