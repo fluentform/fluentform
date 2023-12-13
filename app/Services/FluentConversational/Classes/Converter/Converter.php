@@ -508,7 +508,7 @@ class Converter
                     }
                 }
             } elseif ('payment_summary_component' === $field['element']) {
-                $question['title'] = 'Payment Summary';
+                $question['title'] = __('Payment Summary', 'fluentform');
                 $question['emptyText'] = $field['settings']['cart_empty_text'];
             } elseif ('recaptcha' === $field['element']) {
                 $reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
