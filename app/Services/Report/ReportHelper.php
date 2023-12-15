@@ -96,7 +96,10 @@ class ReportHelper
             $formattedReports[$report->field_name]['total_entry'] = static::getEntryTotal($report->field_name, $formId,
                 $statuses);
         }
-
+        if ($formattedReports) {
+            //sync with form field order
+            $formattedReports = array_replace(array_intersect_key(array_flip($fieldNames), $formattedReports), $formattedReports);
+        }
         return $formattedReports;
     }
 
