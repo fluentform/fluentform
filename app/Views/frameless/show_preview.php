@@ -13,7 +13,7 @@
 
     </style>
 </head>
-<body>
+<body class="ff-form-preview-body">
 <div class="ff_preview_text">
     Design Mode
 </div>
