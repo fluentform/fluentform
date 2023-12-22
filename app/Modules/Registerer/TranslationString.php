@@ -1127,6 +1127,9 @@ class TranslationString
             'Error Message' => __('Error Message', 'fluentform'),
             'Custom' => __('Custom', 'fluentform'),
             'Global' => __('Global', 'fluentform'),
+            'End of page' => __('End of page', 'fluentform'),
+            'PAGE BREAK' => __('PAGE BREAK', 'fluentform'),
+            'Top of new page' => __('Top of new page', 'fluentform'),
         );
 
         return apply_filters('fluentform/editor_i18n', $i18n);
