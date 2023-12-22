@@ -396,6 +396,14 @@ class AddOnModule
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
             ],
+            'tutorlms' => [
+                'title'        => __('Tutor LMS', 'fluentform'),
+                'description'  => __('Use Fluent Form to add subscribers to Tutor LMS courses.', 'fluentform'),
+                'logo'         => fluentformMix('img/integrations/tutorlms.png'),
+                'enabled'      => 'no',
+                'purchase_url' => $purchaseUrl,
+                'category'     => 'crm',
+            ],
         ];
     }
 }
