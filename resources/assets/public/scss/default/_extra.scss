@@ -318,6 +318,10 @@ select#{$el-prefix}-form-control {
   overflow-x: scroll;
 }
 
+.pac-container {
+  z-index: 99999 !important;
+}
+
 // .ff-el-section-break {
 //   .ff-el-section-title {
 //     margin-bottom: 5px;
