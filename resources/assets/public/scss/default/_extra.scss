@@ -314,6 +314,10 @@ select#{$el-prefix}-form-control {
   }
 }
 
+.ff_payment_summary {
+  overflow-x: scroll;
+}
+
 // .ff-el-section-break {
 //   .ff-el-section-title {
 //     margin-bottom: 5px;
