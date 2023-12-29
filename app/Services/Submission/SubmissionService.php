@@ -98,7 +98,7 @@ class SubmissionService
                 'fluentform/find_submission'
             );
             
-            return apply_filters('fluentform/find_submission', $submission)->makeHidden('form');
+            return apply_filters('fluentform/find_submission', $submission, $form->id)->makeHidden('form');
         } catch (Exception $e) {
             throw new Exception(
                 __('No Entry found.', 'fluentform')
