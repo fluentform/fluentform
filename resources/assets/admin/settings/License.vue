@@ -34,9 +34,9 @@
                     </form>
                 </div><!-- .ff-inactive-license-wrap -->
                 <div class="ff-active-license-wrap" v-else>
-                    <h5 class="mb-2">{{$t('WP Fluent Forms Pro Add On')}}</h5>
+                    <h5 class="mb-2">{{$t('Fluent Forms Pro')}}</h5>
                     <p class="mb-4">
-                        {{$t('Your license is active! Enjoy WP Fluent Forms Pro Add On ')}}😍
+                        {{$t('Your license is active! Enjoy Fluent Forms Pro')}}😍
                     </p>
                     <el-button type="primary" plain class="el-button--large">
                         {{$t('Deactivate License')}}

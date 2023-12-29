@@ -7,7 +7,7 @@
             <el-row :gutter="6">
                 <el-col :md="18">
                     <h6 class="ff_block_title mb-1">{{ $t('Advanced Inventory') }}</h6>
-                    <p class="ff_block_text">{{ $t('Advanced Inventories can be used across different forms. You can manage tickets, items ,event registraion etc.') }}</p>
+                    <p class="ff_block_text">{{ $t('Advanced Inventories can be used across different forms. You can manage tickets, items, event registration etc.') }}</p>
                 </el-col>
                 <el-col :md="6" class="text-right">
                     <el-button
