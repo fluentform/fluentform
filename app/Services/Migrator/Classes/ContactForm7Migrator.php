@@ -117,13 +117,13 @@ class ContactForm7Migrator extends BaseMigrator
     {
         switch ($type) {
             case 'input_number':
-                $args['min'] = ArrayHelper::get($args, 'min');
+                $args['min'] = ArrayHelper::get($args, 'min', 0);
                 $args['max'] = ArrayHelper::get($args, 'max');
                 break;
             case 'rangeslider':
-                $args['min'] = ArrayHelper::get($args, 'min');
-                $args['max'] = ArrayHelper::get($args, 'max');
-                $args['step'] = ArrayHelper::get($args, 'step');
+                $args['min'] = ArrayHelper::get($args, 'min', 0);
+                $args['max'] = ArrayHelper::get($args, 'max', 10);
+                $args['step'] = ArrayHelper::get($args, 'step',1);
                 break;
             case 'input_date':
                 $args['format'] = "Y-m-d H:i";
@@ -546,7 +546,7 @@ class ContactForm7Migrator extends BaseMigrator
             return $entries;
         }
         wp_send_json_error([
-            'message' => __("Please install and active Flamango", 'fluentform')
+            'message' => __("Please install and active Flamingo", 'fluentform')
         ], 422);
     }
 }
