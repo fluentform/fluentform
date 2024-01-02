@@ -286,8 +286,8 @@ class Converter
                 $app = wpFluentForm();
                 $dateField = new DateTime();
 
-                wp_enqueue_style('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'));
-                wp_enqueue_script('flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], false, true);
+                wp_enqueue_style('ff-flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.css'));
+                wp_enqueue_script('ff-flatpickr', fluentFormMix('libs/flatpickr/flatpickr.min.js'), [], false, true);
 
                 $question['dateConfig'] = json_decode($dateField->getDateFormatConfigJSON($field['settings'], $form));
                 $question['dateCustomConfig'] = $dateField->getCustomConfig($field['settings']);

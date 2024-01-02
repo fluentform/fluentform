@@ -81,15 +81,15 @@ class Component
 
         // Date Pickckr Style
         //fix for essential addon event picker conflict
-        if (!wp_script_is('flatpickr', 'registered')) {
+        if (!wp_script_is('ff-flatpickr', 'registered')) {
             wp_register_style(
-                'flatpickr',
+                'ff-flatpickr',
                 fluentFormMix('libs/flatpickr/flatpickr.min.css')
             );
         }
         // Date Pickckr Script
         wp_register_script(
-            'flatpickr',
+            'ff-flatpickr',
             fluentFormMix('libs/flatpickr/flatpickr.min.js'),
             ['jquery'],
             false,
