@@ -280,4 +280,40 @@ class SettingsService
             'share_url' => $shareUrl,
         ];
     }
+
+    public function getPreset($formId)
+    {
+        $formId = intval($formId);
+        $selectedPreset = Helper::getFormMeta($formId, '_ff_selected_style', 'ffs_default');
+        $selectedPreset = $selectedPreset ?: 'ffs_default';
+        $presets = [
+            'ffs_default' => [
+                'label' => __('Default', ''),
+                'style' => '[]',
+            ],
+            'ffs_inherit_theme' => [
+                'label' => __('Inherit Theme Style', 'fluentform'),
+                'style' => '{}',
+            ],
+        ];
+        return [
+            'selected_preset'=> $selectedPreset,
+            'presets' => $presets,
+        ];
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function savePreset($attributes)
+    {
+        $formId = intval(Arr::get($attributes, 'form_id'));
+        $selectedPreset = Arr::get($attributes, 'selected_preset');
+        if ($selectedPreset && Helper::setFormMeta($formId, '_ff_selected_style', $selectedPreset)) {
+            return [
+                'message' => __('Settings save successfully', 'fluentform'),
+            ];
+        }
+        throw new \Exception(__('Settings save failed', 'fluentform'));
+    }
 }

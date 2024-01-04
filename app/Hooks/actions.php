@@ -624,6 +624,19 @@ add_action('wp', function () use ($app) {
             }
             wp_enqueue_script('fluent-form-submission');
             wp_enqueue_style('fluent-form-preview', fluentFormMix('css/preview.css'));
+            if (!defined('FLUENTFORMPRO')) {
+                wp_enqueue_script(
+                    'fluentform-preview_app',
+                    fluentFormMix('js/form_preview_app.js'),
+                    ['jquery'],
+                    FLUENTFORM_VERSION,
+                    true
+                );
+
+                wp_localize_script('fluentform-preview_app', 'fluent_preview_var', [
+                    'i18n'    => \FluentForm\App\Modules\Registerer\TranslationString::getPreviewI18n()
+                ]);
+            }
         });
 
         (new \FluentForm\App\Modules\ProcessExteriorModule())->handleExteriorPages();

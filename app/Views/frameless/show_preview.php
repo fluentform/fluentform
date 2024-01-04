@@ -79,6 +79,13 @@
         </div>
         <div class="ff_form_styler_wrapper">
             <?php
+            if (!defined('FLUENTFORMPRO')): ?>
+                <div class="ff_form_preview_app" id="ff_form_preview_app">
+                    <preview-app :form_id="<?php echo intval($form_id); ?>"></preview-app>
+                    <global-search></global-search>
+                </div>
+            <?php endif; ?>
+            <?php
             $isShowPreview = true;
 
             if(defined('FLUENTFORMPRO')): ?>

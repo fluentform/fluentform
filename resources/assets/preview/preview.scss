@@ -397,6 +397,33 @@ ol{
   }
 }
 
+
+// form style template
+.preview-form-style-template{
+  &-wrap{
+    padding: 20px 20px 20px 20px;
+    border-bottom: 1px solid #ececec;
+  }
+  &-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+    h5{
+      margin-bottom: 0;
+      font-size: 18px;
+      text-transform: capitalize;
+      font-weight: 600;
+    }
+  }
+  &-selector{
+    .el-select{
+      width: 100%;
+    }
+  }
+}
+
 // ff global search
 @import "../admin/styles/global_search";
 .global-search-wrapper  {

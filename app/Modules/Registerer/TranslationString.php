@@ -1299,6 +1299,17 @@ class TranslationString
         return apply_filters('fluentform/editor_i18n', $i18n);
     }
 
+    public static function getPreviewI18n()
+    {
+        $i18n = [
+            'Form Style Template'  => __('Form Style Template', 'fluenform'),
+            'Save Settings'        => __('Save Settings', 'fluenform'),
+            'Select Preset Styles' => __('Select Preset Styles', 'fluenform'),
+            'Success'              => __('Success', 'fluenform'),
+        ];
+        return apply_filters('fluentform/preview_i18n', $i18n);
+    }
+
     public static function getEntriesI18n()
     {
         $i18n = array(

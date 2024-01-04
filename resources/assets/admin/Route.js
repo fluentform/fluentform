@@ -37,6 +37,9 @@ class Route {
     storeFormSettings = this.getFormSettings;
     deleteFormSettings = this.getFormSettings;
 
+    getPresetSettings = this.getFormSettings + "/preset";
+    savePresetSettings = this.getFormSettings + "/save-preset";
+
     getGeneralFormSettings = this.getFormSettings + "/general";
     storeGeneralFormSettings = this.getGeneralFormSettings;
 
