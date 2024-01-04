@@ -724,9 +724,10 @@
 
                             const $settingsOption = jQuery('.ff_global_settings_option');
 
-                            if($settingsOption.length){
-                                const top = jQuery(targetId).offset().top - 34 - $settingsOption.position().top + $settingsOption.scrollTop();
-
+                            if ($settingsOption.length) {
+	                            const menuHeight = jQuery('.ff_header').first()?.outerHeight() || 0;
+	                            const wpAdminBarHeight = jQuery('#wpadminbar').outerHeight() || 0;
+                                const top = jQuery(targetId).offset().top + $settingsOption.scrollTop() - (wpAdminBarHeight + menuHeight + $settingsOption.position().top);
                                 scrollTop(top, 'fast', '.ff_global_settings_option').then((_) => {
                                     if(targetId.length) {
                                         setTimeout(() => {
