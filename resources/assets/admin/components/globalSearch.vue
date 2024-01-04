@@ -7,7 +7,7 @@
                            prefix-icon="el-icon-search"
                            @input="search($event.target.value)"
                            type="text" name="search"
-                           :placeholder="placeholder"
+                           :placeholder="$t(placeholder)"
                            autocomplete="off"
                     />
                     <span class="el-input__prefix"><i class="el-input__icon el-icon-search"></i></span>
@@ -26,20 +26,20 @@
 		                </li>
 	                </template>
 	                <li v-else>
-		                <span>Search not match. Try different.</span>
+		                <span>{{ $t('Search not match. Try a different query.') }}</span>
 	                </li>
                 </ul>
             </div>
             <div>
                 <ul class="search-commands">
-                    <li>Esc to close</li>
+                    <li>{{ $t('Esc to close') }}</li>
                     <li>
-                        Navigate
+                        {{ $t('Navigate') }}
                         <i class="el-icon-bottom"></i>
                         <i class="el-icon-top"></i>
                     </li>
-                    <li>Tab to focus search</li>
-                    <li>Enter to Select</li>
+                    <li>{{ $t('Tab to focus search') }}</li>
+                    <li>{{ $t('Enter to Select') }}</li>
                 </ul>
             </div>
         </div>

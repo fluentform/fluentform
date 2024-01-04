@@ -1,18 +1,18 @@
 <template>
     <div class="ff-filter-fields-wrap">
         <el-checkbox v-model="conditionals.status" v-if="hasPro">
-            {{ labels.status_label }}
+            {{ $t(labels.status_label) }}
         </el-checkbox>
 
         <div v-if="conditionals.status" class="mt-3">
             <div class="mb-3">
-                {{ labels.notification_if_start }}
+                {{ $t(labels.notification_if_start) }}
                 <select class="ff-select ff-select-small ml-1 mr-1" v-model="conditionals.type">
                     <option v-for="(label, value) in {all: 'All', any: 'Any'}" :key="value" :value="value">
                         {{ label }}
                     </option>
                 </select>
-                {{ labels.notification_if_end }}
+                {{ $t(labels.notification_if_end) }}
             </div>
 
             <el-row class="items-center" v-for="(logic, key) in items" :key="key" :gutter="12">

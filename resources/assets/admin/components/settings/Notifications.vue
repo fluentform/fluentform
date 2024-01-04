@@ -103,7 +103,7 @@
                                 <i class="el-icon el-icon-close"></i>
                             </span>
                             <p>{{
-                                    $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ')
+                                    $t('For better email deliver ability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ')
                                 }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
                             <a class="el-button el-button--info el-button--medium"
                                :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>

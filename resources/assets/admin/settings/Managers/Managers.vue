@@ -3,7 +3,7 @@
         <el-row :gutter="6">
             <el-col :md="18">
                 <h6 class="ff_block_title mb-1">{{ $t('Advanced') }}</h6>
-                <p class="ff_block_text">{{ $t('Administrators have full access to Fluent Forms.Add other managers giving specific permissions.') }}</p>
+                <p class="ff_block_text">{{ $t('Administrators have full access to Fluent Forms. Add other managers giving specific permissions.') }}</p>
             </el-col>
             <el-col :md="6" class="text-right">
                 <el-button
@@ -91,7 +91,7 @@
                 class="ff_managers_form"
         >
             <div slot="title">
-                <h5>{{getModalTitle()}}</h5>
+                <h5>{{$t(getModalTitle())}}</h5>
             </div>
 
             <el-form :data="manager" label-position="top" class="mt-4">

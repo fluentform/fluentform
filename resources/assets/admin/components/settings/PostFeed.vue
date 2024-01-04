@@ -213,9 +213,9 @@
                                 :general_settings="feed.value.acf_mappings"
                                 :advanced_settings="feed.value.advanced_acf_mappings"
                                 :labels="{
-                                section_title: 'ACF Plugin Mapping',
-                                remote_label: 'ACF Field',
-                                local_label: 'Form Field (Value)'
+                                section_title: $t('ACF Plugin Mapping'),
+                                remote_label: $t('ACF Field'),
+                                local_label: $t('Form Field (Value)')
                             }"
                                 :general_fields="post_settings.acf_fields"
                                 :advanced_fields="post_settings.acf_fields_advanced"
@@ -229,9 +229,9 @@
                                 :general_settings="feed.value.metabox_mappings"
                                 :advanced_settings="feed.value.advanced_metabox_mappings"
                                 :labels="{
-                                section_title: 'MetaBox (MB) Plugin Mapping',
-                                remote_label: 'MetaBox (MB) Field',
-                                local_label: 'Form Field (Value)'
+                                section_title: $t('MetaBox (MB) Plugin Mapping'),
+                                remote_label: $t('MetaBox (MB) Field'),
+                                local_label: $t('Form Field (Value)')
                             }"
                                 :general_fields="post_settings.metabox_fields"
                                 :advanced_fields="post_settings.metabox_fields_advanced"

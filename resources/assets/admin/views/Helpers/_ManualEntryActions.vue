@@ -23,7 +23,7 @@
                     <el-table border stripe :data="feeds">
                         <el-table-column
                             width="180"
-                            label="Integration">
+                            :label="$t('Integration')">
                             <template slot-scope="scope">
                                 <img v-if="scope.row.provider_logo" class="general_integration_logo"
                                      :src="scope.row.provider_logo" :alt="scope.row.provider"/>
@@ -31,21 +31,21 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="Title">
+                            :label="$t('Title')">
                             <template slot-scope="scope">
                                 {{scope.row.name}}
                                 <span v-if="scope.row.has_condition"> {{ $t('(Conditional)') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="Status">
+                            :label="$t('Status')">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.enabled">{{ $t('Active') }}</span>
                                 <span v-else>{{ $t('Draft') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="Actions">
+                            :label="$t('Actions')">
                             <template slot-scope="scope">
                                 <el-button @click="replayFeed(scope.row.id)" type="info" size="mini">
                                     {{ sending ? $t('Loading...') : $t('Replay') }}

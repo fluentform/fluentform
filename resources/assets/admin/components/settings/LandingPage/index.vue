@@ -16,7 +16,7 @@
                                     rel="noopener" 
                                     :href="final_share_url" 
                                     class="el-button el-button--info el-button--icon el-button--medium el-button--soft"
-                                    title="Share"
+                                    :title="$t('Share')"
                                 >
                                     <i class="el-icon-share"></i>
                                 </a>
@@ -26,7 +26,7 @@
                                     v-show="share_url && settings.status == 'yes'" 
                                     class="el-button el-button--primary el-button--icon el-button--medium el-button--soft"
                                     @click="fullScreen"
-                                    title="Toggle Fullscreen"
+                                    :title="$t('Toggle Fullscreen')"
                                 >
                                     <i class="el-icon-full-screen"></i>
                                 </a>
@@ -48,9 +48,9 @@
                 <card-body>
                     <el-checkbox 
                         v-model="settings.status" 
-                        true-label="yes" 
+                        :true-label="$t('yes')"
                         @change="offFullScreen" 
-                        false-label="no"
+                        :false-label="$t('no')"
                     >
                         {{ $t('Enable Form Landing Page Mode') }}
                     </el-checkbox>

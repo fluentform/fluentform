@@ -39,7 +39,7 @@
                     </el-col>
                     <el-col :span="5">
                         <div class="ff_form_group">
-                            <h6 class="fs-15 mb-3">Status</h6>
+                            <h6 class="fs-15 mb-3">{{ $t('Status') }}</h6>
                             <el-select class="w-100" @change="getLogs()" multiple clearable v-model="selected_status" :placeholder="$t('Select Status')">
                                 <el-option
                                     v-for="item in available_statuses"
@@ -52,7 +52,7 @@
                     </el-col>
                     <el-col :span="8">
                         <div class="ff_form_group">
-                            <h6 class="fs-15 mb-3">Date</h6>
+                            <h6 class="fs-15 mb-3">{{ $t('Date') }}</h6>
                             <el-date-picker
                                     v-model="filter_date_range"
                                     type="datetimerange"

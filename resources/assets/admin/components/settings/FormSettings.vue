@@ -150,13 +150,13 @@
                                 </template>
 
                                 <div class="form_item">
-                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_logged_in">
+                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="double_optin.skip_if_logged_in">
                                         {{ $t('Disable Double Optin for Logged in users') }}
                                     </el-checkbox>
                                 </div>
 
                                 <div v-if="hasFluentCRM" class="form_item">
-                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
+                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="double_optin.skip_if_fc_subscribed">
                                         {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
                                     </el-checkbox>
                                 </div>
@@ -170,14 +170,15 @@
                 <card v-if="admin_approval" id="admin_approval">
                     <card-head>
                         <h5 class="title">{{ $t('Admin approval') }}</h5>
-                        <p class="text">Enable admin approval email notifications to inform the admin of pending submissions from <a href="?page=fluent_forms_settings#admin_approval">Global Settings</a>. After approve form data & email notification will be processed. You can configure an email for users declined submissions </p>
+                        <p class="text">
+                            {{ $t('Enable admin approval email notifications to inform the admin of pending submissions from') }} <a href="?page=fluent_forms_settings#admin_approval">{{ $t('Global Settings') }}</a>. {{$t('After approve form data & email notification will be processed.You can configure an email for users declined submissions.') }}</p>
                     </card-head>
                     <card-body>
 
                         <el-form label-position="top">
                             <el-row :gutter="24">
                                 <el-col>
-                                    <el-checkbox true-label="yes" false-label="no"  v-model="admin_approval.status">
+                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')"  v-model="admin_approval.status">
                                         {{ $t('Enable Admin approval before Form Data Processing')}}
                                     </el-checkbox>
                                 </el-col>
@@ -262,7 +263,7 @@
                                             ></input-popover>
                                             <wp-editor v-else :height="150" :editor-shortcodes="editorShortcodes"
                                                        v-model="admin_approval.email_body"/>
-                                            <el-checkbox class="mt-3" true-label="yes" false-label="no" v-model="admin_approval.asPlainText">
+                                            <el-checkbox class="mt-3" :true-label="$t('yes')" :false-label="$t('no')" v-model="admin_approval.asPlainText">
                                                 {{ $t('Send Email as RAW HTML Format') }}
                                             </el-checkbox>
 
@@ -272,7 +273,7 @@
 
                                     </template>
                                     <div class="form_item">
-                                        <el-checkbox true-label="yes" false-label="no" v-model="admin_approval.skip_if_logged_in">
+                                        <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="admin_approval.skip_if_logged_in">
                                             {{ $t('Disable Admin Approval for Logged in users') }}
                                         </el-checkbox>
                                     </div>
@@ -282,7 +283,6 @@
                         </el-form>
                     </card-body>
                 </card>
-
 
                 <!-- Appearance Settings -->
                 <card id="form-layout">
@@ -345,7 +345,7 @@
                                         <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.helpMessagePlacement">
                                             <el-option
                                                 v-for="(label, value) in helpMessagePlacementOptions"
-                                                :label="label"
+                                                :label="$t(label)"
                                                 :key="value"
                                                 :value="value"
                                             >
@@ -373,7 +373,7 @@
                                         <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.errorMessagePlacement">
                                             <el-option
                                                 v-for="(label, value) in errorMessagesPlacement"
-                                                :label="label"
+                                                :label="$t(label)"
                                                 :key="value"
                                                 :value="value"
                                             >
@@ -401,7 +401,7 @@
                                         <el-select class="w-100 ff-input-s1" v-model="formSettings.layout.asteriskPlacement">
                                             <el-option
                                                 v-for="(label, value) in asteriskPlacementMock"
-                                                :label="label"
+                                                :label="$t(label)"
                                                 :key="value"
                                                 :value="value"
                                             >
@@ -510,8 +510,8 @@
                         <div v-if="formSettings.delete_entry_on_submission != 'yes'" class="ff_auto_delete_section mt-3">
                             <el-checkbox
                                 v-if="hasPro"
-                                true-label="yes"
-                                false-label="no"
+                                :true-label="$t('yes')"
+                                :false-label="$t('no')"
                                 v-model="formSettings.delete_after_x_days"
                             >
                                 {{ $t('Enable auto delete old entries') }}
@@ -595,7 +595,7 @@
                             <label class="el-form-item__label">
                                 {{$t('Allow referrals')}}
                             </label>
-                            <el-checkbox true-label="yes" false-label="no" v-model="affiliate_wp.status">
+                            <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="affiliate_wp.status">
                                 {{$t('Enable')}}
                             </el-checkbox>
                         </div>

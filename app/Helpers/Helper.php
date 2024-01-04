@@ -103,9 +103,9 @@ class Helper
     public static function getEntryStatuses($form_id = false)
     {
         $statuses = [
-            'unread'    => 'Unread',
-            'read'      => 'Read',
-            'favorites' => 'Favorites',
+            'unread'    => __('Unread', 'fluentform'),
+            'read'      => __('Read', 'fluentform'),
+            'favorites' => __('Favorites', 'fluentform'),
         ];
 
         $statuses = apply_filters_deprecated(

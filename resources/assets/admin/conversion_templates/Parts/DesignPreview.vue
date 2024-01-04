@@ -27,8 +27,8 @@
                 v-model="device_type"
                 active-value="desktop"
                 inactive-value="mobile"
-                active-text="Desktop"
-                inactive-text="Mobile">
+                :active-text="$t('Desktop')"
+                :inactive-text="$t('Mobile')">
             </el-switch>
         </div>
     </div>
