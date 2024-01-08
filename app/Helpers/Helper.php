@@ -898,7 +898,7 @@ class Helper
     }
 
     /**
-     * Validate form input value.
+     * Validate form input value against database values
      *
      * @param $field array Form Field
      * @param $formData array From Data
@@ -959,6 +959,10 @@ class Helper
                 case 'terms_and_condition':
                 case 'input_checkbox':
                 case 'multi_select':
+                    $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
+                    if ($skipValidationInputsWithOptions) {
+                        break;
+                    }
                     if (is_array($inputValue)) {
                         $isValid = array_diff($inputValue, $options);
                         $isValid = empty($isValid);
