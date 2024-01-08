@@ -217,12 +217,16 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
-                                    <?php if (ArrayHelper::get($component, 'hash') != 're_captcha'
-                                        && ArrayHelper::get($component, 'hash') != 'h_captcha'
-                                        && ArrayHelper::get($component, 'hash') != 'turnstile'
-                                        && ArrayHelper::get($component, 'query.component') != 'payment_settings'
-                                        && ArrayHelper::get($component, 'query.component') != 'license_page'
-                                    ) : ?>
+                                    <?php
+                                        if (ArrayHelper::get($component, 'hash') != 're_captcha'
+                                            && ArrayHelper::get($component, 'hash') != 'h_captcha'
+                                            && ArrayHelper::get($component, 'hash') != 'turnstile'
+                                            && ArrayHelper::get($component, 'query.component') != 'payment_settings'
+                                            && ArrayHelper::get($component, 'query.component') != 'license_page'
+                                            && ArrayHelper::get($component, 'hash') != 'admin_approval'
+                                            && ArrayHelper::get($component, 'hash') != 'inventory_manager'
+                                        )
+                                    : ?>
 
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
