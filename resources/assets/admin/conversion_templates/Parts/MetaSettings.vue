@@ -88,7 +88,7 @@
                                         :placeholder="$t('Enter Key hint tooltip')"
                                 />
                             </el-form-item>
-                            <el-form-item :label="$t('File Upload Size Limit Text')">
+                            <el-form-item class="ff-form-item" :label="$t('File Upload Size Limit Text')">
                                 <el-input
                                         v-model="meta_settings.i18n.limit"
                                         type="text"
