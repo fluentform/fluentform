@@ -1233,6 +1233,7 @@ span + .ff_payment_badge{
 
 .el-tooltip__popper{
   max-width: 300px;
+  z-index: 99999999999 !important;
 }
 
 .ff_inventory_list{

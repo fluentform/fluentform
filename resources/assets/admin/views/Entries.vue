@@ -13,6 +13,11 @@
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
+                        <el-button @click="showImportEntriesModal = true" type="primary" class="el-button">
+                            {{ $t('Import Entries') }}
+                        </el-button>
+                    </btn-group-item>
+                    <btn-group-item as="div">
                         <el-dropdown @command="selectFieldsToExport" trigger="click">
                             <el-button>
                                 {{ $t('Export') }}
@@ -207,6 +212,8 @@
                 </btn-group>
             </section-head-content>
         </section-head>
+
+        <ImportEntriesModal :app="app" :visibility.sync="showImportEntriesModal" />
 
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
@@ -508,6 +515,7 @@
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
+    import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
 
     export default {
         name: 'FormEntries',
@@ -519,7 +527,8 @@
             BtnGroup,
             BtnGroupItem,
             SectionHead,
-            SectionHeadContent
+            SectionHeadContent,
+            ImportEntriesModal
         },
         watch: {
             search_string() {
@@ -643,6 +652,8 @@
                 has_pro : window.fluent_form_entries_vars.has_pro,
                 isIndeterminateFieldsSelection: true,
                 checkAllFields : false,
+                showImportEntriesModal: false,
+                app: window.fluent_forms_global_var
             }
         },
         computed: {

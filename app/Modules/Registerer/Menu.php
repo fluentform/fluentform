@@ -253,6 +253,11 @@ class Menu
             return;
         }
 
+        $forms = wpFluent()->table('fluentform_forms')
+                           ->orderBy('id', 'desc')
+                           ->select(['id', 'title'])
+                           ->get();
+
         wp_enqueue_script('fluent_forms_global');
         wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
@@ -273,7 +278,9 @@ class Menu
                 'mollie'               => fluentformMix('img/payment/mollie.png'),
                 'paypal'               => fluentformMix('img/payment/paypal.png'),
                 'stripe'               => fluentformMix('img/payment/stripe.png')
-            ]
+            ],
+            'forms'                    => $forms,
+            'hasPro'                   => defined('FLUENTFORMPRO'),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
