@@ -625,11 +625,13 @@ class FluentFormPdfBuilder
         wp_localize_script('fluentform_pdf_admin', 'fluentform_pdf_admin', [
             'ajaxUrl' => admin_url('admin-ajax.php')
         ]);
-
+        $inheritStyle = true;
         $statuses = [];
         $globalSettingsUrl = '#';
         if (!$downloadableFiles) {
             $statuses = $this->getSystemStatuses();
+          
+    
             $globalSettingsUrl = admin_url('admin.php?page=fluent_forms_settings#pdf_settings');
 
             if (!get_option($this->optionKey)) {
@@ -637,7 +639,7 @@ class FluentFormPdfBuilder
             }
         }
 
-        include FLUENTFORM_PDF_PATH . '/assets/views/admin_screen.php';
+        include FLUENTFORM_PDF_PATH . '/views/admin_screen.php';
     }
 
     public function downloadFonts()
