@@ -4,7 +4,7 @@
             <div class="ff_import_entries">
                 <el-form v-if="app.hasPro" label-position="top" class="mt-4">
                     <el-row :gutter="24">
-                        <el-col :lg="12" :md="24">
+                        <el-col v-if="!form_id" :lg="12" :md="24">
                             <!--Select Forms-->
                             <el-form-item class="ff-form-item">
                                 <template slot="label">
@@ -28,7 +28,7 @@
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-col :lg="12" :md="24">
+                        <el-col :lg="form_id ? 24 : 12" :md="24">
                             <!--File Type-->
                             <el-form-item>
                                 <template slot="label">
@@ -231,11 +231,12 @@
         },
         props: {
             visibility: Boolean,
+	        form_id: Number,
             app: Object
         },
         data() {
             return {
-                selected_form_id: this.app.forms?.length > 0 ? this.app.forms[0].id : '',
+                selected_form_id: this.form_id || (this.app.forms?.length > 0 ? this.app.forms[0].id : ''),
                 csv_delimiter: 'auto_guess',
                 file_type: 'json',
                 entries_page_url: '',

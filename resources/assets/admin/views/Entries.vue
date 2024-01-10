@@ -213,7 +213,7 @@
             </section-head-content>
         </section-head>
 
-        <ImportEntriesModal :app="app" :visibility.sync="showImportEntriesModal" />
+        <ImportEntriesModal :app="app" :form_id="form_id" :visibility.sync="showImportEntriesModal" />
 
         <el-dialog :visible.sync="visibleColReorderModal">
             <template slot="title">
