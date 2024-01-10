@@ -29,15 +29,9 @@
 
                             <el-table-column type="expand">
                                 <template slot-scope="scope">
-                                    <el-table  v-if="scope.row.details" :data="formatTableData(scope.row.details, scope.row.quantity)" border style="width: 100%">
+                                    <el-table  v-if="scope.row.details" :data="formatTableData(scope.row.details)" border style="width: 100%">
                                         <el-table-column prop="name" label="Name"  />
-                                        <el-table-column prop="total" label="Total"  />
-                                        <el-table-column prop="stock" label="Stock" >
-                                            <template slot-scope="scope">
-                                                <span v-html="stockFormatHtml(scope.row.stock)"></span>
-                                            </template>
-                                        </el-table-column>
-
+                                        <el-table-column prop="used" label="Used" />
                                     </el-table>
                                     <span v-else>
                                       <div class="text-center">   No data available yet </div>
@@ -51,6 +45,11 @@
 
                             <el-table-column :label="$t('Quantity')" prop="quantity" width="80" />
 
+                            <el-table-column :label="$t('Stock')" prop="remaining">
+		                        <template slot-scope="scope">
+			                        <span v-html="stockFormatHtml(scope.row.remaining)"></span>
+		                        </template>
+                            </el-table-column>
 
                             <el-table-column :label="$t('Items in Use')" width="150">
                                 <template slot-scope="scope">
@@ -355,23 +354,19 @@
                         this.reset_item = {};
                     });
             },
-            formatTableData(usedItems, totalQuantity) {
+            formatTableData(usedItems) {
                 let items = [];
-                let sum =
-                    {
-                        'name': 'Total',
-                        'total': 0,
-                        'stock': 0,
-                    };
+	            let sum = {
+		            'name': 'Total',
+		            'used': 0,
+	            };
                 for (const [name, used_count] of Object.entries(usedItems)) {
                     let item = {
                         'name': name,
-                        'total': parseInt(totalQuantity),
-                        'stock': parseInt(totalQuantity) - parseInt(used_count),
+                        'used': parseInt(used_count),
                     }
                     items.push(item);
-                    sum.total += item.total;
-                    sum.stock += item.stock;
+                    sum.used += item.used;
                 }
                 items.push(sum)
                 return items;
