@@ -100,113 +100,6 @@
                     <div class="mt-4" v-if="is_imported">
                         <h5 class="mb-2"><a :href="entries_page_url"> {{ $t('View Entries') }}</a></h5>
                     </div>
-
-                    <!-- Modal for mapping fields -->
-                    <div v-if="form_fields && submission_info_fields && mapping_fields"
-                         :class="{'ff_backdrop': show_mapping_dialog}">
-                        <el-dialog
-                            top="50px"
-                            width="70%"
-                            element-loading-spinner="el-icon-loading"
-                            :loading="loading_map_columns"
-                            :visible="show_mapping_dialog"
-                            :before-close="closeInputSelection"
-                        >
-                            <template slot="title">
-                                <div class="el-dialog__header_group">
-                                    <h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
-                                </div>
-                            </template>
-
-                            <div class="ff_card_wrap mt-5 mb-4">
-                                <el-row :gutter="24" class="mb-4">
-                                    <el-col :lg="12" :sm="24">
-                                        <h6 class="mr-3">{{ $t('Form Fields') }}</h6>
-                                    </el-col>
-                                    <el-col :lg="12" :sm="24">
-                                        <h6 class="mr-3">{{ $t('Mapping Fields') }}</h6>
-                                    </el-col>
-                                </el-row>
-                                <hr/>
-                                <template v-for="(form_field, key) in form_fields">
-                                    <el-row :gutter="24" :key="key">
-                                        <el-col :lg="12" :sm="24">
-                                            <span>{{ form_field.label }}</span>
-                                        </el-col>
-                                        <el-col :lg="12" :sm="24">
-                                            <el-select v-model="form_field['binding_field']" class="w-100"
-                                                       placeholder="Select" filterable clearable>
-                                                <el-option
-                                                    v-for="item in (is_csv_file_type ? mapping_fields : mapping_fields.form_fields)"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                                </el-option>
-                                            </el-select>
-                                        </el-col>
-                                    </el-row>
-                                    <hr/>
-                                </template>
-                            </div>
-                            <el-checkbox v-model="map_submission_info_fields">
-                                {{ $t('Show Submission Info Mapping') }}
-                            </el-checkbox>
-                            <div v-if="map_submission_info_fields" class="ff_card_wrap mt-5 mb-4">
-                                <el-row :gutter="24" class="mb-4">
-                                    <el-col :lg="12" :sm="24">
-                                        <h6 class="mr-3">{{ $t('Submission Info Fields') }}</h6>
-                                    </el-col>
-                                    <el-col :lg="12" :sm="24">
-                                        <h6 class="mr-3">{{ $t('Mapping Fields') }}</h6>
-                                    </el-col>
-                                </el-row>
-                                <hr/>
-                                <template v-for="(submission_info_field, key) in submission_info_fields">
-                                    <el-row :gutter="24" :key="key">
-                                        <el-col :lg="12" :sm="24">
-                                            <span>{{ submission_info_field.label }}</span>
-                                        </el-col>
-                                        <el-col :lg="12" :sm="24">
-                                            <el-select v-model="submission_info_field['binding_field']" class="w-100"
-                                                       placeholder="Select" filterable clearable>
-                                                <el-option
-                                                    v-for="item in (is_csv_file_type ? mapping_fields : mapping_fields.submission_info_fields)"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                                </el-option>
-                                            </el-select>
-                                        </el-col>
-                                    </el-row>
-                                    <hr/>
-                                </template>
-                            </div>
-
-                            <div slot="footer">
-                                <el-row :gutter="24">
-                                    <el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
-                                        <el-checkbox v-model="delete_existing_submissions">
-                                            {{ $t('Delete Existing Submissions') }}
-                                        </el-checkbox>
-                                    </el-col>
-                                    <el-col :lg="12" :sm="24">
-                                        <el-button @click="closeInputSelection" type="info" class="el-button--soft">
-                                            {{ $t('Cancel') }}
-                                        </el-button>
-                                        <el-button type="primary" :loading="loading_import_entries" icon="el-icon-success"
-                                                   @click="importEntries">
-                                            {{ $t('Import') }}
-                                        </el-button>
-                                    </el-col>
-                                    <el-col :span="24" v-if="loading_import_entries && has_lots_of_entries">
-                                        <p>
-                                            {{ $t("It's take some times. Please wail...") }}
-                                        </p>
-                                    </el-col>
-                                </el-row>
-                            </div>
-                        </el-dialog>
-                    </div>
                 </el-form>
                 <notice v-else type="danger-soft" class="ff_alert_between">
                     <div>
@@ -221,6 +114,113 @@
                 </notice>
             </div>
         </el-dialog>
+
+        <!-- Modal for mapping fields -->
+        <div v-if="form_fields && submission_info_fields && mapping_fields"
+             :class="{'ff_backdrop': show_mapping_dialog}">
+            <el-dialog
+                top="50px"
+                width="70%"
+                element-loading-spinner="el-icon-loading"
+                :loading="loading_map_columns"
+                :visible="show_mapping_dialog"
+                :before-close="closeInputSelection"
+            >
+                <template slot="title">
+                    <div class="el-dialog__header_group">
+                        <h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
+                    </div>
+                </template>
+
+                <div class="ff_card_wrap mt-5 mb-4">
+                    <el-row :gutter="24" class="mb-4">
+                        <el-col :lg="12" :sm="24">
+                            <h6 class="mr-3">{{ $t('Form Fields') }}</h6>
+                        </el-col>
+                        <el-col :lg="12" :sm="24">
+                            <h6 class="mr-3">{{ $t('Mapping Fields') }}</h6>
+                        </el-col>
+                    </el-row>
+                    <hr/>
+                    <template v-for="(form_field, key) in form_fields">
+                        <el-row :gutter="24" :key="key">
+                            <el-col :lg="12" :sm="24">
+                                <span>{{ form_field.label }}</span>
+                            </el-col>
+                            <el-col :lg="12" :sm="24">
+                                <el-select v-model="form_field['binding_field']" class="w-100"
+                                           placeholder="Select" filterable clearable>
+                                    <el-option
+                                        v-for="item in (is_csv_file_type ? mapping_fields : mapping_fields.form_fields)"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <hr/>
+                    </template>
+                </div>
+                <el-checkbox v-model="map_submission_info_fields">
+                    {{ $t('Show Submission Info Mapping') }}
+                </el-checkbox>
+                <div v-if="map_submission_info_fields" class="ff_card_wrap mt-5 mb-4">
+                    <el-row :gutter="24" class="mb-4">
+                        <el-col :lg="12" :sm="24">
+                            <h6 class="mr-3">{{ $t('Submission Info Fields') }}</h6>
+                        </el-col>
+                        <el-col :lg="12" :sm="24">
+                            <h6 class="mr-3">{{ $t('Mapping Fields') }}</h6>
+                        </el-col>
+                    </el-row>
+                    <hr/>
+                    <template v-for="(submission_info_field, key) in submission_info_fields">
+                        <el-row :gutter="24" :key="key">
+                            <el-col :lg="12" :sm="24">
+                                <span>{{ submission_info_field.label }}</span>
+                            </el-col>
+                            <el-col :lg="12" :sm="24">
+                                <el-select v-model="submission_info_field['binding_field']" class="w-100"
+                                           placeholder="Select" filterable clearable>
+                                    <el-option
+                                        v-for="item in (is_csv_file_type ? mapping_fields : mapping_fields.submission_info_fields)"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <hr/>
+                    </template>
+                </div>
+
+                <div slot="footer">
+                    <el-row :gutter="24">
+                        <el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
+                            <el-checkbox v-model="delete_existing_submissions">
+                                {{ $t('Delete Existing Submissions') }}
+                            </el-checkbox>
+                        </el-col>
+                        <el-col :lg="12" :sm="24">
+                            <el-button @click="closeInputSelection" type="info" class="el-button--soft">
+                                {{ $t('Cancel') }}
+                            </el-button>
+                            <el-button type="primary" :loading="loading_import_entries" icon="el-icon-success"
+                                       @click="importEntries">
+                                {{ $t('Import') }}
+                            </el-button>
+                        </el-col>
+                        <el-col :span="24" v-if="loading_import_entries && has_lots_of_entries">
+                            <p>
+                                {{ $t("It's take some times. Please wail...") }}
+                            </p>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
@@ -316,6 +316,7 @@
                             this.submission_info_fields = response.data.submission_info_fields;
                             this.mapping_fields = response.data.mapping_fields;
                             this.show_mapping_dialog = true;
+                            this.close();
                         },
                         error: (error) => {
                             this.clear();
