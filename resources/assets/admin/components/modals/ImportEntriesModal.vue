@@ -1,6 +1,9 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
-        <el-dialog :title="$t('Import Entries')" :visible="visibility" :before-close="close">
+        <el-dialog :visible="visibility" :before-close="close">
+            <span slot="title" class="el-dialog__title">
+              <h4> {{ $t('Import Entries') }}</h4>
+            </span>
             <div class="ff_import_entries">
                 <el-form v-if="app.hasPro" label-position="top" class="mt-4">
                     <el-row :gutter="24">

@@ -13,8 +13,8 @@
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <el-button @click="showImportEntriesModal = true" type="primary" class="el-button">
-                            {{ $t('Import Entries') }}
+                        <el-button @click="showImportEntriesModal = true"  class="el-button">
+                            {{ $t('Import') }}
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
