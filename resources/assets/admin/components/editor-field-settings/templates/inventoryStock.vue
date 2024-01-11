@@ -12,8 +12,8 @@
 	                    <template v-if="!isSingleInput">
 		                    <el-row :gutter="10" style="align-items: center;">
 			                    <el-col :span="12">
-				                    <!-- Advance Inventory -->
-				                    <el-select v-if="isAdvancedInventory" class="el-fluid" v-model="editItem.settings[getOptionsKey][index].advanced_inventory" :filterable="true" clearable>
+				                    <!-- Global Inventory -->
+				                    <el-select v-if="isGlobalInventory" class="el-fluid" v-model="editItem.settings[getOptionsKey][index].global_inventory" :filterable="true" clearable>
 					                    <el-option
 						                    v-for="item in listItem.options"
 						                    :key="item.value"
@@ -36,8 +36,8 @@
 
 						<!-- Single Type Inventory -->
 	                    <template v-else>
-		                    <!-- Advance Inventory -->
-		                    <el-select v-if="isAdvancedInventory" class="el-fluid" v-model="editItem.settings.advanced_inventory" :filterable="true" clearable>
+		                    <!-- Global Inventory -->
+		                    <el-select v-if="isGlobalInventory" class="el-fluid" v-model="editItem.settings.global_inventory" :filterable="true" clearable>
 			                    <el-option
 				                    v-for="item in listItem.options"
 				                    :key="item.value"
@@ -97,10 +97,10 @@
                 return  false;
             },
             isInventoryEnabled(){
-				return ['simple', 'advanced'].includes(this.editItem.settings.inventory_type);
+				return ['simple', 'global'].includes(this.editItem.settings.inventory_type);
             },
-	        isAdvancedInventory(){
-				return this.editItem.settings.inventory_type === 'advanced';
+	        isGlobalInventory(){
+				return this.editItem.settings.inventory_type === 'global';
             },
         },
         mounted() {

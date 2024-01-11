@@ -6,8 +6,8 @@
         <card-body>
             <el-row :gutter="6">
                 <el-col :md="18">
-                    <h6 class="ff_block_title mb-1">{{ $t('Advanced Inventory') }}</h6>
-                    <p class="ff_block_text">{{ $t('Advanced Inventories can be used across different forms. You can manage tickets, items, event registration etc.') }}</p>
+                    <h6 class="ff_block_title mb-1">{{ $t('Global Inventory') }}</h6>
+                    <p class="ff_block_text">{{ $t('Global Inventories can be used across different forms. You can manage tickets, items, event registration etc.') }}</p>
                 </el-col>
                 <el-col :md="6" class="text-right">
                     <el-button
@@ -232,7 +232,7 @@
             fetchInventoryList() {
                 this.loading = true;
                 FluentFormsGlobal.$get({
-                    action: 'fluentform_get_advanced_inventory_list',
+                    action: 'fluentform_get_global_inventory_list',
                 })
                     .then(response => {
                         this.inventory_list = response.data.inventory_list;
@@ -265,7 +265,7 @@
             store() {
                 this.loading = true;
                 FluentFormsGlobal.$post({
-                    action: 'fluentform_store_advanced_inventory_list',
+                    action: 'fluentform_store_global_inventory_list',
                     inventory: this.inventory
                 })
                     .then(response => {
@@ -295,7 +295,7 @@
             remove(inventory) {
 
                 FluentFormsGlobal.$post({
-                    action: 'fluentform_delete_advanced_inventory_list',
+                    action: 'fluentform_delete_global_inventory_list',
                     slug: inventory.slug
                 })
                     .then(response => {
@@ -332,7 +332,7 @@
             reset(){
                 this.reseting = true
                 FluentFormsGlobal.$post({
-                    action: 'fluentform_reset_advanced_inventory_item',
+                    action: 'fluentform_reset_global_inventory_item',
                     slug: this.reset_item.slug
                 })
                     .then(response => {
@@ -345,7 +345,6 @@
                         }
                     })
                     .fail((errors) => {
-                        console.log(errors)
                         this.$fail(this.$t('Error, please reload and try again'));
                     })
                     .always(() => {

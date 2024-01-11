@@ -206,7 +206,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                             'hash' => 'inventory_manager'
                                         ])); ?>">
                                     <?php
-                                    echo __('Inventory Managers', 'fluentform'); ?>
+                                    echo __('Inventory Manager', 'fluentform'); ?>
                                 </a>
                             </li>
                         <?php } ?>
