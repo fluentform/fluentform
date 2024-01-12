@@ -381,7 +381,7 @@ class Converter
                         $question['type'] = 'FlowFormDropdownType';
                     }
 
-                    $question['options'] = $field['settings']['pricing_options'];
+                    $question['options'] = ArrayHelper::get($field, 'settings.pricing_options');
                 }
 
                 $question['is_payment_field'] = true;
