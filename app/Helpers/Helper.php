@@ -711,6 +711,8 @@ class Helper
     {
         $formulas = ['=', '-', '+', '@', "\t", "\r"];
 
+        $formulas = apply_filters('fluentform/csv_sanitize_formulas', $formulas);
+
         if (Str::startsWith($content, $formulas)) {
             $content = "'" . $content;
         }
