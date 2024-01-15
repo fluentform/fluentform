@@ -1039,7 +1039,7 @@ class TranslationString
             'Reset' => __('Reset', 'fluentform'),
             'Inventory Name' => __('Inventory Name', 'fluentform'),
             'Item Name' => __('Item Name', 'fluentform'),
-            'Quantity Per Combination' => __('Quantity Per Combination', 'fluentform'),
+            'Total Quantity' => __('Total Quantity', 'fluentform'),
             'Reset used Inventory Item Quantity' => __('Reset used Inventory Item Quantity', 'fluentform'),
             'You are about to reset this inventory used count to zero' => __('You are about to reset this inventory used count to zero', 'fluentform'),
             'Yes, Reset this Item' => __('Yes, Reset this Item', 'fluentform'),

@@ -141,7 +141,7 @@
 
                     <el-form-item>
                         <template slot="label">
-                            <h6>{{$t('Quantity Per Combination')}}</h6>
+                            <h6>{{$t('Total Quantity')}}</h6>
                         </template>
                         <el-input
                                 type="number"
