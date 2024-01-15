@@ -137,7 +137,7 @@ class Entry
         ];
     }
 
-    public function report($statuses = [])
+    public function report($statuses = ['read', 'unread'])
     {
         return ReportHelper::generateReport($this->form, $statuses);
     }
