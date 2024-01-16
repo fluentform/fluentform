@@ -137,7 +137,7 @@ class Entry
         ];
     }
 
-    public function report($statuses = ['read', 'unread'])
+    public function report($statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed'])
     {
         return ReportHelper::generateReport($this->form, $statuses);
     }

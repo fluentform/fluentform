@@ -65,7 +65,7 @@ class ReportHelper
         ];
     }
 
-    public static function getInputReport($formId, $fieldNames, $statuses = ['read', 'unread'])
+    public static function getInputReport($formId, $fieldNames, $statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed'])
     {
         if (!$fieldNames) {
             return [];
