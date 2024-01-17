@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.4.1
-Requires PHP: 7.1
-Stable tag: 5.1.5
+Tested up to: 6.4.2
+Requires PHP: 7.4
+Stable tag: 5.1.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,6 +440,19 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+= 5.1.7 (Date: January 17, 2023) =
+- Adds Contact Form 7 Migration
+- Adds Inherit theme style support in form Styler
+- Adds Form Title smart code on confirmation
+- Adds more translations string
+- Adds Filter to skip validation of selectable inputs
+- Improves Admin Mobile responsiveness
+- Fix Conversational form Custom HTML automatically scrolls to bottom of page
+- Fix predefined form filter issue on form creation
+- Fix hidden field mapping on integration
+- Fix CC/BCC email on Email Notification Routing
+- Fix Sync visual report order with form fields order
+- Fixed nested conditional field
 
 = 5.1.5 (Date: November 23, 2023) =
 - Fixes max length validation
