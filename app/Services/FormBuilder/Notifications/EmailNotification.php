@@ -388,7 +388,7 @@ class EmailNotification
 
         $fromEmail = $notification['fromEmail'];
 
-        if (! is_email($fromEmail)) {
+        if (!is_string($fromEmail) || ! is_email($fromEmail)) {
             $fromEmail = false;
         }
 
