@@ -280,7 +280,7 @@ $app->addFilter('fluentform/disabled_analytics', function ($status) {
     return $status;
 });
 
-// permision based filters
+// permission based filters
 $app->addFilter('fluentform/permission_callback', function ($status, $permission) {
     return (new \FluentForm\App\Modules\Acl\RoleManager())->currentUserFormFormCapability();
 }, 10, 2);

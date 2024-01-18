@@ -381,7 +381,7 @@ class Converter
                         $question['type'] = 'FlowFormDropdownType';
                     }
 
-                    $question['options'] = $field['settings']['pricing_options'];
+                    $question['options'] = ArrayHelper::get($field, 'settings.pricing_options');
                 }
 
                 $question['is_payment_field'] = true;
@@ -508,7 +508,7 @@ class Converter
                     }
                 }
             } elseif ('payment_summary_component' === $field['element']) {
-                $question['title'] = 'Payment Summary';
+                $question['title'] = __('Payment Summary', 'fluentform');
                 $question['emptyText'] = $field['settings']['cart_empty_text'];
             } elseif ('recaptcha' === $field['element']) {
                 $reCaptchaConfig = get_option('_fluentform_reCaptcha_details');
@@ -594,6 +594,12 @@ class Converter
 
         if (is_array($fields) && ! empty($fields)) {
             foreach ($fields as $field) {
+                $element = ArrayHelper::get($field, 'element');
+                $allowedFields = array_keys(static::fieldTypes());
+                if (!in_array($element, $allowedFields)) {
+                    continue;
+                }
+                
                 if (! ArrayHelper::exists($field, 'style_pref')) {
                     $field['style_pref'] = [
                         'layout'           => 'default',

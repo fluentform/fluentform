@@ -195,6 +195,7 @@ class Entries extends EntryQuery
             'form_entries_str'      => TranslationString::getEntriesI18n(),
             'editor_shortcodes'     =>  $submissionShortcodes['shortcodes'],
             'input_labels'          =>  $inputLabels,
+            'update_status'         => isset($_REQUEST['update_status']) ? sanitize_text_field($_REQUEST['update_status']) : '',
         ];
     
         $data = apply_filters_deprecated(
@@ -936,17 +937,7 @@ class Entries extends EntryQuery
      */
     public function recordEntryDetails($entryId, $formId, $data)
     {
-        $formData = ArrayHelper::except($data, [
-            '__fluent_form_embded_post_id',
-            '_fluentform_' . $formId . '_fluentformnonce',
-            '_wp_http_referer',
-            'g-recaptcha-response',
-            'h-captcha-response',
-            'cf-turnstile-response',
-            '__stripe_payment_method_id',
-            '__ff_all_applied_coupons',
-            '__entry_intermediate_hash',
-        ]);
+        $formData = ArrayHelper::except($data, Helper::getWhiteListedFields($formId));
 
         $entryItems = [];
         foreach ($formData as $dataKey => $dataValue) {

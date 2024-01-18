@@ -314,6 +314,14 @@ select#{$el-prefix}-form-control {
   }
 }
 
+.ff_payment_summary {
+  overflow-x: scroll;
+}
+
+.pac-container {
+  z-index: 99999 !important;
+}
+
 // .ff-el-section-break {
 //   .ff-el-section-title {
 //     margin-bottom: 5px;

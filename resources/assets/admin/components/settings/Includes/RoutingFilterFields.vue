@@ -6,9 +6,9 @@
                     <tr v-for="(routing, key) in routings" :key="key">
                         <td>
                             <label class="ff_inline">
-                                {{labels.input_label}}
+                                {{$t(labels.input_label)}}
                                 <el-input v-if="input_type == 'text'" :placeholder="labels.input_placeholder" size="small" v-model="routing.input_value"/>
-                                <el-select size="small" v-else-if="input_type == 'select'" v-model="routing.input_value" :placeholder="labels.input_placeholder">
+                                <el-select size="small" v-else-if="input_type == 'select'" v-model="routing.input_value" :placeholder="$t(labels.input_placeholder)">
                                     <el-option
                                         v-for="(item,itemValue) in input_options"
                                         :key="itemValue"
@@ -53,7 +53,7 @@
                                            :label="label" :value="value"
                                 ></el-option>
                             </el-select>
-                            <el-input size="small" v-else placeholder="Enter a value" v-model="routing.value"></el-input>
+                            <el-input size="small" v-else :placeholder="$t('Enter a value')" v-model="routing.value"></el-input>
                         </td>
                         <td>
                             <action-btn>

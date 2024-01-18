@@ -55,6 +55,8 @@ class EditorShortCode
             $formShortCodes['shortcodes']['{inputs.' . $key . '}'] = $value['admin_label'];
         }
 
+        $formShortCodes['shortcodes']['{form_title}'] = __('Form Title', 'fluentform');
+
         return $formShortCodes;
     }
 

@@ -66,7 +66,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-checkbox class="mr-3" v-model="turnstile.invisible" true-label="yes" false-label="no"></el-checkbox>
+                        <el-checkbox class="mr-3" v-model="turnstile.invisible" :true-label="$t('yes')" :false-label="$t('no')"></el-checkbox>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
@@ -83,9 +83,9 @@
                             </el-tooltip>
                         </template>
 
-                        <el-radio v-model="turnstile.theme" label="auto">Auto</el-radio>
-                        <el-radio v-model="turnstile.theme" label="light">Light</el-radio>
-                        <el-radio v-model="turnstile.theme" label="dark">Dark</el-radio>
+                        <el-radio v-model="turnstile.theme" label="auto">{{ $t('Auto') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" label="light">{{ $t('Light') }}</el-radio>
+                        <el-radio v-model="turnstile.theme" label="dark">{{ $t('Dark') }}</el-radio>
                     </el-form-item>
 
                     <!--Validate Keys-->

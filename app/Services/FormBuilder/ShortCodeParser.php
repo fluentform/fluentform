@@ -444,6 +444,8 @@ class ShortCodeParser
             $value = $prefix . uniqid();
 
             return apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, static::getInstance());
+        } elseif ('form_title' == $key) {
+            return static::getForm()->title;
         }
 
 

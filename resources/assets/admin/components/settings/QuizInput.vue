@@ -26,7 +26,7 @@
                         <el-option
                             v-for="(label, key) in macthingCondition"
                             :key="key"
-                            :label="label"
+                            :label="$t(label)"
                             :value="key">
                         </el-option>
                     </el-select>

@@ -50,7 +50,7 @@
                     </el-col>
 	                <el-col :span="8">
 		                <div class="ff_form_group">
-			                <h6 class="fs-15 mb-3">Date</h6>
+			                <h6 class="fs-15 mb-3">{{ $t('Date') }}</h6>
 			                <el-date-picker
 				                v-model="filter_date_range"
 				                type="datetimerange"
@@ -106,7 +106,7 @@
                             <el-table-column prop="title" :label="$t('Title')"></el-table-column>
                             <el-table-column prop="status" :label="$t('Status')" width="100">
                                 <template slot-scope="props">
-                                    <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
+                                    <el-tag :type="getStatusClass(props.row.status)" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
@@ -323,6 +323,17 @@
                     per_page: data.per_page || localStorage.getItem('activityLogsPerPage') || 10,
                 }
             },
+            getStatusClass(status) {
+                if (status == 'failed') {
+                    return 'danger';
+                }else if (status == 'success') {
+                    return 'success';
+                }else if (status == 'warning') {
+                    return 'warning';
+                }else  {
+                    return 'info';
+                }
+            }
         },
         mounted() {
             this.getLogs();
