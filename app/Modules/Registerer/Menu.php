@@ -281,6 +281,7 @@ class Menu
             ],
             'forms'                    => $forms,
             'hasPro'                   => defined('FLUENTFORMPRO'),
+            'has_entries_import'       => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -1065,6 +1066,7 @@ class Menu
             'status_query' => sanitize_text_field($this->app->request->get('status')),
             'date_start_query' => sanitize_text_field($this->app->request->get('start_date')),
             'date_end_query' => sanitize_text_field($this->app->request->get('end_date')),
+            'has_entries_import' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
         ]);
 
         $this->app->view->render('admin.tools.index');
