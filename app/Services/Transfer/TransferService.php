@@ -61,9 +61,9 @@ class TransferService
                     } else {
                         throw new Exception(__('You have a faulty JSON file, please export the Fluent Forms again.', 'fluentform'));
                     }
-
+                    $formTitle = sanitize_text_field(Arr::get($formItem, 'title'));
                     $form = [
-                        'title'       => sanitize_text_field(Arr::get($formItem, 'title')),
+                        'title'       => $formTitle ?: 'Blank Form',
                         'form_fields' => $formFields,
                         'status'      => sanitize_text_field(Arr::get($formItem, 'status', 'published')),
                         'has_payment' => sanitize_text_field(Arr::get($formItem, 'has_payment', 0)),
