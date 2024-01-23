@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.4.2
 Requires PHP: 7.4
-Stable tag: 5.1.8
+Stable tag: 5.1.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -441,6 +441,10 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+= 5.1.9 (Date: January 19, 2023) =
+- Update Custom html field sanitization
+- Improves server side conditional settings validation
+
 = 5.1.8 (Date: January 19, 2023) =
 - Fix step navigation button issue
 - Improves sanitization on form import
