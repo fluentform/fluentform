@@ -47,7 +47,7 @@ class ConditionAssesor
         if ($conditional['field']) {
             $accessor = rtrim(str_replace(['[', ']', '*'], ['.'], $conditional['field']), '.');
 
-            if (!isset($inputs[$accessor])) {
+            if (!in_array($conditional['operator'], ['!=', 'doNotContains']) && !Arr::has($inputs, $accessor)) {
                 return false;
             }
             $inputValue = Arr::get($inputs, $accessor);
