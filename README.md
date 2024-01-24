@@ -439,15 +439,15 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
-= 5.1.9 (Date: January 23, 2023) =
+= 5.1.9 (Date: January 23, 2024) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
 
-= 5.1.8 (Date: January 19, 2023) =
+= 5.1.8 (Date: January 19, 2024) =
 - Fix step navigation button issue
 - Improves sanitization on form import
 
-= 5.1.7 (Date: January 17, 2023) =
+= 5.1.7 (Date: January 17, 2024) =
 - Adds Contact Form 7 Migration
 - Adds Inherit theme style support in form Styler
 - Adds Form Title smart code on confirmation
