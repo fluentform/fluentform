@@ -5,7 +5,7 @@
               <h4> {{ $t('Import Entries') }}</h4>
             </span>
             <div class="ff_import_entries">
-                <el-form v-if="app.hasPro" label-position="top" class="mt-4">
+                <el-form v-if="app.hasPro && app.has_entries_import" label-position="top" class="mt-4">
                     <el-row :gutter="24">
                         <el-col v-if="!form_id" :lg="12" :md="24">
                             <!--Select Forms-->
@@ -101,6 +101,12 @@
                         <h5 class="mb-2"><a :href="entries_page_url"> {{ $t('View Entries') }}</a></h5>
                     </div>
                 </el-form>
+	            <notice v-else-if="app.hasPro" type="info-soft" class="ff_alert_between">
+		            <div>
+			            <h6 class="title">{{ $t('Update Needed.') }}</h6>
+			            <p class="text">{{ $t('Update fluentformpro to get access to import entries.') }}</p>
+		            </div>
+	            </notice>
                 <notice v-else type="danger-soft" class="ff_alert_between">
                     <div>
                         <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>

@@ -5,7 +5,7 @@
 				<h5 class="title">{{ $t('Import Entries') }}</h5>
 			</card-head>
 			<card-body>
-				<el-form v-if="app.hasPro" label-position="top">
+				<el-form v-if="app.hasPro && app.has_entries_import" label-position="top">
 					<el-row :gutter="24">
 						<el-col :lg="12" :md="24">
 							<!--Select Forms-->
@@ -203,6 +203,12 @@
 						</el-dialog>
 					</div>
 				</el-form>
+				<notice v-else-if="app.hasPro" type="info-soft" class="ff_alert_between">
+					<div>
+						<h6 class="title">{{ $t('Update Needed.') }}</h6>
+						<p class="text">{{ $t('Update fluentformpro to get access to import entries.') }}</p>
+					</div>
+				</notice>
 				<notice v-else type="danger-soft" class="ff_alert_between">
 					<div>
 						<h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>

@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.4.2
 Requires PHP: 7.4
-Stable tag: 5.1.7
+Stable tag: 5.1.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -323,6 +323,7 @@ Fluent Forms Documentation comes with a detailed step-by-step instruction of how
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/field-types/" target="_blank">Available Field Types in WordPress Forms</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/conditional-logic-fluent-form/" target="_blank">Set up Forms with Conditional Logic</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/form-restrictions/" target="_blank">WordPress Form Scheduling and Restriction Feature</a></li>
+	<li><a href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/global-inventory-manager-in-fluent-forms/" target="_blank">Global Inventory Manager in Fluent Forms</a></li>
 	<li><a href="https://wpmanageninja.com/docs/fluent-form/integrations-availabel-in-wp-fluent-form/" target="_blank">All Available CRM and Marketing Tools Integration Modules</a></li>
 </ul>
 
@@ -440,7 +441,15 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
-= 5.1.7 (Date: January 17, 2023) =
+= 5.1.9 (Date: January 23, 2024) =
+- Update Custom html field sanitization
+- Improves server side conditional settings validation
+
+= 5.1.8 (Date: January 19, 2024) =
+- Fix step navigation button issue
+- Improves sanitization on form import
+
+= 5.1.7 (Date: January 17, 2024) =
 - Adds Contact Form 7 Migration
 - Adds Inherit theme style support in form Styler
 - Adds Form Title smart code on confirmation
