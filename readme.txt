@@ -441,7 +441,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
-= 5.1.9 (Date: January 19, 2023) =
+= 5.1.9 (Date: January 23, 2023) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
 
