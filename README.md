@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.3.2
-Requires PHP: 7.1
-Stable tag: 5.1.0
+Tested up to: 6.4.2
+Requires PHP: 7.4
+Stable tag: 5.1.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,54 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+= 5.1.9 (Date: January 23, 2023) =
+- Update Custom html field sanitization
+- Improves server side conditional settings validation
+
+= 5.1.8 (Date: January 19, 2023) =
+- Fix step navigation button issue
+- Improves sanitization on form import
+
+= 5.1.7 (Date: January 17, 2023) =
+- Adds Contact Form 7 Migration
+- Adds Inherit theme style support in form Styler
+- Adds Form Title smart code on confirmation
+- Adds more translations string
+- Adds Filter to skip validation of selectable inputs
+- Improves Admin Mobile responsiveness
+- Fix Conversational form Custom HTML automatically scrolls to bottom of page
+- Fix predefined form filter issue on form creation
+- Fix hidden field mapping on integration
+- Fix CC/BCC email on Email Notification Routing
+- Fix Sync visual report order with form fields order
+- Fixed nested conditional field
+
+= 5.1.5 (Date: November 23, 2023) =
+- Fixes max length validation
+- Improves options validation
+- Improves date validation
+- Improves conditional logics
+
+= 5.1.4 (Date: November 22, 2023) =
+- Fixes advanced country list issue
+
+= 5.1.3 (Date: November 22, 2023) =
+- Improves container width auto calculation
+- Improves PHP 8.2 support
+- Improves backend performance
+- Fixes GDPR field required message
+- Fixes BuddyPress User Blog plugin conflict
+- Fixes WPForms & Gravity Forms migration issues
+- Fixes conversational form design duplication and import
+
+= 5.1.2 (Date: November 9, 2023) =
+- Maintenance updates for WP 6.4
+- Improves data escaping for URL params
+- Fixes composer class autoloading
+- Fixes HTTP status code issues
+
+= 5.1.1 (Date: November 4, 2023) =
+- Improves custom CSS & JS loading
 
 = 5.1.0 (Date: November 1, 2023) =
 - Adds Global Search
