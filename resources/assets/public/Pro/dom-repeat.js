@@ -107,100 +107,109 @@ const registerRepeaterHandler = function ($theForm) {
         }
     });
 
-    $theForm.on('click', '.js-repeater .repeat-plus', function (e) {
-        let $btnPlus = jQuery(this);
-        let $table = $btnPlus.closest('table');
-        let $tr = $btnPlus.closest('tr');
-        let maxRepeat = parseInt($table.attr('data-max_repeat'));
+    $theForm.on('click keyup', '.js-repeater .repeat-plus', function (e) {
+        if (e.keyCode == 13 || e.type == 'click') {
+            let $btnPlus = jQuery(this);
+            let $table = $btnPlus.closest('table');
+            let $tr = $btnPlus.closest('tr');
+            let maxRepeat = parseInt($table.attr('data-max_repeat'));
 
-        let existingCount = $table.find('tbody tr').length;
+            let existingCount = $table.find('tbody tr').length;
 
-        if(maxRepeat && existingCount == maxRepeat) {
-            $table.addClass('repeat-maxed');
-            return;
-        }
-
-        var $freshCopy = $tr.clone();
-
-        $freshCopy.find('td').each(function (i, td) {
-            var el = jQuery(this).find('.ff-el-form-control:last-child');
-            var tabIndex = el.attr('tabindex');
-
-            var dataMask = el.attr('data-mask');
-            if (dataMask) {
-                el.mask(dataMask);
+            if (maxRepeat && existingCount == maxRepeat) {
+                $table.addClass('repeat-maxed');
+                return;
             }
 
-            var newId = 'ffrpt-' + (new Date()).getTime() + i;
-            let oldDataName = el.data('name');
-            var itemProp = {
-                value: '',
-                id: newId
-            };
+            var $freshCopy = $tr.clone();
 
-            if(oldDataName) {
+            $freshCopy.find('td').each(function (i, td) {
+                var el = jQuery(this).find('.ff-el-form-control:last-child');
+                var tabIndex = el.attr('tabindex');
 
-            }
-
-            if (tabIndex) {
-            //    itemProp.tabIndex = parseInt(tabIndex) + itemLength;
-            }
-            el.prop(itemProp);
-        });
-        $freshCopy.insertAfter($tr);
-
-        // Now let's fix the name
-        let rootName = $table.attr('data-root_name');
-        let firstTabIndex = 0;
-        $table.find('tbody tr').each(function (i, td) {
-            var els = jQuery(this).find('.ff-el-form-control');
-            els.each(function (index, el) {
-                let $el = jQuery(el);
-                if(i == 0) {
-                    firstTabIndex = $el.attr('tabindex');
+                var dataMask = el.attr('data-mask');
+                if (dataMask) {
+                    el.mask(dataMask);
                 }
-                $el.prop({
-                    'name': rootName+'['+i+'][]'
-                });
-                $el.attr('data-name',  rootName+'_'+index+'_'+i);
-                if(firstTabIndex) {
-                    $el.attr('tabindex',  firstTabIndex);
+
+                var newId = 'ffrpt-' + (new Date()).getTime() + i;
+                let oldDataName = el.data('name');
+                var itemProp = {
+                    value: '',
+                    id: newId
+                };
+
+                if (oldDataName) {
+
                 }
+
+                if (tabIndex) {
+                    //    itemProp.tabIndex = parseInt(tabIndex) + itemLength;
+                }
+                el.prop(itemProp);
             });
-        });
+            $freshCopy.insertAfter($tr);
 
-        $freshCopy.find('.ff-el-form-control')[0].focus();
+            // Now let's fix the name
+            let rootName = $table.attr('data-root_name');
+            let firstTabIndex = 0;
+            $table.find('tbody tr').each(function (i, td) {
+                var els = jQuery(this).find('.ff-el-form-control');
+                els.each(function (index, el) {
+                    let $el = jQuery(el);
+                    const labelName = $el.parents('td').data('label');
+                    if (i == 0) {
+                        firstTabIndex = $el.attr('tabindex');
+                    }
+                    $el.prop({
+                        'name': rootName + '[' + i + '][]',
+                        'ariaLabel': 'repeater level ' + (i+1) + ' and field ' + labelName
+                    });
+                    $el.attr('data-name', rootName + '_' + index + '_' + i);
+                    if (firstTabIndex) {
+                        $el.attr('tabindex', firstTabIndex);
+                    }
+                });
+            });
 
-        $table.trigger('repeat_change');
+            $freshCopy.find('.ff-el-form-control')[0].focus();
+
+            $table.trigger('repeat_change');
 
 
-        if(maxRepeat && existingCount+1 == maxRepeat) {
-            $table.addClass('repeat-maxed');
+            if (maxRepeat && existingCount + 1 == maxRepeat) {
+                $table.addClass('repeat-maxed');
+            }
         }
     });
 
-    $theForm.on('click', '.js-repeater .repeat-minus', function (e) {
-        let $btnMinus = jQuery(this);
-        let $table = $btnMinus.closest('table');
-        let existingCount = $table.find('tbody tr').length;
-        if(existingCount == 1) {
-            return;
-        }
+    $theForm.on('click keyup', '.js-repeater .repeat-minus', function (e) {
+        if (e.keyCode == 13 || e.type == 'click') {
+            let $btnMinus = jQuery(this);
+            let $table = $btnMinus.closest('table');
+            let existingCount = $table.find('tbody tr').length;
+            if (existingCount == 1) {
+                return;
+            }
 
-        $btnMinus.closest('tr').remove();
-        $table.removeClass('repeat-maxed');
+            $btnMinus.closest('tr').remove();
+            $table.removeClass('repeat-maxed');
 
-        // Now let's fix the name
-        let rootName = $table.attr('data-root_name');
-        $table.find('tbody tr').each(function (i, td) {
-            var els = jQuery(this).find('.ff-el-form-control');
-            els.each(function (index, el) {
-                jQuery(el).prop({
-                    'name': rootName + '[' + i + '][]'
+            // Now let's fix the name
+            let rootName = $table.attr('data-root_name');
+            $table.find('tbody tr').each(function (i, td) {
+                var els = jQuery(this).find('.ff-el-form-control');
+                els.each(function (index, el) {
+                    let $el = jQuery(el);
+                    const labelName = $el.parents('td').data('label');
+                    $el.prop({
+                        'name': rootName + '[' + i + '][]',
+                        'ariaLabel': 'repeater level ' + (i+1) + ' and field ' + labelName
+                    });
                 });
             });
-        });
-        $table.trigger('repeat_change');
+            $table.trigger('repeat_change');
+        }
     });
 
 
