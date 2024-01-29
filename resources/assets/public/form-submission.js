@@ -921,6 +921,40 @@ jQuery(document).ready(function () {
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
+                this.radioTabbable();
+            },
+
+            /**
+             * accessibilty feature
+             * make radio field tabbable
+             * @return void
+             */
+            radioTabbable: function () {
+                var $radioInputs = $('body').find('form input[type=radio]');
+                var groups = [];
+                // group the inputs by name
+                $radioInputs.each(function () {
+                    var el = this;
+                    var thisGroup = groups[el.name] = (groups[el.name] || []);
+                    thisGroup.push(el);
+                });
+
+                $radioInputs.on('keydown', function (e) {
+                    setTimeout(function () {
+                        var el = e.target;
+                        var thisGroup = groups[el.name] = (groups[el.name] || []);
+                        var indexOfTarget = thisGroup.indexOf(e.target);
+
+                        if (e.keyCode === 9) {
+                            if (indexOfTarget < (thisGroup.length - 1) && !(e.shiftKey)) {
+                                thisGroup[indexOfTarget + 1].focus();
+                            }
+                            else if (indexOfTarget > 0 && e.shiftKey) {
+                                thisGroup[indexOfTarget - 1].focus();
+                            }
+                        }
+                    });
+                });
             },
 
             /**

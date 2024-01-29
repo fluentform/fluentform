@@ -106,7 +106,16 @@ class Checkable extends BaseComponent
                 $parentClass .= ' ff-el-image-holder';
             }
 
-            $elMarkup .= "<div class='" . esc_attr($parentClass) . "'>";
+            $fieldLabel = ArrayHelper::get($data, 'settings.label');
+            $fieldLabel = esc_attr($fieldLabel);
+            $elMarkup .= "<div aria-label='{$fieldLabel}' class='" . esc_attr($parentClass) . "'>";
+
+            $inputType = ArrayHelper::get($data, 'attributes.type');
+            if ('radio' == $inputType) {
+                $elMarkup = str_replace('<div', "<div role='radio'", $elMarkup);
+            } elseif ('checkbox' == $inputType) {
+                $elMarkup = str_replace('<div', "<div role='checkbox'", $elMarkup);
+            }
 
             $id = esc_attr($id);
 
