@@ -925,12 +925,12 @@ jQuery(document).ready(function () {
             },
 
             /**
-             * accessibilty feature
+             * accessibility feature
              * make radio field tabbable
              * @return void
              */
             radioTabbable: function () {
-                var $radioInputs = $('body').find('form input[type=radio]');
+                var $radioInputs = $('body').find('form.frm-fluent-form  input[type=radio]');
                 var groups = [];
                 // group the inputs by name
                 $radioInputs.each(function () {
