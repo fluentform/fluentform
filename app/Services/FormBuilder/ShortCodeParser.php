@@ -18,6 +18,8 @@ class ShortCodeParser
 
     protected static $formFields = null;
 
+    protected static $provider = null;
+
     protected static $store = [
         'inputs'          => null,
         'original_inputs' => null,
@@ -30,7 +32,7 @@ class ShortCodeParser
     public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false)
     {
         try {
-            static::setDependencies($entryId, $data, $form);
+            static::setDependencies($entryId, $data, $form, $providerOrIsHTML);
 
             if (is_array($parsable)) {
                 return static::parseShortCodeFromArray($parsable, $isUrl, $providerOrIsHTML);
@@ -45,11 +47,12 @@ class ShortCodeParser
         }
     }
 
-    protected static function setDependencies($entry, $data, $form)
+    protected static function setDependencies($entry, $data, $form, $provider)
     {
         static::setEntry($entry);
         static::setData($data);
         static::setForm($form);
+        static::$provider = $provider;
     }
 
     protected static function setEntry($entry)
@@ -505,6 +508,11 @@ class ShortCodeParser
         }
 
         return static::$form;
+    }
+
+    public static function getProvider()
+    {
+        return static::$provider;
     }
 
     public static function getEntry()
