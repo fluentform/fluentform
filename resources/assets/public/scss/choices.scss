@@ -307,7 +307,7 @@ $inner-border-color: #ced4da;
     }
     .#{$choices-selector}__item {
       position: relative;
-      padding: 10px;
+      padding: 16px;
       font-size: $choices-font-size-md;
       [dir='rtl'] & {
         text-align: right;
