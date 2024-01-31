@@ -299,7 +299,8 @@ jQuery(document).ready(function () {
                                 if (res.data.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
-                                        'class': 'ff-message-success'
+                                        'class': 'ff-message-success',
+                                        'role': 'status'
                                     })
                                         .html(res.data.result.message)
                                         .insertAfter($theForm);
@@ -316,7 +317,8 @@ jQuery(document).ready(function () {
                                 }
                                 $('<div/>', {
                                     'id': successMsgId,
-                                    'class': 'ff-message-success'
+                                    'class': 'ff-message-success',
+                                    'role': 'status'
                                 })
                                     .html(res.data.result.message)
                                     .insertAfter($theForm);
