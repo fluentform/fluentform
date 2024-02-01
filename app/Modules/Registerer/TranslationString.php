@@ -795,6 +795,8 @@ class TranslationString
             'Feed name is required.' => __('Feed name is required.', 'fluentform'),
             'ACF Plugin Mapping' => __('ACF Plugin Mapping', 'fluentform'),
             'ACF Field' => __('ACF Field', 'fluentform'),
+            'Jetengine Meta Mapping' => __('Jetengine Meta Mapping', 'fluentform'),
+            'Jetengine Field' => __('Jetengine Field', 'fluentform'),
             'Form Field (Value)' => __('Form Field (Value)', 'fluentform'),
             'MetaBox (MB) Plugin Mapping' => __('MetaBox (MB) Plugin Mapping', 'fluentform'),
             'MetaBox (MB) Field' => __('MetaBox (MB) Field', 'fluentform'),
