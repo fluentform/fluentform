@@ -106,6 +106,7 @@ class Logger
                 'ff_scheduled_actions.status',
                 'ff_scheduled_actions.note',
                 'ff_scheduled_actions.updated_at',
+                'ff_scheduled_actions.feed_id',
                 'fluentform_forms.title as form_title',
             ];
             $join = 'ff_scheduled_actions.form_id';
