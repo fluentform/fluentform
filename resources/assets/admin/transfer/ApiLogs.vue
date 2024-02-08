@@ -84,7 +84,7 @@
                                 </btn-group-item>
                                 <btn-group-item>
                                     <el-button @click="runActions()" type="info" size="mini">
-                                        <i class="mr-2 ff-icon-setting"></i>
+                                        <i class="mr-1 ff-icon-refresh"></i>
                                         {{ $t('Run Selected Action') }}
                                     </el-button>
                                 </btn-group-item>
@@ -174,13 +174,11 @@
   import { scrollTop } from '@/admin/helpers';
   import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
   import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";
-  import ManualEntryActions from "@/admin/views/Helpers/_ManualEntryActions.vue";
 
   export default {
         name: 'ApiLogs',
         props: ['app'],
         components:{
-            ManualEntryActions,
             BtnGroupItem,
             BtnGroup,
             remove
@@ -236,7 +234,8 @@
 	                            const lastWeedEnd = new Date(end.setHours(23, 59, 59, 999))
                                 picker.$emit('pick', [lastWeedStart, lastWeedEnd]);
                             }
-                        }, {
+                        },
+                        {
                             text: 'Last month',
                             onClick(picker) {
                                 const end = new Date();
@@ -257,14 +256,14 @@
 
                 const url = FluentFormsGlobal.$rest.route('getLogs');
                 FluentFormsGlobal.$rest.get(url, {
-                    page: this.paginate.current_page,
-                    per_page: this.paginate.per_page,
-                    form_id: this.selected_form,
-                    status: this.selected_status,
-                    component: this.selected_component,
-                    date_range : this.filter_date_range,
-                    type: 'api',
-                })
+                        page: this.paginate.current_page,
+                        per_page: this.paginate.per_page,
+                        form_id: this.selected_form,
+                        status: this.selected_status,
+                        component: this.selected_component,
+                        date_range : this.filter_date_range,
+                        type: 'api',
+                    })
                     .then(response => {
                         this.logs = response.data;
                         this.total = response.total;
@@ -297,7 +296,6 @@
                         this.getLogs();
                         this.multipleSelection = [];
                         this.$success(response.message);
-
                     })
                     .catch(error => {
                         this.$fail(error.message);
@@ -344,7 +342,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .then(response => {
-                        this.$notify.success(response.data.message);
+                        this.$success(response.data.message);
                     })
                     .fail(error => {
                         if (!error.responseJSON && !error.responseText || error.responseText == '0') {
