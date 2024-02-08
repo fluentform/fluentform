@@ -164,7 +164,7 @@ class Logger
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            $log = apply_filters_deprecated(
+            $logs = apply_filters_deprecated(
                 'fluentform_entry_logs',
                 [
                     $logs,
