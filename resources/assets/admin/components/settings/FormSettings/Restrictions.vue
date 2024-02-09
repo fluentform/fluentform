@@ -43,7 +43,7 @@
                     </el-form-item>
 
                     <el-form-item class="ff-form-item" :label="$t('Message Shown on Reaching Max Entries')" key="limit-reached-msg">
-                        <el-input v-model="form.limitNumberOfEntries.limitReachedMsg" type="textarea"></el-input>
+                        <wp-editor :height="50"  v-model="form.limitNumberOfEntries.limitReachedMsg" />
                     </el-form-item>
                 </div>
             </transition>
@@ -128,11 +128,11 @@
                     </div>
 
                     <el-form-item class="ff-form-item" :label="$t('Form Waiting Message')">
-                        <el-input v-model="form.scheduleForm.pendingMsg" type="textarea"></el-input>
+                        <wp-editor :height="50" v-model="form.scheduleForm.pendingMsg" />
                     </el-form-item>
 
                     <el-form-item class="ff-form-item" :label="$t('Form Expired Message')">
-                        <el-input v-model="form.scheduleForm.expiredMsg" type="textarea"></el-input>
+                        <wp-editor :height="50" v-model="form.scheduleForm.expiredMsg" />
                     </el-form-item>
                 </div>
             </transition>
@@ -178,7 +178,7 @@
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
-                        <el-input type="textarea" v-model="form.requireLogin.requireLoginMsg"></el-input>
+                        <wp-editor :height="50" v-model="form.requireLogin.requireLoginMsg" />
                     </el-form-item>
                 </div>
             </transition>
@@ -224,8 +224,7 @@
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
-
-                        <el-input type="textarea" v-model="form.denyEmptySubmission.message"></el-input>
+                        <wp-editor :height="50" v-model="form.denyEmptySubmission.message" />
                     </el-form-item>
                 </div>
             </transition>
@@ -293,8 +292,7 @@
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
-
-                                    <el-input type="textarea" v-model="form.restrictForm.fields.ip.message"></el-input>
+                                    <wp-editor :height="50" v-model="form.restrictForm.fields.ip.message" />
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item">
@@ -354,8 +352,7 @@
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
-
-                                    <el-input type="textarea" v-model="form.restrictForm.fields.country.message"></el-input>
+                                    <wp-editor :height="50" v-model="form.restrictForm.fields.country.message" />
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item">
@@ -408,8 +405,8 @@
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </template>
+                                <wp-editor :height="50" v-model="form.restrictForm.fields.keywords.message" />
 
-                                <el-input type="textarea" v-model="form.restrictForm.fields.keywords.message"></el-input>
                             </el-form-item>
                         </div>
                     </div>
@@ -421,10 +418,11 @@
 
 <script>
     import Notice from "@/admin/components/Notice/Notice.vue";
+    import wpEditor from '../../../../common/_wp_editor.vue';
 
     export default {
         name: 'FormRestrictions',
-        components: {Notice},
+        components: {Notice,wpEditor},
         props: {
             data: {
                 required: true

@@ -35,14 +35,14 @@
 
                     <p v-if="settings.validation_type == 'fail_on_condition_met'">
                         {{ $t('Based on your selection, submission ')}}
-                        <b>{{ $t('will be rejected ') }}</b> 
-                        {{ $t('if ') }} {{ settings.type }} 
+                        <b>{{ $t('will be rejected ') }}</b>
+                        {{ $t('if ') }} {{ settings.type }}
                         {{ $t('conditions are met') }}
                     </p>
                     <p v-else>
                         {{ $t('Based on your selection, submission ') }}
                         <b>{{ $t('will be valid ') }}</b>
-                        {{ $t('if ') }} {{settings.type}} 
+                        {{ $t('if ') }} {{settings.type}}
                         {{ $t('conditions are met') }}
                     </p>
                 </el-form-item>
@@ -58,18 +58,19 @@
                             <i class="ff-icon ff-icon-info-filled text-primary" />
                         </el-tooltip>
                     </template>
-                    <el-input :placeholder="$t('Error Message on Failed submission')" type="textarea" v-model="settings.error_message"/>
+                    <wp-editor :height="40"  v-model="settings.error_message" />
                 </el-form-item>
             </template>
         </el-form>
     </div>
 </template>
 <script type="text/babel">
+    import wpEditor from '../../../../common/_wp_editor.vue';
     import FilterFields from './FilterFields.vue';
     export default {
         name: 'ExportDefaults',
         components: {
-            FilterFields
+            FilterFields,wpEditor
         },
         props: ['settings', 'inputs', 'hasPro'],
         data() {
