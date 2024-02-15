@@ -65,7 +65,6 @@ export default {
             form_id: window.FluentFormApp.form_id,
             visible: false,
             fields: [
-                "Name Fields",
                 "Section Break",
                 "Shortcode",
                 "Action Hook",

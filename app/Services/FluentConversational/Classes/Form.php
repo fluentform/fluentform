@@ -292,6 +292,7 @@ class Form
             'ratings',
             'textarea',
             'address',
+            'input_name',
             'input_url',
             'input_text',
             'input_date',
