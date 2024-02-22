@@ -27,6 +27,7 @@ class ShortCodeParser
         'post'            => null,
         'other'           => null,
         'submission'      => null,
+        'created_post'    => null
     ];
 
     public static function parse($parsable, $entryId, $data = [], $form = null, $isUrl = false, $providerOrIsHTML = false)
@@ -149,6 +150,9 @@ class ShortCodeParser
                 );
 
                 $value = apply_filters('fluentform/payment_smartcode', $deprecatedValue, $property, self::getInstance());
+            } elseif (false !== strpos($matches[1], 'post.')) {
+                $formProperty = substr($matches[1], strlen('post.'));
+                $value = static::getCreatedPostData($formProperty, $isHtml);
             } else {
                 $value = static::getOtherData($matches[1]);
             }
@@ -523,6 +527,33 @@ class ShortCodeParser
 
         return static::$entry;
     }
+
+    protected static function getCreatedPostData($key)
+    {
+        $entryId = static::$entry->id;
+        if (is_null(static::$store['created_post']) && $entryId) {
+            $postId = wpFluent()->table('fluentform_submission_meta')
+                                ->select(['value'])
+                                ->where([
+                                    'response_id' => $entryId,
+                                    'meta_key'    => '__postFeeds_created_id'
+                                ])
+                                ->first()
+                                ->value;
+            static::$store['created_post'] = get_post($postId);
+        }
+
+        if (false !== strpos($key, 'ID')) {
+            return static::$store['created_post']->ID;
+        } elseif (false !== strpos($key, 'post_title')) {
+            return static::$store['created_post']->post_title;
+        } elseif (false !== strpos($key, 'post_permalink')) {
+            return get_the_permalink(static::$store['created_post']);
+        }
+
+        return static::$store['created_post']->{$key};
+    }
+
 
     protected static function getRequest()
     {
