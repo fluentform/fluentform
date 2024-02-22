@@ -319,7 +319,8 @@ class Form
             'recaptcha',
             'hcaptcha',
             'quiz_score',
-            'rangeslider'
+            'rangeslider',
+            'save_progress_button'
         ];
 
         $acceptedFieldElements = apply_filters(
@@ -452,7 +453,7 @@ class Form
             }
 
             foreach ($item->deps as $dep) {
-                if (!isset($items[$dep])) {
+                if (isset($wp_scripts->registered[$dep])) {
                     $child = $wp_scripts->registered[$dep];
                     if ($child->src) {
                         $jsScripts[$dep] = $child;
@@ -500,7 +501,7 @@ class Form
 
             if ($item->deps) {
                 foreach ($item->deps as $dep) {
-                    if (!isset($items[$dep])) {
+                    if (isset($wp_styles->registered[$dep])) {
                         $child = $wp_styles->registered[$dep];
                         if ($child->src) {
                             $cssStyles[$dep] = $child;
@@ -529,11 +530,9 @@ class Form
     public function renderShortcode($form)
     {
         $formId = $form->id;
+        $this->enqueueScripts();
         $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
-
-        $this->enqueueScripts();
-
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
         $instanceId = $form->instance_index;
@@ -675,6 +674,9 @@ class Form
             echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
             exit(200);
         }
+
+        $this->enqueueScripts();
+
         /* This filter is deprecated and will be removed soon */
         $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
@@ -694,8 +696,6 @@ class Form
         $form->settings = json_decode($formSettings->value, true);
 
         $submitCss = $this->getSubmitBttnStyle($form);
-
-        $this->enqueueScripts();
 
         $designSettings = $this->getDesignSettings($formId);
 
@@ -778,14 +778,14 @@ class Form
         wp_enqueue_style(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/' . $cssFileName . '.css',
-            [],
+            ['intlTelInput', 'flatpickr'],
             FLUENTFORM_VERSION
         );
 
         wp_enqueue_script(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            [],
+            ['intlTelInputUtils', 'intlTelInput', 'flatpickr', 'google-recaptcha', 'hcaptcha'],
             FLUENTFORM_VERSION,
             true
         );
