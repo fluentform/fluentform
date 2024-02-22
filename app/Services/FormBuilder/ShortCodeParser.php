@@ -532,15 +532,19 @@ class ShortCodeParser
     {
         $entryId = static::$entry->id;
         if (is_null(static::$store['created_post']) && $entryId) {
-            $postId = wpFluent()->table('fluentform_submission_meta')
+            $postIdObject = wpFluent()->table('fluentform_submission_meta')
                                 ->select(['value'])
                                 ->where([
                                     'response_id' => $entryId,
                                     'meta_key'    => '__postFeeds_created_id'
                                 ])
-                                ->first()
-                                ->value;
-            static::$store['created_post'] = get_post($postId);
+                                ->first();
+
+            if (is_null($postIdObject)) {
+                return '';
+            }
+
+            static::$store['created_post'] = get_post($postIdObject->value);
         }
 
         if (false !== strpos($key, 'ID')) {
