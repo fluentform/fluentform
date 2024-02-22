@@ -48,9 +48,9 @@
                 <card-body>
                     <el-checkbox 
                         v-model="settings.status" 
-                        :true-label="$t('yes')"
+                        true-label="yes"
                         @change="offFullScreen" 
-                        :false-label="$t('no')"
+                        false-label="no"
                     >
                         {{ $t('Enable Form Landing Page Mode') }}
                     </el-checkbox>

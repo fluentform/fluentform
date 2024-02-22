@@ -150,13 +150,13 @@
                                 </template>
 
                                 <div class="form_item">
-                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="double_optin.skip_if_logged_in">
+                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_logged_in">
                                         {{ $t('Disable Double Optin for Logged in users') }}
                                     </el-checkbox>
                                 </div>
 
                                 <div v-if="hasFluentCRM" class="form_item">
-                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="double_optin.skip_if_fc_subscribed">
+                                    <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
                                         {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
                                     </el-checkbox>
                                 </div>
@@ -178,7 +178,7 @@
                         <el-form label-position="top">
                             <el-row :gutter="24">
                                 <el-col>
-                                    <el-checkbox :true-label="$t('yes')" :false-label="$t('no')"  v-model="admin_approval.status">
+                                    <el-checkbox true-label="yes" false-label="no"  v-model="admin_approval.status">
                                         {{ $t('Enable Admin approval before Form Data Processing')}}
                                     </el-checkbox>
                                 </el-col>
@@ -263,7 +263,7 @@
                                             ></input-popover>
                                             <wp-editor v-else :height="150" :editor-shortcodes="editorShortcodes"
                                                        v-model="admin_approval.email_body"/>
-                                            <el-checkbox class="mt-3" :true-label="$t('yes')" :false-label="$t('no')" v-model="admin_approval.asPlainText">
+                                            <el-checkbox class="mt-3" true-label="yes" false-label="no" v-model="admin_approval.asPlainText">
                                                 {{ $t('Send Email as RAW HTML Format') }}
                                             </el-checkbox>
 
@@ -273,7 +273,7 @@
 
                                     </template>
                                     <div class="form_item">
-                                        <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="admin_approval.skip_if_logged_in">
+                                        <el-checkbox true-label="yes" false-label="no" v-model="admin_approval.skip_if_logged_in">
                                             {{ $t('Disable Admin Approval for Logged in users') }}
                                         </el-checkbox>
                                     </div>
@@ -510,8 +510,8 @@
                         <div v-if="formSettings.delete_entry_on_submission != 'yes'" class="ff_auto_delete_section mt-3">
                             <el-checkbox
                                 v-if="hasPro"
-                                :true-label="$t('yes')"
-                                :false-label="$t('no')"
+                                true-label="yes"
+                                false-label="no"
                                 v-model="formSettings.delete_after_x_days"
                             >
                                 {{ $t('Enable auto delete old entries') }}
@@ -595,7 +595,7 @@
                             <label class="el-form-item__label">
                                 {{$t('Allow referrals')}}
                             </label>
-                            <el-checkbox :true-label="$t('yes')" :false-label="$t('no')" v-model="affiliate_wp.status">
+                            <el-checkbox true-label="yes" false-label="no" v-model="affiliate_wp.status">
                                 {{$t('Enable')}}
                             </el-checkbox>
                         </div>

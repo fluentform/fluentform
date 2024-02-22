@@ -66,7 +66,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-checkbox class="mr-3" v-model="turnstile.invisible" :true-label="$t('yes')" :false-label="$t('no')"></el-checkbox>
+                        <el-checkbox class="mr-3" v-model="turnstile.invisible" true-label="yes" false-label="no"></el-checkbox>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
