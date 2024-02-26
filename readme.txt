@@ -441,6 +441,18 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+= 5.2.0 (Date: February 26, 2024) =
+- Adds turnstile for conversational form
+- Improves turnstile with appearance modes
+- Fixes Inventory Module hiding empty stock
+- Fixes url escaping issue of form redirect
+- Fixes sanitization issue for html supported fields
+- Fixes Entry Export with user submission IP
+- Fixes PDF feed watermark image
+- Fixes Name Field aria-required attribute
+- Fixes PDF Feeds on duplicate form
+- Fixes Numeric min max Field Bug
+
 = 5.1.9 (Date: January 23, 2024) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
