@@ -381,7 +381,7 @@ class FormHandler
     
             $redirectUrl = wp_sanitize_redirect(urldecode($redirectUrl));
             $returnData = [
-                'redirectUrl' => esc_url($redirectUrl),
+                'redirectUrl' => esc_url_raw($redirectUrl),
                 'message'     => $message,
             ];
         }
