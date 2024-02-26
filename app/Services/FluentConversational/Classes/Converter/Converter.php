@@ -16,6 +16,7 @@ class Converter
 
         $form->reCaptcha = false;
         $form->hCaptcha = false;
+        $form->turnstile = false;
         $form->hasCalculation = false;
 
         $questions = [];
@@ -568,6 +569,31 @@ class Converter
                     FLUENTFORM_VERSION,
                     true
                 );
+            } elseif ('turnstile' === $field['element']) {
+                $turnstileConfig = get_option('_fluentform_turnstile_details');
+                $siteKey = ArrayHelper::get($turnstileConfig, 'siteKey');
+                $appearance = ArrayHelper::get($turnstileConfig, 'appearance', 'always');
+                $theme = ArrayHelper::get($turnstileConfig, 'theme', 'auto');
+
+                if (! $siteKey) {
+                    continue;
+                }
+
+                $question['siteKey'] = $siteKey;
+                $question['appearance'] = $appearance;
+                $question['theme'] = $theme;
+
+                $form->turnstile = [
+                    'siteKey' => $siteKey,
+                ];
+
+                wp_enqueue_script(
+                    'turnstile_conv',
+                    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                    [],
+                    FLUENTFORM_VERSION,
+                    false
+                );
             }
 
             do_action('fluentform/conversational_question', $question, $field, $form);
@@ -642,6 +668,7 @@ class Converter
             'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
             'recaptcha'             => 'FlowFormReCaptchaType',
             'hcaptcha'              => 'FlowFormHCaptchaType',
+            'turnstile'             => 'FlowFormTurnstileType',
             'address'               => 'FlowFormAddressType',
             'ffc_custom'            => 'FlowFormCustomType',
         ];
