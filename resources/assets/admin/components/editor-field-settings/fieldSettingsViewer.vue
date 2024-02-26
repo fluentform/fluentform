@@ -21,6 +21,11 @@
                 listOpt[prop] = fieldOptionsDictionary[prop];
             }
         });
+	    for (const prop in obj) {
+		    if (prop in listOpt) {
+			    delete listOpt[prop];
+		    }
+	    }
         return {...listOpt, ...obj};
     };
 
