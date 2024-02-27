@@ -587,7 +587,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 1.0.0 =
 * Init The most advanced form builder plugin
 
-[View changelog for all versions](https://fluentforms.com/docs/change-log/).
+[View changelog for all versions](https://fluentforms.com/docs/changelog/).
 
 == Upgrade Notice ==
 The latest Version is compatible with previous version, So nothing to worry
