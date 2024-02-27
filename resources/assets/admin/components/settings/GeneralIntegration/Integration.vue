@@ -165,6 +165,9 @@
         },
         methods: {
             add(integration_name) {
+                if (!integration_name) {
+                    return;
+                }
                 let integration = this.available_integrations[integration_name];
 
                 if(!integration.is_active) {
