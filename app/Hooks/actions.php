@@ -212,8 +212,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     ];
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement, $form) {
-            $element = apply_filters('fluentform/rendering_field_data_' . $upgradeElement, $element, $form);
-
+    
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
                 $formattedOptions = [];
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);

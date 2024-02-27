@@ -171,7 +171,7 @@ class Entries extends EntryQuery
 
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
         $submissionShortcodes = \FluentForm\App\Services\FormBuilder\EditorShortCode::getSubmissionShortcodes();
-        $submissionShortcodes['shortcodes']['{ip}'] = 'IP';
+        $submissionShortcodes['shortcodes']['{submission.ip}'] = __('Submitter IP', 'fluentform');
         if ($form->has_payment) {
             $submissionShortcodes['shortcodes']['{payment.payment_status}'] = __('Payment Status','fluentform');
             $submissionShortcodes['shortcodes']['{payment.payment_total}'] = __('Payment Total','fluentform');

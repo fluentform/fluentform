@@ -77,6 +77,6 @@ class Fields
             Arr::forget($field, 'raw');
         }
 
-        return $fields;
+        return apply_filters('fluentform/filtered_editor_fields', $fields);
     }
 }

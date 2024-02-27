@@ -18,7 +18,7 @@
             <el-row class="items-center" v-for="(logic, key) in items" :key="key" :gutter="12">
                 <el-col :md="8">
                     <div class="mb-2">
-                        <el-select v-model="items[key].field" style="width: 100%" @change="items[key].value = ''">
+                        <el-select popper-class="ff-mw-100" v-model="items[key].field" style="width: 100%" @change="items[key].value = ''">
                             <el-option
                                 v-for="(field, key) in fields" :key="key"
                                 :label="field.admin_label" :value="key"

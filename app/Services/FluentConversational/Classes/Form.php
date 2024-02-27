@@ -318,6 +318,7 @@ class Form
             'payment_coupon',
             'recaptcha',
             'hcaptcha',
+            'turnstile',
             'quiz_score',
             'rangeslider'
         ];
@@ -358,7 +359,7 @@ class Form
                         $field['settings'] = $existingSettings;
                     }
                     //adding required settings for captcha in conversational form
-                    if ('hcaptcha' == $element || 'recaptcha' == $element) {
+                    if ('hcaptcha' == $element || 'recaptcha' == $element || 'turnstile' == $element) {
                         $existingSettings = $field['settings'];
                         if (empty($existingSettings['validation_rules'])) {
                             $existingSettings['validation_rules'] = [
@@ -550,6 +551,7 @@ class Form
                 'hasCalculation' => (bool)$form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
+                'turnstile'      => $form->turnstile,
             ],
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
@@ -711,6 +713,7 @@ class Form
                 'hasCalculation' => (bool)$form->hasCalculation,
                 'reCaptcha'      => $form->reCaptcha,
                 'hCaptcha'       => $form->hCaptcha,
+                'turnstile'      => $form->turnstile,
             ],
             'form_id'                  => $form->id,
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
