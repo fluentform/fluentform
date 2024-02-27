@@ -178,7 +178,7 @@
       color: $text-color;
       background-image: none;
       background-clip: padding-box;
-      border: 1px solid #dadbdd;
+      border: 1px solid $border;
       border-radius: 7px;
       transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
       margin-bottom: 0;
@@ -186,7 +186,7 @@
       font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
       &:focus {
         color: $text-color;
-        background-color: #fff;
+        //background-color: #fff;
         border-color: $primary;
         outline: none;
         // ~ .ff-el-help-message {
@@ -225,9 +225,14 @@
       label.ff-el-form-check-label {
         margin-bottom: 7px;
         cursor: pointer;
-
+        color: $text-color;
         > span:before, > span:after {
           content: none;
+        }
+        &.ff_tc_label{
+          a{
+            color: $primary;
+          }
         }
       }
 
@@ -237,6 +242,11 @@
         }
       }
     }
+    &-input--label{
+      label{
+        color: $title-color;
+      }
+    }
   }
 
   // .mce-tinymce.mce-container.mce-panel {
@@ -244,6 +254,12 @@
   // }
   textarea{
     min-height: 90px;
+  }
+  .rangeslider__fill{
+    background: $primary;
+  }
+  .ff_range_value{
+    color: $title-color;
   }
 }
 

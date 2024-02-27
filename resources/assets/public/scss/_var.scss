@@ -1,7 +1,11 @@
 $prefix: '.ff';
 $el-prefix: $prefix + '-el';
 $danger: #F56C6C;
-$font-color: #000;
+//$font-color: #000;
 $geenishGray: #ced4da;
-$primary:      #1a7efb;
-$text-color:      #606266;
+
+$primary:         var(--primary);
+$border:          var(--border);
+
+$title-color:     var(--emphasis);
+$text-color:      var(--secondary);
