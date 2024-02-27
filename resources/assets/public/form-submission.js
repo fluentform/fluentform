@@ -1209,6 +1209,9 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.min = function (el, rule) {
+                    if (!el.val()) {
+                        return true;
+                    }
                     var val = window.ff_helper.numericVal(el);
                     val = val.toString();
                     if (!rule.value || !val.length) {
@@ -1226,6 +1229,9 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.max = function (el, rule) {
+                    if (!el.val()) {
+                        return true;
+                    }
                     var val = window.ff_helper.numericVal(el);
                     val = val.toString();
 
@@ -1244,6 +1250,9 @@ jQuery(document).ready(function () {
                  * @return bool
                  */
                 this.digits = function (el, rule) {
+                    if (!el.val()) {
+                        return true;
+                    }
                     var val = window.ff_helper.numericVal(el);
                     val = val.toString();
 

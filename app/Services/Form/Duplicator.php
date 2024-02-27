@@ -84,6 +84,7 @@ class Duplicator
                 $pdfData = [
                     'meta_key' => $pdf_feed->meta_key,
                     'value'    => $pdf_feed->value,
+                    'form_id'  => $form->id,
                 ];
                 $pdfFeedMap[$pdf_feed->id] = $form->formMeta()->insertGetId($pdfData);
             }
