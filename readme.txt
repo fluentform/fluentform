@@ -369,6 +369,21 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 5.1.11 (Date: February 26, 2024) =
+- Fixes URL escaping bug
+
+= 5.1.10 (Date: February 26, 2024) =
+- Adds turnstile captcha for conversational form
+- Improves turnstile with appearance modes
+- Fixes Inventory Module hiding empty stock
+- Fixes url escaping issue of form redirect
+- Fixes sanitization issue for html supported fields
+- Fixes Entry Export with user submission IP
+- Fixes PDF feed watermark image
+- Fixes Name Field aria-required attribute
+- Fixes PDF Feeds on duplicate form
+- Fixes Numeric min max Field Bug
+
 = 5.1.9 (Date: January 19, 2024) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
@@ -424,6 +439,47 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds form theme change support in Gutenberg block
 - Adds theme style inherit option
 
+= 5.0.9 (Date: Sept 8, 2023) =
+- In active form submission prevented
+- Fixes Broken Access Control vulnerability
+
+= 5.0.8 (Date: August 24, 2023) =
+- Adds address field in conversational form with Google Map Support
+- Adds entries sort by column
+
+= 5.0.7 (Date: July 18, 2023) =
+- Fixes LiteSpeed caching issue
+- Fixes dynamic shortcode bug
+- Fixes style issues
+- Fixes PDF issue for checkbox field
+- Fixes post update issue for block themes
+- Fixes conditional issue for payment items
+- Improves email on iOS devices
+
+= 5.0.5 (Date: June 28, 2023) =
+ - Fixed Form Editor Update Error due to Old API
+
+= 5.0.4 (Date: June 28, 2023) =
+ - Styling Improvement for Gutenberg Editor
+ - Fixed ModSec issues for Form Builder & Settings Update
+ - Fixed Compatibility Issue with WP Fusion
+
+= 5.0.3 (Date: Jun 26, 2023) =
+ - Form Restrictions check improved
+ - Email Notification improved
+ - Visual Reporting issues fixed
+ - Fixed issues with the REST API endpoints
+ - Fixed Compatibility issue with Caching Plugins and Few other servers
+ - Styling issues fixed
+ - Deprecated hooks notices fixed
+ - Litespeed cache compatibility issue fixed
+
+= 5.0.2 (Date: Jun 23, 2023) =
+ - Fixed UI issues with Conversational Forms
+ - Fixed Styling issues from 5.0.0
+ - Advanced Calculation issues fixed
+ - Fixed Deprecated hooks from Fluent Forms 4.*
+
 = 5.0.0 (Date: June 22, 2023) =
  - Revamped UI and better UX
  - Global Styler Improvement
@@ -438,156 +494,146 @@ You can get support from our official support thread at <a href="https://wpmanag
  - Updated filter & action hooks naming convention with older hooks support
  - Updated translation strings
 
-= 4.3.0 (Date: Jan 18, 2022) =
-- Adds other form plugins' migrator
-- Adds hCaptcha field
-- Adds malicious attack prevention mechanism
-- Adds support for advanced date configuration in Conversational Forms
-- Adds placeholder settings input for Conversational Forms
-- Adds advanced configuration of country field for Conversational forms
-- Adds validation rule message settings for Email and URL fields
-- Fixes PDF Feed issue on form duplication
-- Fixes url validation regex
-- Fixes Gutenberg block css class issue
-- Fixes Gutenberg block shortcode issue for Conversational Forms
-- Fixes PHP 8 warning issue
-- Improves backend translations
-- Removes file & images link from parser when auto delete enabled
-- Improves Helper Shortcode for submission count of payments
-- Improves Step forms for Autoslider with HTML input
+= 4.3.24 (Date: February 03, 2023) =
+- Fixes Accessibility CSS issue
 
-= 4.1.0 (Date: June 30, 2021) =
-* Improvements on Conversational Forms
-* Introducing ReCaptcha V3
-* Elementor Integration Widget Improvements
-* Added prefix and suffix to text, email, mask inputs
-* Integration Improvements
-* Other CRON related issues fixed
-* Custom RAW HTML Email Body for advanced or simple designs
+= 4.3.23 (Date: February 02, 2023) =
+ - Adds WPForms Form & Entry Migrator
+ - Adds Form shortcode page finder
+ - Improves Form Accessibility
+ - Fixes Mp3 File issue in Conversational Form
+ - Fixes Oxygen Builder Popup Form
+ - Fixes Elementor v3.9.1 popup issue
+ - Fixes Migration Issue of Gravity Form
+ - Fixes Numeric Field US format Negative value
+ - Fixes URL validation for Conversational Form
+ - Fixes Asterisk Position for Conversational Forms
+ - Fixes Conditional Shortcode contains ‘&’ character
+ - Fixes Conversational Form Duplicated Form’s Design Issue
+ - Fixes Conditional Logic Empty Ruleset for Conversational Form
+ - Fixes Text Input field’s Max Text Length for Conversational Form
+ - Fixes Conditional Logic with Calculation for Conversational Form
+ - Fixes Conditional Logic Enabled Icon on Conversational Form Fields
+ - Fixes Payment Quantity Field issue on Conversational Form Editor
+ - Fixes Error Message instant Trigger For Numeric Field on Conversational Form
 
-= 4.0.0 (Date: June 08, 2021) =
-* Introducing Conversational Form Style
-* Dedicated landing page for Conversational Form
-* Added Layout Option for Conversational Form
-* Bulk Resend Notification Fixed
-* Various Integration Improvements
-* Editor UI improvements
-* PHP 8.0 Support
-* PHP API
-* Custom Submit Button
+= 4.3.22 (Date: November 11, 2022) =
+- Adds Conversational form to Regular form converter
+- Fixes conditional field for EU number style
+- Fixes rating field for conditional
+- Fixes file upload preview
 
-= 3.6.0 (Date: June 18, 2020) =
-* Brand new UI for Form Builder
-* Introducing Weekly Email Summary for all of your forms
-* See All the Entries aggregated from all the forms
-* Better Oxygen Page Builder Support
-* Advanced Form Validation (Less Spam)
-* Introducing Elementor widget
-* Added German Language File
-* Mobile-friendly Admin Panel
-* Conditional logic issues for “less than” and “less than equal”
-* Added priority-based country selection
-* Added Kosovo to the country list
-* Elementor and Oxygen popup issues for step forms
-* Option to position input labels below the fields
-* Added layout option to make Radio/Checkbox as Button Selection style
-* Passwords will be now truncated after feeds and API calls completed
-* Added conditional source support for Hidden Fields
+= 4.3.21 (Date: October 27, 2022) =
+- Adds Ninja Forms entry migrator
+- Adds Gravity Forms entry migrator
+- Adds Birthday field support on Mailchimp
+- Improves Sanitization
+- Improves Conversational Forms responsiveness
+- Improves UX
 
-= 3.5.0 (Date: March 30, 2020) =
-* Mailchimp tags syncing bug fix
-* CleanTalk issue fix
-* Beaver Builder integration issue fix
-* Added indication icon for conditional fields
-* Internal Architecture improvement
+= 4.3.20 (Date: October 22, 2022) =
+- Fixes Date / Time field config bug
 
-= 3.2.3 (Date: March 02, 2020) =
-* Minor Bug Fixes
+= 4.3.18 (Date: October 19, 2022) =
+- Improves Turnstile
+- Fixes condition checker nullable bug
+- Fixes Multi-Select upgrade bug
 
-= 3.2.3 (Date: February 29, 2020) =
-* Conditional Fields Improvement
-* UI Improvement
-* Internal code improvement and bug fixes
+= 4.3.17 (Date: October 18, 2022) =
+- Adds GDPR field in Conversational Form
+- Fixes Email Feed duplicate bug
+- Fixes Custom Button style in Containers
+- Fixes Custom Button style in Step Form
+- Improves Multi-Select field
+- Improves Conversational Form calculation
 
-= 3.2.0 (Date: February 10, 2020) =
-* Email delivery fix for multiple emails
-* Frontend Form Submission Error handle
-* Prevent form submission on Enter key press
-* Added CSS class field for containers
-* Added Suffix and Prefix label for Numeric Fields
+= 4.3.13 (Date: October 07, 2022) =
+- Adds Cloudflare Turnstile
+- Adds full admin side translations
+- Improves entry page styles
+- Improves label placement settings
+- Improves Slack integration for Checkable Grid
+- Improves Password truncate module
+- Improves AJAX calls
+- Fixes CSV export issue
+- Fixes multiple success message issue
+- Fixes conditional logics for Containers
+- Fixes long file names issue for file upload
 
-= 3.1.0 (Date: November 19, 2019) =
-* Added Gutenberg block
-* Added native form widget for sidebars and widget arias
-* Added step attribute to numeric field
-* File attachment list view improved
-* Added hidden fields to conditional logics
-* Fixed submission error handler
-* Added global activity logs
-* Improved Form Editor UX
-* Added success message for redirect type confirmations
+= 4.3.12 (Date: September 01, 2022) =
+- Adds manual control for Container width
+- Improves PHP 8 compatibility
+- Improves field deletion UX
+- Improves Conversational Forms Captcha
+- Fixes Global Default settings not being applied
+- Fixes form submission search for accented characters
+- Fixes Captcha Label placement
+- Fixes http_referer shortcode
+- Fixes URL field issue
+- Fixes additional shortcode Entry Count
+- Fixes Conversational form auto validation message issue
+- Fixes Conversational form long "Custom HTML Field" issue
 
-= 3.0.0 (Date: October 13. 2019) =
-* All new form editor screen with a simple, powerful and clean interface
-* Built-in Data analysis tool for form submissions.
-* Added new DB table for advanced reporting
-* Submit button styling and customization option
-* Improved form security
-* Form Preview re-engineered
-* Exporting data issue fixed
-* Entry status management improvement
-* Lots of integration added
-* Global Integration and Module manager
+= 4.3.10 (Date: August 04, 2022) =
+- Adds Forms type filter
+- Improves data sanitization
+- Improves email summary
+- Improves Resizeable Container
+- Fixes Conversational Form issue with Elementor popup
 
-= 2.0.1 (Date: June 01, 2019) =
-* Added lots of UI improvement
-* Added option to add custom css and JS
-* Added response filter options
-* Added an option to export data
-* Added Dashboard widget for a quick look
+= 4.3.9 (Date: July 04, 2022) =
+- Adds Resizeable Container Width
+- Adds hCaptcha in conversational form
+- Improves Regex pattern Condition
+- Fixes confirmation message responsive issue
+- Fixes conditional logic empty issue
+- Fixes form duplicate issue
+- Fixes auto captcha option issue with Custom Submit Button
+- Fixes tooltip issue
 
-= 1.7.0 (Date: October 11, 2018) =
-* Added Lots of New features
-* Added Brand New Fields
-* Improved Performance by around 50%
-* Added Integration Bugs
-* Conditional Fields have more options
+= 4.3.6 (Date: May 19, 2022) =
+- Adds public PDF downloadable option
+- Improves Slack integration
+- Fixes Caldera migrator
+- Fixes CSS issue for multiple choice field options
+- Fixes email footer HTML issue
+- Fixes Numeric field formatting issue
 
-= 1.6.0 (Date: June 28, 2018) =
-* Added More Integrations
-* Added Rating fields
-* Improved Export Entries
-* Added GDPR Compliance
+= 4.3.5 (Date: Apr 22, 2022) =
+- Adds CLI support
+- Adds Oxygen builder native widget support
+- Adds support for programmatically form rendering
+- Adds digits validation for numeric field
+- Adds mechanism for adding custom validation rules
+- Adds {all_data_without_hidden_fields} shortcode
+- Improves payment status translations
+- Improves deactivated form styles
+- Fixes help message tooltip position issue
+- Fixes tooltip behavior in Elementor Popup
+- Fixes reCAPTCHA v3 issue in Elementor Popup
+- Fixes entries table style
+- Fixes dropdown open style issue
+- Fixes Elementor widget issue
 
-= 1.5.0 (Date: April 19, 2018) =
-* Added Mask Input Field
-* Added Submit Button Customization
-* Added Dynamic Default Value from $_GET Parameter
-* Added + icon on Form Editor for faster Form Create and Edit
-* Placement of Required Items *
-* Added Ratings component
-* Added dynamic fields on Redirects
+= 4.3.4 (Date: Mar 18, 2022) =
+- Adds configuragion option for email summary subject
+- Adds RTL support for backend
+- Adds Datepicker field language support
+- Adds integration search option on form settings
+- Adds elementor popup support for Conversation Forms
+- Adds quick form deactivation toggle option
+- Adds Timezone preset for Dropdown field
+- Improves calculation module
+- Improves chained select CSV upload
+- Improves conditional rendering module
+- Improves Select field data rendering
+- Improves entry user update module
+- Fixes US style numerical value calculation
+- Fixes shareable link bug
+- Fixes mask field bug
+...
 
-= 1.4.0 ( Date: 19.03.2018 ) =
-* Whole New Form Builder Editor
-* Added More Input Fields
-* Reviewing form entries is more easy by going next and previous.
-* Added capability to add custom fields for 3rd party developers.
-
-= 1.3.0 ( Date: 17.02.2018 ) =
-* Refactoring Form Builder for better performance
-* Added Image as Submit Button on form
-
-= 1.1.0 =
-* Added Mailchimp Integration
-* Added Slack Integration
-* Added Label positioning for each form element
-* Added Country Field
-
-= 1.0.0 =
-* Init The most advanced form builder plugin
-
-[View changelog for all versions](https://fluentforms.com/docs/changelog/).
+[View full changelog for all versions](https://fluentforms.com/docs/changelog/).
 
 == Upgrade Notice ==
 The latest Version is compatible with previous version, So nothing to worry
