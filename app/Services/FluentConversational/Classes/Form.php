@@ -540,16 +540,8 @@ class Form
         wp_localize_script('fluent_forms_conversational_form', $varName, [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'form'                     => [
-                'id'             => $form->id,
-                'questions'      => $form->questions,
-                'image_preloads' => $form->image_preloads,
-                'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool)$form->has_payment,
-                'hasCalculation' => (bool)$form->hasCalculation,
-                'reCaptcha'      => $form->reCaptcha,
-                'hCaptcha'       => $form->hCaptcha,
-            ],
+            'nonce'                    => wp_create_nonce(),
+            'form'                     => $this->getLocalizedForm($form),
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
             'form_id'                  => $form->id,
@@ -702,16 +694,8 @@ class Form
         wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'form'                     => [
-                'id'             => $form->id,
-                'questions'      => $form->questions,
-                'image_preloads' => $form->image_preloads,
-                'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool)$form->has_payment,
-                'hasCalculation' => (bool)$form->hasCalculation,
-                'reCaptcha'      => $form->reCaptcha,
-                'hCaptcha'       => $form->hCaptcha,
-            ],
+            'nonce'                    => wp_create_nonce(),
+            'form'                     => $this->getLocalizedForm($form),
             'form_id'                  => $form->id,
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
@@ -785,7 +769,7 @@ class Form
         wp_enqueue_script(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            ['intlTelInputUtils', 'intlTelInput', 'flatpickr', 'google-recaptcha', 'hcaptcha'],
+            ['intlTelInputUtils', 'intlTelInput', 'flatpickr', 'google-recaptcha', 'hcaptcha', 'conv-turnstile'],
             FLUENTFORM_VERSION,
             true
         );
@@ -871,5 +855,23 @@ class Form
         }
 
         return $asteriskPlacement;
+    }
+
+    private function getLocalizedForm($form)
+    {
+        return [
+            'id'                        => $form->id,
+            'questions'                 => $form->questions,
+            'image_preloads'            => $form->image_preloads,
+            'submit_button'             => $form->submit_button,
+            'hasPayment'                => (bool)$form->has_payment,
+            'hasCalculation'            => (bool)$form->hasCalculation,
+            'reCaptcha'                 => $form->reCaptcha,
+            'hCaptcha'                  => $form->hCaptcha,
+            'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
+            'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
+            'has_save_link'             => $form->save_state,
+            'step_completed'            => $form->stepCompleted ?? 0
+        ];
     }
 }

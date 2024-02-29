@@ -27,8 +27,11 @@ class Converter
 
         $hasSaveAndResume = static::hasSaveAndResume($form);
         $saveAndResumeData = [];
-        if ($hasSaveAndResume) {
+
+        if ($hasSaveAndResume && ArrayHelper::get($form->settings, 'conv_form_per_step_save')) {
             $saveAndResumeData = static::getSaveAndResumeData($form);
+
+            $form->stepCompleted = intval(ArrayHelper::get($saveAndResumeData, 'step_completed', 0));
         }
 
         foreach ($fields as $field) {
@@ -399,8 +402,8 @@ class Converter
                 $question['settings'] = ArrayHelper::get($field, 'settings');
 
                 $vars = apply_filters('fluentform/save_progress_vars', [
-                    'ajax_url'                  => admin_url('admin-ajax.php'),
-                    'source_url'                => home_url($_SERVER['REQUEST_URI']),
+                    'ajaxurl'                   => admin_url('admin-ajax.php'),
+                    'sourceurl'                 => home_url($_SERVER['REQUEST_URI']),
                     'form_id'                   => $form->id,
                     'nonce'                     => wp_create_nonce(),
                     'copy_button'               => fluentFormMix('img/copy.svg'),
@@ -961,15 +964,23 @@ class Converter
     private static function hasSaveAndResume($form)
     {
         $saveAndResume = false;
+        $hash = '';
+        $form->save_state = false;
 
         $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
 
         if ($key) {
-            $key = base64_decode($key);
-            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $key)->first();
-            if ($draftForm) {
-                $saveAndResume = true;
-            }
+            $hash = base64_decode($key);
+            $form->save_state = true;
+        } else {
+            $cookieName = 'fluentform_step_form_hash_' . $form->id;
+            $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
+        }
+
+        $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+
+        if ($draftForm) {
+            $saveAndResume = true;
         }
 
         return $saveAndResume;
@@ -978,25 +989,23 @@ class Converter
     private static function getSaveAndResumeData($form)
     {
         $draftForm = null;
-        $data = [];
+        $data = null;
         $formId = $form->id;
         $cookieName = 'fluentform_step_form_hash_' . $formId;
         $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
 
         if ($hash) {
-            if ($formId) {
-                $draftForm = wpFluent()->table('fluentform_draft_submissions')
-                                       ->where('hash', $hash)
-                                       ->where('form_id', $formId)
-                                       ->first();
-            }
-        }
-
-        if (!$draftForm && $userId = get_current_user_id()) {
+            $draftForm = wpFluent()->table('fluentform_draft_submissions')
+                                   ->where('hash', $hash)
+                                   ->where('form_id', $formId)
+                                   ->first();
+        } elseif (!$draftForm && $userId = get_current_user_id()) {
             $draftForm = wpFluent()->table('fluentform_draft_submissions')
                                    ->where('user_id', $userId)
                                    ->where('form_id', $formId)
                                    ->first();
+        } else {
+            return $data;
         }
 
         if ($draftForm) {
