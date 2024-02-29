@@ -335,18 +335,29 @@ class SubmissionHandlerService
                 if (strpos($redirectUrl, '&') || '=' == substr($redirectUrl, -1) || $encodeUrl) {
                     $urlArray = explode('?', $redirectUrl);
                     $baseUrl = array_shift($urlArray);
-                    
-                    $query = wp_parse_url($redirectUrl)['query'];
+
+                    $parsedUrl = wp_parse_url($redirectUrl);
+                    $query = Arr::get($parsedUrl, 'query', '');
                     $queryParams = explode('&', $query);
                     
                     $params = [];
                     foreach ($queryParams as $queryParam) {
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
-                            $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            if (strpos($paramArray[1], '%') === false) {
+                                $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            } else {
+                                // Param string is URL-encoded
+                                $params[$paramArray[0]] = $paramArray[1];
+                            }
                         }
                     }
-                    $redirectUrl = add_query_arg($params, $baseUrl);
+                    if ($params) {
+                        $redirectUrl = add_query_arg($params, $baseUrl);
+                        if ($fragment = Arr::get($parsedUrl, 'fragment')) {
+                            $redirectUrl .= '#' . $fragment;
+                        }
+                    }
                 }
             }
             
