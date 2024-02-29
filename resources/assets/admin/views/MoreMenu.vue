@@ -66,12 +66,10 @@ export default {
             visible: false,
             fields: [
                 "Name Fields",
-                "Section Break",
                 "Shortcode",
                 "Action Hook",
                 "Form Step",
                 "Custom Submit Button",
-                "Range Slider Field",
                 "Net Promoter Score",
                 "Chained Select Field",
                 "Color Picker Field",
