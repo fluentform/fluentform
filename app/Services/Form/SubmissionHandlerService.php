@@ -336,7 +336,7 @@ class SubmissionHandlerService
                     $urlArray = explode('?', $redirectUrl);
                     $baseUrl = array_shift($urlArray);
                     
-                    $query = wp_parse_url($redirectUrl)['query'];
+                    $query = Arr::get(wp_parse_url($redirectUrl), 'query', '');
                     $queryParams = explode('&', $query);
                     
                     $params = [];
@@ -346,7 +346,9 @@ class SubmissionHandlerService
                             $params[$paramArray[0]] = urlencode($paramArray[1]);
                         }
                     }
-                    $redirectUrl = add_query_arg($params, $baseUrl);
+                    if ($params) {
+                        $redirectUrl = add_query_arg($params, $baseUrl);
+                    }
                 }
             }
             
