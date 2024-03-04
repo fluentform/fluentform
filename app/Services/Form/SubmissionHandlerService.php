@@ -343,7 +343,12 @@ class SubmissionHandlerService
                     foreach ($queryParams as $queryParam) {
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
-                            $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            if (strpos($paramArray[1], '%') === false) {
+                                $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            } else {
+                                // Param string is URL-encoded
+                                $params[$paramArray[0]] = $paramArray[1];
+                            }
                         }
                     }
                     if ($params) {
