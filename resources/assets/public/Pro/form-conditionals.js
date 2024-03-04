@@ -43,10 +43,12 @@ const formConditional = function ($, $theForm, form) {
             const conditionAppInstance = new ConditionApp(form.conditionals, formData);
 
             $.each(watchableFields, (name, el) => {
-                el.on('change', () => {
+                el.on('change keydown', (e) => {
                     formData = getFormData();
                     conditionAppInstance.setFormData(formData);
-                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    if (e.type == 'change' || (e.type == 'keydown' && e.keyCode == '9')) {
+                        hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    }
                 });
             });
 
