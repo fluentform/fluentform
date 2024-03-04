@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\Common;
+namespace FluentForm\Box\Spout\Reader\Common;
 
-use Box\Spout\Reader\Wrapper\XMLReader;
+use Fluentform\Box\Spout\Reader\Wrapper\XMLReader;
 
 /**
  * Class XMLProcessor
  * Helps process XML files
  *
- * @package Box\Spout\Reader\Common
+ * @package FluentForm\Box\Spout\Reader\Common
  */
 class XMLProcessor
 {
@@ -25,7 +25,7 @@ class XMLProcessor
     const PROCESSING_STOP = 2;
 
 
-    /** @var \Box\Spout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
+    /** @var \FluentForm\Box\Spout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
     protected $xmlReader;
 
     /** @var array Registered callbacks */
@@ -33,7 +33,7 @@ class XMLProcessor
 
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object
      */
     public function __construct($xmlReader)
     {
@@ -91,7 +91,7 @@ class XMLProcessor
      * Stops whenever a callback indicates that reading should stop or at the end of the file.
      *
      * @return void
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException
+     * @throws \FluentForm\Box\Spout\Reader\Exception\XMLProcessingException
      */
     public function readUntilStopped()
     {

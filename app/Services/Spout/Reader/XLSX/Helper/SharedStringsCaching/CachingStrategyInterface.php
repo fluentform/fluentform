@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
 
 /**
  * Interface CachingStrategyInterface
  *
- * @package Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
  */
 interface CachingStrategyInterface
 {
@@ -31,7 +31,7 @@ interface CachingStrategyInterface
      *
      * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      * @return string The shared string at the given index
-     * @throws \Box\Spout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
+     * @throws \FluentForm\Box\Spout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
      */
     public function getStringAtIndex($sharedStringIndex);
 

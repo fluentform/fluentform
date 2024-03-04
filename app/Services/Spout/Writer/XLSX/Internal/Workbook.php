@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Internal;
+namespace FluentForm\Box\Spout\Writer\XLSX\Internal;
 
-use Box\Spout\Writer\Common\Internal\AbstractWorkbook;
-use Box\Spout\Writer\XLSX\Helper\FileSystemHelper;
-use Box\Spout\Writer\XLSX\Helper\SharedStringsHelper;
-use Box\Spout\Writer\XLSX\Helper\StyleHelper;
-use Box\Spout\Writer\Common\Sheet;
+use FluentForm\Box\Spout\Writer\Common\Internal\AbstractWorkbook;
+use FluentForm\Box\Spout\Writer\XLSX\Helper\FileSystemHelper;
+use FluentForm\Box\Spout\Writer\XLSX\Helper\SharedStringsHelper;
+use FluentForm\Box\Spout\Writer\XLSX\Helper\StyleHelper;
+use FluentForm\Box\Spout\Writer\Common\Sheet;
 
 /**
  * Class Workbook
  * Represents a workbook within a XLSX file.
  * It provides the functions to work with worksheets.
  *
- * @package Box\Spout\Writer\XLSX\Internal
+ * @package FluentForm\Box\Spout\Writer\XLSX\Internal
  */
 class Workbook extends AbstractWorkbook
 {
@@ -26,21 +26,21 @@ class Workbook extends AbstractWorkbook
     /** @var bool Whether inline or shared strings should be used */
     protected $shouldUseInlineStrings;
 
-    /** @var \Box\Spout\Writer\XLSX\Helper\FileSystemHelper Helper to perform file system operations */
+    /** @var \FluentForm\Box\Spout\Writer\XLSX\Helper\FileSystemHelper Helper to perform file system operations */
     protected $fileSystemHelper;
 
-    /** @var \Box\Spout\Writer\XLSX\Helper\SharedStringsHelper Helper to write shared strings */
+    /** @var \FluentForm\Box\Spout\Writer\XLSX\Helper\SharedStringsHelper Helper to write shared strings */
     protected $sharedStringsHelper;
 
-    /** @var \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles */
+    /** @var \FluentForm\Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles */
     protected $styleHelper;
 
     /**
      * @param string $tempFolder
      * @param bool $shouldUseInlineStrings
      * @param bool $shouldCreateNewSheetsAutomatically
-     * @param \Box\Spout\Writer\Style\Style $defaultRowStyle
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $defaultRowStyle
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
      */
     public function __construct($tempFolder, $shouldUseInlineStrings, $shouldCreateNewSheetsAutomatically, $defaultRowStyle)
     {
@@ -59,7 +59,7 @@ class Workbook extends AbstractWorkbook
     }
 
     /**
-     * @return \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles to XLSX files
+     * @return \FluentForm\Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles to XLSX files
      */
     protected function getStyleHelper()
     {
@@ -78,7 +78,7 @@ class Workbook extends AbstractWorkbook
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
      * @return Worksheet The created sheet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
     public function addNewSheet()
     {

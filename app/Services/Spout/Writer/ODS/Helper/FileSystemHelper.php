@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Helper;
+namespace FluentForm\Box\Spout\Writer\ODS\Helper;
 
-use Box\Spout\Writer\Common\Helper\ZipHelper;
-use Box\Spout\Writer\ODS\Internal\Worksheet;
+use FluentForm\Box\Spout\Writer\Common\Helper\ZipHelper;
+use FluentForm\Box\Spout\Writer\ODS\Internal\Worksheet;
 
 /**
  * Class FileSystemHelper
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files
  *
- * @package Box\Spout\Writer\ODS\Helper
+ * @package FluentForm\Box\Spout\Writer\ODS\Helper
  */
-class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
+class FileSystemHelper extends \FluentForm\Box\Spout\Common\Helper\FileSystemHelper
 {
     const APP_NAME = 'Spout';
     const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
@@ -55,7 +55,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates all the folders needed to create a ODS file, as well as the files that won't change.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
      */
     public function createBaseFilesAndFolders()
     {
@@ -71,7 +71,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the folder that will be used as root
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder
      */
     protected function createRootFolder()
     {
@@ -83,7 +83,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the "META-INF" folder under the root folder as well as the "manifest.xml" file in it
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder or the "manifest.xml" file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder or the "manifest.xml" file
      */
     protected function createMetaInfoFolderAndFile()
     {
@@ -98,7 +98,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the "manifest.xml" file under the "META-INF" folder (under root)
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createManifestFile()
     {
@@ -122,7 +122,7 @@ EOD;
      * This folder is not part of the final ODS file and is only used to be able to jump between sheets.
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder
      */
     protected function createSheetsContentTempFolder()
     {
@@ -134,7 +134,7 @@ EOD;
      * Creates the "meta.xml" file under the root folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createMetaFile()
     {
@@ -161,7 +161,7 @@ EOD;
      * Creates the "mimetype" file under the root folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createMimetypeFile()
     {

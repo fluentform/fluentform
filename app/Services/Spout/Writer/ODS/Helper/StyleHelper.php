@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Helper;
+namespace FluentForm\Box\Spout\Writer\ODS\Helper;
 
-use Box\Spout\Writer\Common\Helper\AbstractStyleHelper;
-use Box\Spout\Writer\Style\BorderPart;
+use FluentForm\Box\Spout\Writer\Common\Helper\AbstractStyleHelper;
+use FluentForm\Box\Spout\Writer\Style\BorderPart;
 
 /**
  * Class StyleHelper
  * This class provides helper functions to manage styles
  *
- * @package Box\Spout\Writer\ODS\Helper
+ * @package FluentForm\Box\Spout\Writer\ODS\Helper
  */
 class StyleHelper extends AbstractStyleHelper
 {
@@ -20,8 +20,8 @@ class StyleHelper extends AbstractStyleHelper
      * Registers the given style as a used style.
      * Duplicate styles won't be registered more than once.
      *
-     * @param \Box\Spout\Writer\Style\Style $style The style to be registered
-     * @return \Box\Spout\Writer\Style\Style The registered style, updated with an internal ID.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style The style to be registered
+     * @return \FluentForm\Box\Spout\Writer\Style\Style The registered style, updated with an internal ID.
      */
     public function registerStyle($style)
     {
@@ -209,7 +209,7 @@ EOD;
     /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     protected function getStyleSectionContent($style)
@@ -229,7 +229,7 @@ EOD;
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     private function getTextPropertiesSectionContent($style)
@@ -246,7 +246,7 @@ EOD;
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     private function getFontSectionContent($style)
@@ -291,7 +291,7 @@ EOD;
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     private function getTableCellPropertiesSectionContent($style)
@@ -326,7 +326,7 @@ EOD;
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     private function getBorderXMLContent($style)
@@ -343,7 +343,7 @@ EOD;
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return string
      */
     private function getBackgroundColorXMLContent($style)

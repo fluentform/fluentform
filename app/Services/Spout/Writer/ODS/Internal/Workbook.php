@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Internal;
+namespace FluentForm\Box\Spout\Writer\ODS\Internal;
 
-use Box\Spout\Writer\Common\Internal\AbstractWorkbook;
-use Box\Spout\Writer\ODS\Helper\FileSystemHelper;
-use Box\Spout\Writer\ODS\Helper\StyleHelper;
-use Box\Spout\Writer\Common\Sheet;
+use FluentForm\Box\Spout\Writer\Common\Internal\AbstractWorkbook;
+use FluentForm\Box\Spout\Writer\ODS\Helper\FileSystemHelper;
+use FluentForm\Box\Spout\Writer\ODS\Helper\StyleHelper;
+use FluentForm\Box\Spout\Writer\Common\Sheet;
 
 /**
  * Class Workbook
  * Represents a workbook within a ODS file.
  * It provides the functions to work with worksheets.
  *
- * @package Box\Spout\Writer\ODS\Internal
+ * @package FluentForm\Box\Spout\Writer\ODS\Internal
  */
 class Workbook extends AbstractWorkbook
 {
@@ -22,17 +22,17 @@ class Workbook extends AbstractWorkbook
      */
     protected static $maxRowsPerWorksheet = 1048576;
 
-    /** @var \Box\Spout\Writer\ODS\Helper\FileSystemHelper Helper to perform file system operations */
+    /** @var \FluentForm\Box\Spout\Writer\ODS\Helper\FileSystemHelper Helper to perform file system operations */
     protected $fileSystemHelper;
 
-    /** @var \Box\Spout\Writer\ODS\Helper\StyleHelper Helper to apply styles */
+    /** @var \FluentForm\Box\Spout\Writer\ODS\Helper\StyleHelper Helper to apply styles */
     protected $styleHelper;
 
     /**
      * @param string $tempFolder
      * @param bool $shouldCreateNewSheetsAutomatically
-     * @param \Box\Spout\Writer\Style\Style $defaultRowStyle
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $defaultRowStyle
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
      */
     public function __construct($tempFolder, $shouldCreateNewSheetsAutomatically, $defaultRowStyle)
     {
@@ -45,7 +45,7 @@ class Workbook extends AbstractWorkbook
     }
 
     /**
-     * @return \Box\Spout\Writer\ODS\Helper\StyleHelper Helper to apply styles to ODS files
+     * @return \FluentForm\Box\Spout\Writer\ODS\Helper\StyleHelper Helper to apply styles to ODS files
      */
     protected function getStyleHelper()
     {
@@ -64,7 +64,7 @@ class Workbook extends AbstractWorkbook
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
      * @return Worksheet The created sheet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
     public function addNewSheet()
     {

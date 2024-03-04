@@ -1,20 +1,20 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace FluentForm\Box\Spout\Reader\XLSX;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\Reader\XLSX\Helper\CellHelper;
-use Box\Spout\Reader\XLSX\Helper\CellValueFormatter;
-use Box\Spout\Reader\XLSX\Helper\StyleHelper;
-use Box\Spout\Reader\Common\XMLProcessor;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\Exception\XMLProcessingException;
+use FluentForm\Box\Spout\Reader\IteratorInterface;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Reader\XLSX\Helper\CellHelper;
+use FluentForm\Box\Spout\Reader\XLSX\Helper\CellValueFormatter;
+use FluentFormBox\Spout\Reader\XLSX\Helper\StyleHelper;
+use FluentForm\Box\Spout\Reader\Common\XMLProcessor;
 
 /**
  * Class RowIterator
  *
- * @package Box\Spout\Reader\XLSX
+ * @package FluentForm\Box\Spout\Reader\XLSX
  */
 class RowIterator implements IteratorInterface
 {
@@ -36,10 +36,10 @@ class RowIterator implements IteratorInterface
     /** @var string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml */
     protected $sheetDataXMLFilePath;
 
-    /** @var \Box\Spout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
+    /** @var \FluentForm\Box\Spout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
     protected $xmlReader;
 
-    /** @var \Box\Spout\Reader\Common\XMLProcessor Helper Object to process XML nodes */
+    /** @var \FluentForm\Box\Spout\Reader\Common\XMLProcessor Helper Object to process XML nodes */
     protected $xmlProcessor;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
@@ -81,7 +81,7 @@ class RowIterator implements IteratorInterface
     /**
      * @param string $filePath Path of the XLSX file being read
      * @param string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param \Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
+     * @param \FluentForm\Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
      * @param Helper\SharedStringsHelper $sharedStringsHelper Helper to work with shared strings
      */
     public function __construct($filePath, $sheetDataXMLFilePath, $options, $sharedStringsHelper)
@@ -122,7 +122,7 @@ class RowIterator implements IteratorInterface
      * @link http://php.net/manual/en/iterator.rewind.php
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data XML cannot be read
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data XML cannot be read
      */
     public function rewind()
     {
@@ -158,8 +158,8 @@ class RowIterator implements IteratorInterface
      * @link http://php.net/manual/en/iterator.next.php
      *
      * @return void
-     * @throws \Box\Spout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
-     * @throws \Box\Spout\Common\Exception\IOException If unable to read the sheet data XML
+     * @throws \FluentForm\Box\Spout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to read the sheet data XML
      */
     public function next()
     {
@@ -195,8 +195,8 @@ class RowIterator implements IteratorInterface
 
     /**
      * @return void
-     * @throws \Box\Spout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
-     * @throws \Box\Spout\Common\Exception\IOException If unable to read the sheet data XML
+     * @throws \FluentForm\Box\Spout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to read the sheet data XML
      */
     protected function readDataForNextRow()
     {
@@ -212,7 +212,7 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<dimension>" starting node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<dimension>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processDimensionStartingNode($xmlReader)
@@ -227,7 +227,7 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" starting node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processRowStartingNode($xmlReader)
@@ -252,7 +252,7 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<cell>" starting node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<cell>" starting node
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processCellStartingNode($xmlReader)
@@ -302,9 +302,9 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" node
      * @return int Row index
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      */
     protected function getRowIndex($xmlReader)
     {
@@ -317,9 +317,9 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<c>" node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<c>" node
      * @return int Column index
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      */
     protected function getColumnIndex($xmlReader)
     {

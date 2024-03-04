@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace FluentForm\Box\Spout\Reader\CSV;
 
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Common\Helper\EncodingHelper;
+use FluentForm\Box\Spout\Reader\IteratorInterface;
+use FluentForm\Box\Spout\Common\Helper\EncodingHelper;
 
 /**
  * Class RowIterator
  * Iterate over CSV rows.
  *
- * @package Box\Spout\Reader\CSV
+ * @package FluentForm\Box\Spout\Reader\CSV
  */
 class RowIterator implements IteratorInterface
 {
@@ -45,10 +45,10 @@ class RowIterator implements IteratorInterface
     /** @var bool Whether empty rows should be returned or skipped */
     protected $shouldPreserveEmptyRows;
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
-    /** @var \Box\Spout\Common\Helper\EncodingHelper Helper to work with different encodings */
+    /** @var \FluentForm\Box\Spout\Common\Helper\EncodingHelper Helper to work with different encodings */
     protected $encodingHelper;
 
     /** @var string End of line delimiter, encoded using the same encoding as the CSV */
@@ -56,8 +56,8 @@ class RowIterator implements IteratorInterface
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read
-     * @param \Box\Spout\Reader\CSV\ReaderOptions $options
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Reader\CSV\ReaderOptions $options
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($filePointer, $options, $globalFunctionsHelper)
     {
@@ -118,7 +118,7 @@ class RowIterator implements IteratorInterface
      * @link http://php.net/manual/en/iterator.next.php
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
     public function next()
     {
@@ -131,7 +131,7 @@ class RowIterator implements IteratorInterface
 
     /**
      * @return void
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
     protected function readDataForNextRow()
     {
@@ -172,7 +172,7 @@ class RowIterator implements IteratorInterface
      * we remove manually whitespace with ltrim or rtrim (depending on the order of the bytes)
      *
      * @return array|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
     protected function getNextUTF8EncodedRow()
     {

@@ -1,23 +1,23 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace FluentForm\Box\Spout\Reader\CSV;
 
-use Box\Spout\Reader\SheetInterface;
+use FluentForm\Box\Spout\Reader\SheetInterface;
 
 /**
  * Class Sheet
  *
- * @package Box\Spout\Reader\CSV
+ * @package FluentForm\Box\Spout\Reader\CSV
  */
 class Sheet implements SheetInterface
 {
-    /** @var \Box\Spout\Reader\CSV\RowIterator To iterate over the CSV's rows */
+    /** @var \FluentForm\Box\Spout\Reader\CSV\RowIterator To iterate over the CSV's rows */
     protected $rowIterator;
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read
-     * @param \Box\Spout\Reader\CSV\ReaderOptions $options
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Reader\CSV\ReaderOptions $options
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($filePointer, $options, $globalFunctionsHelper)
     {
@@ -26,7 +26,7 @@ class Sheet implements SheetInterface
 
     /**
      * @api
-     * @return \Box\Spout\Reader\CSV\RowIterator
+     * @return \FluentForm\Box\Spout\Reader\CSV\RowIterator
      */
     public function getRowIterator()
     {

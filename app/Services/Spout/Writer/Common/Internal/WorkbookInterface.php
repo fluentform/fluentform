@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Internal;
+namespace FluentForm\Box\Spout\Writer\Common\Internal;
 
 /**
  * Interface WorkbookInterface
  *
- * @package Box\Spout\Writer\Common\Internal
+ * @package FluentForm\Box\Spout\Writer\Common\Internal
  */
 interface WorkbookInterface
 {
@@ -13,7 +13,7 @@ interface WorkbookInterface
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
      * @return WorksheetInterface The created sheet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
     public function addNewSheet();
 
@@ -22,7 +22,7 @@ interface WorkbookInterface
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
      * @return WorksheetInterface The created sheet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
     public function addNewSheetAndMakeItCurrent();
 
@@ -42,9 +42,9 @@ interface WorkbookInterface
      * Sets the given sheet as the current one. New data will be written to this sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
-     * @param \Box\Spout\Writer\Common\Sheet $sheet The "external" sheet to set as current
+     * @param \FluentForm\Box\Spout\Writer\Common\Sheet $sheet The "external" sheet to set as current
      * @return void
-     * @throws \Box\Spout\Writer\Exception\SheetNotFoundException If the given sheet does not exist in the workbook
+     * @throws \FluentForm\Box\Spout\Writer\Exception\SheetNotFoundException If the given sheet does not exist in the workbook
      */
     public function setCurrentSheet($sheet);
 
@@ -55,10 +55,10 @@ interface WorkbookInterface
      *
      * @param array $dataRow Array containing data to be written.
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
-     * @param \Box\Spout\Writer\Style\Style $style Style to be applied to the row.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style Style to be applied to the row.
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If trying to create a new sheet and unable to open the sheet for writing
-     * @throws \Box\Spout\Writer\Exception\WriterException If unable to write data
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If trying to create a new sheet and unable to open the sheet for writing
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterException If unable to write data
      */
     public function addRowToCurrentWorksheet($dataRow, $style);
 

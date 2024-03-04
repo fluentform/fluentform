@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Reader\Exception;
+namespace FluentForm\Box\Spout\Reader\Exception;
 
 /**
  * Class SharedStringNotFoundException
  *
  * @api
- * @package Box\Spout\Reader\Exception
+ * @package FluentForm\Box\Spout\Reader\Exception
  */
 class SharedStringNotFoundException extends ReaderException
 {

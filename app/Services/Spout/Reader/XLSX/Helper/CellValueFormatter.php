@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper;
 
 /**
  * Class CellValueFormatter
  * This class provides helper functions to format cell values
  *
- * @package Box\Spout\Reader\XLSX\Helper
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper
  */
 class CellValueFormatter
 {
@@ -47,7 +47,7 @@ class CellValueFormatter
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
     protected $shouldFormatDates;
 
-    /** @var \Box\Spout\Common\Escaper\XLSX Used to unescape XML data */
+    /** @var FluentForm\Box\Spout\Common\Escaper\XLSX Used to unescape XML data */
     protected $escaper;
 
     /**
@@ -62,7 +62,7 @@ class CellValueFormatter
         $this->shouldFormatDates = $shouldFormatDates;
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->escaper = \Box\Spout\Common\Escaper\XLSX::getInstance();
+        $this->escaper = FluentForm\Box\Spout\Common\Escaper\XLSX::getInstance();
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace FluentForm\Box\Spout\Reader\CSV;
 
-use Box\Spout\Common\Helper\EncodingHelper;
+use FluentForm\Box\Spout\Common\Helper\EncodingHelper;
 
 /**
  * Class ReaderOptions
  * This class is used to customize the reader's behavior
  *
- * @package Box\Spout\Reader\CSV
+ * @package FluentForm\Box\Spout\Reader\CSV
  */
-class ReaderOptions extends \Box\Spout\Reader\Common\ReaderOptions
+class ReaderOptions extends FluentForm\Box\Spout\Reader\Common\ReaderOptions
 {
     /** @var string Defines the character used to delimit fields (one character only) */
     protected $fieldDelimiter = ',';

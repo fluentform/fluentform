@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Helper;
+namespace FluentForm\Box\Spout\Writer\Common\Helper;
 
 /**
  * Class CellHelper
  * This class provides helper functions when working with cells
  *
- * @package Box\Spout\Writer\Common\Helper
+ * @package FluentForm\Box\Spout\Writer\Common\Helper
  */
 class CellHelper
 {

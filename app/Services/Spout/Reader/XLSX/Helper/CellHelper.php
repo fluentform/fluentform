@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper;
 
-use Box\Spout\Common\Exception\InvalidArgumentException;
+use FluentForm\Box\Spout\Common\Exception\InvalidArgumentException;
 
 /**
  * Class CellHelper
  * This class provides helper functions when working with cells
  *
- * @package Box\Spout\Reader\XLSX\Helper
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper
  */
 class CellHelper
 {
@@ -52,7 +52,7 @@ class CellHelper
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
      * @return int
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     * @throws FluentForm\Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      */
     public static function getColumnIndexFromCellIndex($cellIndex)
     {

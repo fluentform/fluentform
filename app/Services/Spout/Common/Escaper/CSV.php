@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Common\Escaper;
+namespace FluentForm\Box\Spout\Common\Escaper;
 
 /**
  * Class CSV
  * Provides functions to escape and unescape data for CSV files
  *
- * @package Box\Spout\Common\Escaper
+ * @package FluentForm\Box\Spout\Common\Escaper
  */
 class CSV implements EscaperInterface
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace FluentForm\Box\Spout\Writer;
 
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
+use FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException;
 
 /**
  * Class AbstractMultiSheetsWriter
  *
- * @package Box\Spout\Writer
+ * @package FluentForm\Box\Spout\Writer
  * @abstract
  */
 abstract class AbstractMultiSheetsWriter extends AbstractWriter
@@ -27,7 +27,7 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      * @api
      * @param bool $shouldCreateNewSheetsAutomatically Whether new sheets should be automatically created when the max rows limit per sheet is reached
      * @return AbstractMultiSheetsWriter
-     * @throws \Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
      */
     public function setShouldCreateNewSheetsAutomatically($shouldCreateNewSheetsAutomatically)
     {
@@ -42,7 +42,7 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      *
      * @api
      * @return Common\Sheet[] All the workbook's sheets
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
      */
     public function getSheets()
     {
@@ -64,7 +64,7 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      *
      * @api
      * @return Common\Sheet The created sheet
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
      */
     public function addNewSheetAndMakeItCurrent()
     {
@@ -79,7 +79,7 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      *
      * @api
      * @return Common\Sheet The current sheet
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
      */
     public function getCurrentSheet()
     {
@@ -94,8 +94,8 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      * @api
      * @param Common\Sheet $sheet The sheet to set as current
      * @return void
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws \Box\Spout\Writer\Exception\SheetNotFoundException If the given sheet does not exist in the workbook
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \FluentForm\Box\Spout\Writer\Exception\SheetNotFoundException If the given sheet does not exist in the workbook
      */
     public function setCurrentSheet($sheet)
     {
@@ -107,7 +107,7 @@ abstract class AbstractMultiSheetsWriter extends AbstractWriter
      * Checks if the book has been created. Throws an exception if not created yet.
      *
      * @return void
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the book is not created yet
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the book is not created yet
      */
     protected function throwIfBookIsNotAvailable()
     {

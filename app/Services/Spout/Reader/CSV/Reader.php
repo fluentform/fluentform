@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace FluentForm\Box\Spout\Reader\CSV;
 
-use Box\Spout\Reader\AbstractReader;
-use Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\AbstractReader;
+use FluentForm\Box\Spout\Common\Exception\IOException;
 
 /**
  * Class Reader
  * This class provides support to read data from a CSV file.
  *
- * @package Box\Spout\Reader\CSV
+ * @package FluentForm\Box\Spout\Reader\CSV
  */
 class Reader extends AbstractReader
 {
@@ -103,7 +103,7 @@ class Reader extends AbstractReader
      *
      * @param  string $filePath Path of the CSV file to be read
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException
      */
     protected function openReader($filePath)
     {

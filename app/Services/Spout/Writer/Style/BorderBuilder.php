@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\Style;
+namespace FluentForm\Box\Spout\Writer\Style;
 
 /**
  * Class BorderBuilder

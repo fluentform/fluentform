@@ -1,20 +1,20 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace FluentForm\Box\Spout\Reader\XLSX;
 
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Reader\XLSX\Helper\SheetHelper;
-use Box\Spout\Reader\Exception\NoSheetsFoundException;
+use FluentForm\Box\Spout\Reader\IteratorInterface;
+use FluentForm\Box\Spout\Reader\XLSX\Helper\SheetHelper;
+use FluentForm\Box\Spout\Reader\Exception\NoSheetsFoundException;
 
 /**
  * Class SheetIterator
  * Iterate over XLSX sheet.
  *
- * @package Box\Spout\Reader\XLSX
+ * @package FluentForm\Box\Spout\Reader\XLSX
  */
 class SheetIterator implements IteratorInterface
 {
-    /** @var \Box\Spout\Reader\XLSX\Sheet[] The list of sheet present in the file */
+    /** @var \FluentForm\Box\Spout\Reader\XLSX\Sheet[] The list of sheet present in the file */
     protected $sheets;
 
     /** @var int The index of the sheet being read (zero-based) */
@@ -22,10 +22,10 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param string $filePath Path of the file to be read
-     * @param \Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
-     * @param \Box\Spout\Reader\XLSX\Helper\SharedStringsHelper $sharedStringsHelper
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @param \FluentForm\Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
+     * @param \FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsHelper $sharedStringsHelper
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @throws \FluentForm\Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     public function __construct($filePath, $options, $sharedStringsHelper, $globalFunctionsHelper)
     {
@@ -81,7 +81,7 @@ class SheetIterator implements IteratorInterface
      * Return the current element
      * @link http://php.net/manual/en/iterator.current.php
      *
-     * @return \Box\Spout\Reader\XLSX\Sheet
+     * @return \FluentForm\Box\Spout\Reader\XLSX\Sheet
      */
     public function current()
     {

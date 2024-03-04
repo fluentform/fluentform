@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace FluentForm\Box\Spout\Reader\CSV;
 
-use Box\Spout\Reader\IteratorInterface;
+use FluentForm\Box\Spout\Reader\IteratorInterface;
 
 /**
  * Class SheetIterator
  * Iterate over CSV unique "sheet".
  *
- * @package Box\Spout\Reader\CSV
+ * @package FluentForm\Box\Spout\Reader\CSV
  */
 class SheetIterator implements IteratorInterface
 {
-    /** @var \Box\Spout\Reader\CSV\Sheet The CSV unique "sheet" */
+    /** @var \FluentForm\Box\Spout\Reader\CSV\Sheet The CSV unique "sheet" */
     protected $sheet;
 
     /** @var bool Whether the unique "sheet" has already been read */
@@ -20,8 +20,8 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param resource $filePointer
-     * @param \Box\Spout\Reader\CSV\ReaderOptions $options
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Reader\CSV\ReaderOptions $options
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($filePointer, $options, $globalFunctionsHelper)
     {
@@ -65,7 +65,7 @@ class SheetIterator implements IteratorInterface
      * Return the current element
      * @link http://php.net/manual/en/iterator.current.php
      *
-     * @return \Box\Spout\Reader\CSV\Sheet
+     * @return \FluentForm\Box\Spout\Reader\CSV\Sheet
      */
     public function current()
     {

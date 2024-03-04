@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader;
+namespace FluentForm\Box\Spout\Reader;
 
 /**
  * Interface IteratorInterface
  *
- * @package Box\Spout\Reader
+ * @package FluentForm\Box\Spout\Reader
  */
 interface IteratorInterface extends \Iterator
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader;
+namespace FluentForm\Box\Spout\Reader;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\ReaderNotOpenedException;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\Exception\ReaderNotOpenedException;
 
 /**
  * Class AbstractReader
  *
- * @package Box\Spout\Reader
+ * @package FluentForm\Box\Spout\Reader
  * @abstract
  */
 abstract class AbstractReader implements ReaderInterface
@@ -16,16 +16,16 @@ abstract class AbstractReader implements ReaderInterface
     /** @var bool Indicates whether the stream is currently open */
     protected $isStreamOpened = false;
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
-    /** @var \Box\Spout\Reader\Common\ReaderOptions Reader's customized options */
+    /** @var \FluentForm\Box\Spout\Reader\Common\ReaderOptions Reader's customized options */
     protected $options;
 
     /**
      * Returns the reader's current options
      *
-     * @return \Box\Spout\Reader\Common\ReaderOptions
+     * @return \FluentForm\Box\Spout\Reader\Common\ReaderOptions
      */
     abstract protected function getOptions();
 
@@ -59,7 +59,7 @@ abstract class AbstractReader implements ReaderInterface
     abstract protected function closeReader();
 
     /**
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      * @return AbstractReader
      */
     public function setGlobalFunctionsHelper($globalFunctionsHelper)
@@ -101,7 +101,7 @@ abstract class AbstractReader implements ReaderInterface
      * @api
      * @param  string $filePath Path of the file to be read
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the file at the given path does not exist, is not readable or is corrupted
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the file at the given path does not exist, is not readable or is corrupted
      */
     public function open($filePath)
     {
@@ -205,7 +205,7 @@ abstract class AbstractReader implements ReaderInterface
      *
      * @api
      * @return \Iterator To iterate over sheets
-     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
+     * @throws \FluentForm\Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      */
     public function getSheetIterator()
     {

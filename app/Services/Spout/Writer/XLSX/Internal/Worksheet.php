@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Internal;
+namespace FluentForm\Box\Spout\Writer\XLSX\Internal;
 
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Writer\Common\Helper\CellHelper;
-use Box\Spout\Writer\Common\Internal\WorksheetInterface;
+use FluentForm\Box\Spout\Common\Exception\InvalidArgumentException;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Common\Helper\StringHelper;
+use FluentForm\Box\Spout\Writer\Common\Helper\CellHelper;
+use FluentForm\Box\Spout\Writer\Common\Internal\WorksheetInterface;
 
 /**
  * Class Worksheet
  * Represents a worksheet within a XLSX file. The difference with the Sheet object is
  * that this class provides an interface to write data
  *
- * @package Box\Spout\Writer\XLSX\Internal
+ * @package FluentForm\Box\Spout\Writer\XLSX\Internal
  */
 class Worksheet implements WorksheetInterface
 {
@@ -30,25 +30,25 @@ class Worksheet implements WorksheetInterface
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 EOD;
 
-    /** @var \Box\Spout\Writer\Common\Sheet The "external" sheet */
+    /** @var \FluentForm\Box\Spout\Writer\Common\Sheet The "external" sheet */
     protected $externalSheet;
 
     /** @var string Path to the XML file that will contain the sheet data */
     protected $worksheetFilePath;
 
-    /** @var \Box\Spout\Writer\XLSX\Helper\SharedStringsHelper Helper to write shared strings */
+    /** @var \FluentForm\Box\Spout\Writer\XLSX\Helper\SharedStringsHelper Helper to write shared strings */
     protected $sharedStringsHelper;
 
-    /** @var \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to work with styles */
+    /** @var \FluentForm\Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to work with styles */
     protected $styleHelper;
 
     /** @var bool Whether inline or shared strings should be used */
     protected $shouldUseInlineStrings;
 
-    /** @var \Box\Spout\Common\Escaper\XLSX Strings escaper */
+    /** @var \FluentForm\Box\Spout\Common\Escaper\XLSX Strings escaper */
     protected $stringsEscaper;
 
-    /** @var \Box\Spout\Common\Helper\StringHelper String helper */
+    /** @var \FluentForm\Box\Spout\Common\Helper\StringHelper String helper */
     protected $stringHelper;
 
     /** @var Resource Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
@@ -58,12 +58,12 @@ EOD;
     protected $lastWrittenRowIndex = 0;
 
     /**
-     * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
+     * @param \FluentForm\Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
-     * @param \Box\Spout\Writer\XLSX\Helper\SharedStringsHelper $sharedStringsHelper Helper for shared strings
-     * @param \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to work with styles
+     * @param \FluentForm\Box\Spout\Writer\XLSX\Helper\SharedStringsHelper $sharedStringsHelper Helper for shared strings
+     * @param \FluentForm\Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to work with styles
      * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings)
     {
@@ -73,7 +73,7 @@ EOD;
         $this->shouldUseInlineStrings = $shouldUseInlineStrings;
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->stringsEscaper = \Box\Spout\Common\Escaper\XLSX::getInstance();
+        $this->stringsEscaper = \FluentForm\Box\Spout\Common\Escaper\XLSX::getInstance();
         $this->stringHelper = new StringHelper();
 
         $this->worksheetFilePath = $worksheetFilesFolder . '/' . strtolower($this->externalSheet->getName()) . '.xml';
@@ -84,7 +84,7 @@ EOD;
      * Prepares the worksheet to accept data
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     protected function startSheet()
     {
@@ -99,7 +99,7 @@ EOD;
      * Checks if the book has been created. Throws an exception if not created yet.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     protected function throwIfSheetFilePointerIsNotAvailable()
     {
@@ -109,7 +109,7 @@ EOD;
     }
 
     /**
-     * @return \Box\Spout\Writer\Common\Sheet The "external" sheet
+     * @return \FluentForm\Box\Spout\Writer\Common\Sheet The "external" sheet
      */
     public function getExternalSheet()
     {
@@ -138,10 +138,10 @@ EOD;
      *
      * @param array $dataRow Array containing data to be written. Cannot be empty.
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
-     * @param \Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the data cannot be written
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the data cannot be written
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
      */
     public function addRow($dataRow, $style)
     {
@@ -171,10 +171,10 @@ EOD;
      *
      * @param array $dataRow Array containing data to be written. Cannot be empty.
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
-     * @param \Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the data cannot be written
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the data cannot be written
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
      */
     protected function addNonEmptyRow($dataRow, $style)
     {

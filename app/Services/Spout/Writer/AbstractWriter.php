@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace FluentForm\Box\Spout\Writer;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\SpoutException;
-use Box\Spout\Common\Helper\FileSystemHelper;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
-use Box\Spout\Writer\Style\StyleBuilder;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Common\Exception\InvalidArgumentException;
+use FluentForm\Box\Spout\Common\Exception\SpoutException;
+use FluentForm\Box\Spout\Common\Helper\FileSystemHelper;
+use FluentForm\Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
+use FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException;
+use FluentForm\Box\Spout\Writer\Style\StyleBuilder;
 
 /**
  * Class AbstractWriter
  *
- * @package Box\Spout\Writer
+ * @package FluentForm\Box\Spout\Writer
  * @abstract
  */
 abstract class AbstractWriter implements WriterInterface
@@ -27,7 +27,7 @@ abstract class AbstractWriter implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     protected $isWriterOpened = false;
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
     /** @var Style\Style Style to be applied to the next written row(s) */
@@ -43,7 +43,7 @@ abstract class AbstractWriter implements WriterInterface
      * Opens the streamer and makes it ready to accept data.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the writer cannot be opened
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the writer cannot be opened
      */
     abstract protected function openWriter();
 
@@ -89,7 +89,7 @@ abstract class AbstractWriter implements WriterInterface
     }
 
     /**
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      * @return AbstractWriter
      */
     public function setGlobalFunctionsHelper($globalFunctionsHelper)
@@ -105,7 +105,7 @@ abstract class AbstractWriter implements WriterInterface
      * @api
      * @param  string $outputFilePath Path of the output file that will contain the data
      * @return AbstractWriter
-     * @throws \Box\Spout\Common\Exception\IOException If the writer cannot be opened or if the given path is not writable
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the writer cannot be opened or if the given path is not writable
      */
     public function openToFile($outputFilePath)
     {
@@ -129,7 +129,7 @@ abstract class AbstractWriter implements WriterInterface
      * @api
      * @param  string $outputFileName Name of the output file that will contain the data. If a path is passed in, only the file name will be kept
      * @return AbstractWriter
-     * @throws \Box\Spout\Common\Exception\IOException If the writer cannot be opened
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the writer cannot be opened
      */
     public function openToBrowser($outputFileName)
     {
@@ -167,7 +167,7 @@ abstract class AbstractWriter implements WriterInterface
      * Will throw an exception if not available.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the pointer is not available
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the pointer is not available
      */
     protected function throwIfFilePointerIsNotAvailable()
     {
@@ -182,7 +182,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @param string $message Error message
      * @return void
-     * @throws \Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened and must not be.
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened and must not be.
      */
     protected function throwIfWriterAlreadyOpened($message)
     {
@@ -199,9 +199,9 @@ abstract class AbstractWriter implements WriterInterface
      *                        Example: $dataRow = ['data1', 1234, null, '', 'data5', false];
      * @api
      * @return AbstractWriter
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
-     * @throws \Box\Spout\Common\Exception\SpoutException If anything else goes wrong while writing data
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \FluentForm\Box\Spout\Common\Exception\SpoutException If anything else goes wrong while writing data
      */
     public function addRow(array $dataRow)
     {
@@ -234,9 +234,9 @@ abstract class AbstractWriter implements WriterInterface
      * @param array $dataRow Array of array containing data to be streamed.
      * @param Style\Style $style Style to be applied to the row.
      * @return AbstractWriter
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to write data
      */
     public function addRowWithStyle(array $dataRow, $style)
     {
@@ -262,9 +262,9 @@ abstract class AbstractWriter implements WriterInterface
      *                             ['data21', 'data22', null, false],
      *                         ];
      * @return AbstractWriter
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to write data
      */
     public function addRows(array $dataRows)
     {
@@ -290,9 +290,9 @@ abstract class AbstractWriter implements WriterInterface
      * @param array $dataRows Array of array containing data to be streamed.
      * @param Style\Style $style Style to be applied to the rows.
      * @return AbstractWriter
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If this function is called before opening the writer
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to write data
      */
     public function addRowsWithStyle(array $dataRows, $style)
     {

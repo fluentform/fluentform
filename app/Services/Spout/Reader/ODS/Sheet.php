@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace FluentForm\Box\Spout\Reader\ODS;
 
-use Box\Spout\Reader\SheetInterface;
-use Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Reader\SheetInterface;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
 
 /**
  * Class Sheet
  * Represents a sheet within a ODS file
  *
- * @package Box\Spout\Reader\ODS
+ * @package FluentForm\Box\Spout\Reader\ODS
  */
 class Sheet implements SheetInterface
 {
-    /** @var \Box\Spout\Reader\ODS\RowIterator To iterate over sheet's rows */
+    /** @var \FluentForm\Box\Spout\Reader\ODS\RowIterator To iterate over sheet's rows */
     protected $rowIterator;
 
     /** @var int ID of the sheet */
@@ -33,7 +33,7 @@ class Sheet implements SheetInterface
      * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
      * @param string $sheetName Name of the sheet
      * @param bool $isSheetActive Whether the sheet was defined as active
-     * @param \Box\Spout\Reader\ODS\ReaderOptions $options Reader's current options
+     * @param \FluentForm\Box\Spout\Reader\ODS\ReaderOptions $options Reader's current options
      */
     public function __construct($xmlReader, $sheetIndex, $sheetName, $isSheetActive, $options)
     {
@@ -45,7 +45,7 @@ class Sheet implements SheetInterface
 
     /**
      * @api
-     * @return \Box\Spout\Reader\ODS\RowIterator
+     * @return \FluentForm\Box\Spout\Reader\ODS\RowIterator
      */
     public function getRowIterator()
     {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Helper;
+namespace FluentForm\Box\Spout\Writer\ODS\Helper;
 
-use Box\Spout\Writer\Style\BorderPart;
-use Box\Spout\Writer\Style\Border;
+use FluentForm\Box\Spout\Writer\Style\BorderPart;
+use FluentForm\Box\Spout\Writer\Style\Border;
 
 /**
  * Class BorderHelper

@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Exception;
+namespace FluentForm\Box\Spout\Writer\Exception;
 
 /**
  * Class InvalidSheetNameException
  *
  * @api
- * @package Box\Spout\Writer\Exception
+ * @package FluentForm\Box\Spout\Writer\Exception
  */
 class InvalidSheetNameException extends WriterException
 {

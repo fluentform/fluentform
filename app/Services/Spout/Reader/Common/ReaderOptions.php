@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Reader\Common;
+namespace FluentForm\Box\Spout\Reader\Common;
 
 /**
  * Class ReaderOptions
  * Readers' common options
  *
- * @package Box\Spout\Reader\Common
+ * @package FluentForm\Box\Spout\Reader\Common
  */
 class ReaderOptions
 {

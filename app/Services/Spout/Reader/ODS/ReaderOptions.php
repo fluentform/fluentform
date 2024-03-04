@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace FluentForm\Box\Spout\Reader\ODS;
 
 /**
  * Class ReaderOptions
  * This class is used to customize the reader's behavior
  *
- * @package Box\Spout\Reader\ODS
+ * @package FluentForm\Box\Spout\Reader\ODS
  */
-class ReaderOptions extends \Box\Spout\Reader\Common\ReaderOptions
+class ReaderOptions extends FluentForm\Box\Spout\Reader\Common\ReaderOptions
 {
     // No extra options
 }

@@ -1,32 +1,32 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Internal;
+namespace FluentForm\Box\Spout\Writer\ODS\Internal;
 
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Writer\Common\Helper\CellHelper;
-use Box\Spout\Writer\Common\Internal\WorksheetInterface;
+use FluentForm\Box\Spout\Common\Exception\InvalidArgumentException;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Common\Helper\StringHelper;
+use FluentForm\Box\Spout\Writer\Common\Helper\CellHelper;
+use FluentForm\Box\Spout\Writer\Common\Internal\WorksheetInterface;
 
 /**
  * Class Worksheet
  * Represents a worksheet within a ODS file. The difference with the Sheet object is
  * that this class provides an interface to write data
  *
- * @package Box\Spout\Writer\ODS\Internal
+ * @package FluentForm\Box\Spout\Writer\ODS\Internal
  */
 class Worksheet implements WorksheetInterface
 {
-    /** @var \Box\Spout\Writer\Common\Sheet The "external" sheet */
+    /** @var \FluentForm\Box\Spout\Writer\Common\Sheet The "external" sheet */
     protected $externalSheet;
 
     /** @var string Path to the XML file that will contain the sheet data */
     protected $worksheetFilePath;
 
-    /** @var \Box\Spout\Common\Escaper\ODS Strings escaper */
+    /** @var \FluentForm\Box\Spout\Common\Escaper\ODS Strings escaper */
     protected $stringsEscaper;
 
-    /** @var \Box\Spout\Common\Helper\StringHelper To help with string manipulation */
+    /** @var \FluentForm\Box\Spout\Common\Helper\StringHelper To help with string manipulation */
     protected $stringHelper;
 
     /** @var Resource Pointer to the temporary sheet data file (e.g. worksheets-temp/sheet1.xml) */
@@ -39,15 +39,15 @@ class Worksheet implements WorksheetInterface
     protected $lastWrittenRowIndex = 0;
 
     /**
-     * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
+     * @param \FluentForm\Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the ODS will be stored
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     public function __construct($externalSheet, $worksheetFilesFolder)
     {
         $this->externalSheet = $externalSheet;
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->stringsEscaper = \Box\Spout\Common\Escaper\ODS::getInstance();
+        $this->stringsEscaper = \FluentForm\Box\Spout\Common\Escaper\ODS::getInstance();
         $this->worksheetFilePath = $worksheetFilesFolder . '/sheet' . $externalSheet->getIndex() . '.xml';
 
         $this->stringHelper = new StringHelper();
@@ -61,7 +61,7 @@ class Worksheet implements WorksheetInterface
      * which may change during the execution of the program. It will be added at the end.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     protected function startSheet()
     {
@@ -73,7 +73,7 @@ class Worksheet implements WorksheetInterface
      * Checks if the book has been created. Throws an exception if not created yet.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     protected function throwIfSheetFilePointerIsNotAvailable()
     {
@@ -107,7 +107,7 @@ class Worksheet implements WorksheetInterface
     }
 
     /**
-     * @return \Box\Spout\Writer\Common\Sheet The "external" sheet
+     * @return \FluentForm\Box\Spout\Writer\Common\Sheet The "external" sheet
      */
     public function getExternalSheet()
     {
@@ -127,10 +127,10 @@ class Worksheet implements WorksheetInterface
      *
      * @param array $dataRow Array containing data to be written. Cannot be empty.
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
-     * @param \Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style Style to be applied to the row. NULL means use default style.
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the data cannot be written
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the data cannot be written
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
      */
     public function addRow($dataRow, $style)
     {
@@ -181,7 +181,7 @@ class Worksheet implements WorksheetInterface
      * @param int $styleIndex Index of the used style
      * @param int $numTimesValueRepeated Number of times the value is consecutively repeated
      * @return string The cell XML content
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
+     * @throws \FluentForm\Box\Spout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
      */
     protected function getCellXML($cellValue, $styleIndex, $numTimesValueRepeated)
     {

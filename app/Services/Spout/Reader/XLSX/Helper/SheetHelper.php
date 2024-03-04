@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper;
 
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\Reader\XLSX\Sheet;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Reader\XLSX\Sheet;
 
 /**
  * Class SheetHelper
  * This class provides helper functions related to XLSX sheets
  *
- * @package Box\Spout\Reader\XLSX\Helper
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper
  */
 class SheetHelper
 {
@@ -33,20 +33,20 @@ class SheetHelper
     /** @var string Path of the XLSX file being read */
     protected $filePath;
 
-    /** @var \Box\Spout\Reader\XLSX\ReaderOptions Reader's current options */
+    /** @var \FluentForm\Box\Spout\Reader\XLSX\ReaderOptions Reader's current options */
     protected $options;
 
-    /** @var \Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings */
+    /** @var \FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings */
     protected $sharedStringsHelper;
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
     /**
      * @param string $filePath Path of the XLSX file being read
-     * @param \Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
-     * @param \Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
+     * @param \FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($filePath, $options, $sharedStringsHelper, $globalFunctionsHelper)
     {
@@ -96,10 +96,10 @@ class SheetHelper
      * We can find the XML file path describing the sheet inside "workbook.xml.res", by mapping with the sheet ID
      * ("r:id" in "workbook.xml", "Id" in "workbook.xml.res").
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReaderOnSheetNode XML Reader instance, pointing on the node describing the sheet, as defined in "workbook.xml"
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReaderOnSheetNode XML Reader instance, pointing on the node describing the sheet, as defined in "workbook.xml"
      * @param int $sheetIndexZeroBased Index of the sheet, based on order of appearance in the workbook (zero-based)
      * @param bool $isSheetActive Whether this sheet was defined as active
-     * @return \Box\Spout\Reader\XLSX\Sheet Sheet instance
+     * @return \FluentForm\Box\Spout\Reader\XLSX\Sheet Sheet instance
      */
     protected function getSheetFromSheetXMLNode($xmlReaderOnSheetNode, $sheetIndexZeroBased, $isSheetActive)
     {
@@ -107,7 +107,7 @@ class SheetHelper
         $escapedSheetName = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_NAME);
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $escaper = \Box\Spout\Common\Escaper\XLSX::getInstance();
+        $escaper = \FluentForm\Box\Spout\Common\Escaper\XLSX::getInstance();
         $sheetName = $escaper->unescape($escapedSheetName);
 
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);

@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\ODS\Helper;
+namespace FluentForm\Box\Spout\Reader\ODS\Helper;
 
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Reader\Exception\XMLProcessingException;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
 
 /**
  * Class SettingsHelper
  * This class provides helper functions to extract data from the "settings.xml" file.
  *
- * @package Box\Spout\Reader\ODS\Helper
+ * @package FluentForm\Box\Spout\Reader\ODS\Helper
  */
 class SettingsHelper
 {

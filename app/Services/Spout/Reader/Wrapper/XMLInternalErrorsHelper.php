@@ -1,13 +1,13 @@
 <?php
 
-namespace Box\Spout\Reader\Wrapper;
+namespace FluentForm\Box\Spout\Reader\Wrapper;
 
-use Box\Spout\Reader\Exception\XMLProcessingException;
+use FluentForm\Box\Spout\Reader\Exception\XMLProcessingException;
 
 /**
  * Trait XMLInternalErrorsHelper
  *
- * @package Box\Spout\Reader\Wrapper
+ * @package FluentForm\Box\Spout\Reader\Wrapper
  */
 trait XMLInternalErrorsHelper
 {
@@ -31,7 +31,7 @@ trait XMLInternalErrorsHelper
      * It also always resets the "libxml_use_internal_errors" setting back to its initial value.
      *
      * @return void
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException
+     * @throws \FluentForm\Box\Spout\Reader\Exception\XMLProcessingException
      */
     protected function resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured()
     {

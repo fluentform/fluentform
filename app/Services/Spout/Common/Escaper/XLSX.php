@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Common\Escaper;
+namespace FluentForm\Box\Spout\Common\Escaper;
 
-use Box\Spout\Common\Singleton;
+use FluentForm\Box\Spout\Common\Singleton;
 
 /**
  * Class XLSX
  * Provides functions to escape and unescape data for XLSX files
  *
- * @package Box\Spout\Common\Escaper
+ * @package FluentForm\Box\Spout\Common\Escaper
  */
 class XLSX implements EscaperInterface
 {

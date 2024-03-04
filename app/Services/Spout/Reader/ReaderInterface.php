@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader;
+namespace FluentForm\Box\Spout\Reader;
 
 /**
  * Interface ReaderInterface
  *
- * @package Box\Spout\Reader
+ * @package FluentForm\Box\Spout\Reader
  */
 interface ReaderInterface
 {
@@ -15,7 +15,7 @@ interface ReaderInterface
      *
      * @param  string $filePath Path of the file to be read
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException
      */
     public function open($filePath);
 
@@ -23,7 +23,7 @@ interface ReaderInterface
      * Returns an iterator to iterate over sheets.
      *
      * @return \Iterator To iterate over sheets
-     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
+     * @throws \FluentForm\Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      */
     public function getSheetIterator();
 

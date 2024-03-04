@@ -1,23 +1,23 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace FluentForm\Box\Spout\Reader\XLSX;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\AbstractReader;
-use Box\Spout\Reader\XLSX\Helper\SharedStringsHelper;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\AbstractReader;
+use FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsHelper;
 
 /**
  * Class Reader
  * This class provides support to read data from a XLSX file
  *
- * @package Box\Spout\Reader\XLSX
+ * @package FluentForm\Box\Spout\Reader\XLSX
  */
 class Reader extends AbstractReader
 {
     /** @var \ZipArchive */
     protected $zip;
 
-    /** @var \Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings */
+    /** @var \FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsHelper Helper to work with shared strings */
     protected $sharedStringsHelper;
 
     /** @var SheetIterator To iterator over the XLSX sheets */
@@ -64,8 +64,8 @@ class Reader extends AbstractReader
      *
      * @param  string $filePath Path of the file to be read
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the file at the given path or its content cannot be read
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the file at the given path or its content cannot be read
+     * @throws \FluentForm\Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader($filePath)
     {

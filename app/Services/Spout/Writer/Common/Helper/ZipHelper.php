@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Helper;
+namespace FluentForm\Box\Spout\Writer\Common\Helper;
 
 /**
  * Class ZipHelper
  * This class provides helper functions to create zip files
  *
- * @package Box\Spout\Writer\Common\Helper
+ * @package FluentForm\Box\Spout\Writer\Common\Helper
  */
 class ZipHelper
 {

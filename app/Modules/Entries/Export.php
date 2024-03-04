@@ -164,7 +164,7 @@ class Export
         }, $data);
         require_once $this->app->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
-        $writer = \Box\Spout\Writer\WriterFactory::create($type);
+        $writer = \FluentForm\Box\Spout\Writer\WriterFactory::create($type);
         $writer->openToBrowser($fileName);
         $writer->addRows($data);
         $writer->close();

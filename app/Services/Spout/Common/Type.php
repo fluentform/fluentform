@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common;
+namespace FluentForm\Box\Spout\Common;
 
 /**
  * Class Type

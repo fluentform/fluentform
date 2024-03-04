@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Helper;
+namespace FluentForm\Box\Spout\Writer\Common\Helper;
 
 /**
  * Class AbstractStyleHelper
  * This class provides helper functions to manage styles
  *
- * @package Box\Spout\Writer\Common\Helper
+ * @package FluentForm\Box\Spout\Writer\Common\Helper
  */
 abstract class AbstractStyleHelper
 {
@@ -17,7 +17,7 @@ abstract class AbstractStyleHelper
     protected $styleIdToStyleMappingTable = [];
 
     /**
-     * @param \Box\Spout\Writer\Style\Style $defaultStyle
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $defaultStyle
      */
     public function __construct($defaultStyle)
     {
@@ -29,8 +29,8 @@ abstract class AbstractStyleHelper
      * Registers the given style as a used style.
      * Duplicate styles won't be registered more than once.
      *
-     * @param \Box\Spout\Writer\Style\Style $style The style to be registered
-     * @return \Box\Spout\Writer\Style\Style The registered style, updated with an internal ID.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style The style to be registered
+     * @return FluentForm\Box\Spout\Writer\Style\Style The registered style, updated with an internal ID.
      */
     public function registerStyle($style)
     {
@@ -50,7 +50,7 @@ abstract class AbstractStyleHelper
     /**
      * Returns whether the given style has already been registered.
      *
-     * @param \Box\Spout\Writer\Style\Style $style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style
      * @return bool
      */
     protected function hasStyleAlreadyBeenRegistered($style)
@@ -65,7 +65,7 @@ abstract class AbstractStyleHelper
      * Returns the registered style associated to the given serialization.
      *
      * @param string $serializedStyle The serialized style from which the actual style should be fetched from
-     * @return \Box\Spout\Writer\Style\Style
+     * @return \FluentForm\Box\Spout\Writer\Style\Style
      */
     protected function getStyleFromSerializedStyle($serializedStyle)
     {
@@ -74,7 +74,7 @@ abstract class AbstractStyleHelper
     }
 
     /**
-     * @return \Box\Spout\Writer\Style\Style[] List of registered styles
+     * @return \FluentForm\Box\Spout\Writer\Style\Style[] List of registered styles
      */
     protected function getRegisteredStyles()
     {
@@ -84,7 +84,7 @@ abstract class AbstractStyleHelper
     /**
      * Returns the default style
      *
-     * @return \Box\Spout\Writer\Style\Style Default style
+     * @return \FluentForm\Box\Spout\Writer\Style\Style Default style
      */
     protected function getDefaultStyle()
     {
@@ -96,9 +96,9 @@ abstract class AbstractStyleHelper
      * Apply additional styles if the given row needs it.
      * Typically, set "wrap text" if a cell contains a new line.
      *
-     * @param \Box\Spout\Writer\Style\Style $style The original style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style The original style
      * @param array $dataRow The row the style will be applied to
-     * @return \Box\Spout\Writer\Style\Style The updated style
+     * @return \FluentForm\Box\Spout\Writer\Style\Style The updated style
      */
     public function applyExtraStylesIfNeeded($style, $dataRow)
     {
@@ -115,9 +115,9 @@ abstract class AbstractStyleHelper
      *        A workaround would be to encode "\n" as "_x000D_" but it does not work
      *        on the Windows version of Excel...
      *
-     * @param \Box\Spout\Writer\Style\Style $style The original style
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style The original style
      * @param array $dataRow The row the style will be applied to
-     * @return \Box\Spout\Writer\Style\Style The eventually updated style
+     * @return \FluentForm\Box\Spout\Writer\Style\Style The eventually updated style
      */
     protected function applyWrapTextIfCellContainsNewLine($style, $dataRow)
     {

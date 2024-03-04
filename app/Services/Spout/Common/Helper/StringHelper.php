@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace FluentForm\Box\Spout\Common\Helper;
 
 /**
  * Class StringHelper
@@ -8,7 +8,7 @@ namespace Box\Spout\Common\Helper;
  *
  * @codeCoverageIgnore
  *
- * @package Box\Spout\Common\Helper
+ * @package FluentForm\Box\Spout\Common\Helper
  */
 class StringHelper
 {

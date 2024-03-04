@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
 
-use Box\Spout\Common\Helper\FileSystemHelper;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Reader\Exception\SharedStringNotFoundException;
+use FluentForm\Box\Spout\Common\Helper\FileSystemHelper;
+use FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper;
+use FluentForm\Box\Spout\Reader\Exception\SharedStringNotFoundException;
 
 /**
  * Class FileBasedStrategy
@@ -13,7 +13,7 @@ use Box\Spout\Reader\Exception\SharedStringNotFoundException;
  * Shared strings are stored in small files (with a max number of strings per file).
  * This strategy is slower than an in-memory strategy but is used to avoid out of memory crashes.
  *
- * @package Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
  */
 class FileBasedStrategy implements CachingStrategyInterface
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Box\Spout\Writer\Exception;
+namespace FluentForm\Box\Spout\Writer\Exception;
 
-use Box\Spout\Common\Exception\SpoutException;
+use FluentForm\Box\Spout\Common\Exception\SpoutException;
 
 /**
  * Class WriterException
  *
- * @package Box\Spout\Writer\Exception
+ * @package FluentForm\Box\Spout\Writer\Exception
  * @abstract
  */
 abstract class WriterException extends SpoutException

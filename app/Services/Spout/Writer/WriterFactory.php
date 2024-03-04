@@ -1,17 +1,17 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace FluentForm\Box\Spout\Writer;
 
-use Box\Spout\Common\Exception\UnsupportedTypeException;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Type;
+use FluentForm\Box\Spout\Common\Exception\UnsupportedTypeException;
+use FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper;
+use FluentForm\Box\Spout\Common\Type;
 
 /**
  * Class WriterFactory
  * This factory is used to create writers, based on the type of the file to be read.
  * It supports CSV, XLSX and ODS formats.
  *
- * @package Box\Spout\Writer
+ * @package FluentForm\Box\Spout\Writer
  */
 class WriterFactory
 {
@@ -21,7 +21,7 @@ class WriterFactory
      * @api
      * @param  string $writerType Type of the writer to instantiate
      * @return WriterInterface
-     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \FluentForm\Box\Spout\Common\Exception\UnsupportedTypeException
      */
     public static function create($writerType)
     {

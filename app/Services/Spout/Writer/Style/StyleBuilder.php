@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Style;
+namespace FluentForm\Box\Spout\Writer\Style;
 
 /**
  * Class StyleBuilder
  * Builder to create new styles
  *
- * @package Box\Spout\Writer\Style
+ * @package FluentForm\Box\Spout\Writer\Style
  */
 class StyleBuilder
 {

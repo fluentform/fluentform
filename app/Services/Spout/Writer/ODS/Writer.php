@@ -1,16 +1,16 @@
 <?php
 
-namespace Box\Spout\Writer\ODS;
+namespace FluentForm\Box\Spout\Writer\ODS;
 
-use Box\Spout\Writer\AbstractMultiSheetsWriter;
-use Box\Spout\Writer\Common;
-use Box\Spout\Writer\ODS\Internal\Workbook;
+use FluentForm\Box\Spout\Writer\AbstractMultiSheetsWriter;
+use FluentForm\Box\Spout\Writer\Common;
+use FluentForm\Box\Spout\Writer\ODS\Internal\Workbook;
 
 /**
  * Class Writer
  * This class provides base support to write data to ODS files
  *
- * @package Box\Spout\Writer\ODS
+ * @package FluentForm\Box\Spout\Writer\ODS
  */
 class Writer extends AbstractMultiSheetsWriter
 {
@@ -30,7 +30,7 @@ class Writer extends AbstractMultiSheetsWriter
      * @api
      * @param string $tempFolder Temporary folder where the files to create the ODS will be stored
      * @return Writer
-     * @throws \Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
      */
     public function setTempFolder($tempFolder)
     {
@@ -44,7 +44,7 @@ class Writer extends AbstractMultiSheetsWriter
      * Configures the write and sets the current sheet pointer to a new sheet.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the file for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to open the file for writing
      */
     protected function openWriter()
     {
@@ -68,10 +68,10 @@ class Writer extends AbstractMultiSheetsWriter
      *
      * @param array $dataRow Array containing data to be written.
      *          Example $dataRow = ['data1', 1234, null, '', 'data5'];
-     * @param \Box\Spout\Writer\Style\Style $style Style to be applied to the row.
+     * @param \FluentForm\Box\Spout\Writer\Style\Style $style Style to be applied to the row.
      * @return void
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the book is not created yet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \FluentForm\Box\Spout\Writer\Exception\WriterNotOpenedException If the book is not created yet
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to write data
      */
     protected function addRowToWriter(array $dataRow, $style)
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace FluentForm\Box\Spout\Reader\XLSX;
 
 /**
  * Class ReaderOptions
  * This class is used to customize the reader's behavior
  *
- * @package Box\Spout\Reader\XLSX
+ * @package FluentForm\Box\Spout\Reader\XLSX
  */
-class ReaderOptions extends \Box\Spout\Reader\Common\ReaderOptions
+class ReaderOptions extends FluentForm\Box\Spout\Reader\Common\ReaderOptions
 {
     /** @var string|null Temporary folder where the temporary files will be created */
     protected $tempFolder = null;

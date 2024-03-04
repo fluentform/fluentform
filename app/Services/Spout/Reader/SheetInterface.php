@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader;
+namespace FluentForm\Box\Spout\Reader;
 
 /**
  * Interface SheetInterface
  *
- * @package Box\Spout\Reader
+ * @package FluentForm\Box\Spout\Reader
  */
 interface SheetInterface
 {

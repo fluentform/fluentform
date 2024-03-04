@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Common\Exception;
+namespace FluentForm\Box\Spout\Common\Exception;
 
 /**
  * Class InvalidArgumentException
  *
  * @api
- * @package Box\Spout\Common\Exception
+ * @package FluentForm\Box\Spout\Common\Exception
  */
 class InvalidArgumentException extends SpoutException
 {

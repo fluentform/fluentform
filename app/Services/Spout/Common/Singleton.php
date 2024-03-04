@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Common;
+namespace FluentForm\Box\Spout\Common;
 
 /**
  * Class Singleton
  * Defines a class as a singleton.
  *
- * @package Box\Spout\Common
+ * @package FluentForm\Box\Spout\Common
  */
 trait Singleton
 {

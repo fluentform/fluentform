@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Writer\Style;
+namespace FluentForm\Box\Spout\Writer\Style;
 
-use Box\Spout\Writer\Exception\InvalidColorException;
+use FluentForm\Box\Spout\Writer\Exception\InvalidColorException;
 
 /**
  * Class Color
  * This class provides constants and functions to work with colors
  *
- * @package Box\Spout\Writer\Style
+ * @package FluentForm\Box\Spout\Writer\Style
  */
 class Color
 {
@@ -53,7 +53,7 @@ class Color
      *
      * @param int $colorComponent
      * @return void
-     * @throws \Box\Spout\Writer\Exception\InvalidColorException
+     * @throws \FluentForm\Box\Spout\Writer\Exception\InvalidColorException
      */
     protected static function throwIfInvalidColorComponentValue($colorComponent)
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Common\Escaper;
+namespace FluentForm\Box\Spout\Common\Escaper;
 
 /**
  * Interface EscaperInterface
  *
- * @package Box\Spout\Common\Escaper
+ * @package FluentForm\Box\Spout\Common\Escaper
  */
 interface EscaperInterface
 {

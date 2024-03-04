@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Helper;
+namespace FluentForm\Box\Spout\Writer\XLSX\Helper;
 
-use Box\Spout\Writer\Common\Helper\ZipHelper;
-use Box\Spout\Writer\XLSX\Internal\Worksheet;
+use FluentForm\Box\Spout\Writer\Common\Helper\ZipHelper;
+use FluentForm\Box\Spout\Writer\XLSX\Internal\Worksheet;
 
 /**
  * Class FileSystemHelper
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for XLSX files
  *
- * @package Box\Spout\Writer\XLSX\Helper
+ * @package FluentForm\Box\Spout\Writer\XLSX\Helper
  */
-class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
+class FileSystemHelper extends \FluentForm\Box\Spout\Common\Helper\FileSystemHelper
 {
     const APP_NAME = 'Spout';
 
@@ -75,7 +75,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates all the folders needed to create a XLSX file, as well as the files that won't change.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
      */
     public function createBaseFilesAndFolders()
     {
@@ -90,7 +90,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the folder that will be used as root
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder
      */
     protected function createRootFolder()
     {
@@ -102,7 +102,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the "_rels" folder under the root folder as well as the ".rels" file in it
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder or the ".rels" file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder or the ".rels" file
      */
     protected function createRelsFolderAndFile()
     {
@@ -117,7 +117,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper
      * Creates the ".rels" file under the "_rels" folder (under root)
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createRelsFile()
     {
@@ -139,7 +139,7 @@ EOD;
      * Creates the "docProps" folder under the root folder as well as the "app.xml" and "core.xml" files in it
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder or one of the files
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder or one of the files
      */
     protected function createDocPropsFolderAndFiles()
     {
@@ -155,7 +155,7 @@ EOD;
      * Creates the "app.xml" file under the "docProps" folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createAppXmlFile()
     {
@@ -177,7 +177,7 @@ EOD;
      * Creates the "core.xml" file under the "docProps" folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the file
      */
     protected function createCoreXmlFile()
     {
@@ -200,7 +200,7 @@ EOD;
      * Creates the "xl" folder under the root folder as well as its subfolders
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the folders
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create at least one of the folders
      */
     protected function createXlFolderAndSubFolders()
     {
@@ -215,7 +215,7 @@ EOD;
      * Creates the "_rels" folder under the "xl" folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder
      */
     protected function createXlRelsFolder()
     {
@@ -227,7 +227,7 @@ EOD;
      * Creates the "worksheets" folder under the "xl" folder
      *
      * @return FileSystemHelper
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If unable to create the folder
      */
     protected function createXlWorksheetsFolder()
     {
@@ -284,7 +284,7 @@ EOD;
 EOD;
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $escaper = \Box\Spout\Common\Escaper\XLSX::getInstance();
+        $escaper = \FluentForm\Box\Spout\Common\Escaper\XLSX::getInstance();
 
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {

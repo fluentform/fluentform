@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper;
 
-use Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
 
 /**
  * Class StyleHelper
  * This class provides helper functions related to XLSX styles
  *
- * @package Box\Spout\Reader\XLSX\Helper
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper
  */
 class StyleHelper
 {
@@ -128,7 +128,7 @@ class StyleHelper
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     * @param \FluentForm\Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
      * @return void
      */
     protected function extractNumberFormats($xmlReader)

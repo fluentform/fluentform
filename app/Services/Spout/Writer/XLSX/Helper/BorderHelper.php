@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Helper;
+namespace FluentForm\Box\Spout\Writer\XLSX\Helper;
 
-use Box\Spout\Writer\Style\Border;
-use Box\Spout\Writer\Style\BorderPart;
+use FluentForm\Box\Spout\Writer\Style\Border;
+use FluentForm\Box\Spout\Writer\Style\BorderPart;
 
 class BorderHelper
 {

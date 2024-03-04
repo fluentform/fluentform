@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Writer\Style;
+namespace FluentForm\Box\Spout\Writer\Style;
 
-use Box\Spout\Writer\Exception\Border\InvalidNameException;
-use Box\Spout\Writer\Exception\Border\InvalidStyleException;
-use Box\Spout\Writer\Exception\Border\InvalidWidthException;
+use FluentForm\Box\Spout\Writer\Exception\Border\InvalidNameException;
+use FluentForm\Box\Spout\Writer\Exception\Border\InvalidStyleException;
+use FluentForm\Box\Spout\Writer\Exception\Border\InvalidWidthException;
 
 /**
  * Class BorderPart

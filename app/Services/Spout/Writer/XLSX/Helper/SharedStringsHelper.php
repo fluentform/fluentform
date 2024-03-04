@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Helper;
+namespace FluentForm\Box\Spout\Writer\XLSX\Helper;
 
-use Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Common\Exception\IOException;
 
 /**
  * Class SharedStringsHelper
  * This class provides helper functions to write shared strings
  *
- * @package Box\Spout\Writer\XLSX\Helper
+ * @package FluentForm\Box\Spout\Writer\XLSX\Helper
  */
 class SharedStringsHelper
 {
@@ -31,7 +31,7 @@ EOD;
     /** @var int Number of shared strings already written */
     protected $numSharedStrings = 0;
 
-    /** @var \Box\Spout\Common\Escaper\XLSX Strings escaper */
+    /** @var \FluentForm\Box\Spout\Common\Escaper\XLSX Strings escaper */
     protected $stringsEscaper;
 
     /**
@@ -49,14 +49,14 @@ EOD;
         fwrite($this->sharedStringsFilePointer, $header);
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->stringsEscaper = \Box\Spout\Common\Escaper\XLSX::getInstance();
+        $this->stringsEscaper = \FluentForm\Box\Spout\Common\Escaper\XLSX::getInstance();
     }
 
     /**
      * Checks if the book has been created. Throws an exception if not created yet.
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
     protected function throwIfSharedStringsFilePointerIsNotAvailable()
     {

@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace FluentForm\Box\Spout\Reader\XLSX;
 
-use Box\Spout\Reader\SheetInterface;
+use FluentForm\Box\Spout\Reader\SheetInterface;
 
 /**
  * Class Sheet
  * Represents a sheet within a XLSX file
  *
- * @package Box\Spout\Reader\XLSX
+ * @package FluentForm\Box\Spout\Reader\XLSX
  */
 class Sheet implements SheetInterface
 {
-    /** @var \Box\Spout\Reader\XLSX\RowIterator To iterate over sheet's rows */
+    /** @var \FluentForm\Box\Spout\Reader\XLSX\RowIterator To iterate over sheet's rows */
     protected $rowIterator;
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
@@ -30,7 +30,7 @@ class Sheet implements SheetInterface
      * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
      * @param string $sheetName Name of the sheet
      * @param bool $isSheetActive Whether the sheet was defined as active
-     * @param \Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
+     * @param \FluentForm\Box\Spout\Reader\XLSX\ReaderOptions $options Reader's current options
      * @param Helper\SharedStringsHelper Helper to work with shared strings
      */
     public function __construct($filePath, $sheetDataXMLFilePath, $sheetIndex, $sheetName, $isSheetActive, $options, $sharedStringsHelper)
@@ -43,7 +43,7 @@ class Sheet implements SheetInterface
 
     /**
      * @api
-     * @return \Box\Spout\Reader\XLSX\RowIterator
+     * @return \FluentForm\Box\Spout\Reader\XLSX\RowIterator
      */
     public function getRowIterator()
     {

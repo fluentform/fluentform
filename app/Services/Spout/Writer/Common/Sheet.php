@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Writer\Common;
+namespace FluentForm\Box\Spout\Writer\Common;
 
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Writer\Exception\InvalidSheetNameException;
+use FluentForm\Box\Spout\Common\Helper\StringHelper;
+use FluentForm\Box\Spout\Writer\Exception\InvalidSheetNameException;
 
 /**
  * Class Sheet
  * External representation of a worksheet
  *
- * @package Box\Spout\Writer\Common
+ * @package FluentForm\Box\Spout\Writer\Common
  */
 class Sheet
 {
@@ -33,7 +33,7 @@ class Sheet
     /** @var string Name of the sheet */
     protected $name;
 
-    /** @var \Box\Spout\Common\Helper\StringHelper */
+    /** @var FluentForm\Box\Spout\Common\Helper\StringHelper */
     protected $stringHelper;
 
     /**
@@ -80,7 +80,7 @@ class Sheet
      * @api
      * @param string $name Name of the sheet
      * @return Sheet
-     * @throws \Box\Spout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
+     * @throws FluentForm\Box\Spout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
      */
     public function setName($name)
     {
@@ -98,7 +98,7 @@ class Sheet
      *
      * @param string $name
      * @return void
-     * @throws \Box\Spout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
+     * @throws FluentForm\Box\Spout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
      */
     protected function throwIfNameIsInvalid($name)
     {

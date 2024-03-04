@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace FluentForm\Box\Spout\Reader\ODS;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Reader\ODS\Helper\SettingsHelper;
-use Box\Spout\Reader\Wrapper\XMLReader;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\Exception\XMLProcessingException;
+use FluentForm\Box\Spout\Reader\IteratorInterface;
+use FluentForm\Box\Spout\Reader\ODS\Helper\SettingsHelper;
+use FluentForm\Box\Spout\Reader\Wrapper\XMLReader;
 
 /**
  * Class SheetIterator
  * Iterate over ODS sheet.
  *
- * @package Box\Spout\Reader\ODS
+ * @package FluentForm\Box\Spout\Reader\ODS
  */
 class SheetIterator implements IteratorInterface
 {
@@ -25,13 +25,13 @@ class SheetIterator implements IteratorInterface
     /** @var string $filePath Path of the file to be read */
     protected $filePath;
 
-    /** @var \Box\Spout\Reader\ODS\ReaderOptions Reader's current options */
+    /** @var \FluentForm\Box\Spout\Reader\ODS\ReaderOptions Reader's current options */
     protected $options;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     protected $xmlReader;
 
-    /** @var \Box\Spout\Common\Escaper\ODS Used to unescape XML data */
+    /** @var \FluentForm\Box\Spout\Common\Escaper\ODS Used to unescape XML data */
     protected $escaper;
 
     /** @var bool Whether there are still at least a sheet to be read */
@@ -45,8 +45,8 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param string $filePath Path of the file to be read
-     * @param \Box\Spout\Reader\ODS\ReaderOptions $options Reader's current options
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @param \Fluentform\Box\Spout\Reader\ODS\ReaderOptions $options Reader's current options
+     * @throws \Fluentform\Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     public function __construct($filePath, $options)
     {
@@ -55,7 +55,7 @@ class SheetIterator implements IteratorInterface
         $this->xmlReader = new XMLReader();
 
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->escaper = \Box\Spout\Common\Escaper\ODS::getInstance();
+        $this->escaper = Fluentform\Box\Spout\Common\Escaper\ODS::getInstance();
 
         $settingsHelper = new SettingsHelper();
         $this->activeSheetName = $settingsHelper->getActiveSheetName($filePath);
@@ -66,7 +66,7 @@ class SheetIterator implements IteratorInterface
      * @link http://php.net/manual/en/iterator.rewind.php
      *
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the XML file containing sheets' data
+     * @throws \Fluentform\Box\Spout\Common\Exception\IOException If unable to open the XML file containing sheets' data
      */
     public function rewind()
     {
@@ -116,7 +116,7 @@ class SheetIterator implements IteratorInterface
      * Return the current element
      * @link http://php.net/manual/en/iterator.current.php
      *
-     * @return \Box\Spout\Reader\ODS\Sheet
+     * @return \Fluentform\Box\Spout\Reader\ODS\Sheet
      */
     public function current()
     {

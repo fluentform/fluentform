@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\Exception\Border;
+namespace FluentForm\Box\Spout\Writer\Exception\Border;
 
-use Box\Spout\Writer\Exception\WriterException;
-use Box\Spout\Writer\Style\BorderPart;
+use FluentForm\Box\Spout\Writer\Exception\WriterException;
+use FluentForm\Box\Spout\Writer\Style\BorderPart;
 
 class InvalidNameException extends WriterException
 {

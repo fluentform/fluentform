@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching;
 
 /**
  * Class CachingStrategyFactory
  *
- * @package Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper\SharedStringsCaching
  */
 class CachingStrategyFactory
 {

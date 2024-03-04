@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Autoloader;
+namespace FluentForm\Box\Spout\Autoloader;
 
 require_once 'Psr4Autoloader.php';
 
@@ -12,4 +12,4 @@ $srcBaseDirectory = dirname(dirname(__FILE__));
 
 $loader = new Psr4Autoloader();
 $loader->register();
-$loader->addNamespace('Box\Spout', $srcBaseDirectory);
+$loader->addNamespace('FluentForm\Box\Spout', $srcBaseDirectory);

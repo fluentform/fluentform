@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace FluentForm\Box\Spout\Reader\XLSX\Helper;
 
 /**
  * Class DateFormatHelper
  * This class provides helper functions to format Excel dates
  *
- * @package Box\Spout\Reader\XLSX\Helper
+ * @package FluentForm\Box\Spout\Reader\XLSX\Helper
  */
 class DateFormatHelper
 {

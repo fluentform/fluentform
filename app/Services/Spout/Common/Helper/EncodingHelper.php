@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace FluentForm\Box\Spout\Common\Helper;
 
-use Box\Spout\Common\Exception\EncodingConversionException;
+use FluentForm\Box\Spout\Common\Exception\EncodingConversionException;
 
 /**
  * Class EncodingHelper
  * This class provides helper functions to work with encodings.
  *
- * @package Box\Spout\Common\Helper
+ * @package FluentForm\Box\Spout\Common\Helper
  */
 class EncodingHelper
 {
@@ -26,14 +26,14 @@ class EncodingHelper
     const BOM_UTF32_LE = "\xFF\xFE\x00\x00";
     const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
     /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
     protected $supportedEncodingsWithBom;
 
     /**
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \FluentForm\Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($globalFunctionsHelper)
     {
@@ -98,7 +98,7 @@ class EncodingHelper
      * @param string $string Non UTF-8 string to be converted
      * @param string $sourceEncoding The encoding used to encode the source string
      * @return string The converted, UTF-8 string
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     public function attemptConversionToUTF8($string, $sourceEncoding)
     {
@@ -111,7 +111,7 @@ class EncodingHelper
      * @param string $string UTF-8 string to be converted
      * @param string $targetEncoding The encoding the string should be re-encoded into
      * @return string The converted string, encoded with the given encoding
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     public function attemptConversionFromUTF8($string, $targetEncoding)
     {
@@ -126,7 +126,7 @@ class EncodingHelper
      * @param string $sourceEncoding The encoding used to encode the source string
      * @param string $targetEncoding The encoding the string should be re-encoded into
      * @return string The converted string, encoded with the given encoding
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \FluentForm\Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     protected function attemptConversion($string, $sourceEncoding, $targetEncoding)
     {

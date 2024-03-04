@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Style;
+namespace FluentForm\Box\Spout\Writer\Style;
 
 /**
  * Class Style
  * Represents a style to be applied to a cell
  *
- * @package Box\Spout\Writer\Style
+ * @package FluentForm\Box\Spout\Writer\Style
  */
 class Style
 {

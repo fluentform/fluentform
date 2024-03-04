@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader\Wrapper;
+namespace FluentForm\Box\Spout\Reader\Wrapper;
 use DOMNode;
 
 
@@ -9,7 +9,7 @@ use DOMNode;
  * Wrapper around the built-in XMLReader
  * @see \XMLReader
  *
- * @package Box\Spout\Reader\Wrapper
+ * @package FluentForm\Box\Spout\Reader\Wrapper
  */
 class XMLReader extends \XMLReader
 {
@@ -82,7 +82,7 @@ class XMLReader extends \XMLReader
      * @see \XMLReader::read
      *
      * @return bool TRUE on success or FALSE on failure
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \FluentForm\Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
      */
     public function read()
     {
@@ -100,7 +100,7 @@ class XMLReader extends \XMLReader
      *
      * @param string $nodeName Name of the node to find
      * @return bool TRUE on success or FALSE on failure
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \FluentForm\Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
      */
     public function readUntilNodeFound($nodeName)
     {
@@ -118,7 +118,7 @@ class XMLReader extends \XMLReader
      *
      * @param string|void $localName The name of the next node to move to
      * @return bool TRUE on success or FALSE on failure
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \FluentForm\Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
      */
     public function next($localName = null)
     {

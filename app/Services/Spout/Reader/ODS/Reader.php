@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace FluentForm\Box\Spout\Reader\ODS;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\AbstractReader;
+use FluentForm\Box\Spout\Common\Exception\IOException;
+use FluentForm\Box\Spout\Reader\AbstractReader;
 
 /**
  * Class Reader
  * This class provides support to read data from a ODS file
  *
- * @package Box\Spout\Reader\ODS
+ * @package FluentForm\Box\Spout\Reader\ODS
  */
 class Reader extends AbstractReader
 {
@@ -47,8 +47,8 @@ class Reader extends AbstractReader
      *
      * @param  string $filePath Path of the file to be read
      * @return void
-     * @throws \Box\Spout\Common\Exception\IOException If the file at the given path or its content cannot be read
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws \FluentForm\Box\Spout\Common\Exception\IOException If the file at the given path or its content cannot be read
+     * @throws \FluentForm\Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader($filePath)
     {
