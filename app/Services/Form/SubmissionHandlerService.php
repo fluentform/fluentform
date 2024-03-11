@@ -58,7 +58,24 @@ class SubmissionHandlerService
         if (!$this->form) {
             throw new ValidationException('', 422, null, ['errors' => 'Sorry, No corresponding form found']);
         }
-        
+
+        /**
+         * Ensure empty array value for unchecked checkboxes
+         *
+         * For unchecked checkboxes, the name not included in the form-data
+         * serialized by the client-side JavaScript. This adjustment ensures that
+         * checkboxes with empty values are present in the form-data to support
+         * conditions such as 'not_equal'.
+         */
+        $checkboxFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox'], ['element', 'attributes']);
+        if ($checkboxFields) {
+            foreach ($checkboxFields as $name => $field) {
+                if (!isset($formDataRaw[$name])) {
+                    $formDataRaw[$name] = [];
+                }
+            }
+        }
+
         // Parse the form and get the flat inputs with validations.
         $this->fields = FormFieldsParser::getEssentialInputs($this->form, $formDataRaw, ['rules', 'raw']);
     

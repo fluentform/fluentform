@@ -321,8 +321,12 @@ class FormDataParser
             return self::formatValue($values);
         }
 
-        if (!is_array($values) || empty($values)) {
+        if (!is_array($values)) {
             return $values;
+        }
+
+        if (empty($values)) {
+            return '';
         }
 
         if (!isset($field['options'])) {
