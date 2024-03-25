@@ -60,16 +60,17 @@ class SubmissionHandlerService
         }
 
         /**
-         * Ensure empty array value for unchecked checkboxes
+         * Ensure empty array value for unchecked checkboxes, terms_and_condition or any checkbox type field
          *
-         * For unchecked checkboxes, the name not included in the form-data
+         * For unchecked checkboxes or t&c, the name not included in the form-data
          * serialized by the client-side JavaScript. This adjustment ensures that
          * checkboxes with empty values are present in the form-data to support
          * conditions such as 'not_equal'.
          */
-        $checkboxFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox'], ['element', 'attributes']);
-        if ($checkboxFields) {
-            foreach ($checkboxFields as $name => $field) {
+        $checkboxTypeFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox', 'terms_and_condition'], ['element', 'attributes']);
+
+        if ($checkboxTypeFields) {
+            foreach ($checkboxTypeFields as $name => $field) {
                 if (!isset($formDataRaw[$name])) {
                     $formDataRaw[$name] = [];
                 }
