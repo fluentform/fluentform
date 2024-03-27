@@ -225,11 +225,47 @@
                                     </template>
                                     <el-radio-group v-model="settings.custom_paypal_mode">
                                         <el-radio label="live">{{ $t('Live Mode') }}</el-radio>
-                                        <el-radio label="test">{{ $t('Test Mode') }}</el-radio>
+                                        <el-radio label="test">{{ $t('Sandbox Mode') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
-                                <el-form-item class="ff-form-item" label="PayPal Email">
+	                            <el-form-item class="ff-form-item">
+		                            <template slot="label">
+			                            {{ $t('Payment Processor') }}
+			                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+				                            <div slot="content">
+					                            <p>
+						                            {{ $t('Select the payment processor. For inline process you should select API otherwise select Standard Email for Hosted process.') }}
+					                            </p>
+				                            </div>
+				                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+			                            </el-tooltip>
+		                            </template>
+		                            <el-radio-group v-model="settings.custom_paypal_processor">
+			                            <el-radio label="standard">{{ $t('Standard Email') }}</el-radio>
+			                            <el-radio label="api">{{ $t('API Keys') }}</el-radio>
+		                            </el-radio-group>
+		                            <error-view field="payment_processor" :errors="errors" />
+	                            </el-form-item>
+	                            <!-- PayPal API Info-->
+	                            <template v-if="settings.custom_paypal_processor === 'api'">
+		                            <el-form-item class="ff-form-item" :label="isPaypalLive ? $t('Live Client ID') : $t('Sandbox Client ID')">
+			                            <el-input
+				                            type="text"
+				                            v-model="settings.custom_paypal_client_id"
+				                            :placeholder="isPaypalLive ? $t('Live Client ID') : $t('Sandbox Client ID')"/>
+			                            <error-view field="payment_client_id" :errors="errors" />
+		                            </el-form-item>
+		                            <el-form-item class="ff-form-item" :label="isPaypalLive ? $t('Live Secret') : $t('Sandbox Secret')">
+			                            <el-input
+				                            type="text"
+				                            v-model="settings.custom_paypal_client_secrete"
+				                            :placeholder="isPaypalLive ? $t('Live Secret') : $t('Sandbox Secret')"/>
+			                            <error-view field="payment_client_secret" :errors="errors" />
+		                            </el-form-item>
+	                            </template>
+                                <el-form-item v-else class="ff-form-item" label="PayPal Email">
                                     <el-input type="email" v-model="settings.custom_paypal_id" :placeholder="$t('Custom PayPal Email')" />
+	                                <error-view field="paypal_email" :errors="errors" />
                                 </el-form-item>
                             </template>
                         </div>
@@ -253,6 +289,7 @@
     import Card from '@/admin/components/Card/Card.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
+    import ErrorView from "@/common/errorView.vue";
 
     export default {
         name: 'payment-settings',
@@ -263,7 +300,8 @@
             inputPopover,
             Card,
             CardHead,
-            CardBody
+            CardBody,
+	        ErrorView
         },
         data() {
             return {
@@ -272,7 +310,8 @@
                 loading: false,
                 currencies: [],
                 payment_methods: [],
-                addressFields: []
+                addressFields: [],
+	            errors: new Errors(),
             }
         },
         computed: {
@@ -280,11 +319,15 @@
                 return _ff.filter(this.inputs, (input) => {
                     return input.attributes.type === 'email';
                 });
-            }
+            },
+	        isPaypalLive() {
+				return this.settings && this.settings.custom_paypal_mode === 'live';
+	        }
         },
         methods: {
             getSettings() {
                 this.loading = true;
+	            this.errors.clear();
                 FluentFormsGlobal.$get({
                     action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.form.id,
@@ -305,6 +348,7 @@
             },
             saveSettings() {
                 this.saving = true;
+	            this.errors.clear();
                 FluentFormsGlobal.$post({
                     action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.form.id,
@@ -315,7 +359,8 @@
                         this.$success(response.data.message);
                     })
                     .fail(error => {
-
+	                    this.$fail(error.responseJSON.data.message);
+	                    this.errors.record(error.responseJSON.data.errors);
                     })
                     .always(() => {
                         this.saving = false;
