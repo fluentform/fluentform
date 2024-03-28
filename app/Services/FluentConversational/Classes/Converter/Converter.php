@@ -159,6 +159,31 @@ class Converter
                         $question['fields'][] = wp_parse_args($itemQuestion, $item);
                     }
                 }
+            } elseif ('input_name' === $field['element']) {
+                foreach ($field['fields'] as $item) {
+                    if ($item['settings']['visible']) {
+                        $itemQuestion = [
+                            'title'           => ArrayHelper::get($item, 'settings.label'),
+                            'container_class' => ArrayHelper::get($item, 'settings.container_class'),
+                            'required'        => ArrayHelper::get($item, 'settings.validation_rules.required.value'),
+                            'requiredMsg'     => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
+                            'errorMessage'    => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
+                            'validationRules' => ArrayHelper::get($item, 'settings.validation_rules'),
+                            'conditional_logics'   => self::parseConditionalLogic($item),
+                        ];
+                        if ($itemQuestion['required']) {
+                            $question['requiredFields'][] = [
+                                "name"         => ArrayHelper::get($item, 'attributes.name', ''),
+                                'requiredMessage'  => ArrayHelper::get($item, 'settings.validation_rules.required.message')
+                            ];
+                            $question['required'] = true;
+                        }
+                        if ($defaultValue = self::setDefaultValue(ArrayHelper::get($item, 'attributes.value'), $item, $form)) {
+                            $item['attributes']['value'] = $defaultValue;
+                        }
+                        $question['fields'][] = wp_parse_args($itemQuestion, $item);
+                    }
+                }
             } elseif ('input_text' === $field['element']) {
                 $mask = ArrayHelper::get($field, 'settings.temp_mask');
 
@@ -670,6 +695,7 @@ class Converter
             'hcaptcha'              => 'FlowFormHCaptchaType',
             'turnstile'             => 'FlowFormTurnstileType',
             'address'               => 'FlowFormAddressType',
+            'input_name'            => 'FlowFormNameType',
             'ffc_custom'            => 'FlowFormCustomType',
         ];
 
