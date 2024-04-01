@@ -67,10 +67,10 @@ class SubmissionHandlerService
          * checkboxes with empty values are present in the form-data to support
          * conditions such as 'not_equal'.
          */
-        $checkboxTypeFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox', 'terms_and_condition'], ['element', 'attributes']);
+        $checkboxTypeFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox', 'terms_and_condition', 'multi_payment_component'], ['element', 'attributes']);
 
-        if ($checkboxTypeFields) {
-            foreach ($checkboxTypeFields as $name => $field) {
+        foreach ($checkboxTypeFields as $name => $field) {
+            if ('checkbox' == Arr::get($field, 'attributes.type')) {
                 if (!isset($formDataRaw[$name])) {
                     $formDataRaw[$name] = [];
                 }
