@@ -321,7 +321,8 @@ class Form
             'hcaptcha',
             'turnstile',
             'quiz_score',
-            'rangeslider'
+            'rangeslider',
+//            'save_progress_button'
         ];
 
         $acceptedFieldElements = apply_filters(
@@ -454,7 +455,7 @@ class Form
             }
 
             foreach ($item->deps as $dep) {
-                if (!isset($items[$dep])) {
+                if (isset($wp_scripts->registered[$dep])) {
                     $child = $wp_scripts->registered[$dep];
                     if ($child->src) {
                         $jsScripts[$dep] = $child;
@@ -502,7 +503,7 @@ class Form
 
             if ($item->deps) {
                 foreach ($item->deps as $dep) {
-                    if (!isset($items[$dep])) {
+                    if (isset($wp_styles->registered[$dep])) {
                         $child = $wp_styles->registered[$dep];
                         if ($child->src) {
                             $cssStyles[$dep] = $child;
@@ -531,11 +532,9 @@ class Form
     public function renderShortcode($form)
     {
         $formId = $form->id;
+        $this->enqueueScripts();
         $form = Converter::convert($form);
         $submitCss = $this->getSubmitBttnStyle($form);
-
-        $this->enqueueScripts();
-
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
         $instanceId = $form->instance_index;
@@ -543,17 +542,8 @@ class Form
         wp_localize_script('fluent_forms_conversational_form', $varName, [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'form'                     => [
-                'id'             => $form->id,
-                'questions'      => $form->questions,
-                'image_preloads' => $form->image_preloads,
-                'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool)$form->has_payment,
-                'hasCalculation' => (bool)$form->hasCalculation,
-                'reCaptcha'      => $form->reCaptcha,
-                'hCaptcha'       => $form->hCaptcha,
-                'turnstile'      => $form->turnstile,
-            ],
+            'nonce'                    => wp_create_nonce(),
+            'form'                     => $this->getLocalizedForm($form),
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
             'form_id'                  => $form->id,
@@ -678,6 +668,9 @@ class Form
             echo "<div style='text-align: center; font-size: 16px; margin: 100px 20px;' id='ff_form_{$form->id}' class='ff_form_not_render'>{$isRenderable['message']}</div>";
             exit(200);
         }
+
+        $this->enqueueScripts();
+
         /* This filter is deprecated and will be removed soon */
         $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
@@ -698,24 +691,13 @@ class Form
 
         $submitCss = $this->getSubmitBttnStyle($form);
 
-        $this->enqueueScripts();
-
         $designSettings = $this->getDesignSettings($formId);
 
         wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
             'ajaxurl'                  => admin_url('admin-ajax.php'),
-            'form'                     => [
-                'id'             => $form->id,
-                'questions'      => $form->questions,
-                'image_preloads' => $form->image_preloads,
-                'submit_button'  => $form->submit_button,
-                'hasPayment'     => (bool)$form->has_payment,
-                'hasCalculation' => (bool)$form->hasCalculation,
-                'reCaptcha'      => $form->reCaptcha,
-                'hCaptcha'       => $form->hCaptcha,
-                'turnstile'      => $form->turnstile,
-            ],
+            'nonce'                    => wp_create_nonce(),
+            'form'                     => $this->getLocalizedForm($form),
             'form_id'                  => $form->id,
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
             'i18n'                     => $metaSettings['i18n'],
@@ -782,14 +764,14 @@ class Form
         wp_enqueue_style(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/' . $cssFileName . '.css',
-            [],
+            ['intlTelInput', 'flatpickr'],
             FLUENTFORM_VERSION
         );
 
         wp_enqueue_script(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            [],
+            ['intlTelInputUtils', 'intlTelInput', 'flatpickr', 'google-recaptcha', 'hcaptcha', 'conv-turnstile'],
             FLUENTFORM_VERSION,
             true
         );
@@ -875,5 +857,24 @@ class Form
         }
 
         return $asteriskPlacement;
+    }
+
+    private function getLocalizedForm($form)
+    {
+        return [
+            'id'                        => $form->id,
+            'questions'                 => $form->questions,
+            'image_preloads'            => $form->image_preloads,
+            'submit_button'             => $form->submit_button,
+            'hasPayment'                => (bool)$form->has_payment,
+            'hasCalculation'            => (bool)$form->hasCalculation,
+            'reCaptcha'                 => $form->reCaptcha,
+            'hCaptcha'                  => $form->hCaptcha,
+            'turnstile'                 => $form->turnstile,
+            'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
+            'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
+            'has_save_link'             => $form->save_state,
+            'step_completed'            => $form->stepCompleted ?? 0
+        ];
     }
 }
