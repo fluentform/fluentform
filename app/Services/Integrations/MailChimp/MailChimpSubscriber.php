@@ -119,7 +119,7 @@ trait MailChimpSubscriber
 
                         $formFieldValue = ArrayHelper::get($formData, $formFieldName);
 
-                        if ($formFieldValue) {
+                        if ($formFieldValue && is_array($formFieldValue)) {
                             if('address' == $fieldSettings['type']) {
                                 $mergeFields[$fieldName] = [
                                     'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
@@ -128,7 +128,7 @@ trait MailChimpSubscriber
                                     'zip'     => ArrayHelper::get($formFieldValue, 'zip'),
                                     'country' => ArrayHelper::get($formFieldValue, 'country'),
                                 ];
-
+                                
                                 if (ArrayHelper::exists($formFieldValue, 'address_line_2')) {
                                     $mergeFields[$fieldName]['addr2'] = ArrayHelper::get($formFieldValue, 'address_line_2');
                                 }
