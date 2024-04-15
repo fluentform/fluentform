@@ -420,7 +420,7 @@ class TranslationString
             'Post Type' => __('Post Type', 'fluentform'),
             'Submission Type' => __('Submission Type', 'fluentform'),
             'Create or Update Post' => __('Create or Update Post', 'fluentform'),
-            'For post update only one feed is avaiable, if you have more than one feed the first one will work.'    => __('For post update only one feed is avaiable, if you have more than one feed the first one will work.', 'fluentform'),
+            'For post update only one feed is available, if you have more than one feed the first one will work.'    => __('For post update only one feed is available, if you have more than one feed the first one will work.', 'fluentform'),
             'Permission guest user to update post. If allowed post can be updatable from logout session.'    => __('Permission guest user to update post. If allowed post can be updatable from logout session.', 'fluentform'),
             'Permission guest user to create post. If allowed post can be creatable from logout session.'    => __('Permission guest user to create post. If allowed post can be creatable from logout session.', 'fluentform'),
             'new' => __('new', 'fluentform'),

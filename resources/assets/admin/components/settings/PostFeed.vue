@@ -37,7 +37,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('For post update only one feed is avaiable, if you have more than one feed the first one will work.') }}
+                                            {{ $t('For post update only one feed is available, if you have more than one feed the first one will work.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
