@@ -178,7 +178,7 @@
       color: $text-color;
       background-image: none;
       background-clip: padding-box;
-      border: 1px solid #dadbdd;
+      border: 1px solid $border;
       border-radius: 7px;
       transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
       margin-bottom: 0;
@@ -225,7 +225,6 @@
       label.ff-el-form-check-label {
         margin-bottom: 7px;
         cursor: pointer;
-
         > span:before, > span:after {
           content: none;
         }
