@@ -12,12 +12,9 @@
 <div class="ff_addon_wrapper ff_block">
     <div class="ff_card text-center mb-4">
         <img class="mb-6" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>
-        <h1 class="mb-4"><?php _e('Making Email Deliver ability Easy and Fast for Your WordPress', 'fluentform'); ?></h1>
+        <h1 class="mb-4"><?php _e('Making Email Deliverability Easy and Fast for Your WordPress', 'fluentform'); ?></h1>
         <p>
-            <a target="_blank" href="https://wordpress.org/plugins/fluent-smtp/" rel="nofollow">FluentSMTP</a> <?php _e('is the ultimate WP Mail Plugin that connects with your Email Service Provider natively and makes
-            sure your emails are delivered 💯.
-            Our goal is to send your WordPress emails delivery fast, secure, and make sure your WordPress emails reach the email inbox.
-            Made by Fluent Forms team for you.', 'fluentform'); ?>
+            <a target="_blank" href="https://wordpress.org/plugins/fluent-smtp/" rel="nofollow">FluentSMTP</a><?php _e(', the ultimate WordPress Mail Plugin, natively integrates with your Email Service Provider to ensure 💯% delivery of your emails. This plugin makes WordPress email delivery fast, secure, and reliable, ensuring your emails consistently reach the inbox. Crafted by the Fluent Forms team, especially for you!', 'fluentform'); ?>
         </p>
         <?php if (!$is_installed): ?>
             <div class="ff_addon_btn_wrapper mb-6 mt-6">
@@ -56,7 +53,7 @@
                     </ul>
                 </div>
                 <div class="el-col el-col-12" style="padding-left: 12px; padding-right: 12px;">
-                    <h5 class="mb-4"><?php _e('Features of Fluent SMTP Plugin', 'fluentform'); ?></h5>
+                    <h5 class="mb-4"><?php _e('Features of FluentSMTP Plugin', 'fluentform'); ?></h5>
                     <ul class="fs-15">
                         <li class="mb-3"><i class="el-icon el-icon-success text-success mr-2"></i> <?php _e('Optimized API connection with Mail Service Providers', 'fluentform'); ?></li>
                         <li class="mb-3"><i class="el-icon el-icon-success text-success mr-2"></i> <?php _e('Email Logging for better visibility', 'fluentform'); ?></li>
