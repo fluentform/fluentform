@@ -304,7 +304,7 @@ class SettingsService
         $selectedPreset = $selectedPreset ?: 'ffs_default';
         $presets = [
             'ffs_default' => [
-                'label' => __('Default', ''),
+                'label' => __('Default', 'fluentform'),
                 'style' => '[]',
             ],
             'ffs_inherit_theme' => [

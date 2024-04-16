@@ -124,9 +124,9 @@ $app->addAction('fluentform/global_menu', function () use ($app) {
 });
 
 $app->addAction('wp_dashboard_setup', function () {
-    $roleManager = new \FluentForm\App\Modules\Acl\Acl();
+    $acl = new \FluentForm\App\Modules\Acl\Acl();
 
-    if (!$roleManager->getCurrentUserCapability()) {
+    if (!$acl::getCurrentUserCapability()) {
         return;
     }
     wp_add_dashboard_widget('fluentform_stat_widget', __('Fluent Forms Latest Form Submissions', 'fluentform'), function () {
@@ -991,7 +991,8 @@ add_action('enqueue_block_editor_assets', function () {
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
-        ['wp-edit-blocks']
+        ['wp-edit-blocks'],
+        FLUENTFORM_VERSION
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
