@@ -166,6 +166,7 @@ class EmailNotification
                 }
             }, 10, 1);
         }
+
         $sendAddresses =  apply_filters_deprecated(
             'fluentform_email_to',
             [
@@ -178,9 +179,10 @@ class EmailNotification
             'fluentform/email_to',
             'Use fluentform/email_to instead of fluentform_email_to.'
         );
+
         $emailTo = apply_filters('fluentform/email_to', $sendAddresses, $notification, $submittedData, $form);
-        if(is_array($sendAddresses)){
-            $sendAddresses = implode(',', $sendAddresses);
+        if (is_array($sendAddresses)) {
+            $sendAddresses = implode(', ', $sendAddresses);
         }
         do_action('fluentform/log_data', [
             'parent_source_id' => $form->id,
@@ -262,11 +264,7 @@ class EmailNotification
                 ],
             ];
             if (\FluentForm\App\Services\ConditionAssesor::evaluate($condition, $submittedData)) {
-                if (is_array($emailAddresses)) {
-                    $validAddresses = array_merge($validAddresses, $emailAddresses);
-                } else {
-                    $validAddresses[] = $emailAddresses;
-                }
+                $validAddresses = array_merge($validAddresses, $emailAddresses);
             }
         }
         return implode(',', $validAddresses);
