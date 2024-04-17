@@ -12,9 +12,9 @@
 <div class="ff_addon_wrapper ff_block">
     <div class="ff_card text-center mb-4">
         <img class="mb-6" style="width: 100px; height: 100px;" src="<?php echo esc_url($logo); ?>"/>
-        <h1 class="mb-4"><?php _e('Making Email Deliverability Easy and Fast for Your WordPress', 'fluentform'); ?></h1>
+        <h1 class="mb-4"><?php _e('Solve Email Deliverability Issues Forever', 'fluentform'); ?></h1>
         <p>
-            <a target="_blank" href="https://wordpress.org/plugins/fluent-smtp/" rel="nofollow">FluentSMTP</a><?php _e(', the ultimate WordPress Mail Plugin, natively integrates with your Email Service Provider to ensure 💯% delivery of your emails. This plugin makes WordPress email delivery fast, secure, and reliable, ensuring your emails consistently reach the inbox. Crafted by the Fluent Forms team, especially for you!', 'fluentform'); ?>
+            <a target="_blank" href="https://wordpress.org/plugins/fluent-smtp/" rel="nofollow">FluentSMTP</a><?php _e(', the ultimate WordPress SMTP Plugin, natively integrates with your email service providers to ensure smooth delivery of your emails. This plugin makes WordPress email delivery fast, secure, and reliable, ensuring your emails consistently reach the inbox.', 'fluentform'); ?>
         </p>
         <?php if (!$is_installed): ?>
             <div class="ff_addon_btn_wrapper mb-6 mt-6">
@@ -23,7 +23,7 @@
             </div>
         <?php else: ?>
             <div class="ff_alert ff_alert_s2 success-soft mt-5">
-                <h3 class="mb-4"><?php _e('FluentSMTP plugin has been activated and running.', 'fluentform'); ?></h3>
+                <h3 class="mb-4"><?php _e('FluentSMTP is Activated and Running', 'fluentform'); ?></h3>
                 <a href="<?php echo esc_url($setup_url); ?>" class="el-button el-button--large el-button--success"><?php _e('View FluentSMTP Settings', 'fluentform'); ?></a>
             </div>
         <?php endif; ?>
