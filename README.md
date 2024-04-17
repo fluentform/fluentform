@@ -439,6 +439,34 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.12 (Date: April 18, 2024) =
+- Adds Name Field on conversational form
+- Adds label shortcode
+- Improved container action UI
+- Fixes mask input on Elementor popup
+- Fixes coupon skip button text on conversational form
+- Fixes query string email symbol encode on redirect URL
+- Fixes redirect URL params with anchor
+- Fixes checkbox and radio smart UI keyboard tab navigation
+- Fixes name fields individual label placement
+- Fixes checkbox & radio field issue with condition
+
+= 5.1.11 (Date: February 26, 2024) =
+- Fixes URL escaping bug
+
+= 5.1.10 (Date: February 26, 2024) =
+- Adds turnstile captcha for conversational form
+- Improves turnstile with appearance modes
+- Fixes Inventory Module hiding empty stock
+- Fixes url escaping issue of form redirect
+- Fixes sanitization issue for html supported fields
+- Fixes Entry Export with user submission IP
+- Fixes PDF feed watermark image
+- Fixes Name Field aria-required attribute
+- Fixes PDF Feeds on duplicate form
+- Fixes Numeric min max Field Bug
+
 = 5.1.9 (Date: January 23, 2024) =
 - Update Custom html field sanitization
 - Improves server side conditional settings validation
@@ -460,6 +488,11 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Fix CC/BCC email on Email Notification Routing
 - Fix Sync visual report order with form fields order
 - Fixed nested conditional field
+
+= 5.1.6 (Date: December 2, 2023) =
+- Fixes Paypal custom payment issue
+- Fixes personality quiz conversational issue
+- Fixes Notion multi select
 
 = 5.1.5 (Date: November 23, 2023) =
 - Fixes max length validation

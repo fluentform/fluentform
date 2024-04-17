@@ -369,15 +369,15 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.1.12 (Date: February 26, 2024) =
+= 5.1.12 (Date: April 18, 2024) =
 - Adds Name Field on conversational form
 - Adds label shortcode
 - Improved container action UI
-- Fixes mask input on eliminator popup
+- Fixes mask input on Elementor popup
 - Fixes coupon skip button text on conversational form
 - Fixes query string email symbol encode on redirect URL
 - Fixes redirect URL params with anchor
-- Fixes checkbox and radio smart choices keyboard tab navigation
+- Fixes checkbox and radio smart UI keyboard tab navigation
 - Fixes name fields individual label placement
 - Fixes checkbox & radio field issue with condition
 
