@@ -597,6 +597,16 @@
       color: white;
       cursor: pointer;
       padding: 10px 20px;
+
+      &:hover {
+        outline: none;
+        background-color: #91959b;
+      }
+
+      &:focus-visible {
+        outline: none;
+        background-color: #91959b;
+      }
     }
   }
 
