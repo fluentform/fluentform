@@ -941,6 +941,11 @@ class TranslationString
             'hcaptcha-placeholder' => __('hcaptcha-placeholder', 'fluentform'),
             'recaptcha-placeholder' => __('recaptcha-placeholder', 'fluentform'),
             'turnstile-placeholder' => __('turnstile-placeholder', 'fluentform'),
+            'Conversational Form Per Step Save' => __('Conversational Form Per Step Save', 'fluentform'),
+            'If you enable this setting than this conversational form per step data will be saved' => __('If you enable this setting than this conversational form per step data will be saved', 'fluentform'),
+            'Enable per step save' => __('Enable per step save', 'fluentform'),
+            'Resume from last step' => __('Resume from last step', 'fluentform'),
+            'Conversation Form Per Step Save is available in the pro version' => __('Conversation Form Per Step Save is available in the pro version', 'fluentform'),
         );
 
         return apply_filters('fluentform/form_settings_i18n', $i18n);
