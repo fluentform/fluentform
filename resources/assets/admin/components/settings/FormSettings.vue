@@ -627,10 +627,10 @@
                 </card>
 
                 <!-- per step save data for conversation form -->
-                <card v-if="is_conversion_form" id="conv_form_per_step_save">
+                <card v-if="is_conversion_form && hasConvFormSaveAndResume" id="conv_form_per_step_save">
                     <card-head>
                         <card-head-group>
-                            <h5 class="title">{{ $t('Conversationaal Form Per Step Save') }}</h5>
+                            <h5 class="title">{{ $t('Conversational Form Per Step Save') }}</h5>
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                 <div slot="content">
                                     <p>
@@ -787,7 +787,8 @@
                 admin_approval : false,
                 is_conversion_form: !!window.FluentFormApp.is_conversion_form,
                 conv_form_per_step_save: false,
-                conv_form_resume_from_last_step: false
+                conv_form_resume_from_last_step: false,
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume
             }
         },
         computed: {
