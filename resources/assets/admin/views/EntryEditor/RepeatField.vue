@@ -30,8 +30,10 @@
 	                        :type="fieldItem.attributes.type"/>
 	                </td>
 	                <td>
-	                    <el-button @click="addRow(rowIndex)" size="mini" icon="el-icon-plus"></el-button>
-	                    <el-button @click="removeRow(rowIndex)" size="mini" icon="el-icon-minus"></el-button>
+		                <div class="action-buttons-group">
+			                <el-button @click="addRow(rowIndex)" size="mini" icon="el-icon-plus"></el-button>
+			                <el-button @click="removeRow(rowIndex)" size="mini" icon="el-icon-minus"></el-button>
+		                </div>
 	                </td>
 	            </tr>
 	            </tbody>
