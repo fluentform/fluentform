@@ -532,8 +532,8 @@ class Form
     public function renderShortcode($form)
     {
         $formId = $form->id;
-        $this->enqueueScripts();
         $form = Converter::convert($form);
+        $this->enqueueScripts();
         $submitCss = $this->getSubmitBttnStyle($form);
         $metaSettings = $this->getMetaSettings($formId);
         $designSettings = $this->getDesignSettings($formId);
@@ -670,13 +670,13 @@ class Form
             exit(200);
         }
 
-        $this->enqueueScripts();
 
         /* This filter is deprecated and will be removed soon */
         $form = wpFluentForm()->applyFilters('fluentform_rendering_form', $form);
 
         $form = wpFluentForm()->applyFilters('fluentform/rendering_form', $form);
         $form = Converter::convert($form);
+        $this->enqueueScripts();
 
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
@@ -765,14 +765,14 @@ class Form
         wp_enqueue_style(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/css/' . $cssFileName . '.css',
-            ['intlTelInput', 'flatpickr'],
+            [],
             FLUENTFORM_VERSION
         );
 
         wp_enqueue_script(
             'fluent_forms_conversational_form',
             FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public/js/conversationalForm.js',
-            ['intlTelInputUtils', 'intlTelInput', 'flatpickr', 'google-recaptcha', 'hcaptcha', 'conv-turnstile'],
+            [],
             FLUENTFORM_VERSION,
             true
         );
