@@ -465,7 +465,7 @@
 
       &-preview {
         margin-top: 5px;
-        border: 1px solid $geenishGray;
+        border: 1px solid $geenish-gray;
         border-radius: 3px;
 
         &:first-child {
@@ -501,7 +501,7 @@
         width: 10000px;
         padding: 0px 10px;
         position: relative;
-        border-left: 1px solid lighten($geenishGray, 10%);
+        border-left: 1px solid lighten($geenish-gray, 10%);
 
         #{$prefix}-inline-block,
         #{$prefix}-upload-error {
