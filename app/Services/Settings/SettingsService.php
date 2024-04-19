@@ -270,6 +270,7 @@ class SettingsService
         $metaKey = "ffc_form_settings";
         $formId = intval($formId);
 
+        $attributes = fluentFormSanitizer($attributes);
         $settings = Arr::get($attributes, 'design_settings');
         FormMeta::persist($formId, $metaKey . '_design', $settings);
 
