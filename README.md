@@ -2,7 +2,7 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.4.2
+Tested up to: 6.5.2
 Requires PHP: 7.4
 Stable tag: 5.1.12
 License: GPLv2 or later
@@ -439,6 +439,9 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.13 (Date: April 18, 2024) =
+- Fix Conversational Form ShortCode Rendering
 
 = 5.1.12 (Date: April 18, 2024) =
 - Adds Name Field on conversational form
