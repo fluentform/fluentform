@@ -1020,6 +1020,10 @@ class Converter
         $hash = '';
         $form->save_state = false;
 
+        if (!defined('FLUENTFORMPRO')) {
+            return false;
+        }
+
         $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
 
         if ($key) {
