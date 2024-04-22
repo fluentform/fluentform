@@ -40,6 +40,7 @@ import { mapGetters } from 'vuex';
 import inputText from './inputText.vue'
 import customSelect from './select.vue'
 import inputYesNoCheckbox from './inputYesNoCheckbox.vue'
+import customMask from './customMask.vue'
 import inputDefaultValue from './inputValue.vue'
 import inputPopover from '../../input-popover.vue'
 import validationRules from './validationRules.vue'
@@ -75,6 +76,7 @@ export default {
         advancedOptions,
         customSelect,
         inputYesNoCheckbox,
+	    customMask,
         radioButton,
     },
     computed: {

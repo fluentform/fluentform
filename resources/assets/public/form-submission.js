@@ -1005,10 +1005,8 @@ jQuery(document).ready(function () {
                     },
                 };
 
-                $('input[data-mask]').each(function (key, el) {
-                    var el = $(el),
-                        mask = el.data('mask'),
-                        maskStr = mask.mask;
+                jQuery('input[data-mask]').each(function (key, el) {
+                    var el = jQuery(el), mask = el.attr('data-mask');
 
                     let options = globalOptions;
                     if (el.attr('data-mask-reverse')) {
@@ -1017,8 +1015,11 @@ jQuery(document).ready(function () {
                     if (el.attr('data-clear-if-not-match')) {
                         options.clearIfNotMatch = true;
                     }
-                    el.mask(maskStr, options);
-                });
+
+                    if (mask) {
+                        el.mask(mask, options);
+                    }
+                })
             },
 
             initCheckableActive: function () {

@@ -572,7 +572,7 @@ class Menu
         $form = wpFluent()->table('fluentform_forms')->find($form_id);
 
         if (!$form) {
-            echo __('<h2>No form found</h2>', 'fluentform');
+            echo '<h2>'.__('No form found', 'fluentform').'</h2>';
             return;
         }
 
@@ -742,6 +742,7 @@ class Menu
             ],
             'countries'            => getFluentFormCountryList(),
             'getIpInfo'            => Helper::getIpinfo(),
+            'has_conv_form_save_and_resume' => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.12', '>=')
         ]);
 
         $this->app->view->render('admin.form.settings', [

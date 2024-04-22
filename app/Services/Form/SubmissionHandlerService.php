@@ -58,7 +58,28 @@ class SubmissionHandlerService
         if (!$this->form) {
             throw new ValidationException('', 422, null, ['errors' => 'Sorry, No corresponding form found']);
         }
-        
+
+        /**
+         * Ensure empty array value for unchecked checkboxes, terms_and_condition, any checkbox or radio type field
+         *
+         * For unchecked checkboxes or t&c, and radio, the name not included in the form-data
+         * serialized by the client-side JavaScript. This adjustment ensures that
+         * checkboxes and radio with empty values are present in the form-data to support
+         * conditions such as 'not_equal'.
+         */
+        $checkboxAndRadioTypeFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox', 'input_radio', 'terms_and_condition', 'multi_payment_component'], ['attributes']);
+
+        foreach ($checkboxAndRadioTypeFields as $name => $field) {
+            if (!isset($formDataRaw[$name])) {
+                $type = Arr::get($field, 'attributes.type');
+                if ('checkbox' == $type) {
+                    $formDataRaw[$name] = [];
+                } elseif ('radio' == $type) {
+                    $formDataRaw[$name] = "";
+                }
+            }
+        }
+
         // Parse the form and get the flat inputs with validations.
         $this->fields = FormFieldsParser::getEssentialInputs($this->form, $formDataRaw, ['rules', 'raw']);
     
@@ -335,18 +356,29 @@ class SubmissionHandlerService
                 if (strpos($redirectUrl, '&') || '=' == substr($redirectUrl, -1) || $encodeUrl) {
                     $urlArray = explode('?', $redirectUrl);
                     $baseUrl = array_shift($urlArray);
-                    
-                    $query = wp_parse_url($redirectUrl)['query'];
+
+                    $parsedUrl = wp_parse_url($redirectUrl);
+                    $query = Arr::get($parsedUrl, 'query', '');
                     $queryParams = explode('&', $query);
                     
                     $params = [];
                     foreach ($queryParams as $queryParam) {
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
-                            $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            if (strpos($paramArray[1], '%') === false) {
+                                $params[$paramArray[0]] = urlencode($paramArray[1]);
+                            } else {
+                                // Param string is URL-encoded
+                                $params[$paramArray[0]] = $paramArray[1];
+                            }
                         }
                     }
-                    $redirectUrl = add_query_arg($params, $baseUrl);
+                    if ($params) {
+                        $redirectUrl = add_query_arg($params, $baseUrl);
+                        if ($fragment = Arr::get($parsedUrl, 'fragment')) {
+                            $redirectUrl .= '#' . $fragment;
+                        }
+                    }
                 }
             }
             

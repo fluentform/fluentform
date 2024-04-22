@@ -851,7 +851,7 @@ export default {
                     this.selectedIndex = null;
                 })
                 .catch(errors => {
-                    this.errors.record(errors);
+                    this.errors.record(errors?.responseJSON);
                     this.selected.id = id;
                 })
                 .always(() => {
