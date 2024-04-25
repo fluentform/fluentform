@@ -146,7 +146,7 @@ jQuery(document).ready(function () {
 
                         validate($inputs);
 
-                        // Serialize form data including
+                        // Serialize form data
                         var inputsData = $inputs.serializeArray();
                         // data names array
                         var inputsDataNames = inputsData.map(item => item.name);

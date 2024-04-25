@@ -60,18 +60,14 @@ class SubmissionHandlerService
         }
 
         /**
-         * Ensure empty array value for unchecked checkboxes, terms_and_condition, any checkbox type field
+         * Filtering empty array inputs to normalize
          *
-         * For unchecked checkboxes or t&c, the name not included in the form-data
-         * serialized by the client-side JavaScript. This adjustment ensures that
-         * checkboxes and radio with empty values are present in the form-data to support
-         * conditions such as 'not_equal'.
+         * For unchecked checkable type, the name filled with empty value
+         * by serialized on the client-side JavaScript. This adjustment ensures filter empty array inputs to normalize- Ex: [''] -> []
          */
-        $checkboxAndTypeFields = FormFieldsParser::getInputsByElementTypes($this->form, ['input_checkbox', 'terms_and_condition', 'multi_payment_component'], ['attributes']);
-        foreach ($checkboxAndTypeFields as $name => $field) {
-            $fieldValue = Arr::get($formDataRaw, $name);
-            if (is_array($fieldValue)) {
-                $formDataRaw[$name] = array_filter($fieldValue);
+        foreach ($formDataRaw as $name => $input) {
+            if (is_array($input)) {
+                $formDataRaw[$name] = array_filter($input);
             }
         }
 
