@@ -187,7 +187,7 @@
                         this.feeds = response.data.feeds;
                         this.action_id = response.data.action_id;
                     })
-                    .fail((errors) => {
+                    .fail((error) => {
                         if (!error.responseJSON && !error.responseText || error.responseText == '0') {
                             alert(this.$t('Looks like you are using older version of fluent forms pro. Please update to latest version'));
                             return;
