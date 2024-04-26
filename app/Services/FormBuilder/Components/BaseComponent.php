@@ -88,12 +88,9 @@ class BaseComponent
         $defaultValues = [];
         if ($dynamicDefaultValue = ArrayHelper::get($data, 'settings.dynamic_default_value')) {
             $parseValue = $this->parseEditorSmartCode($dynamicDefaultValue, $form);
-            if (is_serialized($parseValue)) {
-                $parseValue = unserialize($parseValue);
-            }
             if (is_array($parseValue)) {
                 $defaultValues = $parseValue;
-            } elseif ($parseValue) {
+            } elseif (is_string($parseValue)) {
                 $defaultValues = explode(',', $parseValue);
                 $defaultValues = array_map('trim', $defaultValues);
             }
