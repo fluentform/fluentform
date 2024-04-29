@@ -161,12 +161,7 @@ jQuery(document).ready(function () {
                         $inputs.each(function() {
                             var name = $(this).attr('name');
                             if (!inputsDataNames.includes(name)) {
-                                if ($(this).is(':checkbox')) {
-                                    if (!processedGroups[name] && !$theForm.find('input[name="' + name + '"]:checked').length) {
-                                        inputsData.push({ name, value: '' });
-                                        processedGroups[name] = true;
-                                    }
-                                } else if ($(this).is(':radio')) {
+                                if ($(this).is(':checkbox') || $(this).is(':radio')) {
                                     if (!processedGroups[name] && !$theForm.find('input[name="' + name + '"]:checked').length) {
                                         inputsData.push({ name, value: '' });
                                         processedGroups[name] = true;
