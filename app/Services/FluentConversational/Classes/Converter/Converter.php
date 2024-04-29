@@ -6,6 +6,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentFormPro\classes\DraftSubmissionsManager;
 
 class Converter
 {
@@ -1042,7 +1043,7 @@ class Converter
             $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
         }
 
-        self::migrate();
+        DraftSubmissionsManager::migrate();
 
         $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
 
@@ -1098,36 +1099,5 @@ class Converter
         }
 
         return $data;
-    }
-
-    /**
-     * Migrate the table.
-     *
-     * @return void
-     */
-    public static function migrate()
-    {
-        global $wpdb;
-        $charsetCollate = $wpdb->get_charset_collate();
-        $table = $wpdb->prefix . 'fluentform_draft_submissions';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE $table (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			    `form_id` INT UNSIGNED NULL,
-			    `hash` VARCHAR(255) NOT NULL,
-			    `type` VARCHAR(255) DEFAULT 'step_data',
-			    `step_completed` INT UNSIGNED NOT NULL,
-                `user_id` INT UNSIGNED NOT NULL,
-                `response` LONGTEXT NULL,
-                `source_url` VARCHAR(255) NULL,
-                `browser` VARCHAR(45) NULL,
-                `device` VARCHAR(45) NULL,
-                `ip` VARCHAR(45) NULL,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                 PRIMARY KEY (`id`) ) $charsetCollate;";
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-        }
     }
 }
