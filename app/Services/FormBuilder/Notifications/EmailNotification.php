@@ -181,8 +181,8 @@ class EmailNotification
         );
 
         $emailTo = apply_filters('fluentform/email_to', $sendAddresses, $notification, $submittedData, $form);
-        if (is_array($sendAddresses)) {
-            $sendAddresses = implode(', ', $sendAddresses);
+        if (is_array($emailTo)) {
+            $emailTo = implode(', ', $emailTo);
         }
         do_action('fluentform/log_data', [
             'parent_source_id' => $form->id,
@@ -191,7 +191,7 @@ class EmailNotification
             'component'        => 'EmailNotification',
             'status'           => 'info',
             'title'            => 'Email sending initiated',
-            'description'      => 'Email Notification broadcasted to ' . $sendAddresses . ".<br />Subject: {$subject}",
+            'description'      => 'Email Notification broadcasted to ' . $emailTo . ".<br />Subject: {$subject}",
         ]);
 
         return $this->broadCast([
