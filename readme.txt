@@ -451,6 +451,11 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 5.1.16 (Date: May 2, 2024) =
+- Fix vulnerability of PHP Object Injection using WP_HTML_Token
+- Fix conversational form save and resume preview form
+- Fix conversational form conditional based calculation field error
+
 = 5.1.15 (Date: April 25, 2024) =
 - Fix nested condition
 
