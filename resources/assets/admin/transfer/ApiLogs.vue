@@ -357,6 +357,7 @@
                     })
                     .always(() => {
                         this.getLogs();
+                        this.multipleSelection = [];
                         this.replaying[singlelog.id] = false;
                     });
             },
