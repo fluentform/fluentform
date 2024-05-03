@@ -1665,7 +1665,7 @@ abstract class BaseMigrator
             $uidHash = md5(wp_generate_uuid4() . $insertId);
 
             \FluentForm\App\Helpers\Helper::setSubmissionMeta($insertId, '_entry_uid_hash', $uidHash, $fluentFormId);
-            $entries = new \FluentForm\App\Modules\Entries\Entries();
+            $entries = new \FluentForm\App\Services\Submission\SubmissionService();
             $entries->recordEntryDetails($insertId, $fluentFormId, $entry);
 
         }
