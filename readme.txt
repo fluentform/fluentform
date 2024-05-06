@@ -452,7 +452,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.1.16 (Date: May 6, 2024) =
-- Fix vulnerability for attacker with contributor level access
+- Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
 - Fix conversational design settings sanitization & escaping
 - Fix conversational form save and resume preview form
 - Fix conversational form conditional based calculation field error

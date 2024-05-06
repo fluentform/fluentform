@@ -440,12 +440,13 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.1.16 (Date: May 2, 2024) =
-- Fix vulnerability of PHP Object Injection using WP_HTML_Token
+= 5.1.16 (Date: May 6, 2024) =
+- Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
+- Fix conversational design settings sanitization & escaping
 - Fix conversational form save and resume preview form
 - Fix conversational form conditional based calculation field error
 
-= 5.1.15 (Date: April 25, 2024) =
+- = 5.1.15 (Date: April 25, 2024) =
 - Fix nested condition
 - Fix entry action for post feed
 
