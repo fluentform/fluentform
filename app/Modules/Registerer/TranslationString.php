@@ -8,7 +8,7 @@ class TranslationString
     {
         $i18n = array(
             'All Forms' => __('All Forms', 'fluentform'),
-            'Add a New Form' => __('Add a New Form', 'fluentform'),
+            'Add New Form' => __('Add New Form', 'fluentform'),
             'Conversational Form' => __('Conversational Form', 'fluentform'),
             'Create Conversational Form' => __('Create Conversational Form', 'fluentform'),
             'ID' => __('ID', 'fluentform'),
