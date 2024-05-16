@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.5.2
+Tested up to: 6.5.3
 Requires PHP: 7.4
-Stable tag: 5.1.15
+Stable tag: 5.1.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,10 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+= 5.1.17 (Date: May 16, 2024) =
+- Improved capability check for global settings & manager settings
+- Adds label shortcode support in global default message
+- Changed type of source_url database column from varchar to text
 
 = 5.1.16 (Date: May 6, 2024) =
 - Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
