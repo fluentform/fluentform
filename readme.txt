@@ -456,6 +456,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds label shortcode support in global default message
 - Changed type of source_url database column from varchar to text
 - Improved ux of form active/inactive loader
+- Improved keyword based restriction
 
 = 5.1.16 (Date: May 6, 2024) =
 - Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
