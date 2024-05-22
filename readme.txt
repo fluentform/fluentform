@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.5.3
 Requires PHP: 7.4
-Stable tag: 5.1.17
+Stable tag: 5.1.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -450,6 +450,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.18 (Date: May 22, 2024) =
+- Fixes cross form captcha error
 
 = 5.1.17 (Date: May 16, 2024) =
 - Improved capability check for global settings & manager settings

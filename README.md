@@ -439,6 +439,10 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.18 (Date: May 22, 2024) =
+- Fixes cross form captcha error
+
 = 5.1.17 (Date: May 16, 2024) =
 - Improved capability check for global settings & manager settings
 - Adds label shortcode support in global default message
