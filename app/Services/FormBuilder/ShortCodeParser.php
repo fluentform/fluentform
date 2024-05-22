@@ -479,6 +479,22 @@ class ShortCodeParser
             return apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, static::getInstance());
         } elseif ('form_title' == $key) {
             return static::getForm()->title;
+        } elseif (false !== strpos($key, 'chat_gpt_response.')) {
+            if (defined('FLUENTFORMPRO') && class_exists('\FluentFormPro\classes\Chat\ChatFieldController')) {
+                $exploded = explode('.', $key);
+                $prefix = array_pop($exploded);
+                if (!$prefix) {
+                    return '';
+                }
+                $exploded = explode('_', $prefix);
+                $formId = reset($exploded);
+                $feedId = end($exploded);
+                $chatGPT = new \FluentFormPro\classes\Chat\ChatFieldController(wpFluentForm());
+                if ($chatGPT->api->isApiEnabled()) {
+                    return $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                }
+            }
+            return '';
         }
 
 
