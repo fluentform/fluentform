@@ -390,9 +390,9 @@ This section describes how to install the plugin and get it working.
 e.g.
 
 1. Upload the plugin files to the `/wp-content/plugins/fluentform` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the \'Plugins\' screen in WordPress
-1. Use the `Fluent Forms` -> `Settings` screen to configure the plugin
-1. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
+2. Activate the plugin through the \'Plugins\' screen in WordPress
+3. Use the `Fluent Forms` -> `Settings` screen to configure the plugin
+4. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
 
 == Frequently Asked Questions ==
 = Do I need coding skill to use Fluent Forms? =
