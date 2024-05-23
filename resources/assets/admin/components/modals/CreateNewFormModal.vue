@@ -180,7 +180,7 @@
                 search: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
-                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
+                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/ff-chatgpt-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',
