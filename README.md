@@ -440,7 +440,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.1.18 (Date: May 22, 2024) =
+= 5.1.18 (Date: May 23, 2024) =
 - Fixes cross form captcha error
 
 = 5.1.17 (Date: May 16, 2024) =

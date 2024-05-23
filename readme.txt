@@ -451,7 +451,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.1.18 (Date: May 22, 2024) =
+= 5.1.18 (Date: May 23, 2024) =
 - Fixes cross form captcha error
 
 = 5.1.17 (Date: May 16, 2024) =
