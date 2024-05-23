@@ -860,6 +860,10 @@ jQuery(document).ready(function () {
                     $theForm.find('.ff-el-tooltip').on('mouseleave', function () {
                         $('.ff-el-pop-content').remove();
                     });
+
+                    $(document).on('lity:open', function () {
+                        renderCaptchas();
+                    });
                     renderCaptchas();
                 };
 
