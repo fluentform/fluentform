@@ -515,6 +515,9 @@
                             });
                         }
                         this.$success(response.message);
+						if ('openai' === this.integration_name) {
+							this.$emit('refetch-all-editor-shortcodes');
+						}
                     })
                     .catch((error) => {
                         const getError = error?.errors || error?.data?.errors
