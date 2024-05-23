@@ -27,24 +27,6 @@
 
                 <div class="ff_card_wrap mt-5 mb-4">
                     <el-row :gutter="32">
-                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5" v-if="has_gpt_feature">
-                            <el-skeleton :loading="loading" animated class="h-100">
-                                <template slot="template">
-                                    <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
-                                    <el-skeleton-item variant="h3" style="width: 80%;"/>
-                                    <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
-                                </template>
-                                <template>
-                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="chatGptImg" imgClass="mb-3">
-                                        <card-body>
-                                            <h6 class="mb-2 ff_card_title">{{$t('ChatGPT')}}</h6>
-                                            <p class="ff_card_text">{{$t('Create a form with AI using ChatGPT')}}</p>
-                                        </card-body>
-                                    </card>
-                                </template>
-                            </el-skeleton>
-                        </el-col>
-
                         <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
@@ -108,6 +90,23 @@
                                         <card-body>
                                             <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
                                             <p class="ff_card_text">{{$t('Create a Post type form from scratch.')}}</p>
+                                        </card-body>
+                                    </card>
+                                </template>
+                            </el-skeleton>
+                        </el-col>
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5" v-if="has_gpt_feature">
+                            <el-skeleton :loading="loading" animated class="h-100">
+                                <template slot="template">
+                                    <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
+                                    <el-skeleton-item variant="h3" style="width: 80%;"/>
+                                    <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
+                                </template>
+                                <template>
+                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="chatGptImg" imgClass="mb-3">
+                                        <card-body>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Create Using ChatGPT')}}</h6>
+                                            <p class="ff_card_text">{{$t('Create a form with AI using ChatGPT')}}</p>
                                         </card-body>
                                     </card>
                                 </template>
