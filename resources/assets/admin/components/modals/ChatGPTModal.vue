@@ -8,17 +8,15 @@
         >
             <template slot="title">
                 <h3 class="title">{{$t('ChatGPT')}}</h3>
-                <p class="text">{{$t('GPT')}}
-                </p>
             </template>
 
             <div class="mt-6">
                 <el-form class="mt-4" :model="{}" label-position="top" >
-                    <el-form-item class="ff-form-item" :label="$t('Create a form for')">
+                    <el-form-item class="ff-form-item" :label="$t('Create a form for - ')">
                         <el-input placeholder="Create a form for"  type="textarea" v-model="query">
                         </el-input>
                     </el-form-item>
-                    <el-form-item class="ff-form-item" :label="$t('Including these Questions')">
+                    <el-form-item class="ff-form-item" :label="$t('Including these questions')">
                         <el-input placeholder="ask questions"  type="textarea" v-model="additional_query">
                         </el-input>
                     </el-form-item>

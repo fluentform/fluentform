@@ -35,10 +35,10 @@
                                     <el-skeleton-item variant="text" style="width: 60%; margin-top: 10px;" />
                                 </template>
                                 <template>
-                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="blankFormImg" imgClass="mb-3">
+                                    <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="chatGptImg" imgClass="mb-3">
                                         <card-body>
-                                            <h6 class="mb-2 ff_card_title">{{$t('Chat GPT')}}</h6>
-                                            <p class="ff_card_text">{{$t('Create a New Blank form from scratch.')}}</p>
+                                            <h6 class="mb-2 ff_card_title">{{$t('ChatGPT')}}</h6>
+                                            <p class="ff_card_text">{{$t('Create a form with AI using ChatGPT')}}</p>
                                         </card-body>
                                     </card>
                                 </template>
@@ -180,6 +180,7 @@
                 search: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
+                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',
