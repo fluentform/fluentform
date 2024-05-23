@@ -1,5 +1,5 @@
 === Contact Form Plugin by Fluent Forms for Quiz, Survey, and Drag & Drop WP Form Builder ===
-Contributors: techjewel,adreastrian,heera,wpmanageninja
+Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.5.3
