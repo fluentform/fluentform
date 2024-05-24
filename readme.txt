@@ -239,6 +239,7 @@ Improve your website’s efficiency by bridging the gap from visitor input to em
 <li>Mautic</li>
 <li>Mailpoet</li>
 <li>Fluent Forms PDF Generator</li>
+</ul>
 
 
 == Integrations Available in the Pro Version ==
