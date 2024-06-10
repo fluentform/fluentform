@@ -452,6 +452,16 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 5.1.19 (Date: June 11, 2024)
+- Adds Akismet integration spam submission actions skip option
+- Adds injectable custom Vue component on form settings and global settings
+- Fixes integration update authorization vulnerability reported by WordFence
+- Fixes dynamic default values with default options
+- Fixes Elementor v3.0.0 deprecated class
+- Fixes phone field country container z-index
+- Fixes hidden turnstile margin
+- Fixes numeric-field name hyphen format
+
 = 5.1.18 (Date: May 23, 2024) =
 - Fixes cross form captcha error
 
