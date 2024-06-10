@@ -701,9 +701,6 @@
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
   }
-  .iti--container, .iti__country-list {
-    z-index: 9999;
-  }
   .ff_gdpr_field {
     margin-right: 5px;
   }
@@ -895,4 +892,8 @@
       }
     }
   }
+}
+
+.iti-mobile .iti--container {
+  z-index: 9999;
 }
