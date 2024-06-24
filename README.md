@@ -441,7 +441,6 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 == Changelog ==
 
 = 5.1.19 (Date: June 11, 2024)
-- Adds Akismet integration spam submission actions skip option
 - Adds injectable custom Vue component on form settings and global settings
 - Fixes integration update authorization vulnerability reported by WordFence
 - Fixes dynamic default values with default options

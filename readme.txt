@@ -452,8 +452,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.1.19 (Date: June 11, 2024)
-- Adds Akismet integration spam submission actions skip option
+= 5.1.19 (Date: June 11, 2024) =
 - Adds injectable custom Vue component on form settings and global settings
 - Fixes integration update authorization vulnerability reported by WordFence
 - Fixes dynamic default values with default options
