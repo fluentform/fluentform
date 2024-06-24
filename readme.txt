@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
-Tested up to: 6.5.3
+Tested up to: 6.5.4
 Requires PHP: 7.4
-Stable tag: 5.1.18
+Stable tag: 5.1.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -451,6 +451,16 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.19 (Date: June 11, 2024)
+- Adds Akismet integration spam submission actions skip option
+- Adds injectable custom Vue component on form settings and global settings
+- Fixes integration update authorization vulnerability reported by WordFence
+- Fixes dynamic default values with default options
+- Fixes Elementor v3.0.0 deprecated class
+- Fixes phone field country container z-index
+- Fixes hidden turnstile margin
+- Fixes numeric-field name hyphen format
 
 = 5.1.18 (Date: May 23, 2024) =
 - Fixes cross form captcha error
