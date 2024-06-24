@@ -94,7 +94,11 @@ jQuery(document).ready(function () {
                 };
 
                 var getTheForm = function () {
-                    return $('body').find('form' + formSelector);
+                    let $form = $('body').find('form' + formSelector);
+                    if (!$form.length) {
+                        $form = $('body').find('div' + formSelector).closest('form');
+                    }
+                    return $form;
                 };
 
                 var maybeInlineForm = function () {

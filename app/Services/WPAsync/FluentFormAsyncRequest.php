@@ -6,6 +6,7 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Helpers\ArrayHelper;
 
 class FluentFormAsyncRequest
 {
@@ -48,6 +49,26 @@ class FluentFormAsyncRequest
 
     public function queue($feed)
     {
+        $action = ArrayHelper::get($feed, 'action');
+        $formId = ArrayHelper::get($feed, 'form_id');
+        $submissionId = ArrayHelper::get($feed, 'origin_id');
+        $feedId = ArrayHelper::get($feed, 'feed_id');
+
+        $alreadyQueued = wpFluent()
+            ->table($this->table)
+            ->where([
+                'action' => $action,
+                'form_id' => $formId,
+                'origin_id' => $submissionId,
+                'feed_id' => $feedId,
+                'status' => 'pending'
+            ])
+            ->get();
+
+        if ($alreadyQueued) {
+            return $alreadyQueued;
+        }
+
         return wpFluent()->table($this->table)->insertGetId($feed);
     }
 

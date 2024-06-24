@@ -7,6 +7,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 class FormDataParser
 {
     protected static $data = null;
+    protected static $submissionId = null;
 
     public static function parseFormEntries($entries, $form, $fields = null)
     {
@@ -35,7 +36,11 @@ class FormDataParser
 
     public static function parseFormSubmission($submission, $form, $fields, $isHtml = false)
     {
-        if (is_null(static::$data)) {
+        $hasSubmission = static::$submissionId != $submission->id;
+
+        if (is_null(static::$data) || $hasSubmission) {
+            static::$submissionId = $submission->id;
+
             static::$data = static::parseData(
                 json_decode($submission->response),
                 $fields,

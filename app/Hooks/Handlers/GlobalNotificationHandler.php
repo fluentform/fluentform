@@ -149,8 +149,16 @@ class GlobalNotificationHandler
                 $asyncFeeds[] = $asyncFeed;
 
                 $queueId = $scheduler->queue($asyncFeed);
-
-                as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
+                if (!apply_filters('fluentform/is_pending_feed', false)) {
+                    if (is_array($queueId)) {
+                        foreach ($queueId as $action) {
+                            $id = $action->id;
+                            as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $id], 'fluentform');
+                        }
+                    } else {
+                        as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
+                    }
+                }
             } else {
                 do_action_deprecated(
                     $oldAction,
