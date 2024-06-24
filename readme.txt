@@ -122,61 +122,63 @@ Get notified every time someone submits a form and also send a confirmation emai
 == Input Fields ==
 
 **Available in the Free Version**
-– Name Fields
-– Email Address
-– Simple Text
-– Mask Input
-– Text Area
-– Address Fields
-– Country List
-– Numeric Field
-– Dropdown
-– Radio Button
-– Check Box
-– Multiple Choice
-– Website URL
-– Time & Date
-– Custom HTML
-– Hidden Field
-– Section Break
-– reCAPTCHA
-– hCaptcha
-– Turnstile
-– Shortcode
-– Terms and Conditions
-– GDPR Agreement Field
-– Password Field
-– Custom Submit Button
-– Multiple Column Container
+
+* Name Fields
+* Email Address
+* Simple Text
+* Mask Input
+* Text Area
+* Address Fields
+* Country List
+* Numeric Field
+* Dropdown
+* Radio Button
+* Check Box
+* Multiple Choice
+* Website URL
+* Time & Date
+* Custom HTML
+* Hidden Field
+* Section Break
+* reCAPTCHA
+* hCaptcha
+* Turnstile
+* Shortcode
+* Terms and Conditions
+* GDPR Agreement Field
+* Password Field
+* Custom Submit Button
+* Multiple Column Container
 
 
 **Available in the Pro Version**
-– Image Upload
-– Phone/Mobile
-– File Upload
-– Shortcode
-– Action Hook
-– Form Step
-– Google Maps & Address Autocomplete
-– Quiz Module
-– Ratings
-– Checkable Grid
-– Range Slider
-– Color Picker
-– Net Promoter Score
-– Repeat Field
-– Save & Resume
-– Post/CPT Selection
-– Post Update
-– Chained Select
-– Post Creation Fields
-– Payment Item
-– Subscription Field
-– Custom Payment Amount
-– Item Quantity
-– Payment Method
-– Payment Summary
-– Coupon
+
+* Image Upload
+* Phone/Mobile
+* File Upload
+* Shortcode
+* Action Hook
+* Form Step
+* Google Maps & Address Autocomplete
+* Quiz Module
+* Ratings
+* Checkable Grid
+* Range Slider
+* Color Picker
+* Net Promoter Score
+* Repeat Field
+* Save & Resume
+* Post/CPT Selection
+* Post Update
+* Chained Select
+* Post Creation Fields
+* Payment Item
+* Subscription Field
+* Custom Payment Amount
+* Item Quantity
+* Payment Method
+* Payment Summary
+* Coupon
 
 
 == Multi-column Form Layout ==
@@ -229,72 +231,70 @@ Improve your website’s efficiency by bridging the gap from visitor input to em
 
 
 == Integrations and Add-ons Available in the Free Version ==
-<ul>
-<li>FluentCRM</li>
-<li>Fluent Support</li>
-<li>MailChimp</li>
-<li>Slack</li>
-<li>FluentSMTP</li>
-<li>Ninja Tables</li>
-<li>Mautic</li>
-<li>Mailpoet</li>
-<li>Fluent Forms PDF Generator</li>
-</ul>
+
+* <a href="https://wordpress.org/plugins/fluent-crm" target="_blank">FluentCRM</a>
+* <a href="https://wordpress.org/plugins/fluent-support" target="_blank">Fluent Support</a>
+* MailChimp
+* Slack
+* <a href="https://wordpress.org/plugins/fluent-smtp" target="_blank">FluentSMTP</a>
+* <a href="https://wordpress.org/plugins/ninja-tables" target="_blank">Ninja Tables</a>
+* Mautic
+* Mailpoet
+* <a href="https://wordpress.org/plugins/fluentforms-pdf" target="_blank">Fluent Forms PDF Generator</a>
 
 
 == Integrations Available in the Pro Version ==
-<ul>
-<li>Zapier</li>
-<li>WebHook</li>
-<li>Google Sheets</li>
-<li>ActiveCampaign</li>
-<li>Campaign Monitor</li>
-<li>Constant Contact</li>
-<li>ConvertKit</li>
-<li>GetResponse</li>
-<li>HubSpot</li>
-<li>iContact</li>
-<li>MooSend</li>
-<li>SendFox</li>
-<li>SMS Notification</li>
-<li>Platform.ly</li>
-<li>Trello</li>
-<li>Drip</li>
-<li>iContact</li>
-<li>Sendinblue</li>
-<li>Automizy</li>
-<li>User Registration</li>
-<li>Post/CPT integration</li>
-<li>PayPal</li>
-<li>Stripe</li>
-<li>Mollie</li>
-<li>RazorPay</li>
-<li>Paystack</li>
-<li>Pipedrive</li>
-<li>Discord</li>
-<li>Salesflare</li>
-<li>AffiliateWP</li>
-<li>Zoho CRM</li>
-<li>ClickSend</li>
-<li>CleverReach</li>
-<li>Salesforce</li>
-<li>Mailjet</li>
-<li>Mailster</li>
-<li>Insightly</li>
-<li>Airtable</li>
-<li>WP Social Ninja</li>
-<li>OnePageCRM</li>
-<li>amoCRM</li>
-<li>Dropbox</li>
-<li>Telegram</li>
-<li>Twilo</li>
-<li>GetGist</li>
-<li>ConvertKit</li>
-<li>WP Social Ninja</li>
-<li>BuddyBoss</li>
-<li>FluentBooking</li>
-<li>Notion</li>
-</ul>
+
+* Zapier
+* WebHook
+* Google Sheets
+* ActiveCampaign
+* Campaign Monitor
+* Constant Contact
+* ConvertKit
+* GetResponse
+* HubSpot
+* iContact
+* MooSend
+* SendFox
+* SMS Notification
+* Platform.ly
+* Trello
+* Drip
+* iContact
+* Sendinblue
+* Automizy
+* User Registration
+* Post/CPT integration
+* PayPal
+* Stripe
+* Mollie
+* RazorPay
+* Paystack
+* Pipedrive
+* Discord
+* Salesflare
+* AffiliateWP
+* Zoho CRM
+* ClickSend
+* CleverReach
+* Salesforce
+* Mailjet
+* Mailster
+* Insightly
+* Airtable
+* WP Social Ninja
+* OnePageCRM
+* amoCRM
+* Dropbox
+* Telegram
+* Twilo
+* GetGist
+* ConvertKit
+* WP Social Ninja
+* BuddyBoss
+* FluentBooking
+* Notion
 
 
 == Create Extensions ==
@@ -757,5 +757,3 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Upgrade Notice ==
 The latest Version is compatible with previous version, So nothing to worry
-
-
