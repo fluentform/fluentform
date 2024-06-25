@@ -18,7 +18,7 @@ trait ModelHelperTrait
         $results = [];
 
         foreach (array_merge([$class => $class], class_parents($class)) as $class) {
-            if ($class != get_class()) {
+            if ($class != self::class) {
                 $results += static::traitUsesRecursive($class);
             }
         }
