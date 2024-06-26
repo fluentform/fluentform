@@ -1648,7 +1648,7 @@ class TranslationString
             'Add New Coupon' => __('Add New Coupon', 'fluentform'),
             'Code' => __('Code', 'fluentform'),
             'Edit Coupon' => __('Edit Coupon', 'fluentform'),
-            'Add a new Coupon' => __('Add a new Coupon', 'fluentform'),
+            'Add a New Coupon' => __('Add a New Coupon', 'fluentform'),
             'Coupon Title' => __('Coupon Title', 'fluentform'),
             'The name of this discount' => __('The name of this discount', 'fluentform'),
             'Coupon Code' => __('Coupon Code', 'fluentform'),
