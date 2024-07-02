@@ -86,7 +86,7 @@
                     return '{payment.'+item.attributes.name+'}';
                 }
                 else if (item.attributes.type == 'number') {
-                    return '{' + item.attributes.name + '}';
+                    return '{input.' + item.attributes.name + '}';
                 }
             },
             isCalculative(item) {
