@@ -85,21 +85,15 @@
                 }  else if(item.element == 'custom_payment_component') {
                     return '{payment.'+item.attributes.name+'}';
                 }
+                else if (item.attributes.type == 'number') {
+                    return '{' + item.attributes.name + '}';
+                }
             },
             isCalculative(item) {
-                const paymentElements = [
-                    'multi_payment_component',
-                    'input_number',
-                    'repeater_field',
-                    'net_promoter_score',
-                    'rangeslider',
-                    'custom_payment_component'
-                ];
-
-                if (paymentElements.indexOf(item.element) != -1) {
+                let items = window.FluentFormApp?.calc_items;
+                if (items && (items['paymentElements'].indexOf(item.element) !== -1 || items['customElements'].indexOf(item.element) !== -1)) {
                     return true;
                 }
-
                 return (
                     item.element == 'select' ||
                     item.element == 'input_checkbox' ||
