@@ -1,7 +1,8 @@
 <template>
     <withLabel :item="item">
-        <div style="max-height: 70px;">
-            <img :src="item.editor_options.imageUrl" style="max-height: inherit">
+        <div :class="item.editor_options.container_class" style="max-height: 70px;">
+            <img :class="item.editor_options.image_class" :src="item.editor_options.imageUrl"
+                 style="max-height: inherit">
         </div>
     </withLabel>
 </template>
