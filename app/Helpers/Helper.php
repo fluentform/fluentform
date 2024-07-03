@@ -933,7 +933,7 @@ class Helper
             $rawField = apply_filters('fluentform/rendering_field_data_' . $fieldType, $rawField, $form);
             $options = [];
             if ("net_promoter_score" === $fieldType) {
-                $options = ArrayHelper::get($rawField, 'options', []);
+                $options = array_flip(ArrayHelper::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
                 $options = array_keys(ArrayHelper::get($rawField, 'options', []));
             } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
