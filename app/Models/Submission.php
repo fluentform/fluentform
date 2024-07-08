@@ -150,6 +150,9 @@ class Submission extends Model
     {
         $formId = Arr::get($attributes, 'form_id');
         $query = $this->customQuery($attributes);
+        if (Arr::get($attributes, 'advanced_filter')) {
+            $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $attributes);
+        }
         $response = $query->paginate();
         $response = apply_filters_deprecated(
             'fluentform_get_raw_responses',

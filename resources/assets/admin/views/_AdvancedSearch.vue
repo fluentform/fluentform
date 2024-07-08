@@ -54,10 +54,9 @@
                 advanced_filters: [[]],
                 filterLabel: this.$t('Filters Info'),}
         },
-        methods:{
+        methods: {
             fetchAllEditorShortcodes() {
-                const url = FluentFormsGlobal.$rest.route('getFormShortcodes', this.form_id);
-                this.editorShortcodes = window.fluent_form_entries_vars.advanced_filters
+                this.editorShortcodes = window.fluent_form_entries_vars.advanced_filters || []
             },
             maybeRemoveGroup(index) {
                 if (this.advanced_filters.length > 1) {
@@ -65,9 +64,6 @@
                 }
             },
             runSearch(){
-                console.log('x')
-                console.log(this.advanced_filters)
-
                 this.$emit("runSearch", this.advanced_filters);
             },
             addConditionGroup() {

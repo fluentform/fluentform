@@ -197,8 +197,6 @@ class Entries extends EntryQuery
             'editor_shortcodes'   => $submissionShortcodes['shortcodes'],
             'input_labels'        => $inputLabels,
             'update_status'       => isset($_REQUEST['update_status']) ? sanitize_text_field($_REQUEST['update_status']) : '',
-            'advanced_filters'    => Helper::getAdvancedFilterOptions($form->id),
-
         ];
     
         $data = apply_filters_deprecated(

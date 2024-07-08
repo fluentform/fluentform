@@ -2,13 +2,13 @@
     <div class="ff_rich_filters">
         <table v-if="items.length && !working" style="width: 100%;" class="ff_table">
             <tbody>
-            <filter-item v-for="(item,itemKey) in items" :view_only="view_only" @removeItem="removeItem(itemKey)"
+            <filter-item v-for="(item, itemKey) in items" :view_only="view_only" @removeItem="removeItem(itemKey)"
                          :key="itemKey"
                          :filterLabels="filterLabels" :item="item"/>
             </tbody>
         </table>
 
-        <div v-if="items.length == 0" class="ff_filter_intro ff_pad_around_5">
+        <div v-if="items.length == 0" class="ff_filter_intro ff_pad_around_5 mt-2">
 
             <el-popover
                 :placement="isRTL ? 'left' : 'right'"
@@ -29,7 +29,7 @@
                        icon="el-icon-delete"></el-button>
         </div>
 
-        <div v-else-if="!view_only" class="ff_filter_intro ff_pad_around_5">
+        <div v-else-if="!view_only" class="ff_filter_intro ff_pad_around_5 mt-2">
             <el-popover
                 :placement="isRTL ? 'left' : 'right'"
                 width="450"

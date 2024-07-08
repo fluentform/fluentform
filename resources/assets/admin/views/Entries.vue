@@ -243,7 +243,18 @@
             :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
             type="error">
         </el-alert>
-        <AdvancedSearch @runSearch="runAdvanceSearch"  :advanced_filter="advanced_filter" v-if="advanced_filter_active"/>
+	    <template v-if="advanced_filter_active">
+                <AdvancedSearch v-if="has_pro" @runSearch="runAdvanceSearch"  :advanced_filter="advanced_filter"/>
+			    <notice v-else type="danger-soft" class="ff_alert_between mb-4">
+				    <div>
+					    <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
+					    <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
+				    </div>
+				    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+					    {{ $t('Upgrade to Pro') }}
+				    </a>
+			    </notice>
+	    </template>
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
@@ -525,6 +536,7 @@
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
     import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
         name: 'FormEntries',
@@ -538,6 +550,7 @@
             BtnGroupItem,
             SectionHead,
             SectionHeadContent,
+	        Notice,
             ImportEntriesModal
         },
         watch: {
@@ -664,7 +677,7 @@
                 checkAllFields : false,
                 showImportEntriesModal: false,
                 app: window.fluent_forms_global_var,
-                advanced_filter_active : true,
+                advanced_filter_active : false,
                 advanced_filter : {}
             }
         },
@@ -795,8 +808,6 @@
                     });
             },
             runAdvanceSearch(query){
-                console.log('y')
-                console.log(query)
                 this.advanced_filter = query
                 this.getData();
             },
