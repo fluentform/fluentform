@@ -106,8 +106,9 @@ class FluentFormWidget extends Widget_Base
             'form_list',
             [
                 'label'       => esc_html__('Fluent Forms', 'fluentform'),
-                'type'        => Controls_Manager::SELECT,
+                'type'        => Controls_Manager::SELECT2,
                 'label_block' => true,
+                'multiple'    => false,
                 'options'     => Helper::getForms(),
                 'default'     => '0',
             ]
