@@ -69,6 +69,7 @@
         &.ff-el-image-holder {
           border: 1px solid #dcdfe5;
           overflow: hidden;
+          margin-bottom: 20px;
           span {
             width: 100%;
             border: none !important;
@@ -318,7 +319,7 @@
       }
     }
   }
-  
+
   ul.ff_coupon_responses {
     margin: 0;
     padding: 0;
@@ -326,18 +327,18 @@
     li {
       padding-top: 5px;
     }
-  
+
     span.error-clear {
       font-weight: bold;
       color: #ff5050;
       margin-right: 10px;
     }
-  
+
     .ff_error {
       color: #f56c6c;
       cursor: pointer;
     }
-  
+
     .ff_success {
       color: #28a745;
     }
@@ -375,7 +376,7 @@
   .ff_submitting {
     pointer-events: none;
   }
-    
+
 
 }
 

@@ -104,7 +104,7 @@
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
-                                                {{ $t('Enter the email address you would like the notification email sent from.') }}
+                                                {{ $t('Enter the email address you would like the notification email sent from. This field works when the admin has multiple SMTP connections enabled and wants to send emails from a specific email address.') }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>

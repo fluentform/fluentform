@@ -384,8 +384,9 @@
                         >
                             <template slot-scope="scope">
                                 <btn-group size="sm">
-                                    <btn-group-item>
-                                        <router-link :to="{
+                                    <el-tooltip class="item" effect="dark" :content="$t('View')" placement="top-start">
+                                        <btn-group-item>
+                                            <router-link :to="{
                                             name: 'form-entry',
                                             params: {
                                                 form_id: scope.row.form_id,
@@ -401,9 +402,11 @@
                                             <span class="el-button el-button--primary el-button--mini el-button--icon">
                                                 <i class="ff-icon ff-icon-eye-filled"></i>
                                             </span>
-                                        </router-link>
-                                    </btn-group-item>
-                                    <btn-group-item>
+                                            </router-link>
+                                        </btn-group-item>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" :content="$t('Delete')" placement="top-start">
+                                        <btn-group-item>
                                         <confirm
                                             v-if="hasPermission('fluentform_manage_entries')"
                                             @on-confirm="removeEntry(scope.row.id, scope.$index)">
@@ -415,6 +418,8 @@
                                             />
                                         </confirm>
                                     </btn-group-item>
+                                    </el-tooltip>
+
                                 </btn-group>
                             </template>
                         </el-table-column>
