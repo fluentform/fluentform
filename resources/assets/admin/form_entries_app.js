@@ -40,6 +40,7 @@ import {
     SkeletonItem,
     Tooltip,
     Cascader,
+    TimePicker,
     CascaderPanel
 
 } from 'element-ui';
@@ -60,6 +61,7 @@ Vue.use(TableColumn);
 Vue.use(Input);
 Vue.use(Switch);
 Vue.use(DatePicker);
+Vue.use(TimePicker);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Button);

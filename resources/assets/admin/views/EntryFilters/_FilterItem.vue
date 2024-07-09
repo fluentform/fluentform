@@ -27,10 +27,25 @@
                           :placeholder="$t('Condition Value')"
                           v-model="item.value"/>
                 <template v-else-if="itemConfig.type == 'dates'">
-	                <el-date-picker :type="itemConfig.date_type || 'date'"
-	                                :disabled="view_only" :value-format="itemConfig.value_format || 'yyyy-MM-dd'"
+	                <el-date-picker :type="dateType"
+	                                :disabled="view_only" value-format="yyyy-MM-dd HH:mm:ss"
 	                                size="mini"
+	                                :range-separator="$t('To')"
+	                                :start-placeholder="$t('Start date')"
+	                                :end-placeholder="$t('End date')"
 	                                v-model="item.value"></el-date-picker>
+                </template>
+	            <template v-else-if="itemConfig.type == 'time'">
+		            <el-time-picker
+			            :is-range="isTimeRange"
+			            v-model="item.value"
+			            size="mini"
+			            value-format="HH:mm:ss"
+			            :range-separator="$t('To')"
+			            :start-placeholder="$t('Start date')"
+			            :end-placeholder="$t('End date')"
+		            >
+		            </el-time-picker>
                 </template>
                 <template v-else-if="itemConfig.type == 'selections'">
                     <template v-if="itemConfig.options">
@@ -109,8 +124,8 @@ export default {
 		    const type = this.itemConfig.type;
 		    const itemName = this.item.source.join('.');
 			let allow_operators = [];
-			if (type == 'dates') {
-			    allow_operators = ['=', '!=', '<', '<=', 'IN', 'NOT IN'];
+			if (['dates', 'time'].includes(type)) {
+			    allow_operators = ['=', '!=', '<', '<=', '>', '>=', 'BETWEEN', 'NOT BETWEEN'];
 		    } else if (['is_favourite', 'straight_assert_option'].includes(type)) {
 			    allow_operators = ['=', '!='];
 		    } else if (type == 'single_assert_option') {
@@ -135,6 +150,22 @@ export default {
 	    },
 	    isNumericType(){
 			return this.itemConfig.type == 'numeric' || this.all_columns.numeric.includes(this.item.source.join('.'));
+	    },
+	    dateType() {
+		    if (['BETWEEN', 'NOT BETWEEN'].includes(this.item.operator)) {
+			    return this.itemConfig.date_type + 'range';
+		    }
+		    return this.itemConfig.date_type;
+	    },
+
+	    isTimeRange() {
+		    if (['BETWEEN', 'NOT BETWEEN'].includes(this.item.operator)) {
+			    return true;
+		    }
+		    return false;
+	    },
+	    dateFormat() {
+		    return this.itemConfig.date_format;
 	    },
         itemConfig() {
             const key = this.item.source.join('-');
