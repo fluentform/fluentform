@@ -648,8 +648,12 @@ class Form
 
         $form->settings = json_decode($formSettings->value, true);
 
-        if($form->status == 'unpublished' && !Acl::hasAnyFormPermission($formId)) {
-            return '';
+        if ($form->status == 'unpublished' && !Acl::hasAnyFormPermission($formId)) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header(404);
+            get_template_part(404);
+            exit();
         }
 
         $metaSettings = $this->getMetaSettings($formId);
