@@ -125,6 +125,7 @@ class Logger
                 'ff_scheduled_actions.updated_at',
                 'ff_scheduled_actions.feed_id',
                 'fluentform_forms.title as form_title',
+                'ff_scheduled_actions.type as type',
             ];
             $join = 'ff_scheduled_actions.form_id';
             $componentColumn = 'ff_scheduled_actions.action';

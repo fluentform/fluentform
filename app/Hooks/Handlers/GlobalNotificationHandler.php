@@ -143,7 +143,7 @@ class GlobalNotificationHandler
                     'form_id'    => $form->id,
                     'origin_id'  => $insertId,
                     'feed_id'    => $feed['id'],
-                    'type'       => 'submission_action',
+                    'type'       => $isDraftSubmission ? 'draft_submission_action' : 'submission_action',
                     'status'     => 'pending',
                     'data'       => maybe_serialize($feed),
                     'created_at' => current_time('mysql'),
@@ -154,7 +154,7 @@ class GlobalNotificationHandler
 
                 $queueId = $scheduler->queue($asyncFeed);
 
-                as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
+                as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId, 'isDraftSubmission' => $isDraftSubmission], 'fluentform');
             } else {
                 do_action_deprecated(
                     $oldAction,

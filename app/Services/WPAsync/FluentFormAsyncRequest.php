@@ -156,7 +156,7 @@ class FluentFormAsyncRequest
         return FormDataParser::parseFormEntry($submission, $form, $formInputs);
     }
 
-    public function process($queue)
+    public function process($queue, $isDraftSubmission = false)
     {
         if (is_numeric($queue)) {
             $queue = wpFluent()->table($this->table)->where('status', 'pending')->find($queue);
@@ -173,8 +173,12 @@ class FluentFormAsyncRequest
         if (isset(static::$submissionCache[$queue->origin_id])) {
             $submission = static::$submissionCache[$queue->origin_id];
         } else {
-            $submission = wpFluent()->table('fluentform_submissions')->find($queue->origin_id);
-            
+            if ($isDraftSubmission) {
+                $submission = wpFluent()->table('fluentform_draft_submissions')->find($queue->origin_id);
+            } else {
+                $submission = wpFluent()->table('fluentform_submissions')->find($queue->origin_id);
+            }
+
             static::$submissionCache[$submission->id] = $submission;
         }
 

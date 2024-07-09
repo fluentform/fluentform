@@ -37,7 +37,7 @@ class EmailNotification
      *
      * @return bool
      */
-    public function notify($notification, $submittedData, $form, $entryId = false)
+    public function notify($notification, $submittedData, $form, $entryId = false, $isDraftSubmission = false)
     {
         $isSendAsPlain = 'yes' == ArrayHelper::get($notification, 'asPlainText');
     
@@ -98,7 +98,7 @@ class EmailNotification
             if ($entryId) {
                 do_action('fluentform/log_data', [
                     'parent_source_id' => $form->id,
-                    'source_type'      => 'submission_item',
+                    'source_type'      => $isDraftSubmission ? 'draft_submission_item' : 'submission_item',
                     'source_id'        => $entryId,
                     'component'        => 'EmailNotification',
                     'status'           => 'error',
@@ -150,13 +150,13 @@ class EmailNotification
             /*
             * Inline email logger. It will work fine hopefully
             */
-            add_action('wp_mail_failed', function ($error) use ($notification, $form, $entryId) {
+            add_action('wp_mail_failed', function ($error) use ($notification, $form, $entryId, $isDraftSubmission) {
                 $failedMailSubject = ArrayHelper::get($error->error_data, 'wp_mail_failed.subject');
                 if ($failedMailSubject == $notification['subject']) {
                     $reason = $error->get_error_message();
                     do_action('fluentform/log_data', [
                         'parent_source_id' => $form->id,
-                        'source_type'      => 'submission_item',
+                        'source_type'      => $isDraftSubmission ? 'draft_submission_item' : 'submission_item',
                         'source_id'        => $entryId,
                         'component'        => 'EmailNotification',
                         'status'           => 'failed',
@@ -186,7 +186,7 @@ class EmailNotification
         }
         do_action('fluentform/log_data', [
             'parent_source_id' => $form->id,
-            'source_type'      => 'submission_item',
+            'source_type'      => $isDraftSubmission ? 'draft_submission_item' : 'submission_item',
             'source_id'        => $entryId,
             'component'        => 'EmailNotification',
             'status'           => 'info',

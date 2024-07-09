@@ -769,11 +769,10 @@ $app->addAction('fluentform/submission_inserted', function ($insertId, $formData
     $notificationManager->globalNotify($insertId, $formData, $form);
 }, 10, 3);
 
-$app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
+$app->addAction('fluentform/schedule_feed', function ($queueId, $isDraftSubmission) use ($app) {
     $scheduler = $app['fluentFormAsyncRequest'];
-
-    $scheduler->process($queueId);
-});
+    $scheduler->process($queueId, $isDraftSubmission);
+}, 20, 2);
 
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
