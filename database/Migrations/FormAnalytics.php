@@ -22,7 +22,7 @@ class FormAnalytics
 			  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `form_id` INT UNSIGNED NULL,
 			  `user_id` INT UNSIGNED NULL,
-			  `source_url` VARCHAR(255) NOT NULL,
+			  `source_url` TEXT NOT NULL,
 			  `platform` CHAR(30) NULL,
 			  `browser` CHAR(30) NULL,
 			  `city` VARCHAR (100) NULL,
@@ -35,6 +35,16 @@ class FormAnalytics
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
             dbDelta($sql);
+        }else{
+            // increase column type of source_url from varchar to text - for already installed sites
+            $column_name = 'source_url';
+            $dataType = $wpdb->get_col_length($table, $column_name);
+            $type = $dataType['type'] ?? false;
+            if ($type == 'char') {
+                $sql = "ALTER TABLE {$table} MODIFY {$column_name} TEXT NOT NULL";
+                $wpdb->query($sql);
+            }
         }
+    
     }
 }

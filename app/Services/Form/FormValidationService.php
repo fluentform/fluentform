@@ -605,7 +605,10 @@ class FormValidationService
 
         foreach ($providedKeywords as $keyword) {
             foreach ($words as $word) {
-                if (strtoupper($word) === strtoupper($keyword)) {
+                if (
+                    strtoupper($word) === strtoupper($keyword) ||
+                    preg_match('/\b' . strtoupper($keyword) . '\b/', strtoupper($word))
+                ) {
                     return true;
                 }
             }
