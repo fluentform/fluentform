@@ -116,14 +116,10 @@ export default {
 		    } else if (type == 'single_assert_option') {
 			    allow_operators = ['='];
 		    } else if (type == 'selections') {
-			    if (this.itemConfig.is_multiple && this.itemConfig.provider != 'subscriber') {
-				    allow_operators = ['IN', 'NOT IN'];
-			    } else if (this.itemConfig.type == 'selections') {
-				    allow_operators = [...allow_operators, '=', '!='];
-			    } else if (this.itemConfig.is_only_in) {
-				    allow_operators = ['IN'];
+			    if (this.itemConfig.is_multiple) {
+					allow_operators = ['IN', 'NOT IN'];
 			    } else {
-					allow_operators = ['=', '!=', 'IN', 'NOT IN'];
+				    allow_operators = ['=', '!='];
 			    }
 		    } else if (this.isNumericType) {
 			    allow_operators = ['>', '<', '>=', '<=', '=', '!='];
