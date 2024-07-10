@@ -180,6 +180,16 @@ class Helper
         return null;
     }
 
+    public static function deleteFormMeta($formId, $metaKey)
+    {
+        try {
+            FormMeta::remove($formId, $metaKey);
+            return true;
+        } catch (\Exception $ex) {
+            return null;
+        }
+    }
+
     public static function getSubmissionMeta($submissionId, $metaKey, $default = false)
     {
         return SubmissionMeta::retrieve($metaKey, $submissionId, $default);

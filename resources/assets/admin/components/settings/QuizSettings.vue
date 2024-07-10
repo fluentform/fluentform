@@ -76,6 +76,14 @@
                                     @click="saveSettings">
                                     {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                                 </el-button>
+                                <el-button
+                                    v-if="settings.enabled"
+                                    :loading="saving"
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    @click="deleteSettings">
+                                    {{ deleting ? $t('Deleting ') : $t('Delete ') }} {{ $t('Quiz Settings') }}
+                                </el-button>
                             </div>
                         </el-form>
                     </el-skeleton>
@@ -123,6 +131,7 @@
         data() {
             return {
                 saving: false,
+                deleting: false,
                 settings: false,
                 loading: false,
                 resultType: '',
@@ -174,6 +183,37 @@
                     .always(() => {
                         this.saving = false;
                     });
+            },
+            deleteSettings() {
+                this.deleting = true;
+                this.$confirm(
+                    this.$t('This will permanently delete the quiz settings. Continue?'),
+                    this.$t('Warning'),
+                    {
+                        confirmButtonText: this.$t('Delete'),
+                        cancelButtonText: this.$t('Cancel'),
+                        confirmButtonClass: 'el-button--soft el-button--danger',
+                        cancelButtonClass: 'el-button--soft el-button--success',
+                        type: 'warning'
+                    }).then(() => {
+                    FluentFormsGlobal.$post({
+                        action: 'ff_delete_quiz_module_settings',
+                        form_id: this.form.id,
+                        settings: JSON.stringify(this.settings)
+                    })
+                        .then(response => {
+                            this.$success(response.data.message);
+                            this.getSettings();
+                        })
+                        .fail(error => {
+                            this.errors.record(error.responseJSON.errors);
+                        })
+                        .always(() => {
+                            this.deleting = false;
+                        });
+                }).catch(() => {
+                    this.deleting = false;
+                })
             },
             addItem(index) {
                 this.settings.grades.splice(index + 1, 0, {
