@@ -285,7 +285,7 @@ class ShortCodeParser
     protected static function getPostData($key)
     {
         if (is_null(static::$store['post'])) {
-            $postId = static::$store['inputs']['__fluent_form_embded_post_id'];
+            $postId = ArrayHelper::get(static::$store,'inputs.__fluent_form_embded_post_id');
             static::$store['post'] = get_post($postId);
             if (is_null(static::$store['post'])) {
                 return '';
