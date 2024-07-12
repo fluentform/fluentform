@@ -68,6 +68,7 @@
                             </label>
                             <el-select
                                     clearable
+                                    filterable
                                     :placeholder="$t('Bulk Actions')"
                                     id="bulk-action-selector-top"
                                     name="action"

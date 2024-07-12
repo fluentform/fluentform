@@ -164,7 +164,7 @@
                                 class="conditional-items ff-form-item"
                                 :class="errors.has('sendTo.email') ? 'is-error' : ''"
                             >
-                                <el-input v-model="selected.value.sendTo.email"></el-input>
+                                <el-input :placeholder="$t('Use comma for multiple values')" v-model="selected.value.sendTo.email"></el-input>
 
                                 <error-view field="sendTo.email" :errors="errors"></error-view>
                             </el-form-item>
