@@ -144,8 +144,8 @@ export default {
 					});
 			}
 			if (!mounted) {
-				let nameField = this.groups.find(g => g.column === 'field_name');
-				if (nameField && ['IN', 'NOT IN'].includes(nameField.operator)) {
+				let nameField = this.groups.find(group => group.column === 'field_name') || {};
+				if (['IN', 'NOT IN'].includes(nameField.operator)) {
 					nameField.value = [];
 				} else {
 					nameField.value = '';
