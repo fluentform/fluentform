@@ -12,8 +12,8 @@
             <div slot="title">
                 <h4>{{$t('Select Post Type')}}</h4>
             </div>
-            <div v-if="hasPro" class="ff_post_type_action_wrap mt-4">
-                <el-select v-model="post_type" class="w-100 ff_post_type_option mb-4">
+            <div v-if="hasPro" class="ff_post_type_action_wrap  mt-4">
+                <el-select :popper-append-to-body="false" v-model="post_type" class="w-100 ff_post_type_option mb-4">
                     <el-option
                         v-for="(type, i) in post_types"
                         :key="i"

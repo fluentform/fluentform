@@ -139,3 +139,9 @@ small {
         }
     }
 }
+.ff_post_type_action_wrap {
+    .el-select-dropdown__item,
+    .el-input--suffix > input {
+        text-transform: capitalize;
+    }
+}
