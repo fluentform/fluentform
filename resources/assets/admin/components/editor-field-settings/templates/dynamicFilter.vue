@@ -24,47 +24,36 @@
 				</el-select>
 			</el-form-item>
 
-			<!-- Filters -->
-			<el-form-item>
-				<elLabel
-					slot="label"
-					:label="$t('Filters')"
-					:help-text="$t('Refine search results by specifying database query filters. Utilize logical operators like AND/OR to group multiple filters, ensuring more precise filtering.')"
-				></elLabel>
-				<div v-if="model.filters.length" class="ff-dynamic-filter-wrap">
-					<div v-for="(groups, groupsIndex) in model.filters" :key="'groups_' + groupsIndex">
-						<div v-if="groupsIndex !== 0" class="ff-dynamic-filter-condition condition-or">
-							<span class="condition-border"></span>
-							<span class="condition-item">OR</span>
-							<span class="condition-border"></span>
-						</div>
-						<div class="ff-dynamic-filter-groups">
-							<!-- Filters Group-->
-							<dynamic-filter-group
-								v-for="(group, groupIndex) in groups" :key="'group_' + groupsIndex + groupIndex"
-								:group="group"
-								:groups="groups"
-								:groupsIndex="groupsIndex"
-								:add-and-text="groupIndex !== 0"
-								:list-item="listItem"
-								:filter-columns="filterColumns"
-								:filter_value_options="filter_value_options"
-								@add-group="addFilter(groupsIndex, groupIndex)"
-								@remove-group="removeFilter(groupsIndex, groupIndex)"
-								@update-filter-value-options="updateFilterValueOptions"
-							></dynamic-filter-group>
-						</div>
-					</div>
-				</div>
-				<div>
-					<el-button
-						@click="addFilterGroup"
-						type="primary" size="mini"
-						icon="el-icon-plus"
-					>{{ $t('Add Filter Group') }}
-					</el-button>
-				</div>
-			</el-form-item>
+			<el-tabs v-model="model.query_type" v-if="hasBasicQuery">
+				<el-tab-pane :label="$t('Basic')" name="basic">
+					<!-- Basic Filters -->
+					<dynamic-basic-filter
+						:filter_value_options="filter_value_options"
+						:config="model"
+						v-model="model.basic_query"
+					/>
+				</el-tab-pane>
+				<el-tab-pane :label="$t('Advance')" name="advance">
+					<!--Advance Filters -->
+					<dynamic-advance-filter
+						v-model="model.filters"
+						:list-item="listItem"
+						:filter-columns="filterColumns"
+						:filter_value_options="filter_value_options"
+						@update-filter-value-options="updateFilterValueOptions"
+					/>
+				</el-tab-pane>
+			</el-tabs>
+
+			<!--Advance Filters -->
+			<dynamic-advance-filter
+				v-else
+				v-model="model.filters"
+				:list-item="listItem"
+				:filter-columns="filterColumns"
+				:filter_value_options="filter_value_options"
+				@update-filter-value-options="updateFilterValueOptions"
+			/>
 
 			<!-- Unique Result -->
 			<el-form-item>
@@ -269,6 +258,8 @@ import dynamicFilterGroup from './helpers/DynamicFilterGroup.vue'
 import inputPopover from '../../input-popover.vue';
 import debounce from 'lodash/debounce';
 import DynamicFilterOptionsDialog from './helpers/DynamicFilterOptionsDialog.vue';
+import DynamicBasicFilter from './helpers/DynamicBasicFilter.vue';
+import DynamicAdvanceFilter from './helpers/DynamicAdvanceFilter.vue';
 
 export default {
 	name: 'dynamicValue',
@@ -278,6 +269,8 @@ export default {
 		elLabel,
 		inputYesNoCheckbox,
 		dynamicFilterGroup,
+		DynamicBasicFilter,
+		DynamicAdvanceFilter,
 		inputPopover
 	},
 	data() {
@@ -302,6 +295,19 @@ export default {
 		'model.type'() {
 			this.getFilterValueOptions();
 		},
+		'model.query_type'(type) {
+			if ('fluentform_submission' === this.model.type) {
+				if ('basic' === type) {
+					this.model.template_value.value = '{inputs.field_name}';
+					this.model.template_label.custom = false;
+					this.model.template_label.value = '{inputs.field_name}';
+				} else {
+					this.model.template_value.value = '{id}';
+					this.model.template_label.custom = true;
+					this.model.template_label.value = 'Submission ({id})';
+				}
+			}
+		},
 		model: {
 			handler() {
 				this.$emit('input', this.model);
@@ -325,33 +331,6 @@ export default {
 			this.filter_value_options = {...this.filter_value_options, [key] : options};
 		},
 
-		addFilterGroup() {
-			this.model.filters = [...this.model.filters, [
-				{
-					column: '',
-					custom: false,
-					operator: '',
-					value: ''
-				}
-			]];
-		},
-
-		removeFilter(groupsIndex, index) {
-			this.model.filters[groupsIndex].splice(index, 1);
-			if (this.model.filters[groupsIndex].length === 0) {
-				this.model.filters.splice(groupsIndex, 1);
-			}
-		},
-
-		addFilter(groupsIndex, index) {
-			this.model.filters[groupsIndex].splice(index + 1, 0, {
-				column: '',
-				custom: false,
-				operator: '',
-				value: ''
-			});
-		},
-
 		getFilterValueOptions(onMounted = false) {
 			FluentFormsGlobal.$get({
 					action: 'fluentform-get-dynamic-filter-value-options',
@@ -363,6 +342,10 @@ export default {
 						this.model.filters = res.data.default_config.filters || [];
 						this.model.sort_by = res.data.default_config.sort_by || '';
 						this.model.order_by = res.data.default_config.order_by || '';
+						this.model.query_type = res.data.default_config.query_type || '';
+						if (res.data.default_config.basic_query?.role_name) {
+							this.model.basic_query.role_name = res.data.default_config.basic_query.role_name;
+						}
 						this.model.result_limit = res.data.default_config.result_limit || 500;
 						this.model.template_value = res.data.default_config.template_value || '';
 						this.model.template_label = res.data.default_config.template_label || '';
@@ -434,6 +417,9 @@ export default {
 		isTextType() {
 			return 'text' === this.editItem.settings.field_type;
 		},
+		hasBasicQuery() {
+			return ['fluentform_submission', 'user'].includes(this.model.type);
+		}
 	},
 	mounted() {
 		this.getFilterValueOptions(true);
