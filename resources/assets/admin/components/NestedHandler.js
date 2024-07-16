@@ -38,6 +38,8 @@ import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 import inputCalendar from './templates/inputCalendar.vue';
 import { Splitpanes, Pane } from 'splitpanes'
+import editorMenuContext from "@/admin/components/EditorMenuContext";
+
 
 export default {
     name: 'list',
@@ -100,6 +102,23 @@ export default {
         }
     },
     methods: {
+        showContextMenu(index, e){
+            this.$set(this.showContext, index, !this.showContext[index]);
+
+            if (this.showContext[index]) {
+                const rect = e.target.getBoundingClientRect();
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'flex',
+                    position: 'absolute',
+                    left: `${e.clientX - rect.left}px`,
+                    top: `${e.clientY - rect.top}px`,
+                });
+                const editorApp = document.getElementById('js-form-editor--body');
+                editorApp.style.overflow = 'visible';
+            } else {
+                this.resetContextMenu(index);
+            }
+        },
         ...mapMutations(['changeFieldMode', 'updateSidebar']),
 
         /**
@@ -146,6 +165,7 @@ export default {
          */
         editSelected(index, item) {
             this.editorInserterDismiss();
+            this.$set(this.showContext, index, false);
             this.handleEdit(item);
         },
 
@@ -241,6 +261,7 @@ export default {
                     el.style.opacity = '0';
                 });
             }
+           this.resetContextMenu()
         },
         maybeShowContainerActions(e) {
             let element = e.target;
@@ -250,6 +271,20 @@ export default {
                     el.style.opacity = '1';
                 });
             }
+        },
+        resetContextMenu(index = false){
+            if (index){
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'none'
+                });
+            }
+            this.showContext = {};
+            this.contextMenuStyle = {};
+
+            const editorApp = document.getElementById('js-form-editor--body');
+            editorApp.style.overflow = '';
+
+
         }
     }
 };
