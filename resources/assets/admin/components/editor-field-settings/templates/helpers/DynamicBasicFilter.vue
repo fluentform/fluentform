@@ -151,6 +151,11 @@ export default {
 		isUser() {
 			return 'user' === this.config.type;
 		}
+	},
+	mounted() {
+		if (this.isFormSubmission && this.model.form_id) {
+			this.getFormFields(this.model.form_id);
+		}
 	}
 }
 </script>
