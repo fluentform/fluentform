@@ -7,7 +7,7 @@
             </el-form-item>
             <el-form-item>
                 <elLabel slot="label" :label="$t('Text Color')" :helpText="$t('Button Text Color')"></elLabel>
-                <el-color-picker v-model="model.color"></el-color-picker>
+                <ninja-color-picker v-model="model.color"></ninja-color-picker>
             </el-form-item>
             <el-form-item>
                 <elLabel slot="label" :label="$t('Border Color')" :helpText="$t('Button Border Color')"></elLabel>
