@@ -453,9 +453,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.1.20 (Date: July 25, 2024) =
-- Fixes inject arbitrary web scripts in checkboxes vulnerability (CVE-2024-6518, CVE-2024-6520) reported by WordFence
-- Fixes textarea fields insufficient input sanitization and output escaping vulnerability (CVE-2024-6521) reported by WordFence
-- Fixes cross-site scripting via the ‘description’ and 'btn_txt' parameters vulnerability (CVE-2024-6703) reported by WordFence
+- Fixes vulnerability in checkboxes (CVE-2024-6518, CVE-2024-6520) reported by WordFence
+- Fixes textarea fields sanitization and output vulnerability (CVE-2024-6521) reported by WordFence
+- Fixes conversational form welcome field ‘description’ and 'btn_txt' field vulnerability (CVE-2024-6703) reported by WordFence
 
 = 5.1.19 (Date: June 11, 2024) =
 - Adds injectable custom Vue component on form settings and global settings
