@@ -158,9 +158,9 @@
 .item-actions-wrapper {
   top: 0;
   opacity: 0;
-  z-index: 4;
+  z-index: 3;
   position: absolute;
-  transition: all 0.6s;
+  transition: all 0.3s;
   visibility: hidden;
 }
 
@@ -180,78 +180,7 @@
     }
   }
 }
-.context-menu-active{
-  z-index: 5;
-  .item-actions{
-    box-shadow:0 2px 10px rgb(0 0 0 / 57%);
-  }
-}
 
-//
-
-.context-menu.mac-style {
-  flex-direction: column;
-  max-width: 100px;
-  background-color: #2C2C2E;
-  border: 1px solid #3A3A3C;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  padding: 6px 0;
-  min-width: 220px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  position: absolute;
-  z-index: 1000;
-}
-
-.context-menu__item {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  color: #E0E0E0;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background-color 0.2s, color 0.2s;
-  user-select: none;
-}
-
-.context-menu__item:hover {
-  //background-color: #3A3A3C;
-  background-color: $primary;
-}
-
-.context-menu__item:active {
-  background-color: #4A4A4C;
-}
-
-.context-menu__item i {
-  margin-right: 12px;
-  font-size: 14px;
-  color: #c9c7c7;
-  width: 20px;
-  text-align: center;
-}
-
-.context-menu__item span {
-  flex-grow: 1;
-}
-
-.context-menu__separator {
-  height: 1px;
-  background-color: #3A3A3C;
-  margin: 6px 0;
-}
-
-.context-menu__item--danger {
-  color: #FF453A;
-}
-
-.context-menu__item--danger:hover {
-  background-color: #3A2A2A;
-}
-
-.context-menu__item--danger:active {
-  background-color: #4A3A3A;
-}
 .hover-action-top-right {
   top: -10px;
   right: 10px;
