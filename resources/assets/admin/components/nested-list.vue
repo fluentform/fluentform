@@ -11,7 +11,7 @@
                         :moved="handleMoved"
                         :wrapper="wrapper">
 
-            <div @click.right.prevent="showContextMenu(index, $event)" @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
+            <div @click.right.prevent.stop="showContextMenu(index, $event)" @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="[
                      item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle',
                      { 'context-menu-active': contextMenuIndex[index] }

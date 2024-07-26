@@ -253,6 +253,11 @@ export default {
                     el.style.opacity = '1';
                 });
             }
+            //re adjust pane css for context menu
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = 'hidden';
+            }
         },
         showContextMenu(index, e){
 
@@ -266,12 +271,10 @@ export default {
                     left: `${e.clientX - rect.left}px`,
                     top: `${e.clientY - rect.top}px`,
                 });
-                const editorApp = document.getElementById('js-form-editor--body');
-                editorApp.style.overflow = 'visible';
             } else {
                 this.resetContextMenu(index);
             }
-            this.selectClosestPane(e.target,index);
+            this.adjustPaneCssForContextMenu(e,index);
         },
         resetContextMenu(index = false){
             if (index){
@@ -281,19 +284,12 @@ export default {
             }
             this.contextMenuIndex = {};
             this.contextMenuStyle = {};
-
-            const editorApp = document.getElementById('js-form-editor--body');
-            editorApp.style.overflow = '';
         },
-        selectClosestPane(e, index = false){
-            // let currentElement = e;
-            // while (currentElement && !currentElement.classList.contains('splitpanes__pane')) {
-            //     currentElement = currentElement.parentElement;
-            // }
-            // if (currentElement) {
-            //     this.selectedPane = currentElement;
-            //     this.selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
-            // }
+        adjustPaneCssForContextMenu(e, index = false){
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
+            }
         }
     }
 };
