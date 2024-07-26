@@ -292,6 +292,7 @@
                     action: 'fluentform_handle_payment_ajax_endpoint',
                     form_id: this.editingTransaction.form_id,
                     transaction: this.editingTransaction,
+                    subscription_id: this.order_data.subscriptions.length && this.order_data.subscriptions[0].id,
                     route: 'update_transaction'
                 })
                 .then(response => {
