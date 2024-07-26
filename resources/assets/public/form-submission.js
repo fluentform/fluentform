@@ -883,15 +883,13 @@ jQuery(document).ready(function () {
                     }
 
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        window.turnstile.ready(function () {
-                            let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-                            let siteKey = $el.data('sitekey');
-                            let id = $el.attr('id');
-                            const turnstileWidgetId = turnstile.render(document.getElementById(id), {
-                                'sitekey': siteKey
-                            });
-                            $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                        let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                        let siteKey = $el.data('sitekey');
+                        let id = $el.attr('id');
+                        const turnstileWidgetId = turnstile.render(document.getElementById(id), {
+                            'sitekey': siteKey
                         });
+                        $el.attr('data-turnstile_widget_id', turnstileWidgetId);
                     }
 
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
