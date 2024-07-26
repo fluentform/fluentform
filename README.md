@@ -1,10 +1,10 @@
 === Contact Form Plugin - Fastest Contact Form Builder Plugin for WordPress by Fluent Forms ===
-Contributors: techjewel,adreastrian,heera,wpmanageninja
+Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.5.2
+Tested up to: 6.5.3
 Requires PHP: 7.4
-Stable tag: 5.1.15
+Stable tag: 5.1.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -390,9 +390,9 @@ This section describes how to install the plugin and get it working.
 e.g.
 
 1. Upload the plugin files to the `/wp-content/plugins/fluentform` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the \'Plugins\' screen in WordPress
-1. Use the `Fluent Forms` -> `Settings` screen to configure the plugin
-1. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
+2. Activate the plugin through the \'Plugins\' screen in WordPress
+3. Use the `Fluent Forms` -> `Settings` screen to configure the plugin
+4. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
 
 == Frequently Asked Questions ==
 = Do I need coding skill to use Fluent Forms? =
@@ -440,7 +440,35 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.1.15 (Date: April 25, 2024) =
+= 5.1.20 (Date: July 25, 2024) =
+- Fixes inject arbitrary web scripts in checkboxes vulnerability (CVE-2024-6518, CVE-2024-6520) reported by WordFence
+- Fixes textarea fields insufficient input sanitization and output escaping vulnerability (CVE-2024-6521) reported by WordFence
+- Fixes cross-site scripting via the ‘description’ and 'btn_txt' parameters vulnerability (CVE-2024-6703) reported by WordFence
+
+= 5.1.19 (Date: June 11, 2024)
+- Adds injectable custom Vue component on form settings and global settings
+- Fixes integration update authorization vulnerability reported by WordFence
+- Fixes dynamic default values with default options
+- Fixes Elementor v3.0.0 deprecated class
+- Fixes phone field country container z-index
+- Fixes hidden turnstile margin
+- Fixes numeric-field name hyphen format
+
+= 5.1.18 (Date: May 23, 2024) =
+- Fixes cross form captcha error
+
+= 5.1.17 (Date: May 16, 2024) =
+- Improved capability check for global settings & manager settings
+- Adds label shortcode support in global default message
+- Changed type of source_url database column from varchar to text
+
+= 5.1.16 (Date: May 6, 2024) =
+- Fix editor vulnerability for attacker with contributor level access (Wordpress version 6.4.0)
+- Fix conversational design settings sanitization & escaping
+- Fix conversational form save and resume preview form
+- Fix conversational form conditional based calculation field error
+
+- = 5.1.15 (Date: April 25, 2024) =
 - Fix nested condition
 - Fix entry action for post feed
 

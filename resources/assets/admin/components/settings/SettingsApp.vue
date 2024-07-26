@@ -9,6 +9,7 @@
                 :has_pro="hasPro"
                 :has_pdf="hasPDF"
                 :editorShortcodes="editorShortcodes"
+                @refetch-all-editor-shortcodes="fetchAllEditorShortcodes"
             ></router-view>
         </el-skeleton>
 	    <global-search/>

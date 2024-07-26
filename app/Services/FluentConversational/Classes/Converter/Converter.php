@@ -2,10 +2,12 @@
 
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentFormPro\classes\DraftSubmissionsManager;
 
 class Converter
 {
@@ -48,17 +50,7 @@ class Converter
 
             $field = apply_filters('fluentform/rendering_field_data_' . $field['element'], $field, $form);
             
-            $validationsRules = ArrayHelper::get($field, 'settings.validation_rules', []);
-            if ($validationsRules) {
-                foreach ($validationsRules as $ruleName => $rule) {
-                    if (isset($rule['message'])) {
-                        if (isset($rule['global']) && $rule['global']) {
-                            $rule['message'] = "";
-                        }
-                        $validationsRules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $ruleName, $rule['message'], $field);
-                    }
-                }
-            }
+            $validationsRules = self::resolveValidationsRules($field, $form);
 
             $question = [
                 'id'              => ArrayHelper::get($field, 'attributes.name'),
@@ -136,13 +128,18 @@ class Converter
 
                 foreach ($field['fields'] as $item) {
                     if ($item['settings']['visible']) {
+                        $itemName = ArrayHelper::get($item, 'attributes.name');
+                        if ($parentName = ArrayHelper::get($question, 'name')) {
+                            $itemName = $parentName . '.' . $itemName;
+                        }
+                        $validationsRules = self::resolveValidationsRules($item, $form, $itemName);
                         $itemQuestion = [
                             'title'           => ArrayHelper::get($item, 'settings.label'),
                             'container_class' => ArrayHelper::get($item, 'settings.container_class'),
-                            'required'        => ArrayHelper::get($item, 'settings.validation_rules.required.value'),
-                            'requiredMsg'     => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
-                            'errorMessage'    => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
-                            'validationRules' => ArrayHelper::get($item, 'settings.validation_rules'),
+                            'required'        => ArrayHelper::get($validationsRules, 'required.value'),
+                            'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
+                            'errorMessage'    => ArrayHelper::get($validationsRules, 'required.message'),
+                            'validationRules' => $validationsRules,
                             'conditional_logics'   => self::parseConditionalLogic($item),
                         ];
                         if ('select_country' === $item['element']) {
@@ -180,7 +177,7 @@ class Converter
                         if ($itemQuestion['required']) {
                             $question['requiredFields'][] = [
                                 "name"         => ArrayHelper::get($item, 'attributes.name', ''),
-                                'requiredMessage'  => ArrayHelper::get($item, 'settings.validation_rules.required.message')
+                                'requiredMessage'  => ArrayHelper::get($itemQuestion, 'requiredMsg')
                             ];
                             $question['required'] = true;
                         }
@@ -194,19 +191,24 @@ class Converter
             } elseif ('input_name' === $field['element']) {
                 foreach ($field['fields'] as $item) {
                     if ($item['settings']['visible']) {
+                        $itemName = ArrayHelper::get($item, 'attributes.name');
+                        if ($parentName = ArrayHelper::get($question, 'name')) {
+                            $itemName = $parentName . '.' . $itemName;
+                        }
+                        $validationsRules = self::resolveValidationsRules($item, $form, $itemName);
                         $itemQuestion = [
                             'title'           => ArrayHelper::get($item, 'settings.label'),
                             'container_class' => ArrayHelper::get($item, 'settings.container_class'),
-                            'required'        => ArrayHelper::get($item, 'settings.validation_rules.required.value'),
-                            'requiredMsg'     => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
-                            'errorMessage'    => ArrayHelper::get($item, 'settings.validation_rules.required.message'),
-                            'validationRules' => ArrayHelper::get($item, 'settings.validation_rules'),
+                            'required'        => ArrayHelper::get($validationsRules, 'required.value'),
+                            'requiredMsg'     => ArrayHelper::get($validationsRules, 'required.message'),
+                            'errorMessage'    => ArrayHelper::get($validationsRules, 'required.message'),
+                            'validationRules' => $validationsRules,
                             'conditional_logics'   => self::parseConditionalLogic($item),
                         ];
                         if ($itemQuestion['required']) {
                             $question['requiredFields'][] = [
                                 "name"         => ArrayHelper::get($item, 'attributes.name', ''),
-                                'requiredMessage'  => ArrayHelper::get($item, 'settings.validation_rules.required.message')
+                                'requiredMessage'  => ArrayHelper::get($itemQuestion, 'requiredMsg', '')
                             ];
                             $question['required'] = true;
                         }
@@ -1015,12 +1017,19 @@ class Converter
 
     private static function hasSaveAndResume($form)
     {
-        if(!defined('FLUENTFORMPRO')){
+        if (!defined('FLUENTFORMPRO')){
             return false;
         }
-        if(!version_compare(FLUENTFORMPRO_VERSION,'5.1.13' ,'>=')){
+
+        if (!version_compare(FLUENTFORMPRO_VERSION,'5.1.13' ,'>=')){
             return false;
         }
+
+        $perStepSave = ArrayHelper::get($form->settings, 'conv_form_per_step_save');
+        if (!$perStepSave) {
+            return false;
+        }
+
         $saveAndResume = false;
         $hash = '';
         $form->save_state = false;
@@ -1035,13 +1044,43 @@ class Converter
             $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
         }
 
+        DraftSubmissionsManager::migrate();
+
         $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
-        
+
         if ($draftForm) {
             $saveAndResume = true;
         }
 
         return $saveAndResume;
+    }
+
+
+    /**
+     * @param array $field
+     * @param object $form
+     * @param string $fieldName
+     * @return array
+     */
+    private static function resolveValidationsRules($field, $form, $fieldName = '')
+    {
+        $validationsRules = ArrayHelper::get($field, 'settings.validation_rules', []);
+        if ($validationsRules) {
+            if (!$fieldName) {
+                $fieldName = ArrayHelper::get($field, 'attributes.name');
+            }
+            foreach ($validationsRules as $ruleName => $rule) {
+                if (ArrayHelper::exists($rule, 'message')) {
+                    if (ArrayHelper::isTrue($rule, 'global')) {
+                        $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);;
+                    }
+                    // Shortcode parse on validation message
+                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $form, $fieldName);
+                    $validationsRules[$ruleName]['message'] = apply_filters('fluentform/validation_message_' . $ruleName, $rule['message'], $field);
+                }
+            }
+        }
+        return $validationsRules;
     }
 
     private static function getSaveAndResumeData($form)

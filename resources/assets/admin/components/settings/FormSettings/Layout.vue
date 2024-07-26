@@ -257,6 +257,7 @@
                     {{
                         $t("These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom.")
                     }}
+	                {{ $t("Use") }} <code>{labels.current_field}</code>{{$t("shortcode for automatically resolve the field label.")}}
                 </p>
             </card-head>
             <card-body>
@@ -406,7 +407,8 @@
                         </template>
                         <el-radio-group v-model="misc.akismet_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
-                            <el-radio label="validation_failed">{{ $t('Make the form submission as failed') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+<!--                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>-->
                         </el-radio-group>
 
                     </el-form-item>
