@@ -1039,7 +1039,7 @@ class Menu
 
         $components['Turnstile'] = [
             'hash'  => 'turnstile',
-            'title' => 'Turnstile (Beta)',
+            'title' => 'Turnstile',
         ];
 
         $customLinks = apply_filters('fluentform/global_settings_menu', []);
