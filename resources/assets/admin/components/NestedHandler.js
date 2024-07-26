@@ -147,6 +147,7 @@ export default {
         editSelected(index, item) {
             this.editorInserterDismiss();
             this.handleEdit(item);
+            this.resetContextMenu();
         },
 
         /**
@@ -161,6 +162,7 @@ export default {
             if (index > -1) {
                 this.wrapper.splice(index + 1, 0, freshCopy);
             }
+            this.contextMenuIndex = {};
         },
 
         /**
@@ -241,6 +243,7 @@ export default {
                     el.style.opacity = '0';
                 });
             }
+            this.resetContextMenu();
         },
         maybeShowContainerActions(e) {
             let element = e.target;
@@ -250,6 +253,47 @@ export default {
                     el.style.opacity = '1';
                 });
             }
+        },
+        showContextMenu(index, e){
+
+            this.$set(this.contextMenuIndex, index, !this.contextMenuIndex[index]);
+
+            if (this.contextMenuIndex[index]) {
+                const rect = e.target.getBoundingClientRect();
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'flex',
+                    position: 'absolute',
+                    left: `${e.clientX - rect.left}px`,
+                    top: `${e.clientY - rect.top}px`,
+                });
+                const editorApp = document.getElementById('js-form-editor--body');
+                editorApp.style.overflow = 'visible';
+            } else {
+                this.resetContextMenu(index);
+            }
+            this.selectClosestPane(e.target,index);
+        },
+        resetContextMenu(index = false){
+            if (index){
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'none'
+                });
+            }
+            this.contextMenuIndex = {};
+            this.contextMenuStyle = {};
+
+            const editorApp = document.getElementById('js-form-editor--body');
+            editorApp.style.overflow = '';
+        },
+        selectClosestPane(e, index = false){
+            // let currentElement = e;
+            // while (currentElement && !currentElement.classList.contains('splitpanes__pane')) {
+            //     currentElement = currentElement.parentElement;
+            // }
+            // if (currentElement) {
+            //     this.selectedPane = currentElement;
+            //     this.selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
+            // }
         }
     }
 };
