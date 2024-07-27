@@ -267,7 +267,12 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        require_once (App::getInstance())->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        // Check if the file is already included
+        if (!in_array(realpath($autoloaderPath), get_included_files())) {
+            // Include the autoloader file if it has not been included yet
+            require_once $autoloaderPath;
+        }
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
         $writer = \Box\Spout\Writer\WriterFactory::create($type);
         $writer->openToBrowser($fileName);
