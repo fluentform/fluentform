@@ -51,11 +51,11 @@
 
                         <el-form-item class="ff-form-item">
                             <template slot="label">
-                                {{ $t('Allow Guest') }}
+                                {{ $t('Allow Logged out user to create posts') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t(`Permission guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} from logout session.`)}}
+                                            {{ $t(`Allow guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} with out login in.`)}}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -259,6 +259,11 @@
                         <filter-fields :fields="form_fields"
                             :conditionals="feed.value.conditionals"
                             :hasPro="hasPro"
+                            :labels="{
+                                status_label: 'Enable conditional logic',
+                                notification_if_start: 'Run this integration if',
+                                notification_if_end: 'of the following match:'
+                            }"
                         />
 
                         <div class="mt-4">
