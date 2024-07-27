@@ -150,7 +150,9 @@ class Submission extends Model
     {
         $formId = Arr::get($attributes, 'form_id');
         $query = $this->customQuery($attributes);
-        $response = $query->paginate();
+        $perPage = Arr::get($attributes, 'per_page', 20);
+        $page = Arr::get($attributes, 'page', 1);
+        $response = $query->paginate($perPage, ['*'], 'page', $page);
         $response = apply_filters_deprecated(
             'fluentform_get_raw_responses',
             [
