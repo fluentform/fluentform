@@ -256,7 +256,7 @@ Here are a few forms from those that we have packed for you:
 <li>Trello – Create Trello Cards in your boards on form submission</li>
 <li>Drip – Fluent Forms Drip Module allows you to create Drip subscribers from WordPress, so you can grow your email list</li>
 <li>iContact – Connect iContact with Fluent Forms and subscribe a contact when a form is submitted</li>
-<li>Sendinblue – Connect Your Contact Forms with Sendinblue CRM</li>
+<li>Brevo – Connect Your Contact Forms with Brevo (formerly SendinBlue) CRM</li>
 <li>Automizy – Connect Your Contact Forms with Automizy Marketing Solution</li>
 <li>User Registration – Create WordPress users from fluent form submissions</li>
 <li>Post/CPT integration – Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>

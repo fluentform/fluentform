@@ -263,7 +263,7 @@ Improve your website’s efficiency by bridging the gap from visitor input to em
 * Trello
 * Drip
 * iContact
-* Sendinblue
+* Brevo (formerly SendInBlue)
 * Automizy
 * User Registration
 * Post/CPT integration
