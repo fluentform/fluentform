@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
-Tested up to: 6.5.4
+Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 5.1.19
+Stable tag: 5.1.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -452,6 +452,11 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.1.20 (Date: July 25, 2024) =
+- Fixes vulnerability in checkboxes (CVE-2024-6518, CVE-2024-6520) reported by WordFence
+- Fixes textarea fields sanitization and output vulnerability (CVE-2024-6521) reported by WordFence
+- Fixes conversational form welcome field ‘description’ and 'btn_txt' field vulnerability (CVE-2024-6703) reported by WordFence
 
 = 5.1.19 (Date: June 11, 2024) =
 - Adds injectable custom Vue component on form settings and global settings
