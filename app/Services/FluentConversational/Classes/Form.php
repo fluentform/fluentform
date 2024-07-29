@@ -322,7 +322,7 @@ class Form
             'turnstile',
             'quiz_score',
             'rangeslider',
-//            'save_progress_button'
+            'save_progress_button',
             'dynamic_field',
             'rangeslider'
         ];
