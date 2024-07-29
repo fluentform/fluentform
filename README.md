@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.5.3
+Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 5.1.17
+Stable tag: 5.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.0 (Date: Aug 2, 2024) =
+- Adds dynamic field
+- Adds print entries
+- Adds context menu in editor
+- Fixes PDF feed watermarks
+- Fixes inactive conversational form pretty permalink
+- Fixes address field country hide label
+- Fixes GDPR attribute target=_blank
+- Fixes Cloudflare Turnstile multiple widget
+- Fixes PHP 8.3 deprecation warning
 
 = 5.1.20 (Date: July 25, 2024) =
 - Fixes inject arbitrary web scripts in checkboxes vulnerability (CVE-2024-6518, CVE-2024-6520) reported by WordFence
