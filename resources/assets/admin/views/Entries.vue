@@ -13,11 +13,6 @@
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <el-button @click="showImportEntriesModal = true"  class="el-button">
-                            {{ $t('Import') }}
-                        </el-button>
-                    </btn-group-item>
-                    <btn-group-item as="div">
                         <el-dropdown @command="selectFieldsToExport" trigger="click">
                             <el-button>
                                 {{ $t('Export') }}
@@ -52,6 +47,21 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
+                    <el-dropdown
+                            @command="showImport"
+                            class="more_menu"
+                    >
+                        <span class="el-dropdown-link">
+                            <i class="ff-icon ff-icon-more-vertical"/>
+                        </span>
+                        <el-dropdown-menu slot="dropdown" >
+                            <el-dropdown-item  >
+                                    {{ $t('Import') }}
+                            </el-dropdown-item >
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
+
                 </btn-group>
             </section-head-content>
         </section-head>
@@ -1187,7 +1197,10 @@
                 this.checkAll = checkedCount === shortCodeCountCount + fieldsCount;
 
                 this.isIndeterminateFieldsSelection = checkedCount > 0 && checkedCount <  shortCodeCountCount + fieldsCount;
-            }
+            },
+            showImport() {
+                this.showImportEntriesModal = !this.showImportEntriesModal;
+            },
         },
         mounted() {
             this.getEntryResources();

@@ -1019,6 +1019,14 @@ body.ff_full_screen {
     padding-top: 9px;
     padding-bottom: 9px;
     font-size: 14px;
+    max-width: 70px;
+    cursor: pointer;
+  }
+}
+.more_menu {
+  padding: 0;
+  .ff-icon-more-vertical{
+    font-size: 24px;
   }
 }
 
