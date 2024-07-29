@@ -966,7 +966,7 @@ class Menu
         ];
 
 	    // if has pro and payment enable. We will use this filter hook to push custom elements
-	    if (defined( 'FLUENTFORMPRO')){
+	    if (defined('FLUENTFORMPRO')) {
 		    $data['calc_items'] = [
 			    'paymentElements' => [
 				    'multi_payment_component',
@@ -978,7 +978,6 @@ class Menu
 			    ]
 		    ];
 	    }
-
 
 	    $data = apply_filters_deprecated(
             'fluentform_editor_vars',
