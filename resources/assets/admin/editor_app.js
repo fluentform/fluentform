@@ -40,6 +40,10 @@ import {
     Skeleton,
     SkeletonItem,
     OptionGroup,
+    Link,
+    Table,
+    TableColumn,
+    DatePicker
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -85,6 +89,10 @@ Vue.use(Alert);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
 Vue.use(OptionGroup);
+Vue.use(Link);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(DatePicker);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

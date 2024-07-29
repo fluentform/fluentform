@@ -946,6 +946,24 @@ class Helper
                     ArrayHelper::get($rawField, 'settings.advanced_options', []),
                     'value'
                 );
+            } elseif ("dynamic_field" == $fieldType) {
+                $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
+                if ($dynamicFetchValue) {
+                    $rawField = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $rawField);
+                }
+                $dfElementType = ArrayHelper::get($rawField, 'attributes.type');
+                if (in_array($dfElementType, ['radio', 'select', 'checkbox'])) {
+                    $fieldType = 'dynamic_field_options';
+                    $options = array_column(
+                        ArrayHelper::get($rawField, 'settings.advanced_options', []),
+                        'value'
+                    );
+                } elseif ('text' == $dfElementType) {
+                    $dfTextType = ArrayHelper::get($rawField, 'settings.text_field_type');
+                    if (in_array($dfTextType, ['hidden', 'readonly'])) {
+                        $fieldType = 'dynamic_field_text_not_changeable';
+                    }
+                }
             }
 
             if ($options) {
@@ -962,6 +980,7 @@ class Helper
                 case 'terms_and_condition':
                 case 'input_checkbox':
                 case 'multi_select':
+                case 'dynamic_field_options':
                     $skipValidationInputsWithOptions = apply_filters('fluentform/skip_validation_inputs_with_options', false, $fieldType, $form, $formData);
                     if ($skipValidationInputsWithOptions) {
                         break;
@@ -972,6 +991,10 @@ class Helper
                     } else {
                         $isValid = in_array($inputValue, $options);
                     }
+                    break;
+                case 'dynamic_field_text_not_changeable':
+                    $originalValue = ArrayHelper::get($rawField, 'attributes.value');
+                    $isValid = $inputValue == $originalValue;
                     break;
                 case 'input_number':
                     if (is_array($inputValue)) {

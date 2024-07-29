@@ -323,6 +323,8 @@ class Form
             'quiz_score',
             'rangeslider',
 //            'save_progress_button'
+            'dynamic_field',
+            'rangeslider'
         ];
 
         $acceptedFieldElements = apply_filters(

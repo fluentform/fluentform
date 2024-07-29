@@ -63,6 +63,11 @@
     }
   }
 
+  .ff-dynamic-editor-wrap {
+    max-height: 300px;
+    overflow: hidden;
+  }
+
   &--sidebar {
     width: 40%;
 
@@ -126,6 +131,39 @@
       margin: 10px -10px;
       .el-input__inner{
         transition: all 0.5s;
+      }
+    }
+    .ff-dynamic{
+      &-warp {
+        padding: 10px 10px 0 10px;
+        margin-bottom: 10px;
+        border-left: 1px dashed $border-color;
+      }
+
+      &-filter {
+        &-groups {
+          border: 1px solid $border-color;
+          padding: 10px;
+          margin-bottom: 10px;
+          border-radius: 5px;
+        }
+        &-condition {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 10px -10px;
+          &.condition-or {
+            margin: 10px 0;
+          }
+          & span.condition-border {
+            border: 1px dashed $border-color;
+            display: block;
+            width: 100%;
+          }
+          & span.condition-item {
+            padding: 0 20px;
+          }
+        }
       }
     }
     .ff_validation_rule_error_choice {

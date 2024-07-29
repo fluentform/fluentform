@@ -268,6 +268,37 @@ class Converter
                 $question['options'] = $options;
                 $question['placeholder'] = ArrayHelper::get($field, 'attributes.placeholder', null);
                 $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
+            } elseif ('dynamic_field' === $field['element']) {
+                $dynamicFetchValue = 'yes' == ArrayHelper::get($field, 'settings.dynamic_fetch');
+                if ($dynamicFetchValue) {
+                    $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
+                    dd(ArrayHelper::get($field, 'attributes.value'));
+                    $question['answer'] = ArrayHelper::get($field, 'attributes.value');
+                }
+                $type = ArrayHelper::get($field, 'attributes.type');
+                if (in_array($type, ['checkbox', 'radio'])) {
+                    $question['type'] = 'FlowFormMultipleChoiceType';
+                    $question['options'] = self::getAdvancedOptions($field);
+                    if ('checkbox' == $type) {
+                        $question['multiple'] = true;
+                    }
+                } elseif ('select' == $type) {
+                    $question['type'] = 'FlowFormDropdownType';
+                    $question['options'] = self::getAdvancedOptions($field);
+                    $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
+                    $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
+                } elseif ('text' == $type) {
+                    $question['type'] = 'FlowFormTextType';
+                    $textType = ArrayHelper::get($field, 'settings.text_field_type');
+                    if ('hidden' == $textType) {
+                        $question['type'] = 'FlowFormHiddenType';
+                    } elseif ('readonly' == $textType) {
+                        $question['readonly'] = true;
+                    }
+                } else {
+                    continue;
+                }
+                $question['nextStepOnAnswer'] = true;
             } elseif ('input_checkbox' === $field['element']) {
                 $question['options'] = self::getAdvancedOptions($field);
                 $question['multiple'] = true;
@@ -790,6 +821,7 @@ class Converter
             $fieldTypes['quiz_score'] = 'FlowFormHiddenType';
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
             $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
+            $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
         }
 
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);
