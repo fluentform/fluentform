@@ -135,6 +135,13 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
+                        <label for="search_bar">
+                           <b> {{ $t('Advanced Search') }}</b>
+                        </label>
+                        <el-switch class="el-switch-sm" v-model="advanced_filter_active" />
+
+                    </btn-group-item>
+                    <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
                             {{ $t('Search Entry') }}
                         </label>
@@ -172,12 +179,12 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                            <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
                                 <span>{{ $t('Filter') }}</span>
-                                <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                                <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
-                            <div v-if="advancedFilter" class="ff_advanced_search">
+                            <div v-if="basicFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
                                         <el-radio label="all">{{$t('All')}}</el-radio>
@@ -236,6 +243,18 @@
             :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
             type="error">
         </el-alert>
+	    <template v-if="advanced_filter_active">
+                <AdvancedSearch v-if="has_pro" @runSearch="runAdvanceSearch"  :advanced_filter="advanced_filter"/>
+			    <notice v-else type="danger-soft" class="ff_alert_between mb-4">
+				    <div>
+					    <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
+					    <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
+				    </div>
+				    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+					    {{ $t('Upgrade to Pro') }}
+				    </a>
+			    </notice>
+	    </template>
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
@@ -516,11 +535,14 @@
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
+    import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
         name: 'FormEntries',
         props: ['form_id', 'has_pdf'],
         components: {
+            AdvancedSearch,
             Confirm,
             EmailResend,
             ColumnDragAndDrop,
@@ -528,6 +550,7 @@
             BtnGroupItem,
             SectionHead,
             SectionHeadContent,
+	        Notice,
             ImportEntriesModal
         },
         watch: {
@@ -593,7 +616,7 @@
                 payment_statuses: window.fluent_form_entries_vars.payment_statuses,
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
-                advancedFilter: false,
+                basicFilter: false,
                 filter_date_range: null,
                 autoDeleteStatus: window.fluent_form_entries_vars.enabled_auto_delete,
                 pickerOptions: {
@@ -653,7 +676,9 @@
                 isIndeterminateFieldsSelection: true,
                 checkAllFields : false,
                 showImportEntriesModal: false,
-                app: window.fluent_forms_global_var
+                app: window.fluent_forms_global_var,
+                advanced_filter_active : false,
+                advanced_filter : {}
             }
         },
         computed: {
@@ -786,6 +811,10 @@
                         this.getData();
                     });
             },
+            runAdvanceSearch(query){
+                this.advanced_filter = query
+                this.getData();
+            },
             getData() {
                 let data = {
                     form_id: this.form_id,
@@ -801,8 +830,11 @@
                 if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                 }
-	            if (this.advancedFilter) {
-		            this.advancedFilter = false;
+	            if (this.basicFilter) {
+		            this.basicFilter = false;
+	            }
+	            if (this.advanced_filter_active) {
+                    data.advanced_filter = this.advanced_filter;
 	            }
 
                 this.loading = true;
