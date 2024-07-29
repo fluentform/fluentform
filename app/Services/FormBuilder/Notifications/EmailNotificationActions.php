@@ -92,7 +92,9 @@ class EmailNotificationActions
             $emailData['attachments'] = $emailAttachments;
         }
 
-        $notifier->notify($emailData, $formData, $form, $entry->id);
+        $isDraftSubmission = isset($entry->hash) && isset($entry->type) && ($entry->type == 'saved_state_data' || $entry->type == 'step_data');
+
+        $notifier->notify($emailData, $formData, $form, $entry->id, $isDraftSubmission);
     }
 
     /**
