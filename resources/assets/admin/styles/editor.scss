@@ -63,6 +63,11 @@
     }
   }
 
+  .ff-dynamic-editor-wrap {
+    max-height: 300px;
+    overflow: hidden;
+  }
+
   &--sidebar {
     width: 40%;
 
@@ -130,7 +135,7 @@
     }
     .ff-dynamic{
       &-warp {
-        padding: 10px;
+        padding: 10px 10px 0 10px;
         margin-bottom: 10px;
         border-left: 1px dashed $border-color;
       }

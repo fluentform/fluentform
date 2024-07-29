@@ -230,25 +230,6 @@
                     </el-col>
                 </el-row>
             </el-form-item>
-
-			<!-- Dynamic Retrieval -->
-			<el-form-item>
-				<input-yes-no-checkbox
-					v-if="isTextType"
-					v-model="model.dynamic_fetch"
-					:listItem="{
-						label: $t('Dynamic Value Retrieval'),
-						help_text : $t('When checked, value are dynamically fetched based on filters during rendering, and the first valid value is used. Leave unchecked to use the current valid value mapping.')}"
-				></input-yes-no-checkbox>
-
-				<input-yes-no-checkbox
-					v-else
-					v-model="model.dynamic_fetch"
-					:listItem="{
-						label: $t('Dynamic Options Retrieval'),
-						help_text : $t('When checked, options are dynamically fetched based on filters during rendering. If unchecked, the current valid options remain unchanged.')}"
-				></input-yes-no-checkbox>
-			</el-form-item>
 		</div>
 	</div>
 </template>
@@ -298,17 +279,10 @@ export default {
 			this.getFilterValueOptions();
 		},
 		'model.query_type'(type) {
-			if ('fluentform_submission' === this.model.type) {
-				if ('basic' === type) {
-					this.model.template_value.value = '{inputs.field_name}';
-					this.model.template_label.custom = false;
-					this.model.template_label.value = '{inputs.field_name}';
-				} else {
-					this.model.template_value.value = '{id}';
-					this.model.template_label.custom = true;
-					this.model.template_label.value = 'Submission ({id})';
-				}
-			}
+			this.resetTemplateMapping(type);
+		},
+		'model.basic_query.form_field'() {
+			this.resetTemplateMapping();
 		},
 		model: {
 			handler() {
@@ -322,6 +296,19 @@ export default {
 		}
 	},
 	methods: {
+		resetTemplateMapping(type = 'basic') {
+			if ('fluentform_submission' === this.model.type) {
+				if ('basic' === type && this.model.basic_query?.form_id && this.model.basic_query?.form_field) {
+					this.model.template_value.value = '{inputs.field_name}';
+					this.model.template_label.custom = false;
+					this.model.template_label.value = '{inputs.field_name}';
+				} else {
+					this.model.template_value.value = '{id}';
+					this.model.template_label.custom = true;
+					this.model.template_label.value = 'Submission ({id})';
+				}
+			}
+		},
 		maybeResetTextValue(){
 			// Set first valid value for dynamically fetched
 			if (this.isTextType && 'yes' === this.model.dynamic_fetch) {
@@ -345,6 +332,9 @@ export default {
 						this.model.sort_by = res.data.default_config.sort_by || '';
 						this.model.order_by = res.data.default_config.order_by || '';
 						this.model.query_type = res.data.default_config.query_type || '';
+						if (res.data.default_config.query_type === 'basic') {
+							this.model.basic_query = res.data.default_config.basic_query || {};
+						}
 						if (res.data.default_config.basic_query?.role_name) {
 							this.model.basic_query.role_name = res.data.default_config.basic_query.role_name;
 						}
@@ -425,6 +415,7 @@ export default {
 	},
 	mounted() {
 		this.getFilterValueOptions(true);
+		this.resetTemplateMapping();
 		this.getResult();
 	}
 }

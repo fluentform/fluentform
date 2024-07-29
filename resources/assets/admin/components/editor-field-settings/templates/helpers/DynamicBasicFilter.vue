@@ -25,7 +25,7 @@
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :span="24" v-if="hasFormFields">
+				<el-col :span="24">
 					<el-form-item>
 						<elLabel
 							slot="label"

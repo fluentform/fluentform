@@ -1,6 +1,8 @@
 <template>
-	<input-checkable v-if="isCheckable" :item="item"></input-checkable>
-	<custom-select v-else-if="isSelectable" :item="item"></custom-select>
+	<div v-if="isCheckable || isSelectable" class="ff-dynamic-editor-wrap">
+		<input-checkable v-if="isCheckable" :item="item"></input-checkable>
+		<custom-select v-else-if="isSelectable" :item="item"></custom-select>
+	</div>
 	<div v-else>
 		<input-hidden v-if="isHidden" :item="item"></input-hidden>
 		<input-text :item="item" v-else></input-text>

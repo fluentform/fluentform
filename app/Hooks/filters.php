@@ -153,7 +153,7 @@ foreach ($elements as $element) {
         $element = $field['element'];
 
         if ('dynamic_field' == $element) {
-            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.dynamic_config.dynamic_fetch');
+            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.dynamic_fetch');
             if ($dynamicFetchValue) {
                 $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
             }
