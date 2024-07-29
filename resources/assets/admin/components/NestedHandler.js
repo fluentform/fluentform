@@ -149,6 +149,7 @@ export default {
         editSelected(index, item) {
             this.editorInserterDismiss();
             this.handleEdit(item);
+            this.resetContextMenu();
         },
 
         /**
@@ -163,6 +164,7 @@ export default {
             if (index > -1) {
                 this.wrapper.splice(index + 1, 0, freshCopy);
             }
+            this.contextMenuIndex = {};
         },
 
         /**
@@ -243,6 +245,7 @@ export default {
                     el.style.opacity = '0';
                 });
             }
+            this.resetContextMenu();
         },
         maybeShowContainerActions(e) {
             let element = e.target;
@@ -251,6 +254,43 @@ export default {
                 topRightElements.forEach((el) => {
                     el.style.opacity = '1';
                 });
+            }
+            //re adjust pane css for context menu
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = 'hidden';
+            }
+        },
+        showContextMenu(index, e){
+
+            this.$set(this.contextMenuIndex, index, !this.contextMenuIndex[index]);
+
+            if (this.contextMenuIndex[index]) {
+                const rect = e.target.getBoundingClientRect();
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'flex',
+                    position: 'absolute',
+                    left: `${e.clientX - rect.left}px`,
+                    top: `${e.clientY - rect.top}px`,
+                });
+            } else {
+                this.resetContextMenu(index);
+            }
+            this.adjustPaneCssForContextMenu(e,index);
+        },
+        resetContextMenu(index = false){
+            if (index){
+                this.$set(this.contextMenuStyle, index, {
+                    display: 'none'
+                });
+            }
+            this.contextMenuIndex = {};
+            this.contextMenuStyle = {};
+        },
+        adjustPaneCssForContextMenu(e, index = false){
+            if (jQuery(e.target).closest('.splitpanes__pane').length) {
+                let selectedPane = jQuery(e.target).closest('.splitpanes__pane')[0];
+                selectedPane.style.overflow = this.contextMenuIndex[index] ? 'visible' : 'hidden';
             }
         }
     }
