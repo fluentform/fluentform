@@ -65,36 +65,7 @@
 				></input-yes-no-checkbox>
 			</el-form-item>
 
-			<!-- Ordering -->
-			<el-form-item>
-				<elLabel
-					slot="label"
-					:label="$t('Ordering')"
-					:help-text="$t('Specify the ordering of the dynamically populate')"
-				></elLabel>
-				<el-row :gutter="20">
-					<el-col :span="12">
-						<el-select v-model="model.sort_by" clearable filterable>
-							<el-option
-								v-for="(label, value) in filterColumns"
-								:key="'key_' + value"
-								:label="label"
-								:value="value"
-							></el-option>
-						</el-select>
-					</el-col>
-					<el-col :span="12">
-						<el-select v-model="model.order_by">
-							<el-option
-								v-for="(label, value) in listItem.order"
-								:key="'key_' + value"
-								:label="label"
-								:value="value"
-							></el-option>
-						</el-select>
-					</el-col>
-				</el-row>
-			</el-form-item>
+
 
 			<!-- Result Limits -->
 			<el-form-item>
@@ -228,6 +199,37 @@
 					</el-col>
 				</el-row>
 			</el-form-item>
+
+            <!-- Ordering -->
+            <el-form-item>
+                <elLabel
+                        slot="label"
+                        :label="$t('Ordering')"
+                        :help-text="$t('Specify the ordering of the dynamically populate')"
+                ></elLabel>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-select v-model="model.sort_by" clearable filterable>
+                            <el-option
+                                    v-for="(label, value) in filterColumns"
+                                    :key="'key_' + value"
+                                    :label="label"
+                                    :value="value"
+                            ></el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-select v-model="model.order_by">
+                            <el-option
+                                    v-for="(label, value) in listItem.order"
+                                    :key="'key_' + value"
+                                    :label="label"
+                                    :value="value"
+                            ></el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+            </el-form-item>
 
 			<!-- Dynamic Retrieval -->
 			<el-form-item>
