@@ -277,8 +277,8 @@ class AddOnModule
                 'category'     => 'crm',
             ],
             'sendinblue' => [
-                'title'        => __('SendInBlue', 'fluentform'),
-                'description'  => __('Fluent Forms Sendinblue Module allows you to create contacts on your list, so you can grow your email list.', 'fluentform'),
+                'title'        => __('Brevo (formerly SendInBlue)', 'fluentform'),
+                'description'  => __('Fluent Forms Brevo (formerly SendInBlue) Module allows you to create contacts on your list, so you can grow your email list.', 'fluentform'),
                 'logo'         => fluentformMix('img/integrations/sendinblue.png'),
                 'enabled'      => 'no',
                 'purchase_url' => $purchaseUrl,
