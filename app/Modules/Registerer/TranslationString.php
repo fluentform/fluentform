@@ -917,6 +917,11 @@ class TranslationString
             'Enable per step save' => __('Enable per step save', 'fluentform'),
             'Resume from last step' => __('Resume from last step', 'fluentform'),
             'Conversation Form Per Step Save is available in the pro version' => __('Conversation Form Per Step Save is available in the pro version', 'fluentform'),
+            'Click to reset the settings if any quiz inputs name has been changed from the editor' => __('Click to reset the settings if any quiz inputs name has been changed from the editor', 'fluentform'),
+            'Resetting ' => __('Resetting ', 'fluentform'),
+            'Reset ' => __('Reset ', 'fluentform'),
+            'This will permanently reset the quiz settings. Continue?' => __('This will permanently reset the quiz settings. Continue?', 'fluentform'),
+            'Reset' => __('Reset', 'fluentform'),
         );
         $i18n = wp_parse_args($i18n, self::getSettingsCommonI18n());
         return apply_filters('fluentform/form_settings_i18n', $i18n);

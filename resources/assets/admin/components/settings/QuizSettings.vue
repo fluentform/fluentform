@@ -76,14 +76,15 @@
                                     @click="saveSettings">
                                     {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
                                 </el-button>
-                                <el-button
-                                    v-if="settings.enabled"
-                                    :loading="saving"
-                                    type="danger"
-                                    icon="el-icon-delete"
-                                    @click="deleteSettings">
-                                    {{ deleting ? $t('Deleting ') : $t('Delete ') }} {{ $t('Quiz Settings') }}
-                                </el-button>
+                                <el-tooltip class="item" effect="dark" :content="$t('Click to reset the settings if any quiz inputs name has been changed from the editor')" placement="top-start" v-if="settings.enabled">
+                                    <el-button
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        :loading="saving"
+                                        @click="deleteSettings">
+                                        {{ deleting ? $t('Resetting ') : $t('Reset ') }} {{ $t('Quiz Settings') }}
+                                    </el-button>
+                                </el-tooltip>
                             </div>
                         </el-form>
                     </el-skeleton>
@@ -187,10 +188,10 @@
             deleteSettings() {
                 this.deleting = true;
                 this.$confirm(
-                    this.$t('This will permanently delete the quiz settings. Continue?'),
+                    this.$t('This will permanently reset the quiz settings. Continue?'),
                     this.$t('Warning'),
                     {
-                        confirmButtonText: this.$t('Delete'),
+                        confirmButtonText: this.$t('Reset'),
                         cancelButtonText: this.$t('Cancel'),
                         confirmButtonClass: 'el-button--soft el-button--danger',
                         cancelButtonClass: 'el-button--soft el-button--success',
