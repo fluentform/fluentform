@@ -290,6 +290,36 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     });
             }
         })
+
+        $form.on('fluentform_post_update_file', function (e, $imgDom, fileUrl) {
+            if (typeof fileUrl === 'object') {
+                fileUrl = fileUrl.url;
+            }
+            const $el = $imgDom.parent().find('input[type=file]');
+            if ($el.length) {
+                if (fileUrl.startsWith('http://')) {
+                    fileUrl = fileUrl.replace('http://', 'https://');
+                }
+                // Extract the file name from the URL
+                const url = new URL(fileUrl);
+                const fileName = url.pathname.split('/').pop();
+
+                // Fetch the file content from the URL
+                fetch(fileUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // Create a File object from the Blob
+                        const file = new File([blob], fileName, {type: blob.type});
+
+                        // Create a data object and add the file to the files array
+                        const data = {
+                            files: [file]
+                        };
+
+                        $el.fileupload('add', data);
+                    });
+            }
+        })
     };
 
     /**
