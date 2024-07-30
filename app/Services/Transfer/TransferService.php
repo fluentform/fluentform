@@ -254,6 +254,11 @@ class TransferService
         $query->when(is_array($entries) && (count($entries) > 0), function ($q) use ($entries) {
             return $q->whereIn('id', $entries);
         });
+
+        if (Arr::get($args, 'advanced_filter')) {
+            $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $args);
+        }
+
         return $query->get();
     }
 

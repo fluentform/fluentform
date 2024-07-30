@@ -1123,6 +1123,9 @@
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
+				if (this.advanced_filter_active) {
+					data.advanced_filter = this.advanced_filter;
+				}
 	            location.href = ajaxurl + '?' + jQuery.param(data);
             },
             dateFormat(date, format) {
