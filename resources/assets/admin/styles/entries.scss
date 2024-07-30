@@ -319,6 +319,11 @@ table.editor_table, .ff_entry_table_field, .ff-table {
 // entry info box
 .entry_info_box {
   margin-bottom: 24px;
+  &_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   &_title {
     font-weight: 600;
     font-size: 17px;
