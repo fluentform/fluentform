@@ -778,6 +778,15 @@ span.ff_tag {
     padding: 10px;
     background: #fdfdfd;
     border: 1px solid #efefef;
+    border-radius: 4px;
+    .ff_table{
+      background: #f0f3f7;
+      border: 1px solid #dedcdc;
+      box-shadow:none;
+      .filter_name{
+        font-weight: 500;
+      }
+    }
   }
   .ff_cond_or {
     border-bottom: 1px dashed #d5dce1;

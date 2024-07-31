@@ -148,7 +148,7 @@
                         <label for="search_bar">
                            <b> {{ $t('Advanced Search') }}</b>
                         </label>
-                        <el-switch class="el-switch-sm" v-model="advanced_filter_active" />
+                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
 
                     </btn-group-item>
                     <btn-group-item as="div">

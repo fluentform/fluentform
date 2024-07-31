@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <td style="width: 210px; line-height: 110%;">
+        <td style="width: 210px; line-height: 110%;" class="filter_name">
             {{ itemConfig.provider|ucFirst }} <span class="fs_provider_separator">/</span>
             {{ itemConfig.label }}
             <span v-if="itemConfig.help">
@@ -93,6 +93,7 @@
         </td>
         <td v-if="!view_only" style="width: 50px; text-align: right;">
             <el-button
+                plain
                 icon="el-icon-delete"
                 @click="removeItem()"
                 size="mini"
