@@ -1327,7 +1327,7 @@ class TranslationString
             'Entries' => __('Entries', 'fluentform'),
             'All Types' => __('All Types', 'fluentform'),
             'All Payments' => __('All Payments', 'fluentform'),
-            'View Visual Report' => __('View Visual Report', 'fluentform'),
+            'Visual Report' => __('Visual Report', 'fluentform'),
             'Columns' => __('Columns', 'fluentform'),
             'Reorder Column' => __('Reorder Column', 'fluentform'),
             'Change Column Display Order' => __('Change Column Display Order', 'fluentform'),

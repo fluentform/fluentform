@@ -9,7 +9,7 @@
                     <btn-group-item as="div">
                         <el-button @click="gotoVisualReport()" type="primary">
                             <i class="ff-icon ff-icon-donut-chart"></i>
-                            <span>{{ $t('View Visual Report') }}</span>
+                            <span>{{ $t('Visual Report') }}</span>
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
@@ -144,7 +144,7 @@
             </section-head-content>
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
-                    <btn-group-item as="div">
+                    <btn-group-item as="div" v-if="!entrySelections.length">
                         <label for="search_bar">
                            <b> {{ $t('Advanced Search') }}</b>
                         </label>
