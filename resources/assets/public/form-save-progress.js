@@ -65,8 +65,6 @@ import formSlider from "./Pro/slider";
                     });
                 });
 
-                hash = window.form_state_save_vars?.key;
-
                 var formData = {
                     source_url: window.form_state_save_vars.source_url,
                     action: 'fluentform_save_form_progress_with_link',

@@ -110,11 +110,6 @@
                 default() {
                     return 'Entry Actions'
                 }
-            },
-            is_draft_submission : {
-                default() {
-                    return false;
-                }
             }
         },
         components: {
@@ -122,7 +117,7 @@
         },
         data() {
             return {
-                has_pro: !!window.fluent_form_entries_vars?.has_pro || !!window.fluentform_step_form_entry_vars?.has_pro,
+                has_pro: !!window.fluent_form_entries_vars.has_pro,
                 dialogVisible: false,
                 sending: false,
                 error_message: '',
@@ -130,7 +125,7 @@
                 feeds: [],
                 loading: false,
                 verify_condition: 'yes',
-                upgrade_url: window.fluent_form_entries_vars?.upgrade_url || window.fluentform_step_form_entry_vars?.upgrade_url
+                upgrade_url: window.fluent_form_entries_vars.upgrade_url
             }
         },
         methods: {
@@ -151,11 +146,6 @@
                         action_id: actionId
                     }]
                 };
-
-                if (this.is_draft_submission) {
-                    data.logIds[0].is_draft_submission = true;
-                }
-
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$success(response.data.message);

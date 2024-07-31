@@ -318,8 +318,7 @@
                             feed_id: singlelog.feed_id,
                             form_id: singlelog.form_id,
                             entry_id: singlelog.submission_id,
-                            integration_enabled: singlelog.integration_enabled,
-                            is_draft_submission: singlelog?.type == 'draft_submission_action'
+                            integration_enabled: singlelog.integration_enabled
                         }
                     ];
                 } else {
@@ -329,8 +328,7 @@
                                 action_id: item.id,
                                 feed_id: item.feed_id,
                                 form_id: item.form_id,
-                                entry_id: item.submission_id,
-                                is_draft_submission: item?.type == 'draft_submission_action'
+                                entry_id: item.submission_id
                             }
                         );
                     });

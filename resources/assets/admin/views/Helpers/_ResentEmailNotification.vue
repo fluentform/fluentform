@@ -97,11 +97,6 @@
                 default() {
                     return 'Resend Email Notification'
                 }
-            },
-            is_draft_submission : {
-                default() {
-                    return false;
-                }
             }
         },
         components: {
@@ -111,7 +106,7 @@
         },
         data() {
             return {
-                has_pro: !!window.fluent_form_entries_vars?.has_pro || !!window.fluentform_step_form_entry_vars?.has_pro,
+                has_pro: !!window.fluent_form_entries_vars.has_pro,
                 dialogVisible: false,
                 sending: false,
                 error_message: '',
@@ -121,8 +116,8 @@
                     send_to_type: 'default',
                     send_to_custom_email: ''
                 },
-                notifications: window.fluent_form_entries_vars?.email_notifications || window.fluentform_step_form_entry_vars?.email_notifications,
-                upgrade_url: window.fluent_form_entries_vars?.upgrade_url || window.fluentform_step_form_entry_vars?.upgrade_url
+                notifications: window.fluent_form_entries_vars.email_notifications,
+                upgrade_url: window.fluent_form_entries_vars.upgrade_url
             }
         },
         computed: {
@@ -151,11 +146,6 @@
                     send_to_custom_email: this.form.send_to_custom_email,
                     ff_sumulate: 'fluentform_submit'
                 };
-
-                if (this.is_draft_submission) {
-                    data.is_draft_submission = true;
-                }
-
                 FluentFormsGlobal.$post(data)
                     .then(response => {
                         this.$notify.success(response.data.message);

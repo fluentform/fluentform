@@ -57,7 +57,7 @@
 
     export default {
         name: 'submission_logs',
-        props: ['entry_id', 'is_draft_submission'],
+        props: ['entry_id'],
         components:{
           remove,
                 Card,
@@ -87,7 +87,7 @@
                 const url = FluentFormsGlobal.$rest.route('getSubmissionLogs', this.entry_id);
 
                 FluentFormsGlobal.$rest.get(url, {
-                    source_type: this.is_draft_submission ? 'draft_submission_item' : 'submission_item',
+                    source_type: 'submission_item',
                     log_type: this.log_type
                 })
                     .then(logs => {
