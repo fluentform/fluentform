@@ -820,7 +820,7 @@ class Converter
             $fieldTypes['payment_coupon'] = 'FlowFormCouponType';
             $fieldTypes['quiz_score'] = 'FlowFormHiddenType';
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
-            $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
+//            $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
         }
 
