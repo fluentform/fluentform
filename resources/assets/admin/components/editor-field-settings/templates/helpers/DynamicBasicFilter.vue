@@ -146,10 +146,10 @@ export default {
 		},
 
 		isFormSubmission() {
-			return 'fluentform_submission' === this.config.type;
+			return 'fluentform_submission' === this.config.source;
 		},
 		isUser() {
-			return 'user' === this.config.type;
+			return 'user' === this.config.source;
 		}
 	},
 	mounted() {

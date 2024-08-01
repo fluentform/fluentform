@@ -7,16 +7,16 @@
 			class="el-form-item__label"
 		></el-label>
 		<div class="ff-dynamic-warp">
-			<!-- Type -->
+			<!-- Source -->
 			<el-form-item>
 				<elLabel
 					slot="label"
-					:label="$t('Type')"
-					:help-text="$t('Choose the type to populate dynamically')"
+					:label="$t('Source')"
+					:help-text="$t('Choose the source to populate dynamically')"
 				></elLabel>
-				<el-select class="el-fluid" v-model="model.type">
+				<el-select class="el-fluid" v-model="model.source">
 					<el-option
-						v-for="(label, key) in listItem.types"
+						v-for="(label, key) in listItem.sources"
 						:key="key"
 						:label="label"
 						:value="key"
@@ -24,36 +24,52 @@
 				</el-select>
 			</el-form-item>
 
-			<el-tabs v-model="model.query_type" v-if="hasBasicQuery">
-				<el-tab-pane :label="$t('Basic')" name="basic">
-					<!-- Basic Filters -->
-					<dynamic-basic-filter
-						:filter_value_options="filter_value_options"
-						:config="model"
-						v-model="model.basic_query"
-					/>
-				</el-tab-pane>
-				<el-tab-pane :label="$t('Advance')" name="advance">
-					<!--Advance Filters -->
-					<dynamic-advance-filter
-						v-model="model.filters"
-						:list-item="listItem"
-						:filter-columns="filterColumns"
-						:filter_value_options="filter_value_options"
-						@update-filter-value-options="updateFilterValueOptions"
-					/>
-				</el-tab-pane>
-			</el-tabs>
+			<template v-if="isDynamicCsv">
+				<el-form-item>
+					<elLabel
+						slot="label"
+						:label="$t('Url')"
+						:help-text="$t('The google sheet csv url')"
+					></elLabel>
+					<el-row :gutter="20">
+						<el-col :span="24">
+							<el-input type="text" v-model="model.csv_url"></el-input>
+						</el-col>
+					</el-row>
+				</el-form-item>
+			</template>
+			<template v-else>
+				<el-tabs v-model="model.query_type" v-if="hasBasicQuery">
+					<el-tab-pane :label="$t('Basic')" name="basic">
+						<!-- Basic Filters -->
+						<dynamic-basic-filter
+							:filter_value_options="filter_value_options"
+							:config="model"
+							v-model="model.basic_query"
+						/>
+					</el-tab-pane>
+					<el-tab-pane :label="$t('Advance')" name="advance">
+						<!--Advance Filters -->
+						<dynamic-advance-filter
+							v-model="model.filters"
+							:list-item="listItem"
+							:filter-columns="filterColumns"
+							:filter_value_options="filter_value_options"
+							@update-filter-value-options="updateFilterValueOptions"
+						/>
+					</el-tab-pane>
+				</el-tabs>
 
-			<!--Advance Filters -->
-			<dynamic-advance-filter
-				v-else
-				v-model="model.filters"
-				:list-item="listItem"
-				:filter-columns="filterColumns"
-				:filter_value_options="filter_value_options"
-				@update-filter-value-options="updateFilterValueOptions"
-			/>
+				<!--Advance Filters -->
+				<dynamic-advance-filter
+					v-else
+					v-model="model.filters"
+					:list-item="listItem"
+					:filter-columns="filterColumns"
+					:filter_value_options="filter_value_options"
+					@update-filter-value-options="updateFilterValueOptions"
+				/>
+			</template>
 
 			<!-- Unique Result -->
 			<el-form-item>
@@ -61,7 +77,7 @@
 					v-model="model.unique_result"
 					:listItem="{
 						label: $t('Only Show Unique Result'),
-						help_text : $t(`Toggle to display only unique results based on the `) + listItem.types[model.type]}"
+						help_text : $t(`Toggle to display only unique results based on the `) + listItem.sources[model.source]}"
 				></input-yes-no-checkbox>
 			</el-form-item>
 
@@ -97,7 +113,7 @@
 									type="primary"
 								>{{ result_counts.valid || 0 }}
 								</el-link>
-							    {{ $t(`valid ${ isTextType ? 'values' : 'option' } of `) }}
+							    {{ $t('valid option of ') }}
 							</span>
 							<span>
 								<el-link
@@ -116,7 +132,6 @@
 			<dynamic-filter-options-dialog
 				v-model="editItem.attributes.value"
 				@close-modal="validOptionsDialog=false"
-				:text-value-disable="'yes' === model.dynamic_fetch"
 				:visible="validOptionsDialog"
 				:options="valid_options"
 				:type="editItem.settings.field_type"
@@ -142,7 +157,7 @@
 				</elLabel>
 
 				<!-- Template Label Mapping -->
-				<el-row v-if="!isTextType" :gutter="20" type="flex" align="middle" class="mb-2">
+				<el-row :gutter="20" type="flex" align="middle" class="mb-2">
 					<el-col :span="4">{{ $t('Label') }}</el-col>
 					<el-col :span="16">
 						<inputPopover
@@ -201,7 +216,7 @@
 			</el-form-item>
 
             <!-- Ordering -->
-            <el-form-item>
+            <el-form-item v-if="!isDynamicCsv">
                 <elLabel
                         slot="label"
                         :label="$t('Ordering')"
@@ -272,10 +287,7 @@ export default {
 		}
 	},
 	watch: {
-		'editItem.settings.field_type'() {
-			this.maybeResetTextValue();
-		},
-		'model.type'() {
+		'model.source'() {
 			this.getFilterValueOptions();
 		},
 		'model.query_type'(type) {
@@ -287,17 +299,23 @@ export default {
 		model: {
 			handler() {
 				this.$emit('input', this.model);
-				this.getDebounceResult()
+				if (this.isValid()) {
+					this.getDebounceResult()
+				}
 			},
 			deep: true,
-		},
-		valid_options() {
-			this.maybeResetTextValue()
 		}
 	},
 	methods: {
+		isValid() {
+			if (this.isDynamicCsv && !this.model.csv_url) {
+				return false;
+			}
+			return true;
+		},
+
 		resetTemplateMapping(type = 'basic') {
-			if ('fluentform_submission' === this.model.type) {
+			if ('fluentform_submission' === this.model.source) {
 				if ('basic' === type && this.model.basic_query?.form_id && this.model.basic_query?.form_field) {
 					this.model.template_value.value = '{inputs.field_name}';
 					this.model.template_label.custom = false;
@@ -309,12 +327,6 @@ export default {
 				}
 			}
 		},
-		maybeResetTextValue(){
-			// Set first valid value for dynamically fetched
-			if (this.isTextType && 'yes' === this.model.dynamic_fetch) {
-				this.editItem.attributes.value = this.valid_options[0]?.value || '';
-			}
-		},
 
 		updateFilterValueOptions(key, options){
 			this.filter_value_options = {...this.filter_value_options, [key] : options};
@@ -323,11 +335,11 @@ export default {
 		getFilterValueOptions(onMounted = false) {
 			FluentFormsGlobal.$get({
 					action: 'fluentform-get-dynamic-filter-value-options',
-					type: this.model.type
+					source: this.model.source
 				})
 				.done(res => {
 					this.filter_value_options = {...this.filter_value_options, ...res.data.options };
-					if (!onMounted) {
+					if (!onMounted && res.data.default_config) {
 						this.model.filters = res.data.default_config.filters || [];
 						this.model.sort_by = res.data.default_config.sort_by || '';
 						this.model.order_by = res.data.default_config.order_by || '';
@@ -357,10 +369,26 @@ export default {
 					config: this.model
 				})
 				.done(res => {
+					if (false === res.success) {
+						this.$fail(res.data.message);
+						return;
+					}
 					this.result_counts = res.data.result_counts || {};
 					this.valid_options = res.data.valid_options || [];
 					this.editItem.settings.advanced_options = res.data.valid_options || [];
 					this.all_options = res.data.all_options || [];
+					if (!this.model.template_value) {
+						this.model.template_value = {
+							value: Object.keys(this.templateColumnsOptions)[0] || '',
+							custom: false
+						};
+					}
+					if (!this.model.template_label) {
+						this.model.template_label = {
+							value: Object.keys(this.templateColumnsOptions)[0] || '',
+							custom: false
+						};
+					}
 				})
 				.fail(error => {
 					console.log(error?.responseJSON)
@@ -376,7 +404,7 @@ export default {
 	},
 	computed: {
 		filterColumns() {
-			return this.listItem.columns[this.model.type] || [];
+			return this.listItem.columns[this.model.source] || [];
 		},
 		hasTemplateColumnsOptions() {
 			return Object.keys(this.templateColumnsOptions).length;
@@ -406,11 +434,11 @@ export default {
 			}
 			return options;
 		},
-		isTextType() {
-			return 'text' === this.editItem.settings.field_type;
-		},
 		hasBasicQuery() {
-			return ['fluentform_submission', 'user'].includes(this.model.type);
+			return ['fluentform_submission', 'user'].includes(this.model.source);
+		},
+		isDynamicCsv() {
+			return this.model.source === 'dynamic_csv';
 		}
 	},
 	mounted() {

@@ -28,29 +28,7 @@
 					</template>
 
 					<template v-else>
-						<el-table-column v-if="isText">
-							<template slot="header">
-								<span>
-								      {{ $t('Value') }}
-								      <el-tooltip
-									      :content="$t('Choose the option you want to be used as the value')"
-									      placement="top"
-								      >
-								        <i class="ff-icon el-icon-info"></i>
-								      </el-tooltip>
-							    </span>
-							</template>
-							<template v-slot="scope">
-								<el-radio
-									:disabled="textValueDisable"
-									v-model="defaultValue"
-									:label="scope.row.value"
-									@change="$emit('close-modal')"
-								></el-radio>
-							</template>
-						</el-table-column>
-
-						<template v-else>
+						<template>
 							<el-table-column v-if="isCheckable">
 								<template slot="header">
 								    <span>
@@ -99,7 +77,7 @@
 				</el-table>
 			</div>
 			<div v-else>
-				<p>{{ $t('Empty ' + (isText ? 'Values' : 'Options')) }}</p>
+				<p>{{ $t('Empty Options') }}</p>
 			</div>
 		</el-dialog>
 	</div>
@@ -109,7 +87,7 @@
 
 export default {
 	name: 'DynamicFilterOptionsDialog',
-	props: ['visible', 'options', 'dynamic', 'type', 'value', 'textValueDisable'],
+	props: ['visible', 'options', 'dynamic', 'type', 'value'],
 	data() {
 		return {
 			selectedValues: Array.isArray(this.value) ? this.value : []
@@ -148,13 +126,8 @@ export default {
 			let label = this.$t('Options');
 			if ('result' === this.type) {
 				label = this.$t('Results');
-			} else if (this.isText) {
-				label = this.$t('Values');
 			}
 			return label;
-		},
-		isText() {
-			return 'text' === this.type;
 		},
 		isCheckable() {
 			return ['multi_select', 'checkbox'].includes(this.type)
@@ -163,8 +136,6 @@ export default {
 			let description = this.$t('Valid options make by template mapping');
 			if ('result' === this.type) {
 				description = this.$t('Result found by filters');
-			} else if (this.isText) {
-				description = this.$t('Valid values by template mapping');
 			}
 			return description;
 		}

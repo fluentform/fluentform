@@ -272,29 +272,20 @@ class Converter
                 $dynamicFetchValue = 'yes' == ArrayHelper::get($field, 'settings.dynamic_fetch');
                 if ($dynamicFetchValue) {
                     $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
-                    dd(ArrayHelper::get($field, 'attributes.value'));
                     $question['answer'] = ArrayHelper::get($field, 'attributes.value');
                 }
-                $type = ArrayHelper::get($field, 'attributes.type');
+                $type = ArrayHelper::get($field, 'settings.field_type', 'select');
                 if (in_array($type, ['checkbox', 'radio'])) {
                     $question['type'] = 'FlowFormMultipleChoiceType';
                     $question['options'] = self::getAdvancedOptions($field);
                     if ('checkbox' == $type) {
                         $question['multiple'] = true;
                     }
-                } elseif ('select' == $type) {
+                } elseif (in_array($type, ['select', 'multi_select'])) {
                     $question['type'] = 'FlowFormDropdownType';
                     $question['options'] = self::getAdvancedOptions($field);
                     $question['searchable'] = ArrayHelper::get($field, 'settings.enable_select_2');
                     $question['multiple'] = ArrayHelper::isTrue($field, 'attributes.multiple');
-                } elseif ('text' == $type) {
-                    $question['type'] = 'FlowFormTextType';
-                    $textType = ArrayHelper::get($field, 'settings.text_field_type');
-                    if ('hidden' == $textType) {
-                        $question['type'] = 'FlowFormHiddenType';
-                    } elseif ('readonly' == $textType) {
-                        $question['readonly'] = true;
-                    }
                 } else {
                     continue;
                 }
