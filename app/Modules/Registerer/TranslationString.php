@@ -921,7 +921,6 @@ class TranslationString
             'Resetting ' => __('Resetting ', 'fluentform'),
             'Reset ' => __('Reset ', 'fluentform'),
             'This will permanently reset the quiz settings. Continue?' => __('This will permanently reset the quiz settings. Continue?', 'fluentform'),
-            'Reset' => __('Reset', 'fluentform'),
         );
         $i18n = wp_parse_args($i18n, self::getSettingsCommonI18n());
         return apply_filters('fluentform/form_settings_i18n', $i18n);
