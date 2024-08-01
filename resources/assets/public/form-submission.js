@@ -694,6 +694,7 @@ jQuery(document).ready(function () {
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
+                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
                             errorStack.append(errorHtml).show();
                         });
 
@@ -746,6 +747,7 @@ jQuery(document).ready(function () {
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
+                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
                         el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();

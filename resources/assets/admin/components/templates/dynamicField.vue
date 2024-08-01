@@ -3,10 +3,6 @@
 		<input-checkable v-if="isCheckable" :item="item"></input-checkable>
 		<custom-select v-else-if="isSelectable" :item="item"></custom-select>
 	</div>
-	<div v-else>
-		<input-hidden v-if="isHidden" :item="item"></input-hidden>
-		<input-text :item="item" v-else></input-text>
-	</div>
 </template>
 
 <script type="text/babel">
@@ -53,9 +49,6 @@ export default {
 		},
 		isSelectable() {
 			return ['select', 'multi_select'].includes(this.item.settings.field_type);
-		},
-		isHidden() {
-			return 'hidden' === this.item.settings.text_field_type;
 		}
 	}
 }

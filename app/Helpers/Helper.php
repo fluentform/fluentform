@@ -975,11 +975,6 @@ class Helper
                         ArrayHelper::get($rawField, 'settings.advanced_options', []),
                         'value'
                     );
-                } elseif ('text' == $dfElementType) {
-                    $dfTextType = ArrayHelper::get($rawField, 'settings.text_field_type');
-                    if (in_array($dfTextType, ['hidden', 'readonly'])) {
-                        $fieldType = 'dynamic_field_text_not_changeable';
-                    }
                 }
             }
             
@@ -1008,10 +1003,6 @@ class Helper
                     } else {
                         $isValid = in_array($inputValue, $options);
                     }
-                    break;
-                case 'dynamic_field_text_not_changeable':
-                    $originalValue = ArrayHelper::get($rawField, 'attributes.value');
-                    $isValid = $inputValue == $originalValue;
                     break;
                 case 'input_number':
                     if (is_array($inputValue)) {
