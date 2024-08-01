@@ -431,11 +431,17 @@ export default {
 					}
 					options[`{${ prop }}`] = _ff.startCase(prop)
 				}
+				if (this.isBasicFFSubmissionSource) {
+					options[`{option_label}`] = _ff.startCase('option_label')
+				}
 			}
 			return options;
 		},
 		hasBasicQuery() {
 			return ['fluentform_submission', 'user'].includes(this.model.source);
+		},
+		isBasicFFSubmissionSource() {
+			return 'fluentform_submission' === this.model.source && 'basic' === this.model.query_type;
 		},
 		isDynamicCsv() {
 			return this.model.source === 'dynamic_csv';
@@ -443,7 +449,6 @@ export default {
 	},
 	mounted() {
 		this.getFilterValueOptions(true);
-		this.resetTemplateMapping();
 		this.getResult();
 	}
 }
