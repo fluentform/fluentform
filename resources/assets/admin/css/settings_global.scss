@@ -968,6 +968,7 @@ body.ff_full_screen {
   padding-left: 10px;
   display: flex;
   align-items: center;
+  max-width: 110px;
   .el-icon-edit{
     position: absolute;
     left: 10px;
@@ -1021,6 +1022,12 @@ body.ff_full_screen {
     font-size: 14px;
     max-width: 70px;
     cursor: pointer;
+    transition: all 0.5s ease;
+  }
+  .ff_shortcode_btn:hover {
+    max-width: 220px;
+    background: #4B4C4D;
+    color: #FFFFFF;
   }
 }
 .more_menu {
