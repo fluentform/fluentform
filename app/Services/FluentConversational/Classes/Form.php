@@ -648,7 +648,7 @@ class Form
 
         $form->settings = json_decode($formSettings->value, true);
 
-        if ($form->status == 'unpublished' && !Acl::hasAnyFormPermission($formId)) {
+        if ($form->status == 'unpublished') {
             global $wp_query;
             $wp_query->set_404();
             status_header(404);
