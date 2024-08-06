@@ -95,7 +95,10 @@
                     items &&
                     (
                         items['paymentElements'].indexOf(item.element) !== -1 ||
-                        items['customElements'].indexOf(item.element) !== -1
+                        (
+                            items.hasOwnProperty('customElements') &&
+                            items['customElements'].indexOf(item.element) !== -1
+                        )
                     )
                 ) {
                     return true;
