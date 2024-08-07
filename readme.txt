@@ -453,8 +453,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.2.0 (Date: Aug 2, 2024) =
-- Adds dynamic field
+= 5.2.0 (Date: Aug 7, 2024) =
 - Adds print entries
 - Adds context menu in editor
 - Fixes PDF feed watermarks
@@ -463,6 +462,8 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes GDPR attribute target=_blank
 - Fixes Cloudflare Turnstile multiple widget
 - Fixes PHP 8.3 deprecation warning
+- Fixes Inherit theme style for submit button preview
+- Fixes timezone change deprecated message
 
 = 5.1.20 (Date: July 25, 2024) =
 - Fixes vulnerability in checkboxes (CVE-2024-6518, CVE-2024-6520) reported by WordFence
