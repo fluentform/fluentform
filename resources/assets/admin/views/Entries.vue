@@ -144,7 +144,7 @@
             </section-head-content>
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
-                    <btn-group-item as="div" v-if="!entrySelections.length">
+                    <btn-group-item as="div">
                         <label for="search_bar">
                            <b> {{ $t('Advanced Search') }}</b>
                         </label>
@@ -166,7 +166,7 @@
                     </btn-group-item>
 
                     <btn-group-item as="div">
-                        <el-dropdown trigger="click" class="current_form_name_column" :hide-on-click="false">
+                        <el-dropdown v-if="!entrySelections.length" trigger="click" class="current_form_name_column" :hide-on-click="false">
                             <el-button>
                                  {{ $t('Columns') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>

@@ -14,7 +14,7 @@
 					:label="$t('Source')"
 					:help-text="$t('Choose the source to populate dynamically')"
 				></elLabel>
-				<el-select class="el-fluid" v-model="model.source">
+				<el-select filterable class="el-fluid" v-model="model.source">
 					<el-option
 						v-for="(label, key) in listItem.sources"
 						:key="key"

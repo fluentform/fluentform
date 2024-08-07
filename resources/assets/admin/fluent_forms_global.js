@@ -12,7 +12,7 @@ import Rest from "./Rest.js";
                     fluent_forms_admin_nonce: this.fluent_forms_global_var.fluent_forms_admin_nonce
                 }
             });
-            //hide all notice
+            // hide all notice
             jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').not('.fluentform-admin-notice').remove();
         }
 
