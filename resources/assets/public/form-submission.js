@@ -694,6 +694,7 @@ jQuery(document).ready(function () {
                             });
                             errorHtml.attr('role', 'alert');
                             errorHtml.append(text, cross);
+                            $(document.body).trigger('fluentform_error_in_stack', {form: $theForm, element: getElement(elementName), message: text});
                             errorStack.append(errorHtml).show();
                         });
 
@@ -746,6 +747,7 @@ jQuery(document).ready(function () {
                     el.closest('.ff-el-group').addClass('ff-el-is-error');
                     if (el.closest('.ff-el-input--content').length) {
                         el.closest('.ff-el-input--content').find('div.error').remove();
+                        $(document.body).trigger('fluentform_error_below_element', {form: $theForm, element: el, message: message});
                         el.closest('.ff-el-input--content').append(div.html(message));
                     } else {
                         el.find('div.error').remove();
@@ -862,6 +864,7 @@ jQuery(document).ready(function () {
                     });
 
                     $(document).on('lity:open', function () {
+                        window.turnstile?.remove();
                         renderCaptchas();
                     });
                     renderCaptchas();
@@ -881,15 +884,13 @@ jQuery(document).ready(function () {
                     }
 
                     if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                        window.turnstile.ready(function () {
-                            let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
-                            let siteKey = $el.data('sitekey');
-                            let id = $el.attr('id');
-                            const turnstileWidgetId = turnstile.render(document.getElementById(id), {
-                                'sitekey': siteKey
-                            });
-                            $el.attr('data-turnstile_widget_id', turnstileWidgetId);
+                        let $el = $theForm.find('.ff-el-turnstile.cf-turnstile');
+                        let siteKey = $el.data('sitekey');
+                        let id = $el.attr('id');
+                        const turnstileWidgetId = window.turnstile?.render(document.getElementById(id), {
+                            'sitekey': siteKey
                         });
+                        $el.attr('data-turnstile_widget_id', turnstileWidgetId);
                     }
 
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {

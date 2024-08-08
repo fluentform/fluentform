@@ -38,7 +38,11 @@ import {
     Alert,
     Skeleton,
     SkeletonItem,
-    Tooltip
+    Tooltip,
+    Cascader,
+    TimePicker,
+    CascaderPanel
+
 } from 'element-ui';
 Vue.use(Vddl);
 Vue.use(Form);
@@ -57,6 +61,7 @@ Vue.use(TableColumn);
 Vue.use(Input);
 Vue.use(Switch);
 Vue.use(DatePicker);
+Vue.use(TimePicker);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Button);
@@ -71,6 +76,8 @@ Vue.use(Dialog)
 Vue.use(Skeleton)
 Vue.use(SkeletonItem)
 Vue.use(Tooltip)
+Vue.use(Cascader)
+Vue.use(CascaderPanel)
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
@@ -221,6 +228,42 @@ Vue.mixin({
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
+        },
+
+        printEntry(data) {
+            const url = FluentFormsGlobal.$rest.route('printSubmissions');
+            FluentFormsGlobal.$rest.get(url, data)
+                .then(res => {
+                    if (res?.success && res?.content) {
+                        jQuery('#fluentformEntriesPrintFrame').remove(); // Remove existing iframe if it exists
+                        const frame = jQuery('<iframe>', {
+                            id: 'fluentformEntriesPrintFrame',
+                            style: 'display:none;',
+                            width: '100%',
+                            height: '100%'
+                        }).appendTo('body');
+                        let contentWindow = frame[0].contentWindow || frame[0].contentDocument;
+                        if (!contentWindow) {
+                            contentWindow = window.frames['fluentformEntriesPrintFrame']?.contentWindow || window.frames['fluentformEntriesPrintFrame']?.contentDocument;
+                        }
+                        let contentDoc = frame[0].contentDocument || frame[0].contentWindow.document;
+                        if (!contentDoc) {
+                            contentDoc = window.frames['fluentformEntriesPrintFrame']?.contentDocument || contentWindow?.document;
+                        }
+                        contentDoc.open();
+                        contentDoc.write(res.content);
+                        contentDoc.close();
+                        contentWindow.focus();
+                        contentWindow.print();
+                    } else {
+                        this.$fail(res.message || this.$t('Failed to print.'));
+                    }
+                })
+                .catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                })
         },
 
         ...notifier

@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.5.3
+Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 5.1.17
+Stable tag: 5.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,7 +256,7 @@ Here are a few forms from those that we have packed for you:
 <li>Trello – Create Trello Cards in your boards on form submission</li>
 <li>Drip – Fluent Forms Drip Module allows you to create Drip subscribers from WordPress, so you can grow your email list</li>
 <li>iContact – Connect iContact with Fluent Forms and subscribe a contact when a form is submitted</li>
-<li>Sendinblue – Connect Your Contact Forms with Sendinblue CRM</li>
+<li>Brevo – Connect Your Contact Forms with Brevo (formerly SendinBlue) CRM</li>
 <li>Automizy – Connect Your Contact Forms with Automizy Marketing Solution</li>
 <li>User Registration – Create WordPress users from fluent form submissions</li>
 <li>Post/CPT integration – Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>
@@ -439,6 +439,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.0 (Date: Aug 2, 2024) =
+- Adds dynamic field
+- Adds print entries
+- Adds context menu in editor
+- Fixes PDF feed watermarks
+- Fixes inactive conversational form pretty permalink
+- Fixes address field country hide label
+- Fixes GDPR attribute target=_blank
+- Fixes Cloudflare Turnstile multiple widget
+- Fixes PHP 8.3 deprecation warning
 
 = 5.1.20 (Date: July 25, 2024) =
 - Fixes inject arbitrary web scripts in checkboxes vulnerability (CVE-2024-6518, CVE-2024-6520) reported by WordFence

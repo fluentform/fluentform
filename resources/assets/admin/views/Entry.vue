@@ -139,9 +139,12 @@
                 <el-col :lg="8">
                     <card class="entry_info_box">
                         <card-head>
-                            <div class="entry_info_box_title">
-                                {{$t('Submission Info')}}
-                            </div>
+	                        <div class="entry_info_box_header">
+		                        <div class="entry_info_box_title">
+			                        {{$t('Submission Info')}}
+		                        </div>
+		                        <el-button size="small" icon="ff-icon el-icon-printer" @click="printEntry({form_id, submission_ids : [entry_id]})"></el-button>
+	                        </div>
                         </card-head>
                         <card-body>
                             <ul class="ff_submission_info_list ff_list_border_bottom">

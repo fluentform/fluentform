@@ -44,17 +44,11 @@ class Turnstile extends BaseComponent
         if (!wp_script_is('turnstile')) {
             wp_enqueue_script(
                 'turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js??render=explicit',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
                 [],
                 FLUENTFORM_VERSION,
                 true
             );
-        }
-
-        $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
-
-        if ('yes' == ArrayHelper::get($turnstile, 'invisible')) {
-            $appearance = 'interaction-only';
         }
 
         $appearance = esc_attr(ArrayHelper::get($turnstile, 'appearance', 'always'));
