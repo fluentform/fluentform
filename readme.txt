@@ -65,6 +65,7 @@ Anything from a simple contact form to a more advanced payment, quiz, or calcula
 * 50+ third-party integrations (and a lot more via Zapier)
 * User registration
 * Advanced post/CPT creation
+* Dynamic Field
 
 
 == Super Fast Contact Forms ==

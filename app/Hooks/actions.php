@@ -288,6 +288,9 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             if (!isset($element['settings']['file_location_type'])) {
                 $element['settings']['file_location_type'] = 'follow_global_settings';
             }
+            if (!isset($element['settings']['upload_bttn_ui'])) {
+                $element['settings']['upload_bttn_ui'] = '';
+            }
             return $element;
         });
     }
