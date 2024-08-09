@@ -66,8 +66,10 @@ trait ModelHelperTrait
             foreach ($abbr as $city) {
                 if ($city['dst'] == $isDst && $city['offset'] == $utcOffset) {
                     $timezoneId = $city['timezone_id'];
-                    $timezone = $timezoneId ?: timezone_name_from_abbr('', $timezoneId, 0);
-                    if ($timezone) return new DateTimeZone($timezone);
+                    if ($timezoneId) {
+                        $timezone = timezone_name_from_abbr('', $timezoneId, 0);
+                        if ($timezone) return new DateTimeZone($timezone);
+                    }
                 }
             }
         }

@@ -4,7 +4,7 @@
             <card-head>
                 <h5 class="title">{{ $t('Activity Logs') }}</h5>
                 <p class="text">
-                    {{ ('Get all form submissions and general activity logs here. Track activity of your forms.') }}
+                    {{ $t('Get all form submissions and general activity logs here. Track activity of your forms.') }}
                 </p>
             </card-head>
             <card-body>

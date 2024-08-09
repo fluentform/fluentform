@@ -72,31 +72,35 @@
             getItemCode(item) {
                 if (item.element == 'input_number' || item.element == 'rangeslider' || (item.element == 'multi_payment_component' && item.attributes.type =='single')) {
                     return '{input.' + item.attributes.name + '}';
-                } else if(item.element == 'select') {
+                } else if (item.element == 'select') {
                     return '{select.' + item.attributes.name + '}';
-                } else if(item.element == 'input_checkbox') {
+                } else if (item.element == 'input_checkbox') {
                     return '{checkbox.' + item.attributes.name + '}';
-                } else if(item.element == 'input_radio' || item.element == 'net_promoter_score') {
+                } else if (item.element == 'input_radio' || item.element == 'net_promoter_score') {
                     return '{radio.' + item.attributes.name + '}';
-                } else if(item.element == 'repeater_field') {
+                } else if (item.element == 'repeater_field') {
                     return '{repeat.'+item.attributes.name+'}';
-                } else if(item.element == 'multi_payment_component' && item.attributes.type !=='single') {
+                } else if (item.element == 'multi_payment_component' && item.attributes.type !=='single') {
                     return '{payment.'+item.attributes.name+'}';
-                }  else if(item.element == 'custom_payment_component') {
+                } else if (item.element == 'custom_payment_component') {
                     return '{payment.'+item.attributes.name+'}';
+                } else if (item.attributes.type == 'number') {
+                    return '{input.' + item.attributes.name + '}';
                 }
             },
             isCalculative(item) {
-                const paymentElements = [
-                    'multi_payment_component',
-                    'input_number',
-                    'repeater_field',
-                    'net_promoter_score',
-                    'rangeslider',
-                    'custom_payment_component'
-                ];
+                let items = window.FluentFormApp?.calc_items;
 
-                if (paymentElements.indexOf(item.element) != -1) {
+                if (
+                    items &&
+                    (
+                        items['paymentElements'].indexOf(item.element) !== -1 ||
+                        (
+                            items.hasOwnProperty('customElements') &&
+                            items['customElements'].indexOf(item.element) !== -1
+                        )
+                    )
+                ) {
                     return true;
                 }
 

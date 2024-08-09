@@ -330,7 +330,7 @@
                 if (parseInt(item.bill_times)) {
                     text += `and Total <b>Billing times ${item.bill_times}</b> `;
                 } else {
-                    text += `and will be billed untill cancel`;
+                    text += `and will be billed until cancel`;
                 }
 
                 return this.$t(text);

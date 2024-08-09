@@ -9,7 +9,7 @@
 
             <inputText v-if="childFields.indexOf('placeholder') != -1" :listItem="{type: 'text', label: $t('Placeholder')}" v-model="field.attributes.placeholder"></inputText>
 
-            <inputText v-if="childFields.indexOf('help_message') != -1" :listItem="{type: 'text', label: $t('Help Message')}" v-model="field.settings.help_message"></inputText>
+            <inputTextarea v-if="childFields.indexOf('help_message') != -1" :listItem="{type: 'text', label: $t('Help Message')}" v-model="field.settings.help_message"></inputTextarea>
 
             <inputText v-if="childFields.indexOf('maxlength') != -1 && field.attributes.maxlength" :listItem="{type: 'number', label: $t('Max text length')}" v-model="field.attributes.maxlength"></inputText>
 
@@ -38,6 +38,7 @@
 import { mapGetters } from 'vuex';
 
 import inputText from './inputText.vue'
+import inputTextarea from './inputTextarea.vue'
 import customSelect from './select.vue'
 import inputYesNoCheckbox from './inputYesNoCheckbox.vue'
 import customMask from './customMask.vue'
@@ -68,6 +69,7 @@ export default {
         }
     },
     components: {
+        inputTextarea,
         InputCheckbox,
         inputText,
         inputPopover,

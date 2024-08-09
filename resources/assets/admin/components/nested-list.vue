@@ -11,20 +11,46 @@
                         :moved="handleMoved"
                         :wrapper="wrapper">
 
-            <div @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
-                 :class="item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle'">
-                <div class="item-actions " :class="item.element == 'container' ? 'container-actions' : 'field-actions'">
-                    <i class="el-icon el-icon-rank"></i>
-                    <i v-if="index > 0" @click.stop="handleUpDown(index, -1)" class="el-icon el-icon-top"></i>
-                    <i v-if="(index + 1) < wrapper.length" @click.stop="handleUpDown(index, 1)" class="el-icon el-icon-bottom"></i>
-                    <i @click="editSelected(index, item)" class="el-icon el-icon-edit"></i>
-                    <i @click="duplicateSelected(index, item)" class="el-icon el-icon-document-copy"></i>
-                    <i @click="askRemoveConfirm(index)" class="el-icon el-icon-delete"></i>
-                    <i
-                        v-if="item.element == 'container' && item.columns.length > 1 && item.modified"
-                        @click="resetContainer()"
-                        class="el-icon el-icon-refresh-right"
-                    />
+            <div @click.right.prevent.stop="showContextMenu(index, $event)" @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
+                 :class="[
+                     item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle',
+                     { 'context-menu-active': contextMenuIndex[index] }
+                 ]">
+                <div :style="contextMenuIndex[index] ? contextMenuStyle[index] : ''" class="item-actions " :class="item.element == 'container' ? 'container-actions' : 'field-actions'">
+
+
+                    <div class="action-menu-item" >
+                        <i class="el-icon el-icon-rank"></i>
+                        <span>Drag</span>
+                    </div>
+                    <div v-if="index > 0" @click.stop="handleUpDown(index, -1)" class="action-menu-item">
+                        <i class="el-icon el-icon-top"></i>
+                        <span>Move Up</span>
+                    </div>
+                    <div v-if="(index + 1) < wrapper.length" @click.stop="handleUpDown(index, 1)" class="action-menu-item">
+                        <i class="el-icon el-icon-bottom"></i>
+                        <span>Move Down</span>
+                    </div>
+                    <div class="context-menu__separator"></div>
+                    <div @click.stop="editSelected(index, item)" class="action-menu-item">
+                        <i class="el-icon el-icon-edit"></i>
+                        <span>Edit</span>
+                    </div>
+                    <div @click.stop="duplicateSelected(index, item)" class="action-menu-item">
+                        <i class="el-icon el-icon-document-copy"></i>
+                        <span>Duplicate</span>
+                    </div>
+                    <div class="context-menu__separator"></div>
+                    <div @click.stop="askRemoveConfirm(index)" class="action-menu-item action-menu-item-danger">
+                        <i class="el-icon el-icon-delete"></i>
+                        <span>Delete</span>
+                    </div>
+                    <div v-if="item.element == 'container' && item.columns.length > 1 && item.modified"
+                         @click.stop="resetContainer()"
+                         class="context-menu__item">
+                        <i class="el-icon el-icon-refresh-right"></i>
+                        <span>Reset Container</span>
+                    </div>
                 </div>
             </div>
 
@@ -77,10 +103,7 @@
             </template>
         </vddl-draggable>
 
-        <ff_removeElConfirm
-                :editItem="editItem"
-                :visibility.sync="showRemoveElConfirm"
-                @on-confirm="onRemoveElConfirm"/>
+        <ff_removeElConfirm :editItem="editItem" :visibility.sync="showRemoveElConfirm" @on-confirm="onRemoveElConfirm"/>
     </div>
 </template>
 
@@ -94,6 +117,8 @@
             return {
                 showRemoveElConfirm: false,
                 removeElIndex: null,
+                contextMenuIndex : {},
+                contextMenuStyle :{},
             }
         },
         methods: NestedHandler.methods

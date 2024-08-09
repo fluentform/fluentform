@@ -8,21 +8,21 @@
         >
             <template slot="title">
                 <h3 class="title">{{$t('Create Using ChatGPT')}}</h3>
-                <p>Use AI to create the initial structure. The response uses ChatGPT, so please note that there might be some inaccuracy in the output.</p>
+                <p>{{ $t('Use AI to create the initial structure. The response uses ChatGPT, so please note that there might be some inaccuracy in the output.') }}</p>
             </template>
 
             <div class="mt-6">
                 <el-form class="mt-4" :model="{}" label-position="top" >
                     <el-form-item class="ff-form-item" :label="$t('Create a form for')">
-                        <el-input placeholder="Customer Review for product"  type="textarea" v-model="query">
+                        <el-input :placeholder="$t('Customer Review for product')"  type="textarea" v-model="query">
                         </el-input>
                     </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Including these questions')">
-                        <el-input placeholder="User satisfaction level, most liked and disliked features"  type="textarea" v-model="additional_query">
+                        <el-input :placeholder="$t('User satisfaction level, most liked and disliked features')"  type="textarea" v-model="additional_query">
                         </el-input>
                     </el-form-item>
                     <el-button v-loading="loading" @click="createForm">
-                        Create
+                        {{ $t('Create') }}
                     </el-button>
                 </el-form>
             </div><!-- .ff_predefined_options -->

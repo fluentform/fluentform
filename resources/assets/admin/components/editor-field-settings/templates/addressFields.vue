@@ -57,6 +57,12 @@
                                     />
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <div class="el-form-item">
+                                    <radio-button :listItem="{label: $t('Label Placement'), options: labelPlacementOptions}" v-model="editItem.fields.country.settings.label_placement" />
+                                </div>
+                            </div>
         
                             <div class="form-group">
                                 <div class="el-form-item">
@@ -132,6 +138,7 @@
 import fieldOptionSettings from './fieldOptionSettings.vue'
 import customCountryList from './customCountryList.vue'
 import validationRules from './validationRules.vue'
+import RadioButton from "./radioButton.vue";
 
 export default {
     name: 'customAddressFields',
@@ -139,7 +146,8 @@ export default {
     components: {
         'wpuf_customCountryList': customCountryList,
         fieldOptionSettings,
-        validationRules
+        validationRules,
+        RadioButton,
     },
     data() {
         return {
@@ -184,6 +192,11 @@ export default {
                 this.editItem.settings.field_order = optionToRender;
             }
             
+        }
+    },
+    computed: {
+        labelPlacementOptions() {
+            return this.editItem.fields.country.settings.label_placement_options;
         }
     },
     mounted() {

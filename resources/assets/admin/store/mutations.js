@@ -7,7 +7,7 @@ export default {
         state.sidebarLoading = true;
         setTimeout(() => {
             state.sidebarLoading = false;
-        }, 500);
+        }, 100);
     },
 
     loadResources(state, payload) {

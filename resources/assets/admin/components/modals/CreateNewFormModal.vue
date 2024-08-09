@@ -88,7 +88,7 @@
                                 <template>
                                     <card class="ff_card_form_action ff_card_shadow_lg hover-zoom" @click="showPostType" :img="postTypeFormImg" imgClass="mb-3">
                                         <card-body>
-                                            <h6 class="mb-2 ff_card_title">{{$t('Create A Post Form')}}</h6>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Create a Post Form')}}</h6>
                                             <p class="ff_card_text">{{$t('Create a Post type form from scratch.')}}</p>
                                         </card-body>
                                     </card>
