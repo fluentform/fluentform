@@ -1115,7 +1115,7 @@
                     sort_by: this.sort_by,
                     search: this.search_string,
                     payment_statuses: this.selectedPaymentStatuses,
-                    fields_to_export: this.fieldsToExport,
+                    fields_to_export: JSON.stringify(this.fieldsToExport),
                     shortcodes_to_export: selectedShortcodes,
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };

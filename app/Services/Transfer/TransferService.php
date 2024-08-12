@@ -155,6 +155,9 @@ class TransferService
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
         $selectedLabels = Arr::get($args,'fields_to_export');
+        if (is_string($selectedLabels) && Helper::isJson($selectedLabels)) {
+            $selectedLabels = \json_decode($selectedLabels, true);
+        }
         $selectedLabels = fluentFormSanitizer($selectedLabels);
        
         //filter out unselected fields
