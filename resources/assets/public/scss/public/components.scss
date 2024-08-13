@@ -706,7 +706,7 @@
   }
   form.ff-form-has-steps {
     .ff-btn-submit {
-      display: none;
+      visibility: hidden;
     }
 
     .ff_submit_btn_wrapper {
