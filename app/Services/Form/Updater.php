@@ -50,6 +50,12 @@ class Updater
             $formFields = $this->sanitizeFields($formFields);
             $data['form_fields'] = $formFields;
             
+            /**
+             * Fires before a Form is updated.
+             * @since 5.2.1
+             */
+            do_action('fluentform/before_updating_form', $form, $data);
+    
             $form->fill($data);
 
             if (FormFieldsParser::hasPaymentFields($form)) {
@@ -59,6 +65,7 @@ class Updater
             }
 
             $this->updatePrimaryEmail($form);
+            
         }
 
         $form->fill($data)->save();

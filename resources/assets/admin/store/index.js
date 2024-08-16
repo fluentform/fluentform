@@ -16,7 +16,7 @@ export default new Vuex.Store({
         editorShortcodes: {},
         editorComponents: {},
         editorDisabledComponents: {},
-        
+
         postMockList: [],
         taxonomyMockList: [],
         generalMockList: [],
@@ -29,7 +29,7 @@ export default new Vuex.Store({
         fieldMode: state => state.fieldMode,
         sidebarLoading: state => state.sidebarLoading,
         editorShortcodes: state => state.editorShortcodes,
-        
+
         editorComponents: state => state.editorComponents,
         editorDisabledComponents: state => state.editorDisabledComponents,
         postMockList: state => state.postMockList,
