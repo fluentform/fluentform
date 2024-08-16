@@ -1075,6 +1075,10 @@ if (function_exists('register_block_type')) {
     });
 }
 
+
+add_action('fluentform/before_updating_form',function ($form, $postData){
+    (new FluentForm\App\Services\Form\HistoryService())->init($form, $postData);
+},10,2);
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');

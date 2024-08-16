@@ -32,6 +32,8 @@ class Route {
     getFormFields = this.findForm + "/fields";
     getFormShortcodes = this.findForm + "/shortcodes";
     findFormShortCodePage = this.findForm + "/findShortCodePage";
+    getFormEditHistory = this.findForm + "/editHistory";
+    clearFormEditHistory = this.findForm + "/clearHistory";
 
     getFormSettings = "settings/{param}";
     storeFormSettings = this.getFormSettings;

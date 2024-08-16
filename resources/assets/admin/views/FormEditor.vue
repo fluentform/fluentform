@@ -149,6 +149,9 @@
                         <li :class="fieldMode == 'edit' ? 'active' : ''">
                             <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
                         </li>
+                        <li :class="fieldMode == 'history' ? 'active' : ''">
+                            <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
+                        </li>
                     </ul>
 
                     <div style="min-height: 420px;" class="panel-full-height nav-tab-items">
@@ -417,6 +420,13 @@
                                         </el-skeleton>
                                     </div>
                                 </template>
+
+                                <!-- =========================
+                                    History
+                                ============================== -->
+                                <template v-if="fieldMode == 'history' && Object.keys(editItem).length">
+                                    <FormHistory :form_saving="form_saving" :history="{}" />
+                                </template>
                             </template>
                         </el-skeleton>
                     </div>
@@ -450,19 +460,19 @@
 </template>
 
 <script type="text/babel">
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import List from '../components/nested-list.vue';
-import ListConversion from '../components/nested-list-conversion.vue';
-import recaptcha from '../components/modals/Recaptcha.vue';
-import hcaptcha from '../components/modals/Hcaptcha.vue';
-import searchElement from '../components/searchElement.vue';
-import EditorSidebar from '../components/EditorSidebar.vue';
-import RenameForm from '../components/modals/RenameForm.vue';
-import ItemDisabled from '../components/modals/ItemDisabled.vue';
-import submitButton from '../components/templates/submitButton.vue';
-import editorInserter from '../components/includes/editor-inserter.vue';
-
-export default {
+    import {mapGetters, mapMutations} from 'vuex';
+    import List from '../components/nested-list.vue';
+    import ListConversion from '../components/nested-list-conversion.vue';
+    import recaptcha from '../components/modals/Recaptcha.vue';
+    import hcaptcha from '../components/modals/Hcaptcha.vue';
+    import searchElement from '../components/searchElement.vue';
+    import EditorSidebar from '../components/EditorSidebar.vue';
+    import RenameForm from '../components/modals/RenameForm.vue';
+    import ItemDisabled from '../components/modals/ItemDisabled.vue';
+    import submitButton from '../components/templates/submitButton.vue';
+    import editorInserter from '../components/includes/editor-inserter.vue';
+    import FormHistory from "@/admin/views/FormHistory";
+    export default {
     name: 'FormEditor',
     props: [
         'form',
@@ -470,10 +480,9 @@ export default {
         'form_saving'
     ],
     components: {
+        FormHistory,
         List,
         ListConversion,
-        recaptcha,
-        hcaptcha,
         RenameForm,
         ItemDisabled,
         submitButton,
@@ -644,7 +653,10 @@ export default {
     watch: {
         form_saving() {
             const saveBtn = jQuery('#saveFormData');
+
             if (this.form_saving) {
+                FluentFormEditorEvents.$emit('editor-form-saving',this.form);
+
                 this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
             } else {
@@ -1079,14 +1091,12 @@ export default {
          */
         jQuery(document).on('click', this.editorInserterDismiss);
 
-        /**
-         * Copy to clip board
-         * @type {Clipboard}
-         */
         (new ClipboardJS('.copy')).on('success', (e) => {
             this.$copy();
         });
-
+        /*
+        * Maybe Autoload Captcha
+         */
         if (this.isAutoloadCaptchaEnabled) {
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
             setTimeout(() => {
