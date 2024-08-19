@@ -231,8 +231,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 },
                 fail: function (e, data) {
                     let errors = [];
-                    data.context.remove();
-                    if (data.jqXHR.responseJSON && data.jqXHR.responseJSON.errors) {
+                    data.context?.remove();
+                    if (data.jqXHR?.responseJSON && data.jqXHR?.responseJSON.errors) {
                         $.each(data.jqXHR.responseJSON.errors, function (key, error) {
                             if (typeof error == 'object') {
                                 $.each(error, function (i, msg) {
@@ -242,7 +242,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                                 errors.push(error);
                             }
                         });
-                    } else if (data.jqXHR.responseText) {
+                    } else if (data.jqXHR?.responseText) {
                         errors.push(data.jqXHR.responseText);
                     } else {
                         errors.push('Something is wrong when uploading the file! Please try again');
