@@ -1,6 +1,6 @@
 <template>
     <div class="form-editor" id="form-editor">
-        <div class="form-editor-main">
+        <div class="form-editor-main"  >
             <div id="js-form-editor--body" class="form-editor--body"
              :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
                 <div class="form-editor__body-content">
@@ -160,7 +160,7 @@
                                 <template v-if="fieldMode == 'add'">
                                     <div class="search-element-wrap">
                                         <searchElement
-                                        :placeholder="$t('Search name, address, mask input etc.')"
+                                        :placeholder="$t('Search (press \'/\' to focus)')"
                                         :isSidebarSearch.sync="isSidebarSearch"
                                         :moved="moved"
                                         :isDisabled="isDisabled"
@@ -275,8 +275,9 @@
                                                     class="option-fields-section--content">
                                                     <div v-for="(itemMockList, i) in itemMockListChunked" :key="i"
                                                         class="v-row mb15" :class="'ff_items_'+itemMockList.length">
-                                                        <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
+                                                        <div @keydown.enter.prevent="insertItemOnClick(itemMock,$event.target.querySelector('span'))"   class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
                                                             <vddl-draggable
+                                                                 tabindex="0"
                                                                 class="btn-element"
                                                                 :class="{ 'disabled': isDisabled(itemMock) }"
                                                                 :draggable="itemMock"
@@ -507,7 +508,8 @@ export default {
             editorInserterInContainer: false,
             instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
             has_payment_features: FluentFormApp.has_payment_features,
-            introVisible: false
+            introVisible: false,
+            isCommandKeyPressed : false,
         }
     },
     computed: {
@@ -1028,6 +1030,12 @@ export default {
             });
 
             return isCaptchaExists;
+        },
+        initKeyboardSave(e) {
+            if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                this.save_form();
+            }
         }
     },
 
@@ -1062,7 +1070,6 @@ export default {
 
     mounted() {
         this.fetchSettings();
-
         this.garbageCleaner();
         this.initSaveBtn();
         this.initRenameForm();
@@ -1086,6 +1093,10 @@ export default {
                 this.form.dropzone = this.form.dropzone.filter(el => !captchas.includes(el.element));
             }, 100);
         }
+        document.addEventListener('keydown', this.initKeyboardSave);
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this.initKeyboardSave);
     }
 };
 </script>

@@ -318,11 +318,9 @@ window.fluentFormEditorApp = new Vue({
             }
             return str;
         },
-
     },
 
     beforeCreate() {
-        // Event listener for page title updater
         this.$on("change-title", module => {
             jQuery("title").text(`${module} - Fluentform`);
         });
