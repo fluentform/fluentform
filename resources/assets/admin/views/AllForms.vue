@@ -374,7 +374,7 @@ export default {
                 }
               ]
             },
-            filter_by:'all',
+            filter_by:'published',
             form_statuses: {
                 all: 'All',
                 published: 'Active',
@@ -552,6 +552,8 @@ export default {
           this.search_string = '';
           this.setDefaultPaginate();
           this.fetchItems();
+          localStorage.setItem('selectedFormType', this.filter_by);
+
         },
         setDefaultPaginate() {
           this.paginate = {
@@ -603,10 +605,15 @@ export default {
         }
     },
     mounted() {
-        this.fetchItems();
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
+        const savedOption = localStorage.getItem('selectedFormType');
+        if (savedOption) {
+            this.filter_by = savedOption;
+        }
+        this.fetchItems();
+
     },
     created() {
         let hash = window.location.hash;
