@@ -415,6 +415,7 @@ export default {
                 })
                 .finally(() => {
                     this.changingStatus[id] = false;
+                    this.fetchItems();
                 });
         },
         goToPage(val) {
