@@ -789,6 +789,12 @@ $app->addAction('fluentform/before_insert_submission', function ($insertData, $r
     $honeyPot->verify($insertData, $requestData, $form->id);
 }, 9, 3);
 
+// Maybe update current user allowed form ids,
+// if current user has specific form permission and capable to create form
+$app->addAction('fluentform/inserted_new_form', function ($formId){
+    \FluentForm\App\Services\Manager\FormManagerService::maybeAddUserAllowedFormIds($formId);
+});
+
 add_action('fluentform/log_data', function ($data) use ($app) {
     $dataLogger = new \FluentForm\App\Modules\Logger\DataLogger($app);
     $dataLogger->log($data);
