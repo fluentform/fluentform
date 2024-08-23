@@ -22,15 +22,39 @@
                 <el-skeleton :loading="loading" animated :rows="6">
                     <el-table class="ff_table_s2" :data="managers">
                         <el-table-column :label="$t('ID')" prop="id" width="70"/>
-                        <el-table-column :label="$t('Name')" width="180">
+                        <el-table-column :label="$t('Name')" width="170">
                             <template slot-scope="scope">
                                 {{ scope.row.first_name }} {{ scope.row.last_name }}
                             </template>
                         </el-table-column>
 
-                        <el-table-column :label="$t('Email')" prop="email" width="240" />
+                        <el-table-column :label="$t('Email')" prop="email" width="200" />
 
                         <el-table-column :label="$t('Roles')" prop="roles" width="120" />
+
+	                    <el-table-column :label="$t('Forms')">
+		                    <template slot-scope="scope">
+			                    <template v-if="scope.row.forms">
+				                    <el-tag
+					                    type="info"
+					                    size="mini"
+					                    v-for="form in scope.row.forms"
+					                    :key="form"
+					                    class="mr-1"
+				                    >
+					                    {{ forms[form] }}
+				                    </el-tag>
+			                    </template>
+			                    <el-tag
+				                    type="info"
+				                    size="mini"
+				                    v-else
+				                    class="mr-1"
+			                    >
+				                    {{ $t('all') }}
+			                    </el-tag>
+		                    </template>
+	                    </el-table-column>
 
                         <el-table-column :label="$t('Permissions')">
                             <template slot-scope="scope">
@@ -129,6 +153,32 @@
 
                     <error-view field="permissions" :errors="errors"/>
                 </el-form-item>
+
+	            <el-form-item>
+		            <template slot="label">
+			            <h6 style="display: inline-block;">{{$t('Access to Forms')}}</h6>
+			            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+				            <div slot="content">
+					            <p>
+						            {{ $t('Select specific forms to grant permission. Leave blank to give the manager access to all forms.')}}
+					            </p>
+				            </div>
+
+				            <i class="ff-icon ff-icon-info-filled text-primary"/>
+			            </el-tooltip>
+		            </template>
+
+		            <el-select v-model="manager.forms" :placeholder="$t('Select forms (leave blank for all)')" class="el-fluid" filterable multiple searchable>
+			            <el-option
+				            v-for="(form, formId) in forms"
+				            :label="form"
+				            :value="Number(formId)"
+				            :key="formId"
+			            >
+				            {{ form }}
+			            </el-option>
+		            </el-select>
+	            </el-form-item>
             </el-form>
 
             <div slot="footer" class="dialog-footer">
@@ -171,6 +221,7 @@
                 modal: false,
                 managers: [],
                 permissions: [],
+                forms: [],
                 manager: {},
                 pagination: {
                     total: 0,
@@ -195,6 +246,7 @@
                     .then(response => {
                         this.managers = response.managers;
                         this.permissions = response.permissions;
+                        this.forms = response.forms;
                         this.pagination.total = response.total;
                     })
                     .catch(e => {
@@ -208,7 +260,8 @@
             showForm() {
                 this.manager = {
                     email: "",
-                    permissions: []
+                    permissions: [],
+	                forms: [],
                 };
                 this.modal = true;
                 this.errors.clear();
