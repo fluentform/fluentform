@@ -1065,6 +1065,8 @@ class Helper
             '__stripe_payment_method_id',
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash',
+            '__square_payment_method_id',
+            '__square_verify_buyer_id'
         ];
         
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
