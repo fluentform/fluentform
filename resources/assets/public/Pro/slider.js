@@ -319,9 +319,10 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
     var registerStepNavigators = function (animDuration) {
 
         $(document).on('keydown', formSelector + ' .fluentform-step > .step-nav button', function (e) {
-            if (e.which == 9 && !e.shiftKey && $(this).data('action') == 'next') {
-                // Prevent default action for Tab key
-                e.preventDefault();
+            if (e.which == 9) {
+                if ($(this).data('action') == 'next') {
+                    e.preventDefault();
+                }
             }
         });
 
@@ -369,10 +370,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             let autoScroll = $theForm.find('.ff-step-container').attr('data-disable_auto_focus') != 'yes';
 
             updateSlider(activeStep, animDuration, autoScroll, actionType);
-
-            setTimeout(() => {
-                $theForm.trigger('fluentform_update_step', autoScroll);
-            }, animDuration + 400);
         });
     };
 
@@ -716,15 +713,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
 
     };
-
-    $theForm.on('fluentform_update_step', function (e, autoScroll) {
-        if (autoScroll) {
-            const focusElement = $(formSelector + ' .fluentform-step.active').find('input, select, textarea').not(".has-conditions").first();
-            if (focusElement.length) {
-                focusElement.focus();
-            }
-        }
-    });
 
     return {
         init,
