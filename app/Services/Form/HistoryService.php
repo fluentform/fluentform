@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Form;
 
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Services\Parser\Form;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class HistoryService
 {
@@ -26,7 +26,15 @@ class HistoryService
      
         $this->compareFields($oldData['fields'], $newData['fields']);
         $this->compareFields([$oldData['submitButton']], [$newData['submitButton']]);
-        
+
+        if (Arr::isTrue($oldData, 'stepsWrapper.stepStart') && Arr::isTrue($newData, 'stepsWrapper.stepStart')) {
+            $newFirstSteps = Arr::get($newData, 'stepsWrapper.stepStart');
+            $newLastSteps = Arr::get($newData, 'stepsWrapper.stepEnd');
+            $oldFirstSteps = Arr::get($oldData, 'stepsWrapper.stepStart');
+            $oldLastSteps = Arr::get($oldData, 'stepsWrapper.stepEnd');
+            $this->compareFields([$oldFirstSteps, $oldLastSteps], [$newFirstSteps, $newLastSteps]);
+        }
+
         if (!empty($this->changes)) {
             $changeTitle = $this->generateChangeTitle();
             $this->storeFormHistory($formId, $oldData, $changeTitle);
@@ -92,9 +100,14 @@ class HistoryService
     {
         $map = [];
         foreach ($fields as $field) {
-            $map[$field['uniqElKey']] = $field;
+            $map[$this->getFieldKey($field)] = $field;
         }
         return $map;
+    }
+
+    private function getFieldKey($field)
+    {
+        return $field['uniqElKey'] ?? $field['element'];
     }
     
     private function getFieldLabel($field)
@@ -104,7 +117,7 @@ class HistoryService
     
     private function compareFieldDetails($oldField, $newField)
     {
-        if (in_array($oldField['uniqElKey'], $this->addedFields) || in_array($oldField['uniqElKey'], $this->removedFields)) {
+        if (in_array($this->getFieldKey($oldField), $this->addedFields) || in_array($this->getFieldKey($oldField), $this->removedFields)) {
             return;
         }
         
