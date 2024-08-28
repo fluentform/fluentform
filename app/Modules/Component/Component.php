@@ -1215,6 +1215,9 @@ class Component
         ];
 
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
+            wp_localize_script('fluentform-advanced', 'fluentform_advanced_vars', [
+                'debounce_time' => 300,
+            ]);
             wp_enqueue_script('fluentform-advanced');
         }
     }
