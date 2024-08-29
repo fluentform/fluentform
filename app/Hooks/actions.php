@@ -431,6 +431,8 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     }, 10, 2);
 
     add_filter('fluentform/editor_init_element_address', function ($item) {
+        $defaultGlobalMessages = \FluentForm\App\Helpers\Helper::getAllGlobalDefaultMessages();
+
         foreach ($item['fields'] as &$addressField) {
             if (
                 !isset($addressField['settings']['label_placement']) &&
@@ -465,6 +467,152 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
                 ];
             }
         }
+
+        $valuesToPush = [
+            ["id" => 7, "value" => "latitude"],
+            ["id" => 8, "value" => "longitude"]
+        ];
+
+        // Check if each value already exists in the array
+        foreach ($valuesToPush as $value) {
+            $exists = false;
+            foreach ($item['settings']['field_order'] as $field) {
+                if (ArrayHelper::get($field, 'value') === ArrayHelper::get($value, 'value')) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            // If the value does not exist, push it to the array
+            if (!$exists) {
+                $item['settings']['field_order'][] = $value;
+            }
+        }
+
+        if (!ArrayHelper::exists($item['fields'], 'latitude')) {
+            $item['fields']['latitude'] = [
+                'element'    => 'input_text',
+                'attributes' => [
+                    'type'        => 'text',
+                    'name'        => 'latitude',
+                    'value'       => '',
+                    'id'          => '',
+                    'class'       => '',
+                    'placeholder' => __('Latitude', 'fluentform'),
+                    'required'    => false,
+                ],
+                'settings' => [
+                    'container_class'   => '',
+                    'label'             => __('Latitude', 'fluentform'),
+                    'label_placement'   => '',
+                    'label_placement_options'   => [
+                        [
+                            'value' => '',
+                            'label' => __('Default', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'top',
+                            'label' => __('Top', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'right',
+                            'label' => __('Right', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'bottom',
+                            'label' => __('Bottom', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'left',
+                            'label' => __('Left', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'hide_label',
+                            'label' => __('Hide Label', 'fluentform'),
+                        ],
+                    ],
+                    'admin_field_label' => '',
+                    'help_message'      => '',
+                    'error_message'     => '',
+                    'visible'           => true,
+                    'validation_rules'  => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => $defaultGlobalMessages['required'],
+                            'global_message' => $defaultGlobalMessages['required'],
+                            'global'  => true,
+                        ],
+                    ],
+                    'conditional_logics' => [],
+                ],
+                'editor_options' => [
+                    'template' => 'inputText',
+                ],
+            ];
+        }
+
+        if (!ArrayHelper::exists($item['fields'], 'longitude')) {
+            $item['fields']['longitude'] = [
+                'element'    => 'input_text',
+                'attributes' => [
+                    'type'        => 'text',
+                    'name'        => 'longitude',
+                    'value'       => '',
+                    'id'          => '',
+                    'class'       => '',
+                    'placeholder' => __('Longitude', 'fluentform'),
+                    'required'    => false,
+                ],
+                'settings' => [
+                    'container_class'   => '',
+                    'label'             => __('Longitude', 'fluentform'),
+                    'label_placement'   => '',
+                    'label_placement_options' => [
+                        [
+                            'value' => '',
+                            'label' => __('Default', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'top',
+                            'label' => __('Top', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'right',
+                            'label' => __('Right', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'bottom',
+                            'label' => __('Bottom', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'left',
+                            'label' => __('Left', 'fluentform'),
+                        ],
+                        [
+                            'value' => 'hide_label',
+                            'label' => __('Hide Label', 'fluentform'),
+                        ],
+                    ],
+                    'admin_field_label' => '',
+                    'help_message'      => '',
+                    'error_message'     => '',
+                    'visible'           => true,
+                    'validation_rules'  => [
+                        'required' => [
+                            'value'   => false,
+                            'message' => $defaultGlobalMessages['required'],
+                            'global_message' => $defaultGlobalMessages['required'],
+                            'global'  => true,
+                        ],
+                    ],
+                    'conditional_logics' => [],
+                ],
+                'editor_options' => [
+                    'template' => 'inputText',
+                ],
+            ];
+        }
+
         return $item;
     });
 }, 10);
