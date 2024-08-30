@@ -44,8 +44,11 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "FluentForm\\Dev\\ComposerScript::run"
+        ],
         "post-update-cmd": [
-            "FluentForm\\App\\ComposerScript::postUpdate"
+            "FluentForm\\Dev\\ComposerScript::run"
         ]
     },
     "minimum-stability": "dev",

@@ -39,7 +39,7 @@ class Application extends Container
 
     protected function pluginFilePath($file)
     {
-        $file = $file ?: realpath(__DIR__ . '/../../../fluentform.php');
+        $file = $file ?: realpath(__DIR__ . '/../../../plugin.php');
         
         return $file;
     }

@@ -24,4 +24,8 @@ class DBMigrator
         Logs::migrate();
         ScheduledActions::migrate();
     }
+    public static function migratorUp()
+    {
+        self::run();
+    }
 }

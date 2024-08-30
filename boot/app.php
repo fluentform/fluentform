@@ -6,7 +6,14 @@ use FluentForm\App\Hooks\Handlers\DeactivationHandler;
 use FluentForm\App\Services\Migrator\Bootstrap as FormsMigrator;
 use FluentForm\App\Services\FluentConversational\Classes\Form as FluentConversational;
 
+
 return function ($file) {
+    $errorHandler = __DIR__ . "/error_handler.php";
+
+    if (0 !== error_reporting() && file_exists($errorHandler)) {
+        require_once $errorHandler;
+    }
+
     add_action('plugins_loaded', function () {
         $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.0.0', '<');
         if ($isNotCompatible) {
@@ -34,7 +41,7 @@ return function ($file) {
     });
 
     add_action('wp_insert_site', function ($blog) use ($app) {
-        if (is_plugin_active_for_network('fluentform/fluentform.php')) {
+        if (is_plugin_active_for_network('fluentform/plugin.php')) {
             switch_to_blog($blog->blog_id);
             ($app->make(ActivationHandler::class))->handle(false);
             restore_current_blog();
@@ -46,26 +53,6 @@ return function ($file) {
     });
 
     add_action('plugins_loaded', function () use ($app) {
-        do_action_deprecated(
-            'fluentform_loaded',
-            [
-                $app
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/loaded',
-            'Use fluentform/loaded instead of fluentform_loaded.'
-        );
-
-        do_action_deprecated(
-            'fluentform-loaded',
-            [
-                $app
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/loaded',
-            'Use fluentform/loaded instead of fluentform-loaded.'
-        );
-
         do_action('fluentform/loaded', $app);
     });
 
@@ -77,21 +64,21 @@ return function ($file) {
     
     /* Plugin Meta Links */
     
-    add_filter('plugin_row_meta', 'fluentform_plugin_row_meta', 10, 2);
-    
-    function fluentform_plugin_row_meta($links, $file)
-    {
-        if ('fluentform/fluentform.php' == $file) {
-            $row_meta = [
-                'docs'    => '<a rel="noopener" href="https://fluentforms.com/docs/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('View Fluent Form Documentation', 'fluentform')) . '" target="_blank">' . esc_html__('Docs', 'fluentform') . '</a>',
-                'support' => '<a rel="noopener" href="https://wpmanageninja.com/support-tickets/#/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Get Support', 'fluentform')) . '" target="_blank">' . esc_html__('Support', 'fluentform') . '</a>',
-                'developer_docs' => '<a rel="noopener" href="https://developers.fluentforms.com" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Developer Docs', 'fluentform')) . '" target="_blank">' . esc_html__('Developer Docs', 'fluentform') . '</a>',
-            ];
-            if (!defined('FLUENTFORMPRO')) {
-                $row_meta['pro'] = '<a rel="noopener" href="https://fluentforms.com" style="color: #7742e6;font-weight: bold;" aria-label="' . esc_attr(esc_html__('Upgrade to Pro', 'fluentform')) . '" target="_blank">' . esc_html__('Upgrade to Pro', 'fluentform') . '</a>';
-            }
-            return array_merge($links, $row_meta);
-        }
-        return (array)$links;
-    }
+//    add_filter('plugin_row_meta', 'fluentform_plugin_row_meta', 10, 2);
+//
+//    function fluentform_plugin_row_meta($links, $file)
+//    {
+//        if ('fluentform/plugin.php' == $file) {
+//            $row_meta = [
+//                'docs'    => '<a rel="noopener" href="https://fluentforms.com/docs/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('View Fluent Form Documentation', 'fluentform')) . '" target="_blank">' . esc_html__('Docs', 'fluentform') . '</a>',
+//                'support' => '<a rel="noopener" href="https://wpmanageninja.com/support-tickets/#/" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Get Support', 'fluentform')) . '" target="_blank">' . esc_html__('Support', 'fluentform') . '</a>',
+//                'developer_docs' => '<a rel="noopener" href="https://developers.fluentforms.com" style="color: #197efb;font-weight: 600;" aria-label="' . esc_attr(esc_html__('Developer Docs', 'fluentform')) . '" target="_blank">' . esc_html__('Developer Docs', 'fluentform') . '</a>',
+//            ];
+//            if (!defined('FLUENTFORMPRO')) {
+//                $row_meta['pro'] = '<a rel="noopener" href="https://fluentforms.com" style="color: #7742e6;font-weight: bold;" aria-label="' . esc_attr(esc_html__('Upgrade to Pro', 'fluentform')) . '" target="_blank">' . esc_html__('Upgrade to Pro', 'fluentform') . '</a>';
+//            }
+//            return array_merge($links, $row_meta);
+//        }
+//        return (array)$links;
+//    }
 };
