@@ -58,7 +58,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         let choiceJsInputs = [] ;
         jQuery.each(response, (key, value) => {
             if (!value) return;
-
             let type = Object.prototype.toString.call(value);
 
 
@@ -111,7 +110,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
             } else if (type === '[object Array]') {
                 let $el = jQuery(`[name=${key}]`);
-
                 $el = $el.length ? $el : jQuery(`[data-name=${key}]`);
                 $el = $el.length ? $el : jQuery(`[name=${key}\\[\\]]`);
                 if ($el.attr('type') == 'file') {
@@ -162,6 +160,16 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             } else {
                 // Others
                 let $el = jQuery(`[name=${key}]`);
+
+                //rich text
+                if ($el.hasClass('fluentform-post-content')) {
+                    if (window.wp && window.wp.editor) {
+                        let editorId = $el.attr('id');
+                        window.tinymce.get(editorId).setContent(value);
+                    }
+                }
+
+
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                 } else {
