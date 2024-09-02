@@ -77,6 +77,7 @@ import calculation from './Pro/calculations';
 
                 $.each(refElement, function () {
                     let inputValue = $(this).val();
+                    let conditionallyHidden = $(this).closest('.ff-el-group.has-conditions').hasClass('ff_excluded');
                     // if(inputValue) {
                     //     let tagName = $(this).prop("tagName");
                     //     if (tagName == 'OPTION') {
@@ -87,7 +88,7 @@ import calculation from './Pro/calculations';
                     //         inputValue = $(this).parent().find('span').html();
                     //     }
                     // }
-                    if (inputValue) {
+                    if (inputValue && !conditionallyHidden) {
                         refValues.push(inputValue);
                     }
                 });
