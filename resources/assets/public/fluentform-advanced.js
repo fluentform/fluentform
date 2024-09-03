@@ -53,6 +53,28 @@ import calculation from './Pro/calculations';
                 }
 
                 var refValues = [];
+                if (!refElement.length) {
+                    // This may repeater field
+                    let $rows = $theForm.find('.ff-el-repeater[data-name="' + ref + '"] tbody tr');
+                    $rows.each(function(index) {
+                        let $inputsInRow = $(this).find('input, select');
+                        let inputGroup = [];
+                        $inputsInRow.each(function(colIndex) {
+                            let value = $(this).val();
+                            if (value) {
+                                let label = $(this).closest('td').data('label') || 'Column-' + (colIndex + 1);
+                                inputGroup.push(label + ': ' + value);
+                            }
+                        });
+                        if (inputGroup.length) {
+                            refValues.push('#' + (index + 1) + '- ' + inputGroup.join(' | '));
+                        }
+                    });
+                    if ($rows.length) {
+                        separator = '<br/>';
+                    }
+                }
+
                 $.each(refElement, function () {
                     let inputValue = $(this).val();
                     // if(inputValue) {
