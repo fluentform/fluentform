@@ -487,6 +487,12 @@
           background-position: center center;
         }
       }
+      &-container-small-column-image {
+          text-align: center;
+          display: flex;
+          flex-wrap: wrap-reverse;
+          justify-content: center;
+      }
 
       &-preview,
       &-details {
