@@ -38,6 +38,36 @@
 					</el-row>
 				</el-form-item>
 			</template>
+
+            <template v-else-if="isFluentCrm">
+                <el-row :gutter="20">
+                    <el-col :span="24">
+                        <el-form-item>
+                            <elLabel
+                                    slot="label"
+                                    :label="$t('Data Source')"
+                                    :help-text="$t('Choose a type')"
+                            ></elLabel>
+                            <el-select
+                                    class="el-fluid"
+                                    :placeholder="$t('Select Source')"
+                                    v-model="model.fluent_crm_data_source"
+                                    filterable
+                            >
+                                <el-option
+                                        label="Contact"
+                                        value="contact"
+                                ></el-option>
+                                <el-option
+                                        label="Company"
+                                        value="company"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </template>
+
 			<template v-else>
 				<el-tabs v-model="model.query_type" v-if="hasBasicQuery">
 					<el-tab-pane :label="$t('Basic')" name="basic">
@@ -445,7 +475,10 @@ export default {
 		},
 		isDynamicCsv() {
 			return this.model.source === 'dynamic_csv';
-		}
+		},
+        isFluentCrm() {
+            return 'fluent_crm' === this.model.source;
+        },
 	},
 	mounted() {
 		this.getFilterValueOptions(true);
