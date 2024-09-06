@@ -12,8 +12,7 @@ use FluentForm\App\Services\Browser\Browser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 /* @deprecated Use class \FluentForm\App\Http\Controllers\SubmissionHandlerController */
 
@@ -371,7 +370,7 @@ class FormHandler
             }
 
             $message = ShortCodeParser::parse(
-                ArrayHelper::get($confirmation, 'redirectMessage', ''),
+                Arr::get($confirmation, 'redirectMessage', ''),
                 $insertId,
                 $formData,
                 $form,
@@ -505,7 +504,7 @@ class FormHandler
 
         foreach ($fields as $fieldKey => $field) {
             $field['data_key'] = $fieldKey;
-            $inputName = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.name');
+            $inputName = Arr::get($field, 'raw.attributes.name');
             $field['name'] = $inputName;
     
             $error = apply_filters_deprecated(
@@ -630,7 +629,7 @@ class FormHandler
     protected function handleSpamError()
     {
         $settings = get_option('_fluentform_global_form_settings');
-        if (!$settings || 'validation_failed' != ArrayHelper::get($settings, 'misc.akismet_validation')) {
+        if (!$settings || 'validation_failed' != Arr::get($settings, 'misc.akismet_validation')) {
             return;
         }
 

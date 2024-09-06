@@ -3,7 +3,7 @@
 namespace FluentForm\App\Http\Controllers;
 
 use FluentForm\App\Services\Integrations\GlobalIntegrationService;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 use Exception;
 
 class GlobalIntegrationController extends Controller

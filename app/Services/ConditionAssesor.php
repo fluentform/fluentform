@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services;
 
 use FluentForm\App\Helpers\Str;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class ConditionAssesor
 {

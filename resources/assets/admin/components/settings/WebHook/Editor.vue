@@ -331,9 +331,9 @@
     import inputPopover from '../../input-popover.vue';
     import ErrorView from '../../../../common/errorView';
     import FilterFields from '../Includes/FilterFields.vue';
-    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
-    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
-    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn';
+    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd';
+    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove';
 
     export default {
         name: 'Editor',

@@ -191,7 +191,38 @@ export default {
                 }
                 this.editItem.settings.field_order = optionToRender;
             }
-            
+        },
+        updateFieldOrder() {
+            // Check if autocomplete is enabled or disabled
+            if (this.editItem.settings.enable_g_autocomplete === 'no') {
+                // Filter out latitude and longitude if autocomplete is disabled
+                this.editItem.settings.field_order = this.editItem.settings.field_order.filter(field => {
+                    return field.value !== "latitude" && field.value !== "longitude";
+                });
+            } else if (this.editItem.settings.enable_g_autocomplete === 'yes') {
+                // Ensure latitude and longitude are included if autocomplete is enabled
+                const fieldOrder = this.editItem.settings.field_order.map(field => field.value);
+
+                if (!fieldOrder.includes('latitude')) {
+                    this.editItem.settings.field_order.push({
+                        id: 7,
+                        value: 'latitude'
+                    });
+                }
+                if (!fieldOrder.includes('longitude')) {
+                    this.editItem.settings.field_order.push({
+                        id: 8,
+                        value: 'longitude'
+                    });
+                }
+            }
+        }
+    },
+    watch: {
+        'editItem.settings.enable_g_autocomplete': {
+            handler() {
+                this.updateFieldOrder();
+            }
         }
     },
     computed: {
@@ -200,7 +231,8 @@ export default {
         }
     },
     mounted() {
-        this.createDragableList()
+        this.createDragableList();
+        this.updateFieldOrder();
     }
 }
 </script>

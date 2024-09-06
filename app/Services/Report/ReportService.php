@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\Report;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\Submission;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 
 class ReportService

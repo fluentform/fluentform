@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\Form;
 use FluentForm\App\Services\Migrator\Classes\BaseMigrator;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class WpFormsMigrator extends BaseMigrator
 {
@@ -27,8 +27,8 @@ class WpFormsMigrator extends BaseMigrator
                 $forms[] = [
                     'ID'       => $form->ID,
                     'name'     => $form->post_title,
-                    'fields'   => ArrayHelper::get($formData, 'fields'),
-                    'settings' => ArrayHelper::get($formData, 'settings'),
+                    'fields'   => Arr::get($formData, 'fields'),
+                    'settings' => Arr::get($formData, 'settings'),
                 ];
             }
         }
@@ -38,32 +38,32 @@ class WpFormsMigrator extends BaseMigrator
     public function getFields($form)
     {
         $fluentFields = [];
-        $fields = ArrayHelper::get($form, 'fields');
+        $fields = Arr::get($form, 'fields');
         
         foreach ($fields as $field) {
             if (
-                "pagebreak" == ArrayHelper::get($field, 'type') &&
-                $position = ArrayHelper::get($field, 'position')
+                "pagebreak" == Arr::get($field, 'type') &&
+                $position = Arr::get($field, 'position')
             ) {
                 if ("top" == $position || "bottom" == $position) {
                     continue;
                 }
             }
-            $fieldType = ArrayHelper::get($this->fieldTypeMap(), ArrayHelper::get($field, 'type'));
+            $fieldType = Arr::get($this->fieldTypeMap(), Arr::get($field, 'type'));
             $args = $this->formatFieldData($field, $fieldType);
-            if ('select' == $fieldType && ArrayHelper::isTrue($field, 'multiple')) {
+            if ('select' == $fieldType && Arr::isTrue($field, 'multiple')) {
                 $fieldType = 'multi_select';
             }
             if ($fieldData = $this->getFluentClassicField($fieldType, $args)) {
                 $fluentFields[$field['id']] = $fieldData;
             } else {
-                $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                $this->unSupportFields[] = Arr::get($field, 'label');
             }
         }
         $submitBtn = $this->getSubmitBttn([
             'uniqElKey' => 'button_' . time(),
-            'label'     => ArrayHelper::get($form, 'settings.submit_text'),
-            'class'     => ArrayHelper::get($form, 'settings.submit_class'),
+            'label'     => Arr::get($form, 'settings.submit_text'),
+            'class'     => Arr::get($form, 'settings.submit_class'),
         ]);
         if (empty($fluentFields)) {
             return false;
@@ -97,9 +97,9 @@ class WpFormsMigrator extends BaseMigrator
                 'color'            => '#ffffff',
                 'background_color' => '#409EFF',
                 'button_ui'        => [
-                    'type'    => ArrayHelper::get($args, 'type', 'default'),
+                    'type'    => Arr::get($args, 'type', 'default'),
                     'text'    => $args['label'],
-                    'img_url' => ArrayHelper::get($args, 'img_url', '')
+                    'img_url' => Arr::get($args, 'img_url', '')
                 ],
                 'normal_styles'    => [],
                 'hover_styles'     => [],
@@ -154,8 +154,8 @@ class WpFormsMigrator extends BaseMigrator
             return [
                 'ID'       => $form->ID,
                 'name'     => $form->post_title,
-                'fields'   => ArrayHelper::get($formData, 'fields'),
-                'settings' => ArrayHelper::get($formData, 'settings'),
+                'fields'   => Arr::get($formData, 'fields'),
+                'settings' => Arr::get($formData, 'settings'),
             ];
         }
         return false;
@@ -198,26 +198,26 @@ class WpFormsMigrator extends BaseMigrator
                     continue;
                 }
                 $formField = $formFields[$fieldId];
-                $name = ArrayHelper::get($formField, 'attributes.name');
+                $name = Arr::get($formField, 'attributes.name');
                 if (!$name) {
                     continue;
                 }
-                $type = ArrayHelper::get($formField, 'element');
+                $type = Arr::get($formField, 'element');
                 // format entry value by field name
-                $finalValue = ArrayHelper::get($field, 'value');
+                $finalValue = Arr::get($field, 'value');
                 if ("input_name" == $type) {
                     $finalValue = $this->getSubmissionNameValue($formField['fields'], $field);
                 } elseif (
                     "input_checkbox" == $type ||
                     (
                         "select" == $type &&
-                        ArrayHelper::isTrue($formField, 'attributes.multiple')
+                        Arr::isTrue($formField, 'attributes.multiple')
                     )
                 ) {
                     $finalValue = explode("\n", $finalValue);
                 } elseif ("address" == $type) {
                     $finalValue = [
-                        "address_line_1" => ArrayHelper::get($field, 'address1', ''),
+                        "address_line_1" => Arr::get($field, 'address1', ''),
                         "address_line_2" => ArrayHelper::get($field, 'address2', ''),
                         "city" => ArrayHelper::get($field, 'city', ''),
                         "state" => ArrayHelper::get($field, 'state', ''),

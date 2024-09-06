@@ -18,15 +18,15 @@
   .ff-el-group {
     &.ff_list_buttons {
       .ff-el-form-check {
-        label {
-          margin: 0;
-        }
         width: auto !important;
         float: none !important;
         display: -moz-inline-stack;
         display: inline-block;
         position: relative;
         margin: 0 0 10px 0;
+        label {
+          margin: 0;
+        }
 
         input {
           opacity: 0;

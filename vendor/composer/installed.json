@@ -2,33 +2,34 @@
     "packages": [
         {
             "name": "wpfluent/framework",
-            "version": "1.0.19",
-            "version_normalized": "1.0.19.0",
+            "version": "2.10.5",
+            "version_normalized": "2.10.5.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:wpfluent/framework.git",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673"
+                "reference": "e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wpfluent/framework/zipball/e7c043b2a431b1bcd98ff658f47a137e8d21d673",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673",
+                "url": "https://api.github.com/repos/wpfluent/framework/zipball/e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33",
+                "reference": "e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "ext-json": "*",
+                "php": "^7.3|^8.0"
             },
-            "time": "2022-09-16T11:41:03+00:00",
+            "time": "2024-09-02T13:57:03+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "installation-source": "source",
             "autoload": {
                 "psr-4": {
-                    "WPFluent\\": "src/WPFluent"
+                    "FluentForm\\Framework\\": "src/WPFluent"
                 }
             },
             "license": [

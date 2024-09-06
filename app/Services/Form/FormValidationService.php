@@ -12,7 +12,7 @@ use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Validator\ValidationException;
 
 class FormValidationService
@@ -195,6 +195,10 @@ class FormValidationService
                 'Use fluentform/validation_user_update_errors instead of fluentform_validation_user_update_errors.'
             );
             $errors = apply_filters('fluentform/validation_user_update_errors', $errors, $formData, $this->form, $fields);
+        }
+
+        if ('update' == Arr::get(Helper::getFormMeta($this->form->id, 'postFeeds'), 'post_form_type')) {
+            $errors = apply_filters('fluentform/validation_post_update_errors', $errors, $formData, $this->form, $fields);
         }
         
         if ($errors) {

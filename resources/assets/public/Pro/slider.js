@@ -190,7 +190,15 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
         // if (stepResume || saveProgressForm) {
         if (stepResume) {
-            updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
+            updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true)
+                .then(() => {
+                    trapFocus($(`${formSelector} .fluentform-step.active`));
+
+                    focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                })
+                .catch(error => {
+                    console.error("An error occurred during the slider update:", error);
+                });
         }
 
         isPopulatingStepData = false;
@@ -216,9 +224,14 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         $(formSteps[activeStep]).addClass('active');
         $(stepTitles[activeStep]).addClass('active');
 
+        const firstStep = formSteps.first();
+        if (firstStep.hasClass('active')) {
+            firstStep.find('button[data-action="next"]').css('visibility', 'visible');
+        }
+
         // submit button should only be printed on last step
         if (formSteps.length && !formSteps.last().hasClass('active')) {
-            $theForm.find('button[type="submit"]').css('display', 'none');
+            $theForm.find('button[type="submit"]').css('visibility', 'hidden');
         }
 
         stepProgressBarHandle({activeStep, totalSteps});
@@ -261,13 +274,28 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 });
 
-                updateSlider(targetStep, fluentFormVars.stepAnimationDuration, true);
+                updateSlider(targetStep, fluentFormVars.stepAnimationDuration, true)
+                    .then(() => {
+                        trapFocus($(`${formSelector} .fluentform-step.active`));
 
+                        focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                    })
+                    .catch(error => {
+                        console.error("An error occurred during the slider update:", error);
+                    });
             } catch (e) {
                 if (!(e instanceof window.ffValidationError)) {
                     throw e;
                 }
-                updateSlider(currentStep, fluentFormVars.stepAnimationDuration, true);
+                updateSlider(currentStep, fluentFormVars.stepAnimationDuration, true)
+                    .then(() => {
+                        trapFocus($(`${formSelector} .fluentform-step.active`));
+
+                        focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                    })
+                    .catch(error => {
+                        console.error("An error occurred during the slider update:", error);
+                    });
                 formInstance.showErrorMessages(e.messages);
                 formInstance.scrollToFirstError(350);
             }
@@ -317,14 +345,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
      * @return void
      */
     var registerStepNavigators = function (animDuration) {
-
-        $(document).on('keydown', formSelector + ' .fluentform-step > .step-nav button', function (e) {
-            if (e.which == 9) {
-                if ($(this).data('action') == 'next') {
-                    e.preventDefault();
-                }
-            }
-        });
+        trapFocus($(`${formSelector} .fluentform-step.active`));
 
         $(formSelector).on('click', '.fluentform-step  .step-nav button, .fluentform-step  .step-nav img', function (e) {
             const btn = $(this).data('action');
@@ -369,170 +390,222 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             let autoScroll = $theForm.find('.ff-step-container').attr('data-disable_auto_focus') != 'yes';
 
-            updateSlider(activeStep, animDuration, autoScroll, actionType);
+            updateSlider(activeStep, animDuration, autoScroll, actionType)
+                .then(() => {
+                    trapFocus($(`${formSelector} .fluentform-step.active`));
+
+                    focusOnInputAfterStepChange(animDuration)
+                })
+                .catch(error => {
+                    console.error("An error occurred during the slider update:", error);
+                });
         });
     };
 
+    // Function to determine the focus element
+    function focusOnInputAfterStepChange(timeout) {
+        const getFocusElement = () => {
+            const $activeStep = $(`${formSelector} .fluentform-step.active`);
+            const isLastStepActive = $theForm.find('.fluentform-step').last().hasClass('active');
+            let focusElement = null;
+
+            if (isLastStepActive) {
+                const allChildrenHidden = $activeStep.children().not('.ff-inner_submit_container').toArray().every(child => $(child).hasClass('ff_excluded'));
+
+                focusElement = allChildrenHidden
+                    ? $activeStep.find('button[type="submit"]').first()
+                    : $activeStep.find('input, select, textarea').first();
+            } else {
+                focusElement = $activeStep.find('input, select, textarea').first();
+            }
+
+            return focusElement;
+        };
+
+        // Adding a small delay to ensure the element is ready
+        setTimeout(() => {
+            const focusElement = getFocusElement();
+
+            if (focusElement && focusElement.length) {
+                focusElement.focus();
+            }
+        }, timeout);
+    }
+
     /**
-     * Update slider position in multisteps form
+     * Update slider position in multistep form
      * @param  {int} goBackToStep
      * @param  {int} animDuration
      * @param  {bool} isScrollTop
-     * @return {void}
+     * @return {Promise}
      */
     var updateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
-        $('div' + formSelector + '_errors').empty();
-        activeStep = goBackToStep;
+        return new Promise((resolve) => {
+            $('div' + formSelector + '_errors').empty();
+            activeStep = goBackToStep;
 
-        var stepsWrapper = $theForm.find('.ff-step-body');
-        var stepTitles = $theForm.find('.ff-step-titles li'),
-            formSteps = $theForm.find('.fluentform-step'),
-            totalSteps = formSteps.length,
-            formTop = $theForm.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20;
+            var stepsWrapper = $theForm.find('.ff-step-body');
+            var stepTitles = $theForm.find('.ff-step-titles li'),
+                formSteps = $theForm.find('.fluentform-step'),
+                totalSteps = formSteps.length;
 
-        // change active step
-        formSteps.removeClass('active');
-        $(formSteps[activeStep]).addClass('active');
+            // Change active step
+            formSteps.removeClass('active');
+            $(formSteps[activeStep]).addClass('active');
 
-        // change step title
-        stepTitles.removeClass('ff_active ff_completed');
-
-        $.each([...Array(activeStep).keys()], (setp) => {
-            $($(stepTitles[setp])).addClass('ff_completed');
-        });
-
-        $(stepTitles[activeStep]).addClass('ff_active');
-
-        // animate step on click next/prev
-        var scrollTop = function () {
-            if (window.ff_disable_step_scroll) {
-                return;
-            }
-
-            const scrollElement = $theForm.find('.ff_step_start');
-
-            if (window.ff_scroll_top_offset) {
-                var formTop = window.ff_scroll_top_offset;
-            } else {
-                var formTop = scrollElement.offset().top - 20
-            }
-
-            var isInViewport = function ($el) {
-                var elementTop = $el.offset().top;
-                var elementBottom = elementTop + $el.outerHeight();
-
-                var viewportTop = $(window).scrollTop();
-                var viewportBottom = viewportTop + $(window).height();
-
-                return elementBottom > viewportTop && elementTop < viewportBottom;
-            };
-
-            const isVisible = isInViewport(scrollElement);
-
-            if (!isVisible || window.ff_force_scroll) {
-                $('html, body').delay(animDuration).animate({
-                    scrollTop: formTop
-                }, 0);
-            }
-        };
-
-        let inlineCssObj = {
-            left: -(activeStep * 100) + '%',
-        };
-
-        if (isRtl) {
-            inlineCssObj = {
-                right: -(activeStep * 100) + '%'
-            };
-        }
-        const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
-        switch (animationType) {
-            case 'slide':
-                //slide
-                stepsWrapper.animate(inlineCssObj, animDuration, () => {
-                    isScrollTop && scrollTop();
-                    stepsWrapper.css({width: wrapperWidth});
-                });
-                break;
-            case 'fade':
-                //fadeIn
-                stepsWrapper.css({opacity: 0})
-                stepsWrapper.animate(inlineCssObj, animDuration, () => {
-                    isScrollTop && scrollTop();
-                    stepsWrapper.css({width: wrapperWidth});
-                });
-                stepsWrapper.animate({
-                    opacity: 1,
-                }, animDuration);
-                break;
-            case 'slide_down':
-                //slideDown
-                stepsWrapper.hide();
-                stepsWrapper.css(inlineCssObj);
-                stepsWrapper.slideDown(animDuration);
-                break;
-            case 'none':
-                //fadeIn
-                stepsWrapper.css(inlineCssObj);
-                break;
-            default:
-                stepsWrapper.css(inlineCssObj);
-
-        }
-
-        //skip saving the last step
-        let isLastStep = activeStep === 0;
-
-        // Fire ajax request to persist the step state/data
-        if (stepPersistency && !isPopulatingStepData & !isLastStep) {
-            saveStepData($theForm, activeStep).then(response => {
-                console.log(response);
+            // Change step title
+            stepTitles.removeClass('ff_active ff_completed');
+            $.each([...Array(activeStep).keys()], (step) => {
+                $($(stepTitles[step])).addClass('ff_completed');
             });
-        }
+            $(stepTitles[activeStep]).addClass('ff_active');
 
-        // update progressbar
-        stepProgressBarHandle({activeStep, totalSteps});
+            var scrollTop = function () {
+                if (window.ff_disable_step_scroll) {
+                    return;
+                }
 
-        // now we have to check if there has any visible elements or not
+                const scrollElement = $theForm.find('.ff_step_start');
+                let formTop;
 
-        // submit button should only be printed on last step
-        if (formSteps.last().hasClass('active')) {
-            $theForm.find('button[type="submit"]').css('display', 'inline-block');
-            return;
-        } else {
-            $theForm.find('button[type="submit"]').css('display', 'none');
-        }
+                if (window.ff_scroll_top_offset) {
+                    formTop = window.ff_scroll_top_offset;
+                } else {
+                    formTop = scrollElement.offset().top - 20;
+                }
 
-        if (!window.ff_disable_auto_step) {
+                var isInViewport = function ($el) {
+                    var elementTop = $el.offset().top;
+                    var elementBottom = elementTop + $el.outerHeight();
 
-            let timeout = 0;
-            if ($theForm.find('.fluentform-step.active .ff_excluded').length) {
-                timeout = 50;
+                    var viewportTop = $(window).scrollTop();
+                    var viewportBottom = viewportTop + $(window).height();
+
+                    return elementBottom > viewportTop && elementTop < viewportBottom;
+                };
+
+                const isVisible = isInViewport(scrollElement);
+
+                if (!isVisible || window.ff_force_scroll) {
+                    $('html, body').delay(animDuration).animate({
+                        scrollTop: formTop
+                    }, 0);
+                }
+            };
+
+            // Animate step
+            let inlineCssObj = {
+                left: -(activeStep * 100) + '%',
+            };
+            if (isRtl) {
+                inlineCssObj = {right: -(activeStep * 100) + '%'};
             }
 
-            setTimeout(() => {
-                let $activeStepDom = $theForm.find('.fluentform-step.active');
-                let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
-                let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
+            const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
+            let animationPromise;
 
-                if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
-                    childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
-                    childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
-                    hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+            switch (animationType) {
+                case 'slide':
+                    animationPromise = stepsWrapper.animate(inlineCssObj, animDuration).promise();
+                    break;
+                case 'fade':
+                    stepsWrapper.css({opacity: 0});
+                    animationPromise = stepsWrapper.animate(inlineCssObj, animDuration)
+                        .animate({opacity: 1}, animDuration)
+                        .promise();
+                    break;
+                case 'slide_down':
+                    stepsWrapper.hide();
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = stepsWrapper.slideDown(animDuration).promise();
+                    break;
+                case 'none':
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = Promise.resolve(); // No animation, resolve immediately
+                    break;
+                default:
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = Promise.resolve();
+            }
 
-                    if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
-                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
-                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
-                        hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+            animationPromise.then(() => {
+                if (isScrollTop) {
+                    scrollTop();
+                }
+
+                // Update progress bar and titles after animation completes
+                stepProgressBarHandle({activeStep, totalSteps});
+
+                // Show submit button on last step
+                if (formSteps.last().hasClass('active')) {
+                    $theForm.find('button[type="submit"]').css('visibility', 'visible');
+                } else {
+                    $theForm.find('button[type="submit"]').css('visibility', 'hidden');
+                }
+
+                // Step skipping logic
+                if (!window.ff_disable_auto_step) {
+                    let $activeStepDom = $theForm.find('.fluentform-step.active');
+                    let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
+                    let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
+
+                    if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
+                        childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
+                        childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
+                        hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+
+                        if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
+                            hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
+                            hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
+                            hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                        }
+                    }
+
+                    if (childDomCounts === hiddenDomCounts) {
+                        $activeStepDom.find('.step-nav button[data-action=' + actionType + '], .step-nav img[data-action=' + actionType + ']').click();
+                        resolve(); // Ensure that we resolve the promise here if we are skipping steps
+                        return;
                     }
                 }
 
-                if (childDomCounts == hiddenDomCounts) {
-                    $activeStepDom.find('.step-nav button[data-action=' + actionType + '], .step-nav img[data-action=' + actionType + ']').click();
-                }
-            }, timeout);
-        }
+                $theForm.find('.fluentform-step.active').find('.step-nav button[data-action="next"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+
+                resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
+            });
+        });
     };
+
+    function trapFocus(container) {
+        const focusableElements = container.find('input, select, textarea, button').filter(':visible');
+        const firstFocusableElement = focusableElements.first();
+        const lastFocusableElement = focusableElements.last();
+
+        container.on('keydown', function (e) {
+            const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+            if (!isTabPressed) {
+                return;
+            }
+
+            if (e.shiftKey) {
+                // If Shift + Tab is pressed
+                if (document.activeElement === firstFocusableElement[0]) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                // If Tab is pressed
+                if (document.activeElement === lastFocusableElement[0]) {
+                    firstFocusableElement.focus();
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+
 
     var saveStepData = function ($theForm, activeStep) {
         var $inputs = $theForm.find(':input').filter(function (i, el) {
@@ -648,11 +721,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 html: name
             });
 
-            var progressBarInline = $(`
-									<div class="ff-upload-progress-inline ff-el-progress">
-										<div style="width: 100%;" class="ff-el-progress-bar"></div>
-									</div>
-								`);
+            var progressBarInline = $(
+                `<div class="ff-upload-progress-inline ff-el-progress">
+                    <div style="width: 100%;" class="ff-el-progress-bar"></div>
+                </div>`
+            );
 
             var removeBtn = $('<span/>', {
                 'data-href': '#',
@@ -710,8 +783,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         removePrevFromFirstFirstStep();
         initStepSlider();
         maybeAutoSlider();
-
-
     };
 
     return {

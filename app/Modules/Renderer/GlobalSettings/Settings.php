@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Renderer\GlobalSettings;
 
 use FluentForm\App\Modules\Form\AkismetHandler;
 use FluentForm\App\Modules\Registerer\TranslationString;
+use FluentForm\App\Utils\Enqueuer\Vite;
 use FluentForm\Framework\Foundation\Application;
 
 class Settings
@@ -44,7 +45,7 @@ class Settings
      */
     public function enqueue()
     {
-        wp_enqueue_script('fluentform-global-settings-js');
+        Vite::enqueueRegisteredScript('fluentform-global-settings-js');
 
         wp_localize_script('fluentform-global-settings-js', 'FluentFormApp', [
             'plugin' => $this->app->config->get('app.slug'),

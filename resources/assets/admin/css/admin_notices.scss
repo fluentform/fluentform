@@ -1,6 +1,8 @@
 @import "../styles/element_ui_var";
 
 .fluentform-admin-notice {
+  display: block;
+  margin: 10px 0;
   h3{
     font-size: 16px;
     margin: 16px 0;
@@ -9,8 +11,6 @@
     margin: 8px 0;
     padding: 2px;
   }
-  display: block;
-  margin: 10px 0;
   .ff_logo_holder {
     max-width: 90px;
     display: inline-block;

@@ -2,81 +2,179 @@
 
 namespace FluentForm\Framework\Foundation;
 
+use Exception;
+
 trait AsyncRequestTrait
 {
+	/**
+	 * Async actions names
+	 * @var array
+	 */
 	protected $asyncActions = [];
 
+	/**
+	 * Launchable actions
+	 * @var array
+	 */
 	protected $launchableActions = [];
 
+	/**
+	 * Add an async action
+	 * 
+	 * @param string $action
+	 * @param mixed $handler Callback
+	 * @return null
+	 */
 	public function addAsyncAction($action, $handler)
 	{
 		$this->asyncActions[$action] = $handler;
 	}
 
+	/**
+	 * Queue an async action so it'll be dispatched
+	 * automatically during the WordPress shutdown hook.
+	 * 
+	 * @param string $action
+	 * @param mixed $handler Callback
+	 * @param array $data The data to be passed to the handler
+	 * @return null
+	 */
+	public function queueAsyncAction($action, $handler, $data = [])
+	{
+		$this->addAsyncAction($action, $handler);
+		$this->doAsyncAction($action, $data);
+	}
+
+	/**
+	 * Dequeue an async action so it won't be dispatched
+	 * automatically during the WordPress shutdown hook.
+	 * 
+	 * @param string $action
+	 * @return null
+	 */
+	public function dequeueAsyncAction($action)
+	{
+		unset($this->launchableActions[$action]);
+	}
+
+	/**
+	 * Dispatch async action
+	 * @param  string $action
+	 * @param  array $data
+	 * @return null
+	 */
 	public function doAsyncAction($action, $data = [])
 	{
 		$this->launchableActions[$action] = $data;
-		
 	}
 
+	/**
+	 * Register an async action
+	 * @return null
+	 */
 	protected function registerAsyncActions()
 	{
-		if ($this->hasAsyncActions()) {
-			$this->registerAdminPostAction(
-				$this->config->get('app.slug')
-			);
-		}
+		$this->registerAdminPostAction(
+			$this->config->get('app.slug')
+		);
 	}
 
-	protected function hasAsyncActions()
-	{
-		return count($this->asyncActions) > 0;
-	}
-
+	/**
+	 * Register an async action in WordPress admin_post_[action]
+	 * @param  string $slug
+	 * @return null
+	 */
 	protected function registerAdminPostAction($slug)
 	{
 		add_action("admin_post_wpfluent_async_$slug", [$this, 'callback']);
 		add_action("admin_post_nopriv_wpfluent_async_$slug", [$this, 'callback']);
 
 		if (!has_action('shutdown', [$this, 'launchPostRequest'])) {
-			add_action('shutdown', [$this, 'launchPostRequest']);
+			if (!$this->request->get($this->getAsyncActionIdentifier())) {
+				add_action('shutdown', [$this, 'launchPostRequest']);
+			}
 		}
 	}
 
+	/**
+	 * The main callback for async actions
+	 * @return null
+	 * @throws Exception
+	 */
 	public function callback()
 	{
 		add_filter('wp_die_handler', function() { die(); });
 
 		try {
 			$this->verifyNonce();
-
+			
 			foreach ($_POST['actions'] as $action => $data) {
 				try {
-					$handler = $this->parseHookHandler(
-						$this->asyncActions[$action]
-					);
-
-					$handler($data);
-				} catch (\Exception $e) {
+					if (isset($this->asyncActions[$action])) {
+						($this->parseHookHandler(
+							$this->asyncActions[$action]
+						))(is_string($data) && $data === $action ? null : $data);
+					}
+				} catch (Exception $e) {
 					continue;
 				}
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return;
 		}
 	}
 
+	/**
+	 * Launch the background (async) request.
+	 * @return null
+	 */
 	public function launchPostRequest()
 	{
 		if (!$this->hasLaunchableActions()) {
 			return;
 		}
+		
+		$data = $this->getData();
+		
+		foreach ($this->launchableActions as $key => $action) {
+			$this->dispatchRequest(
+				$data + [
+					'actions' => [
+						$key => $action ?: $key
+					]
+				]
+			);
+		}
+	}
 
+	/**
+	 * Get the post data for the action
+	 * @return array
+	 */
+	protected function getData()
+	{
+		$slug = $this->getAsyncActionIdentifier();
+
+		return [
+			$slug => true,
+			'_nonce' => $this->createNonce(),
+			'action' => $this->getMainAction()
+		];
+	}
+
+	/**
+	 * Dispatch the request.
+	 * 
+	 * @param  array $data
+	 * @return null
+	 */
+	protected function dispatchRequest($data)
+	{
 		$args = [
 			'timeout'   => 0.01,
 			'blocking'  => false,
-			'sslverify' => apply_filters('https_local_ssl_verify', true),
-			'body'      => $this->getData(),
+			'sslverify' => apply_filters('https_local_ssl_verify', false),
+			'body'      => $data,
 			'headers'   => [
 				'cookie' => $this->getCookie(),
 			],
@@ -85,31 +183,49 @@ trait AsyncRequestTrait
 		wp_remote_post(admin_url('admin-post.php'), $args);
 	}
 
-	protected function getData()
+	/**
+	 * Get the unique slug for identifying
+	 * the async request for this plugin.
+	 * 
+	 * @return string Unique identifier
+	 */
+	protected function getAsyncActionIdentifier()
 	{
-		return [
-			'_nonce' => $this->createNonce(),
-			'action' => $this->getMainAction(),
-			'actions' => $this->launchableActions,
-		];
+		$slug = $this->config->get('app.slug');
+		
+		return '_wpfluent_is_async_request_for_plugin_' . $slug;
 	}
 
+	/**
+	 * Get the cookie to send with the request
+	 * @return string Cookie string
+	 */
 	protected function getCookie()
 	{
 		$cookies = [];
 
 		foreach ($_COOKIE as $name => $value) {
-			$cookies[] = "$name=" . urlencode(is_array($value) ? serialize($value) : $value);
+			$cookies[] = "$name=" . urlencode(
+				is_array($value) ? serialize($value) : $value
+			);
 		}
 
 		return implode('; ', $cookies);
 	}
 
+	/**
+	 * Check for any launchable actions.
+	 * @return boolean
+	 */
 	protected function hasLaunchableActions()
 	{
 		return count($this->launchableActions) > 0;
 	}
 
+	/**
+	 * Create the nonce for the request.
+	 * @return string
+	 */
 	protected function createNonce()
 	{
 		$i = wp_nonce_tick();
@@ -119,10 +235,14 @@ trait AsyncRequestTrait
 		return wp_hash($i . $action, 'nonce');
 	}
 
+	/**
+	 * Verify the nonce
+	 * @return mixed
+	 */
 	protected function verifyNonce()
 	{
 		if (!isset($_POST['_nonce'])) {
-			throw new \Exception('Invalid Request.');
+			throw new Exception('Invalid Request.');
 		}
 
 		$nonce = $_POST['_nonce'];
@@ -145,6 +265,10 @@ trait AsyncRequestTrait
 		return false;
 	}
 
+	/**
+	 * Resolve the main action name for the pliugin.
+	 * @return string
+	 */
 	protected function getMainAction() {
 		$action = $this->config->get('app.slug');
 

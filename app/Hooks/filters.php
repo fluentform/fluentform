@@ -62,16 +62,16 @@ add_action('fluentform/before_form_validation',function (){
         if ($input['is_disabled']) {
             continue;
         }
-        
+
         add_filter('fluentform/has_' . $input['type'], function () use ($input) {
             $option = get_option('_fluentform_global_form_settings');
-            $autoload = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
-            $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
-            
+            $autoload = \FluentForm\Framework\Support\Arr::get($option, 'misc.autoload_captcha');
+            $type = \FluentForm\Framework\Support\Arr::get($option, 'misc.captcha_type');
+
             if ($autoload && $type == $input['type']) {
                 return true;
             }
-            
+
             return false;
         });
     }
@@ -82,11 +82,11 @@ add_action('fluentform/before_form_validation',function (){
  */
 $app->addFilter('fluentform/rendering_form', function ($form) {
     $option = get_option('_fluentform_global_form_settings');
-    $enabled = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.autoload_captcha');
+    $enabled = \FluentForm\Framework\Support\Arr::get($option, 'misc.autoload_captcha');
     if (!$enabled) {
         return $form;
     }
-    $type = \FluentForm\Framework\Helpers\ArrayHelper::get($option, 'misc.captcha_type');
+    $type = \FluentForm\Framework\Support\Arr::get($option, 'misc.captcha_type');
     $reCaptcha = [
         'element'    => 'recaptcha',
         'attributes' => [
@@ -120,7 +120,7 @@ $app->addFilter('fluentform/rendering_form', function ($form) {
     $hasCustomSubmit = false;
     foreach ($form->fields['fields'] as $index => $field) {
         if (in_array($field['element'], ['recaptcha', 'hcaptcha', 'turnstile'])) {
-            \FluentForm\Framework\Helpers\ArrayHelper::forget($form->fields['fields'], $index);
+            \FluentForm\Framework\Support\Arr::forget($form->fields['fields'], $index);
         }
         if ('custom_submit_button' == $field['element']) {
             $hasCustomSubmit = true;
@@ -153,11 +153,11 @@ foreach ($elements as $element) {
         $element = $field['element'];
 
         if ('dynamic_field' == $element) {
-            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.dynamic_fetch');
+            $dynamicFetchValue = 'yes' == \FluentForm\Framework\Support\Arr::get($field, 'raw.settings.dynamic_fetch');
             if ($dynamicFetchValue) {
                 $field = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $field);
             }
-            $attrType = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.attributes.type');
+            $attrType = \FluentForm\Framework\Support\Arr::get($field, 'raw.attributes.type');
             if ('radio' == $attrType) {
                 $element = 'input_radio';
             } elseif ('checkbox' == $attrType) {
@@ -192,7 +192,7 @@ foreach ($elements as $element) {
         if ($response && $isLabel && in_array($element, ['select', 'input_radio']) && !is_array($response)) {
             if (!isset($field['options'])) {
                 $field['options'] = [];
-                foreach (\FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
+                foreach (\FluentForm\Framework\Support\Arr::get($field, 'raw.settings.advanced_options', []) as $option) {
                     $field['options'][$option['value']] = $option['label'];
                 }
             }
@@ -301,6 +301,11 @@ $app->addFilter('fluentform/permission_callback', function ($status, $permission
     return  \FluentForm\App\Modules\Acl\Acl::getCurrentUserCapability();
 }, 10, 2);
 
+// Get current user allowed form ids, if current user has specific form permission
+$app->addFilter('fluentform/current_user_allowed_forms', function ($form){
+    return \FluentForm\App\Services\Manager\FormManagerService::getUserAllowedForms();
+});
+
 $app->addFilter('fluentform/validate_input_item_input_email', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
 
 $app->addFilter('fluentform/validate_input_item_input_text', ['\FluentForm\App\Helpers\Helper', 'isUniqueValidation'], 10, 5);
@@ -326,8 +331,8 @@ $app->addFilter('fluentform/response_render_input_number', function ($response, 
     if (!$response || !$isHtml) {
         return $response;
     }
-    $fieldSettings = \FluentForm\Framework\Helpers\ArrayHelper::get($field, 'raw.settings');
-    $formatter = \FluentForm\Framework\Helpers\ArrayHelper::get($fieldSettings, 'numeric_formatter');
+    $fieldSettings = \FluentForm\Framework\Support\Arr::get($field, 'raw.settings');
+    $formatter = \FluentForm\Framework\Support\Arr::get($fieldSettings, 'numeric_formatter');
     if (!$formatter) {
         return $response;
     }

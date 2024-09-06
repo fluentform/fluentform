@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class TabularGrid extends BaseComponent
 {

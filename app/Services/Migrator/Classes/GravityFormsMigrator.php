@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 
 use FluentForm\App\Modules\Form\Form;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class GravityFormsMigrator extends BaseMigrator
 {
@@ -37,7 +37,7 @@ class GravityFormsMigrator extends BaseMigrator
             if ($value = $this->getFluentClassicField($type, $args)) {
                 $fluentFields[$field['id']] = $value;
             } else {
-                $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                $this->unSupportFields[] = Arr::get($field, 'label');
             }
         }
 

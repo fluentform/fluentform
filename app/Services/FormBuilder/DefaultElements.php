@@ -371,6 +371,8 @@ $defaultElements = [
                     ['id' => 4, 'value' => 'state'],
                     ['id' => 5, 'value' => 'zip'],
                     ['id' => 6, 'value' => 'country'],
+                    ['id' => 7, 'value' => 'latitude'],
+                    ['id' => 8, 'value' => 'longitude'],
                 ],
                 'conditional_logics' => [],
             ],
@@ -732,6 +734,124 @@ $defaultElements = [
                         'element'    => 'country-list',
                         'icon_class' => 'icon-text-width',
                         'template'   => 'selectCountry',
+                    ],
+                ],
+                'latitude' => [
+                    'element'    => 'input_text',
+                    'attributes' => [
+                        'type'        => 'text',
+                        'name'        => 'latitude',
+                        'value'       => '',
+                        'id'          => '',
+                        'class'       => '',
+                        'placeholder' => __('Latitude', 'fluentform'),
+                        'required'    => false,
+                    ],
+                    'settings' => [
+                        'container_class'   => '',
+                        'label'             => __('Latitude', 'fluentform'),
+                        'label_placement'   => '',
+                        'label_placement_options'   => [
+                            [
+                                'value' => '',
+                                'label' => __('Default', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'top',
+                                'label' => __('Top', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'right',
+                                'label' => __('Right', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'bottom',
+                                'label' => __('Bottom', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'left',
+                                'label' => __('Left', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'hide_label',
+                                'label' => __('Hide Label', 'fluentform'),
+                            ],
+                        ],
+                        'admin_field_label' => '',
+                        'help_message'      => 'Only exists if Google Maps',
+                        'error_message'     => '',
+                        'visible'           => true,
+                        'validation_rules'  => [
+                            'required' => [
+                                'value'   => false,
+                                'message' => $defaultGlobalMessages['required'],
+                                'global_message' => $defaultGlobalMessages['required'],
+                                'global'  => true,
+                            ],
+                        ],
+                        'conditional_logics' => [],
+                    ],
+                    'editor_options' => [
+                        'template' => 'inputText',
+                    ],
+                ],
+                'longitude' => [
+                    'element'    => 'input_text',
+                    'attributes' => [
+                        'type'        => 'text',
+                        'name'        => 'longitude',
+                        'value'       => '',
+                        'id'          => '',
+                        'class'       => '',
+                        'placeholder' => __('Longitude', 'fluentform'),
+                        'required'    => false,
+                    ],
+                    'settings' => [
+                        'container_class'   => '',
+                        'label'             => __('Longitude', 'fluentform'),
+                        'label_placement'   => '',
+                        'label_placement_options'   => [
+                            [
+                                'value' => '',
+                                'label' => __('Default', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'top',
+                                'label' => __('Top', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'right',
+                                'label' => __('Right', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'bottom',
+                                'label' => __('Bottom', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'left',
+                                'label' => __('Left', 'fluentform'),
+                            ],
+                            [
+                                'value' => 'hide_label',
+                                'label' => __('Hide Label', 'fluentform'),
+                            ],
+                        ],
+                        'admin_field_label' => '',
+                        'help_message'      => 'Only exists if Google Maps',
+                        'error_message'     => '',
+                        'visible'           => true,
+                        'validation_rules'  => [
+                            'required' => [
+                                'value'   => false,
+                                'message' => $defaultGlobalMessages['required'],
+                                'global_message' => $defaultGlobalMessages['required'],
+                                'global'  => true,
+                            ],
+                        ],
+                        'conditional_logics' => [],
+                    ],
+                    'editor_options' => [
+                        'template' => 'inputText',
                     ],
                 ],
             ],

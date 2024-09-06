@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\Integrations;
 
 use FluentForm\App\Models\FormMeta;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class FormIntegrationService
 {

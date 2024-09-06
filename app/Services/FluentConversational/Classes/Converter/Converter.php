@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;

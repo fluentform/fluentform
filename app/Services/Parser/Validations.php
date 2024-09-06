@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\Parser;
 
 use FluentForm\App\Services\ConditionAssesor;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 class Validations
 {

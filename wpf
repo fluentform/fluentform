@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+
+<?php
+
+(function($argvals, $cwd, $loader, $devGlobals, $functions, $require) {
+	require $cwd.'/dev/cli/wpf.php';
+})(
+	$argv,
+	__DIR__,
+	__DIR__. '/dev/vendor/autoload.php',
+	__DIR__. '/dev/globals.php',
+	__DIR__. '/dev/cli/functions.php',
+	function($a) {foreach($a as $f) require $f;},
+);

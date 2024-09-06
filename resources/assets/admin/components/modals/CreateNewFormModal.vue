@@ -145,7 +145,7 @@
     import ChooseTemplateModal from './ChooseTemplateModal.vue';
     import ChatGPTModal from './ChatGPTModal.vue';
     import PostTypeSelectionModal from './PostTypeSelectionModal.vue';
-    import ImportForms from '@/admin/transfer/ImportForms';
+    import ImportForms from '@/admin/transfer/ImportForms.vue';
 
     export default {
         name: 'CreateNewFormModal',

@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\FormBuilder\Components;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Services\FormBuilder\Components\Select;
 
 class Name extends Select

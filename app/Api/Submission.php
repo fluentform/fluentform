@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Api;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class Submission
 {
@@ -269,7 +269,7 @@ class Submission
 
         $subscriptions = $query->get();
         foreach ($subscriptions as $subscription) {
-            $subscription->currency = ArrayHelper::get($currencyMaps, $subscription->submission_id);
+            $subscription->currency = Arr::get($currencyMaps, $subscription->submission_id);
         }
         return $subscriptions;
     }

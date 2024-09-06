@@ -4,7 +4,7 @@ namespace FluentForm\App\Modules\Form;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Request\File;
 
 /* @deprecated Current File FluentForm\App\Http\Controllers\TransferController */

@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules\Widgets;
 
 use Elementor\Plugin as Elementor;
 use FluentForm\App\Modules\Widgets\FluentFormWidget;
+use FluentForm\App\Utils\Enqueuer\Vite;
 
 class ElementorWidget
 {
@@ -29,6 +30,6 @@ class ElementorWidget
 
     public function enqueueAssets()
     {
-        wp_enqueue_style('fluentform-elementor-widget', fluentformMix('css/fluent-forms-elementor-widget.css'), [], FLUENTFORM_VERSION);
+        Vite::enqueueStyle('fluentform-elementor-widget', 'assets/elementor/fluent-forms-elementor-widget.scss', [], FLUENTFORM_VERSION);
     }
 }

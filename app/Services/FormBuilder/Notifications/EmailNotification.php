@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Notifications;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Emogrifier\Emogrifier;

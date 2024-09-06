@@ -1,8 +1,42 @@
 <?php
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+/**
+ ***** DO NOT CALL ANY FUNCTIONS DIRECTLY FROM THIS FILE ******
+ *
+ * This file will be loaded even before the framework is loaded
+ * so the $app is not available here, only declare functions here.
+ */
+
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Component\BaseComponent;
 use FluentForm\App\Services\FormBuilder\EditorShortCode;
+
+if ($app->config->get('app.env') == 'dev') {
+
+    $globalsDevFile = __DIR__ . '/../dev/globals.php';
+    
+    is_readable($globalsDevFile) && include $globalsDevFile;
+}
+
+if (!function_exists('wpf_float_val')) {
+    /**
+     * PHP float val doesn't convert an int to float 
+     * so, this is just a wrapper to get a real number.
+     * 
+     * @param  integer $val
+     * @param  integer $frac
+     * @return real number/float
+     */
+    function wpf_float_val($val = 0, $frac = 2) {
+        $val = floatval($val);
+        
+        if (strpos($val, '.') === false) {
+            $val = sprintf("%.{$frac}f", $val);
+        }
+
+        return $val;
+    }
+}
 
 /**
  ***** DO NOT CALL ANY FUNCTIONS DIRECTLY FROM THIS FILE ******
@@ -53,7 +87,7 @@ function fluentFormMix($path = '')
     return wpFluentForm('url.assets') . ltrim($path, '/');
 }
 
-if (! function_exists('wpFluent')) {
+if (!function_exists('wpFluent')) {
     /**
      * @return \FluentForm\Framework\Database\Query\Builder|\FluentForm\Framework\Database\Query\WPDBConnection
      */
@@ -79,7 +113,7 @@ function wpFluentFormAddComponent(BaseComponent $component)
 function fluentFormSanitizer($input, $attribute = null, $fields = [])
 {
     if (is_string($input)) {
-        $element = ArrayHelper::get($fields, $attribute . '.element');
+        $element = Arr::get($fields, $attribute . '.element');
 
         if (in_array($element, ['post_content', 'rich_text_input'])) {
             return wp_kses_post($input);
@@ -134,7 +168,7 @@ function fluentFormGetAllEditorShortCodes($form)
  * Recursively implode a multi-dimentional array
  *
  * @param string $glue
- * @param array  $array
+ * @param array $array
  *
  * @return string
  */
@@ -197,7 +231,7 @@ if (!function_exists('isWpAsyncRequest')) {
 function fluentFormIsHandlingSubmission()
 {
     $status = fluentFormWasSubmitted() || isWpAsyncRequest('fluentform_async_request');
-    
+
     $status = apply_filters_deprecated(
         'fluentform_is_handling_submission',
         [
@@ -283,11 +317,11 @@ function fluentFormGetRandomPhoto()
 function fluentFormRender($atts)
 {
     $shortcodeDefaults = [
-        'id'                 => null,
-        'title'              => null,
-        'css_classes'        => '',
-        'permission'         => '',
-        'type'               => 'classic',
+        'id' => null,
+        'title' => null,
+        'css_classes' => '',
+        'permission' => '',
+        'type' => 'classic',
         'permission_message' => __('Sorry, You do not have permission to view this form', 'fluentform'),
     ];
     $atts = shortcode_atts($shortcodeDefaults, $atts);
@@ -306,16 +340,16 @@ function fluentFormPrintUnescapedInternalString($string)
 function fluentform_options_sanitize($options)
 {
     $maps = [
-        'label'      => 'wp_kses_post',
-        'value'      => 'sanitize_text_field',
-        'image'      => 'sanitize_url',
+        'label' => 'wp_kses_post',
+        'value' => 'sanitize_text_field',
+        'image' => 'sanitize_url',
         'calc_value' => 'sanitize_text_field',
     ];
 
     $mapKeys = array_keys($maps);
 
     foreach ($options as $optionIndex => $option) {
-        $attributes = array_filter(ArrayHelper::only($option, $mapKeys));
+        $attributes = array_filter(Arr::only($option, $mapKeys));
         foreach ($attributes as $key => $value) {
             $options[$optionIndex][$key] = call_user_func($maps[$key], $value);
         }
@@ -357,19 +391,19 @@ function fluentform_sanitize_html($html)
     ];
     // iframe
     $tags['iframe'] = [
-        'width'           => [],
-        'height'          => [],
-        'src'             => [],
-        'srcdoc'          => [
+        'width' => [],
+        'height' => [],
+        'src' => [],
+        'srcdoc' => [
             'value_callback' => 'fluentform_iframe_srcdoc_sanitize'
         ],
-        'title'           => [],
-        'frameborder'     => [],
-        'allow'           => [],
-        'class'           => [],
-        'id'              => [],
+        'title' => [],
+        'frameborder' => [],
+        'allow' => [],
+        'class' => [],
+        'id' => [],
         'allowfullscreen' => [],
-        'style'           => [],
+        'style' => [],
     ];
     //button
     $tags['button']['onclick'] = [];
@@ -378,25 +412,25 @@ function fluentform_sanitize_html($html)
     if (empty($tags['svg'])) {
         $svg_args = [
             'svg' => [
-                'class'           => true,
-                'aria-hidden'     => true,
+                'class' => true,
+                'aria-hidden' => true,
                 'aria-labelledby' => true,
-                'role'            => true,
-                'xmlns'           => true,
-                'width'           => true,
-                'height'          => true,
-                'viewbox'         => true,
-                'fill'            => true,
-                'stroke'          => true,
-                'stroke-width'    => true,
-                'stroke-linecap'  => true,
+                'role' => true,
+                'xmlns' => true,
+                'width' => true,
+                'height' => true,
+                'viewbox' => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
                 'stroke-linejoin' => true
             ],
-            'g'     => ['fill' => true],
+            'g' => ['fill' => true],
             'title' => ['title' => true],
-            'path'  => [
-                'd'         => true,
-                'fill'      => true,
+            'path' => [
+                'd' => true,
+                'fill' => true,
                 'transform' => true,
             ],
             'polyline' => [
@@ -405,7 +439,7 @@ function fluentform_sanitize_html($html)
         ];
         $tags = array_merge($tags, $svg_args);
     }
-    
+
     $tags = apply_filters_deprecated(
         'fluentform_allowed_html_tags',
         [
@@ -441,7 +475,7 @@ function fluentform_backend_sanitizer($inputs, $sanitizeMap = [])
         if (is_array($value)) {
             $value = fluentform_backend_sanitizer($value, $sanitizeMap);
         } else {
-            $method = ArrayHelper::get($sanitizeMap, $key);
+            $method = Arr::get($sanitizeMap, $key);
             if (is_callable($method)) {
                 $value = call_user_func($method, $value);
             }
@@ -485,9 +519,9 @@ function fluentformGetPages()
 
     foreach ($pages as $page) {
         $formattedPages[] = [
-            'ID'         => $page->ID,
+            'ID' => $page->ID,
             'post_title' => $page->post_title,
-            'guid'       => $page->guid,
+            'guid' => $page->guid,
         ];
     }
 

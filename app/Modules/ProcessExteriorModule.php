@@ -4,6 +4,7 @@ namespace FluentForm\App\Modules;
 
 use FluentForm\App\Models\Form;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Utils\Enqueuer\Vite;
 
 class ProcessExteriorModule
 {
@@ -13,9 +14,9 @@ class ProcessExteriorModule
             // oxygen page compatibility
             remove_action('wp_head', 'oxy_print_cached_css', 999999);
         }
-        wp_register_script(
+        Vite::registerScript(
             'fluentform_editor_helper',
-            fluentFormMix('js/fluent_forms_editor_helper.js'),
+            'assets/admin/fluent_forms_editor_helper.js',
             array('jquery'),
             FLUENTFORM_VERSION,
             true

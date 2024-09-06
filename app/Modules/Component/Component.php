@@ -6,8 +6,9 @@ use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\App\Services\FormBuilder\Notifications\EmailNotificationActions;
+use FluentForm\App\Utils\Enqueuer\Vite;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class Component
 {
@@ -49,31 +50,31 @@ class Component
             $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
         }
 
-        wp_register_style(
+        Vite::registerStyle(
             'fluent-form-styles',
-            $fluentFormPublicCss,
+            'assets/public/scss/fluent-forms-public.scss',
             [],
             FLUENTFORM_VERSION
         );
 
-        wp_register_style(
+        Vite::registerStyle(
             'fluentform-public-default',
-            $fluentFormPublicDefaultCss,
+            'assets/public/scss/fluentform-public-default.scss',
             [],
             FLUENTFORM_VERSION
         );
 
-        wp_register_script(
+        Vite::registerScript(
             'fluent-form-submission',
-            fluentFormMix('js/form-submission.js'),
+            'assets/public/form-submission.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
 
-        wp_register_script(
+        Vite::registerScript(
             'fluentform-advanced',
-            fluentFormMix('js/fluentform-advanced.js'),
+            'assets/public/fluentform-advanced.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -82,40 +83,40 @@ class Component
         // Date Pickckr Style
         //fix for essential addon event picker conflict
         if (!wp_script_is('flatpickr', 'registered')) {
-            wp_register_style(
+            Vite::enqueueStaticStyle(
                 'flatpickr',
-                fluentFormMix('libs/flatpickr/flatpickr.min.css'),
+                'assets/libs/flatpickr/flatpickr.css',
                 [],
                 '4.6.9'
             );
         }
         // Date Pickckr Script
-        wp_register_script(
+        Vite::enqueueStaticStyle(
             'flatpickr',
-            fluentFormMix('libs/flatpickr/flatpickr.min.js'),
+            'assets/libs/flatpickr/flatpickr.js',
             ['jquery'],
             '4.6.9',
             true
         );
 
-        wp_register_script(
+        Vite::registerScript(
             'choices',
-            fluentFormMix('libs/choices/choices.min.js'),
+            'assets/libs/choices/choices.min.js',
             [],
             '9.0.1',
             true
         );
 
-        wp_register_style(
+        Vite::registerStyle(
             'ff_choices',
-            fluentFormMix('css/choices.css'),
+            'assets/public/scss/choices.scss',
             [],
             FLUENTFORM_VERSION
         );
 
-        wp_register_script(
+        Vite::registerScript(
             'form-save-progress',
-            fluentFormMix('js/form-save-progress.js'),
+            'assets/public/form-save-progress.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true

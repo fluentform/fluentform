@@ -1,7 +1,7 @@
 <?php
 namespace FluentForm\App\Helpers\Traits;
 
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 
 trait GlobalDefaultMessages
 {

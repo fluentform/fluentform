@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 
 use \FluentForm\App\Modules\Form\Form;
-use \FluentForm\Framework\Helpers\ArrayHelper;
+use \FluentForm\Framework\Support\Arr;
 
 class NinjaFormsMigrator extends BaseMigrator
 {
@@ -86,7 +86,7 @@ class NinjaFormsMigrator extends BaseMigrator
     public function getFields($form)
     {
         $fluentFields = [];
-        $fields = ArrayHelper::get($form, 'fields');
+        $fields = Arr::get($form, 'fields');
 
         foreach ($fields as $field) {
             list($type, $args) = $this->formatFieldData($field);

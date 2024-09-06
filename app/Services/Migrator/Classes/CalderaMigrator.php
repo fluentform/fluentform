@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 
 use FluentForm\App\Modules\Form\Form;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class CalderaMigrator extends BaseMigrator
 {
@@ -74,7 +74,7 @@ class CalderaMigrator extends BaseMigrator
                 $fluentFields[$field['ID']] = $value;
             } else {
                 //submit button is imported separately
-                if (ArrayHelper::get($field, 'type') != 'button') {
+                if (Arr::get($field, 'type') != 'button') {
                     $this->unSupportFields[] = ArrayHelper::get($field, 'label');
                 }
             }

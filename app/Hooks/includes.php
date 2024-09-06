@@ -10,4 +10,4 @@
  * @var \FluentForm\Framework\Foundation\Application $app
  */
 
-include_once __DIR__ . '/Ajax.php';
+include_once __DIR__ . '/ajax.php';

@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\Settings\Validator;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Validator\Validator;
 
 class Notifications extends Validate

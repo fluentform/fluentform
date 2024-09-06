@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder\Components;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class Address extends BaseComponent
 {
@@ -91,11 +91,16 @@ class Address extends BaseComponent
         endif;
         echo "<div class='ff-el-input--content'>";
 
+        $googleAutoComplete = 'yes' === ArrayHelper::get($data, 'settings.enable_g_autocomplete');
+        if (!$googleAutoComplete) {
+            $data['fields']['latitude']['settings']['visible'] = false;
+            $data['fields']['longitude']['settings']['visible'] = false;
+        }
+
         $visibleFields = array_chunk(array_filter($data['fields'], function ($field) {
             return $field['settings']['visible'];
         }), 2);
 
-        $googleAutoComplete = 'yes' === ArrayHelper::get($data, 'settings.enable_g_autocomplete');
         foreach ($visibleFields as $chunked) {
             echo "<div class='ff-t-container'>";
             foreach ($chunked as $item) {

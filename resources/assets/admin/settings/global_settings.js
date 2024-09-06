@@ -1,7 +1,8 @@
-import Vue from 'vue';
-import locale from 'element-ui/lib/locale';
-import lang from 'element-ui/lib/locale/lang/en';
+import { createApp } from 'vue';
+import { useLocale } from 'element-plus';
+import en from 'element-plus/es/locale/lang/en';
 
+// Import your components
 import GlobalSettings from './GlobalSettings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
@@ -11,120 +12,75 @@ import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
 import InventoryManager from './InventoryManager.vue';
-
-
 import License from './License.vue';
-import globalSearch from '../global_search'
+import globalSearch from '../global_search';
 
-import Errors from '@/common/Errors';
-global.Errors = Errors;
-
-import notifier from '@/admin/notifier';
-
+// Import Element Plus components
 import {
-    Button,
-    Radio,
-    RadioGroup,
-    Form,
-    FormItem,
-    Input,
-    Tooltip,
-    Row,
-    Col,
-    Select,
-    Option,
-    OptionGroup,
-    Switch,
-    Dialog,
-    Loading,
-    Notification,
-    Checkbox,
-    CheckboxGroup,
-    ColorPicker,
-    InputNumber,
-    Table,
-    TableColumn,
-    Tag,
-    Popover,
-    Pagination,
-    Skeleton,
-    SkeletonItem
-} from 'element-ui';
-import e from 'jquery-datetimepicker';
+    ElButton,
+    ElRadio,
+    ElRadioGroup,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElTooltip,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElOptionGroup,
+    ElSwitch,
+    ElDialog,
+    ElLoading,
+    ElNotification,
+    ElCheckbox,
+    ElCheckboxGroup,
+    ElColorPicker,
+    ElInputNumber,
+    ElTable,
+    ElTableColumn,
+    ElTag,
+    ElPopover,
+    ElPagination,
+    ElSkeleton,
+    ElSkeletonItem,
+} from 'element-plus';
+
 import { handleSidebarActiveLink } from '@/admin/helpers';
 import CustomComponent from '@/admin/components/CustomComponent';
+import Errors from '@/common/Errors';
+import notifier from '@/admin/notifier';
 
-locale.use(lang);
-Vue.use(Button);
-Vue.use(Form);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(Input);
-Vue.use(Checkbox);
-Vue.use(CheckboxGroup);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(OptionGroup);
-Vue.use(Switch);
-Vue.use(Tooltip);
-Vue.use(FormItem);
-Vue.use(Loading.directive);
-Vue.use(InputNumber);
-Vue.use(ColorPicker);
-Vue.use(RadioGroup);
-Vue.use(Radio);
-Vue.use(Dialog);
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(Tag);
-Vue.use(Popover);
-Vue.use(Pagination);
-Vue.use(Skeleton);
-Vue.use(SkeletonItem);
+// Locale configuration
+const locale = useLocale();
+locale.locale(en);
 
-Vue.prototype.$notify = Notification;
-Vue.prototype.$loading = Loading.service;
-
-Vue.mixin({
-    methods: {
-        $t(str) {
-            let transString = window.FluentFormApp.form_settings_str[str];
-            if(transString) {
-                return transString;
-            }
-            return str;
-        },
-
-        ...notifier
-    }
-})
-
-new Vue({
-    el: '#ff_global_settings_option_app',
+// Create Vue app
+const app = createApp({
     components: {
         globalSearch,
-        settings: GlobalSettings,
-        re_captcha: reCaptcha,
-        h_captcha: hCaptcha,
-        turnstile: turnstile,
-        pdf_settings: pdf_settings,
-        'general-integration-settings': GeneralIntegrationSettings,
-        'double_optin_settings': DoubleOptinSettings,
-        managers: ManagersSettings,
-        inventory_manager: InventoryManager,
-        custom_component: CustomComponent,
-        license: License
-
+        GlobalSettings,
+        reCaptcha,
+        hCaptcha,
+        turnstile,
+        pdf_settings,
+        GeneralIntegrationSettings,
+        DoubleOptinSettings,
+        ManagersSettings,
+        InventoryManager,
+        License,
+        CustomComponent
     },
-    data: {
-        component: 'settings',
-        App: window.FluentFormApp,
-        component_name: '',
-        settings_key: ''
+    data() {
+        return {
+            component: 'settings',
+            App: window.FluentFormApp,
+            component_name: '',
+            settings_key: ''
+        };
     },
     methods: {
         setRoute($el, $originalEl = false) {
-            // get component by hash
             let hash = $el.data('hash');
             let component = hash;
             if ($el.data('component')) {
@@ -134,7 +90,6 @@ new Vue({
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component_name = $el.data('component_name') || '';
                 this.component = component;
-                // set route hash
                 location.hash = hash;
             } else if ($originalEl &&
                 $originalEl.hasClass('ff-payment-settings-root')
@@ -161,17 +116,64 @@ new Vue({
         if ($el.length) {
             $el = this.maybeGetFirstSubLink($el);
             this.setRoute($el);
-            handleSidebarActiveLink($el.parent(), true , true);
+            handleSidebarActiveLink($el.parent(), true, true);
         }
         const that = this;
         jQuery('.ff_settings_list li a').on('click', function (e) {
             $el = jQuery(this);
-            if($el.attr('href') === '#') e.preventDefault();
+            if ($el.attr('href') === '#') e.preventDefault();
             if (that.setRoute(that.maybeGetFirstSubLink($el), $el) === 'redirected') {
                 return;
             }
-            handleSidebarActiveLink($el.parent())
+            handleSidebarActiveLink($el.parent());
         });
     }
 });
 
+// Register global properties and Element Plus components
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.Errors = Errors;
+app.mixin({
+    methods: {
+        $t(str) {
+            let transString = window.FluentFormApp.form_settings_str[str];
+            if (transString) {
+                return transString;
+            }
+            return str;
+        },
+        ...notifier
+    }
+});
+
+// Use Element Plus components
+app.use(ElButton);
+app.use(ElForm);
+app.use(ElRow);
+app.use(ElCol);
+app.use(ElInput);
+app.use(ElCheckbox);
+app.use(ElCheckboxGroup);
+app.use(ElSelect);
+app.use(ElOption);
+app.use(ElOptionGroup);
+app.use(ElSwitch);
+app.use(ElTooltip);
+app.use(ElFormItem);
+app.use(ElLoading.directive);
+app.use(ElInputNumber);
+app.use(ElColorPicker);
+app.use(ElRadioGroup);
+app.use(ElRadio);
+app.use(ElDialog);
+app.use(ElTable);
+app.use(ElTableColumn);
+app.use(ElTag);
+app.use(ElPopover);
+app.use(ElPagination);
+app.use(ElSkeleton);
+app.use(ElSkeletonItem);
+
+// Mount the app
+app.mount('#ff_global_settings_option_app');

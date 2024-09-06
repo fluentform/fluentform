@@ -417,8 +417,9 @@
     padding: 15px;
     cursor: pointer;
     border-radius: 6px;
-    font-size: 14px;
     background-color: $white;
+    font-size: 18px;
+    margin-bottom: 4px;
     &:hover {
       background-color: $editor-inserter-content-item-hover-bg;
       color: $editor-inserter-content-item-hover-color;
@@ -428,8 +429,6 @@
       &.dashicons {
         font-family: dashicons;
       }
-      font-size: 18px;
-      margin-bottom: 4px;
     }
 
     div {

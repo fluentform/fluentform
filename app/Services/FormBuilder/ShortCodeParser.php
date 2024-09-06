@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\FormBuilder;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Helpers\Helper;
 
 class ShortCodeParser
@@ -160,7 +160,7 @@ class ShortCodeParser
             }
 
             if ($isUrl) {
-                $value = urlencode($value);
+                $value = rawurlencode($value);
             }
 
             return $value;

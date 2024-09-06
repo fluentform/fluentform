@@ -3,33 +3,34 @@
 namespace FluentForm\App\Modules\Registerer;
 
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Services\Manager\FormManagerService;
+use FluentForm\Framework\Support\Arr;
 
 class AdminBar
 {
-    
+
     public function register()
     {
         if (!self::isDisabled()) {
             add_action('admin_bar_menu', [$this, 'addMenuBar'], 99);
         }
     }
-    
+
     public static function isDisabled()
     {
         $settings = get_option('_fluentform_global_form_settings');
 
-        if(!$settings || is_multisite()) {
+        if (!$settings || is_multisite()) {
             return true;
         }
 
-        return 'no' == ArrayHelper::get($settings, 'misc.admin_top_nav_status');
+        return 'no' == Arr::get($settings, 'misc.admin_top_nav_status');
     }
-    
+
     public function addMenuBar($wpAdminBar)
     {
         $items = $this->getMenuItems();
-        if(empty($items)){
+        if (empty($items)) {
             return;
         }
 
@@ -37,10 +38,10 @@ class AdminBar
             $arr = [
                 'id'     => $itemKey == 'fluent_form' ? $itemKey : sanitize_title($itemKey),
                 'parent' => $itemKey != 'fluent_form' ? 'fluent_form' : '',
-                'title'  => ArrayHelper::get($item, 'title'),
-                'href'   => ArrayHelper::get($item, 'url'),
+                'title'  => Arr::get($item, 'title'),
+                'href'   => Arr::get($item, 'url'),
             ];
-            if(ArrayHelper::get($item,'meta')){
+            if (Arr::get($item, 'meta')) {
                 $arr['meta'] = [
                     'target' => '_blank',
                     'rel'    => 'noopener noreferrer',
@@ -52,8 +53,8 @@ class AdminBar
             do_action("fluentform/admin_nav_menu_{$itemKey}");
         }
     }
-    
-    
+
+
     private function getMenuItems()
     {
         $dashBoardCapability = 'fluentform_dashboard_access';
@@ -71,7 +72,7 @@ class AdminBar
             'fluentform/dashboard_capability',
             $dashBoardCapability
         );
-    
+
         $settingManager = 'fluentform_settings_manager';
         $settingManager = apply_filters_deprecated(
             'fluentform_settings_capability',
@@ -87,7 +88,7 @@ class AdminBar
             'fluentform/settings_capability',
             $settingManager
         );
-        
+
         $fromRole = $currentUserCapability = false;
         if (!current_user_can($dashBoardCapability) && !current_user_can($settingsCapability)) {
             $currentUserCapability = Acl::getCurrentUserCapability();
@@ -98,19 +99,23 @@ class AdminBar
                 $dashBoardCapability = $settingsCapability = $currentUserCapability;
             }
         }
-        
+
         if (Acl::isSuperMan()) {
             $fromRole = true;
         }
-        
+
         if (defined('FLUENTFORMPRO')) {
             $title = __('Fluent Forms Pro', 'fluentform');
         } else {
             $title = __('Fluent Forms', 'fluentform');
         }
-    
+
+        $allowForms = FormManagerService::getUserAllowedForms();
         $hasUnreadSubmissions = wpFluent()->table('fluentform_submissions')
             ->where('status', 'unread')
+            ->when($allowForms, function ($q) use ($allowForms) {
+                return $q->whereIn('form_id', $allowForms);
+            })
             ->count();
 
         $entriesDropdownTitle = __('Entries', 'fluentform');
@@ -121,7 +126,7 @@ class AdminBar
             $style .= 'float:right; margin-top:4px';
             $entriesDropdownTitle .= ' <span class="ff_unread_count" style="' . $style . '">' . $hasUnreadSubmissions . '</span>';
         }
-        
+
         $items = [
             'fluent_form' => [
                 'title'      => $title,
@@ -134,7 +139,7 @@ class AdminBar
                 'url'        => admin_url('admin.php?page=fluent_forms')
             ],
         ];
-        
+
         if ($settingsCapability) {
             $items['new_form'] = [
                 'title' => __('New Form', 'fluentform'),
@@ -159,35 +164,32 @@ class AdminBar
             );
 
             if (apply_filters('fluentform/show_payment_entries', $showPaymentEntries)) {
-                $items ['fluent_forms_payment_entries'] = [
+                $items['fluent_forms_payment_entries'] = [
                     'title'      => __('Payments', 'fluentform'),
                     'capability' => $fromRole ? $settingsCapability : 'fluentform_view_payments',
                     'url'        => admin_url('admin.php?page=fluent_forms_payment_entries')
                 ];
             }
-         
         }
         $items['fluent_forms_community'] = [
-            'title'  => esc_html__( 'Community', 'wpforms-lite' ),
+            'title'  => esc_html__('Community', 'wpforms-lite'),
             'url'   => 'https://www.facebook.com/groups/fluentforms/',
             'meta'   => true
         ];
         $items['fluent_forms_doc'] = [
-            'title' => __('Docs','fluentform'),
+            'title' => __('Docs', 'fluentform'),
             'url' => 'https://wpmanageninja.com/docs/fluent-form/',
             'meta'   => true
         ];
         $items['fluent_forms_doc'] = [
-            'title' => __('Docs','fluentform'),
+            'title' => __('Docs', 'fluentform'),
             'url' => 'https://wpmanageninja.com/docs/fluent-form/',
         ];
         $items['fluent_forms_dev_doc'] = [
-            'title' => __('Developer Docs','fluentform'),
+            'title' => __('Developer Docs', 'fluentform'),
             'url' => 'https://developers.fluentforms.com/',
             'meta'   => true
         ];
         return apply_filters('fluentform/admin_menu_bar_items', $items);
     }
-    
-    
 }

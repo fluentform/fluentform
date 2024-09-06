@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\Analytics;
 use FluentForm\App\Models\FormAnalytics;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Services\Browser\Browser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class AnalyticsService
 {

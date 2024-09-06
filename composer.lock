@@ -4,29 +4,30 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "455d051c2734534ae348c2ecb4cd50f7",
+    "content-hash": "0686cb653dffd2a64b73eee0fb31f94d",
     "packages": [
         {
             "name": "wpfluent/framework",
-            "version": "1.0.19",
+            "version": "2.10.5",
             "source": {
                 "type": "git",
                 "url": "git@github.com:wpfluent/framework.git",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673"
+                "reference": "e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wpfluent/framework/zipball/e7c043b2a431b1bcd98ff658f47a137e8d21d673",
-                "reference": "e7c043b2a431b1bcd98ff658f47a137e8d21d673",
+                "url": "https://api.github.com/repos/wpfluent/framework/zipball/e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33",
+                "reference": "e6c7a57a934513a71497ccdd8c12cd7ca8ac4e33",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "ext-json": "*",
+                "php": "^7.3|^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -44,7 +45,11 @@
                 }
             ],
             "description": "A lightweight rest api based framework to build WordPress plugins.",
-            "time": "2022-09-16T11:41:03+00:00"
+            "support": {
+                "source": "https://github.com/wpfluent/framework/tree/2.10.5",
+                "issues": "https://github.com/wpfluent/framework/issues"
+            },
+            "time": "2024-09-02T13:57:03+00:00"
         }
     ],
     "packages-dev": [],
@@ -55,5 +60,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }

@@ -2,10 +2,9 @@
 
 namespace FluentForm\App\Hooks\Handlers;
 
-
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 Use FluentForm\App\Services\Integrations\GlobalNotificationService;
 
 class GlobalNotificationHandler
@@ -100,7 +99,7 @@ class GlobalNotificationHandler
         
         foreach ($enabledFeeds as $feed) {
             // We will decide if this feed will run on async or sync
-            $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
+            $integrationKey = Arr::get($feedKeys, $feed['meta_key']);
 
             $oldAction = 'fluentform_integration_notify_' . $feed['meta_key'];
             $newAction = 'fluentform/integration_notify_' . $feed['meta_key'];
@@ -110,7 +109,7 @@ class GlobalNotificationHandler
             }
             // skip emails which will be sent on payment form submit otherwise email is sent after payment success
             if (!! $form->has_payment && ('notifications' == $feed['meta_key'])) {
-                if (('payment_form_submit' == ArrayHelper::get($feed, 'settings.feed_trigger_event'))) {
+                if (('payment_form_submit' == Arr::get($feed, 'settings.feed_trigger_event'))) {
                     continue;
                 }
             }

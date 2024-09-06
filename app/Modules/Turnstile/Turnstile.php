@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Turnstile;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class Turnstile
 {

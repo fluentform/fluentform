@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\HCaptcha;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class HCaptcha
 {

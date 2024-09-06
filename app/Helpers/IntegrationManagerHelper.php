@@ -5,6 +5,7 @@ namespace FluentForm\App\Helpers;
 
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Services\Integrations\FormIntegrationService;
+use FluentForm\Framework\Support\Arr;
 
 class IntegrationManagerHelper
 {
@@ -131,7 +132,7 @@ class IntegrationManagerHelper
         if (empty($globalModules)) {
             $globalModules = get_option('fluentform_global_modules_status');
         }
-        if  (\FluentForm\Framework\Helpers\ArrayHelper::get($globalModules, $key) == 'yes') {
+        if  (Arr::get($globalModules, $key) == 'yes') {
             return true;
         }
     

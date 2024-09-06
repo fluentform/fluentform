@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Migrator\Classes;
 
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Submission\SubmissionService;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 abstract class BaseMigrator
 {
@@ -175,7 +175,7 @@ abstract class BaseMigrator
         ];
 
         $args = wp_parse_args($args, $defaults);
-        return ArrayHelper::get(self::defaultFieldConfig($args), $field);
+        return Arr::get(self::defaultFieldConfig($args), $field);
     }
 
     public static function defaultFieldConfig($args)

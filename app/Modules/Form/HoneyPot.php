@@ -3,7 +3,7 @@
 namespace FluentForm\App\Modules\Form;
 
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class HoneyPot
 {

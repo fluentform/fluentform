@@ -11,7 +11,7 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\ConditionAssesor;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * @deprecated deprecated use  FluentForm\App\Hooks\Handlers\GlobalNotificationHandler;

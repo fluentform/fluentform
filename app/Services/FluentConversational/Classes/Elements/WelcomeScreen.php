@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\FluentConversational\Classes\Elements;
 
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class WelcomeScreen extends BaseFieldManager
 {

@@ -84,8 +84,8 @@ Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 
-import lang from 'element-ui/lib/locale/lang/en';
-import locale from 'element-ui/lib/locale';
+import lang from 'element-plus/es/locale/lang/en';
+import locale from 'element-plus/es/locale';
 // configure language
 locale.use(lang);
 

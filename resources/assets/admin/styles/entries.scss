@@ -375,13 +375,12 @@ table.editor_table, .ff_entry_table_field, .ff-table {
 }
 
 .entry_info_body.narrow_items {
-  padding: 0 15px 15px;
+  margin: 0 -15px;
+  padding: 10px 15px;
   .wpf_each_entry {
     * {
       word-break: break-all;
     }
-    margin: 0 -15px;
-    padding: 10px 15px;
     p {
       margin: 5px 0px;
     }

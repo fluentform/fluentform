@@ -4,7 +4,7 @@ namespace FluentForm\App\Modules\Form\Settings;
 
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\Form;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\Settings\Validator\Validator;
 

@@ -9,7 +9,7 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Services\FormBuilder\Components\SelectCountry;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Helpers\Traits\GlobalDefaultMessages;
 
 class Helper
@@ -34,7 +34,7 @@ class Helper
     public static function sanitizer($input, $attribute = null, $fields = [])
     {
         if (is_string($input)) {
-            if ('textarea' === ArrayHelper::get($fields, $attribute . '.element')) {
+            if ('textarea' === Arr::get($fields, $attribute . '.element')) {
                 $input = sanitize_textarea_field($input);
             } else {
                 $input = sanitize_text_field($input);
@@ -56,12 +56,12 @@ class Helper
     {
         $baseUrl = admin_url('admin.php?page=' . $page);
         
-        $hash = ArrayHelper::get($component, 'hash', '');
+        $hash = Arr::get($component, 'hash', '');
         if ($hash) {
             $baseUrl = $baseUrl . '#' . $hash;
         }
         
-        $query = ArrayHelper::get($component, 'query');
+        $query = Arr::get($component, 'query');
         
         if ($query) {
             $paramString = http_build_query($query);
@@ -206,7 +206,7 @@ class Helper
     public static function isEntryAutoDeleteEnabled($formId)
     {
         if (
-            'yes' == ArrayHelper::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission',
+            'yes' == Arr::get(static::getFormMeta($formId, 'formSettings', []), 'delete_entry_on_submission',
                 '')
         ) {
             return true;
@@ -226,7 +226,7 @@ class Helper
             return '';
         }
         
-        if ($extraClass = ArrayHelper::get($formSettings, 'form_extra_css_class')) {
+        if ($extraClass = Arr::get($formSettings, 'form_extra_css_class')) {
             return esc_attr($extraClass);
         }
         
@@ -318,7 +318,7 @@ class Helper
                     
                     $ids[$result[$selector]] = $result[$selector];
                     
-                    $theme = ArrayHelper::get($result, 'theme');
+                    $theme = Arr::get($result, 'theme');
                     
                     if ($theme) {
                         $attributes[] = [
@@ -354,7 +354,7 @@ class Helper
         
         $parsedBlocks = parse_blocks($content);
         foreach ($parsedBlocks as $block) {
-            if (!ArrayHelper::exists($block, 'blockName') || !ArrayHelper::get($block, 'attrs.formId')) {
+            if (!Arr::exists($block, 'blockName') || !Arr::get($block, 'attrs.formId')) {
                 continue;
             }
             
@@ -364,7 +364,7 @@ class Helper
                 
                 $ids[] = $formId;
                 
-                $theme = ArrayHelper::get($block, 'attrs.themeStyle');
+                $theme = Arr::get($block, 'attrs.themeStyle');
                 
                 if ($theme) {
                     $attributes[] = [
@@ -386,7 +386,7 @@ class Helper
     {
         if ('na' == static::$tabIndexStatus) {
             $globalSettings = get_option('_fluentform_global_form_settings');
-            static::$tabIndexStatus = 'yes' == ArrayHelper::get($globalSettings, 'misc.tabIndex');
+            static::$tabIndexStatus = 'yes' == Arr::get($globalSettings, 'misc.tabIndex');
         }
         
         return static::$tabIndexStatus;
@@ -397,7 +397,7 @@ class Helper
         $form = Form::find($formId);
         $fields = json_decode($form->form_fields, true);
         
-        if (ArrayHelper::get($fields, 'stepsWrapper')) {
+        if (Arr::get($fields, 'stepsWrapper')) {
             return true;
         }
         
@@ -414,9 +414,9 @@ class Helper
     
     public static function isUniqueValidation($validation, $field, $formData, $fields, $form)
     {
-        if ('yes' == ArrayHelper::get($field, 'raw.settings.is_unique')) {
-            $fieldName = ArrayHelper::get($field, 'name');
-            if ($inputValue = ArrayHelper::get($formData, $fieldName)) {
+        if ('yes' == Arr::get($field, 'raw.settings.is_unique')) {
+            $fieldName = Arr::get($field, 'name');
+            if ($inputValue = Arr::get($formData, $fieldName)) {
                 $exist = EntryDetails::where('form_id', $form->id)
                     ->where('field_name', $fieldName)
                     ->where('field_value', $inputValue)
@@ -428,16 +428,16 @@ class Helper
                     $allSubmission = Submission::where('form_id', $form->id)->get()->toArray();
                     
                     foreach ($allSubmission as $submission) {
-                        $response = json_decode(ArrayHelper::get($submission, 'response'), true);
-                        $exist = $inputValue == ArrayHelper::get($response, $fieldName);
+                        $response = json_decode(Arr::get($submission, 'response'), true);
+                        $exist = $inputValue == Arr::get($response, $fieldName);
                     }
                 }
                 
                 if ($exist) {
-                    $typeName = ArrayHelper::get($field, 'element', 'input_text');
+                    $typeName = Arr::get($field, 'element', 'input_text');
                     return [
                         'unique' => apply_filters('fluentform/validation_message_unique_' . $typeName,
-                            ArrayHelper::get($field, 'raw.settings.unique_validation_message'), $field),
+                            Arr::get($field, 'raw.settings.unique_validation_message'), $field),
                     ];
                 }
             }
@@ -567,14 +567,14 @@ class Helper
         $names = [];
         
         foreach ($fields as $field) {
-            if ('container' == ArrayHelper::get($field, 'element')) {
-                $columns = ArrayHelper::get($field, 'columns', []);
+            if ('container' == Arr::get($field, 'element')) {
+                $columns = Arr::get($field, 'columns', []);
                 foreach ($columns as $column) {
-                    $columnInputs = static::getFieldNamesStatuses(ArrayHelper::get($column, 'fields', []));
+                    $columnInputs = static::getFieldNamesStatuses(Arr::get($column, 'fields', []));
                     $names = array_merge($names, $columnInputs);
                 }
             } else {
-                if ($name = ArrayHelper::get($field, 'attributes.name')) {
+                if ($name = Arr::get($field, 'attributes.name')) {
                     $names[] = $name;
                 }
             }
@@ -627,7 +627,7 @@ class Helper
     private static function getConversionUrl($formId)
     {
         $meta = static::getFormMeta($formId, 'ffc_form_settings_meta', []);
-        $key = ArrayHelper::get($meta, 'share_key', '');
+        $key = Arr::get($meta, 'share_key', '');
         
         $slug = apply_filters_deprecated(
             'fluentform_conversational_url_slug',
@@ -778,8 +778,8 @@ class Helper
         if (!$girdData || !$field) {
             return '';
         }
-        $girdRows = ArrayHelper::get($field, 'raw.settings.grid_rows', '');
-        $girdCols = ArrayHelper::get($field, 'raw.settings.grid_columns', '');
+        $girdRows = Arr::get($field, 'raw.settings.grid_rows', '');
+        $girdCols = Arr::get($field, 'raw.settings.grid_columns', '');
         $value = '';
         $lastRow = key(array_slice($girdData, -1, 1, true));
         foreach ($girdData as $row => $column) {
@@ -864,12 +864,12 @@ class Helper
     
     public static function getIpinfo()
     {
-        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
+        return Arr::get(get_option('_fluentform_global_form_settings'), 'misc.geo_provider_token');
     }
     
     public static function isAutoloadCaptchaEnabled()
     {
-        return ArrayHelper::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
+        return Arr::get(get_option('_fluentform_global_form_settings'), 'misc.autoload_captcha');
     }
     
     public static function maybeDecryptUrl($url)
@@ -906,7 +906,7 @@ class Helper
                 static::resolveValidationRulesGlobalOption($subField);
             }
         } else {
-            if (ArrayHelper::get($field, 'settings.validation_rules')) {
+            if (Arr::get($field, 'settings.validation_rules')) {
                 foreach ($field['settings']['validation_rules'] as $key => &$rule) {
                     if (!isset($rule['global'])) {
                         $rule['global'] = false;
@@ -933,26 +933,26 @@ class Helper
     {
         $error = '';
         if (!$fieldName) {
-            $fieldName = ArrayHelper::get($field, 'name');
+            $fieldName = Arr::get($field, 'name');
         }
         if (!$fieldName) {
             return $error;
         }
         if (!$inputValue) {
-            $inputValue = ArrayHelper::get($formData, $fieldName);
+            $inputValue = Arr::get($formData, $fieldName);
         }
         if ($inputValue) {
-            $rawField = ArrayHelper::get($field, 'raw');
+            $rawField = Arr::get($field, 'raw');
             if (!$rawField) {
                 $rawField = $field;
             }
-            $fieldType = ArrayHelper::get($rawField, 'element');
+            $fieldType = Arr::get($rawField, 'element');
             $rawField = apply_filters('fluentform/rendering_field_data_' . $fieldType, $rawField, $form);
             $options = [];
             if ("net_promoter_score" === $fieldType) {
-                $options = array_flip(ArrayHelper::get($rawField, 'options', []));
+                $options = array_flip(Arr::get($rawField, 'options', []));
             } elseif ('ratings' == $fieldType) {
-                $options = array_keys(ArrayHelper::get($rawField, 'options', []));
+                $options = array_keys(Arr::get($rawField, 'options', []));
             } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
                 $options = ['on'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
@@ -1065,6 +1065,8 @@ class Helper
             '__stripe_payment_method_id',
             '__ff_all_applied_coupons',
             '__entry_intermediate_hash',
+            '__square_payment_method_id',
+            '__square_verify_buyer_id'
         ];
         
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);

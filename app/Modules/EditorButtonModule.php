@@ -2,7 +2,8 @@
 
 namespace FluentForm\App\Modules;
 
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Utils\Enqueuer\Vite;
+use FluentForm\Framework\Support\Arr;
 
 class EditorButtonModule
 {
@@ -21,9 +22,9 @@ class EditorButtonModule
 
     private function addMceButtonAssets()
     {
-        wp_enqueue_script(
+        Vite::registerScript(
             'fluentform_editor_script',
-            fluentformMix('js/fluentform_editor_script.js'),
+            'assets/admin/fluentform_editor_script.js',
             ['jquery'],
             FLUENTFORM_VERSION
         );

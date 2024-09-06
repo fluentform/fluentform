@@ -5,7 +5,7 @@ namespace FluentForm\App\Modules\Entries;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Helpers\Helper;
 
 class Export

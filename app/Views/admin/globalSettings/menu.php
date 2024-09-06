@@ -1,7 +1,7 @@
 <?php
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 ?>
 <?php

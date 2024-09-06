@@ -5,7 +5,7 @@ namespace FluentForm\App\Services\Integrations\MailChimp;
 use FluentForm\App\Http\Controllers\IntegrationManagerController;
 use FluentForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use FluentForm\Framework\Foundation\Application;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class MailChimpIntegration extends IntegrationManagerController
 {

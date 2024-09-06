@@ -63,7 +63,7 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
 
     $router->prefix('{entry_id}')->group(function ($router) {
         $router->get('/', 'SubmissionController@find');
-    
+
         $router->post('status', 'SubmissionController@updateStatus');
         $router->post('is-favorite', 'SubmissionController@toggleIsFavorite');
 
@@ -72,7 +72,7 @@ $router->prefix('submissions')->withPolicy('SubmissionPolicy')->group(function (
 
         $router->get('notes', 'SubmissionNoteController@get');
         $router->post('notes', 'SubmissionNoteController@store');
-        
+
         $router->get('submission-users','SubmissionController@submissionUsers');
         $router->post('update-submission-user','SubmissionController@updateSubmissionUser');
     });
@@ -93,7 +93,7 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
     $router->get('/', 'GlobalIntegrationController@index');
     $router->post('/', 'GlobalIntegrationController@updateIntegration');
     $router->post('update-status', 'GlobalIntegrationController@updateModuleStatus');
-    
+
     /*
     * Form Integrations
     */
@@ -102,7 +102,7 @@ $router->prefix('integrations')->withPolicy('FormPolicy')->group(function ($rout
         $router->get('/', 'FormIntegrationController@find');
         $router->post('/', 'FormIntegrationController@update');
         $router->delete('/', 'FormIntegrationController@delete');
-        
+
         $router->get('/integration-list-id', 'FormIntegrationController@integrationListComponent');
     });
 });

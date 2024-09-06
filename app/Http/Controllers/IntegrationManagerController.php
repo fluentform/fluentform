@@ -5,7 +5,7 @@ namespace FluentForm\App\Http\Controllers;
 
 use FluentForm\App\Helpers\IntegrationManagerHelper;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 abstract class IntegrationManagerController extends IntegrationManagerHelper
 
@@ -228,12 +228,12 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
         $routingId = 'tag_ids_selection_type',
         $routersKey = 'tag_routers'
     ) {
-        $routing = ArrayHelper::get($data, $routingId, 'simple');
+        $routing = Arr::get($data, $routingId, 'simple');
         if (!$routing || 'simple' == $routing) {
-            return ArrayHelper::get($data, $simpleKey, []);
+            return Arr::get($data, $simpleKey, []);
         }
         
-        $routers = ArrayHelper::get($data, $routersKey);
+        $routers = Arr::get($data, $routersKey);
         if (empty($routers)) {
             return [];
         }
@@ -245,7 +245,7 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
     {
         $validInputs = [];
         foreach ($routings as $routing) {
-            $inputValue = ArrayHelper::get($routing, 'input_value');
+            $inputValue = Arr::get($routing, 'input_value');
             if (!$inputValue) {
                 continue;
             }

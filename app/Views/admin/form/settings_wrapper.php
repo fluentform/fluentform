@@ -1,5 +1,5 @@
 <?php
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 ?>
 
 <div class="ff_settings_wrapper ff_layout_section">

@@ -4,7 +4,7 @@ namespace FluentForm\App\Services\Integrations\MailChimp;
 
 use FluentForm\App\Services\ConditionAssesor;
 use FluentForm\App\Services\Integrations\LogResponseTrait;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 trait MailChimpSubscriber
 {

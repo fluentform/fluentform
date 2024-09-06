@@ -46,8 +46,8 @@ import {
     DatePicker
 } from 'element-ui';
 
-import lang from 'element-ui/lib/locale/lang/en';
-import locale from 'element-ui/lib/locale';
+import lang from 'element-plus/es/locale/lang/en';
+import locale from 'element-plus/es/locale';
 import mixins from './editor_mixins';
 import globalSearch from './global_search'
 // Global error handling...

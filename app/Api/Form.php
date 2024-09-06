@@ -3,7 +3,8 @@
 namespace FluentForm\App\Api;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Services\Manager\FormManagerService;
+use FluentForm\Framework\Support\Arr;
 
 class Form
 {
@@ -22,20 +23,24 @@ class Form
 
         $atts = wp_parse_args($atts, $defaultAtts);
 
-        $perPage = (int) ArrayHelper::get($atts, 'per_page', 10);
-        $search = sanitize_text_field(ArrayHelper::get($atts, 'search', ''));
-        $status = sanitize_text_field(ArrayHelper::get($atts, 'status', 'all'));
-        $filter_by = sanitize_text_field(ArrayHelper::get($atts, 'filter_by', 'all'));
-        $dateRange = ArrayHelper::get($atts, 'date_range', []);
+        $perPage = (int) Arr::get($atts, 'per_page', 10);
+        $search = sanitize_text_field(Arr::get($atts, 'search', ''));
+        $status = sanitize_text_field(Arr::get($atts, 'status', 'all'));
+        $filter_by = sanitize_text_field(Arr::get($atts, 'filter_by', 'all'));
+        $dateRange = Arr::get($atts, 'date_range', []);
         $is_filter_by_conv_or_step_form = $filter_by && ('conv_form' == $filter_by || 'step_form' == $filter_by);
 
-        $shortColumn = sanitize_sql_orderby(ArrayHelper::get($atts, 'sort_column', 'id'));
-        $sortBy = Helper::sanitizeOrderValue(ArrayHelper::get($atts, 'sort_by', 'DESC'));
+        $shortColumn = sanitize_sql_orderby(Arr::get($atts, 'sort_column', 'id'));
+        $sortBy = Helper::sanitizeOrderValue(Arr::get($atts, 'sort_by', 'DESC'));
 
         $query = \FluentForm\App\Models\Form::orderBy($shortColumn, $sortBy)->getQuery();
 
         if ($status && 'all' != $status) {
             $query->where('status', $status);
+        }
+
+        if ($allowIds = FormManagerService::getUserAllowedForms()) {
+            $query->whereIn('id', $allowIds);
         }
 
         if ($filter_by && !$is_filter_by_conv_or_step_form) {
@@ -69,14 +74,14 @@ class Form
             });
         }
 
-        $currentPage = intval(ArrayHelper::get($atts, 'page', 1));
+        $currentPage = intval(Arr::get($atts, 'page', 1));
         $total = $query->count();
         $skip = $perPage * ($currentPage - 1);
 
         if ($is_filter_by_conv_or_step_form) {
-            $data = (array) $query->select('*')->get();
+            $data = $query->select('*')->get()->toArray();
         } else {
-            $data = (array) $query->select('*')->limit($perPage)->offset($skip)->get();
+            $data = $query->select('*')->limit($perPage)->offset($skip)->get()->toArray();
         }
 
         $conversationOrStepForms = [];

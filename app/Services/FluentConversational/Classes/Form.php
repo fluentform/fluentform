@@ -4,7 +4,8 @@ namespace FluentForm\App\Services\FluentConversational\Classes;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\App\Utils\Enqueuer\Vite;
+use FluentForm\Framework\Support\Arr;
 use FluentForm\App\Modules\Form\Settings\FormCssJs;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\FluentConversational\Classes\Elements\WelcomeScreen;
@@ -65,9 +66,9 @@ class Form
             wp_enqueue_media();
         }
 
-        wp_enqueue_script(
+        Vite::enqueueScript(
             'fluent_forms_conversational_design',
-            fluentformMix('js/conversational_design.js'),
+            'assets/admin/conversion_templates/conversational_design.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -96,9 +97,9 @@ class Form
             'has_pro'     => defined('FLUENTFORMPRO'),
         ]);
 
-        wp_enqueue_style(
+        Vite::enqueueStyle(
             'fluent_forms_conversion_style',
-            fluentformMix('css/conversational_design.css'),
+            'assets/admin/conversion_templates/design_css.scss',
             [],
             FLUENTFORM_VERSION
         );

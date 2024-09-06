@@ -395,14 +395,6 @@
     }
 }
 .ff-el-banner {
-    &-group {
-        overflow: hidden;
-        .ff-el-banner {
-            margin-right: 10px;
-            margin-bottom: 30px;
-        }
-    }
-
     width: 200px;
     height: 250px;
     border: 1px solid lighten($greenishGray, 30%);
@@ -411,6 +403,14 @@
     padding: 5px;
     transition: border 0.3s;
     overflow: hidden;
+
+    &-group {
+        overflow: hidden;
+        .ff-el-banner {
+            margin-right: 10px;
+            margin-bottom: 30px;
+        }
+    }
 
     + .ff-el-banner {
         margin-right: 10px;

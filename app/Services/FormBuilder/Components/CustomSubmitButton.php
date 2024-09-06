@@ -8,7 +8,7 @@ if (! defined('ABSPATH')) {
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\BaseFieldManager;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 class CustomSubmitButton extends BaseFieldManager
 {
