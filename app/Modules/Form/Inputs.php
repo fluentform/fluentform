@@ -12,7 +12,7 @@ class Inputs
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request
+     * @var \FluentForm\Framework\Http\Request\Request
      */
     private $request;
 
@@ -87,7 +87,7 @@ class Inputs
     public function filterEditorFields($fields)
     {
         foreach ($fields as $index => $field) {
-            $element = ArrayHelper::get($field, 'element');
+            $element = Arr::get($field, 'element');
             if ('select_country' == $element) {
                 $fields[$index]['options'] = getFluentFormCountryList();
             } elseif ('gdpr-agreement' == $element || 'terms_and_condition' == $element) {

@@ -246,8 +246,8 @@ class ContactForm7Migrator extends BaseMigrator
         return [
             'formSettings'                 => [
                 'confirmation' => Arr::get($defaults, 'confirmation'),
-                'restrictions' => ArrayHelper::get($defaults, 'restrictions'),
-                'layout'       => ArrayHelper::get($defaults, 'layout'),
+                'restrictions' => Arr::get($defaults, 'restrictions'),
+                'layout'       => Arr::get($defaults, 'layout'),
             ],
             'advancedValidationSettings'   => $this->getAdvancedValidation(),
             'delete_entry_on_submission'   => 'no',
@@ -484,7 +484,7 @@ class ContactForm7Migrator extends BaseMigrator
                 $fieldLabel = $fieldElement;
             }
 
-            $fieldType = ArrayHelper::get($this->fieldTypeMap(), $fieldElement);
+            $fieldType = Arr::get($this->fieldTypeMap(), $fieldElement);
 
             $args = [
                 'uniqElKey'          => 'el_' . $fieldKey . time(),

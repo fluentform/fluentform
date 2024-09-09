@@ -956,23 +956,23 @@ class Helper
             } elseif ('gdpr_agreement' == $fieldType || 'terms_and_condition' == $fieldType) {
                 $options = ['on'];
             } elseif (in_array($fieldType, ['input_radio', 'select', 'input_checkbox'])) {
-                if (ArrayHelper::isTrue($rawField, 'attributes.multiple')) {
+                if (Arr::isTrue($rawField, 'attributes.multiple')) {
                     $fieldType = 'multi_select';
                 }
                 $options = array_column(
-                    ArrayHelper::get($rawField, 'settings.advanced_options', []),
+                    Arr::get($rawField, 'settings.advanced_options', []),
                     'value'
                 );
             } elseif ("dynamic_field" == $fieldType) {
-                $dynamicFetchValue = 'yes' == ArrayHelper::get($rawField, 'settings.dynamic_fetch');
+                $dynamicFetchValue = 'yes' == Arr::get($rawField, 'settings.dynamic_fetch');
                 if ($dynamicFetchValue) {
                     $rawField = apply_filters('fluentform/dynamic_field_re_fetch_result_and_resolve_value', $rawField);
                 }
-                $dfElementType = ArrayHelper::get($rawField, 'attributes.type');
+                $dfElementType = Arr::get($rawField, 'attributes.type');
                 if (in_array($dfElementType, ['radio', 'select', 'checkbox'])) {
                     $fieldType = 'dynamic_field_options';
                     $options = array_column(
-                        ArrayHelper::get($rawField, 'settings.advanced_options', []),
+                        Arr::get($rawField, 'settings.advanced_options', []),
                         'value'
                     );
                 }
@@ -1015,14 +1015,14 @@ class Helper
                     }
                     break;
                 case 'select_country':
-                    $fieldData = ArrayHelper::get($field, 'raw');
+                    $fieldData = Arr::get($field, 'raw');
                     $data = (new SelectCountry())->loadCountries($fieldData);
-                    $validCountries = ArrayHelper::get($fieldData, 'settings.country_list.priority_based', []);
-                    $validCountries = array_merge($validCountries, array_keys(ArrayHelper::get($data, 'options')));
+                    $validCountries = Arr::get($fieldData, 'settings.country_list.priority_based', []);
+                    $validCountries = array_merge($validCountries, array_keys(Arr::get($data, 'options')));
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
-                    foreach (ArrayHelper::get($rawField, 'fields', []) as $index => $repeaterField) {
+                    foreach (Arr::get($rawField, 'fields', []) as $index => $repeaterField) {
                         $repeaterFieldValue = array_filter(array_column($inputValue, $index));
                         if ($repeaterFieldValue && $error = static::validateInput($repeaterField, $formData, $form,
                                 $fieldName, $repeaterFieldValue)) {
@@ -1032,13 +1032,13 @@ class Helper
                     }
                     break;
                 case 'tabular_grid':
-                    $rows = array_keys(ArrayHelper::get($rawField, 'settings.grid_rows', []));
-                    $submittedRows = array_keys(ArrayHelper::get($formData, $fieldName, []));
+                    $rows = array_keys(Arr::get($rawField, 'settings.grid_rows', []));
+                    $submittedRows = array_keys(Arr::get($formData, $fieldName, []));
                     $rowDiff = array_diff($submittedRows, $rows);
                     $isValid = empty($rowDiff);
                     if ($isValid) {
-                        $columns = array_keys(ArrayHelper::get($rawField, 'settings.grid_columns', []));
-                        $submittedCols = ArrayHelper::flatten(ArrayHelper::get($formData, $fieldName, []));
+                        $columns = array_keys(Arr::get($rawField, 'settings.grid_columns', []));
+                        $submittedCols = Arr::flatten(Arr::get($formData, $fieldName, []));
                         $colDiff = array_diff($submittedCols, $columns);
                         $isValid = empty($colDiff);
                     }

@@ -28,7 +28,7 @@ class FormHandler
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request
+     * @var \FluentForm\Framework\Http\Request\Request
      */
     protected $request;
 

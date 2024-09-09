@@ -35,9 +35,9 @@ trait MailChimpSubscriber
 
         foreach ($feeds as $feed) {
             if ($this->isApplicable($feed, $formData)) {
-                $email = ArrayHelper::get(
+                $email = Arr::get(
                     $formData,
-                    ArrayHelper::get($feed->formattedValue, 'fieldEmailAddress')
+                    Arr::get($feed->formattedValue, 'fieldEmailAddress')
                 );
 
                 if (is_string($email) && is_email($email)) {
@@ -59,8 +59,8 @@ trait MailChimpSubscriber
      */
     public function isApplicable(&$feed, &$formData)
     {
-        return ArrayHelper::get($feed->formattedValue, 'enabled') &&
-            ArrayHelper::get($feed->formattedValue, 'list_id') &&
+        return Arr::get($feed->formattedValue, 'enabled') &&
+            Arr::get($feed->formattedValue, 'list_id') &&
             ConditionAssesor::evaluate($feed->formattedValue, $formData);
     }
 
@@ -81,56 +81,56 @@ trait MailChimpSubscriber
         $feedData = $feed['processedValues'];
 
         if (! is_email($feedData['fieldEmailAddress'])) {
-            $feedData['fieldEmailAddress'] = ArrayHelper::get($formData, $feedData['fieldEmailAddress']);
+            $feedData['fieldEmailAddress'] = Arr::get($formData, $feedData['fieldEmailAddress']);
         }
 
         if (! is_email($feedData['fieldEmailAddress'])) {
             return false;
         }
 
-        $mergeFields = array_filter(ArrayHelper::get($feedData, 'merge_fields'));
-        $status = ArrayHelper::isTrue($feedData, 'doubleOptIn') ? 'pending' : 'subscribed';
+        $mergeFields = array_filter(Arr::get($feedData, 'merge_fields'));
+        $status = Arr::isTrue($feedData, 'doubleOptIn') ? 'pending' : 'subscribed';
 
         $listId = $feedData['list_id'];
 
         $arguments = [
             'email_address' => $feedData['fieldEmailAddress'],
             'status_if_new' => $status,
-            'double_optin'  => ArrayHelper::isTrue($feedData, 'doubleOptIn'),
-            'vip'           => ArrayHelper::isTrue($feedData, 'markAsVIP'),
+            'double_optin'  => Arr::isTrue($feedData, 'doubleOptIn'),
+            'vip'           => Arr::isTrue($feedData, 'markAsVIP'),
         ];
 
         if ($mergeFields) {
             // Process merge field for address
             $mergeFieldsSettings = $this->findMergeFields(
-                ArrayHelper::get($feed, 'settings.list_id')
+                Arr::get($feed, 'settings.list_id')
             );
 
             foreach ($mergeFieldsSettings as $fieldSettings) {
                 if ('address' == $fieldSettings['type'] || 'birthday' == $fieldSettings['type']) {
                     $fieldName = $fieldSettings['tag'];
 
-                    $formFieldName = ArrayHelper::get($feed, 'settings.merge_fields.' . $fieldName);
+                    $formFieldName = Arr::get($feed, 'settings.merge_fields.' . $fieldName);
 
                     if ($formFieldName) {
                         preg_match('/{+(.*?)}/', $formFieldName, $matches);
 
                         $formFieldName = substr($matches[1], strlen('inputs.'));
 
-                        $formFieldValue = ArrayHelper::get($formData, $formFieldName);
+                        $formFieldValue = Arr::get($formData, $formFieldName);
 
                         if ($formFieldValue && is_array($formFieldValue)) {
                             if('address' == $fieldSettings['type']) {
                                 $mergeFields[$fieldName] = [
-                                    'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
-                                    'city'    => ArrayHelper::get($formFieldValue, 'city'),
-                                    'state'   => ArrayHelper::get($formFieldValue, 'state'),
-                                    'zip'     => ArrayHelper::get($formFieldValue, 'zip'),
-                                    'country' => ArrayHelper::get($formFieldValue, 'country'),
+                                    'addr1'   => Arr::get($formFieldValue, 'address_line_1'),
+                                    'city'    => Arr::get($formFieldValue, 'city'),
+                                    'state'   => Arr::get($formFieldValue, 'state'),
+                                    'zip'     => Arr::get($formFieldValue, 'zip'),
+                                    'country' => Arr::get($formFieldValue, 'country'),
                                 ];
                                 
-                                if (ArrayHelper::exists($formFieldValue, 'address_line_2')) {
-                                    $mergeFields[$fieldName]['addr2'] = ArrayHelper::get($formFieldValue, 'address_line_2');
+                                if (Arr::exists($formFieldValue, 'address_line_2')) {
+                                    $mergeFields[$fieldName]['addr2'] = Arr::get($formFieldValue, 'address_line_2');
                                 }
                             }
                             else {
@@ -195,7 +195,7 @@ trait MailChimpSubscriber
         $isNew = true;
         if (! empty($existingMember['id'])) {
             $isNew = false;
-            if (ArrayHelper::isTrue($feedData, 'resubscribe')) {
+            if (Arr::isTrue($feedData, 'resubscribe')) {
                 //for resubscribing unsubscribed contact ; status = subscribed || pending
                 $arguments['status'] = $status;
             }
@@ -211,10 +211,10 @@ trait MailChimpSubscriber
                 'Use fluentform/mailchimp_keep_existing_interests instead of fluentform_mailchimp_keep_existing_interests.'
             );
             if (apply_filters('fluentform/mailchimp_keep_existing_interests', $status, $form->id)) {
-                $arguments['interests'] = ArrayHelper::get($existingMember, 'interests', []);
+                $arguments['interests'] = Arr::get($existingMember, 'interests', []);
             }
 
-            if (ArrayHelper::exists($arguments, 'tags')) {
+            if (Arr::exists($arguments, 'tags')) {
                 $isExistingTags = apply_filters_deprecated(
                     'fluentform_mailchimp_keep_existing_tags',
                     [
@@ -226,7 +226,7 @@ trait MailChimpSubscriber
                     'Use fluentform/mailchimp_keep_existing_tags instead of fluentform_mailchimp_keep_existing_tags.'
                 );
                 if (apply_filters('fluentform/mailchimp_keep_existing_tags', $isExistingTags, $form->id)) {
-                    $tags = ArrayHelper::get($existingMember, 'tags', []);
+                    $tags = Arr::get($existingMember, 'tags', []);
                     $tagNames = [];
                     foreach ($tags as $tag) {
                         $tagNames[] = $tag['name'];
@@ -238,10 +238,10 @@ trait MailChimpSubscriber
         }
 
         if (
-            ArrayHelper::get($feedData, 'interest_group.sub_category') &&
-            ArrayHelper::get($feedData, 'interest_group.category')
+            Arr::get($feedData, 'interest_group.sub_category') &&
+            Arr::get($feedData, 'interest_group.category')
         ) {
-            $interestGroup = ArrayHelper::get($feedData, 'interest_group.sub_category');
+            $interestGroup = Arr::get($feedData, 'interest_group.sub_category');
             $arguments['interests'][$interestGroup] = true;
         }
 
@@ -253,8 +253,8 @@ trait MailChimpSubscriber
         $result = $MailChimp->put($endPoint, $arguments);
 
         if (400 == $result['status']) {
-            if (ArrayHelper::exists($result, 'errors')) {
-                $errors = ArrayHelper::get($result, 'errors');
+            if (Arr::exists($result, 'errors')) {
+                $errors = Arr::get($result, 'errors');
                 return new \WP_Error(423, $errors);
             }
             return new \WP_Error(423, $result['detail']);
@@ -269,7 +269,7 @@ trait MailChimpSubscriber
             }
 
             // Let's sync the tags
-            if (! $isNew && ArrayHelper::exists($arguments, 'tags')) {
+            if (! $isNew && Arr::exists($arguments, 'tags')) {
                 $currentTags = [];
                 foreach ($result['tags'] as $tag) {
                     $currentTags[] = $tag['name'];

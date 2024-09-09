@@ -55,7 +55,7 @@ class EditorButtonModule
 
         if ($isEligiblePage) {
             $option = get_option('_fluentform_global_form_settings');
-            $isEligiblePage = 'yes' == ArrayHelper::get($option, 'misc.classicEditorButton');
+            $isEligiblePage = 'yes' == Arr::get($option, 'misc.classicEditorButton');
         }
     
         $isEligiblePage = apply_filters_deprecated(

@@ -32,9 +32,9 @@ class Select extends BaseComponent
 
         $data['attributes']['id'] = $this->makeElementId($data, $form);
 
-        $isMulti = 'yes' == ArrayHelper::get($data, 'settings.enable_select_2');
+        $isMulti = 'yes' == Arr::get($data, 'settings.enable_select_2');
 
-        if (ArrayHelper::get($data['attributes'], 'multiple')) {
+        if (Arr::get($data['attributes'], 'multiple')) {
             $data['attributes']['name'] = $data['attributes']['name'] . '[]';
             wp_enqueue_script('choices');
             wp_enqueue_style('ff_choices');
@@ -45,7 +45,7 @@ class Select extends BaseComponent
             $data['attributes']['class'] .= ' ff_has_multi_select';
         }
 
-        if ($maxSelection = ArrayHelper::get($data, 'settings.max_selection')) {
+        if ($maxSelection = Arr::get($data, 'settings.max_selection')) {
             $data['attributes']['data-max_selected_options'] = $maxSelection;
         }
 
@@ -71,7 +71,7 @@ class Select extends BaseComponent
         $options = $this->buildOptions($data, $defaultValues);
 
         $ariaRequired = 'false';
-        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+        if (Arr::get($data, 'settings.validation_rules.required.value')) {
             $ariaRequired = 'true';
         }
 
@@ -103,8 +103,8 @@ class Select extends BaseComponent
      */
     protected function buildOptions($data, $defaultValues)
     {
-        if (! $formattedOptions = ArrayHelper::get($data, 'settings.advanced_options')) {
-            $options = ArrayHelper::get($data, 'options', []);
+        if (! $formattedOptions = Arr::get($data, 'settings.advanced_options')) {
+            $options = Arr::get($data, 'options', []);
             $formattedOptions = [];
             foreach ($options as $value => $label) {
                 $formattedOptions[] = [
@@ -115,7 +115,7 @@ class Select extends BaseComponent
             }
         }
 
-        if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
+        if ('yes' == Arr::get($data, 'settings.randomize_options')) {
             shuffle($formattedOptions);
         }
 
@@ -133,10 +133,10 @@ class Select extends BaseComponent
             }
     
             $atts = [
-                'data-calc_value'        => ArrayHelper::get($option, 'calc_value'),
-                'data-custom-properties' => ArrayHelper::get($option, 'calc_value'),
-                'value'                  => ArrayHelper::get($option, 'value'),
-                'disabled'               => ArrayHelper::get($option, 'disabled') ? 'disabled' : ''
+                'data-calc_value'        => Arr::get($option, 'calc_value'),
+                'data-custom-properties' => Arr::get($option, 'calc_value'),
+                'value'                  => Arr::get($option, 'value'),
+                'disabled'               => Arr::get($option, 'disabled') ? 'disabled' : ''
             ];
             
             $opts .= '<option '. $this->buildAttributes($atts) . " {$selected}>" . wp_strip_all_tags($option['label']) . '</option>';

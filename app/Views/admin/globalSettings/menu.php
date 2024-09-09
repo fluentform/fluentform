@@ -97,7 +97,7 @@ use FluentForm\Framework\Support\Arr;
                                 </li>
                             </ul>
                         </li>
-                        <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
+                        <?php if (Arr::exists($components, 'payment_settings')) : ?>
                             <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">
                                 <a
                                         class="ff_list_button_link ff-payment-settings-root"
@@ -105,20 +105,20 @@ use FluentForm\Framework\Support\Arr;
                                         href="#">
                                     <?php echo __('Payment', 'fluentform'); ?>
                                 </a>
-                                <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
+                                <?php if (Arr::get($components, 'payment_settings.sub_menu')) : ?>
                                     <ul class="ff_list_submenu">
                                         <?php
-                                        $subMenus = ArrayHelper::get($components, 'payment_settings.sub_menu');
+                                        $subMenus = Arr::get($components, 'payment_settings.sub_menu');
                                         foreach ($subMenus as $subMenu):
                                             $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
-                                            $baseUrl .= ArrayHelper::get($subMenu, 'path');
+                                            $baseUrl .= Arr::get($subMenu, 'path');
                                             ?>
                                             <li>
-                                                <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($subMenu,
+                                                <a data-settings_key="<?php echo esc_attr(Arr::get($subMenu,
                                                     'path')); ?>"
-                                                data-component="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
+                                                data-component="<?php echo esc_attr(Arr::get($subMenu, 'path',
                                                     '')); ?>"
-                                                data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
+                                                data-hash="<?php echo esc_attr(Arr::get($subMenu, 'path',
                                                     '')); ?>"
                                                 href="<?php echo esc_url($baseUrl); ?>"
                                                 >
@@ -137,18 +137,18 @@ use FluentForm\Framework\Support\Arr;
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
-                                    <?php if (ArrayHelper::get($component, 'hash') == 're_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'h_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'turnstile'
+                                    <?php if (Arr::get($component, 'hash') == 're_captcha'
+                                        || Arr::get($component, 'hash') == 'h_captcha'
+                                        || Arr::get($component, 'hash') == 'turnstile'
                                     ) : ?>
 
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
-                                            <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component,
+                                            <a data-settings_key="<?php echo esc_attr(Arr::get($component,
                                                 'settings_key')); ?>"
-                                            data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component',
+                                            data-component="<?php echo esc_attr(Arr::get($component, 'component',
                                                 '')); ?>"
-                                            data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                            data-hash="<?php echo esc_attr(Arr::get($component, 'hash', '')); ?>"
                                             href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings',
                                                 $component)); ?>"
                                             >
@@ -170,7 +170,7 @@ use FluentForm\Framework\Support\Arr;
                                 <?php echo __('Managers'); ?>
                             </a>
                         </li>
-                        <?php if ( ArrayHelper::get($components, 'admin_approval')) :?>
+                        <?php if ( Arr::get($components, 'admin_approval')) :?>
 
                             <li class="<?php echo esc_attr(Helper::getHtmlElementClass('admin_approval', $currentComponent)); ?> ff_list_button_item">
                                 <a
@@ -196,7 +196,7 @@ use FluentForm\Framework\Support\Arr;
                             </a>
                         </li>
                         <?php
-                        if (ArrayHelper::exists($components, 'InventoryManager')) { ?>
+                        if (Arr::exists($components, 'InventoryManager')) { ?>
                             <li class="<?php echo esc_attr(Helper::getHtmlElementClass('inventory', $currentComponent)); ?> ff_list_button_item">
                                 <a
                                         class="ff_list_button_link"
@@ -218,23 +218,23 @@ use FluentForm\Framework\Support\Arr;
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
                                     <?php
-                                        if (ArrayHelper::get($component, 'hash') != 're_captcha'
-                                            && ArrayHelper::get($component, 'hash') != 'h_captcha'
-                                            && ArrayHelper::get($component, 'hash') != 'turnstile'
-                                            && ArrayHelper::get($component, 'query.component') != 'payment_settings'
-                                            && ArrayHelper::get($component, 'query.component') != 'license_page'
-                                            && ArrayHelper::get($component, 'hash') != 'admin_approval'
-                                            && ArrayHelper::get($component, 'hash') != 'inventory_manager'
+                                        if (Arr::get($component, 'hash') != 're_captcha'
+                                            && Arr::get($component, 'hash') != 'h_captcha'
+                                            && Arr::get($component, 'hash') != 'turnstile'
+                                            && Arr::get($component, 'query.component') != 'payment_settings'
+                                            && Arr::get($component, 'query.component') != 'license_page'
+                                            && Arr::get($component, 'hash') != 'admin_approval'
+                                            && Arr::get($component, 'hash') != 'inventory_manager'
                                         )
                                     : ?>
 
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
-                                            <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component,
+                                            <a data-settings_key="<?php echo esc_attr(Arr::get($component,
                                                 'settings_key')); ?>"
-                                            data-component="<?php echo esc_attr(ArrayHelper::get($component, 'component',
+                                            data-component="<?php echo esc_attr(Arr::get($component, 'component',
                                                 '')); ?>"
-                                            data-hash="<?php echo esc_attr(ArrayHelper::get($component, 'hash', '')); ?>"
+                                            data-hash="<?php echo esc_attr(Arr::get($component, 'hash', '')); ?>"
                                             href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings',
                                                 $component)); ?>"
                                             >
@@ -246,11 +246,11 @@ use FluentForm\Framework\Support\Arr;
                             </ul>
                         </li>
 
-                        <?php if ($licensePage = ArrayHelper::get($components, 'license_page', '')) : ?>
+                        <?php if ($licensePage = Arr::get($components, 'license_page', '')) : ?>
                             <li class="<?php echo esc_attr(Helper::getHtmlElementClass('license_page', $currentComponent)); ?> ff_list_button_item">
                                 <a
                                     class="ff_list_button_link"
-                                    data-component="<?php echo esc_attr(ArrayHelper::get($licensePage, 'query.component', '')); ?>"
+                                    data-component="<?php echo esc_attr(Arr::get($licensePage, 'query.component', '')); ?>"
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', $licensePage)); ?>"
                                 >
                                     <?php echo esc_attr($licensePage['title']); ?>
@@ -262,19 +262,19 @@ use FluentForm\Framework\Support\Arr;
                         <?php if ($customLinks) : ?>
                             <?php foreach ($customLinks as $customLink): ?>
                                 <li
-                                    class="<?php echo esc_attr(ArrayHelper::get($customLink, 'class', '')); ?> ff_list_button_item"
+                                    class="<?php echo esc_attr(Arr::get($customLink, 'class', '')); ?> ff_list_button_item"
                                 >
                                     <a
                                         class="ff_list_button_link"
-                                        data-hash="<?php echo esc_attr(ArrayHelper::get($customLink, 'hash', 'custom_component')) ?>"
+                                        data-hash="<?php echo esc_attr(Arr::get($customLink, 'hash', 'custom_component')) ?>"
                                         data-settings_key="custom_component"
                                         data-component="custom_component"
-                                        data-component_name="<?php echo esc_attr(ArrayHelper::get($customLink, 'component', '')); ?>"
+                                        data-component_name="<?php echo esc_attr(Arr::get($customLink, 'component', '')); ?>"
                                         href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
-                                            'hash' => esc_attr(ArrayHelper::get($customLink, 'hash', 'custom_component')),
+                                            'hash' => esc_attr(Arr::get($customLink, 'hash', 'custom_component')),
                                         ])); ?>"
                                     >
-                                        <?php echo esc_attr(ArrayHelper::get($customLink, 'title', '')); ?>
+                                        <?php echo esc_attr(Arr::get($customLink, 'title', '')); ?>
                                     </a>
                                 </li>
                             <?php endforeach; ?>

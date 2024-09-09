@@ -18,7 +18,7 @@ class HCaptcha
     {
         $verifyUrl = 'https://hcaptcha.com/siteverify';
 
-        $secret = $secret ?: ArrayHelper::get(get_option('_fluentform_hCaptcha_details'), 'secretKey');
+        $secret = $secret ?: Arr::get(get_option('_fluentform_hCaptcha_details'), 'secretKey');
 
         $response = wp_remote_post($verifyUrl, [
             'method' => 'POST',

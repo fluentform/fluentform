@@ -61,7 +61,7 @@ class TabularGrid extends BaseComponent
                 $attributes = $this->buildAttributes($atts, $form);
 
                 $ariaRequired = 'false';
-                if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+                if (Arr::get($data, 'settings.validation_rules.required.value')) {
                     $ariaRequired = 'true';
                 }
 

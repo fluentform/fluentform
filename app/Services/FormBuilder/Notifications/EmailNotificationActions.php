@@ -51,7 +51,7 @@ class EmailNotificationActions
         }
 
         $onSubmitEmailFeeds = array_filter($activeEmailFeeds, function ($feed) {
-            return 'payment_form_submit' == ArrayHelper::get($feed, 'settings.feed_trigger_event');
+            return 'payment_form_submit' == Arr::get($feed, 'settings.feed_trigger_event');
         });
 
         if (! $onSubmitEmailFeeds || 'yes' === Helper::getSubmissionMeta($submissionId, '_ff_on_submit_email_sent')) {
@@ -109,7 +109,7 @@ class EmailNotificationActions
         if (! empty($emailData['attachments']) && is_array($emailData['attachments'])) {
             $attachments = [];
             foreach ($emailData['attachments'] as $name) {
-                $fileUrls = ArrayHelper::get($formData, $name);
+                $fileUrls = Arr::get($formData, $name);
                 if ($fileUrls && is_array($fileUrls)) {
                     foreach ($fileUrls as $url) {
                         $filePath = str_replace(
@@ -125,11 +125,11 @@ class EmailNotificationActions
             }
             $emailAttachments = $attachments;
         }
-        $mediaAttachments = ArrayHelper::get($emailData, 'media_attachments');
+        $mediaAttachments = Arr::get($emailData, 'media_attachments');
         if (! empty($mediaAttachments) && is_array($mediaAttachments)) {
             $attachments = [];
             foreach ($mediaAttachments as $file) {
-                $fileUrl = ArrayHelper::get($file, 'url');
+                $fileUrl = Arr::get($file, 'url');
                 if ($fileUrl) {
                     $filePath = str_replace(
                         site_url(''),

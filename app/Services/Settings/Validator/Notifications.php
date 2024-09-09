@@ -42,11 +42,11 @@ class Notifications extends Validate
     public static function conditionalValidations(Validator $validator)
     {
         $validator->sometimes('sendTo.routing', 'required', function ($input) {
-            if ('routing' !== ArrayHelper::get($input, 'sendTo.type')) {
+            if ('routing' !== Arr::get($input, 'sendTo.type')) {
                 return false;
             }
 
-            $routingInputs = ArrayHelper::get($input, 'sendTo.routing');
+            $routingInputs = Arr::get($input, 'sendTo.routing');
             $required = false;
 
             foreach ($routingInputs as $routingInput) {

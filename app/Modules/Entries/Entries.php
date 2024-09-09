@@ -165,7 +165,7 @@ class Entries extends EntryQuery
             $value = \json_decode($notification->value, true);
             $formattedNotification[] = [
                 'id'   => $notification->id,
-                'name' => ArrayHelper::get($value, 'name'),
+                'name' => Arr::get($value, 'name'),
             ];
         }
 

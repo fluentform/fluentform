@@ -13,7 +13,7 @@ class FormSettings
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request
+     * @var \FluentForm\Framework\Http\Request\Request
      */
     private $request;
 
@@ -24,7 +24,7 @@ class FormSettings
     /**
      * The settings (fluentform_form_meta) query builder.
      *
-     * @var \WpFluent\QueryBuilder\QueryBuilderHandler
+     * @var \FluentForm\Framework\Database\Orm\Builder
      */
     private $settingsQuery;
 
@@ -160,15 +160,15 @@ class FormSettings
 
         Validator::validate(
             'confirmations',
-            ArrayHelper::get($formSettings, 'confirmation', [])
+            Arr::get($formSettings, 'confirmation', [])
         );
 
         $form->updateMeta($formId, 'formSettings', $formSettings);
         $form->updateMeta($formId, 'advancedValidationSettings', $advancedValidationSettings);
 
-        $deleteAfterXDaysStatus = ArrayHelper::get($formSettings, 'delete_after_x_days');
-        $deleteDaysCount = ArrayHelper::get($formSettings, 'auto_delete_days');
-        $deleteOnSubmission = ArrayHelper::get($formSettings, 'delete_entry_on_submission');
+        $deleteAfterXDaysStatus = Arr::get($formSettings, 'delete_after_x_days');
+        $deleteDaysCount = Arr::get($formSettings, 'auto_delete_days');
+        $deleteOnSubmission = Arr::get($formSettings, 'delete_entry_on_submission');
 
         if ('yes' != $deleteOnSubmission && $deleteDaysCount && 'yes' == $deleteAfterXDaysStatus) {
             // We have to set meta values
@@ -210,7 +210,7 @@ class FormSettings
         if ('formSettings' == $key) {
             Validator::validate(
                 'confirmations',
-                ArrayHelper::get(
+                Arr::get(
                     $valueArray,
                     'confirmation',
                     []

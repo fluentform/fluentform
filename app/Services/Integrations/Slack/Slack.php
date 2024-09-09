@@ -52,13 +52,13 @@ class Slack
             if (empty($formData[$name])) {
                 continue;
             }
-            if ('tabular_grid' == ArrayHelper::get($input, 'element', '')) {
+            if ('tabular_grid' == Arr::get($input, 'element', '')) {
                 $formData[$name] = Helper::getTabularGridFormatValue($formData[$name], $input, '<br />', ', ', 'markdown');
             }
         }
         $formData = FormDataParser::parseData((object) $formData, $inputs, $form->id);
 
-        $slackTitle = ArrayHelper::get($settings, 'textTitle');
+        $slackTitle = Arr::get($settings, 'textTitle');
 
         if ('' === $slackTitle) {
             $title = 'New submission on ' . $form->title;
@@ -66,7 +66,7 @@ class Slack
             $title = $slackTitle;
         }
 
-        $footerText = ArrayHelper::get($settings, 'footerText');
+        $footerText = Arr::get($settings, 'footerText');
         if ($footerText === '') {
             $footerText = "fluentform";
         }
@@ -87,7 +87,7 @@ class Slack
                 'short' => false,
             ];
         }
-        $slackHook = ArrayHelper::get($settings, 'webhook');
+        $slackHook = Arr::get($settings, 'webhook');
 
         $titleLink = admin_url(
             'admin.php?page=fluent_forms&form_id='

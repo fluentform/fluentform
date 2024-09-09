@@ -5,28 +5,28 @@ namespace FluentForm\App\Services\Form;
 use Exception;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
+use FluentForm\Framework\Database\Orm\Builder;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Support\Arr;
-use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 
 class FormService
 {
-    /** @var \FluentForm\Framework\Foundation\Application */
+    /** @var Application */
     protected $app;
     
-    /** @var \FluentForm\App\Models\Form|\FluentForm\Framework\Database\Query\Builder */
+    /** @var Form|Builder */
     protected $model;
     
-    /** @var \FluentForm\App\Services\Form\Updater */
+    /** @var Updater */
     protected $updater;
     
-    /** @var \FluentForm\App\Services\Form\Duplicator */
+    /** @var Duplicator */
     protected $duplicator;
     
-    /** @var \FluentForm\App\Services\Form\Fields */
+    /** @var Fields */
     protected $fields;
 
     
@@ -63,7 +63,7 @@ class FormService
      * Store a form with its associated meta.
      *
      * @param array $attributes
-     * @return \FluentForm\App\Models\Form $form
+     * @return Form $form
      * @throws Exception
      */
     public function store($attributes = [])
@@ -106,7 +106,7 @@ class FormService
      * Duplicate a form with its associated meta.
      *
      * @param array $attributes
-     * @return \FluentForm\App\Models\Form $form
+     * @return Form $form
      * @throws Exception
      */
     public function duplicate($attributes = [])
@@ -170,7 +170,7 @@ class FormService
      * Update a form with its relevant fields.
      *
      * @param array $attributes
-     * @return \FluentForm\App\Models\Form $form
+     * @return Form $form
      * @throws Exception
      */
     public function update($attributes = [])
@@ -182,7 +182,7 @@ class FormService
      * Duplicate a form with its associated meta.
      *
      * @param int $id
-     * @return \FluentForm\App\Models\Form $form
+     * @return Form $form
      * @throws Exception
      */
     public function convert($id)

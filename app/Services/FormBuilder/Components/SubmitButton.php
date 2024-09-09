@@ -45,7 +45,7 @@ class SubmitButton extends BaseComponent
 
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
+        $btnStyle = Arr::get($data['settings'], 'button_style');
         
         /* This filter is deprecated and will be removed soon */
         $noStyle = apply_filters('fluentform_submit_button_force_no_style', false);
@@ -83,11 +83,11 @@ class SubmitButton extends BaseComponent
         }
 
         $styles = '';
-        if ('' == ArrayHelper::get($data, 'settings.button_style')) {
+        if ('' == Arr::get($data, 'settings.button_style')) {
             $data['attributes']['class'] .= ' wpf_has_custom_css';
             // it's a custom button
-            $buttonActiveStyles = ArrayHelper::get($data, 'settings.normal_styles', []);
-            $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
+            $buttonActiveStyles = Arr::get($data, 'settings.normal_styles', []);
+            $buttonHoverStyles = Arr::get($data, 'settings.hover_styles', []);
 
             $activeStates = '';
             foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
@@ -116,9 +116,9 @@ class SubmitButton extends BaseComponent
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } elseif ('no_style' != $btnStyle) {
-            $bgColor = esc_attr(ArrayHelper::get($data, 'settings.background_color'));
+            $bgColor = esc_attr(Arr::get($data, 'settings.background_color'));
             $bgColor = str_replace('#1a7efb','var(--fluentform-primary)',$bgColor);
-            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit:not(.ff_btn_no_style) { background-color: ' . $bgColor . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
+            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit:not(.ff_btn_no_style) { background-color: ' . $bgColor . '; color: ' . esc_attr(Arr::get($data, 'settings.color')) . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);

@@ -33,7 +33,7 @@ class HoneyPot
         }
 
         // Now verify
-        if (ArrayHelper::get($requestData, $this->getFieldName($formId))) {
+        if (Arr::get($requestData, $this->getFieldName($formId))) {
             // It's a bot! Block him
             wp_send_json(
                 [
@@ -49,7 +49,7 @@ class HoneyPot
     public function isEnabled($formId = false)
     {
         $option = get_option('_fluentform_global_form_settings');
-        $status = 'yes' == ArrayHelper::get($option, 'misc.honeypotStatus');
+        $status = 'yes' == Arr::get($option, 'misc.honeypotStatus');
     
         $status = apply_filters_deprecated(
             'fluentform_honeypot_status',

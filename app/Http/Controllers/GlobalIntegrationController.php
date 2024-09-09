@@ -11,7 +11,7 @@ class GlobalIntegrationController extends Controller
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request $request
+     * @var \FluentForm\Framework\Http\Request\Request $request
      */
     protected $request;
     

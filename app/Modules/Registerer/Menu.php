@@ -542,7 +542,7 @@ class Menu
                 'entries'  => 'fluentform_entries_viewer',
             ]);
 
-            $toVerifyPermission = ArrayHelper::get(
+            $toVerifyPermission = Arr::get(
                 $formRoutePermissionSet,
                 $route,
                 'fluentform_forms_manager'

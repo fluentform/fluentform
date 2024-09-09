@@ -3,7 +3,7 @@
 namespace FluentForm\App\Http\Policies;
 
 use FluentForm\App\Modules\Acl\Acl;
-use FluentForm\Framework\Request\Request;
+use FluentForm\Framework\Http\Request\Request;
 use FluentForm\Framework\Foundation\Policy;
 
 class SubmissionPolicy extends Policy
@@ -11,7 +11,7 @@ class SubmissionPolicy extends Policy
     /**
      * Check permission for any method
      *
-     * @param  \FluentForm\Framework\Request\Request $request
+     * @param  Request $request
      * @return bool
      */
     public function verifyRequest(Request $request)

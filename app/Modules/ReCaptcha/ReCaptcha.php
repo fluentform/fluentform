@@ -18,7 +18,7 @@ class ReCaptcha
     {
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-        $secret = $secret ?: ArrayHelper::get(get_option('_fluentform_reCaptcha_details'), 'secretKey');
+        $secret = $secret ?: Arr::get(get_option('_fluentform_reCaptcha_details'), 'secretKey');
 
         $response = wp_remote_post($verifyUrl, [
             'method' => 'POST',

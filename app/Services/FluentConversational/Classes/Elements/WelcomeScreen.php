@@ -121,7 +121,7 @@ class WelcomeScreen extends BaseFieldManager
 
         $data = $app->applyFilters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        $alignment = ArrayHelper::get($data, 'settings.align');
+        $alignment = Arr::get($data, 'settings.align');
         if ($alignment) {
             if (empty($data['attributes']['class'])) {
                 $data['attributes']['class'] = '';
@@ -134,7 +134,7 @@ class WelcomeScreen extends BaseFieldManager
         $data['attributes']['class'] = $cls . ' ff-el-section-break ' . $data['attributes']['class'];
         $data['attributes']['class'] = trim($data['attributes']['class']);
         $atts = $this->buildAttributes(
-            ArrayHelper::except($data['attributes'], 'name')
+            Arr::except($data['attributes'], 'name')
         );
         $html = "<div {$atts}>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
         $html .= "<h3 class='ff-el-section-title'>" . fluentform_sanitize_html($data['settings']['label']) . '</h3>';

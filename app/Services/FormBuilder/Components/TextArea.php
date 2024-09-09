@@ -40,7 +40,7 @@ class TextArea extends BaseComponent
         }
 
         $ariaRequired = 'false';
-        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+        if (Arr::get($data, 'settings.validation_rules.required.value')) {
             $ariaRequired = 'true';
         }
 

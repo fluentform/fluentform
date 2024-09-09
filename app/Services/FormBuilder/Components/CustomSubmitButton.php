@@ -132,7 +132,7 @@ class CustomSubmitButton extends BaseFieldManager
 
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        $btnStyle = ArrayHelper::get($data['settings'], 'button_style');
+        $btnStyle = Arr::get($data['settings'], 'button_style');
 
         $btnSize = 'ff-btn-';
         $btnSize .= isset($data['settings']['button_size']) ? $data['settings']['button_size'] : 'md';
@@ -160,11 +160,11 @@ class CustomSubmitButton extends BaseFieldManager
         }
 
         $styles = '';
-        if ('' == ArrayHelper::get($data, 'settings.button_style')) {
+        if ('' == Arr::get($data, 'settings.button_style')) {
             $data['attributes']['class'] .= ' wpf_has_custom_css';
             // it's a custom button
-            $buttonActiveStyles = ArrayHelper::get($data, 'settings.normal_styles', []);
-            $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
+            $buttonActiveStyles = Arr::get($data, 'settings.normal_styles', []);
+            $buttonHoverStyles = Arr::get($data, 'settings.hover_styles', []);
 
             $activeStates = '';
             foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
@@ -193,7 +193,7 @@ class CustomSubmitButton extends BaseFieldManager
                 $styles .= 'form.fluent_form_' . $form->id . ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } elseif ('no_style' != $btnStyle) {
-            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . esc_attr(ArrayHelper::get($data, 'settings.background_color')) . '; color: ' . esc_attr(ArrayHelper::get($data, 'settings.color')) . '; }';
+            $styles .= 'form.fluent_form_' . $form->id . ' .ff-btn-submit { background-color: ' . esc_attr(Arr::get($data, 'settings.background_color')) . '; color: ' . esc_attr(Arr::get($data, 'settings.color')) . '; }';
         }
 
         $atts = $this->buildAttributes($data['attributes']);

@@ -93,8 +93,8 @@ class NinjaFormsMigrator extends BaseMigrator
             if ($value = $this->getFluentClassicField($type, $args)) {
                 $fluentFields[$field['key']] = $value;
             } else {
-                if (ArrayHelper::get($field, 'type') != 'submit') {
-                    $this->unSupportFields[] = ArrayHelper::get($field, 'label');
+                if (Arr::get($field, 'type') != 'submit') {
+                    $this->unSupportFields[] = Arr::get($field, 'label');
                 }
             }
         }
@@ -122,22 +122,22 @@ class NinjaFormsMigrator extends BaseMigrator
     protected function formatFieldData($field)
     {
 
-        $type = ArrayHelper::get($this->fieldTypes(), $field['type'], '');
+        $type = Arr::get($this->fieldTypes(), $field['type'], '');
 
         $args = [
             'uniqElKey'       => $field['key'] . '-' . time(),
             'index'           => $field['order'],
-            'required'        => ArrayHelper::isTrue($field, 'required'),
+            'required'        => Arr::isTrue($field, 'required'),
             'label'           => $field['label'],
-            'name'            => ArrayHelper::get($field, 'key'),
-            'placeholder'     => ArrayHelper::get($field, 'placeholder', ''),
-            'class'           => ArrayHelper::get($field, 'element_class', ''),
-            'value'           => $this->dynamicShortcodeConverter(ArrayHelper::get($field, 'value', '')),
-            'help_message'    => ArrayHelper::get($field, 'desc_text'),
-            'container_class' => ArrayHelper::get($field, 'container_class'),
+            'name'            => Arr::get($field, 'key'),
+            'placeholder'     => Arr::get($field, 'placeholder', ''),
+            'class'           => Arr::get($field, 'element_class', ''),
+            'value'           => $this->dynamicShortcodeConverter(Arr::get($field, 'value', '')),
+            'help_message'    => Arr::get($field, 'desc_text'),
+            'container_class' => Arr::get($field, 'container_class'),
         ];
         if (empty($args['name'])) {
-            $name = ArrayHelper::get($field, 'id');
+            $name = Arr::get($field, 'id');
             $args['name'] = str_replace('.', '_', $name);
         }
 
@@ -148,17 +148,17 @@ class NinjaFormsMigrator extends BaseMigrator
             case 'input_radio':
             case 'input_checkbox':
             case 'multi_select':
-                $optionsData = $this->getOptions(ArrayHelper::get($field, 'options', []));
-                $args['options'] = ArrayHelper::get($optionsData, 'options');
-                $args['value'] = ArrayHelper::get($optionsData, 'selectedOption.0', '');
+                $optionsData = $this->getOptions(Arr::get($field, 'options', []));
+                $args['options'] = Arr::get($optionsData, 'options');
+                $args['value'] = Arr::get($optionsData, 'selectedOption.0', '');
 
                 if ($field['type'] == 'listimage') {
                     $args['enable_image_input'] = true;
-                    $optionsData = $this->getOptions(ArrayHelper::get($field, 'image_options', []), $hasImage = true);
+                    $optionsData = $this->getOptions(Arr::get($field, 'image_options', []), $hasImage = true);
                     $args['options'] = $optionsData['options'];
-                    $args['value'] = ArrayHelper::get($optionsData, 'selectedOption.0', '');
+                    $args['value'] = Arr::get($optionsData, 'selectedOption.0', '');
 
-                    if (ArrayHelper::isTrue($field, 'allow_multi_select')) {
+                    if (Arr::isTrue($field, 'allow_multi_select')) {
                         $type = 'input_checkbox';
                     }
 
@@ -166,8 +166,8 @@ class NinjaFormsMigrator extends BaseMigrator
                     if ($field['type'] == 'checkbox' && empty($args['options'])) {
                         //single item checkbox
                         $arr = [
-                            'label'      => ArrayHelper::get($field, 'checked_value'),
-                            'value'      => ArrayHelper::get($field, 'checked_value'),
+                            'label'      => Arr::get($field, 'checked_value'),
+                            'value'      => Arr::get($field, 'checked_value'),
                             'calc_value' => '',
                             'id'         => 0
                         ];
@@ -176,18 +176,18 @@ class NinjaFormsMigrator extends BaseMigrator
                         if ($field['type'] == 'checkbox' && $args['allow_multi_select'] == 1) {
                             //img with multi item checkbox make it check box
                             $type = 'input_checkbox';
-                            $args['value'] = ArrayHelper::get($optionsData, 'selectedOption');
+                            $args['value'] = Arr::get($optionsData, 'selectedOption');
                         }
                     }
                 }
                 if ($type == 'input_checkbox' || $type == 'multi_select') {
                     //array values
-                    $args['value'] = ArrayHelper::get($optionsData, 'selectedOption', '');
+                    $args['value'] = Arr::get($optionsData, 'selectedOption', '');
                 }
 
                 break;
             case 'input_date':
-                $args['format'] = Arrayhelper::get($field, 'date_format');
+                $args['format'] = Arr::get($field, 'date_format');
                 if ($args['format'] == 'default') {
                     $args['format'] = 'd/m/Y';
                 }
@@ -198,10 +198,10 @@ class NinjaFormsMigrator extends BaseMigrator
                 $args['max'] = $field['num_max'];
                 break;
             case 'input_hidden':
-                $args['value'] = ArrayHelper::get($field, 'default', '');
+                $args['value'] = Arr::get($field, 'default', '');
                 break;
             case 'ratings':
-                $number = ArrayHelper::get($field, 'number_of_stars', 5);
+                $number = Arr::get($field, 'number_of_stars', 5);
                 $args['options'] = array_combine(range(1, $number), range(1, $number));
                 break;
             case 'input_file':
@@ -215,10 +215,10 @@ class NinjaFormsMigrator extends BaseMigrator
                 $args['tnc_html'] = $field['config']['agreement'];
                 break;
             case 'repeater_field':
-                $repeaterFields = ArrayHelper::get($field, 'fields', []);
+                $repeaterFields = Arr::get($field, 'fields', []);
                 $arr = [];
                 foreach ($repeaterFields as $serial => $repeaterField) {
-                    $type = ArrayHelper::get($this->fieldTypes(), $repeaterField['type'], '');
+                    $type = Arr::get($this->fieldTypes(), $repeaterField['type'], '');
                     $supportedRepeaterFields = ['input_text', 'select', 'input_number', 'email'];
 
                     if (in_array($type, $supportedRepeaterFields)) {
@@ -295,16 +295,16 @@ class NinjaFormsMigrator extends BaseMigrator
         $selectedOption = [];
         foreach ($options as $key => $option) {
             $arr = [
-                'label'      => ArrayHelper::get($option, 'label', 'Item -' . $key),
-                'value'      => ArrayHelper::get($option, 'value'),
-                'calc_value' => ArrayHelper::get($option, 'calc'),
-                'id'         => ArrayHelper::get($option, 'order')
+                'label'      => Arr::get($option, 'label', 'Item -' . $key),
+                'value'      => Arr::get($option, 'value'),
+                'calc_value' => Arr::get($option, 'calc'),
+                'id'         => Arr::get($option, 'order')
             ];
             if ($hasImage) {
-                $arr['image'] = ArrayHelper::get($option, 'image');
+                $arr['image'] = Arr::get($option, 'image');
             }
-            if (ArrayHelper::isTrue($option, 'selected')) {
-                $selectedOption[] = ArrayHelper::get($option, 'value', '');
+            if (Arr::isTrue($option, 'selected')) {
+                $selectedOption[] = Arr::get($option, 'value', '');
             }
             $formattedOptions[] = $arr;
         }
@@ -343,7 +343,7 @@ class NinjaFormsMigrator extends BaseMigrator
                         'redirectTo'           => 'samePage'
                     ];
                 } elseif ($actionData['type'] == 'save') {
-                    $isAutoDelete = intval(ArrayHelper::get($actionData, 'set_subs_to_expire')) == 1;
+                    $isAutoDelete = intval(Arr::get($actionData, 'set_subs_to_expire')) == 1;
                     if ($isAutoDelete) {
                         $formMeta['formSettings'] = [
                             'delete_after_x_days' => true,
@@ -377,7 +377,7 @@ class NinjaFormsMigrator extends BaseMigrator
         ];
 
         $defaults['restrictions']['requireLogin'] = [
-            'enabled'         => ArrayHelper::isTrue($formSettings, 'logged_in', false),
+            'enabled'         => Arr::isTrue($formSettings, 'logged_in'),
             'requireLoginMsg' => $formSettings['not_logged_in_msg']
         ];
 
@@ -444,15 +444,15 @@ class NinjaFormsMigrator extends BaseMigrator
                     'field'     => 'email',
                     'routing'   => '',
                 ],
-                'enabled'     => ArrayHelper::isTrue($actionData, 'active'),
+                'enabled'     => Arr::isTrue($actionData, 'active'),
                 'name'        => $actionData['label'],
                 'subject'     => $actionData['email_subject'],
                 'to'          => ($actionData['to'] == '{system:admin_email}') ? '{wp.admin_email}' : $actionData['to'],
                 'replyTo'     => ($actionData['to'] == '{system:admin_email}') ? '{wp.admin_email}' : $actionData['reply_to'],
                 'message'     => $actionData['email_message'],
-                'fromName'    => ArrayHelper::get($actionData, 'from_name'),
-                'fromAddress' => ArrayHelper::get($actionData, 'from_address'),
-                'bcc'         => ArrayHelper::get($actionData, 'bcc'),
+                'fromName'    => Arr::get($actionData, 'from_name'),
+                'fromAddress' => Arr::get($actionData, 'from_address'),
+                'bcc'         => Arr::get($actionData, 'bcc'),
             ];
         return $notification;
     }
@@ -567,7 +567,7 @@ class NinjaFormsMigrator extends BaseMigrator
 
         foreach ($submissions as $submission) {
             $values = $submission->get_field_values();
-            $values = ArrayHelper::only($values, $fieldsMap);
+            $values = Arr::only($values, $fieldsMap);
             $values = $this->formatEntries($values);
             if ($created_at = $submission->get_sub_date('Y-m-d H:i:s')) {
                 $values['created_at'] = $created_at;
@@ -582,7 +582,7 @@ class NinjaFormsMigrator extends BaseMigrator
 
     public function getFieldKeyMaps($form)
     {
-        $fields = ArrayHelper::get($form, 'fields');
+        $fields = Arr::get($form, 'fields');
         $fieldsMap = [];
         foreach ($fields as $field) {
             $fieldsMap[] = $field['key'];

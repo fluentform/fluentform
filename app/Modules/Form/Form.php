@@ -12,7 +12,7 @@ class Form
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request $request
+     * @var \FluentForm\Framework\Http\Request\Request $request
      */
     protected $request;
 
@@ -389,7 +389,7 @@ class Form
         $emailInputs = FormFieldsParser::getElement($form, ['input_email'], ['element', 'attributes']);
         if ($emailInputs) {
             $emailInput = array_shift($emailInputs);
-            $emailInputName = ArrayHelper::get($emailInput, 'attributes.name');
+            $emailInputName = Arr::get($emailInput, 'attributes.name');
             $this->updateMeta($formId, '_primary_email_field', $emailInputName);
         } else {
             $this->updateMeta($formId, '_primary_email_field', '');
@@ -455,7 +455,7 @@ class Form
         $stylePrefKeys = array_keys($stylePrefMap);
 
         foreach ($fields as $fieldIndex => $field) {
-            $element = ArrayHelper::get($field, 'element');
+            $element = Arr::get($field, 'element');
 
             if ('container' == $element) {
                 $columns = $field['columns'];
@@ -474,21 +474,21 @@ class Form
             }
 
             if (!empty($field['attributes'])) {
-                $attributes = array_filter(ArrayHelper::only($field['attributes'], $attributesKeys));
+                $attributes = array_filter(Arr::only($field['attributes'], $attributesKeys));
                 foreach ($attributes as $key => $value) {
                     $fields[$fieldIndex]['attributes'][$key] = call_user_func($attributesMap[$key], $value);
                 }
             }
 
             if (!empty($field['settings'])) {
-                $settings = array_filter(ArrayHelper::only($field['settings'], $settingsKeys));
+                $settings = array_filter(Arr::only($field['settings'], $settingsKeys));
                 foreach ($settings as $key => $value) {
                     $fields[$fieldIndex]['settings'][$key] = call_user_func($settingsMap[$key], $value);
                 }
             }
 
             if (!empty($field['style_pref'])) {
-                $settings = array_filter(ArrayHelper::only($field['style_pref'], $stylePrefKeys));
+                $settings = array_filter(Arr::only($field['style_pref'], $stylePrefKeys));
                 foreach ($settings as $key => $value) {
                     $fields[$fieldIndex]['style_pref'][$key] = call_user_func($stylePrefMap[$key], $value);
                 }
@@ -831,7 +831,7 @@ class Form
         if (function_exists('parse_blocks')) {
             $parsedBlocks = parse_blocks($content);
             foreach ($parsedBlocks as $block) {
-                if (!ArrayHelper::exists($block, 'blockName') || ArrayHelper::exists($block, 'attrs.formId')) {
+                if (!Arr::exists($block, 'blockName') || Arr::exists($block, 'attrs.formId')) {
                     continue;
                 }
                 $hasBlock = strpos($block['blockName'], 'fluentfom/guten-block') === 0;

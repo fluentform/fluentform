@@ -75,7 +75,7 @@ class FormBuilder
             $formClass .= ' ' . $extraFormClass;
         }
 
-        $themeStyle = ArrayHelper::get($atts, 'theme');
+        $themeStyle = Arr::get($atts, 'theme');
 
         if (!$themeStyle) {
             $selectedStyle = Helper::getFormMeta($form->id, '_ff_selected_style');
@@ -141,7 +141,7 @@ class FormBuilder
         $formAtts = $this->buildAttributes($formAttributes);
       
 
-        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . ArrayHelper::get($atts, 'css_classes'));
+        $wrapperClasses = trim('fluentform ff-default fluentform_wrapper_' . $form->id . ' ' . Arr::get($atts, 'css_classes'));
 
         if ($themeStyle === 'ffs_inherit_theme') {
             $wrapperClasses = str_replace("ff-default", "ff-inherit-theme-style", $wrapperClasses);
@@ -302,7 +302,7 @@ class FormBuilder
         if ($hasStepWrapper) {
             $startElement = $form->fields['stepsWrapper']['stepStart'];
 
-            $steps = ArrayHelper::get($startElement, 'settings.step_titles');
+            $steps = Arr::get($startElement, 'settings.step_titles');
 
             // check if $stepCounter == count()
             if ($stepCounter > count($steps)) {
@@ -448,7 +448,7 @@ class FormBuilder
                         $rule['message'] = apply_filters('fluentform/get_global_message_' . $ruleName, $rule['message']);
                     }
                     // Shortcode parse on validation message
-                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, ArrayHelper::get($item, 'attributes.name'));
+                    $rule['message'] = Helper::shortCodeParseOnValidationMessage($rule['message'], $this->form, Arr::get($item, 'attributes.name'));
                     $rules[$ruleName]['message'] = apply_filters_deprecated(
                         'fluentform_validation_message_' . $ruleName,
                         [

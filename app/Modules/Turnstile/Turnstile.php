@@ -38,11 +38,11 @@ class Turnstile
 
     public static function ensureSettings($values)
     {
-        $settings = ArrayHelper::get($values, '_fluentform_turnstile_details');
+        $settings = Arr::get($values, '_fluentform_turnstile_details');
 
-        $settings['invisible'] = ArrayHelper::get($settings, 'invisible', 'no');
-        $settings['theme'] = ArrayHelper::get($settings, 'theme', 'auto');
-        $settings['appearance'] = ArrayHelper::get($settings, 'appearance', 'always');
+        $settings['invisible'] = Arr::get($settings, 'invisible', 'no');
+        $settings['theme'] = Arr::get($settings, 'theme', 'auto');
+        $settings['appearance'] = Arr::get($settings, 'appearance', 'always');
         unset($settings['token']);
 
         $values['_fluentform_turnstile_details'] = $settings;

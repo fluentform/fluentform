@@ -51,7 +51,7 @@ class Container extends BaseComponent
 
         $data = apply_filters('fluentform/rendering_field_data_' . $elementName, $data, $form);
 
-        $containerClass = ArrayHelper::get($data, 'settings.container_class');
+        $containerClass = Arr::get($data, 'settings.container_class');
 
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
         $containerClass .= ' ' . $hasConditions;
@@ -62,7 +62,7 @@ class Container extends BaseComponent
         }
 
         $atts = $this->buildAttributes(
-            ArrayHelper::except($data['attributes'], 'name')
+            Arr::except($data['attributes'], 'name')
         );
 
         $columnClass = $this->columnClass;

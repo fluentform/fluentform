@@ -47,7 +47,7 @@ class DateTime extends BaseComponent
         $atts = $this->buildAttributes($data['attributes']);
 
         $ariaRequired = 'false';
-        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+        if (Arr::get($data, 'settings.validation_rules.required.value')) {
             $ariaRequired = 'true';
         }
 
@@ -108,7 +108,7 @@ class DateTime extends BaseComponent
 
     public function getDateFormatConfigJSON($settings, $form)
     {
-        $dateFormat = ArrayHelper::get($settings, 'date_format');
+        $dateFormat = Arr::get($settings, 'date_format');
 
         if (! $dateFormat) {
             $dateFormat = 'm/d/Y';
@@ -134,7 +134,7 @@ class DateTime extends BaseComponent
 
     public function getCustomConfig($settings)
     {
-        $customConfigObject = trim(ArrayHelper::get($settings, 'date_config'));
+        $customConfigObject = trim(Arr::get($settings, 'date_config'));
 
         if (! $customConfigObject || '{' != substr($customConfigObject, 0, 1) || '}' != substr($customConfigObject, -1)) {
             $customConfigObject = '{}';

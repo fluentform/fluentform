@@ -4,8 +4,9 @@ namespace FluentForm\App\Modules\Form;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Http\Request\Request;
 use FluentForm\Framework\Support\Arr;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 
 /* @deprecated Current File FluentForm\App\Http\Controllers\TransferController */
 
@@ -14,14 +15,14 @@ class Transfer
     /**
      * Request object
      *
-     * @var \FluentForm\Framework\Request\Request $request
+     * @var Request $request
      */
     protected $request;
 
     /**
      * Transfer constructor.
      *
-     * @param \FluentForm\Framework\Foundation\Application $application
+     * @param Application $application
      */
     public function __construct(Application $application)
     {
@@ -76,9 +77,9 @@ class Transfer
                 foreach ($forms as $formItem) {
                     // First of all make the form object.
                     $formFields = json_encode([]);
-                    if ($fields = ArrayHelper::get($formItem, 'form', '')) {
+                    if ($fields = Arr::get($formItem, 'form', '')) {
                         $formFields = json_encode($fields);
-                    } elseif ($fields = ArrayHelper::get($formItem, 'form_fields', '')) {
+                    } elseif ($fields = Arr::get($formItem, 'form_fields', '')) {
                         $formFields = json_encode($fields);
                     } else {
                         wp_send_json([
@@ -87,16 +88,16 @@ class Transfer
                     }
 
                     $form = [
-                        'title'       => ArrayHelper::get($formItem, 'title'),
+                        'title'       => Arr::get($formItem, 'title'),
                         'form_fields' => $formFields,
-                        'status'      => ArrayHelper::get($formItem, 'status', 'published'),
-                        'has_payment' => ArrayHelper::get($formItem, 'has_payment', 0),
-                        'type'        => ArrayHelper::get($formItem, 'type', 'form'),
+                        'status'      => Arr::get($formItem, 'status', 'published'),
+                        'has_payment' => Arr::get($formItem, 'has_payment', 0),
+                        'type'        => Arr::get($formItem, 'type', 'form'),
                         'created_by'  => get_current_user_id(),
                     ];
 
-                    if (ArrayHelper::get($formItem, 'conditions')) {
-                        $form['conditions'] = ArrayHelper::get($formItem, 'conditions');
+                    if (Arr::get($formItem, 'conditions')) {
+                        $form['conditions'] = Arr::get($formItem, 'conditions');
                     }
 
                     if (isset($formItem['appearance_settings'])) {

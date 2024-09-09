@@ -695,7 +695,7 @@ class Component
 
         $formSettings = $form->settings;
 
-        $formSettings = ArrayHelper::only($formSettings, ['layout', 'id']);
+        $formSettings = Arr::only($formSettings, ['layout', 'id']);
 
         $formSettings['restrictions']['denyEmptySubmission'] = [
             'enabled' => false,
@@ -1015,7 +1015,7 @@ class Component
         }
 
         $weekDayToday = date('l');   //day of the week
-        $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
+        $selectedWeekDays = Arr::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
         if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
             $isRenderable['message'] = $restrictions['expiredMsg'];
@@ -1222,7 +1222,7 @@ class Component
 
     public function getNumericInputValue($value, $field)
     {
-        $formatter = ArrayHelper::get($field, 'raw.settings.numeric_formatter');
+        $formatter = Arr::get($field, 'raw.settings.numeric_formatter');
         if (!$formatter) {
             return $value;
         }

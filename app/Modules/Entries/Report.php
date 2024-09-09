@@ -104,7 +104,7 @@ class Report
 
         foreach ($reports as $reportKey => $report) {
             $reports[$reportKey]['label'] = $inputLabels[$reportKey];
-            $reports[$reportKey]['element'] = ArrayHelper::get($inputs, $reportKey, []);
+            $reports[$reportKey]['element'] = Arr::get($inputs, $reportKey, []);
             $reports[$reportKey]['options'] = $formInputs[$reportKey]['options'];
         }
 
@@ -225,7 +225,7 @@ class Report
             }
         } else {
             $value = $report['sub_field_name'] . ' : ' . $filedValue;
-            $count = ArrayHelper::get($formattedReports, $report['field_name'] . '.reports.' . $value . '.count');
+            $count = Arr::get($formattedReports, $report['field_name'] . '.reports.' . $value . '.count');
             $count = $count ? $count + $report['total_count'] : $report['total_count'];
 
             $formattedReports[$report['field_name']]['reports'][$value] = [

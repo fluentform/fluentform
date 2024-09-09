@@ -42,12 +42,12 @@ class Address extends BaseComponent
         $data['attributes']['class'] .= ' ff-name-address-wrapper ' . $this->wrapperClass . ' ' . $hasConditions;
         $data['attributes']['class'] = trim($data['attributes']['class']);
 
-        if ('yes' == ArrayHelper::get($data, 'settings.enable_g_autocomplete')) {
+        if ('yes' == Arr::get($data, 'settings.enable_g_autocomplete')) {
             $data['attributes']['class'] .= ' ff_map_autocomplete';
-            if ('yes' == ArrayHelper::get($data, 'settings.enable_g_map')) {
+            if ('yes' == Arr::get($data, 'settings.enable_g_map')) {
                 $data['attributes']['data-ff_with_g_map'] = '1';
             }
-            $data['attributes']['data-ff_with_auto_locate'] = ArrayHelper::get($data, 'settings.enable_auto_locate', false);
+            $data['attributes']['data-ff_with_auto_locate'] = Arr::get($data, 'settings.enable_auto_locate', false);
             do_action_deprecated(
                 'fluentform_address_map_autocomplete',
                 [
@@ -62,13 +62,13 @@ class Address extends BaseComponent
         }
 
         $atts = $this->buildAttributes(
-            ArrayHelper::except($data['attributes'], 'name')
+            Arr::except($data['attributes'], 'name')
         );
 
         //re order fields from version 4.3.2
-        if ($order = ArrayHelper::get($data, 'settings.field_order')) {
+        if ($order = Arr::get($data, 'settings.field_order')) {
             $order = array_values(array_column($order, 'value'));
-            $fields = ArrayHelper::get($data, 'fields');
+            $fields = Arr::get($data, 'fields');
             $data['fields'] = array_merge(array_flip($order), $fields);
         }
         ob_start();
@@ -91,7 +91,7 @@ class Address extends BaseComponent
         endif;
         echo "<div class='ff-el-input--content'>";
 
-        $googleAutoComplete = 'yes' === ArrayHelper::get($data, 'settings.enable_g_autocomplete');
+        $googleAutoComplete = 'yes' === Arr::get($data, 'settings.enable_g_autocomplete');
         if (!$googleAutoComplete) {
             $data['fields']['latitude']['settings']['visible'] = false;
             $data['fields']['longitude']['settings']['visible'] = false;
@@ -110,12 +110,12 @@ class Address extends BaseComponent
                     $item['attributes']['name'] = $rootName . '[' . $itemName . ']';
 
                     if ('select_country' === $item['element'] && $googleAutoComplete) {
-                        $selectedCountries = (array) ArrayHelper::get($item, 'attributes.value', []);
-                        if ('visible_list' === ArrayHelper::get($item, 'settings.country_list.active_list')) {
+                        $selectedCountries = (array) Arr::get($item, 'attributes.value', []);
+                        if ('visible_list' === Arr::get($item, 'settings.country_list.active_list')) {
                             $selectedCountries = array_unique(
                                 array_merge(
                                     $selectedCountries,
-                                    ArrayHelper::get($item, 'settings.country_list.visible_list', [])
+                                    Arr::get($item, 'settings.country_list.visible_list', [])
                                 )
                             );
                         }

@@ -209,8 +209,8 @@ class Form
         $request = wpFluentForm('request')->get();
 
         if ((isset($request[$paramKey])) && !wp_doing_ajax()) {
-            $formId = (int) ArrayHelper::get($request, $paramKey);
-            $shareKey = ArrayHelper::get($request, 'form');
+            $formId = (int) Arr::get($request, $paramKey);
+            $shareKey = Arr::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
     }
@@ -219,7 +219,7 @@ class Form
     {
         $globalModules = get_option('fluentform_global_modules_status');
 
-        $addOn = ArrayHelper::get($globalModules, $this->addOnKey);
+        $addOn = Arr::get($globalModules, $this->addOnKey);
 
         if (!$addOn || 'yes' == $addOn) {
             return true;
@@ -233,10 +233,10 @@ class Form
         $data = $form->submit_button;
         $styles = '';
 
-        if ('' == ArrayHelper::get($data, 'settings.button_style')) {
+        if ('' == Arr::get($data, 'settings.button_style')) {
             // it's a custom button
-            $buttonActiveStyles = ArrayHelper::get($data, 'settings.normal_styles', []);
-            $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
+            $buttonActiveStyles = Arr::get($data, 'settings.normal_styles', []);
+            $buttonHoverStyles = Arr::get($data, 'settings.hover_styles', []);
             $activeStates = '';
             foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
                 if (!$styleValue) {
@@ -264,7 +264,7 @@ class Form
                 $styles .= ' .wpf_has_custom_css.ff-btn-submit:hover { ' . $hoverStates . ' } ';
             }
         } else {
-            $styles .= ' .ff-btn-submit { background-color: ' . ArrayHelper::get($data, 'settings.background_color') . '; color: ' . ArrayHelper::get($data, 'settings.color') . '; }';
+            $styles .= ' .ff-btn-submit { background-color: ' . Arr::get($data, 'settings.background_color') . '; color: ' . Arr::get($data, 'settings.color') . '; }';
         }
 
         if (defined('FLUENTFORMPRO')) {
@@ -282,9 +282,9 @@ class Form
             return $components;
         }
 
-        $generalFields = ArrayHelper::get($components, 'general', []);
-        $advancedFields = ArrayHelper::get($components, 'advanced', []);
-        $paymentFields = ArrayHelper::get($components, 'payments', []);
+        $generalFields = Arr::get($components, 'general', []);
+        $advancedFields = Arr::get($components, 'advanced', []);
+        $paymentFields = Arr::get($components, 'payments', []);
 
         $acceptedFieldElements = [
             'phone',
@@ -406,7 +406,7 @@ class Form
                     if (empty($jsScript->src)) {
                         continue;
                     }
-                    if ($data = ArrayHelper::get($jsScript->extra, 'data')) {
+                    if ($data = Arr::get($jsScript->extra, 'data')) {
                         printf("<script type='text/javascript' id='%s-js-extra'>\n", esc_attr($handle));
                         echo "$data\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $data is hardcoded localized data and escaped before being passed in.
                         echo "</script>\n";
@@ -660,7 +660,7 @@ class Form
 
         $metaSettings = $this->getMetaSettings($formId);
 
-        $shareKey = ArrayHelper::get($metaSettings, 'share_key');
+        $shareKey = Arr::get($metaSettings, 'share_key');
         if ($shareKey) {
             if ($providedKey != $shareKey && !Acl::hasAnyFormPermission($formId)) {
                 return '';
@@ -880,8 +880,8 @@ class Form
             'reCaptcha'                 => $form->reCaptcha,
             'hCaptcha'                  => $form->hCaptcha,
             'turnstile'                 => $form->turnstile,
-            'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
-            'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
+            'has_per_step_save'         => Arr::get($form->settings, 'conv_form_per_step_save', false),
+            'has_resume_from_last_step' => Arr::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];

@@ -15,7 +15,7 @@ class AkismetHandler
         }
 
         $settings = get_option('_fluentform_global_form_settings');
-        return $settings && 'yes' == ArrayHelper::get($settings, 'misc.akismet_status');
+        return $settings && 'yes' == Arr::get($settings, 'misc.akismet_status');
     }
 
     public static function isPluginEnabled()
@@ -33,7 +33,7 @@ class AkismetHandler
         $fields = self::getAkismetFields($formData, $form);
         $response = \Akismet::http_post($fields, 'comment-check');
 
-        return 'true' == ArrayHelper::get($response, 1);
+        return 'true' == Arr::get($response, 1);
     }
 
     protected static function getAkismetFields($data, $form)
@@ -62,10 +62,10 @@ class AkismetHandler
         $inputs = FormFieldsParser::getInputs($form, ['attributes']);
 
         foreach ($inputs as $input) {
-            $element = ArrayHelper::get($input, 'element');
-            $key = ArrayHelper::get($input, 'attributes.name');
+            $element = Arr::get($input, 'element');
+            $key = Arr::get($input, 'attributes.name');
             if (isset($maps[$element]) && !$info[$maps[$element]]) {
-                $value = ArrayHelper::get($data, $key);
+                $value = Arr::get($data, $key);
                 if ($value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);

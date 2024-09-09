@@ -179,7 +179,7 @@ class FormDataParser
         }
 
         try {
-            $repeatColumns = ArrayHelper::get($field, 'raw.fields');
+            $repeatColumns = Arr::get($field, 'raw.fields');
             $rows = count($value[0]);
             $columns = count($value);
 
@@ -191,7 +191,7 @@ class FormDataParser
                         <thead>
                             <tr>
                                 <?php foreach ($repeatColumns as $repeatColumn) : ?>
-                                <th><?php echo fluentform_sanitize_html(ArrayHelper::get($repeatColumn, 'settings.label')); ?>
+                                <th><?php echo fluentform_sanitize_html(Arr::get($repeatColumn, 'settings.label')); ?>
                                 </th>
                                 <?php endforeach; ?>
                             </tr>
@@ -336,7 +336,7 @@ class FormDataParser
 
         if (!isset($field['options'])) {
             $field['options'] = [];
-            foreach (ArrayHelper::get($field, 'raw.settings.advanced_options', []) as $option) {
+            foreach (Arr::get($field, 'raw.settings.advanced_options', []) as $option) {
                 $field['options'][$option['value']] = $option['label'];
             }
         }
@@ -344,7 +344,7 @@ class FormDataParser
         $html = '<ul style="white-space: normal;">';
         foreach ($values as $value) {
             $item = $value;
-            if ($itemLabel = ArrayHelper::get($field, 'options.' . $item)) {
+            if ($itemLabel = Arr::get($field, 'options.' . $item)) {
                 $item = $itemLabel;
             }
             $html .= '<li>' . $item . '</li>';

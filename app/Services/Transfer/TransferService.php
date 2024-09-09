@@ -11,7 +11,7 @@ use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\App;
-use FluentForm\Framework\Request\File;
+use FluentForm\Framework\Http\Request\File;
 use FluentForm\Framework\Support\Arr;
 
 class TransferService

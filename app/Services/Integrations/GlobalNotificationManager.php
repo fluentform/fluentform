@@ -100,7 +100,7 @@ class GlobalNotificationManager
 
         foreach ($enabledFeeds as $feed) {
             // We will decide if this feed will run on async or sync
-            $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
+            $integrationKey = Arr::get($feedKeys, $feed['meta_key']);
 
             $action = 'fluentform/integration_notify_' . $feed['meta_key'];
 
@@ -109,7 +109,7 @@ class GlobalNotificationManager
             }
             // skip emails which will be sent on payment form submit otherwise email is sent after payment success
             if (! ! $form->has_payment && ('notifications' == $feed['meta_key'])) {
-                if (('payment_form_submit' == ArrayHelper::get($feed, 'settings.feed_trigger_event'))) {
+                if (('payment_form_submit' == Arr::get($feed, 'settings.feed_trigger_event'))) {
                     continue;
                 }
             }
@@ -187,11 +187,11 @@ class GlobalNotificationManager
 
     public function checkCondition($parsedValue, $formData, $insertId)
     {
-        $conditionSettings = ArrayHelper::get($parsedValue, 'conditionals');
+        $conditionSettings = Arr::get($parsedValue, 'conditionals');
         if (
             ! $conditionSettings ||
-            ! ArrayHelper::isTrue($conditionSettings, 'status') ||
-            ! count(ArrayHelper::get($conditionSettings, 'conditions'))
+            ! Arr::isTrue($conditionSettings, 'status') ||
+            ! count(Arr::get($conditionSettings, 'conditions'))
         ) {
             return true;
         }
@@ -260,7 +260,7 @@ class GlobalNotificationManager
         $enabledFeeds = [];
         foreach ($feeds as $feed) {
             $parsedValue = json_decode($feed->value, true);
-            if ($parsedValue && ArrayHelper::isTrue($parsedValue, 'enabled')) {
+            if ($parsedValue && Arr::isTrue($parsedValue, 'enabled')) {
                 // Now check if conditions matched or not
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
                 if ($isConditionMatched) {

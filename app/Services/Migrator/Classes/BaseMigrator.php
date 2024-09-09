@@ -199,21 +199,21 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'input_name_args.first_name.name'),
-                            'value'       => ArrayHelper::get($args, 'input_name_args.first_name.default', ''),
+                            'name'        => Arr::get($args, 'input_name_args.first_name.name'),
+                            'value'       => Arr::get($args, 'input_name_args.first_name.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'input_name_args.first_name.placeholder' ,__('First Name', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'input_name_args.first_name.placeholder' ,__('First Name', 'fluentform')),
                             'maxlength'   => '',
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'input_name_args.first_name.label'),
+                            'label'              => Arr::get($args, 'input_name_args.first_name.label'),
                             'help_message'       => '',
-                            'visible'            => ArrayHelper::isTrue($args, 'input_name_args.first_name.visible'),
+                            'visible'            => Arr::isTrue($args, 'input_name_args.first_name.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'input_name_args.first_name.required'),
+                                    'value'   => Arr::isTrue($args, 'input_name_args.first_name.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -227,23 +227,23 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'input_name_args.middle_name.name'),
-                            'value'       => ArrayHelper::get($args, 'input_name_args.middle_name.default', ''),
+                            'name'        => Arr::get($args, 'input_name_args.middle_name.name'),
+                            'value'       => Arr::get($args, 'input_name_args.middle_name.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'input_name_args.middle_name.placeholder' , __('Middle Name', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'input_name_args.middle_name.placeholder' , __('Middle Name', 'fluentform')),
                             'required'    => false,
                             'maxlength'   => '',
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'input_name_args.middle_name.label'),
+                            'label'              => Arr::get($args, 'input_name_args.middle_name.label'),
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::isTrue($args, 'input_name_args.middle_name.visible'),
+                            'visible'            => Arr::isTrue($args, 'input_name_args.middle_name.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'input_name_args.middle_name.required'),
+                                    'value'   => Arr::isTrue($args, 'input_name_args.middle_name.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -257,23 +257,23 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'input_name_args.last_name.name'),
-                            'value'       => ArrayHelper::get($args, 'input_name_args.last_name.default', ''),
+                            'name'        => Arr::get($args, 'input_name_args.last_name.name'),
+                            'value'       => Arr::get($args, 'input_name_args.last_name.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'input_name_args.last_name.placeholder', __('Last Name', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'input_name_args.last_name.placeholder', __('Last Name', 'fluentform')),
                             'required'    => false,
                             'maxlength'   => '',
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'input_name_args.last_name.label'),
+                            'label'              => Arr::get($args, 'input_name_args.last_name.label'),
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::isTrue($args, 'input_name_args.last_name.visible'),
+                            'visible'            => Arr::isTrue($args, 'input_name_args.last_name.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'input_name_args.last_name.required'),
+                                    'value'   => Arr::isTrue($args, 'input_name_args.last_name.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -822,7 +822,7 @@ abstract class BaseMigrator
                             'message' => __('This field is required', 'fluentform'),
                         ],
                         'valid_phone_number' => [
-                            'value'   => ArrayHelper::isTrue($args, 'valid_phone_number'),
+                            'value'   => Arr::isTrue($args, 'valid_phone_number'),
                             'message' => __('Phone number is not valid', 'fluentform')
                         ]
                     ],
@@ -888,7 +888,7 @@ abstract class BaseMigrator
                 'settings'       => [
                     'html_codes'         => $args['html_codes'],
                     'conditional_logics' => [],
-                    'container_class'    => ArrayHelper::get($args, 'container_class', '')
+                    'container_class'    => Arr::get($args, 'container_class', '')
                 ],
                 'editor_options' => [
                     'title'      => __('Custom HTML', 'fluentform'),
@@ -1022,14 +1022,14 @@ abstract class BaseMigrator
                 ],
                 'settings'       => [
                     'prev_btn' => [
-                        'type'    => ArrayHelper::get($args, 'prev_btn.type', 'default'),
-                        'text'    => ArrayHelper::get($args, 'prev_btn.text', 'Previous'),
-                        'img_url' => ArrayHelper::get($args, 'prev_btn.img_url', '')
+                        'type'    => Arr::get($args, 'prev_btn.type', 'default'),
+                        'text'    => Arr::get($args, 'prev_btn.text', 'Previous'),
+                        'img_url' => Arr::get($args, 'prev_btn.img_url', '')
                     ],
                     'next_btn' => [
-                        'type'    => ArrayHelper::get($args, 'next_btn.type', 'default'),
-                        'text'    => ArrayHelper::get($args, 'next_btn.text', 'Next'),
-                        'img_url' => ArrayHelper::get($args, 'next_btn.img_url', '')
+                        'type'    => Arr::get($args, 'next_btn.type', 'default'),
+                        'text'    => Arr::get($args, 'next_btn.text', 'Next'),
+                        'img_url' => Arr::get($args, 'next_btn.img_url', '')
                     ]
                 ],
                 'editor_options' => [
@@ -1168,21 +1168,21 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'address_args.address_line_1.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.address_line_1.default', ''),
+                            'name'        => Arr::get($args, 'address_args.address_line_1.name'),
+                            'value'       => Arr::get($args, 'address_args.address_line_1.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.address_line_1.placeholder', __('Address Line 1', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.address_line_1.placeholder', __('Address Line 1', 'fluentform')),
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.address_line_1.label'),
+                            'label'              => Arr::get($args, 'address_args.address_line_1.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.address_line_1.visible'),
+                            'visible'            => Arr::get($args, 'address_args.address_line_1.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.address_line_1.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.address_line_1.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1196,21 +1196,21 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'address_args.address_line_2.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.address_line_2.default', ''),
+                            'name'        => Arr::get($args, 'address_args.address_line_2.name'),
+                            'value'       => Arr::get($args, 'address_args.address_line_2.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.address_line_2.placeholder', __('Address Line 2', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.address_line_2.placeholder', __('Address Line 2', 'fluentform')),
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.address_line_2.label'),
+                            'label'              => Arr::get($args, 'address_args.address_line_2.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.address_line_2.visible'),
+                            'visible'            => Arr::get($args, 'address_args.address_line_2.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.address_line_2.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.address_line_2.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1224,22 +1224,22 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'address_args.city.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.city.default', ''),
+                            'name'        => Arr::get($args, 'address_args.city.name'),
+                            'value'       => Arr::get($args, 'address_args.city.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.city.placeholder', __('City', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.city.placeholder', __('City', 'fluentform')),
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.city.label'),
+                            'label'              => Arr::get($args, 'address_args.city.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.city.visible'),
+                            'visible'            => Arr::get($args, 'address_args.city.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.city.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.city.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1253,22 +1253,22 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'address_args.state.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.state.default', ''),
+                            'name'        => Arr::get($args, 'address_args.state.name'),
+                            'value'       => Arr::get($args, 'address_args.state.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.state.placeholder', __('State', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.state.placeholder', __('State', 'fluentform')),
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.state.label'),
+                            'label'              => Arr::get($args, 'address_args.state.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.state.visible'),
+                            'visible'            => Arr::get($args, 'address_args.state.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.state.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.state.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1282,23 +1282,23 @@ abstract class BaseMigrator
                         'element'        => 'input_text',
                         'attributes'     => [
                             'type'        => 'text',
-                            'name'        => ArrayHelper::get($args, 'address_args.zip.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.zip.default', ''),
+                            'name'        => Arr::get($args, 'address_args.zip.name'),
+                            'value'       => Arr::get($args, 'address_args.zip.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.zip.placeholder', __('Zip', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.zip.placeholder', __('Zip', 'fluentform')),
                             'required'    => false,
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.zip.label'),
+                            'label'              => Arr::get($args, 'address_args.zip.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.zip.visible'),
+                            'visible'            => Arr::get($args, 'address_args.zip.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.zip.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.zip.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1311,23 +1311,23 @@ abstract class BaseMigrator
                     'country'        => [
                         'element'        => 'select_country',
                         'attributes'     => [
-                            'name'        => ArrayHelper::get($args, 'address_args.country.name'),
-                            'value'       => ArrayHelper::get($args, 'address_args.country.default', ''),
+                            'name'        => Arr::get($args, 'address_args.country.name'),
+                            'value'       => Arr::get($args, 'address_args.country.default', ''),
                             'id'          => '',
                             'class'       => '',
-                            'placeholder' => ArrayHelper::get($args, 'address_args.country.placeholder', __('Country', 'fluentform')),
+                            'placeholder' => Arr::get($args, 'address_args.country.placeholder', __('Country', 'fluentform')),
                             'required'    => false,
                         ],
                         'settings'       => [
                             'container_class'    => '',
-                            'label'              => ArrayHelper::get($args, 'address_args.country.label'),
+                            'label'              => Arr::get($args, 'address_args.country.label'),
                             'admin_field_label'  => '',
                             'help_message'       => '',
                             'error_message'      => '',
-                            'visible'            => ArrayHelper::get($args, 'address_args.country.visible'),
+                            'visible'            => Arr::get($args, 'address_args.country.visible'),
                             'validation_rules'   => [
                                 'required' => [
-                                    'value'   => ArrayHelper::isTrue($args, 'address_args.country.required'),
+                                    'value'   => Arr::isTrue($args, 'address_args.country.required'),
                                     'message' => __('This field is required', 'fluentform'),
                                 ],
                             ],
@@ -1366,9 +1366,9 @@ abstract class BaseMigrator
                     'id' => '',
                     'class' => $args['class'],
                     'placeholder' => $args['placeholder'],
-                    'rows' => ArrayHelper::get($args, 'rows', 3),
-                    'cols' => ArrayHelper::get($args, 'cols', 2),
-                    'maxlength' => ArrayHelper::get($args, 'maxlength', ''),
+                    'rows' => Arr::get($args, 'rows', 3),
+                    'cols' => Arr::get($args, 'cols', 2),
+                    'maxlength' => Arr::get($args, 'maxlength', ''),
                 ],
                 'settings'       => [
                     'container_class'    => $args['container_class'],
@@ -1379,7 +1379,7 @@ abstract class BaseMigrator
                     'help_message'      => $args['help_message'],
                     'validation_rules'   => [
                         'required'           => [
-                            'value'   => ArrayHelper::isTrue($args,'required'),
+                            'value'   => Arr::isTrue($args,'required'),
                             'message' => __('This field is required', 'fluentformpro'),
                         ]
                     ],
@@ -1418,9 +1418,9 @@ abstract class BaseMigrator
                 'color'            => '#ffffff',
                 'background_color' => '#1a7efb',
                 'button_ui'        => [
-                    'type'    => ArrayHelper::get($args, 'type', 'default'),
+                    'type'    => Arr::get($args, 'type', 'default'),
                     'text'    => $args['label'],
-                    'img_url' => ArrayHelper::get($args, 'img_url', '')
+                    'img_url' => Arr::get($args, 'img_url', '')
                 ],
                 'normal_styles'    => [],
                 'hover_styles'     => [],
@@ -1444,7 +1444,7 @@ abstract class BaseMigrator
     {
         if ($metas) {
             //when multiple notifications
-            if ($notifications = ArrayHelper::get($metas, 'notifications')) {
+            if ($notifications = Arr::get($metas, 'notifications')) {
                 (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->deleteMeta($formId, 'notifications');
                 foreach ($notifications as $notify) {
                     $settings = [
@@ -1458,7 +1458,7 @@ abstract class BaseMigrator
                 unset($metas['notifications']);
             }
             //when multiple confirmations
-            if ($confirmations = ArrayHelper::get($metas, 'confirmations')) {
+            if ($confirmations = Arr::get($metas, 'confirmations')) {
                 (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->deleteMeta($formId, 'confirmations');
                 foreach ($confirmations as $confirmation) {
                     $settings = [
@@ -1473,7 +1473,7 @@ abstract class BaseMigrator
             }
 
             //when have webhooks
-            if ($webhooks = ArrayHelper::get($metas, 'webhooks')) {
+            if ($webhooks = Arr::get($metas, 'webhooks')) {
                 \FluentForm\App\Models\FormMeta::remove($formId, 'fluentform_webhook_feed');
                 foreach ($webhooks as $webhook) {
                     \FluentForm\App\Models\FormMeta::create([
@@ -1533,7 +1533,7 @@ abstract class BaseMigrator
             "csv"
         ];
 
-        $formattedTypes = explode(', ', ArrayHelper::get($field, $arg, ''));
+        $formattedTypes = explode(', ', Arr::get($field, $arg, ''));
         $fileTypeOptions = [];
         foreach ($formattedTypes as $format) {
             foreach ($allFileTypes as $fileTypes) {
@@ -1553,8 +1553,8 @@ abstract class BaseMigrator
         $deletedForms = [];
         if (is_array($importedFormMap)) {
             foreach ($importedFormMap as $fluentFormId => $value) {
-                if ($this->getFormId($formItem) == ArrayHelper::get($value,
-                        'imported_form_id') && $this->key == ArrayHelper::get($value, 'form_type')) {
+                if ($this->getFormId($formItem) == Arr::get($value,
+                        'imported_form_id') && $this->key == Arr::get($value, 'form_type')) {
 
                     if (wpFluent()->table('fluentform_forms')->find($fluentFormId)) {
                         return $fluentFormId;
@@ -1584,7 +1584,7 @@ abstract class BaseMigrator
         $emailInputs = FormFieldsParser::getElement($form, ['input_email'], ['element', 'attributes']);
         if ($emailInputs) {
             $emailInput = array_shift($emailInputs);
-            $emailInputName = ArrayHelper::get($emailInput, 'attributes.name');
+            $emailInputName = Arr::get($emailInput, 'attributes.name');
             (new \FluentForm\App\Modules\Form\Form(wpFluentForm()))->updateMeta($formId, '_primary_email_field',
                 $emailInputName);
         } else {
@@ -1631,13 +1631,13 @@ abstract class BaseMigrator
             if ($previousItem) {
                 $serialNumber = $previousItem->serial_number + 1;
             }
-            $created_at = ArrayHelper::get($entry, 'created_at');
+            $created_at = Arr::get($entry, 'created_at');
             if ($created_at) {
-                ArrayHelper::forget($entry, 'created_at');
+                Arr::forget($entry, 'created_at');
             }
-            $updated_at = ArrayHelper::get($entry, 'updated_at');
+            $updated_at = Arr::get($entry, 'updated_at');
             if ($updated_at) {
-                ArrayHelper::forget($entry, 'updated_at');
+                Arr::forget($entry, 'updated_at');
             }
             $insertData = [
                 'form_id'       => $fluentFormId,
@@ -1652,13 +1652,13 @@ abstract class BaseMigrator
                 'updated_at'    => $updated_at ?: current_time('mysql')
             ];
 
-            if ($is_favourite = ArrayHelper::get($entry, 'is_favourite')) {
+            if ($is_favourite = Arr::get($entry, 'is_favourite')) {
                 $insertData['is_favourite'] = $is_favourite;
-                ArrayHelper::forget($entry, 'is_favourite');
+                Arr::forget($entry, 'is_favourite');
             }
-            if ($status = ArrayHelper::get($entry, 'status')) {
+            if ($status = Arr::get($entry, 'status')) {
                 $insertData['status'] = $status;
-                ArrayHelper::forget($entry, 'status');
+                Arr::forget($entry, 'status');
             }
 
             $insertId = wpFluent()->table('fluentform_submissions')->insertGetId($insertData);
@@ -1733,7 +1733,7 @@ abstract class BaseMigrator
 
     protected function getResolveOperator($key)
     {
-        return ArrayHelper::get([
+        return Arr::get([
             'equal'            => '=',
             'is'               => '=',
             '=='               => '=',

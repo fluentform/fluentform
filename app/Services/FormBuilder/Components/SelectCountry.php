@@ -34,7 +34,7 @@ class SelectCountry extends BaseComponent
         $defaultValues = (array) $this->extractValueFromAttributes($data);
         $data['attributes']['class'] = trim('ff-el-form-control ' . $data['attributes']['class']);
         $data['attributes']['id'] = $this->makeElementId($data, $form);
-        $isSearchable = ArrayHelper::get($data, 'settings.enable_select_2');
+        $isSearchable = Arr::get($data, 'settings.enable_select_2');
         if ('yes' == $isSearchable) {
             wp_enqueue_script('choices');
             wp_enqueue_style('ff_choices');
@@ -45,22 +45,22 @@ class SelectCountry extends BaseComponent
             $data['attributes']['tabindex'] = $tabIndex;
         }
 
-        $placeholder = ArrayHelper::get($data, 'attributes.placeholder');
+        $placeholder = Arr::get($data, 'attributes.placeholder');
 
-        $activeList = ArrayHelper::get($data, 'settings.country_list.active_list');
+        $activeList = Arr::get($data, 'settings.country_list.active_list');
 
         $ariaRequired = 'false';
-        if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+        if (Arr::get($data, 'settings.validation_rules.required.value')) {
             $ariaRequired = 'true';
         }
 
         $elMarkup = '<select ' . $this->buildAttributes($data['attributes']) . "aria-invalid='false' aria-required=$ariaRequired><option value=''>" . wp_strip_all_tags($placeholder) . '</option>';
 
         if ('priority_based' == $activeList) {
-            $selectCountries = ArrayHelper::get($data, 'settings.country_list.priority_based', []);
+            $selectCountries = Arr::get($data, 'settings.country_list.priority_based', []);
             $priorityCountries = $this->getSelectedCountries($selectCountries);
-            $primaryListLabel = ArrayHelper::get($data, 'settings.primary_label');
-            $otherListLabel = ArrayHelper::get($data, 'settings.other_label');
+            $primaryListLabel = Arr::get($data, 'settings.primary_label');
+            $otherListLabel = Arr::get($data, 'settings.other_label');
             $elMarkup .= '<optgroup label="' . wp_strip_all_tags($primaryListLabel) . '">';
             $elMarkup .= $this->buildOptions($priorityCountries, $defaultValues);
             $elMarkup .= '</optgroup><optgroup label="' . wp_strip_all_tags($otherListLabel) . '">';
@@ -99,17 +99,17 @@ class SelectCountry extends BaseComponent
     {
         $app = wpFluentForm();
         $data['options'] = [];
-        $activeList = ArrayHelper::get($data, 'settings.country_list.active_list');
+        $activeList = Arr::get($data, 'settings.country_list.active_list');
         $countries = getFluentFormCountryList();
 
         if ('visible_list' == $activeList) {
-            $selectCountries = ArrayHelper::get($data, 'settings.country_list.' . $activeList, []);
+            $selectCountries = Arr::get($data, 'settings.country_list.' . $activeList, []);
             foreach ($selectCountries as $value) {
                 $data['options'][$value] = $countries[$value];
             }
         } elseif ('hidden_list' == $activeList || 'priority_based' == $activeList) {
             $data['options'] = $countries;
-            $selectCountries = ArrayHelper::get($data, 'settings.country_list.' . $activeList, []);
+            $selectCountries = Arr::get($data, 'settings.country_list.' . $activeList, []);
             foreach ($selectCountries as $value) {
                 unset($data['options'][$value]);
             }

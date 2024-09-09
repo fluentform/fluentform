@@ -31,11 +31,11 @@ class CustomHtml extends BaseComponent
 
         $hasConditions = $this->hasConditions($data) ? 'has-conditions ' : '';
         $cls = trim($this->getDefaultContainerClass() . ' ff-' . $elementName . ' ' . $hasConditions);
-        if ($containerClass = ArrayHelper::get($data, 'settings.container_class')) {
+        if ($containerClass = Arr::get($data, 'settings.container_class')) {
             $cls .= ' ' . $containerClass;
         }
         $atts = $this->buildAttributes(
-            ArrayHelper::except($data['attributes'], 'name')
+            Arr::except($data['attributes'], 'name')
         );
         $html = "<div class='" . esc_attr($cls) . "' {$atts}>" . fluentform_sanitize_html($data['settings']['html_codes']) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $atts is escaped before being passed in.
     

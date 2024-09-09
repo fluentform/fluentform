@@ -34,7 +34,7 @@ class Checkable extends BaseComponent
         $data['attributes']['class'] = trim(
             'ff-el-form-check-input ' .
             'ff-el-form-check-' . $data['attributes']['type'] . ' ' .
-            ArrayHelper::get($data, 'attributes.class')
+            Arr::get($data, 'attributes.class')
         );
 
         if ('checkbox' == $data['attributes']['type']) {
@@ -51,8 +51,8 @@ class Checkable extends BaseComponent
 
         $firstTabIndex = \FluentForm\App\Helpers\Helper::getNextTabIndex();
 
-        if (! $formattedOptions = ArrayHelper::get($data, 'settings.advanced_options')) {
-            $options = ArrayHelper::get($data, 'options', []);
+        if (! $formattedOptions = Arr::get($data, 'settings.advanced_options')) {
+            $options = Arr::get($data, 'options', []);
             $formattedOptions = [];
             foreach ($options as $value => $label) {
                 $formattedOptions[] = [
@@ -64,7 +64,7 @@ class Checkable extends BaseComponent
             }
         }
 
-        $hasImageOption = ArrayHelper::get($data, 'settings.enable_image_input');
+        $hasImageOption = Arr::get($data, 'settings.enable_image_input');
 
         if ($hasImageOption) {
             if (empty($data['settings']['layout_class'])) {
@@ -73,9 +73,9 @@ class Checkable extends BaseComponent
             $elMarkup .= '<div class="ff_el_checkable_photo_holders">';
         }
 
-        $data['settings']['container_class'] .= ' ' . ArrayHelper::get($data, 'settings.layout_class');
+        $data['settings']['container_class'] .= ' ' . Arr::get($data, 'settings.layout_class');
 
-        if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
+        if ('yes' == Arr::get($data, 'settings.randomize_options')) {
             shuffle($formattedOptions);
         }
 
@@ -96,7 +96,7 @@ class Checkable extends BaseComponent
             }
 
             $data['attributes']['value'] = $option['value'];
-            $data['attributes']['data-calc_value'] = ArrayHelper::get($option, 'calc_value');
+            $data['attributes']['data-calc_value'] = Arr::get($option, 'calc_value');
 
             $atts = $this->buildAttributes($data['attributes']);
 
@@ -118,11 +118,11 @@ class Checkable extends BaseComponent
             }
 
             $ariaRequired = 'false';
-            if (ArrayHelper::get($data, 'settings.validation_rules.required.value')) {
+            if (Arr::get($data, 'settings.validation_rules.required.value')) {
                 $ariaRequired = 'true';
             }
     
-            $disabled = ArrayHelper::get($option, 'disabled') ? 'disabled' : '';
+            $disabled = Arr::get($option, 'disabled') ? 'disabled' : '';
 
             $elMarkup .= "<label class='ff-el-form-check-label' for={$id}><input {$disabled} {$atts} id='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' aria-invalid='false' aria-required={$ariaRequired}> <span>" . $label . '</span></label>';
             $elMarkup .= '</div>';
