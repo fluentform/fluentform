@@ -3,5 +3,5 @@
   "host": "localhost",
   "port": "8880",
   "strict_port": true,
-  "vite_protocol": "wp"
+  "vite_protocol": "ws"
 }
