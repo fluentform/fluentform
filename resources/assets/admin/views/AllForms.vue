@@ -8,6 +8,7 @@
                 <btn-group as="div">
                     <btn-group-item as="div">
                         <el-select
+                            size="large"
                             clearable
                             v-model="filter_by"
                             :placeholder="$t('All Types')"
@@ -26,6 +27,7 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <el-button
+                            size="large"
                             v-if="hasPermission('fluentform_forms_manager')"
                             type="primary"
                             @click.prevent="showAddFormModal = true"
@@ -46,15 +48,18 @@
                                     @clear="refetchItems"
                                     v-model="searchFormsKeyWord"
                                     :placeholder="$t('Search Forms')"
-                                    prefix-icon="el-icon-search"
                                     class="all-forms-search"
+                                    size="large"
                                 >
+                                    <template #prefix>
+                                        <i class="el-icon-search el-icon-left el-icon"></i>
+                                    </template>
                                 </el-input>
                             </el-form>
                         </btn-group-item>
                         <btn-group-item as="div">
                             <div class="ff_advanced_filter_wrap">
-                                <el-button @click="advancedFilter = !advancedFilter"
+                                <el-button size="large" @click="advancedFilter = !advancedFilter"
                                            :class="filter_date_range && 'ff_filter_selected'">
                                     <span>{{ $t('Filter') }}</span>
                                     <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
@@ -102,6 +107,7 @@
                             @sort-change="handleTableSort"
                             @selection-change="handleSelectionChange"
                             :row-class-name="tableRowClass"
+                            size="large"
                         >
                             <el-table-column sortable="custom" :label="$t('ID')" prop="id" width="40"></el-table-column>
 
@@ -309,7 +315,8 @@
         <CreateNewFormModal
             v-if="hasPermission('fluentform_forms_manager')"
             ref="predefinedFormsModal"
-            :visibility.sync="showAddFormModal"
+            :visibility="showAddFormModal"
+            @update:visibility="showAddFormModal = $event"
         />
     </div>
 </template>

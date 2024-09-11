@@ -4,10 +4,9 @@
             :width="!hasPro ? '40%' : '28%'"
             v-loading="loading"
             @close="cancelSelection"
-            :visible="visibility"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
             custom-class="post-type-selection"
+            :model-value="visibility"
+            @update:model-value="$emit('update:visibility', $event)"
         >
             <div slot="title">
                 <h4>{{$t('Select Post Type')}}</h4>
@@ -41,9 +40,10 @@ import Notice from '@/admin/components/Notice/Notice.vue';
 export default {
     name: 'PostTypeSelectionModal',
     props: [
-        'postTypeSelectionDialogVisibility',
+        'visibility',
         'hasPro'
     ],
+    emits: ['update:visibility'],
     components: {
         Notice
     },
@@ -57,18 +57,7 @@ export default {
     methods: {
         cancelSelection() {
             this.post_type = null;
-            this.$emit('on-post-type-selction-end', undefined);
-        }
-    },
-    computed: {
-        visibility: {
-            get() {
-                return this.postTypeSelectionDialogVisibility;
-            },
-            set(value) {
-                this.$emit('on-post-type-selction-end', this.post_type);
-                this.post_type = null;
-            }
+            this.$emit('visibility', undefined);
         }
     }
 };

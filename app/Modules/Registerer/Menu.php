@@ -235,13 +235,13 @@ class Menu
         if (is_rtl()) {
             $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
         }
-        Vite::enqueueStyle(
-            'fluentform_global_elements',
-            'assets/admin/css/element-ui-css.scss',
-            [],
-            FLUENTFORM_VERSION,
-            'all'
-        );
+//        Vite::enqueueStyle(
+//            'fluentform_global_elements',
+//            'assets/admin/css/element-ui-css.scss',
+//            [],
+//            FLUENTFORM_VERSION,
+//            'all'
+//        );
     }
 
     public function isFluentPages()
@@ -270,16 +270,16 @@ class Menu
             'permissions'              => Acl::getCurrentUserPermissions(),
             'rest'                     => Helper::getRestInfo(),
             'card_brands'              => [
-                'visa'                 => fluentformMix('img/card-brand/visa.jpg'),
-                'paypal'               => fluentformMix('img/card-brand/paypal.jpg'),
-                'mastercard'           => fluentformMix('img/card-brand/mastercard.jpg'),
-                'amex'                 => fluentformMix('img/card-brand/amex.jpg')
+                'visa'                 => Vite::getAssetUrl('img/card-brand/visa.jpg'),
+                'paypal'               => Vite::getAssetUrl('img/card-brand/paypal.jpg'),
+                'mastercard'           => Vite::getAssetUrl('img/card-brand/mastercard.jpg'),
+                'amex'                 => Vite::getAssetUrl('img/card-brand/amex.jpg')
             ],
             'payment_icons'            => [
-                'offline'              => fluentformMix('img/payment/offline.png'),
-                'mollie'               => fluentformMix('img/payment/mollie.png'),
-                'paypal'               => fluentformMix('img/payment/paypal.png'),
-                'stripe'               => fluentformMix('img/payment/stripe.png')
+                'offline'              => Vite::getAssetUrl('img/payment/offline.png'),
+                'mollie'               => Vite::getAssetUrl('img/payment/mollie.png'),
+                'paypal'               => Vite::getAssetUrl('img/payment/paypal.png'),
+                'stripe'               => Vite::getAssetUrl('img/payment/stripe.png')
             ],
             'forms'                    => $forms,
             'hasPro'                   => defined('FLUENTFORMPRO'),
@@ -736,13 +736,13 @@ class Menu
             'hasPDF'               => defined('FLUENTFORM_PDF_VERSION'),
             'hasFluentCRM'         => defined('FLUENTCRM'),
             'upgrade_url'          => fluentform_upgrade_url(),
-            'ace_path_url'         => fluentformMix('libs/ace'),
+            'ace_path_url'         => Vite::getAssetUrl('assets/libs/ace'),
             'is_conversion_form'   => Helper::isConversionForm($form_id),
             'has_fluent_smtp'      => defined('FLUENTMAIL'),
             'fluent_smtp_url'      => admin_url('admin.php?page=fluent_forms_smtp'),
             'form_settings_str'    => TranslationString::getSettingsI18n(),
             'integrationsResource' => [
-                'asset_url'   => fluentformMix('img/integrations.png'),
+                'asset_url'   => Vite::getAssetUrl('img/integrations.png'),
                 'list_url'    => fluentform_integrations_url(),
                 'instruction' => __("Fluent Forms Pro has tons of integrations to take your forms to the next level. From payment gateways to quiz building, SMS notifications to email marketing - you'll get integrations for various purposes. Even if you don't find your favorite tools, you can integrate them easily with Zapier.", 'fluentform'),
             ],
@@ -1192,8 +1192,8 @@ class Menu
         ], FLUENTFORM_VERSION);
 
         $this->app->view->render('admin.smtp.index', [
-            'logo'         => fluentformMix('img/fluentsmtp.svg'),
-            'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
+            'logo'         => Vite::getAssetUrl('img/fluentsmtp.svg'),
+            'banner_image' => Vite::getAssetUrl('img/fluentsmtp-banner.png'),
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
         ]);

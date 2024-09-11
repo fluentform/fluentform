@@ -1,0 +1,208 @@
+@import '../../../../node_modules/element-plus/theme-chalk/base.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-var.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-badge.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-button.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-button-group.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-input.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-table.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-popover.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-loading.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-message.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-upload.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-message-box.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-tooltip.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-pagination.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-collapse.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-collapse-item.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-dialog.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-aside.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-main.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-container.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-menu.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-menu-item.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-header.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-color-picker.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-form.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-form-item.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-radio-group.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-radio.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-switch.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-radio-button.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-tabs.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-tab-pane.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-steps.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-step.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-alert.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-option.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-option-group.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-row.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-col.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-collapse.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-collapse-item.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-transfer.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-date-picker.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-popover.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-popper.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-slider.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-card.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-input-number.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-rate.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-progress.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-button-group.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-dropdown.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-badge.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-tag.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-select.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-check-tag.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-checkbox-button.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-checkbox-group.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-checkbox.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-notification.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-skeleton.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-skeleton-item.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-breadcrumb.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-overlay.css';
+@import '../../../../node_modules/element-plus/theme-chalk/el-scrollbar.css';
+
+:root {
+    /* Element Plus Variables */
+    --el-color-primary: #1A7EFB !important;
+    --el-color-success: #00B27F !important;
+    --el-color-warning: #FCBE2D !important;
+    --el-color-danger: #FF6154 !important;
+    --el-color-info: #4B4C4D !important;
+    --el-color-cyan: #0dcaf0;
+    --el-color-dark: #1e1f21;
+    --el-color-blue: #3b5998;
+    --el-border-color-base: #dadbdd;
+    --el-border-color-light: #E4E7ED;
+    --el-border-color-lighter: #EBEEF5;
+    --el-border-color-extra-light: #F2F6FC;
+    --el-border-width-base: 1px;
+    --el-border-style-base: solid;
+    --el-border-radius-base: 7px;
+    --el-border-radius-small: 4px;
+    --el-border-radius-circle: 100%;
+    --el-border-radius-zero: 0;
+    --el-box-shadow-base: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+    --el-box-shadow-dark: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .12);
+    --el-box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+    /* Typography */
+    --el-font-size-extra-large: 20px;
+    --el-font-size-large: 18px;
+    --el-font-size-medium: 16px;
+    --el-font-size-base: 14px;
+    --el-font-size-small: 13px;
+    --el-font-size-extra-small: 12px;
+    --el-font-weight-primary: 500;
+    --el-font-weight-secondary: 100;
+    --el-font-color-disabled-base: #bbb;
+
+    /* General Colors */
+    --white: #ffffff;
+    --base-color: #1E1F21;
+    --base-text: #606266;
+    --dark-800: #353537;
+    --primary-soft: #E8F2FF;
+    --border-color: #ececec;
+    --body-bg: #F2F2F2;
+    --bg-gray: #F5F5F3;
+
+    /* Functional Colors */
+    --info-color: #909399;
+    --gray: #f5f5f5;
+    --gray-border: #e2e4e7;
+    --greenish-gray: #8391a5;
+
+    /* Buttons */
+    --primary-button-hover-bg: #1565C9;
+    --primary-button-hover-border-color: var(--primary-button-hover-bg);
+
+    /* Input Fields */
+    --input-gray-bg: #E7E6E6;
+    --input-gray-border-color: #E7E6E6;
+    --input-gray-light-bg: var(--bg-gray);
+    --input-gray-light-border-color: var(--bg-gray);
+
+    /* Dimensions */
+    --max-width: 980px;
+    --min-width: 730px;
+    --item-height: 78px;
+
+    /* Popup Search Element */
+    --popup-search-element-bg: #33383F;
+
+    /* Placeholder */
+    --placeholder-bg: #f5f5f5;
+
+    /* Border Radius */
+    --border-radius: 8px;
+
+    /* Layout */
+    --section-layout-sidebar-width: 280px;
+    --section-layout-sidebar-width-sm: 230px;
+
+    /* Header & Menu */
+    --header-padding-y: 10px;
+    --header-padding-x: 24px;
+    --menu-link-padding-y: 4px;
+    --menu-link-padding-x: 14px;
+    --menu-link-color: var(--dark-800);
+    --menu-link-hover-color: var(--el-color-primary);
+
+    /* Submenu Links */
+    --submenu-link-active-bg: #efefef;
+    --submenu-link-color: var(--base-text);
+    --submenu-link-active-color: var(--base-color);
+
+    /* Shortcode */
+    --shortcode-bg: var(--el-color-info-lighter);
+    --shortcode-color: var(--dark-800);
+    --shortcode-bg-thin: #f2f2f2;
+
+    /* Icons */
+    --icon-btn-dark-soft-bg: mix(var(--base-color), var(--white), 10%);
+    --icon-btn-dark-soft-color: var(--base-color);
+    --icon-btn-dark-soft-hover-bg: var(--base-color);
+    --icon-btn-dark-soft-hover-color: var(--white);
+
+    /* Payment Badge */
+    --payment-badge-border-color: #b1b1b1;
+
+    /* Tab List */
+    --tab-link-bg: var(--bg-gray);
+    --tab-link-color: var(--base-color);
+    --tab-link-active-bg: var(--el-color-info);
+    --tab-link-active-color: var(--white);
+
+    /* Radio Group */
+    --radio-group-bg: var(--bg-gray);
+    --radio-group-button-hover-color: var(--base-color);
+    --radio-group-button-active-bg: var(--el-color-info);
+    --radio-group-button-active-color: var(--white);
+
+    /* Input */
+    --input-font-size: var(--el-font-size-base);
+    --input-font-color: var(--base-text);
+    --input-placeholder-color: #afb3ba;
+    --input-border-radius: var(--el-border-radius-base);
+    --input-border-color: var(--el-border-color-base);
+    --input-border-color-hover: var(--el-border-color-light);
+    --input-background-color: var(--white);
+    --input-clear-hover-color: var(--base-text);
+
+    /* Predefined Form Sidebar */
+    --predefined-form-sidebar-width: 240px;
+
+    /* Button Styles */
+    --btn-element-color: var(--base-color);
+    --btn-element-bg: var(--white);
+    --btn-element-hover-bg: var(--el-color-info);
+    --btn-element-hover-color: var(--white);
+    --btn-element-border-color: #dfdfdf;
+
+    /* Editor Inserter Content */
+    --editor-inserter-content-item-hover-bg: var(--bg-gray);
+    --editor-inserter-content-item-hover-color: var(--base-color);
+}

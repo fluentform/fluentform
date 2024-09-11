@@ -16,12 +16,12 @@ const Components = require("unplugin-vue-components/vite");
 //Add All CSS and js here
 const inputs = [
     'resources/assets/admin/fluent_forms_global.js',
+    'resources/assets/admin/all_forms_app.js',
     // 'resources/assets/admin/settings/global_settings.js',
     // 'resources/assets/admin/transfer/transfer.js',
     // 'resources/assets/admin/form_settings_app.js',
     // 'resources/assets/admin/editor_app.js',
     // 'resources/assets/admin/form_entries_app.js',
-    // 'resources/assets/admin/all_forms_app.js',
 
     // 'resources/assets/libs/chartjs/chart.js',
     // 'resources/assets/libs/chartjs/vue-chartjs.js',
@@ -41,21 +41,21 @@ const inputs = [
     // 'resources/assets/admin/AllEntries/all-entries.js',
     // 'resources/assets/admin/conversion_templates/conversational_design.js',
     // 'resources/assets/admin/fluent_forms_editor_helper.js',
-    'resources/assets/admin/css/element-ui-css.scss',
-    'resources/assets/admin/css/settings_global.scss',
-    'resources/assets/admin/css/fluent-forms-admin.scss',
+    // 'resources/assets/admin/css/element-ui-css.scss',
+    // 'resources/assets/admin/css/settings_global.scss',
+    // 'resources/assets/admin/styles/index.less',
     'resources/assets/admin/css/fluent-all-forms.scss',
-    'resources/assets/admin/css/admin_notices.scss',
-    'resources/assets/admin/css/admin_docs.scss',
-    'resources/assets/admin/css/admin_docs.scss',
-    'resources/assets/admin/css/fluent_gutenblock.scss',
-    'resources/assets/public/scss/fluent-forms-public.scss',
-    'resources/assets/public/scss/fluentform-public-default.scss',
-    'resources/assets/preview/preview.scss',
-    'resources/assets/public/scss/choices.scss',
-    'resources/assets/elementor/fluent-forms-elementor-widget.scss',
-    'resources/assets/admin/conversion_templates/design_css.scss',
-    'resources/assets/admin/styles/index.less',
+    // 'resources/assets/admin/css/fluent-forms-admin.scss',
+    // 'resources/assets/admin/css/admin_notices.scss',
+    // 'resources/assets/admin/css/admin_docs.scss',
+    // 'resources/assets/admin/css/admin_docs.scss',
+    // 'resources/assets/admin/css/fluent_gutenblock.scss',
+    // 'resources/assets/public/scss/fluent-forms-public.scss',
+    // 'resources/assets/public/scss/fluentform-public-default.scss',
+    // 'resources/assets/preview/preview.scss',
+    // 'resources/assets/public/scss/choices.scss',
+    // 'resources/assets/elementor/fluent-forms-elementor-widget.scss',
+    // 'resources/assets/admin/conversion_templates/design_css.scss',
     // 'resources/assets/admin/fluent_gutenblock.jsx',
 
 ]
@@ -80,7 +80,7 @@ export default defineConfig({
             ],
         }),
         Components({
-            resolvers: [ElementPlusResolver()],
+            // resolvers: [ElementPlusResolver()],
             directives: false,
         }),
     ],
@@ -118,6 +118,7 @@ export default defineConfig({
     },
 
     server: {
+        host: serverConfig.host,
         port: serverConfig.port,
         strictPort: serverConfig.strict_port,
         hmr: {

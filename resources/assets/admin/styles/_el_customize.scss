@@ -73,10 +73,10 @@
         padding-right: 10px;
         border-radius: $border-radius;
         border: 0;
-        font-size: 16px;
+        font-size: 14px;
         .el-collapse-item__arrow{
             font-weight: 500;
-            font-size: 16px;
+            font-size: 14px;
         }
     }
 
@@ -231,7 +231,7 @@
     }
     &--large{
         padding: 15px 20px;
-        font-size: 16px;
+        font-size: 14px;
     }
     &--soft {
         &.el-button{
@@ -686,6 +686,9 @@
 
 // input sizes
 .el-input{
+    &--prefix &__inner, &--suffix &__inner {
+        border: none;
+    }
     &--mini{
         .el-input__inner{
             border-radius: 4px;
@@ -696,7 +699,7 @@
             height: 48px;
             padding-left: 20px;
             padding-right: 20px;
-            font-size: 16px;
+            font-size: 14px;
         }
     }
     &-number{
@@ -742,4 +745,8 @@
 }
 .el-skeleton__item{
     border-radius: 4px;
+}
+
+.el-input--large .el-input__inner {
+    height: 40px;
 }

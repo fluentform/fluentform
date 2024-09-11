@@ -1,7 +1,8 @@
 <template>
     <div class="ff_choose_template_wrap" :class="{'ff_backdrop': visibility}">
         <el-dialog
-            :visible.sync="visibility"
+            :model-value="visibility"
+            @update:model-value="$emit('update:visibility', $event)"
             width="70%"
             top= "50px"
             :before-close="close"
@@ -47,6 +48,7 @@
                 current: null,
             }
         },
+        emits: ['update:visibility'],
         computed: {
         },
         methods: {
