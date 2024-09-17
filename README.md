@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 5.2.0
+Stable tag: 5.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,14 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.2 (Date: September 11, 2024) =
+- Fixes Gutenblock widget
+
+= 5.2.1 (Date: September 10, 2024) =
+- Fixes custom error messages vulnerability (Allowing admin to inject script in custom error messages)
+- Fixes dropdown field in conversational forms after conditional multi-select
+- Fixes checkbox field "not-equal" condition in conversational forms
 
 = 5.2.0 (Date: Aug 2, 2024) =
 - Adds dynamic field

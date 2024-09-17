@@ -1,6 +1,8 @@
 let mix = require('laravel-mix');
 const exec = require('child_process').exec;
 const path = require('path');
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');
@@ -21,7 +23,13 @@ mix.webpackConfig({
         alias: {
             '@': path.resolve('resources/assets')
         }
-    }
+    },
+    plugins: [
+        // new BundleAnalyzerPlugin({
+        //     analyzerMode: 'static',
+        //     openAnalyzer: mix.inProduction()
+        // })
+    ],
 });
 
 // mix.js('resources/assets/admin/editor_app.js', `public/js/fluent-forms-editor.js`);

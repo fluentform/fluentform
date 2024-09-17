@@ -74,7 +74,8 @@ import formSlider from "./Pro/slider";
                     form_id: $theForm.data('form_id'),
                     hash: hash,
                     active_step: activeStep,
-                    nonce: window.form_state_save_vars.nonce
+                    nonce: window.form_state_save_vars.nonce,
+                    save_progress_btn_name: $($saveBttn).attr('name')
                 };
                 const saveProgressMessage = formData.form_id + '_save_progress_msg';
                 const savingResponseMsg = '#' + saveProgressMessage;
