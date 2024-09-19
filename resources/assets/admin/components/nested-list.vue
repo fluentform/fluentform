@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div :id="`item${index}`" style="position: relative;" >
+        <ResizableDiv @dragend="status=false" :index="index"   @dragStart="handleStart" :container-id="`item${index}`" >
+
         <vddl-draggable class="panel__body--item js-editor-item"
                         :class="{ 'selected': editItem.uniqElKey == item.uniqElKey }"
                         :draggable="item"
@@ -9,7 +11,9 @@
                         :dragstart="handleDragstart"
                         :dragend="handleDragend"
                         :moved="handleMoved"
-                        :wrapper="wrapper">
+                        :wrapper="wrapper"
+                        :disable-if="status"
+        >
 
             <div @click.right.prevent.stop="showContextMenu(index, $event)" @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="[
@@ -104,23 +108,39 @@
         </vddl-draggable>
 
         <ff_removeElConfirm :editItem="editItem" :visibility.sync="showRemoveElConfirm" @on-confirm="onRemoveElConfirm"/>
+        </ResizableDiv>
     </div>
 </template>
 
 <script type="text/babel">
     import NestedHandler from "./NestedHandler.js";
+    import ResizableDiv from './drag.vue';
+
     export default {
         name: 'list',
         props: NestedHandler.props,
-        components: NestedHandler.components,
+        components: {
+            ...NestedHandler.components,
+            ResizableDiv,
+        },
         data() {
             return {
                 showRemoveElConfirm: false,
                 removeElIndex: null,
                 contextMenuIndex : {},
                 contextMenuStyle :{},
+                status:false,
             }
         },
-        methods: NestedHandler.methods
+        methods: {
+            ...NestedHandler.methods,
+            updateDivPosition(index, { left, width }) {
+                this.resizableDivs[index].left = left;
+                this.resizableDivs[index].width = width;
+            },
+            handleStart(e){
+               this.status = true;
+            }
+        },
     };
 </script>
