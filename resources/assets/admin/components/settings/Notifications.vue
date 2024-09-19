@@ -638,7 +638,10 @@ export default {
                     inputEmails.shortcodes[code] = input.admin_label;
                 }
             });
-
+            if (Object.keys(inputEmails.shortcodes).length === 0) {
+                inputEmails.shortcodes[''] = "No email inputs were found";
+            }
+            
             return [inputEmails];
         },
 
