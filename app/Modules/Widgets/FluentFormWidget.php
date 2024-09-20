@@ -561,7 +561,7 @@ class FluentFormWidget extends Widget_Base
                 'label'     => __('Asterisk Color', 'fluentform'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ff-el-is-required.asterisk-right label:after' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .ff-el-is-required.asterisk-right label:after' => 'color: {{VALUE}} !important',
                 ],
             ]
         );
