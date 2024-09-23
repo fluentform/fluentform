@@ -541,6 +541,16 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     scrollTop();
                 }
 
+                //skip saving the last step
+                let isLastStep = activeStep === 0;
+
+                // Fire ajax request to persist the step state/data
+                if (stepPersistency && !isPopulatingStepData && !isLastStep) {
+                    saveStepData($theForm, activeStep).then(response => {
+                        console.log(response);
+                    });
+                }
+
                 // Update progress bar and titles after animation completes
                 stepProgressBarHandle({activeStep, totalSteps});
 
