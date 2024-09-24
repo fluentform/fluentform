@@ -52,7 +52,7 @@ class Converter
             
             $validationsRules = self::resolveValidationsRules($field, $form);
     
-            $question = static::buildBaseQuestion($field, $validationsRules);
+            $question = static::buildBaseQuestion($field, $validationsRules, $form);
 
             if (!$hasSaveAndResume && $answer = self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form)) {
                 $question['answer'] = $answer;
@@ -742,7 +742,7 @@ class Converter
         return json_encode($formFields);
     }
     
-    private static function buildBaseQuestion($field, $validationsRules)
+    private static function buildBaseQuestion($field, $validationsRules, $form)
     {
         return [
             'id'              => ArrayHelper::get($field, 'attributes.name'),
