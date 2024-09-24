@@ -136,7 +136,7 @@
                     </p>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item class="mb-1">
                     <template slot="label">
                         <h6>{{$t('Permissions')}}</h6>
                     </template>
@@ -154,7 +154,13 @@
                     <error-view field="permissions" :errors="errors"/>
                 </el-form-item>
 
-	            <el-form-item>
+	            <el-form-item class="mb-1">
+		            <el-checkbox true-label="yes" false-label="no" v-model="manager.has_specific_forms_permission">
+			            {{ $t('Enable Specific Forms Permission') }}
+		            </el-checkbox>
+	            </el-form-item>
+
+	            <el-form-item v-if="manager.has_specific_forms_permission === 'yes'">
 		            <template slot="label">
 			            <h6 style="display: inline-block;">{{$t('Access to Forms')}}</h6>
 			            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
@@ -261,6 +267,7 @@
                 this.manager = {
                     email: "",
                     permissions: [],
+	                has_specific_forms_permission: false,
 	                forms: [],
                 };
                 this.modal = true;
