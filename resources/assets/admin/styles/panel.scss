@@ -1,12 +1,14 @@
+@use "sass:color";
+
 .panel {
     border-radius: 8px;
-    border: 1px solid darken($gray, 4%);
+    border: 1px solid color.adjust($gray, $lightness: -4%);
     overflow: hidden;
     margin-bottom: 15px;
 
     &__heading {
         background: $gray;
-        border-bottom: 1px solid darken($gray, 4%);
+        border-bottom: 1px solid color.adjust($gray, $lightness: -4%);
         height: 42px;
 
         .form-name-editable {

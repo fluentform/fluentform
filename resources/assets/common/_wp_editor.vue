@@ -1,7 +1,7 @@
 <template>
     <div class="wp_vue_editor_wrapper">
         <popover v-if="editorShortcodes.length" class="popover-wrapper" :class="{'popover-wrapper-plaintext': !hasWpEditor}" :data="editorShortcodes" @command="handleCommand" btnType="info" :plain="true"></popover>
-        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id" v-model="value"></textarea>
+        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id" model-value="value"></textarea>
         <textarea v-else
                   class="wp_vue_editor wp_vue_editor_plain"
                   v-model="plain_content"
@@ -15,7 +15,7 @@
 
 <script type="text/babel">
     import popover from './input-popover-dropdown.vue'
-    import ButtonDesigner from './MCE/button';
+    import ButtonDesigner from './MCE/button.vue';
 
     export default {
         name: 'wp_editor',

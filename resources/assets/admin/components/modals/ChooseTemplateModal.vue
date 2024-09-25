@@ -4,18 +4,18 @@
             :model-value="visibility"
             @update:model-value="$emit('update:visibility', $event)"
             width="100%"
-            top= "50px"
+            top="50px"
             :before-close="close"
         >
-            <template slot="title">
-                <h3 class="title">{{$t('Predefined Form Templates')}}</h3>
-                <p class="text">{{$t('Choose a pre-made form template to get started right away.')}}
+            <template #header>
+                <h3 class="title">{{ $t('Predefined Form Templates') }}</h3>
+                <p class="text">{{ $t('Choose a pre-made form template to get started right away.') }}
                 </p>
             </template>
 
             <div class="ff_predefined_options mt-6">
                 <div class="ff_predefined_sidebar">
-                    <h5 class="ff_predefined_title mb-3">{{$t('Categories')}}</h5>
+                    <h5 class="ff_predefined_title mb-3">{{ $t('Categories') }}</h5>
                     <ul class="ff_list_button ff_list_button_s1">
                         <li
                             class="ff_list_button_item"
@@ -24,11 +24,11 @@
                             :class="{'active': index === 0}"
                         >
                             <a
-                                @click.prevent="scollTo"
+                                @click.prevent="scrollTo"
                                 :href="'#' + item.toLocaleLowerCase()"
                                 class="ff_list_button_link"
                             >
-                                {{item}}
+                                {{ item }}
                             </a>
                         </li>
                     </ul>
@@ -55,9 +55,10 @@
                             class="ff_form_group"
                             :key="category"
                         >
-                            <h5 class="ff_form_group_title">{{category}}</h5>
+                            <h5 class="ff_form_group_title">{{ category }}</h5>
                             <div class="ff_form_item_group">
-                                <div v-for="(form, name, i) in forms" :class="form.class" class="ff_form_item_col" :key="i">
+                                <div v-for="(form, name, i) in forms" :class="form.class" class="ff_form_item_col"
+                                     :key="i">
                                     <div class="ff_form_card">
                                         <img :src="form.screenshot" alt="" class="ff_form_card_img">
                                         <div
@@ -68,10 +69,11 @@
                                             <div class="ff_form_card_overlap_inner">
                                                 <el-button>
                                                     <template v-if="creatingForm">
-                                                        <span>{{$t('Creating Form...')}}</span>
+                                                        <span>{{ $t('Creating Form...') }}</span>
                                                     </template>
                                                     <template v-else>
-                                                        <span v-if="form.is_pro && !has_pro">{{$t('Unlock in Pro')}}</span>
+                                                        <span
+                                                            v-if="form.is_pro && !has_pro">{{ $t('Unlock in Pro') }}</span>
                                                         <span v-else>{{ $t('Create Form') }}</span>
                                                     </template>
                                                 </el-button>
@@ -81,10 +83,8 @@
                                     </div>
                                 </div>
                             </div><!-- .ff_form_item_group -->
-
                         </div>
                     </div>
-
                 </div><!-- .ff_predefined_main -->
             </div><!-- .ff_predefined_options -->
         </el-dialog>
@@ -92,93 +92,93 @@
 </template>
 
 <script>
-    import each from 'lodash/each';
+import each from 'lodash/each';
 
-    export default {
-        name: 'ChooseTemplateModal',
-        props: {
-            categories: Array,
-            visibility: Boolean,
-            predefinedForms: Object
-        },
-        data() {
-            return {
-                creatingForm: false,
-                // predefinedForms: {},
-                form_title: '',
-                category: '',
-                // categories: [],
-                search: '',
-                has_pro: !!window.FluentFormApp.hasPro,
-                current: null,
-            }
-        },
-        emits: ['update:visibility'],
-        computed: {
-            filteredForms() {
-                let items = {};
+export default {
+    name: 'ChooseTemplateModal',
+    props: {
+        categories: Array,
+        visibility: Boolean,
+        predefinedForms: Object
+    },
+    data() {
+        return {
+            creatingForm: false,
+            // predefinedForms: {},
+            form_title: '',
+            category: '',
+            // categories: [],
+            search: '',
+            has_pro: !!window.FluentFormApp.hasPro,
+            current: null,
+        }
+    },
+    emits: ['update:visibility'],
+    computed: {
+        filteredForms() {
+            let items = {};
 
-                if (this.search) {
-                    let search = this.search.toLocaleLowerCase();
-                    let allForms = {
-                        'Search Result': {}
-                    };
-
-                    each(this.predefinedForms, (forms, formCategory) => {
-                        each(forms, (form, formName) => {
-                            let formStrung = JSON.stringify([
-                                form.title,
-                                form.category,
-                                form.tags
-                            ]).toLowerCase();
-
-                            if (formStrung.indexOf(search) != -1) {
-                                allForms['Search Result'][formName] = form;
-                            }
-                        });
-                    });
-
-                    this.category = '';
-
-                    return allForms;
-                } else {
-                    if (this.category) {
-                        items[this.category] = this.predefinedForms[this.category];
-                    } else {
-                        return this.predefinedForms;
-                    }
-                }
-
-                return items;
-            }
-        },
-        methods: {
-            close() {
-                this.$emit('update:visibility', false);
-            },
-            createForm(formType, form) {
-                let selectedFormType = 'form';
-                if (form) {
-                    if (form.is_pro && !window.FluentFormApp.hasPro) {
-                        return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
-                    }
-                    selectedFormType = form.type;
-                }
-
-                this.creatingForm = true;
-
-                let data = {
-                    type: selectedFormType,
-                    predefined: formType,
-                    action: 'fluentform-predefined-create'
+            if (this.search) {
+                let search = this.search.toLocaleLowerCase();
+                let allForms = {
+                    'Search Result': {}
                 };
 
-                return this.doCreateForm(data)
-            },
-            doCreateForm(data) {
-                const url = FluentFormsGlobal.$rest.route('getForms');
+                each(this.predefinedForms, (forms, formCategory) => {
+                    each(forms, (form, formName) => {
+                        let formStrung = JSON.stringify([
+                            form.title,
+                            form.category,
+                            form.tags
+                        ]).toLowerCase();
 
-                FluentFormsGlobal.$rest.post(url, data)
+                        if (formStrung.indexOf(search) != -1) {
+                            allForms['Search Result'][formName] = form;
+                        }
+                    });
+                });
+
+                this.category = '';
+
+                return allForms;
+            } else {
+                if (this.category) {
+                    items[this.category] = this.predefinedForms[this.category];
+                } else {
+                    return this.predefinedForms;
+                }
+            }
+
+            return items;
+        }
+    },
+    methods: {
+        close() {
+            this.$emit('update:visibility', false);
+        },
+        createForm(formType, form) {
+            let selectedFormType = 'form';
+            if (form) {
+                if (form.is_pro && !window.FluentFormApp.hasPro) {
+                    return this.$fail(this.$t('This form required pro add-on of fluentform. Please install pro add-on'));
+                }
+                selectedFormType = form.type;
+            }
+
+            this.creatingForm = true;
+
+            let data = {
+                type: selectedFormType,
+                predefined: formType,
+                action: 'fluentform-predefined-create'
+            };
+
+            return this.doCreateForm(data)
+        },
+        doCreateForm(data) {
+            const url = FluentFormsGlobal.$rest.route('getForms');
+
+            FluentFormsGlobal.$rest.post(url, data)
                 .then((response) => {
                     this.$success(response.message);
 
@@ -192,53 +192,53 @@
                 .finally(() => {
                     this.creatingForm = false;
                 });
-            },
-            scollTo(e) {
-                let targetHash = e.target.hash;
-                let listItem = jQuery('.ff_list_button_item');
+        },
+        scrollTo(e) {
+            let targetHash = e.target.hash;
+            let listItem = jQuery('.ff_list_button_item');
 
-                listItem.addClass('active');
+            listItem.addClass('active');
 
-                for (let i = 0; i < listItem.length; i++) {
-                    if (e.target.parentElement != listItem[i]) {
-                        jQuery(listItem[i]).removeClass('active');
-                    }
+            for (let i = 0; i < listItem.length; i++) {
+                if (e.target.parentElement != listItem[i]) {
+                    jQuery(listItem[i]).removeClass('active');
                 }
-
-                jQuery('.ff_predefined_form_wrap').animate({
-                    scrollTop: jQuery(targetHash).offset().top - 54 - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
-
-                }, 'slow');
-
-            },
-            goToImportPage() {
-                let path = window.location.href;
-                const index = path.lastIndexOf('fluent_forms#add=1');
-                path = path.substring(0, index);
-                path += 'fluent_forms_transfer#importforms';
-                window.location.href = path;
             }
-            // stickyMenu(){
-            //     let stickyElem = jQuery('#sticky-menu');
-            //     let stickyTop = stickyElem.offset().top;
 
-            //     jQuery(window).on('scroll', function() {
-            //         let windowTop = jQuery(window).scrollTop();
-            //         if (stickyTop < windowTop) {
-            //             stickyElem.addClass('is-sticky');
-            //         } else {
-            //             stickyElem.removeClass("is-sticky");
-            //         }
-            //     });
-            // }
+            jQuery('.ff_predefined_form_wrap').animate({
+                scrollTop: jQuery(targetHash).offset().top - 54 - jQuery('.ff_predefined_form_wrap').position().top + jQuery('.ff_predefined_form_wrap').scrollTop()
+
+            }, 'slow');
 
         },
-        mounted() {
-            // this.createForm();
-            // this.fetchPredefinedForms();
-            // this.forms = this.predefinedForms;
-            // this.categories = this.categories;
-
+        goToImportPage() {
+            let path = window.location.href;
+            const index = path.lastIndexOf('fluent_forms#add=1');
+            path = path.substring(0, index);
+            path += 'fluent_forms_transfer#importforms';
+            window.location.href = path;
         }
-    };
+        // stickyMenu(){
+        //     let stickyElem = jQuery('#sticky-menu');
+        //     let stickyTop = stickyElem.offset().top;
+
+        //     jQuery(window).on('scroll', function() {
+        //         let windowTop = jQuery(window).scrollTop();
+        //         if (stickyTop < windowTop) {
+        //             stickyElem.addClass('is-sticky');
+        //         } else {
+        //             stickyElem.removeClass("is-sticky");
+        //         }
+        //     });
+        // }
+
+    },
+    mounted() {
+        // this.createForm();
+        // this.fetchPredefinedForms();
+        // this.forms = this.predefinedForms;
+        // this.categories = this.categories;
+
+    }
+};
 </script>

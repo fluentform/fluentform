@@ -1,29 +1,31 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        
+        <template #label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+        </template>
+
         <el-color-picker v-model="model" size="small"></el-color-picker>
     </el-form-item>
 </template>
 
 <script>
-import elLabel from '../../includes/el-label.vue'
+import elLabel from '../../includes/el-label.vue';
 
 export default {
     name: 'inputColor',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'modelValue'],
     components: {
-        elLabel
+        elLabel,
     },
     watch: {
         model() {
-            this.$emit('input', this.model);
-        }
+            this.$emit('update:modelValue', this.model);
+        },
     },
     data() {
         return {
-            model: this.value
-        }
-    }
-}
+            model: this.modelValue,
+        };
+    },
+};
 </script>

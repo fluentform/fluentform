@@ -1,11 +1,12 @@
 <template>
     <withLabel :item="item">
-        <el-rate 
+        <el-rate
             class="ff-el-rate"
             :value="defaultValue"
             :colors="[item.settings.color, item.settings.color, item.settings.color]"
-            :max="maxScore" />
-            <span v-if="item.settings.show_text">{{ ratingText }}</span>
+            :max="maxScore"
+        />
+        <span v-if="item.settings.show_text">{{ ratingText }}</span>
     </withLabel>
 </template>
 
@@ -16,7 +17,7 @@ export default {
     name: 'ratings',
     props: ['item'],
     components: {
-        withLabel
+        withLabel,
     },
     computed: {
         maxScore() {
@@ -29,8 +30,7 @@ export default {
 
         ratingText() {
             return this.item.options[this.item.attributes.value];
-        }
-    }
-}
+        },
+    },
+};
 </script>
-

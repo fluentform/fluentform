@@ -132,7 +132,7 @@
       padding: 20px;
     }
 
-    .ff_advnced_options_wrap {
+    .ff_advanced_options_wrap {
       max-height: 300px;
       overflow-y: auto;
       margin-bottom: 10px;
@@ -1010,7 +1010,7 @@ mark {
     }
   }
   .v-col--50:last-child {
-    padding-right: 15px;
+    padding-right: 5px;
   }
 }
 
@@ -1113,4 +1113,22 @@ mark {
   .v-row .v-col--50:last-child{
     padding-bottom: 0;
   }
+}
+
+.ff_el_popover_textarea_icon {
+  position: absolute;
+  z-index: 1;
+  right: 8px;
+  top: -22px;
+}
+
+.el-form-item__content {
+  .ff_with_arrow {
+    width: 100%;
+  }
+}
+
+.ff_advanced_options {
+  display: flex;
+  justify-content: space-between;
 }

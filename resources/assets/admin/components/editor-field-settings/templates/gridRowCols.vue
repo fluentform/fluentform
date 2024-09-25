@@ -1,52 +1,58 @@
 <template>
     <el-form-item class="js-el-form-item">
-        <div class="clearfix">
-            <div class="pull-right">
-                <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
+        <template #label>
+            <div class="clearfix">
+                <div class="pull-right">
+                    <el-checkbox v-model="valuesVisible">{{ $t('Show Values') }}</el-checkbox>
+                </div>
+                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
             </div>
-            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        </div>
+        </template>
 
-        <vddl-list v-if="optionsToRender.length" class="vddl-list__handle" :list="optionsToRender" :horizontal="false">
-            <vddl-draggable class="optionsToRender" v-for="(option, index) in optionsToRender" :key="option.vkey"
-                            :draggable="option"
-                            :index="index"
-                            :wrapper="optionsToRender"
-                            effect-allowed="move">
-                <vddl-nodrag class="nodrag">
-                    <div v-show="hideRowForRadios" class="checkbox">
-                        <input ref="defaultOptions"
-                            class="form-control"
-                            :type="fieldType"
-                            name="fluentform__default-option"
-                            :value="option.value"
-                            :checked="isChecked(option.value)"
-                           @change="updateDefaultOption(option)">
+        <draggable
+            v-if="optionsToRender.length"
+            v-model="optionsToRender"
+            class="vddl-list__handle"
+            v-bind="stageDragOptions"
+            item-key="id"
+            @change="handleDrop"
+        >
+            <template #item="{ element: option, index }">
+                <div class="optionsToRender">
+                    <div class="vddl-nodrag nodrag-address-fields">
+                        <div v-show="hideRowForRadios" class="checkbox">
+                            <input
+                                ref="defaultOptions"
+                                class="form-control"
+                                :type="fieldType"
+                                name="fluentform__default-option"
+                                :value="option.value"
+                                :checked="isChecked(option.value)"
+                                @change="updateDefaultOption(option)"
+                            />
+                        </div>
+
+                        <div class="vddl-handle handle"></div>
+
+                        <div>
+                            <el-input v-model="option.label" @input="updateValue(option)"></el-input>
+                        </div>
+                        <div v-if="valuesVisible">
+                            <el-input v-model="option.value"></el-input>
+                        </div>
+
+                        <action-btn>
+                            <action-btn-add size="small" @click="increase(index)"></action-btn-add>
+                            <action-btn-remove size="small" @click="decrease(index)"></action-btn-remove>
+                        </action-btn>
                     </div>
+                </div>
+            </template>
+        </draggable>
 
-                    <vddl-handle
-                        :handle-left="20"
-                        :handle-top="20"
-                        class="handle">
-                    </vddl-handle>
-
-                    <div>
-                        <el-input v-model="option.label" @input="updateValue(option)"></el-input>
-                    </div>
-                    <div v-if="valuesVisible">
-                        <el-input v-model="option.value"></el-input>
-                    </div>
-
-                    <action-btn>
-                        <action-btn-add size="mini" @click="increase(index)"></action-btn-add>
-                        <action-btn-remove size="mini" @click="decrease(index)"></action-btn-remove>
-                    </action-btn>
-                </vddl-nodrag>
-            </vddl-draggable>
-        </vddl-list>
-
-        <el-button type="warning" size="mini" :disabled="isClearBtnDisabled" @click.prevent="clear">{{ $t('Clear Selection') }}</el-button>
-
+        <el-button type="warning" size="small" :disabled="isClearBtnDisabled" @click.prevent="clear">
+            {{ $t('Clear Selection') }}
+        </el-button>
     </el-form-item>
 </template>
 
@@ -63,21 +69,33 @@ export default {
         elLabel,
         ActionBtn,
         ActionBtnAdd,
-        ActionBtnRemove
+        ActionBtnRemove,
     },
     data() {
         return {
             valuesVisible: false,
-            optionsToRender: []
-        }
+            optionsToRender: [],
+        };
     },
     computed: {
+        stageDragOptions() {
+            return {
+                animation: 200,
+                ghostClass: 'vddl-placeholder',
+                dragClass: 'vddl-dragover',
+                bubbleScroll: false,
+                emptyInsertThreshold: 100,
+                handle: '.handle',
+                direction: 'horizontal'
+            };
+        },
+
         fieldType() {
             return this.editItem.settings.tabular_field_type;
         },
 
         hideRowForRadios() {
-            return this.prop == 'grid_rows' && this.fieldType == 'radio' ? false : true;
+            return !(this.prop === 'grid_rows' && this.fieldType === 'radio');
         },
 
         defaultChecked: {
@@ -86,21 +104,21 @@ export default {
             },
             set(val) {
                 this.editItem.settings.selected_grids = val;
-            }
+            },
         },
 
         isClearBtnDisabled() {
             let disabled = true;
             this.optionsToRender.map(option => {
                 if (this.defaultChecked.includes(option.value)) {
-                    return disabled = false;
+                    return (disabled = false);
                 }
             });
             return disabled;
         },
-        alwayShowValues() {
-            return this.valuesAlwaysVisible == undefined;
-        }
+        alwaysShowValues() {
+            return this.valuesAlwaysVisible === undefined;
+        },
     },
     watch: {
         fieldType() {
@@ -110,13 +128,13 @@ export default {
         optionsToRender: {
             handler() {
                 let newOptions = {};
-                _ff.map(this.optionsToRender, (option) => {
-                    newOptions[option.value] = option.label
+                _ff.map(this.optionsToRender, option => {
+                    newOptions[option.value] = option.label;
                 });
                 this.$emit('input', newOptions);
             },
-            deep: true
-        }
+            deep: true,
+        },
     },
     methods: {
         updateValue(currentOption) {
@@ -130,19 +148,18 @@ export default {
         increase(index) {
             let options = this.optionsToRender;
             let keys = options.map(opt => {
-                let value = opt.value;
-                value = opt.value.toString();
+                let value = opt.value.toString();
                 let nums = value.match(/\d+/g);
                 return nums && Number(nums.pop());
             });
-            let key = Math.max(...keys.filter(i => i != 'undefined')) + 1;
+            let key = Math.max(...keys.filter(i => i !== 'undefined')) + 1;
             let optionStr = `Item ${key}`;
             let optionKey = optionStr.toLowerCase().replace(/\s/g, '_');
 
             let newOpt = {
                 label: optionStr,
                 value: optionKey,
-                vkey: new Date().getTime()
+                vkey: new Date().getTime(),
             };
 
             options.splice(index + 1, 0, newOpt);
@@ -155,25 +172,25 @@ export default {
             } else {
                 this.$notify.error({
                     message: 'You have to have at least one option.',
-                    offset: 30
+                    offset: 30,
                 });
             }
         },
 
         clear() {
-            this.$refs.defaultOptions.map( el => {
+            this.$refs.defaultOptions.map(el => {
                 el.checked = false;
-                
+
                 const index = this.defaultChecked.indexOf(el.value);
 
-                if (~ index) this.defaultChecked.splice(index, 1);
+                if (~index) this.defaultChecked.splice(index, 1);
             });
         },
 
         updateDefaultOption(option) {
             const selectedGrids = this.defaultChecked;
 
-            if (this.fieldType == 'checkbox') {
+            if (this.fieldType === 'checkbox') {
                 if (event.target.checked) {
                     selectedGrids.push(option.value);
                 } else {
@@ -190,13 +207,18 @@ export default {
 
         createOptionsToRender() {
             _ff.each(this.value, (label, value) => {
-                this.optionsToRender.push({ value, label, vkey: value });
+                this.optionsToRender.push({value, label, vkey: value});
             });
-        }
+        },
+
+        handleDrop(evt) {
+            const movedElement = evt.moved.element;
+            movedElement.id = new Date().getTime();
+        },
     },
     created() {
         this.createOptionsToRender();
-        this.valuesVisible = !this.alwayShowValues;
-    }
-}
+        this.valuesVisible = !this.alwaysShowValues;
+    },
+};
 </script>

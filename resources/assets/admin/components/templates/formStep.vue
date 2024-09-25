@@ -1,5 +1,4 @@
 <template>
-
     <div class="form-step__wrapper">
         <div class="step-start text-center">
             <div class="end-of-page">
@@ -8,7 +7,7 @@
 
             <div class="step-start__indicator">
                 <strong>{{ $t('PAGE BREAK') }}</strong>
-                <hr>
+                <hr />
             </div>
 
             <div class="start-of-page">
@@ -22,5 +21,5 @@
 export default {
     name: 'formStep',
     props: ['item'],
-}
+};
 </script>

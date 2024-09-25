@@ -1,16 +1,18 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        <el-select v-loading="fetching" :element-loading-text="$t('Loading...')" element-loading-spinner="none" v-model="model" placeholder="Select" class="el-fluid ff-group-select">
-            <el-option-group
-                    v-for="group in options"
-                    :key="group.label"
-                    :label="group.label">
-                <el-option
-                        v-for="item in group.options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+        <template #label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+        </template>
+        <el-select
+            v-loading="fetching"
+            :element-loading-text="$t('Loading...')"
+            element-loading-spinner="none"
+            v-model="model"
+            placeholder="Select"
+            class="el-fluid ff-group-select"
+        >
+            <el-option-group v-for="group in options" :key="group.label" :label="group.label">
+                <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-option-group>
         </el-select>
@@ -18,63 +20,67 @@
 </template>
 
 <script>
-    import elLabel from '../../includes/el-label.vue'
-    export default {
-        name: 'selectGroup',
-        props: ['editItem', 'listItem', 'value'],
-        components: {
-            elLabel
-        },
-        data() {
-            return {
-                options: [],
-                model: this.value,
-                fetching: false,
-            }
-        },
-        methods: {
-            fetchRemoteData() {
-                //if options is passed then no need to call ajax
-                // fluentform/select_group_component_ajax_options filter can be used to pass data in this ajax call
-                if (typeof this.listItem.options === 'object') {
-                    this.options = this.listItem.options;
-                    return;
-                }
-                this.fetching = true;
+import elLabel from '../../includes/el-label.vue';
 
-                FluentFormsGlobal.$post({
-                    name: this.editItem.attributes.name,
-                    element: this.editItem.element,
-                    form_id: window.FluentFormApp.form.id,
-                    action: 'fluentform_select_group_ajax_data',
-                }).then(response => {
+export default {
+    name: 'selectGroup',
+    props: ['editItem', 'listItem', 'modelValue'],
+    components: {
+        elLabel,
+    },
+    data() {
+        return {
+            options: [],
+            model: this.modelValue,
+            fetching: false,
+        };
+    },
+    methods: {
+        fetchRemoteData() {
+            //if options is passed then no need to call ajax
+            // fluentform/select_group_component_ajax_options filter can be used to pass data in this ajax call
+            if (typeof this.listItem.options === 'object') {
+                this.options = this.listItem.options;
+                return;
+            }
+            this.fetching = true;
+
+            FluentFormsGlobal.$post({
+                name: this.editItem.attributes.name,
+                element: this.editItem.element,
+                form_id: window.FluentFormApp.form.id,
+                action: 'fluentform_select_group_ajax_data',
+            })
+                .then(response => {
                     if (response.success) {
-                        this.options = JSON.parse(JSON.stringify(response.data))
+                        this.options = JSON.parse(JSON.stringify(response.data));
                     } else {
                         this.$notify.error({
                             offset: 32,
                             title: 'Error',
-                            message: 'Failed! Please try again.'
+                            message: 'Failed! Please try again.',
                         });
                     }
-                }).fail(response => {
+                })
+                .fail(response => {
                     this.$notify.error({
                         offset: 32,
                         title: 'Error',
-                        message: 'Failed! Please try again.'
+                        message: 'Failed! Please try again.',
                     });
-                }).always(() => {
+                })
+                .always(() => {
                     this.fetching = false;
                 });
-            },
         },
-        watch: {
-            model() {
-                this.$emit('input', this.model);
-            }
+    },
+    watch: {
+        model() {
+            this.$emit('update:modelValue', this.model);
         },
-        mounted() {
-            this.fetchRemoteData()
-        }
-    }
+    },
+    mounted() {
+        this.fetchRemoteData();
+    },
+};
 </script>

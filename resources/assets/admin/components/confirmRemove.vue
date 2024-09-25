@@ -1,8 +1,5 @@
 <template>
-    <el-popconfirm
-        :title="text || $t('Are you sure to delete this?')"
-        @confirm="confirmAction"
-    >
+    <el-popconfirm :title="text || $t('Are you sure to delete this?')" @confirm="confirmAction">
         <template #reference>
             <slot>
                 <p class="text-right">{{ $t('Are you sure to delete this?') }}</p>
@@ -20,19 +17,19 @@
 </template>
 
 <script>
-    export default {
-        name: 'confirmRemove',
-        props: ['text'],
-        data() {
-            return {
-                visible: false
-            };
+export default {
+    name: 'confirmRemove',
+    props: ['text'],
+    data() {
+        return {
+            visible: false,
+        };
+    },
+    methods: {
+        confirmAction() {
+            this.visible = false;
+            this.$emit('on-confirm');
         },
-        methods: {
-            confirmAction() {
-                this.visible = false;
-                this.$emit('on-confirm');
-            }
-        }
-    };
+    },
+};
 </script>

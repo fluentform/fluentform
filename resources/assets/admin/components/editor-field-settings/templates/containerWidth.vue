@@ -2,11 +2,13 @@
     <div>
         <template v-if="editItem.columns.length > 1">
             <el-form-item>
-                <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+                <template #label>
+                    <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+                </template>
             </el-form-item>
 
-            <template v-for="(column, i) in columns">
-                <el-form-item :label="'Column ' + (i + 1)" :key="i">
+            <template v-for="(column, i) in columns" :key="i">
+                <el-form-item :label="'Column ' + (i + 1)">
                     <el-input
                         type="number"
                         :min="minWidth"
@@ -20,7 +22,9 @@
            <p>{{ listItem.width_limitation_msg }}</p>
 
            <el-form-item>
-                <elLabel slot="label" :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></elLabel>
+               <template #label>
+                <el-label :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></el-label>
+               </template>
                 <el-radio v-model="editItem.settings.is_width_auto_calc" :label="true">{{ $t('Yes') }}</el-radio>
                 <el-radio v-model="editItem.settings.is_width_auto_calc" :label="false">{{ $t('No') }}</el-radio>
             </el-form-item>
@@ -29,7 +33,7 @@
 </template>
 
 <script>
-    import elLabel from "../../includes/el-label";
+    import elLabel from "../../includes/el-label.vue";
 
     export default {
         name: "containerWidth",
@@ -82,7 +86,7 @@
                 const perColumnWidth = this.getNumber(100 / this.editItem.columns.length);
                 this.editItem.modified = false;
                 this.editItem.columns.forEach(column => {
-                    if ( column.width != perColumnWidth ){
+                    if ( column.width !== perColumnWidth ){
                         this.editItem.modified = true;
                     }
                 })

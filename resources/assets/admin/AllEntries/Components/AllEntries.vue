@@ -26,11 +26,11 @@
                             <div v-if="advancedFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                        <el-radio label="all">All</el-radio>
-                                        <el-radio label="today">Today</el-radio>
-                                        <el-radio label="yesterday">Yesterday</el-radio>
-                                        <el-radio label="last-week">Last Week</el-radio>
-                                        <el-radio label="last-month">Last Month</el-radio>
+                                        <el-radio value="all">All</el-radio>
+                                        <el-radio value="today">Today</el-radio>
+                                        <el-radio value="yesterday">Yesterday</el-radio>
+                                        <el-radio value="last-week">Last Week</el-radio>
+                                        <el-radio value="last-month">Last Month</el-radio>
                                     </el-radio-group>
                                 </div>
                                 <div class="ff_advanced_search_date_range">
@@ -90,9 +90,9 @@
                             <el-col :span="13">
                                 <div class="ff_radio_group_wrap">
                                     <el-radio-group class="ff_radio_group_s2" @change="fetchEntries('reset')" v-model="entry_status">
-                                        <el-radio-button label="">{{ $t('All') }}</el-radio-button>
-                                        <el-radio-button label="unread">{{ $t('Unread Only') }}</el-radio-button>
-                                        <el-radio-button label="read">{{ $t('Read Only') }}</el-radio-button>
+                                        <el-radio-button value="">{{ $t('All') }}</el-radio-button>
+                                        <el-radio-button value="unread">{{ $t('Unread Only') }}</el-radio-button>
+                                        <el-radio-button value="read">{{ $t('Read Only') }}</el-radio-button>
                                     </el-radio-group>
                                 </div>
                             </el-col>

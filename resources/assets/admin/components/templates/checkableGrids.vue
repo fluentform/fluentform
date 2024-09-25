@@ -13,7 +13,7 @@
                 <tr v-for="(row, i) in tabluarData" :key="i">
                     <td>{{ row.label }}</td>
                     <td v-for="(col, i) in row.columns" :key="i">
-                        <input :type="fieldType" :checked="isChecked(col, row)">
+                        <input :type="fieldType" :checked="isChecked(col, row)" />
                     </td>
                 </tr>
             </tbody>
@@ -28,7 +28,7 @@ export default {
     name: 'checkableGrids',
     props: ['item'],
     components: {
-        withLabel
+        withLabel,
     },
     computed: {
         fieldType() {
@@ -46,25 +46,25 @@ export default {
         tabluarData() {
             const table = [];
             const rows = this.item.settings.grid_rows;
-		    const columns = this.item.settings.grid_columns;
-            
+            const columns = this.item.settings.grid_columns;
+
             _ff.each(rows, (rowValue, rowKey) => {
                 const row = {
                     name: rowKey,
                     label: rowValue,
-                    columns: []
+                    columns: [],
                 };
                 _ff.each(columns, (columnValue, columnKey) => {
                     row.columns.push({
                         name: columnKey,
-                        label: columnValue
+                        label: columnValue,
                     });
                 });
                 table.push(row);
             });
 
             return table;
-        }
+        },
     },
     methods: {
         isChecked(column, row) {
@@ -72,7 +72,7 @@ export default {
             const colChecked = this.defaultChecked.includes(column.name);
 
             return rowChecked ? rowChecked : colChecked;
-        }
-    }
-}
+        },
+    },
+};
 </script>

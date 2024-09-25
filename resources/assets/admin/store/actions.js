@@ -6,6 +6,12 @@ export default {
             .then(res => {
                 commit('loadResources', res);
             })
-            .catch( _ => {});
+            .catch(() => {});
     },
-}
+    updateSidebar({ commit }) {
+        commit('setSidebarLoading', true);
+        setTimeout(() => {
+            commit('setSidebarLoading', false);
+        }, 100);
+    }
+};

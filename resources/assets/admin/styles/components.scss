@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .list-group {
   margin: 0;
   > li.title {
@@ -45,7 +47,7 @@
 .form-step {
   &__wrapper.form-step__wrapper {
     background: $gray;
-    border: 1px solid darken($gray, 2%);
+    border: 1px solid color.adjust($gray, $lightness: -2%);
     padding: 10px;
   }
 
@@ -85,12 +87,13 @@
       right: 10px;
       border: 0;
       z-index: 1;
-      border-top: 1px solid darken($gray, 7%);
+      border-top: 1px solid color.adjust($gray, $lightness: -7%);
     }
   }
 }
 
 .vddl-list {
+  width: 100%;
   padding-left: 0px;
   min-height: $item-height;
 }
@@ -106,7 +109,7 @@
 .empty-dropzone {
   height: $item-height;
   border: 1px dashed #CED0D4;
-  margin: 0 10px;
+  margin: 5px 10px;
   border-radius: 6px;
   position: relative;
   z-index: 2;
@@ -115,11 +118,11 @@
     height: auto;
   }
   &-placeholder {
-    display: table-cell;
-    text-align: center;
-    width: 1000px;
-    height: inherit;
-    vertical-align: middle;
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     .popup-search-element {
       position: relative;
       z-index: 2;
@@ -176,9 +179,13 @@
   span{
     display: none;
   }
-  .action-menu-item:hover {
-    //background-color: #3A3A3C;
-    background-color: $primary;
+  .action-menu-item {
+    width: 34px;
+    height: 34px;
+    &:hover {
+      //background-color: #3A3A3C;
+      background-color: $primary;
+    }
   }
   .el-icon {
     color: $white;
@@ -418,7 +425,7 @@
     cursor: pointer;
     border-radius: 6px;
     background-color: $white;
-    font-size: 18px;
+    font-size: 15px;
     margin-bottom: 4px;
     &:hover {
       background-color: $editor-inserter-content-item-hover-bg;
@@ -477,8 +484,7 @@
 }
 
 .address-field-option {
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+  margin: 4px 0;
   width: 100%;
   > .el-icon-caret-bottom,
   .el-icon-caret-top {

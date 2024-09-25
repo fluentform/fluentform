@@ -1,6 +1,8 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="fieldOpt.label" :helpText="fieldOpt.help_text"></elLabel>
+        <template #label>
+            <el-label :label="fieldOpt.label" :helpText="fieldOpt.help_text"></el-label>
+        </template>
         <slot></slot>
     </el-form-item>
 </template>
@@ -12,7 +14,7 @@ export default {
     name: 'withLabel',
     props: ['fieldOpt'],
     components: {
-        elLabel
-    }
-}
+        elLabel,
+    },
+};
 </script>

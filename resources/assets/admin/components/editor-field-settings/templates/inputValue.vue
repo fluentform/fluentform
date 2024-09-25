@@ -1,8 +1,14 @@
 <template>
-    <el-form-item v-if="!editItem.hasOwnProperty('options') && typeof value == 'string'">
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
-        <inputPopover :fieldType="fieldType" v-model="model" :data="editorShortcodes" 
-                      :attr-name="editItem.attributes.name">
+    <el-form-item v-if="!editItem.hasOwnProperty('options') && typeof modelValue == 'string'">
+        <template #label>
+            <elLabel :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+        </template>
+        <inputPopover
+            :fieldType="fieldType"
+            v-model="model"
+            :data="editorShortcodes"
+            :attr-name="editItem.attributes.name"
+        >
         </inputPopover>
     </el-form-item>
 </template>
@@ -10,47 +16,47 @@
 <script>
 import { mapGetters } from 'vuex';
 
-import elLabel from '../../includes/el-label.vue'
-import inputPopover from '../../input-popover.vue'
+import elLabel from '../../includes/el-label.vue';
+import inputPopover from '../../input-popover.vue';
 
 export default {
     name: 'wpuf_inputValue',
-    props: ['listItem', 'value', 'editItem'],
+    props: ['listItem', 'modelValue', 'editItem'],
     components: {
         elLabel,
-        inputPopover
+        inputPopover,
     },
     data() {
         return {
-            model: this.value
-        }
+            model: this.modelValue,
+        };
     },
     computed: {
         ...mapGetters(['editorShortcodes']),
         fieldType() {
-            if(this.listItem.type) {
+            if (this.listItem.type) {
                 return this.listItem.type;
             }
             if (!this.editItem.attributes.type) {
                 return 'textarea';
             }
             return 'text';
-        }
+        },
     },
     watch: {
         model() {
-            this.$emit('input', this.model);
-        }
+            this.$emit('update:modelValue', this.model);
+        },
     },
     mounted() {
         let shortcodes = Object.assign(
-            { "{get.param_name}": "Populate by GET Param" },
+            { '{get.param_name}': 'Populate by GET Param' },
             this.editorShortcodes[0].shortcodes
         );
 
-        shortcodes['{cookie.cookie_name}'] = "Cookie Value";
-        
-        this.editorShortcodes[0].shortcodes = shortcodes;
-    }
-}
+        shortcodes['{cookie.cookie_name}'] = 'Cookie Value';
+
+        this.$store.commit('setEditorShortcode', shortcodes);
+    },
+};
 </script>

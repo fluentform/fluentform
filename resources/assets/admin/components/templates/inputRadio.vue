@@ -1,7 +1,7 @@
 <template>
     <withLabel :item="item">
         <el-radio-group class="el-radio-horizontal" v-model="item.attributes.value">
-            <el-radio v-for="(label, value, i) in item.options" :label="value" :key="i">
+            <el-radio v-for="(label, value, i) in item.options" :value="value" :key="i">
                 {{ label }}
             </el-radio>
         </el-radio-group>
@@ -15,7 +15,7 @@ export default {
     name: 'inputRadio',
     props: ['item'],
     components: {
-        withLabel
-    }
-}
+        withLabel,
+    },
+};
 </script>

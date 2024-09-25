@@ -1,85 +1,105 @@
 <template>
-<el-form label-position="top" label-width="120px">
-    <div :class="optionFieldsSection == 'generalEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <h5 @click="toggleFieldsSection('generalEditOptions')"
-            :class="optionFieldsSection == 'generalEditOptions' ? 'active' : ''"
-            class="option-fields-section--title">
-            {{ editItem.editor_options.title }}
-        </h5>
-
-        <transition name="slide-fade">
-            <div v-if="optionFieldsSection == 'generalEditOptions'" class="option-fields-section--content">
-                <template v-for="(listItem, key, i) in generalEditOptions">
-                    <component
-                        v-if="willShow(key, listItem)"
-                        :is="guessElTemplate(listItem)"
-                        v-model="vModelFinder(key)[key]"
-                        :editItem="editItem"
-                        :prop="key"
-                        :form_items="form_items"
-                        :listItem="listItem"
-                        :key="i">
-                    </component>
-                </template>
-            </div>
-        </transition>
-    </div>
-
-    <div :class="optionFieldsSection == 'advancedEditOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <template v-if="haveSettings(advancedEditOptions)">
-            <h5 @click="toggleFieldsSection('advancedEditOptions')"
-                :class="optionFieldsSection == 'advancedEditOptions' ? 'active' : ''"
-                class="option-fields-section--title">
-                {{ $t('Advanced Options') }}
+    <el-form label-position="top" label-width="120px">
+        <div
+            :class="optionFieldsSection === 'generalEditOptions' ? 'option-fields-section_active' : ''"
+            class="option-fields-section"
+        >
+            <h5
+                @click="toggleFieldsSection('generalEditOptions')"
+                :class="optionFieldsSection === 'generalEditOptions' ? 'active' : ''"
+                class="option-fields-section--title"
+            >
+                {{ editItem.editor_options.title }}
             </h5>
 
             <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'advancedEditOptions'" class="option-fields-section--content">
-                    <template v-for="(listItem, key, i) in advancedEditOptions">
+                <div v-if="optionFieldsSection === 'generalEditOptions'" class="option-fields-section--content">
+                    <template v-for="(listItem, key, i) in generalEditOptions">
                         <component
                             v-if="willShow(key, listItem)"
                             :is="guessElTemplate(listItem)"
                             v-model="vModelFinder(key)[key]"
-                            :form_items="form_items"
                             :editItem="editItem"
+                            :prop="key"
+                            :form_items="form_items"
                             :listItem="listItem"
-                            :key="i">
+                            :key="i"
+                        >
                         </component>
                     </template>
-                    <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
-                        {{
-                            $t('Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro')
-                        }}
-                        <a target="_blank" rel="noopener" href="https://fluentforms.com/conversational-form" class="el-button el-button--success el-button--small">{{
-                                $t('Get Fluent Forms Pro')
-                            }}</a>
+                </div>
+            </transition>
+        </div>
+
+        <div
+            :class="optionFieldsSection === 'advancedEditOptions' ? 'option-fields-section_active' : ''"
+            class="option-fields-section"
+        >
+            <template v-if="haveSettings(advancedEditOptions)">
+                <h5
+                    @click="toggleFieldsSection('advancedEditOptions')"
+                    :class="optionFieldsSection === 'advancedEditOptions' ? 'active' : ''"
+                    class="option-fields-section--title"
+                >
+                    {{ $t('Advanced Options') }}
+                </h5>
+
+                <transition name="slide-fade">
+                    <div v-if="optionFieldsSection === 'advancedEditOptions'" class="option-fields-section--content">
+                        <template v-for="(listItem, key, i) in advancedEditOptions">
+                            <component
+                                v-if="willShow(key, listItem)"
+                                :is="guessElTemplate(listItem)"
+                                v-model="vModelFinder(key)[key]"
+                                :form_items="form_items"
+                                :editItem="editItem"
+                                :listItem="listItem"
+                                :key="i"
+                            />
+                        </template>
+                        <div v-if="!hasPro && is_conversion_form" class="fcc_pro_message">
+                            {{
+                                $t(
+                                    'Conditional Logic on conversational form available only in Pro version. To use conditional logic please upgrade to pro'
+                                )
+                            }}
+                            <a
+                                target="_blank"
+                                rel="noopener"
+                                href="https://fluentforms.com/conversational-form"
+                                class="el-button el-button--success el-button--small"
+                                >{{ $t('Get Fluent Forms Pro') }}</a
+                            >
+                        </div>
                     </div>
-                </div>
-            </transition>
-        </template>
-    </div>
+                </transition>
+            </template>
+        </div>
 
-    <div :class="optionFieldsSection == 'layoutOptions' ? 'option-fields-section_active' : ''" class="option-fields-section">
-        <template v-if="editItem.style_pref">
-            <h5 @click="toggleFieldsSection('layoutOptions')"
-                :class="optionFieldsSection == 'layoutOptions' ? 'active' : ''"
-                class="option-fields-section--title">
-                {{ $t('Layout Settings') }}
-            </h5>
+        <div
+            :class="optionFieldsSection === 'layoutOptions' ? 'option-fields-section_active' : ''"
+            class="option-fields-section"
+        >
+            <template v-if="editItem.style_pref">
+                <h5
+                    @click="toggleFieldsSection('layoutOptions')"
+                    :class="optionFieldsSection === 'layoutOptions' ? 'active' : ''"
+                    class="option-fields-section--title"
+                >
+                    {{ $t('Layout Settings') }}
+                </h5>
 
-            <transition name="slide-fade">
-                <div v-if="optionFieldsSection == 'layoutOptions'" class="option-fields-section--content">
-                    <conversion-style-pref :pref="editItem.style_pref" />
-                </div>
-            </transition>
-        </template>
-    </div>
-
-</el-form>
+                <transition name="slide-fade">
+                    <div v-if="optionFieldsSection === 'layoutOptions'" class="option-fields-section--content">
+                        <conversion-style-pref :pref="editItem.style_pref" />
+                    </div>
+                </transition>
+            </template>
+        </div>
+    </el-form>
 </template>
 
 <script type="text/babel">
-
 import select from './templates/select.vue';
 import nameAttr from './templates/nameAttr.vue';
 import infoBlock from './templates/infoBlock.vue';
@@ -115,23 +135,18 @@ import inputRequiredFieldText from './templates/inputRequiredFieldText.vue';
 import chainSelectDataSource from './templates/chainSelectDataSource.vue';
 import paymentMethodsConfig from './templates/paymentMethodsConfig.vue';
 import targetProduct from './templates/targetProduct.vue';
-import inputYesNoCheckBox from "./templates/inputYesNoCheckbox";
-import fieldsRepeatSettings from "./templates/fieldsRepeatSettings";
-import ConversionStylePref from "../../conversion_templates/ConversionStylePref";
-import ContainerWidth from "./templates/containerWidth";
-import inventoryStock from "./templates/inventoryStock";
-import selectGroup from "./templates/selectGroup.vue";
-import CustomSettingsField from "./templates/CustomSettingsField.vue";
-import dynamicFilter from "./templates/dynamicFilter.vue";
+import inputYesNoCheckBox from './templates/inputYesNoCheckbox.vue';
+import fieldsRepeatSettings from './templates/fieldsRepeatSettings.vue';
+import ConversionStylePref from '../../conversion_templates/ConversionStylePref.vue';
+import ContainerWidth from './templates/containerWidth.vue';
+import inventoryStock from './templates/inventoryStock.vue';
+import selectGroup from './templates/selectGroup.vue';
+import CustomSettingsField from './templates/CustomSettingsField.vue';
+import dynamicFilter from './templates/dynamicFilter.vue';
 
 export default {
     name: 'FieldOptionsSettings',
-    props: [
-        'editItem',
-        'form_items',
-        'generalEditOptions',
-        'advancedEditOptions'
-    ],
+    props: ['editItem', 'form_items', 'generalEditOptions', 'advancedEditOptions'],
     components: {
         ff_select: select,
         ff_radio: inputRadio,
@@ -175,14 +190,14 @@ export default {
         ff_inventoryStock: inventoryStock,
         ff_selectGroup: selectGroup,
         ff_dynamicFilter: dynamicFilter,
-        ff_CustomSettingsField: CustomSettingsField
+        ff_CustomSettingsField: CustomSettingsField,
     },
     data() {
         return {
             optionFieldsSection: 'generalEditOptions',
             hasPro: !!window.FluentFormApp.hasPro,
-            is_conversion_form: !!window.FluentFormApp.is_conversion_form
-        }
+            is_conversion_form: !!window.FluentFormApp.is_conversion_form,
+        };
     },
     computed: {
         /**
@@ -211,7 +226,7 @@ export default {
             }
 
             return elementOptions;
-        }
+        },
     },
     methods: {
         /**
@@ -220,21 +235,21 @@ export default {
          */
         vModelFinder(attr) {
             if (_ff.has(this.editItem.attributes, attr)) {
-                return this.editItem.attributes
+                return this.editItem.attributes;
             } else {
-                return this.editItem.settings
+                return this.editItem.settings;
             }
         },
 
         /**
-         * This determins to show/hide "general" and "advanced" settings
+         * This determines to show/hide "general" and "advanced" settings
          * @param targetObj
          * @return {number}
          */
         haveSettings(targetObj) {
             let total = 0;
-            _ff.each(this.elementOptions, (el_key) => {
-                if(_ff.has(targetObj, el_key)) {
+            _ff.each(this.elementOptions, el_key => {
+                if (_ff.has(targetObj, el_key)) {
                     total++;
                 }
             });
@@ -242,16 +257,16 @@ export default {
         },
 
         /**
-        * Helper function for show/hide dependent elements
-        & @return {Boolean}
+         * Helper function for show/hide dependent elements
+         & @return {Boolean}
          */
         compare(operand1, operator, operand2) {
-            switch(operator) {
+            switch (operator) {
                 case '==':
-                    return operand1 == operand2
+                    return operand1 === operand2;
                     break;
                 case '!=':
-                    return operand1 != operand2
+                    return operand1 !== operand2;
                     break;
             }
         },
@@ -262,15 +277,15 @@ export default {
          * @return {boolean}
          */
         // @todo add multiple dependency support
-        dependancyPass(listItem) {
+        dependencyPass(listItem) {
             if (listItem.dependency) {
                 let optionPaths = listItem.dependency.depends_on.split('/');
 
                 let dependencyVal = optionPaths.reduce((obj, prop) => {
-                    return obj[prop]
+                    return obj[prop];
                 }, this.editItem);
 
-                if ( this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal) ) {
+                if (this.compare(listItem.dependency.value, listItem.dependency.operator, dependencyVal)) {
                     return true;
                 }
                 return false;
@@ -278,10 +293,12 @@ export default {
             return true;
         },
         willShow(key, listItem) {
-            return this.elementOptions.includes(key) && this.dependancyPass(listItem) && this.conversionPass(listItem, key);
+            return (
+                this.elementOptions.includes(key) && this.dependencyPass(listItem) && this.conversionPass(listItem, key)
+            );
         },
         conversionPass(listItem, key) {
-            if(!this.is_conversion_form) {
+            if (!this.is_conversion_form) {
                 return true;
             }
             let unsupportedSettings = [
@@ -294,15 +311,15 @@ export default {
                 'layout_class',
                 'class',
                 'rows',
-                'cols'
+                'cols',
             ];
 
-            if(!this.hasPro) {
+            if (!this.hasPro) {
                 unsupportedSettings.push('conditional_logics');
             }
 
             return unsupportedSettings.indexOf(key) === -1;
-        }
+        },
     },
 };
 </script>

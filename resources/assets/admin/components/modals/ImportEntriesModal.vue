@@ -1,6 +1,6 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
-        <el-dialog :visible="visibility" :before-close="close">
+        <el-dialog :model-value="visibility" @update:model-value="$emit('update:visibility', $event)" :before-close="close">
             <span slot="title" class="el-dialog__title">
               <h4> {{ $t('Import Entries') }}</h4>
             </span>
@@ -47,8 +47,8 @@
                                     </el-tooltip>
                                 </template>
                                 <el-radio-group v-model="file_type">
-                                    <el-radio label="json">JSON (.json)</el-radio>
-                                    <el-radio label="csv">CSV (.csv)</el-radio>
+                                    <el-radio value="json">JSON (.json)</el-radio>
+                                    <el-radio value="csv">CSV (.csv)</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                         </el-col>
@@ -243,6 +243,7 @@
 	        form_id: Number,
             app: Object
         },
+        emits: ['update:visibility'],
         data() {
             return {
                 selected_form_id: this.form_id || (this.app.forms?.length > 0 ? this.app.forms[0].id : ''),

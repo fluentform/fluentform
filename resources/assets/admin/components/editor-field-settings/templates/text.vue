@@ -7,16 +7,16 @@
 <script>
 export default {
     name: 'wpuf_inputText',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'modelValue'],
     watch: {
         model() {
-            this.$emit('input', this.model);
-        }
+            this.$emit('update:modelValue', this.model);
+        },
     },
     data() {
         return {
-            model: this.value
-        }
-    }
-}
+            model: this.modelValue,
+        };
+    },
+};
 </script>

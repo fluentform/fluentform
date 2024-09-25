@@ -23,6 +23,7 @@
                         :key="option"
                         :label="option"
                         :value="value">
+                    {{option}}
                 </el-radio>
         </el-form-item>
 

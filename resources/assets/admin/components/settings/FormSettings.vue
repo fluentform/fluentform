@@ -98,8 +98,8 @@
 
                                 <el-form-item class="ff-form-item" :label="$t('Email Type')">
                                     <el-radio-group v-model="double_optin.email_body_type">
-                                        <el-radio label="global">{{ $t('As Per Global Settings') }}</el-radio>
-                                        <el-radio label="custom">{{ $t('Customized Double Optin Email') }}</el-radio>
+                                        <el-radio value="global">{{ $t('As Per Global Settings') }}</el-radio>
+                                        <el-radio value="custom">{{ $t('Customized Double Optin Email') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
 

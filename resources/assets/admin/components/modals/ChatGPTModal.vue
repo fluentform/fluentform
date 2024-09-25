@@ -7,7 +7,7 @@
             top= "50px"
             :before-close="close"
         >
-            <template slot="title">
+            <template #header>
                 <h3 class="title">{{$t('Create Using ChatGPT')}}</h3>
                 <p>{{ $t('Use AI to create the initial structure. The response uses ChatGPT, so please note that there might be some inaccuracy in the output.') }}</p>
             </template>

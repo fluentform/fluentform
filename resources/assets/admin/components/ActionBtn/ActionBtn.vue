@@ -1,11 +1,11 @@
 <template>
     <div class="action-btns">
-        <slot/>
+        <slot />
     </div>
 </template>
 
 <script>
-    export default {
-        name: 'ActionBtn'
-    }
+export default {
+    name: 'ActionBtn',
+};
 </script>

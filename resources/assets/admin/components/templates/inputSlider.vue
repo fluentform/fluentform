@@ -16,14 +16,14 @@ export default {
     props: ['item'],
     computed: {
         valueNumber() {
-           if(parseInt(item.attributes.value)) {
-               return item.attributes.value;
-           }
-           return 5;
-        }
+            if (parseInt(item.attributes.value)) {
+                return item.attributes.value;
+            }
+            return 5;
+        },
     },
     components: {
-        withLabel
-    }
-}
+        withLabel,
+    },
+};
 </script>

@@ -1,6 +1,10 @@
 <template>
-    <el-form-item v-if="editItem.settings.progress_indicator != ''">
-        <b><elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel></b>
+    <el-form-item v-if="editItem.settings.progress_indicator !== ''">
+        <template #label>
+            <b>
+                <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+            </b>
+        </template>
         <hr class="mb-3" />
 
         <div v-for="(number, index) in formStepsCount" class="el-form-item" :key="index">
@@ -13,24 +17,24 @@
 </template>
 
 <script>
-import elLabel from '../../includes/el-label.vue'
+import elLabel from '../../includes/el-label.vue';
 
 export default {
     name: 'customStepTitles',
     components: {
-        elLabel
+        elLabel,
     },
     props: ['listItem', 'editItem', 'form_items'],
     computed: {
         formStepsCount() {
             let count = 1;
-            _ff.map(this.form_items, (field) => {
-                if (field.editor_options.template == "formStep") {
+            _ff.map(this.form_items, field => {
+                if (field.editor_options.template === 'formStep') {
                     count++;
                 }
             });
             return count;
         },
-    }
-}
+    },
+};
 </script>

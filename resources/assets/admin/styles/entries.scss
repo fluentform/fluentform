@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .entry_navs {
   a {
     text-decoration: none;
@@ -194,7 +196,7 @@ table.editor_table, .ff_entry_table_field, .ff-table {
             background-color: #fff;
           }
           &:nth-child(2n + 1) {
-            background-color: lighten($gray, 6%);
+            background-color: color.adjust($gray, $lightness: 6%);
           }
 
           td {
@@ -207,7 +209,7 @@ table.editor_table, .ff_entry_table_field, .ff-table {
       margin: 0;
       font-size: 17px;
       margin-bottom: 0;
-      border-bottom: 1px solid lighten($gray, 3%);
+      border-bottom: 1px solid color.adjust($gray, $lightness: 3%);
       padding: 15px;
     }
     &-field,

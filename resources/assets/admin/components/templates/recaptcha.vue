@@ -1,8 +1,8 @@
 <template>
     <withLabel :item="item">
-      <div class="ff-el-form-captcha-img-wrapper">
-        <img :src="plugin_url+'img/recaptcha-placeholder.png'" :alt="$t('recaptcha-placeholder')">
-      </div>
+        <div class="ff-el-form-captcha-img-wrapper">
+            <img :src="plugin_url + 'img/recaptcha-placeholder.png'" :alt="$t('recaptcha-placeholder')" />
+        </div>
     </withLabel>
 </template>
 
@@ -13,12 +13,12 @@ export default {
     name: 'recaptcha',
     props: ['item'],
     components: {
-        withLabel
+        withLabel,
     },
     data() {
         return {
-            plugin_url: window.FluentFormApp.plugin_public_url
-        }
-    }
-}
+            plugin_url: window.FluentFormApp.plugin_public_url,
+        };
+    },
+};
 </script>

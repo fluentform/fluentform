@@ -69,7 +69,7 @@ class Menu
 
         Vite::registerStyle(
             'fluentform_settings_global',
-            'resources/assets/admin/css/settings_global.scss',
+            'assets/admin/css/settings_global.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -125,7 +125,7 @@ class Menu
 
         Vite::registerStyle(
             'fluentform_editor_style',
-            'resources/assets/admin/css/fluent-forms-admin.scss',
+            'assets/admin/css/fluent-forms-admin.scss',
             [],
             FLUENTFORM_VERSION,
             'all'
@@ -840,7 +840,7 @@ class Menu
 
         do_action('fluentform/loading_editor_assets', $form);
 
-        wp_enqueue_style('fluentform_editor_sass');
+//        wp_enqueue_style('fluentform_editor_sass');
         wp_enqueue_style('fluentform_editor_style');
 
         $pluginSlug = $this->app->config->get('app.slug');
@@ -853,74 +853,70 @@ class Menu
 
         wp_enqueue_script('fluentform_editor_script');
 
-        $jsonData = $form->form_fields;
+        $formFields = $form->form_fields;
 
-        if (!defined('FLUENTFORM_DISABLE_EDITOR_FILED_HOOOK')) {
-            $formFields = $form->form_fields;
+        if ($formFields) {
+            $formFields = json_decode($formFields, true);
 
-            if ($formFields) {
-                $formFields = json_decode($formFields, true);
-
-                foreach ($formFields['fields'] as $index => $formField) {
-                    $formField = apply_filters_deprecated(
-                        'fluentform_editor_init_element_' . $formField['element'],
-                        [
-                            $formField,
-                            $form
-                        ],
-                        FLUENTFORM_FRAMEWORK_UPGRADE,
-                        'fluentform/editor_init_element_' . $formField['element'],
-                        'Use fluentform/editor_init_element_' . $formField['element'] . ' instead of fluentform_editor_init_element_' . $formField['element']
-                    );
-
-                    $formField = $formFields['fields'][$index] = apply_filters(
-                        'fluentform/editor_init_element_' . $formField['element'],
+            foreach ($formFields['fields'] as $index => $formField) {
+                $formField = apply_filters_deprecated(
+                    'fluentform_editor_init_element_' . $formField['element'],
+                    [
                         $formField,
                         $form
-                    );
+                    ],
+                    FLUENTFORM_FRAMEWORK_UPGRADE,
+                    'fluentform/editor_init_element_' . $formField['element'],
+                    'Use fluentform/editor_init_element_' . $formField['element'] . ' instead of fluentform_editor_init_element_' . $formField['element']
+                );
 
-                    if (!$formFields['fields'][$index]) {
-                        unset($formFields['fields'][$index]);
-                        continue;
-                    }
+                $formField = $formFields['fields'][$index] = apply_filters(
+                    'fluentform/editor_init_element_' . $formField['element'],
+                    $formField,
+                    $form
+                );
 
-                    if ('container' == $formField['element']) {
-                        $columns = $formField['columns'];
-                        foreach ($columns as $columnIndex => $column) {
-                            foreach ($column['fields'] as $fieldIndex => $columnField) {
-                                $columnField = apply_filters_deprecated(
-                                    'fluentform_editor_init_element_' . $columnField['element'],
-                                    [
-                                        $columnField,
-                                        $form
-                                    ],
-                                    FLUENTFORM_FRAMEWORK_UPGRADE,
-                                    'fluentform/editor_init_element_' . $columnField['element'],
-                                    'Use fluentform/editor_init_element_' . $columnField['element'] . ' instead of fluentform_editor_init_element_' . $columnField['element']
-                                );
-
-                                $columns[$columnIndex]['fields'][$fieldIndex] = apply_filters(
-                                    'fluentform/editor_init_element_' . $columnField['element'],
-                                    $columnField,
-                                    $form
-                                );
-
-                                if (!$columns[$columnIndex]['fields'][$fieldIndex]) {
-                                    unset($columns[$columnIndex]['fields'][$fieldIndex]);
-                                }
-                            }
-                        }
-
-                        $formFields['fields'][$index]['columns'] = array_values($columns);
-                    }
+                if (!$formFields['fields'][$index]) {
+                    unset($formFields['fields'][$index]);
+                    continue;
                 }
 
-                $formFields['fields'] = array_values($formFields['fields']);
-                $formFields = json_encode($formFields, true);
+                if ('container' == $formField['element']) {
+                    $columns = $formField['columns'];
+                    foreach ($columns as $columnIndex => $column) {
+                        foreach ($column['fields'] as $fieldIndex => $columnField) {
+                            $columnField = apply_filters_deprecated(
+                                'fluentform_editor_init_element_' . $columnField['element'],
+                                [
+                                    $columnField,
+                                    $form
+                                ],
+                                FLUENTFORM_FRAMEWORK_UPGRADE,
+                                'fluentform/editor_init_element_' . $columnField['element'],
+                                'Use fluentform/editor_init_element_' . $columnField['element'] . ' instead of fluentform_editor_init_element_' . $columnField['element']
+                            );
+
+                            $columns[$columnIndex]['fields'][$fieldIndex] = apply_filters(
+                                'fluentform/editor_init_element_' . $columnField['element'],
+                                $columnField,
+                                $form
+                            );
+
+                            if (!$columns[$columnIndex]['fields'][$fieldIndex]) {
+                                unset($columns[$columnIndex]['fields'][$fieldIndex]);
+                            }
+                        }
+                    }
+
+                    $formFields['fields'][$index]['columns'] = array_values($columns);
+                }
             }
 
-            $form->form_fields = $formFields;
+            $formFields['fields'] = array_values($formFields['fields']);
+            $formFields = json_encode($formFields, true);
         }
+
+        $form->form_fields = $formFields;
 
         $searchTags = fluentformLoadFile('Services/FormBuilder/ElementSearchTags.php');
     

@@ -1,10 +1,12 @@
 <template>
     <div class="editor-inserter__content-items">
-        <div v-for="(item, i) in list"
-            @click="insertItemOnClick(item)"
+        <div
+            v-for="(item, i) in list"
+            @click="insertItemOnClick(item, $event)"
             :key="i"
             class="editor-inserter__content-item"
-            :title="item.editor_options.title">
+            :title="item.editor_options.title"
+        >
             <i class="icon" :class="item.editor_options.icon_class"></i>
             <div>{{ item.editor_options.title }}</div>
         </div>
@@ -16,7 +18,7 @@ export default {
     name: 'el-list-items',
     props: {
         list: Array,
-        insertItemOnClick: Function
-    }
-}
+        insertItemOnClick: Function,
+    },
+};
 </script>

@@ -5,13 +5,13 @@
 </template>
 
 <script>
-    export default {
-        name: 'BtnGroupItem',
-        props: ['as'],
-        computed: {
-            isType(){
-               return this.as ? this.as : 'li';
-            }
-        }
-    }
+export default {
+    name: 'BtnGroupItem',
+    props: ['as'],
+    computed: {
+        isType() {
+            return this.as ? this.as : 'li';
+        },
+    },
+};
 </script>

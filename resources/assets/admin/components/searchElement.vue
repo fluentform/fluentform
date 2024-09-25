@@ -2,61 +2,82 @@
     <div class="search-element">
         <div class="ff-input-wrap">
             <span class="el-icon el-icon-search"></span>
-            <el-input :class="[searchElementStr.length > 0 ? 'active' : '']" v-model="searchElementStr" type="text" :placeholder="placeholder" />
+            <el-input
+                :class="[searchElementStr.length > 0 ? 'active' : '']"
+                v-model="searchElementStr"
+                type="text"
+                :placeholder="placeholder"
+            />
         </div>
 
-        <div class="search-element-result" v-show="searchResult.length" style="margin-top: 15px;">
-            <div v-for="(itemMockList, i) in searchResult" :key="i" class="v-row mb15">
-                <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
-                    <vddl-draggable
-                        class="btn-element"
-                        :draggable="itemMock"
-                        :selected="insertItemOnClick"
-                        :index="i"
-                        :wrapper="itemMockList"
-                        :disable-if="isDisabled(itemMock)"
-                        :moved="moved"
-                        effectAllowed="copy">
-                        <i :class="itemMock.editor_options.icon_class"></i>
-                        <span>{{ itemMock.editor_options.title }}</span>
-                    </vddl-draggable>
-                </div>
+        <div class="search-element-result" v-show="searchResult.length">
+            <div class="option-fields-section">
+                <draggable
+                    class="option-fields-section--content"
+                    v-model="searchResult"
+                    v-bind="sideBarDragOptions"
+                    item-key="id"
+                    :component-data="{
+                        tag: 'div',
+                        type: 'transition-group',
+                        name: !stageDrag ? 'flip-list' : null,
+                    }"
+                >
+                    <template #item="{ element }">
+                        <div class="v-col--50">
+                            <div
+                                :class="{
+                                    disabled: isDisabled(element),
+                                }"
+                                @click="insertItemOnClick(element, $event)"
+                            >
+                                <div class="vddl-draggable btn-element">
+                                    <i :class="element.editor_options.icon_class"></i>
+                                    <span>{{ element.editor_options.title }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </draggable>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 export default {
     name: 'search-element',
+    components: { draggable },
     props: {
         list: {
             type: Array,
-            required: true
+            required: true,
         },
         insertItemOnClick: {
             type: Function,
-            required: true
+            required: true,
         },
         isDisabled: {
             type: Function,
-            required: true
-        },
-        moved: {
-            type: Function,
-            required: true
+            required: true,
         },
         placeholder: {
-            type: String
+            type: String,
         },
-        isSidebarSearch: Boolean
+        sideBarDragOptions: {
+            type: Object,
+            required: true,
+        },
     },
     data() {
         return {
             searchElementStr: '',
             searchResult: [],
-            tags: window.FluentFormApp.element_search_tags
-        }
+            tags: window.FluentFormApp.element_search_tags,
+            stageDrag: false,
+        };
     },
     watch: {
         searchElementStr() {
@@ -65,20 +86,20 @@ export default {
             let searchResult = [];
 
             if (searchElementStr) {
-                searchResult = this.list.filter((item) => {
+                searchResult = this.list.filter(item => {
                     if (tags[item.element]) {
                         let search = this.makeSearchString(item);
                         search += tags[item.element].toString();
                         return search.toLowerCase().includes(searchElementStr);
                     }
-					return false;
+                    return false;
                 });
-                this.$emit('update:isSidebarSearch', true);
+                this.updateSidebar(true);
             } else {
-                this.$emit('update:isSidebarSearch', false);
+                this.updateSidebar(false);
             }
-            this.searchResult = _ff.chunk( searchResult, 2 );
-        }
+            this.searchResult = searchResult;
+        },
     },
     methods: {
         makeSearchString(field) {
@@ -96,9 +117,10 @@ export default {
                 }
             }
             return searchStr.toString();
-        }
-    }
-}
+        },
+        updateSidebar(value) {
+            this.$emit('update:modelValue', value);
+        },
+    },
+};
 </script>
-
-

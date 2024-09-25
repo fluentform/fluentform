@@ -1,28 +1,30 @@
 <template>
     <el-form-item>
-        <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+        <template #label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
+        </template>
         <el-input v-model="model" :type="listItem.type"></el-input>
     </el-form-item>
 </template>
 
 <script>
-import elLabel from '../../includes/el-label.vue'
+import elLabel from '../../includes/el-label.vue';
 
 export default {
     name: 'inputText',
-    props: ['listItem', 'value'],
+    props: ['listItem', 'modelValue'],
     components: {
-        elLabel
-    },
-    watch: {
-        model() {
-            this.$emit('input', this.model);
-        }
+        elLabel,
     },
     data() {
         return {
-            model: this.value
-        }
-    }
-}
+            model: this.modelValue,
+        };
+    },
+    watch: {
+        model() {
+            this.$emit('update:modelValue', this.model);
+        },
+    },
+};
 </script>

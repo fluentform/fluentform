@@ -1,32 +1,34 @@
 <template>
-    <div :class="{ ff_backdrop: visible }">
-        <div class="ff_more_menu">
-            <el-dropdown @command="handle" trigger="click">
-                <span class="el-dropdown-link">
-                    <i class="ff-icon ff-icon-more-vertical"/>
-                </span>
+    <div class="ff_more_menu">
+        <el-dropdown @command="handle" trigger="click">
+            <span class="el-dropdown-link">
+                <i class="ff-icon ff-icon-more-vertical"/>
+            </span>
 
-                <el-dropdown-menu slot="dropdown">
+            <template #dropdown>
+                <el-dropdown-menu>
                     <el-dropdown-item command="conversational">
                         {{ convertBtnText }}
                     </el-dropdown-item>
                 </el-dropdown-menu>
-            </el-dropdown>
+            </template>
+        </el-dropdown>
 
+        <div :class="{ ff_backdrop: visible }">
             <el-dialog
-                :visible.sync="visible"
+                v-model="visible"
                 :append-to-body="true"
                 width="60%"
             >
-                <div slot="title">
-                    <h5 class="mb-2">{{$t('Confirmation')}}</h5>
+                <template #header>
+                    <h5 class="mb-2">{{ $t('Confirmation') }}</h5>
                     <p>{{ $t('Are you sure you want to convert this form?') }}</p>
-                </div>
+                </template>
 
-                <template v-if="!is_conversion_form">
+                <template v-if="!isConversationalForm">
                     <el-alert
                         class="mt-4"
-                        title="Warning"
+                        :title="$t('Warning')"
                         type="warning"
                         :description="$t('Conversational Forms currently doesn\'t support the following fields: You may also lose data of these fields.')"
                         show-icon
@@ -43,21 +45,24 @@
                     </el-row>
                 </template>
 
-
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="visible = false" type="info" class="el-button--soft">
-                        {{ $t('Cancel') }}
-                    </el-button>
-                    <el-button type="primary" icon="el-icon-success" @click="confirm">
-                        {{ $t('Convert') }}
-                    </el-button>
-                </span>
+                <template #footer>
+                    <span class="dialog-footer">
+                        <el-button @click="visible = false" type="info" class="el-button--soft">
+                            {{ $t('Cancel') }}
+                        </el-button>
+                        <el-button type="primary" icon="el-icon-success" @click="confirm">
+                            {{ $t('Convert') }}
+                        </el-button>
+                    </span>
+                </template>
             </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
+import notifier from "@/admin/notifier";
+
 export default {
     name: "MoreMenu",
     data() {
@@ -76,26 +81,30 @@ export default {
                 "Repeat Field",
                 "POST/CPT Selection",
                 "Containers"
-            ]
+            ],
+            isConversationalForm: window.FluentFormApp.is_conversion_form,
         };
     },
-
     computed: {
         convertBtnText() {
-            const text = this.is_conversion_form ? 'Convert to Regular Form' : 'Convert to Conversational Form';
-
+            const text = this.isConversationalForm ? 'Convert to Regular Form' : 'Convert to Conversational Form';
             return this.$t(text);
         }
     },
-
     methods: {
+        ...notifier,
+        $t(str) {
+            let transString = window.FluentFormApp.form_editor_str[str];
+            if (transString) {
+                return transString;
+            }
+            return str;
+        },
         handle() {
             this.visible = !this.visible;
         },
-
         convert() {
             const url = FluentFormsGlobal.$rest.route('convertForm', this.form_id);
-
             FluentFormsGlobal.$rest.post(url)
                 .then(response => {
                     this.$success(response.message);
@@ -107,7 +116,6 @@ export default {
                     this.$fail(error.message);
                 });
         },
-
         confirm() {
             this.visible = false;
             this.convert();

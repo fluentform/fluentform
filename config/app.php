@@ -10,5 +10,5 @@
   'hook_prefix' => 'fluentform',
   'rest_namespace' => 'fluentform',
   'rest_version' => 'v2',
-  'env' => 'dev',
+  'env'            => 'dev',
 );

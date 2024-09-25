@@ -543,7 +543,6 @@ class FormService
             'fluentform/disabled_components',
             'Use fluentform/disabled_components instead of fluentform_disabled_components.'
         );
-        
         return $this->app->applyFilters('fluentform/disabled_components', $disabled);
     }
     

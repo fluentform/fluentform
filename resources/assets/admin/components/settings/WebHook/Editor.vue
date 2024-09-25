@@ -99,8 +99,8 @@
             </template>
 
             <template>
-                <el-radio v-model="editing_item.with_header" label="nop">{{ $t('No Headers') }}</el-radio>
-                <el-radio v-model="editing_item.with_header" label="yup">{{ $t('With Headers') }}</el-radio>
+                <el-radio v-model="editing_item.with_header" value="nop">{{ $t('No Headers') }}</el-radio>
+                <el-radio v-model="editing_item.with_header" value="yup">{{ $t('With Headers') }}</el-radio>
             </template>
             <error-view field="with_header" :errors="errors"></error-view>
         </el-form-item>
@@ -221,8 +221,8 @@
             </template>
 
             <template>
-                <el-radio v-model="editing_item.request_body" label="all_fields">{{ $t('All Fields') }}</el-radio>
-                <el-radio v-model="editing_item.request_body" label="selected_fields">{{ $t('Selected Fields') }}</el-radio>
+                <el-radio v-model="editing_item.request_body" value="all_fields">{{ $t('All Fields') }}</el-radio>
+                <el-radio v-model="editing_item.request_body" value="selected_fields">{{ $t('Selected Fields') }}</el-radio>
             </template>
             <error-view field="request_body" :errors="errors"></error-view>
         </el-form-item>

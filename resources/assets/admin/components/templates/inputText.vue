@@ -1,10 +1,11 @@
 <template>
     <withLabel :item="item">
-        <el-input 
+        <el-input
             :type="item.attributes.type"
             :value="item.attributes.value"
             :disabled="disabled"
-            :placeholder="placeholder">
+            :placeholder="placeholder"
+        >
         </el-input>
     </withLabel>
 </template>
@@ -16,20 +17,22 @@ export default {
     name: 'inputText',
     props: ['item'],
     components: {
-        withLabel
+        withLabel,
     },
     computed: {
         disabled() {
-            return this.item.attributes.type == 'number' &&
+            return (
+                this.item.attributes.type === 'number' &&
                 this.item.settings.calculation_settings &&
-                this.item.settings.calculation_settings.status;
+                this.item.settings.calculation_settings.status
+            );
         },
         placeholder() {
             if (this.disabled) {
                 return this.item.settings.calculation_settings.formula;
             }
             return this.item.attributes.placeholder;
-        }
-    }
-}
+        },
+    },
+};
 </script>

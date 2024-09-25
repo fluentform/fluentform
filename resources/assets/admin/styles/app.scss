@@ -60,7 +60,6 @@
 .container,
 footer {
   max-width: $max-width;
-  min-width: $min-width;
   margin: 0 auto;
 }
 
@@ -118,6 +117,12 @@ footer {
   margin-left: 3px;
   &.el-icon-info{
     transform: rotate(-14deg);
+  }
+}
+
+.search-element-wrap {
+  .search-element-result {
+    margin-top: 15px;
   }
 }
 
