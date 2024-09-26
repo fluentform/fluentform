@@ -193,10 +193,26 @@ const registerRepeaterHandler = function ($theForm) {
 
 
 };
+const registerKeyboardShort = function ($theForm) {
 
+    $theForm.on('keydown', '.repeat-plus', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            jQuery(this).click();
+        }
+    });
+
+    $theForm.on('keydown', '.repeat-minus', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            jQuery(this).click();
+        }
+    });
+}
 const initRepeater = function($theForm) {
     registerRepeaterButtonsOldVersion($theForm);
     registerRepeaterHandler($theForm);
+    registerKeyboardShort($theForm);
 };
 
 export {initRepeatButtons, initRepeater};
