@@ -454,7 +454,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.2.3 (Date: September 30, 2024) =
-- Adds form edit history
+- Adds form edit history (undo/redo)
 - Adds editor keyboard navigation and shortcuts
 - Adds form-specific permissions in the permission manager
 - Improved condition change event handling
@@ -469,6 +469,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes exporting numeric fields to Excel
 - Fixes label asterisk style with elementor widget
 - Fixes conditional logic with numeric formatting
+- Fixes Checkable Grid submission issue
 
 = 5.2.2 (Date: September 11, 2024) =
 - Update tested WordPress Version

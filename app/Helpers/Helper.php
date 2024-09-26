@@ -1038,6 +1038,7 @@ class Helper
                     $isValid = empty($rowDiff);
                     if ($isValid) {
                         $columns = array_keys(ArrayHelper::get($rawField, 'settings.grid_columns', []));
+                        $columns = array_map('trim', $columns);
                         $submittedCols = ArrayHelper::flatten(ArrayHelper::get($formData, $fieldName, []));
                         $colDiff = array_diff($submittedCols, $columns);
                         $isValid = empty($colDiff);
