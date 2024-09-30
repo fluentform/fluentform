@@ -2,7 +2,7 @@
     <div class="ff-edit-history-wrap option-fields-section" style="min-height: 100px;">
         <div class="option-fields-section--title active">
             <div >
-                <h5>History</h5>
+                <h5>History (Beta)</h5>
             </div>
             <div>
                 <el-button @click="clearHistory" type="danger" plain icon="el-icon-delete" size="mini"></el-button>
