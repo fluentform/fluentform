@@ -454,7 +454,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.2.3 (Date: September 30, 2024) =
-- Adds form edit history (undo/redo)
+- Adds form edit history (Beta)
 - Adds editor keyboard navigation and shortcuts
 - Adds form-specific permissions in the permission manager
 - Improved condition change event handling
