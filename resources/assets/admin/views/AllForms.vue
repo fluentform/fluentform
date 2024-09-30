@@ -504,6 +504,8 @@ export default {
             if (column.order) {
                 this.sort_column = column.prop;
                 this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
+                localStorage.setItem('ff_all_form_sort_column', this.sort_column);
+                localStorage.setItem('ff_all_form_sort_by', this.sort_by);
                 this.fetchItems();
             }
         },
@@ -612,6 +614,14 @@ export default {
         const savedOption = localStorage.getItem('selectedFormType');
         if (savedOption) {
             this.filter_by = savedOption;
+        }
+
+        const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
+        const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
+
+        if (savedSortColumn && savedSortBy) {
+            this.sort_column = savedSortColumn;
+            this.sort_by = savedSortBy;
         }
         this.fetchItems();
 
