@@ -120,7 +120,6 @@ class HistoryService
         if (in_array($this->getFieldKey($oldField), $this->addedFields) || in_array($this->getFieldKey($oldField), $this->removedFields)) {
             return;
         }
-        
         $fieldLabel = $this->getFieldLabel($newField);
         $categories = ['settings', 'attributes', 'fields', 'columns'];
     
@@ -145,6 +144,9 @@ class HistoryService
     
     private function compareArrayRecursively($oldValue, $newValue, $fieldLabel, $category, $parentKey = '')
     {
+       
+    
+    
         foreach ($newValue as $key => $value) {
             $currentKey = $parentKey ? "$parentKey.$key" : $key;
             
@@ -243,7 +245,7 @@ class HistoryService
         }
         
         if (count($changeDescriptions) > 1) {
-            return "Multiple changes: " . implode(", ", $changeDescriptions);
+            return "Multiple changes";
         } elseif (count($changeDescriptions) == 1) {
             return $changeDescriptions[0];
         }
@@ -252,6 +254,12 @@ class HistoryService
     
     private function storeFormHistory($formId, $oldData, $changeTitle)
     {
+        $revisions = FormMeta::where('form_id', $formId)
+            ->where('meta_key', 'revision')
+            ->count();
+        if ($revisions === 0) {
+            $changeTitle = __('Initial state','fluentform');
+        }
         $historyEntry = [
             'change_title' => $changeTitle,
             'timestamp'    => current_time('mysql'),

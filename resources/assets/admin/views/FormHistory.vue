@@ -40,13 +40,12 @@
             </li>
         </ul>
         <div v-else  class="option-fields-section--content">
-<!--            todo hide history if its empty-->
-            <strong>Unsaved changes are not reflected in the form history. To see your recent changes in the history:</strong>
-            <ol>
+            <strong>To see your recent changes in the history:</strong>
+            <ul class="list-group">
                 <li>Save your current form changes.</li>
                 <li>The saved version will then appear in the form history.</li>
-                <li>You can now preview or restore from this latest history entry.</li>
-            </ol>
+                <li>Preview or restore from this latest history entry.</li>
+            </ul>
         </div>
     </div>
 </template>

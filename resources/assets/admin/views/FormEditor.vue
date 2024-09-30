@@ -149,7 +149,7 @@
                         <li :class="fieldMode == 'edit' ? 'active' : ''">
                             <a href="#" @click.prevent="changeSidebarMode('edit')">{{ $t('Input Customization') }}</a>
                         </li>
-                        <li :class="fieldMode == 'history' ? 'active' : ''">
+                        <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
                             <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
                         </li>
                     </ul>
