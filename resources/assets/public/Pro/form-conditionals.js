@@ -63,7 +63,7 @@ const formConditional = function ($, $theForm, form) {
 
         const debouncedHideShowElements = debounce((statuses) => {
             hideShowElements(statuses);
-        }, window.fluentform_advanced_vars.debounce_time);
+        }, form.debounce_time || 300);
 
         const hideShowElements = function (items) {
             $.each(items, (itemName, status) => {

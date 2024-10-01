@@ -712,6 +712,7 @@ class Component
             'form_instance'    => $instanceCssClass,
             'form_id_selector' => 'fluentform_' . $form->id,
             'rules'            => $formBuilder->validationRules,
+            'debounce_time'    => apply_filters('fluentform/show_hide_elements_debounce_time', 300),
         ];
 
         if ($conditionals = $formBuilder->conditions) {
@@ -1215,9 +1216,6 @@ class Component
         ];
 
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
-            wp_localize_script('fluentform-advanced', 'fluentform_advanced_vars', [
-                'debounce_time' => 300,
-            ]);
             wp_enqueue_script('fluentform-advanced');
         }
     }
