@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 5.2.3
+Stable tag: 5.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -452,6 +452,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.4 (Date: October 1, 2024) =
+- Fix calculation issue
 
 = 5.2.3 (Date: September 30, 2024) =
 - Adds form edit history (Beta)
