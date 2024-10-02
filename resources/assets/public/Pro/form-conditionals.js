@@ -43,15 +43,27 @@ const formConditional = function ($, $theForm, form) {
             const conditionAppInstance = new ConditionApp(form.conditionals, formData);
 
             $.each(watchableFields, (name, el) => {
-                el.on('change', () => {
+                el.on('keyup change', () => {
                     formData = getFormData();
                     conditionAppInstance.setFormData(formData);
-                    hideShowElements(conditionAppInstance.getCalculatedStatuses());
+                    debouncedHideShowElements(conditionAppInstance.getCalculatedStatuses());
                 });
             });
 
             hideShowElements(conditionAppInstance.getCalculatedStatuses());
         };
+
+        const debounce = (func, delay = 300) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+        const debouncedHideShowElements = debounce((statuses) => {
+            hideShowElements(statuses);
+        }, form.debounce_time || 300);
 
         const hideShowElements = function (items) {
             $.each(items, (itemName, status) => {
@@ -64,17 +76,9 @@ const formConditional = function ($, $theForm, form) {
                     $parent.removeClass('ff_excluded')
                         .addClass('ff_cond_v')
                         .slideDown(200);
-
-                    $parent.siblings('.step-nav')
-                        .removeClass('has-conditions')
-                        .slideDown(200);
                 } else {
                     $parent.removeClass('ff_cond_v')
                         .addClass('ff_excluded')
-                        .slideUp(200);
-
-                    $parent.siblings('.step-nav')
-                        .addClass('has-conditions')
                         .slideUp(200);
                 }
             });

@@ -209,24 +209,10 @@
                                 <template v-else-if="field.component == 'chained_fields'">
                                     <chained-fields
                                             select_class="flex-grow-1"
-                                            v-if="has_pro"
                                             :settings="settings"
                                             v-model="settings[field.key]"
                                             :field="field"
                                     ></chained-fields>
-
-                                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                                        <div>
-                                            <h6 class="title">{{ $t('Interest Group is a Pro Feature') }}</h6>
-                                            <p class="text">
-                                                {{ $t('Please upgrade to pro to unlock this feature.') }}</p>
-                                        </div>
-                                        <a target="_blank"
-                                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                                           class="el-button el-button--danger el-button--small">
-                                            {{ $t('Upgrade to Pro') }}
-                                        </a>
-                                    </notice>
                                 </template>
 
                                 <div class="ff_chained_ajax_field" v-else-if="field.component == 'chained-ajax-fields'">
@@ -250,24 +236,10 @@
 
                                 <template v-else-if="field.component == 'chained_select'">
                                     <chained-selects
-                                            v-if="has_pro"
                                             :settings="settings"
                                             v-model="settings[field.key]"
                                             :field="field"
                                     ></chained-selects>
-
-                                    <notice class="ff_alert_between" type="danger-soft" v-else>
-                                        <div>
-                                            <h6 class="title">{{ $t('This is a Pro Feature') }}</h6>
-                                            <p class="text">
-                                                {{ $t('Please upgrade to pro to unlock this feature.') }}</p>
-                                        </div>
-                                        <a target="_blank"
-                                           href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree"
-                                           class="el-button el-button--danger el-button--small">
-                                            {{ $t('Upgrade to Pro') }}
-                                        </a>
-                                    </notice>
                                 </template>
 
                                 <template v-else-if="field.component == 'html_info'">

@@ -338,6 +338,7 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
 .ff_editor_html {
   display: block;
   width: 100%;
+  min-height: 24px;
   overflow: hidden;
 
   img.aligncenter {
@@ -1115,3 +1116,143 @@ mark {
     padding-bottom: 0;
   }
 }
+
+.ff-edit-history-wrap {
+  .option-fields-section--title {
+    display: flex;
+    justify-content: space-between;
+
+    h5 {
+      font-size: 14px;
+      color: $primary;
+    }
+  }
+  .option-fields-section--title:after{
+    display: none;
+  }
+}
+// Form Edit History
+.ff-edit-history-wrap {
+  .option-fields-section--title {
+    display: flex;
+    justify-content: space-between;
+
+    h5 {
+      font-size: 14px;
+      color: $primary;
+    }
+  }
+
+  .timeline {
+    margin: 0;
+    font-size: 14px;
+    list-style: none;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    .timeline_item {
+      position: relative;
+      padding: 6px 25px 0 42px;
+      border-bottom: 1px solid transparent;
+      border-top: 1px solid transparent;
+
+      &:first-child {
+        margin-top: 10px;
+      }
+
+      &:hover {
+        background: #f0f8ff;
+        border-color: #dfdfdf;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 18px;
+        top: 15px;
+        width: 12px;
+        height: 12px;
+        background-color: #b1bacb;
+        border-radius: 50%;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 23px;
+        top: 27px;
+        height: calc(100% - 10px);
+        border-left: 2px solid #e4e7ed;
+        z-index: 1;
+
+        &:last-child {
+          display: none;
+        }
+      }
+
+      .timeline_item_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .details_list {
+        padding: 7px;
+        border: 1px solid #ececed;
+        border-bottom: none;
+        font-size: small;
+
+        &:last-child {
+          border-bottom: 1px solid #e9e0e0;
+        }
+      }
+
+      .timeline_details.is-visible ul {
+        overflow: auto;
+        max-height: 160px;
+        margin-bottom: 15px;
+        background: #fff;
+      }
+    }
+
+    .timeline-action {
+      align-content: center;
+    }
+
+    .timeline_content {
+      color: #303133;
+      span{
+        font-weight: 500;
+      }
+    }
+
+    .timeline_date {
+      display: block;
+      color: #686f7a;
+      font-size: 13px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .timeline_details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+    &.is-visible {
+      max-height: 500px;
+      opacity: 1;
+    }
+  }
+
+  .el-icon-caret-bottom {
+    transition: transform 0.3s ease;
+
+    &.is-active {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+

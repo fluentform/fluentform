@@ -200,7 +200,10 @@ window.fluentFormEditorApp = new Vue({
             }
         },
         loading: false,
-        form_saving: false
+        form_saving: false,
+        isClicked: false,
+        editHistoryIndex: null,
+        tempFormData : {}
     },
     methods: {
         ...mapActions(["loadResources"]),
@@ -259,7 +262,7 @@ window.fluentFormEditorApp = new Vue({
         },
 
         /**
-         * The the form data into the server
+         * The form data into the server
          */
         saveForm() {
             this.form_saving = true;
@@ -307,6 +310,33 @@ window.fluentFormEditorApp = new Vue({
             });
         },
 
+        /*
+        * Show Preview of Form from history
+        */
+        updateFormFromEditHistory(editHistory) {
+            this.form.dropzone = editHistory.fields
+            this.form.submitButton = editHistory.submitButton
+        },
+        /*
+        * return to original form from preview
+        */
+        resetFormToOriginal() {
+            if (this.tempFormData) {
+                this.form.dropzone = this.tempFormData.dropzone || [];
+                this.form.submitButton = this.tempFormData.submitButton || [];
+            }
+        },
+
+        /**
+         * Save a deep copy of the original form data
+         */
+        saveOriginalForm() {
+            this.tempFormData = JSON.parse(JSON.stringify({
+                dropzone: this.form.dropzone,
+                submitButton: this.form.submitButton
+            }));
+        },
+
         saveHash() {
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         },
@@ -318,11 +348,9 @@ window.fluentFormEditorApp = new Vue({
             }
             return str;
         },
-
     },
 
     beforeCreate() {
-        // Event listener for page title updater
         this.$on("change-title", module => {
             jQuery("title").text(`${module} - Fluentform`);
         });
@@ -336,6 +364,30 @@ window.fluentFormEditorApp = new Vue({
         if (this.is_conversion_form) {
             jQuery('#wpcontent').addClass('ff_conversion_editor');
         }
+
+        /**
+         *
+         */
+        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
+
+            if (type == 'enter') {
+                this.saveOriginalForm();
+                this.updateFormFromEditHistory(editHistory);
+            }else if (type == 'leave') {
+                if (!this.isClicked && this.editHistoryIndex != index) {
+                    this.resetFormToOriginal(editHistory);
+                }
+            }else if (type == 'restore') {
+                this.isClicked = true;
+                this.editHistoryIndex = index;
+                setTimeout(() => {
+                    this.isClicked = false;
+                }, 1000);
+                this.updateFormFromEditHistory(editHistory);
+                this.$success('Restored from History! Click Save to Confirm');
+            }
+
+        });
     },
 });
 

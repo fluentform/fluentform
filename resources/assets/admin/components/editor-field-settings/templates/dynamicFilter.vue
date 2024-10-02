@@ -37,6 +37,21 @@
 						</el-col>
 					</el-row>
 				</el-form-item>
+				<!--Csv Delimiter-->
+				<el-form-item>
+					<elLabel
+						slot="label"
+						:label="$t('Csv Delimiter')"
+						:help-text="$t('Select your csv file delimiter')"
+					></elLabel>
+					<el-select class="w-100" v-model="model.csv_delimiter">
+						<el-option
+							v-for="(delimiter, key) in {comma:'Comma Separated (,)', semicolon: 'Semicolon Separated (;)', auto_guess: 'Auto Guess'}"
+							:key="key"
+							:label="delimiter" :value="key"
+						></el-option>
+					</el-select>
+				</el-form-item>
 			</template>
 			<template v-else>
 				<el-tabs v-model="model.query_type" v-if="hasBasicQuery">
@@ -289,6 +304,7 @@ export default {
 	watch: {
 		'model.source'() {
 			this.getFilterValueOptions();
+			this.maybeSetDefaultCsvDelimiter();
 		},
 		'model.query_type'(type) {
 			this.resetTemplateMapping(type);
@@ -360,6 +376,12 @@ export default {
 				})
 				.always(() => {
 				});
+		},
+
+		maybeSetDefaultCsvDelimiter() {
+			if (this.isDynamicCsv && !this.model.csv_delimiter) {
+				this.$set(this.model, 'csv_delimiter', 'comma')
+			}
 		},
 
 		getResult() {
@@ -450,6 +472,7 @@ export default {
 	mounted() {
 		this.getFilterValueOptions(true);
 		this.getResult();
+		this.maybeSetDefaultCsvDelimiter();
 	}
 }
 </script>

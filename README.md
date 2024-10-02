@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 5.2.2
+Stable tag: 5.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,23 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.3 (Date: September 30, 2024) =
+- Adds form edit history (Beta)
+- Adds editor keyboard navigation and shortcuts
+- Adds form-specific permissions in the permission manager
+- Improved condition change event handling
+- Fixes exposing the conversational form URL
+- Fixes empty URL GET parameters in conversational form shortcodes
+- Fixes all form filter selections being retained on page reload
+- Fixes next button trapping keyboard focus
+- Fixes confirmation redirect URL handling for spaces
+- Fixes entries export issue for forms with a large number of fields (250+ fields)
+- Fixes dynamic SmartCodes in conditional fields
+- Fixes checkable field “not-equal” condition on conversation form
+- Fixes exporting numeric fields to Excel
+- Fixes label asterisk style with elementor widget
+- Fixes conditional logic with numeric formatting
 
 = 5.2.2 (Date: September 11, 2024) =
 - Fixes Gutenblock widget

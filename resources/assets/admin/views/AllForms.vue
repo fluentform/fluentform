@@ -374,7 +374,7 @@ export default {
                 }
               ]
             },
-            filter_by:'all',
+            filter_by:'published',
             form_statuses: {
                 all: 'All',
                 published: 'Active',
@@ -415,6 +415,7 @@ export default {
                 })
                 .finally(() => {
                     this.changingStatus[id] = false;
+                    this.fetchItems();
                 });
         },
         goToPage(val) {
@@ -503,6 +504,8 @@ export default {
             if (column.order) {
                 this.sort_column = column.prop;
                 this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
+                localStorage.setItem('ff_all_form_sort_column', this.sort_column);
+                localStorage.setItem('ff_all_form_sort_by', this.sort_by);
                 this.fetchItems();
             }
         },
@@ -552,6 +555,8 @@ export default {
           this.search_string = '';
           this.setDefaultPaginate();
           this.fetchItems();
+          localStorage.setItem('selectedFormType', this.filter_by);
+
         },
         setDefaultPaginate() {
           this.paginate = {
@@ -603,10 +608,23 @@ export default {
         }
     },
     mounted() {
-        this.fetchItems();
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
+        const savedOption = localStorage.getItem('selectedFormType');
+        if (savedOption) {
+            this.filter_by = savedOption;
+        }
+
+        const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
+        const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
+
+        if (savedSortColumn && savedSortBy) {
+            this.sort_column = savedSortColumn;
+            this.sort_by = savedSortBy;
+        }
+        this.fetchItems();
+
     },
     created() {
         let hash = window.location.hash;

@@ -487,6 +487,12 @@
           background-position: center center;
         }
       }
+      &-container-small-column-image {
+          text-align: center;
+          display: flex;
+          flex-wrap: wrap-reverse;
+          justify-content: center;
+      }
 
       &-preview,
       &-details {
@@ -706,7 +712,7 @@
   }
   form.ff-form-has-steps {
     .ff-btn-submit {
-      display: none;
+      visibility: hidden;
     }
 
     .ff_submit_btn_wrapper {
@@ -896,4 +902,8 @@
 
 .iti-mobile .iti--container {
   z-index: 9999;
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
 }

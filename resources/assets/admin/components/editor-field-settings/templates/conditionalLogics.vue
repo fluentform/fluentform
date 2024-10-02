@@ -247,6 +247,18 @@
                                         field_label: formItem.settings.label
                                     }
                                 }
+                            } else if (formItem.element == 'input_number') {
+                                if (formItem.attributes.name) {
+                                    dependencies[formItem.attributes.name] = {
+                                        options: formItem.options ? this.formatOptions(formItem.options) : null,
+                                        field_label: formItem.settings.label,
+                                    }
+                                    this.editItem.settings.conditional_logics.conditions.map(cond => {
+                                        if (cond.value && formItem.attributes.name === cond.field && formItem.settings.numeric_formatter) {
+                                            cond.numeric_formatter = formItem.settings.numeric_formatter;
+                                        }
+                                    });
+                                }
                             } else {
                                 if (formItem.attributes.name) {
                                     dependencies[formItem.attributes.name] = {
