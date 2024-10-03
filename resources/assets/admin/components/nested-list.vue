@@ -1,5 +1,10 @@
 <template>
-    <div>
+    <div
+            class="resizable-element"
+            :style="elementStyle"
+            :ref="`container-${index}`"
+            :id="`container-${index}`"
+    >
         <vddl-draggable class="panel__body--item js-editor-item"
                         :class="{ 'selected': editItem.uniqElKey == item.uniqElKey }"
                         :draggable="item"
@@ -104,23 +109,115 @@
         </vddl-draggable>
 
         <ff_removeElConfirm :editItem="editItem" :visibility.sync="showRemoveElConfirm" @on-confirm="onRemoveElConfirm"/>
+
+
+        <Resizer
+                :element="element"
+                :containerWidth="containerWidth"
+                :gridSize="gridSize"
+                :index="index"
+                :elements="allElements"
+                @element-resized="handleElementResize"
+                @layout-optimized="handleLayoutOptimize"
+        />
+
     </div>
 </template>
 
 <script type="text/babel">
     import NestedHandler from "./NestedHandler.js";
+    import Resizer from '@/admin/components/resizer.vue';
+
     export default {
         name: 'list',
         props: NestedHandler.props,
-        components: NestedHandler.components,
+        components: {
+            ...NestedHandler.components,
+            Resizer
+        },
         data() {
             return {
                 showRemoveElConfirm: false,
                 removeElIndex: null,
                 contextMenuIndex : {},
                 contextMenuStyle :{},
+                containerWidth:100,
+                gridSize:10,
+                element : this.item,
             }
         },
-        methods: NestedHandler.methods
+        computed: {
+            elementStyle() {
+                return {
+                    left: `${this.element?.position?.left || 0}px`,   // Default left to 0 if not defined
+                    width: `${this.element?.position?.width || 100}%`, // Default width to 100 if not defined
+                    transition: 'width 0.2s, left 0.3s'
+                };
+            },
+            containerWidths() {
+
+            },
+        },
+        methods: {
+            handleElementResize(element, position) {
+                console.log('Element resized:', element, position);
+                // Update your data or perform any necessary actions
+            },
+            handleLayoutOptimize(updatedElements) {
+                console.log('Layout optimized:', updatedElements);
+                this.allElements = updatedElements;
+            },
+            ...NestedHandler.methods,
+
+        }
     };
 </script>
+
+
+<style>
+    .resizable-element {
+        border: 1px solid #ddd;
+        background: white;
+        box-sizing: border-box;
+        user-select: none;
+        position: relative;
+        transition: width 0.2s ease-in-out, left 0.2s ease-in-out;
+    }
+
+    .element-header {
+        padding: 8px;
+        background: #f5f5f5;
+        cursor: move;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .element-header h3 {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .element-content {
+        padding: 10px;
+    }
+
+    .resizer {
+        width: 10px;
+        height: 100%;
+        position: absolute;
+        right: -5px;
+        top: 0;
+        cursor: e-resize;
+    }
+
+    .edit-button {
+        padding: 4px 8px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+</style>
+
