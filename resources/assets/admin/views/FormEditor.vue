@@ -1,9 +1,10 @@
 <template>
     <div class="form-editor" id="form-editor">
         <div class="form-editor-main"  >
-            <div id="js-form-editor--body" class="form-editor--body"
+            <div id="js-form-editor--body" class="form-editor--body "
              :style="{width: editorConfig.bodyWidth ? editorConfig.bodyWidth + 'px' : ''}">
-                <div class="form-editor__body-content">
+                <div class="form-editor__body-content ">
+                <div id="grid-view" class=" "></div>
                     <div>
                         <!-- =========================
                             PAGING START

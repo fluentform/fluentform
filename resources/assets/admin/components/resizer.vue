@@ -35,8 +35,21 @@
                 console.error('Parent container not found');
             }
         },
-        beforeUnmount() { 
+        beforeUnmount() {
             this.destroyResizer();
+        },
+        watch: {
+            isResizing(newVal, oldVal) {
+                if (newVal) {
+                    this.container.style.zIndex = 99;
+                    jQuery('#grid-view').addClass('show-grid');
+                } else {
+                    this.container.style.zIndex = 2;
+
+                    jQuery('#grid-view').removeClass('show-grid'); // Removes the class when resizing stops
+                }
+                console.log('Resizing state changed:', newVal); // Debug log for when resizing state changes
+            }
         },
         methods: {
             initializeResizer() {
@@ -95,7 +108,7 @@
     };
 </script>
 
-<style scoped>
+<style >
     .resizer {
         position: absolute;
         right: -5px;
@@ -105,5 +118,23 @@
         cursor: ew-resize;
         z-index: 10;
         background-color: rgba(0, 0, 0, 0.1); /* Visible for debugging */
+    }
+    .form-editor__body-content{
+        position: relative;
+    }
+    .show-grid{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+
+        /* Using multiple background gradients to create colored columns */
+        background-image: linear-gradient(to right, rgb(183 197 205) 25%, transparent 25%), linear-gradient(to right, rgba(0, 255, 0, 0.2) 25%, transparent 25%);
+
+        background-size: calc(100% / 4) 100%; /* Defaulting to 4 columns */
+        z-index: 10;
+        background-size: calc(100% / 24) 100%;
     }
 </style>
