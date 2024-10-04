@@ -4,13 +4,9 @@
             <h5 class="title">{{ $t('Managers') }}</h5>
         </card-head>
         <card-body>
-
             <privacy/>
-
             <hr class="mt-5 mb-4">
-
             <managers>{{ $t('Advanced form') }}</managers>
-
         </card-body>
     </card>
 </template>

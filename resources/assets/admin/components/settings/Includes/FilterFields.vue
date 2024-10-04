@@ -18,7 +18,8 @@
             <el-row class="items-center" v-for="(logic, key) in items" :key="key" :gutter="12">
                 <el-col :md="8">
                     <div class="mb-2">
-                        <el-select popper-class="ff-mw-100" v-model="items[key].field" style="width: 100%" @change="items[key].value = ''">
+                        <el-select popper-class="ff-mw-100" v-model="items[key].field" style="width: 100%"
+                                   @change="items[key].value = ''">
                             <el-option
                                 v-for="(field, key) in fields" :key="key"
                                 :label="field.admin_label" :value="key"
@@ -33,7 +34,8 @@
                             <el-option-group :label="$t('General Operators')">
                                 <el-option value="=" :label="$t('equal')"></el-option>
                                 <el-option value="!=" :label="$t('not equal')"></el-option>
-                                <template v-if="fields[logic.field] && !Object.keys(fields[logic.field].options || {}).length">
+                                <template
+                                    v-if="fields[logic.field] && !Object.keys(fields[logic.field].options || {}).length">
                                     <el-option value=">" :label="$t('greater than')"></el-option>
                                     <el-option value="<" :label="$t('less than')"></el-option>
                                     <el-option value=">=" :label="$t('greater than or equal')"></el-option>
@@ -47,7 +49,8 @@
                             <el-option-group :label="$t('Advanced Operators')">
                                 <el-option value="length_equal" :label="$t('Equal to Data Length')"></el-option>
                                 <el-option value="length_less_than" :label="$t('Less than to Data length')"></el-option>
-                                <el-option value="length_greater_than" :label="$t('Greater than to Data Length')"></el-option>
+                                <el-option value="length_greater_than"
+                                           :label="$t('Greater than to Data Length')"></el-option>
                                 <el-option value="test_regex" :label="$t('Regex Match')"></el-option>
                             </el-option-group>
                         </el-select>
@@ -56,14 +59,17 @@
 
                 <el-col :md="8">
                     <div class="mb-2">
-                        <template v-if="items[key].operator == 'length_equal' || items[key].operator == 'length_less_than' || items[key].operator == 'length_greater_than'">
-                            <el-input type="number" step="1" :placeholder="('Enter length in number')" v-model="items[key].value" />
+                        <template
+                            v-if="items[key].operator === 'length_equal' || items[key].operator === 'length_less_than' || items[key].operator === 'length_greater_than'">
+                            <el-input type="number" step="1" :placeholder="('Enter length in number')"
+                                      v-model="items[key].value"/>
                         </template>
                         <template v-else>
-                            <el-select v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
-                                    v-model="items[key].value" clearable filterable allow-create style="width: 100%">
+                            <el-select
+                                v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
+                                v-model="items[key].value" clearable filterable allow-create style="width: 100%">
                                 <el-option v-for="(label, value) in fields[logic.field].options" :key="value"
-                                        :label="label" :value="value"
+                                           :label="label" :value="value"
                                 ></el-option>
                             </el-select>
                             <el-input v-else :placeholder="$t('Enter a value')" v-model="items[key].value"></el-input>
@@ -84,66 +90,66 @@
 </template>
 
 <script>
-    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
-    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
-    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
-    export default {
-        name: 'FilterFields',
-        components: {
-            ActionBtn,
-            ActionBtnAdd,
-            ActionBtnRemove
+export default {
+    name: 'FilterFields',
+    components: {
+        ActionBtn,
+        ActionBtnAdd,
+        ActionBtnRemove
+    },
+    props: {
+        conditionals: {
+            type: Object,
+            required: true,
+            default: {}
         },
-        props: {
-            conditionals: {
-                type: Object,
-                required: true,
-                default: {}
-            },
-            fields: {
-                type: Object,
-                required: true,
-                default: {}
-            },
-            hasPro: {
-                type: Boolean,
-                required: true
-            },
-            labels: {
-                default: () => ({
-                    status_label: 'Enable conditional logic',
-                    notification_if_start: 'Send this notification if',
-                    notification_if_end: 'of the following match:'
-                })
-            }
+        fields: {
+            type: Object,
+            required: true,
+            default: {}
         },
-        data() {
-            return {
-                defaultRules: {
-                    field: null,
-                    operator: '=',
-                    value: null
-                }
-            }
+        hasPro: {
+            type: Boolean,
+            required: true
         },
-        computed: {
-            items() {
-                return this.conditionals.conditions;
-            }
-        },
-        methods: {
-            add(index) {
-                this.items.splice(index + 1, 0, {...this.defaultRules});
-            },
-            remove(index) {
-                this.items.splice(index, 1);
-            }
-        },
-        mounted() {
-            if (!this.conditionals.conditions.length) {
-                this.conditionals.conditions.push({...this.defaultRules});
+        labels: {
+            default: () => ({
+                status_label: 'Enable conditional logic',
+                notification_if_start: 'Send this notification if',
+                notification_if_end: 'of the following match:'
+            })
+        }
+    },
+    data() {
+        return {
+            defaultRules: {
+                field: null,
+                operator: '=',
+                value: null
             }
         }
-    };
+    },
+    computed: {
+        items() {
+            return this.conditionals.conditions;
+        }
+    },
+    methods: {
+        add(index) {
+            this.items.splice(index + 1, 0, {...this.defaultRules});
+        },
+        remove(index) {
+            this.items.splice(index, 1);
+        }
+    },
+    mounted() {
+        if (!this.conditionals.conditions.length) {
+            this.conditionals.conditions.push({...this.defaultRules});
+        }
+    }
+};
 </script>

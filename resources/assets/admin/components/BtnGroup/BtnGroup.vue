@@ -1,6 +1,6 @@
 <template>
     <component :is="isType" class="ff_btn_group" :class="isSize">
-        <slot />
+        <slot/>
     </component>
 </template>
 

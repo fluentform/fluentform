@@ -59,13 +59,13 @@ class GlobalSearchService
             [
                 "title" => 'Global Settings > Security > rCaptcha',
                 "icon"  => '',
-                "path"  => '?page=fluent_forms_settings#re_captcha',
+                "path"  => '?page=fluent_forms_settings#reCaptcha',
                 "tags"  => ['global', 'security', 'recaptcha']
             ],
             [
                 "title" => 'Global Settings > Security > hCaptcha',
                 "icon"  => '',
-                "path"  => '?page=fluent_forms_settings#h_captcha',
+                "path"  => '?page=fluent_forms_settings#hCaptcha',
                 "tags"  => ['global', 'security', 'hcaptcha']
             ],
             [

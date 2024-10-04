@@ -1,89 +1,93 @@
 <template>
-    <el-popover
-        v-if="fieldType === 'textarea'"
-        ref="popover"
-        :placement="placement"
-        :width="220"
-        trigger="click"
-        class="ff_el_popover"
-        popper-class="el-dropdown-list-wrapper"
-    >
-        <template #reference>
-            <i class="ff_el_popover_textarea_icon el-icon el-icon-tickets"></i>
-        </template>
+    <div v-if="fieldType === 'textarea'" class="ff_el_popover_textarea">
+        <el-popover
+            ref="popover"
+            :placement="placement"
+            :width="220"
+            trigger="click"
+            class="ff_el_popover"
+            popper-class="el-dropdown-list-wrapper"
+        >
+            <template #reference>
+                <i class="ff_el_popover_textarea_icon el-icon el-icon-tickets"></i>
+            </template>
+            <template #default>
+                <ul class="el-dropdown-menu el-dropdown-list">
+                    <li v-for="(item, item_index) in data" :key="item_index">
+                        <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
+                        <ul>
+                            <li
+                                v-for="(title, code, index) in item.shortcodes"
+                                :key="index"
+                                @click="insertShortcode(code)"
+                                class="el-dropdown-menu__item"
+                            >
+                                {{ title }}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </template>
+        </el-popover>
 
-        <template #default>
-            <ul class="el-dropdown-menu el-dropdown-list">
-                <li v-for="(item, item_index) in data" :key="item_index">
-                    <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
-                    <ul>
-                        <li
-                            v-for="(title, code, index) in item.shortcodes"
-                            :key="index"
-                            @click="insertShortcode(code)"
-                            class="el-dropdown-menu__item"
-                        >
-                            {{ title }}
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </template>
-    </el-popover>
-
-    <div v-if="fieldType === 'textarea'" class="input-textarea-value">
-        <el-input
-            width="100%"
-            v-model="model"
-            :rows="rows"
-            :placeholder="placeholder"
-            type="textarea"
-        ></el-input>
+        <div class="input-textarea-value">
+            <el-input
+                width="100%"
+                v-model="model"
+                :rows="rows"
+                :placeholder="placeholder"
+                type="textarea"
+            >
+            </el-input>
+        </div>
     </div>
 
-    <el-input
-        v-else
-        v-model="model"
-        :placeholder="placeholder"
-        :type="fieldType"
-    >
-        <template #append>
-            <el-popover
-                ref="popover"
-                :placement="placement"
-                :width="200"
-                trigger="click"
-                popper-class="el-dropdown-list-wrapper"
-            >
-                <template #reference>
-                    <i class="ff_el_popover_text_icon el-icon el-icon-tickets"></i>
-                </template>
 
-                <template #default>
-                    <ul class="el-dropdown-menu el-dropdown-list">
-                        <li v-for="(item, item_index) in data" :key="item_index">
-                            <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
-                            <ul>
-                                <li
-                                    v-for="(title, code, index) in item.shortcodes"
-                                    :key="index"
-                                    @click="insertShortcode(code)"
-                                    class="el-dropdown-menu__item"
-                                >
-                                    {{ title }}
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </template>
-            </el-popover>
-        </template>
-    </el-input>
+    <div v-else>
+        <el-input
+            v-model="model"
+            :placeholder="placeholder"
+            :type="fieldType"
+        >
+            <template #append>
+                <el-popover
+                    ref="popover"
+                    :placement="placement"
+                    :width="200"
+                    trigger="click"
+                    popper-class="el-dropdown-list-wrapper"
+                >
+                    <template #reference>
+                        <i class="ff_el_popover_text_icon el-icon el-icon-more"></i>
+                    </template>
+
+                    <template #default>
+                        <ul class="el-dropdown-menu el-dropdown-list">
+                            <li v-for="(item, item_index) in data" :key="item_index">
+                                <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
+                                <ul>
+                                    <li
+                                        v-for="(title, code, index) in item.shortcodes"
+                                        :key="index"
+                                        @click="insertShortcode(code)"
+                                        class="el-dropdown-menu__item"
+                                    >
+                                        {{ title }}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </template>
+                </el-popover>
+            </template>
+        </el-input>
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'inputPopover',
+    name: 'InputPopover',
+    emits: ['update:modelValue'],
     props: {
         modelValue: {
             type: String,
@@ -117,7 +121,7 @@ export default {
     },
     data() {
         return {
-            popoverVisible: false
+            popoverVisible: false,
         }
     },
     computed: {

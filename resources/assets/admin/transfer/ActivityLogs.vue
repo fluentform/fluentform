@@ -87,39 +87,39 @@
                         >
                             <el-table-column sortable type="selection" width="50"></el-table-column>
                             <el-table-column type="expand">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <p v-html="props.row.description"></p>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable prop="id" width="100px" :label="$t('ID')"></el-table-column>
                             <el-table-column sortable width="140px" :label="$t('Submission ID')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
                                     <span v-else>n/a</span>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable :label="$t('Form')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <span v-if="props.row.form_title">{{props.row.form_title}}</span>
                                     <span v-else>{{ $t('General Log') }}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column sortbale prop="title" :label="$t('Title')"></el-table-column>
                             <el-table-column sortable prop="status" :label="$t('Status')" width="100">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <el-tag :type="getStatusClass(props.row.status)" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable :label="$t('Component')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <div>{{ props.row.component }}</div>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
                             <el-table-column width="115" fixed="right" align="center" :label="$t('Action')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <btn-group size="sm">
                                         <btn-group-item>
                                             <remove :plain="true" @on-confirm="deleteItems(props.row.id)">

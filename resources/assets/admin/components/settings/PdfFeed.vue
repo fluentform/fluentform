@@ -4,12 +4,15 @@
             <el-tab-pane :label="$t('PDF Content')">
                 <el-form v-if="feed.settings" label-position="top">
                     <field-mapper
-                        :field="{ component: 'value_text', label: $t('Feed Title'), placeholder: $t('Feed Title') }"
+                        :field="{
+                            component: 'value_text',
+                            label: $t('Feed Title'),
+                            placeholder: $t('Feed Title')
+                        }"
                         :editorShortcodes="editorShortcodes"
                         :errors="errors"
                         v-model="feed.name"
-                    >
-                    </field-mapper>
+                    />
 
                     <!-- form iteration loop -->
                     <field-mapper
@@ -21,7 +24,12 @@
                         v-model="feed.settings[field.key]"
                      />
                 </el-form>
-                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" size="large">
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t('Save Feed') }}
+                </el-button>
             </el-tab-pane>
 
             <el-tab-pane :label="$t('Appearance')">
@@ -35,14 +43,19 @@
                         v-model="feed.appearance[field.key]"
                     />
                 </el-form>
-                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary" icon="el-icon-success">{{ $t('Save Feed') }}</el-button>
+                <el-button class="mt-4" v-loading="saving" @click="saveFeed()" type="primary">
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t('Save Feed') }}
+                </el-button>
             </el-tab-pane>
         </el-tabs>
     </div>
 </template>
 
 <script type="text/babel">
-    import FieldMapper from "./GeneralIntegration/FieldMapper";
+    import FieldMapper from "./GeneralIntegration/FieldMapper.vue";
 
     export default {
         name: 'EditAddPdf',
@@ -57,7 +70,7 @@
                 feed: {},
                 settings_fields: [],
                 appearance_fields: [],
-                errors: new Errors()
+                errors: new Errors(),
             }
         },
         methods: {

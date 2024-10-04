@@ -513,7 +513,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import List from '../components/nested-list.vue';
 import ListConversion from '../components/nested-list-conversion.vue';

@@ -44,7 +44,7 @@
                                         :label="$t('Imported')"
                                         width="120"
                                         align="center">
-                                        <template slot-scope="props">
+                                        <template #default="props">
                                             <span v-if="props.row.imported_ff_id">
                                             <i class="el-icon-success text-success"></i>
                                             </span>
@@ -60,7 +60,7 @@
                                         width="120"
                                         label=""
                                     >
-                                        <template slot-scope="props">
+                                        <template #default="props">
                                             <el-button
                                                 v-if="entryImportSupported && props.row.imported_ff_id"
                                                 class="el-button--soft"
@@ -74,7 +74,7 @@
                                     </el-table-column>
 
                                     <el-table-column width="160" :label="$t('Action')" align="right">
-                                        <template slot-scope="props">
+                                        <template #default="props">
                                             <el-button
                                                 class="el-button--soft"
                                                 size="mini"
@@ -129,7 +129,7 @@
                                         </el-table-column>
 
                                         <el-table-column width="120" prop="edit_url" label="" align="right">
-                                            <template slot-scope="props">
+                                            <template #default="props">
                                                 <a :href="props.row.edit_url"> {{ $t('Edit Form') }}</a>
                                             </template>
                                         </el-table-column>

@@ -5,7 +5,23 @@
             placement="bottom"
             width="170"
             popper-class="el-dropdown-list-wrapper"
-            trigger="click">
+            trigger="click"
+            :visible="visible"
+            @hide="visible = false"
+            @show="visible = true"
+        >
+            <template #reference>
+                <el-button
+                    class="editor-add-shortcode el-button--soft"
+                    size="small"
+                    type="info"
+                    @click="visible = !visible"
+                >
+                    {{ $t('Add Shortcodes') }}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+            </template>
+
             <ul class="el-dropdown-menu el-dropdown-list">
                 <li v-for="(item, i) in data" :key="i">
                     <span v-if="data.length > 1" class="group-title">{{ item.title }}</span>
@@ -20,26 +36,24 @@
                 </li>
             </ul>
         </el-popover>
-        <el-button class="editor-add-shortcode el-button--soft"
-                   size="small"
-                   v-popover:input-popover1
-                   type="info">
-            Add Shortcodes
-            <i class="el-icon-arrow-down el-icon--right"></i>
-        </el-button>
     </div>
 </template>
 
 <script>
-    export default {
-        name: 'inputPopoverDropdown',
-        props: {
-            data: Array
-        },
-        methods: {
-            insertShortcode(code) {
-                this.$emit('command', code);
-            }
+export default {
+    name: 'InputPopoverDropdown',
+    data() {
+        return {
+            visible: false,
+        }
+    },
+    props: {
+        data: Array
+    },
+    methods: {
+        insertShortcode(code) {
+            this.$emit('command', code);
         }
     }
+}
 </script>

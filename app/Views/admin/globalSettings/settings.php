@@ -11,8 +11,8 @@
 
 <div class="ff_global_settings_option" id="ff_global_settings_option_app">
     <component
-        :settings_key="settings_key"
         :is="component"
+        :settings_key="settings_key"
         :current_component="component"
         :app="App"
         :component_name="component_name"

@@ -47,6 +47,7 @@
     "vue-easy-lightbox": "^1.17.0",
     "vue-html-to-paper": "^1.4.4",
     "vue-router": "^4.2.4",
+    "vue3-ace-editor": "^2.2.4",
     "vuedraggable": "^4.1.0",
     "vuex": "^4.1.0"
   },
@@ -70,6 +71,7 @@
     "less-loader": "^10.2.0",
     "postcss": "^8.4.25",
     "postcss-import": "^15.1.0",
+    "prettier": "3.3.3",
     "promise-polyfill": "^8.2.3",
     "resolve-url-loader": "^5.0.0",
     "rollup-plugin-copy": "^3.4.0",

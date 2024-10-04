@@ -84,7 +84,7 @@
                             </div>
                         </template>
                         <template #item="{ element: field, index }">
-                            <div class="vddl-nodrag">
+                            <div>
                                 <list
                                     :key="field.uniqElKey"
                                     :item="field"

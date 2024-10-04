@@ -149,7 +149,7 @@ class Menu
 
         Vite::registerScript(
             'fluentform-global-settings-js',
-            'admin/settings/global_settings.js',
+            'assets/admin/settings/global_settings.js',
             ['jquery'],
             FLUENTFORM_VERSION,
             true
@@ -231,7 +231,7 @@ class Menu
             return $footerContent;
         });
 
-        $elementUIStyle = fluentFormMix('css/element-ui-css.css');
+        $elementUIStyle = Vite::getAssetUrl('css/element-ui-css.css');
         if (is_rtl()) {
             $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
         }
@@ -1043,17 +1043,16 @@ class Menu
             'fluentform/global_settings_components',
             'Use fluentform/global_settings_components instead of fluentform_global_settings_components.'
         );
-        
+
         $components = apply_filters('fluentform/global_settings_components', $components);
-    
 
         $components['reCAPTCHA'] = [
-            'hash'  => 're_captcha',
+            'hash'  => 'reCaptcha',
             'title' => 'reCAPTCHA',
         ];
 
         $components['hCAPTCHA'] = [
-            'hash'  => 'h_captcha',
+            'hash'  => 'hCaptcha',
             'title' => 'hCaptcha',
         ];
 

@@ -5,7 +5,7 @@
                 <card-head>
                     <h5 class="title">{{ $t('Google reCAPTCHA Settings') }}</h5>
                     <p class="text">
-                        {{$t('Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.')}} 
+                        {{ $t('Fluent Forms integrates with reCAPTCHA, a free service that protects your website from spam and abuse. Please note, these settings are required only if you decide to use the reCAPTCHA field.') }}
                         <a href="http://www.google.com/recaptcha/" target="_blank">
                             {{ $t('Read more about reCAPTCHA.') }}
                         </a>
@@ -13,37 +13,39 @@
                     <p class="text"><b>{{ $t('Please generate API key and API secret using reCAPTCHA') }}</b></p>
                 </card-head>
                 <card-body>
-                     <!--Site key-->
+                    <!--Site key-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
+                        <template #label>
                             {{ $t('reCAPTCHA Version') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
                                         {{ $t('Please select which reCAPTCHA version you would like to use') }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
                         </template>
 
                         <el-radio-group @change="load" v-model="reCaptcha.api_version">
-                            <el-radio label="v2_visible">{{ $t('Version 2 (Visible reCAPTCHA)') }}</el-radio>
-                            <el-radio label="v3_invisible">{{ $t('Version 3 (Invisible reCAPTCHA)') }}</el-radio>
+                            <el-radio value="v2_visible">{{ $t('Version 2 (Visible reCAPTCHA)') }}</el-radio>
+                            <el-radio value="v3_invisible">{{ $t('Version 3 (Invisible reCAPTCHA)') }}</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
                     <!--Site key-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
+                        <template #label>
                             {{ $t('Site Key') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('Enter your reCAPTCHA Site Key, if you do not have a key you can register for one at the provided link. reCAPTCHA is a free service.') }}
+                                        {{
+                                            $t('Enter your reCAPTCHA Site Key, if you do not have a key you can register for one at the provided link. reCAPTCHA is a free service.')
+                                        }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -54,14 +56,16 @@
 
                     <!--Secret key-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
+                        <template #label>
                             {{ $t('Secret Key') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
-                                        {{ $t('Enter your reCAPTCHA Secret Key, if you do not have a key you can register for one at the provided link, reCAPTCHA is a free service.') }}
+                                        {{
+                                            $t('Enter your reCAPTCHA Secret Key, if you do not have a key you can register for one at the provided link, reCAPTCHA is a free service.')
+                                        }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>
@@ -72,12 +76,12 @@
 
                     <!--Validate Keys-->
                     <el-form-item :class="hidden">
-                        <template slot="label" v-if="v2">
+                        <template #label v-if="v2">
                             {{ $t('Validate Keys') }}
                         </template>
 
                         <div
-                            id="reCaptcha" 
+                            id="reCaptcha"
                             :data-sitekey="reCaptcha.siteKey"
                             :data-size="size"
                         />
@@ -92,19 +96,27 @@
             <div class="mt-4">
                 <el-button
                     type="primary"
-                    icon="el-icon-success"
                     @click="save"
                     :disabled="disabled"
                     :loading="saving"
-                >{{ $t('Save Settings') }}
+                    size="large"
+                >
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
+                    {{ $t('Save Settings') }}
                 </el-button>
-                
-                 <el-button
+
+                <el-button
                     type="danger"
-                    icon="ff-icon ff-icon-trash"
                     @click="clearSettings"
                     :loading="clearing"
-                >{{ $t('Clear Settings') }}
+                    size="large"
+                >
+                    <template #icon>
+                        <i class="ff-icon ff-icon-trash"></i>
+                    </template>
+                    {{ $t('Clear Settings') }}
                 </el-button>
             </div>
         </el-form>
@@ -118,9 +130,9 @@ import CardHead from '@/admin/components/Card/CardHead.vue';
 import Notice from '@/admin/components/Notice/Notice.vue';
 
 export default {
-    components: { 
-        Card, 
-        CardHead, 
+    components: {
+        Card,
+        CardHead,
         CardBody,
         Notice
     },

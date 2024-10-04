@@ -99,33 +99,33 @@
                         >
                             <el-table-column sortable type="selection" width="50"></el-table-column>
                             <el-table-column type="expand">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <p v-html="props.row.note"></p>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable prop="id" width="100px" :label="$t('ID')">
                             </el-table-column>
                             <el-table-column sortable :label="$t('Submission ID')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <a :href="props.row.submission_url">#{{props.row.submission_id}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable prop="form_title" :label="$t('Form')"></el-table-column>
                             <el-table-column sortable prop="status" :label="$t('Status')" width="140">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable :label="$t('Component')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <div>{{getReadableName(props.row.component)}}</div>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="updated_at" :label="$t('Date')" width="180"></el-table-column>
                             <el-table-column width="115" fixed="right" align="center" :label="$t('Action')">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     <btn-group size="sm">
                                         <btn-group-item v-if="hasPro">
                                             <el-tooltip  popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">

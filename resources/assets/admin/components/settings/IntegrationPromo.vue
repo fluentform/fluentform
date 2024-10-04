@@ -22,14 +22,18 @@
                  src="https://wpmanageninja.com/wp-content/uploads/2018/10/ff-intragrations.png">
         </div>
         <div class="promo_section">
-            <p class="ff-add-on-description">{{ $t('Unlock all type of premium input fields by using this add on') }}</p>
-            <a target="_blank" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=add_on" class="button button-primary">{{ $t('Purchase Pro Add - On Now') }}</a>
+            <p class="ff-add-on-description">{{
+                    $t('Unlock all type of premium input fields by using this add on')
+                }}</p>
+            <a target="_blank"
+               href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/?utm_source=fluentform&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade&utm_content=add_on"
+               class="button button-primary">{{ $t('Purchase Pro Add - On Now') }}</a>
         </div>
     </div>
 </template>
 
-<script type="text/babel">
-    export default {
-        name: 'integration_promo'
-    }
+<script>
+export default {
+    name: 'integration_promo'
+}
 </script>

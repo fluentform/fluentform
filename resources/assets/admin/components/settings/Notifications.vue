@@ -8,7 +8,7 @@
                         <h5 class="title">{{ $t('Email Notifications') }}</h5>
                         <btn-group>
                             <btn-group-item>
-                                <video-doc btn_size="medium" :btn_text="$t('Learn More')"
+                                <video-doc btn_size="default" :btn_text="$t('Learn More')"
                                            route_id="formEmailSettings"></video-doc>
                             </btn-group-item>
                             <btn-group-item>
@@ -16,19 +16,23 @@
                                     v-if="selected"
                                     @click="discard"
                                     type="info"
-                                    icon="ff-icon ff-icon-arrow-left"
-                                    size="medium"
+                                    size="default"
                                     class="el-button--soft"
                                 >
+                                    <template #icon>
+                                        <i class="ff-icon ff-icon-arrow-left"></i>
+                                    </template>
                                     {{ $t('Back') }}
                                 </el-button>
                                 <el-button
                                     v-else
                                     @click="add"
                                     type="info"
-                                    size="medium"
-                                    icon="ff-icon ff-icon-plus"
+                                    size="default"
                                 >
+                                    <template #icon>
+                                        <i class="ff-icon ff-icon-plus"></i>
+                                    </template>
                                     {{ $t('Add Notification') }}
                                 </el-button>
                             </btn-group-item>
@@ -42,7 +46,7 @@
                             <el-skeleton :loading="loading" animated :rows="6">
                                 <el-table :data="notifications">
                                     <el-table-column width="180" :label="$t('Status')">
-                                        <template slot-scope="scope">
+                                        <template #default="scope">
                                             <span class="mr-3" v-if="scope.row.value.enabled">{{ $t('Enabled') }}</span>
                                             <span class="mr-3 text-danger" v-else>{{ $t('Disabled') }}</span>
                                             <el-switch
@@ -58,7 +62,7 @@
                                     <el-table-column prop="value.subject" :label="$t('Subject')"></el-table-column>
 
                                     <el-table-column width="130" :label="$t('Actions')" class-name="action-buttons">
-                                        <template slot-scope="scope">
+                                        <template #default="scope">
                                             <btn-group size="sm">
                                                 <btn-group-item>
                                                     <el-tooltip :content="$t('Duplicate notification settings')"
@@ -67,9 +71,12 @@
                                                             class="el-button--icon"
                                                             @click="clone(scope.$index)"
                                                             type="primary"
-                                                            icon="ff-icon-plus"
-                                                            size="mini"
-                                                        ></el-button>
+                                                            size="small"
+                                                        >
+                                                            <template #icon>
+                                                                <i class="ff-icon-plus"></i>
+                                                            </template>
+                                                        </el-button>
                                                     </el-tooltip>
                                                 </btn-group-item>
                                                 <btn-group-item>
@@ -77,18 +84,24 @@
                                                         class="el-button--icon"
                                                         @click="edit(scope.$index)"
                                                         type="success"
-                                                        icon="ff-icon-setting"
-                                                        size="mini"
-                                                    ></el-button>
+                                                        size="small"
+                                                    >
+                                                        <template #icon>
+                                                            <i class="ff-icon-setting"></i>
+                                                        </template>
+                                                    </el-button>
                                                 </btn-group-item>
                                                 <btn-group-item>
                                                     <remove @on-confirm="remove(scope.$index, scope.row.id)">
                                                         <el-button
                                                             class="el-button--icon"
-                                                            size="mini"
+                                                            size="small"
                                                             type="danger"
-                                                            icon="ff-icon-trash"
-                                                        />
+                                                        >
+                                                            <template #icon>
+                                                                <i class="ff-icon-trash"></i>
+                                                            </template>
+                                                        </el-button>
                                                     </remove>
                                                 </btn-group-item>
                                             </btn-group>
@@ -119,35 +132,35 @@
                         <!--send to-->
                         <el-form-item class="ff-form-item is-required"
                                       :class="errors.has('sendTo.type') ? 'is-error' : ''">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Send To') }}
 
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>
                                             {{
                                                 $t('Enter the email address you would like the notification email sent to.')
                                             }}
                                         </p>
-                                    </div>
+                                    </template>
 
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
 
                             <el-radio-group v-model="selected.value.sendTo.type">
-                                <el-radio label="email">{{ $t('Enter Email') }}</el-radio>
-                                <el-radio label="field">{{ $t('Select a Field') }}</el-radio>
-                                <el-radio v-if="!!has_pro" label="routing">
+                                <el-radio value="email">{{ $t('Enter Email') }}</el-radio>
+                                <el-radio value="field">{{ $t('Select a Field') }}</el-radio>
+                                <el-radio v-if="!!has_pro" value="routing">
                                     {{ $t('Configure Routing') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>
                                                 {{
                                                     $t('Allows notification to be sent to different email addresses depending on values selected in the form.')
                                                 }}
                                             </p>
-                                        </div>
+                                        </template>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -190,9 +203,11 @@
                             </el-form-item>
                         </template>
 
-                        <div class="conditional-items" v-else-if="selected.value.sendTo.type == 'routing'">
-                            <routing-filter-fields :fields="inputs"
-                                                   :routings="selected.value.sendTo.routing"></routing-filter-fields>
+                        <div class="conditional-items" v-else-if="selected.value.sendTo.type === 'routing'">
+                            <routing-filter-fields
+                                :fields="inputs"
+                                :routings="selected.value.sendTo.routing"
+                            />
                             <error-view field="sendTo.routing" :errors="errors"></error-view>
                         </div>
 
@@ -210,8 +225,8 @@
                         <el-form-item :label="$t('Email Body')" class="is-required ff-form-item"
                                       :class="errors.has('message') ? 'is-error' : ''">
                             <input-popover
+                                v-if="selected.value.asPlainText === 'yes'"
                                 :rows="10"
-                                v-if="selected.value.asPlainText == 'yes'"
                                 fieldType="textarea"
                                 v-model="selected.value.message"
                                 :placeholder="$t('Email Body HTML')"
@@ -219,12 +234,12 @@
                             ></input-popover>
                             <wp_editor
                                 v-else
-                                :editorShortcodes="emailBodyeditorShortcodes"
+                                :editorShortcodes="emailBodyEditorShortcodes"
                                 :height="200"
                                 v-model="selected.value.message">
                             </wp_editor>
                             <error-view field="message" :errors="errors"></error-view>
-                            <el-checkbox class="mt-3" true-label="yes" false-label="no"
+                            <el-checkbox class="mt-3" true-value="yes" false-value="no"
                                          v-model="selected.value.asPlainText">
                                 {{ $t('Send Email as RAW HTML Format') }}
                             </el-checkbox>
@@ -232,15 +247,15 @@
 
                         <!-- FilterFields -->
                         <el-form-item class="ff-form-item">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Conditional Logics') }}
 
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>
                                             {{ $t('Allow this feed conditionally') }}
                                         </p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
@@ -263,14 +278,14 @@
                             </notice>
                         </el-form-item>
                         <el-form-item class="ff-form-item" v-if="attachmentFields.length && selected.value.attachments">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Email Attachments') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>
                                             {{ $t('Select the field that you want to attach in the email') }}
                                         </p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
@@ -286,12 +301,12 @@
 
                         <!-- Media Attachments -->
                         <el-form-item class="ff-form-item">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Media File Attachments') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         {{ $t('Add Additional Media File Attachments for the email') }}
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
@@ -299,10 +314,12 @@
                                 style="width: 350px;"
                                 :disabled="!has_pro"
                                 plain
-                                icon="el-icon el-icon-upload"
                                 @click="mediaAttachments()"
                                 class="el-button--upload"
                             >
+                                <template #icon>
+                                    <i class="el-icon el-icon-upload"></i>
+                                </template>
                                 <span>{{ $t('Upload Media') }}</span>
                                 <span v-if="!has_pro" class="text-danger ml-2">{{ $t('(Require Pro Version)') }}</span>
                             </el-button>
@@ -311,16 +328,20 @@
                                 <div class="ff_file_upload_result"
                                      v-for="(attachment, index) in selected.value.media_attachments" :key="index">
                                     <div class="ff_file_upload_preview">
-                                        <img  v-if="attachment.type != 'pdf'" :src="attachment.url" :alt="attachment.name"/>
+                                        <img v-if="attachment.type !== 'pdf'" :src="attachment.url"
+                                             :alt="attachment.name"/>
                                     </div>
                                     <div class="ff_file_upload_data">
                                         <el-button
                                             class="el-button--icon"
                                             type="danger"
-                                            icon="el-icon-delete"
-                                            size="mini"
+                                            size="small"
                                             @click="removeMediaAttachments(index)"
-                                        ></el-button>
+                                        >
+                                            <template #icon>
+                                                <i class="el-icon-delete"></i>
+                                            </template>
+                                        </el-button>
                                         <div class="ff_file_upload_description">
                                             {{ attachment.name }}
                                         </div>
@@ -333,21 +354,21 @@
                         </el-form-item>
 
                         <el-form-item v-if="pdf_feeds.length">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('PDF Attachments') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <h3>{{ $t('PDF Attachments') }}</h3>
                                         <p>
                                             {{ $t('You can select PDF attachments from your created PDF templates') }}
                                         </p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
 
                             <el-checkbox-group v-model="selected.value.pdf_attachments">
-                                <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :label="feed.id">{{ feed.label }}
+                                <el-checkbox v-for="feed in pdf_feeds" :key="feed.id" :value="feed.id">{{ feed.label }}
                                 </el-checkbox>
                             </el-checkbox-group>
                         </el-form-item>
@@ -357,19 +378,19 @@
                         </p>
 
                         <el-form-item class="ff-form-item" v-if="hasPaymentField">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Send Email') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>{{ $t('Please Select when the email will be sent for Payment Forms') }}</p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
 
                             <el-radio-group v-model="selected.value.feed_trigger_event">
-                                <el-radio label="payment_success">{{ $t('After Payment Success') }}</el-radio>
-                                <el-radio label="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
+                                <el-radio value="payment_success">{{ $t('After Payment Success') }}</el-radio>
+                                <el-radio value="payment_form_submit">{{ $t('After Form Submit') }}</el-radio>
                             </el-radio-group>
 
                             <p class="mt-2 text-note" style="max-width: 700px;">{{
@@ -382,45 +403,49 @@
                             <el-collapse-item :title="$t('Advanced')" name="advanced">
                                 <!--from name-->
                                 <el-form-item class="ff-form-item">
-                                    <template slot="label">
+                                    <template #label>
                                         {{ $t('From Name') }}
 
                                         <el-tooltip class="item" placement="bottom-start"
                                                     popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
+                                            <template #content>
                                                 <p>
                                                     {{
                                                         $t('Enter the name you would like the notification email sent from, or select the name from available name fields.')
                                                     }}
                                                 </p>
-                                            </div>
+                                            </template>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
 
-                                    <input-popover fieldType="text"
-                                                   v-model="selected.value.fromName"
-                                                   :data="editorShortcodes"
-                                    ></input-popover>
+                                    <input-popover
+                                        fieldType="text"
+                                        v-model="selected.value.fromName"
+                                        :data="editorShortcodes"
+                                    />
                                     <p v-if="selected.value.fromName">
                                         {{
                                             $t('It will only be visible in the email if \"From Email\" value is available')
-                                        }}</p>
+                                        }}
+                                    </p>
                                 </el-form-item>
 
                                 <!--from email-->
                                 <el-form-item class="ff-form-item">
-                                    <template slot="label">
+                                    <template #label>
                                         {{ $t('From Email') }}
 
                                         <el-tooltip class="item" placement="bottom-start"
                                                     popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
+                                            <template #content>
                                                 <p>
-                                                    {{ $t('Enter the email address you would like the notification email sent from, or select the email from available email form fields.') }}
+                                                    {{
+                                                        $t('Enter the email address you would like the notification email sent from, or select the email from available email form fields.')
+                                                    }}
                                                 </p>
-                                            </div>
+                                            </template>
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
                                     </template>
@@ -431,22 +456,26 @@
                                         :data="fromEmailShortcodes"
                                     ></input-popover>
                                     <p v-if="selected.value.fromEmail">
-                                        {{ $t('It\'s not recommended to change from email. Please use your domain\'s email / SMTP main email. Otherwise email may failed to send.') }}
+                                        {{
+                                            $t('It\'s not recommended to change from email. Please use your domain\'s email / SMTP main email. Otherwise email may failed to send.')
+                                        }}
                                     </p>
                                 </el-form-item>
 
                                 <!--reply to-->
                                 <el-form-item class="ff-form-item">
-                                    <template slot="label">
+                                    <template #label>
                                         {{ $t('Reply To') }}
 
                                         <el-tooltip class="item" placement="bottom-start"
                                                     popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
+                                            <template #content>
                                                 <p>
-                                                    {{ $t('Enter the email address you would like to be used as the reply to address for the notification email.') }}
+                                                    {{
+                                                        $t('Enter the email address you would like to be used as the reply to address for the notification email.')
+                                                    }}
                                                 </p>
-                                            </div>
+                                            </template>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -460,17 +489,17 @@
 
                                 <!--BCC-->
                                 <el-form-item class="ff-form-item">
-                                    <template slot="label">
+                                    <template #label>
                                         {{ $t('BCC') }}
                                         <el-tooltip class="item" placement="bottom-start"
                                                     popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
+                                            <template #content>
                                                 <p>
                                                     {{
                                                         $t('Enter a comma separated list of email addresses you would like to receive a BCC of the notification email.')
                                                     }}
                                                 </p>
-                                            </div>
+                                            </template>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -482,16 +511,18 @@
                                 </el-form-item>
                                 <!--CC-->
                                 <el-form-item class="ff-form-item">
-                                    <template slot="label">
+                                    <template #label>
                                         {{ $t('CC') }}
 
                                         <el-tooltip class="item" placement="bottom-start"
                                                     popper-class="ff_tooltip_wrap">
-                                            <div slot="content">
+                                            <template #content>
                                                 <p>
-                                                    {{ $t('Enter a comma separated list of email addresses you would like to receive a CC of the notification email.') }}
+                                                    {{
+                                                        $t('Enter a comma separated list of email addresses you would like to receive a CC of the notification email.')
+                                                    }}
                                                 </p>
-                                            </div>
+                                            </template>
 
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -514,7 +545,11 @@
                     :loading="loading"
                     @click="store"
                     type="primary"
-                    icon="el-icon-success">
+                    size="large"
+                >
+                    <template #icon>
+                        <i class="el-icon-success"></i>
+                    </template>
                     {{ loading ? $t('Saving ') : $t('Save ') }} {{ $t('Notification') }}
                 </el-button>
             </div>
@@ -525,9 +560,9 @@
 <script type="text/babel">
 import remove from '../confirmRemove.vue';
 import inputPopover from '../input-popover.vue';
-import wpEditor from '@/common/_wp_editor';
+import wpEditor from '@/common/_wp_editor.vue';
 import FilterFields from './Includes/FilterFields.vue';
-import RoutingFilterFields from './Includes/RoutingFilterFields';
+import RoutingFilterFields from './Includes/RoutingFilterFields.vue';
 import ErrorView from '@/common/errorView.vue';
 import VideoDoc from '@/common/VideoInstruction.vue';
 import Card from '@/admin/components/Card/Card.vue';
@@ -540,6 +575,7 @@ import Notice from '@/admin/components/Notice/Notice.vue';
 
 export default {
     name: 'EmailNotifications',
+    inject: ['eventBus'],
     props: ['form_id', 'inputs', 'has_pro', 'has_pdf', 'editorShortcodes'],
     components: {
         remove,
@@ -650,7 +686,7 @@ export default {
             };
             return freshCopy;
         },
-        emailBodyeditorShortcodes() {
+        emailBodyEditorShortcodes() {
             const freshCopy = _ff.cloneDeep(this.editorShortcodes);
             freshCopy[0].shortcodes = {
                 ...freshCopy[0].shortcodes,
@@ -702,9 +738,10 @@ export default {
             freshCopy.value.name = null;
             freshCopy.id = null;
 
-            if (!freshCopy.value.conditionals
-                || !freshCopy.value.conditionals.conditions
-                || !freshCopy.value.conditionals.conditions.length
+            if (
+                !freshCopy.value.conditionals ||
+                !freshCopy.value.conditionals.conditions ||
+                !freshCopy.value.conditionals.conditions.length
             ) {
                 freshCopy.value.conditionals = this.mock.value.conditionals;
             }
@@ -737,16 +774,16 @@ export default {
             this.selected = notification;
 
             if (!this.selected.value.attachments) {
-                this.$set(this.selected.value, 'attachments', []);
+                this.selected.value.attachments = [];
             }
             if (!this.selected.value.media_attachments) {
-                this.$set(this.selected.value, 'media_attachments', []);
+                this.selected.value.media_attachments = [];
             }
             if (!this.selected.value.pdf_attachments) {
-                this.$set(this.selected.value, 'pdf_attachments', []);
+                this.selected.value.pdf_attachments = [];
             }
             if (!this.selected.value.feed_trigger_event) {
-                this.$set(this.selected.value, 'feed_trigger_event', 'payment_success');
+                this.selected.value.feed_trigger_event = 'payment_success';
             }
 
             this.selectedIndex = index;
@@ -830,6 +867,7 @@ export default {
             let id = this.selected.id;
 
             delete (this.selected.id);
+            console.log(this.selected.value)
 
             const data = {
                 form_id: this.form_id,
@@ -879,8 +917,8 @@ export default {
         this.fetchNotifications();
         this.has_pdf && this.fetchEmailTemplates();
     },
-    beforeCreate() {
-        ffSettingsEvents.$emit('change-title', 'Email Notification Settings');
+    created() {
+        this.eventBus.emit('change-title', 'Email Notification Settings');
     }
 };
 </script>

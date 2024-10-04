@@ -24,7 +24,7 @@
                         <el-table-column
                             width="180"
                             :label="$t('Integration Icon')">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <img v-if="scope.row.provider_logo" class="general_integration_logo"
                                      :src="scope.row.provider_logo" :alt="scope.row.provider"/>
                                 <span class="general_integration_name" v-else>{{scope.row.provider}}</span>
@@ -32,7 +32,7 @@
                         </el-table-column>
                         <el-table-column
                             :label="$t('Integration Feed Name')">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 {{scope.row.name}}
                                 <span v-if="scope.row.has_condition"> {{ $t('(Conditional)') }}</span>
                             </template>
@@ -40,14 +40,14 @@
                         <el-table-column
                             :label="$t('Status')"
                             width="120">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <span v-if="scope.row.enabled">{{ $t('Active') }}</span>
                                 <span v-else>{{ $t('Draft') }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column
                             :label="$t('Actions')">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="info" size="mini">
                                     {{ $t('Replay') }}
                                 </el-button>

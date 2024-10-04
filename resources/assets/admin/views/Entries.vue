@@ -280,7 +280,7 @@
 
                         <el-table-column type="selection" width="30"></el-table-column>
                         <el-table-column label="#" sortable="custom" prop="id" width="100px" :class-name="idShortByClassName">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <div class="has_hover_item">
                                     <router-link :to="{
                                             name: 'form-entry',
@@ -337,7 +337,7 @@
                                 sortable="custom"
                                 :prop="'user_inputs_column_field-' + column.field"
                                 :key="index">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <span v-html="scope.row.user_inputs[column.field]"></span>
                             </template>
                         </el-table-column>
@@ -347,7 +347,7 @@
                                 sortable
                                 prop="status"
                                 width="120px">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 {{ getStatusName(scope.row.status) }}
                             </template>
                         </el-table-column>
@@ -358,7 +358,7 @@
                                     sortable="custom"
                                     prop="payment_total"
                                     min-width="120px">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <span v-html="formatMoney(scope.row.payment_total, scope.row.currency)"></span>
                                 </template>
                             </el-table-column>
@@ -367,7 +367,7 @@
                                     sortable
                                     prop="payment_status"
                                     min-width="140px">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <span class="ff_badge"
                                         :class="'ff_badge_'+scope.row.payment_status"
                                         v-if="scope.row.payment_status"
@@ -381,7 +381,7 @@
                                     sortable
                                     prop="payment_method"
                                     min-width="140px">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <span class="ff_badge" v-if="scope.row.payment_method"
                                         :class="`ff_badge_${
                                         scope.row.payment_method == 'stripe' ? 'stripe' :
@@ -400,7 +400,7 @@
                                 sortable
                                 prop="created_at"
                                 width="120px">
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 {{ dateFormat(scope.row.created_at) }}
                             </template>
                         </el-table-column>
@@ -411,7 +411,7 @@
                                 :width="115"
                                 align="center"
                         >
-                            <template slot-scope="scope">
+                            <template #default="scope">
                                 <btn-group size="sm">
                                     <btn-group-item>
                                         <router-link :to="{

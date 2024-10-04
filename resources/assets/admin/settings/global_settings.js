@@ -1,5 +1,4 @@
-import { createApp } from 'vue';
-import { useLocale } from 'element-plus';
+import {createApp} from 'vue';
 import en from 'element-plus/es/locale/lang/en';
 
 // Import your components
@@ -46,15 +45,12 @@ import {
     ElSkeletonItem,
 } from 'element-plus';
 
-import { handleSidebarActiveLink } from '@/admin/helpers';
-import CustomComponent from '@/admin/components/CustomComponent';
-import Errors from '@/common/Errors';
-import notifier from '@/admin/notifier';
+import {handleSidebarActiveLink} from '@/admin/helpers.js';
+import CustomComponent from '@/admin/components/CustomComponent.vue';
+import Errors from '@/common/Errors.js';
+import notifier from '@/admin/notifier.js';
 
-// Locale configuration
-const locale = useLocale();
-locale.locale(en);
-
+window.Errors = Errors;
 // Create Vue app
 const app = createApp({
     components: {
@@ -73,9 +69,10 @@ const app = createApp({
     },
     data() {
         return {
-            component: 'settings',
+            component: 'GlobalSettings',
             App: window.FluentFormApp,
             component_name: '',
+            current_component: '',
             settings_key: ''
         };
     },
@@ -91,9 +88,7 @@ const app = createApp({
                 this.component_name = $el.data('component_name') || '';
                 this.component = component;
                 location.hash = hash;
-            } else if ($originalEl &&
-                $originalEl.hasClass('ff-payment-settings-root')
-            ) {
+            } else if ($originalEl && $originalEl.hasClass('ff-payment-settings-root')) {
                 location.href = $el.attr('href');
                 return 'redirected';
             }
@@ -130,10 +125,6 @@ const app = createApp({
     }
 });
 
-// Register global properties and Element Plus components
-app.config.globalProperties.$notify = ElNotification;
-app.config.globalProperties.$loading = ElLoading.service;
-app.config.globalProperties.Errors = Errors;
 app.mixin({
     methods: {
         $t(str) {
@@ -147,33 +138,45 @@ app.mixin({
     }
 });
 
-// Use Element Plus components
-app.use(ElButton);
-app.use(ElForm);
-app.use(ElRow);
-app.use(ElCol);
-app.use(ElInput);
-app.use(ElCheckbox);
-app.use(ElCheckboxGroup);
-app.use(ElSelect);
-app.use(ElOption);
-app.use(ElOptionGroup);
-app.use(ElSwitch);
-app.use(ElTooltip);
-app.use(ElFormItem);
-app.use(ElLoading.directive);
-app.use(ElInputNumber);
-app.use(ElColorPicker);
-app.use(ElRadioGroup);
-app.use(ElRadio);
-app.use(ElDialog);
-app.use(ElTable);
-app.use(ElTableColumn);
-app.use(ElTag);
-app.use(ElPopover);
-app.use(ElPagination);
-app.use(ElSkeleton);
-app.use(ElSkeletonItem);
+const components = [
+    ElButton,
+    ElRadio,
+    ElRadioGroup,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElTooltip,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElOptionGroup,
+    ElSwitch,
+    ElDialog,
+    ElLoading,
+    ElNotification,
+    ElCheckbox,
+    ElCheckboxGroup,
+    ElColorPicker,
+    ElInputNumber,
+    ElTable,
+    ElTableColumn,
+    ElTag,
+    ElPopover,
+    ElPagination,
+    ElSkeleton,
+    ElSkeletonItem,
+];
+
+components.forEach(component => {
+    app.use(component);
+});
+
+// Register global properties and Element Plus components
+app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$loading = ElLoading.service;
+app.config.globalProperties.Errors = Errors;
+app.config.globalProperties.$ELEMENT = {locale: en};
 
 // Mount the app
 app.mount('#ff_global_settings_option_app');

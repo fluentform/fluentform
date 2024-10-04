@@ -3,14 +3,17 @@
         {
             "files": ["*.js", "*.vue", ".prettierrc"],
             "options": {
-                "printWidth": 120,
+                "printWidth": 80,
                 "tabWidth": 4,
                 "semi": true,
                 "vueIndentScriptAndStyle": false,
                 "arrowParens": "avoid",
+                "parser": "typescript",
                 "singleQuote": true,
                 "bracketSameLine": false,
-                "singleAttributePerLine": false
+                "bracketSpacing": true,
+                "singleAttributePerLine": true,
+                "--vue-indent-script-and-style": true
             }
         }
     ]

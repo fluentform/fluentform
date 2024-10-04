@@ -1,5 +1,5 @@
 <template>
-    <a href="#" class="ff_tab_link" @click="$emit('click')"><slot/></a>
+    <a href="#" class="ff_tab_link" @click.prevent="$emit('click')"><slot/></a>
 </template>
 
 <script>

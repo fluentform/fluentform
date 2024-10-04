@@ -671,7 +671,7 @@ label.el-radio, label.el-checkbox {
 
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 50%; /* 16:9 */
   height: 0;
   iframe {
     position: absolute;
@@ -951,6 +951,7 @@ label.el-radio, label.el-checkbox {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  width: 100%;
 }
 
 // align items
@@ -1128,6 +1129,7 @@ label.el-radio, label.el-checkbox {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
     .text{
       margin-bottom: 0;
     }
@@ -1144,6 +1146,7 @@ label.el-radio, label.el-checkbox {
   display: flex;
   align-items: center;
   .el-form-item__label{
+      width: 390px;
     padding-bottom: 0;
   }
   &.reverse{
@@ -1199,6 +1202,7 @@ label.el-radio, label.el-checkbox {
 }
 // wp vue editor
 .wp_vue_editor_wrapper {
+  width: 100%;
   border: 1px solid $--border-color-base;
   border-radius: $border-radius;
   overflow: hidden;
@@ -1231,6 +1235,10 @@ label.el-radio, label.el-checkbox {
     top: 0;
     right: 0;
     padding: 10px;
+      button {
+        height: 30px;
+        border-radius: 7px;
+      }
   }
   .wp-editor-container{
     border: 0;
@@ -1450,6 +1458,22 @@ label.el-radio, label.el-checkbox {
       justify-content: center;
     }
   }
+    li {
+        .el-button--small {
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 7px;
+            height: 28px;
+        }
+    }
+  &_item {
+      .el-button--small {
+          border-radius: 4px;
+          font-size: 12px;
+          padding: 7px;
+          height: 28px;
+      }
+  }
 }
 
 // custom file input
@@ -1566,7 +1590,13 @@ label.el-radio, label.el-checkbox {
 }
 
 .el-radio.is-bordered {
+  height: 40px;
   margin-right: 6px;
+  padding: 12px 20px 0 10px;
+}
+
+.el-radio.is-bordered+.el-radio.is-bordered {
+    margin-left: 10px;
 }
 
 // media
@@ -1705,6 +1735,11 @@ label.el-radio, label.el-checkbox {
     padding: 6px 20px;
     &:hover{
       background-color: transparent;
+    }
+    .el-input {
+        .el-input__inner {
+            border: none;
+        }
     }
   }
 }

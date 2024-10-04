@@ -71,7 +71,7 @@ use FluentForm\Framework\Support\Arr;
                                     href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                         'hash' => 'setting'
                                     ])); ?>">
-                                        
+
                                         <?php echo __('Integration Failure'); ?>
                                     </a>
                                 </li>
@@ -137,8 +137,8 @@ use FluentForm\Framework\Support\Arr;
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
-                                    <?php if (Arr::get($component, 'hash') == 're_captcha'
-                                        || Arr::get($component, 'hash') == 'h_captcha'
+                                    <?php if (Arr::get($component, 'hash') == 'reCaptcha'
+                                        || Arr::get($component, 'hash') == 'hCaptcha'
                                         || Arr::get($component, 'hash') == 'turnstile'
                                     ) : ?>
 
@@ -159,11 +159,11 @@ use FluentForm\Framework\Support\Arr;
                                 <?php endforeach; ?>
                             </ul>
                         </li>
-                        
+
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('managers', $currentComponent)); ?> ff_list_button_item">
                             <a
                                 class="ff_list_button_link"
-                                data-hash="managers"
+                                data-hash="ManagersSettings"
                                 href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                     'hash' => 'managers'
                                 ])); ?>">
@@ -177,7 +177,7 @@ use FluentForm\Framework\Support\Arr;
                                         class="ff_list_button_link"
                                         data-hash="admin_approval"
                                         data-settings_key="ff_admin_approval"
-                                        data-component="general-integration-settings"
+                                        data-component="GeneralIntegrationSettings"
                                         href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                             'hash' => 'admin_approval'
                                         ])); ?>">
@@ -188,7 +188,7 @@ use FluentForm\Framework\Support\Arr;
                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass('double_optin_settings', $currentComponent)); ?> ff_list_button_item">
                             <a
                                 class="ff_list_button_link"
-                                data-hash="double_optin_settings"
+                                data-hash="DoubleOptinSettings"
                                 href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
                                     'hash' => 'double_optin_settings'
                                 ])); ?>">
@@ -210,7 +210,7 @@ use FluentForm\Framework\Support\Arr;
                                 </a>
                             </li>
                         <?php } ?>
-                        
+
                         <li class="ff_list_button_item has_sub_menu">
                             <a class="ff_list_button_link" href="#">
                                 <?php echo __('Configure Integrations', 'fluentform'); ?>
@@ -218,8 +218,8 @@ use FluentForm\Framework\Support\Arr;
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
                                     <?php
-                                        if (Arr::get($component, 'hash') != 're_captcha'
-                                            && Arr::get($component, 'hash') != 'h_captcha'
+                                        if (Arr::get($component, 'hash') != 'reCaptcha'
+                                            && Arr::get($component, 'hash') != 'hCaptcha'
                                             && Arr::get($component, 'hash') != 'turnstile'
                                             && Arr::get($component, 'query.component') != 'payment_settings'
                                             && Arr::get($component, 'query.component') != 'license_page'
@@ -227,7 +227,6 @@ use FluentForm\Framework\Support\Arr;
                                             && Arr::get($component, 'hash') != 'inventory_manager'
                                         )
                                     : ?>
-
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
                                             <a data-settings_key="<?php echo esc_attr(Arr::get($component,

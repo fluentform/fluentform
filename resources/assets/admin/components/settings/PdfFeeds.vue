@@ -6,7 +6,11 @@
                     <div>
                         <template v-if="!selectedId">
                             <h5 class="title">{{ $t('PDF Feeds') }}</h5>
-                            <p class="text">{{ $t('Create PDF template feed and you can download the PDFs from each submission') }}</p>
+                            <p class="text">
+                                {{
+                                    $t('Create PDF template feed and you can download the PDFs from each submission')
+                                }}
+                            </p>
                         </template>
                         <template v-else>
                             <h5 class="title">{{ $t('Edit PDF Feed ') }} - {{selectedId}}</h5>
@@ -14,12 +18,18 @@
                     </div>
                     <btn-group class="action-buttons">
                         <btn-group-item v-if="selectedId">
-                            <el-button class="el-button--soft" @click="discard()" type="info" size="medium" icon="ff-icon ff-icon-arrow-left">
+                            <el-button class="el-button--soft" @click="discard()" type="info" size="default">
+                                <template #icon>
+                                    <i class="ff-icon ff-icon-arrow-left"></i>
+                                </template>
                                 {{$t('Back')}}
                             </el-button>
                         </btn-group-item>
                         <btn-group-item v-else>
-                            <el-button @click="addVisible = true" type="info" size="medium" icon="ff-icon ff-icon-plus">
+                            <el-button @click="addVisible = true" type="info" size="large">
+                                <template #icon>
+                                    <i class="ff-icon ff-icon-plus"></i>
+                                </template>
                                 {{ $t('Add PDF Feed') }}
                             </el-button>
                         </btn-group-item>
@@ -38,23 +48,35 @@
 
                         <el-table-column prop="template_key" :label="$t('Template')"></el-table-column>
 
-                        <el-table-column width="160" label="Actions" class-name="action-buttons">
-                            <template slot-scope="scope">
-                                <el-button
-                                    @click="edit(scope.row.id)"
-                                    type="primary"
-                                    icon="el-icon-setting"
-                                    class="el-button--icon"
-                                    size="mini"
-                                ></el-button>
-                                <remove @on-confirm="remove(scope.row.id)">
-                                    <el-button
-                                        class="el-button--icon"
-                                        size="mini"
-                                        type="danger"
-                                        icon="el-icon-delete"
-                                    />
-                                </remove>
+                        <el-table-column width="160" :label="$t('Actions')" class-name="action-buttons">
+                            <template #default="scope">
+                                <btn-group size="sm">
+                                    <btn-group-item>
+                                        <el-button
+                                            @click="edit(scope.row.id)"
+                                            type="primary"
+                                            class="el-button--icon"
+                                            size="small"
+                                        >
+                                            <template #icon>
+                                                <i class="el-icon-setting"></i>
+                                            </template>
+                                        </el-button>
+                                    </btn-group-item>
+                                    <btn-group-item>
+                                        <remove @on-confirm="remove(scope.row.id)">
+                                            <el-button
+                                                class="el-button--icon"
+                                                size="small"
+                                                type="danger"
+                                            >
+                                                <template #icon>
+                                                    <i class="el-icon-delete"></i>
+                                                </template>
+                                            </el-button>
+                                        </remove>
+                                    </btn-group-item>
+                                </btn-group>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -71,12 +93,10 @@
         </card>
 
         <el-dialog
-            v-loading="creating"
-            :element-loading-text="$t('Creating Feed. Please wait...')"
-            :visible.sync="addVisible"
+            v-model="addVisible"
             width="60%"
         >
-            <template slot="title">
+            <template #header>
                 <h4>{{$t('Create new PDF Feed')}}</h4>
             </template>
             <div class="ff_modal_container mt-4">
@@ -90,11 +110,10 @@
                     </el-col>
                 </el-row>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button plain size="medium" @click="addVisible = false">{{ $t('Cancel') }}</el-button>
-            </span>
+            <template #footer class="dialog-footer">
+                <el-button plain size="default" @click="addVisible = false">{{ $t('Cancel') }}</el-button>
+            </template>
         </el-dialog>
-
     </div>
 </template>
 
@@ -106,7 +125,7 @@
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
     import remove from "@/admin/components/confirmRemove.vue";
-    import FeedEditor from './PdfFeed';
+    import FeedEditor from './PdfFeed.vue';
 
     export default {
         name: "PdfSettings",

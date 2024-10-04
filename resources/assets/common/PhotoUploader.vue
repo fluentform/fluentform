@@ -5,7 +5,7 @@
                 <img style="max-width: 100%" v-if="image_url" :src="image_url"/>
                 <div @click="initUploader" class="photo_widget_btn"><span
                     class="dashicons dashicons-cloud-upload"></span></div>
-                <div @click="image_url = ''" v-if="enable_clear_name == 'yes' && image_url"
+                <div @click="image_url = ''" v-if="enable_clear_name === 'yes' && image_url"
                      class="photo_widget_btn_clear"><span
                     class="dashicons dashicons-trash"></span></div>
             </div>
@@ -25,7 +25,7 @@
                             class="el-button--icon"
                             type="danger"
                             icon="el-icon-delete"
-                            size="mini"
+                            size="small"
                             @click="image_url = ''"
                         ></el-button>
 
@@ -43,55 +43,55 @@
 </template>
 
 <script type="text/babel">
-    export default {
-        name: 'photo_widget',
-        props: ['value', 'design_mode', 'enable_clear', 'for_advanced_option'],
-        data() {
-            return {
-                app_ready: false,
-                design_mode_name: this.design_mode || 'small',
-                enable_clear_name: this.enable_clear,
-                image_size: '',
-                for_editor_advance_option : this.for_advanced_option || false
-            }
-        },
-        methods: {
-            initUploader(event) {
-                const that = this;
-                const send_attachment_bkp = wp.media.editor.send.attachment;
-                wp.media.editor.send.attachment = function (props, attachment) {
-                    that.image_url = attachment.url;
-                    that.image_size = attachment.filesizeHumanReadable;
-                    wp.media.editor.send.attachment = send_attachment_bkp;
-                };
-                wp.media.editor.open();
-                return false;
-            }
-        },
-	    computed: {
-		    image_url : {
-				get() {
-					return this.value || '';
-				},
-			    set(value) {
-				    this.$emit('input', value);
-			    }
-		    },
-		    image_name() {
-			    let url = this.image_url;
-			    let name = url.substring(url.lastIndexOf("/")+1, url?.length);
-			    // 15 character for suitable visible name
-			    if (name?.length > 15) {
-				    name = name.slice(0, 15) + '...' + name.substring(name.lastIndexOf(".") - 2, name?.length);
-			    }
-				return name;
-		    }
-	    },
-        mounted() {
-            if (!window.wpActiveEditor) {
-                window.wpActiveEditor = null;
-            }
-            this.app_ready = true;
+export default {
+    name: 'photo_widget',
+    props: ['value', 'design_mode', 'enable_clear', 'for_advanced_option'],
+    data() {
+        return {
+            app_ready: false,
+            design_mode_name: this.design_mode || 'small',
+            enable_clear_name: this.enable_clear,
+            image_size: '',
+            for_editor_advance_option: this.for_advanced_option || false
         }
+    },
+    methods: {
+        initUploader(event) {
+            const that = this;
+            const send_attachment_bkp = wp.media.editor.send.attachment;
+            wp.media.editor.send.attachment = function (props, attachment) {
+                that.image_url = attachment.url;
+                that.image_size = attachment.filesizeHumanReadable;
+                wp.media.editor.send.attachment = send_attachment_bkp;
+            };
+            wp.media.editor.open();
+            return false;
+        }
+    },
+    computed: {
+        image_url: {
+            get() {
+                return this.value || '';
+            },
+            set(value) {
+                this.$emit('input', value);
+            }
+        },
+        image_name() {
+            let url = this.image_url;
+            let name = url.substring(url.lastIndexOf("/") + 1, url?.length);
+            // 15 character for suitable visible name
+            if (name?.length > 15) {
+                name = name.slice(0, 15) + '...' + name.substring(name.lastIndexOf(".") - 2, name?.length);
+            }
+            return name;
+        }
+    },
+    mounted() {
+        if (!window.wpActiveEditor) {
+            window.wpActiveEditor = null;
+        }
+        this.app_ready = true;
     }
+}
 </script>

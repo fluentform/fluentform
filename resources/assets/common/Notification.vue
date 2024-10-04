@@ -8,7 +8,7 @@
 </template>
 
 <script type="text/babel">
-    export default {
-        name: 'notification'
-    }
+export default {
+    name: 'notification'
+}
 </script> 

@@ -28,6 +28,7 @@
 }
 
 .el-form-item {
+    display: block;
     &__force-inline {
         &.el-form-item__label {
             float: left;
@@ -101,6 +102,30 @@
 }
 
 .el-form-item__content {
+    display: block;
+
+    .el-select {
+        .el-select__wrapper {
+            height: 42px;
+        }
+    }
+
+    .el-input {
+        height: 42px;
+        .el-input__inner {
+            border: none;
+        }
+
+        .el-input-group__prepend,
+        .el-input-group__append {
+            right: 6px;
+            top: 6px;
+            width: 30px;
+            min-height: 30px;
+            box-shadow: none;
+        }
+    }
+
     select {
         border: 1px solid #000;
     }
@@ -519,6 +544,10 @@
 }
 
 .el-switch{
+    &.is-checked .el-switch__core {
+        background-color: var(--el-color-success);
+        border-color: var(--el-color-success);
+    }
     &--small{
         .el-switch__core{
             width: 28px !important;
@@ -774,12 +803,21 @@
     padding: 0;
 }
 
-.el-input__wrapper {
-    padding: 0;
+//.el-input__wrapper {
+//    padding: 0;
+//}
+
+//.el-input {
+//    input {
+//        height: 42px;
+//    }
+//}
+
+.el-input-group--append > .el-input__wrapper {
+    border-bottom-right-radius: var(--el-border-radius-base);
+    border-top-right-radius: var(--el-border-radius-base);
 }
 
-.el-input {
-    input {
-        height: 40px;
-    }
+input, select {
+    margin: 0;
 }

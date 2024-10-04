@@ -28,7 +28,7 @@
 
 
                             <el-table-column type="expand">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <el-table  v-if="scope.row.details" :data="formatTableData(scope.row.details)" border style="width: 100%">
                                         <el-table-column prop="name" label="Name"  />
                                         <el-table-column prop="used" label="Used" />
@@ -46,13 +46,13 @@
                             <el-table-column :label="$t('Quantity')" prop="quantity" width="80" />
 
                             <el-table-column :label="$t('Stock')" prop="remaining">
-		                        <template slot-scope="scope">
+		                        <template #default="scope">
 			                        <span v-html="stockFormatHtml(scope.row.remaining)"></span>
 		                        </template>
                             </el-table-column>
 
                             <el-table-column :label="$t('Items in Use')" width="150">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <span v-if="scope.row.details">
                                           <el-tag
                                                   type="info"
@@ -68,7 +68,7 @@
                             </el-table-column>
 
                             <el-table-column :label="$t('Action')" width="160">
-                                <template slot-scope="scope">
+                                <template #default="scope">
 
                                     <el-button
                                             class="el-button--icon"

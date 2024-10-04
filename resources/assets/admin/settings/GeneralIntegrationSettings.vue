@@ -11,11 +11,14 @@
                         <i class="el-icon el-icon-check"></i>
                     </div>
                     <h6 class="mb-4" v-html="settings.discard_settings.section_description"></h6>
-                    <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()" type="primary"
-                        icon="el-icon-success">
+                    <el-button v-if="settings.discard_settings.show_verify" v-loading="saving" @click="save()"
+                               type="primary" size="large">
+                        <template #icon>
+                            <i class="el-icon-success"></i>
+                        </template>
                         {{ $t('Verify Connection Again') }}
                     </el-button>
-                    <el-button @click="disconnect(settings.discard_settings.data)" type="danger">
+                    <el-button @click="disconnect(settings.discard_settings.data)" type="danger" size="large">
                         {{ settings.discard_settings.button_text }}
                     </el-button>
                 </div>
@@ -34,19 +37,21 @@
                         </card-head>
                         <card-body>
                             <!--Site key-->
-                            <el-form-item class="ff-form-item" v-for="(field,fieldKey) in settings.fields" :key="fieldKey" v-if="dependancyPass(field, integration)">
-                                <template slot="label" v-if="field.label">
+                            <el-form-item class="ff-form-item" v-for="(field,fieldKey) in settings.fields"
+                                          :key="fieldKey" v-if="dependencyPass(field, integration)">
+                                <template #label v-if="field.label">
                                     {{ field.label }}
-                                    <el-tooltip v-if="field.label_tips" class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                    <el-tooltip v-if="field.label_tips" class="item" placement="bottom-start"
+                                                popper-class="ff_tooltip_wrap">
+                                        <template #content>
                                             <div v-html="field.label_tips">
                                             </div>
-                                        </div>
+                                        </template>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </template>
 
-                                <template v-if="field.type == 'select'">
+                                <template v-if="field.type === 'select'">
                                     <el-select class="w-100 ff-input-s1" v-model="integration[fieldKey]">
                                         <el-option
                                             v-for="(optionName, optionValue) in field.options"
@@ -55,44 +60,48 @@
                                             :value="optionValue"></el-option>
                                     </el-select>
                                 </template>
-                                <template v-else-if="field.type == 'link'">
-                                    <a :target="field.target" :class="field.btn_class" :href="field.link">{{ field.link_text }}</a>
+                                <template v-else-if="field.type === 'link'">
+                                    <a :target="field.target" :class="field.btn_class"
+                                       :href="field.link">{{ field.link_text }}</a>
                                     <p class="mt-2">{{ field.tips }}</p>
                                 </template>
-                                <template v-else-if="field.type == 'dynamic_link'">
-                                    <a :target="field.target" :disabled="!getDynamicAuthLink(field)" :class="field.btn_class" :href="getDynamicAuthLink(field)">{{ field.link_text }}</a>
+                                <template v-else-if="field.type === 'dynamic_link'">
+                                    <a :target="field.target" :disabled="!getDynamicAuthLink(field)"
+                                       :class="field.btn_class" :href="getDynamicAuthLink(field)">{{
+                                            field.link_text
+                                        }}</a>
                                     <p>{{ field.tips }}</p>
                                 </template>
-                                <template v-else-if="field.type == 'checkbox-single'">
+                                <template v-else-if="field.type === 'checkbox-single'">
                                     <el-checkbox v-model="integration[fieldKey]">
-                                        {{field.checkbox_label}}
+                                        {{ field.checkbox_label }}
                                     </el-checkbox>
                                 </template>
-                                <template v-else-if="field.type == 'checkbox_yes_no'">
+                                <template v-else-if="field.type === 'checkbox_yes_no'">
                                     <el-checkbox true-label="yes" false-label="no" v-model="integration[fieldKey]">
-                                        {{field.checkbox_label}}
+                                        {{ field.checkbox_label }}
                                     </el-checkbox>
                                 </template>
-                                <template v-else-if="field.type == 'radio_choice'">
+                                <template v-else-if="field.type === 'radio_choice'">
                                     <el-radio-group v-model="integration[fieldKey]">
                                         <el-radio
-                                                v-for="(fieldLabel, fieldValue) in field.options"
-                                                :key="fieldValue"
-                                                :label="fieldValue"
+                                            v-for="(fieldLabel, fieldValue) in field.options"
+                                            :key="fieldValue"
+                                            :label="fieldValue"
                                         >{{ fieldLabel }}
                                         </el-radio>
                                     </el-radio-group>
                                 </template>
-                                <template v-else-if="field.type == 'wp_editor'">
+                                <template v-else-if="field.type === 'wp_editor'">
                                     <wp-editor :height="120" v-model="integration[fieldKey]"/>
                                     <div class="mt-3" v-if="field.info"><span v-html="field.info"></span></div>
                                 </template>
-                                <template v-else-if="field.type == 'input_number'">
+                                <template v-else-if="field.type === 'input_number'">
                                     <el-input-number v-model="integration[fieldKey]" :min="1"></el-input-number>
                                 </template>
                                 <template v-else>
                                     <el-input :placeholder="field.placeholder" :type="field.type"
-                                            v-model="integration[fieldKey]"></el-input>
+                                              v-model="integration[fieldKey]"></el-input>
                                     <p class="text-note mt-2" v-if="field.tips">{{ field.tips }}</p>
                                 </template>
                             </el-form-item>
@@ -102,7 +111,8 @@
                                 <p><i class="el-icon-success"></i> {{ settings.valid_message }}</p>
                             </div>
                             <div v-else>
-                                <p><i class="ff-icon ff-icon-close-circle-filled"></i> {{ settings.invalid_message }}</p>
+                                <p><i class="ff-icon ff-icon-close-circle-filled"></i> {{ settings.invalid_message }}
+                                </p>
                             </div>
 
                             <p v-if="error_message">{{ error_message }}</p>
@@ -122,19 +132,19 @@
 
 <script type="text/babel">
 import VideoDoc from '@/common/VideoInstruction.vue';
-import Errors from '@/common/Errors';
-import ErrorView from '@/common/errorView';
+import Errors from '@/common/Errors.js';
+import ErrorView from '@/common/errorView.vue';
 import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';
-import wpEditor from '@/common/_wp_editor';
+import wpEditor from '@/common/_wp_editor.vue';
 
 
 export default {
     name: "generalIntegration",
     props: ['app', 'settings_key'],
     components: {
-        Errors ,
+        Errors,
         ErrorView,
         VideoDoc,
         Card,
@@ -150,7 +160,7 @@ export default {
             saving: false,
             settings: {},
             error_message: '',
-            errors : new Errors()
+            errors: new Errors()
         }
     },
     watch: {
@@ -161,8 +171,8 @@ export default {
         }
     },
     methods: {
-        getDynamicAuthLink(field){
-            if (field.link && this.integration[field.dynamic_key_field_name]){
+        getDynamicAuthLink(field) {
+            if (field.link && this.integration[field.dynamic_key_field_name]) {
                 let link = field.link;
                 return link.replace("dynamic_key_placeholder", this.integration[field.dynamic_key_field_name]);
             }
@@ -172,7 +182,7 @@ export default {
         save() {
             this.saving = true;
             const url = FluentFormsGlobal.$rest.route('updateGlobalIntegration')
-            FluentFormsGlobal.$rest.post(url,{
+            FluentFormsGlobal.$rest.post(url, {
                 settings_key: this.settings_key,
                 integration: this.integration
             })
@@ -211,18 +221,18 @@ export default {
                     this.settings = response.settings;
                 })
                 .catch(error => {
-                    this.error_message = error?.responseJSON?.data.message ||error?.message;
+                    this.error_message = error?.responseJSON?.data.message || error?.message;
                 })
                 .finally(() => {
                     this.loading = false;
                 });
         },
-        dependancyPass(inputItem, settings) {
-            if (inputItem.dependency) {
+        dependencyPass(inputItem, settings) {
+            if (inputItem?.dependency) {
                 let status = true;
                 let continueLoop = true;
                 inputItem.dependency.forEach((item) => {
-                    if (!continueLoop){
+                    if (!continueLoop) {
                         return;
                     }
                     let optionItem = item.depends_on;
@@ -242,12 +252,12 @@ export default {
             return true;
         },
         compare(operand1, operator, operand2) {
-            switch(operator) {
+            switch (operator) {
                 case '==':
-                    return operand1 == operand2
+                    return operand1 === operand2
                     break;
                 case '!=':
-                    return operand1 != operand2
+                    return operand1 !== operand2
                     break;
             }
         },

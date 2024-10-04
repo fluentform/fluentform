@@ -10,7 +10,7 @@
                     <btn-group>
                         <btn-group-item>
                             <el-button
-                                size="medium"
+                                size="default"
                                 type="info"
                                 icon="el-icon-arrow-left"
                                 @click="$emit('show-post-feeds')"
@@ -32,32 +32,32 @@
                             <el-input class="ff_input_full_width" disabled v-model="post_settings.post_info.value.post_type"/>
                         </el-form-item>
                         <el-form-item class="ff-form-item">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Submission Type') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>
                                             {{ $t('For post update only one feed is available, if you have more than one feed the first one will work.') }}
                                         </p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
                             <el-radio-group v-model="feed.value.post_form_type">
-                                <el-radio label="new">{{ $t('New Post') }}</el-radio>
-                                <el-radio label="update">{{ $t('Update Post') }}</el-radio>
+                                <el-radio value="new">{{ $t('New Post') }}</el-radio>
+                                <el-radio value="update">{{ $t('Update Post') }}</el-radio>
                             </el-radio-group>
                         </el-form-item>
 
                         <el-form-item class="ff-form-item">
-                            <template slot="label">
+                            <template #label>
                                 {{ $t('Allow Logged out user to create posts') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                    <div slot="content">
+                                    <template #content>
                                         <p>
                                             {{ $t(`Allow guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} with out login in.`)}}
                                         </p>
-                                    </div>
+                                    </template>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                 </el-tooltip>
                             </template>
@@ -102,7 +102,7 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :lg="6" style="flex: 1">
-                                <el-form-item class="ff-form-item" v-if="post_settings.post_info.value.post_type == 'post'" :label="('Default Category')">
+                                <el-form-item class="ff-form-item" v-if="post_settings.post_info.value.post_type === 'post'" :label="('Default Category')">
                                     <el-select clearable v-model="feed.value.default_category" class="ff_input_full_width">
                                         <el-option
                                             v-for="item in categories"
@@ -124,12 +124,12 @@
                                 <el-table :data="feed.value.post_fields_mapping" size="medium">
                                     <el-table-column label="#" type="index"/>
                                     <el-table-column :label="$t('Post Fields')">
-                                        <template slot-scope="scope">
+                                        <template #default="scope">
                                             {{ scope.row.post_field.replace(/_/, ' ').ucWords() }}
                                         </template>
                                     </el-table-column>
                                     <el-table-column :label="$t('Form Fields')">
-                                        <template slot-scope="scope">
+                                        <template #default="scope">
                                             <inputPopover
                                                 fieldType="text"
                                                 :data="editorShortcodes"
@@ -285,8 +285,8 @@
 <script type="text/babel">
     import inputPopover from '../input-popover.vue';
     import FilterFields from './Includes/FilterFields.vue';
-    import PostMetaPluginMapping from './_PostMetaPluginsMapping';
-    import each from 'lodash/each';
+    import PostMetaPluginMapping from './_PostMetaPluginsMapping.vue';
+    import each from 'lodash/each.js';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
     import Card from '@/admin/components/Card/Card.vue';

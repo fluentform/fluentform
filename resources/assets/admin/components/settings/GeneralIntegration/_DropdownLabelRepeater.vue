@@ -3,8 +3,8 @@
         <table v-if="!loading" class="ff-table">
             <thead>
             <tr>
-                <th>{{field.field_label ||  $t('Field Label')}}</th>
-                <th>{{field.value_label ||  $t('Field Value')}}</th>
+                <th>{{ field.field_label || $t('Field Label') }}</th>
+                <th>{{ field.value_label || $t('Field Value') }}</th>
                 <th></th>
             </tr>
             </thead>
@@ -22,7 +22,8 @@
                 <td>
                     <action-btn>
                         <action-btn-add @click="addItemAfter(itemIndex)"></action-btn-add>
-                        <action-btn-remove v-if="settings[field.key].length > 1" @click="removeItem(itemIndex)"></action-btn-remove>
+                        <action-btn-remove v-if="settings[field.key].length > 1"
+                                           @click="removeItem(itemIndex)"></action-btn-remove>
                     </action-btn>
                 </td>
             </tr>
@@ -32,43 +33,43 @@
 </template>
 
 <script type="text/babel">
-    import FieldGeneral from './_FieldGeneral';
-    import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
-    import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
-    import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
+import FieldGeneral from './_FieldGeneral.vue';
+import ActionBtn from '@/admin/components/ActionBtn/ActionBtn.vue';
+import ActionBtnAdd from '@/admin/components/ActionBtn/ActionBtnAdd.vue';
+import ActionBtnRemove from '@/admin/components/ActionBtn/ActionBtnRemove.vue';
 
-    export default {
-        name: 'dropdown_label_repeater',
-        props: ['settings', 'field', 'inputs', 'errors', 'editorShortcodes'],
-        components: {
-            FieldGeneral,
-            ActionBtn,
-            ActionBtnAdd,
-            ActionBtnRemove
+export default {
+    name: 'dropdown_label_repeater',
+    props: ['settings', 'field', 'inputs', 'errors', 'editorShortcodes'],
+    components: {
+        FieldGeneral,
+        ActionBtn,
+        ActionBtnAdd,
+        ActionBtnRemove
+    },
+    data() {
+        return {
+            loading: false
+        }
+    },
+    methods: {
+        addItemAfter(index) {
+            this.loading = true;
+            this.settings[this.field.key].splice(index + 1, 0, {
+                item_value: '',
+                label: ''
+            });
+            this.$nextTick(() => {
+                this.loading = false;
+            });
         },
-        data() {
-          return {
-              loading: false
-          }
-        },
-        methods: {
-            addItemAfter(index) {
-                this.loading = true;
-                this.settings[this.field.key].splice( index + 1, 0, {
-                    item_value: '',
-                    label: ''
-                });
-                this.$nextTick(() => {
-                    this.loading = false;
-                });
-            },
-            removeItem(index) {
-                this.loading = true;
-                this.settings[this.field.key].splice(index, 1);
-                this.$nextTick(() => {
-                    this.loading = false;
-                });
-            }
+        removeItem(index) {
+            this.loading = true;
+            this.settings[this.field.key].splice(index, 1);
+            this.$nextTick(() => {
+                this.loading = false;
+            });
         }
     }
+}
 </script>

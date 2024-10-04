@@ -117,7 +117,7 @@ abstract class IntegrationManagerController extends IntegrationManagerHelper
     {
         $setting[$this->integrationKey] = [
             'hash'         => 'general-' . $this->integrationKey . '-settings',
-            'component'    => 'general-integration-settings',
+            'component'    => 'GeneralIntegrationSettings',
             'settings_key' => $this->integrationKey,
             'title'        => $this->title,
         ];

@@ -124,6 +124,7 @@
     --input-gray-border-color: #E7E6E6;
     --input-gray-light-bg: var(--bg-gray);
     --input-gray-light-border-color: var(--bg-gray);
+    --el-component-size-large: 42px;
 
     /* Dimensions */
     --max-width: 980px;
@@ -205,4 +206,6 @@
     /* Editor Inserter Content */
     --editor-inserter-content-item-hover-bg: var(--bg-gray);
     --editor-inserter-content-item-hover-color: var(--base-color);
+
+    --el-switch-on-color: var(--el-color-success) !important;
 }

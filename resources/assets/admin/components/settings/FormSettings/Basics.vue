@@ -2,29 +2,29 @@
     <el-form ref="form-button" label-width="205px" label-position="left">
         <!--Redirect to-->
         <el-form-item :label="$t('Redirect To')">
-            <template slot="label">
+            <template #label>
                 {{ $t('Redirect To') }}
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
-                    <div slot="content">
+                    <template #content>
                         <h3>{{ $t('Confirmation Type') }}</h3>
 
                         <p>
                             {{ $t('After successful submit, where the page will redirect to.') }}
                         </p>
-                    </div>
+                    </template>
 
                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
                 </el-tooltip>
             </template>
 
-                <el-radio
-                        v-for="(option, value) in redirectToOptions"
-                        :key="option"
-                        :label="option"
-                        :value="value">
-                    {{option}}
-                </el-radio>
+            <el-radio
+                v-for="(option, value) in redirectToOptions"
+                :key="option"
+                :label="option"
+                :value="value">
+                {{ option }}
+            </el-radio>
         </el-form-item>
 
         <!--Additional fields based on the redirect to selection-->
@@ -48,26 +48,26 @@
 </template>
 
 <script>
-    export default {
-        name: 'FormBasics',
-        props: {
-            data: {
-                required: true
-            }
-        },
-        computed: {
-            form() {
-                return this.data;
-            }
-        },
-        data() {
-            return {
-                redirectToOptions: {
-                    samePage: 'Same Page',
-                    customPage: 'To a Page',
-                    customUrl: 'To a Custom URL'
-                },
-            }
+export default {
+    name: 'FormBasics',
+    props: {
+        data: {
+            required: true
         }
-    };
+    },
+    computed: {
+        form() {
+            return this.data;
+        }
+    },
+    data() {
+        return {
+            redirectToOptions: {
+                samePage: 'Same Page',
+                customPage: 'To a Page',
+                customUrl: 'To a Custom URL'
+            },
+        }
+    }
+};
 </script>

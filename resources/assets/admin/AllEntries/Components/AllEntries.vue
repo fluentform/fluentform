@@ -118,7 +118,7 @@
                     <el-skeleton :loading="loading" animated :rows="10">
                         <el-table :data="entries">
                             <el-table-column width="200" prop="id" sortable :label="$t('Submission ID')">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <a :href="scope.row.entry_url" >
                                         <span>#{{scope.row.id}}</span>
                                         <span class="ff_payment_badge" v-if="scope.row.total_paid">{{formatMoney(scope.row)}}</span>
@@ -127,7 +127,7 @@
                             </el-table-column>
                             <el-table-column :label="$t('Form')" sortable prop="form.title" width="400"></el-table-column>
                             <el-table-column width="150" prop="status" sortable :label="$t('Status')">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
                                     <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
                                     <span v-else>{{scope.row.status|ucFirst}}</span>
@@ -135,12 +135,12 @@
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
                             <el-table-column width="150" :label="$t('Time')">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     {{scope.row.human_date}} {{$t('ago')}}
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">
-                                <template slot-scope="scope">
+                                <template #default="scope">
                                     <a :href="scope.row.entry_url" class="el-button el-button--primary el-button--soft el-button--small">
                                         <i class="ff-icon ff-icon-eye"></i>
                                         <span>{{$t('View')}}</span>
