@@ -1,13 +1,11 @@
 <template>
-    <div ref="resizer" className="resizer"></div>
+    <div ref="resizer" class="resizer"></div>
 </template>
 
 <script>
     export default {
         name: 'Resizer',
         props: {
-
-
             minWidth: {
                 type: Number,
                 default: 200
@@ -18,6 +16,7 @@
             },
             index: {
                 type: Number,
+                default: 0 // Provide a default value if applicable
             },
         },
         data() {
@@ -30,23 +29,28 @@
         },
         mounted() {
             this.container = this.$el.parentElement; // Get parent container
-            this.initializeResizer();
+            if (this.container) {
+                this.initializeResizer();
+            } else {
+                console.error('Parent container not found');
+            }
         },
-        beforeDestroy() {
+        beforeUnmount() { 
             this.destroyResizer();
         },
         methods: {
             initializeResizer() {
-                this.$refs.resizer.style.position = 'absolute';
-                this.$refs.resizer.style.right = '-5px';
-                this.$refs.resizer.style.top = '0';
-                this.$refs.resizer.style.bottom = '0';
-                this.$refs.resizer.style.width = '10px';
-                this.$refs.resizer.style.cursor = 'ew-resize';
-                this.$refs.resizer.style.zIndex = '10';
-                this.$refs.resizer.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'; // Visible for debugging
+                const resizer = this.$refs.resizer;
+                resizer.style.position = 'absolute';
+                resizer.style.right = '-5px';
+                resizer.style.top = '0';
+                resizer.style.bottom = '0';
+                resizer.style.width = '10px';
+                resizer.style.cursor = 'ew-resize';
+                resizer.style.zIndex = '10';
+                resizer.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'; // Visible for debugging
 
-                this.$refs.resizer.addEventListener('mousedown', this.startResize);
+                resizer.addEventListener('mousedown', this.startResize);
             },
             startResize(event) {
                 this.isResizing = true;
@@ -62,11 +66,19 @@
 
                 const dx = event.clientX - this.startX;
                 let newWidth = this.startWidth + dx;
-                newWidth = Math.max(this.minWidth, Math.min(newWidth, this.maxWidth));
 
+                // Calculate the maximum width as the parent's width
+                const parentWidth = this.container.parentElement.offsetWidth;
+                const maxWidth = Math.min(this.maxWidth, parentWidth);
+
+                // Clamp the new width between minWidth and maxWidth
+                newWidth = this.clampWidth(newWidth, this.minWidth, maxWidth);
+
+                // Set the container's width
                 this.container.style.width = `${newWidth}px`;
-                // this.$set(this.editorConfig, 'bodyWidth', newWidth); // Set the new width in the editorConfig
-                this.$emit('resize', newWidth); // Emit the resize event
+
+                // Emit the resize event with the new width
+                this.$emit('resize', newWidth);
             },
             stopResize() {
                 this.isResizing = false;
@@ -75,6 +87,9 @@
             },
             destroyResizer() {
                 this.$refs.resizer.removeEventListener('mousedown', this.startResize);
+            },
+            clampWidth(newWidth, min, max) {
+                return Math.max(min, Math.min(newWidth, max));
             }
         }
     };
