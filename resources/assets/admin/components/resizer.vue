@@ -1,85 +1,86 @@
 <template>
-    <div class="resizer"  @mousedown.prevent.stop="startResize"></div>
+    <div ref="resizer" className="resizer"></div>
 </template>
 
 <script>
     export default {
         name: 'Resizer',
         props: {
-            element: {
-                type: Object,
-                required: true,
-            },
-            containerWidth: {
+
+
+            minWidth: {
                 type: Number,
-                default: 100,
+                default: 200
             },
-            gridSize: {
+            maxWidth: {
                 type: Number,
-                default: 10,
-            }
+                default: 2000
+            },
+            index: {
+                type: Number,
+            },
         },
         data() {
             return {
                 isResizing: false,
                 startX: 0,
                 startWidth: 0,
+                container: null,
             };
         },
+        mounted() {
+            this.container = this.$el.parentElement; // Get parent container
+            this.initializeResizer();
+        },
+        beforeDestroy() {
+            this.destroyResizer();
+        },
         methods: {
-            validateAndSetPosition() {
-                const defaultPosition = { width: this.containerWidth, left: 0 };
-                this.$set(this.element, 'position', this.element.position || defaultPosition);
-                this.element.position = { width: this.element.position.width || this.containerWidth, left: this.element.position.left || 0 };
+            initializeResizer() {
+                this.$refs.resizer.style.position = 'absolute';
+                this.$refs.resizer.style.right = '-5px';
+                this.$refs.resizer.style.top = '0';
+                this.$refs.resizer.style.bottom = '0';
+                this.$refs.resizer.style.width = '10px';
+                this.$refs.resizer.style.cursor = 'ew-resize';
+                this.$refs.resizer.style.zIndex = '10';
+                this.$refs.resizer.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'; // Visible for debugging
+
+                this.$refs.resizer.addEventListener('mousedown', this.startResize);
             },
             startResize(event) {
-                this.validateAndSetPosition();
                 this.isResizing = true;
                 this.startX = event.clientX;
-                this.startWidth = this.element.position.width;
+                this.startWidth = this.container.offsetWidth;
 
-                const mouseMoveHandler = (e) => this.resize(e);
-                const mouseUpHandler = () => {
-                    this.stopResize();
-                    document.removeEventListener('mousemove', mouseMoveHandler);
-                    document.removeEventListener('mouseup', mouseUpHandler);
-                };
-
-                document.addEventListener('mousemove', mouseMoveHandler);
-                document.addEventListener('mouseup', mouseUpHandler);
-
+                document.addEventListener('mousemove', this.resize);
+                document.addEventListener('mouseup', this.stopResize);
                 event.preventDefault();
             },
             resize(event) {
                 if (!this.isResizing) return;
 
-                let newWidth = this.calculateNewWidth(event.clientX);
-
-                this.element.position.width = this.clampWidth(newWidth, this.gridSize, this.containerWidth - this.element.position.left);
-                this.$emit('element-resized', this.element, this.element.position);
-            },
-            calculateNewWidth(clientX) {
-                const dx = clientX - this.startX;
+                const dx = event.clientX - this.startX;
                 let newWidth = this.startWidth + dx;
-                newWidth = Math.round(newWidth / this.gridSize) * this.gridSize;
-                return newWidth;
-            },
-            clampWidth(newWidth, min, max) {
-                return Math.max(min, Math.min(newWidth, max));
+                newWidth = Math.max(this.minWidth, Math.min(newWidth, this.maxWidth));
+
+                this.container.style.width = `${newWidth}px`;
+                // this.$set(this.editorConfig, 'bodyWidth', newWidth); // Set the new width in the editorConfig
+                this.$emit('resize', newWidth); // Emit the resize event
             },
             stopResize() {
                 this.isResizing = false;
-                this.saveElementPosition();
+                document.removeEventListener('mousemove', this.resize);
+                document.removeEventListener('mouseup', this.stopResize);
             },
-            saveElementPosition() {
-                const positionKey = `element-position-${this.element.uniqElKey}`;
-                localStorage.setItem(positionKey, JSON.stringify(this.element.position));
+            destroyResizer() {
+                this.$refs.resizer.removeEventListener('mousedown', this.startResize);
             }
         }
     };
 </script>
 
-<style>
+<style scoped>
     .resizer {
         position: absolute;
         right: -5px;
@@ -87,10 +88,7 @@
         bottom: 0;
         width: 10px;
         cursor: ew-resize;
-
-    }
-    .resizable-element {
-        position: relative;
-        transition: width 0.05s ease;
+        z-index: 10;
+        background-color: rgba(0, 0, 0, 0.1); /* Visible for debugging */
     }
 </style>
