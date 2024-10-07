@@ -1,8 +1,8 @@
 <template>
     <div class="edit_entry_view">
         <el-form v-if="has_pro" :data="entry" label-position="top">
-            <template v-for="(field, fieldKey) in parsedFields">
-                <el-form-item :label="labels[fieldKey]" :key="fieldKey">
+            <template v-for="(field, fieldKey) in parsedFields" :key="fieldKey">
+                <el-form-item :label="labels[fieldKey]">
                     <component
                         v-if="field.component"
                         v-model="entry[fieldKey]"
@@ -41,17 +41,16 @@
 </template>
 
 <script type="text/babel">
-    import each from 'lodash/each';
-
-    import MultiTextLine from './EntryEditor/MultiText';
-    import TextLine from './EntryEditor/Text';
-    import AddressEditor from './EntryEditor/AddressEditor';
-    import SelectField from './EntryEditor/SelectField';
-    import RadioField from './EntryEditor/RadioField';
-    import CheckboxField from './EntryEditor/CheckboxField';
-    import TermsField from './EntryEditor/TermsField';
-    import RepeatField from './EntryEditor/RepeatField';
-    import MultiFile from './EntryEditor/MultiFile';
+    import each from 'lodash/each.js';
+    import MultiTextLine from './EntryEditor/MultiText.vue';
+    import TextLine from './EntryEditor/Text.vue';
+    import AddressEditor from './EntryEditor/AddressEditor.vue';
+    import SelectField from './EntryEditor/SelectField.vue';
+    import RadioField from './EntryEditor/RadioField.vue';
+    import CheckboxField from './EntryEditor/CheckboxField.vue';
+    import TermsField from './EntryEditor/TermsField.vue';
+    import RepeatField from './EntryEditor/RepeatField.vue';
+    import MultiFile from './EntryEditor/MultiFile.vue';
     import Notice from '@/admin/components/Notice/Notice.vue';
 
     export default {

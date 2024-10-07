@@ -4,7 +4,7 @@
                 :gutter="10" :key="index"
         >
             <el-col v-for="(file, index) in row" :md="6" :key="index">
-                <el-card class="input_file" :body-style="{ padding: '0px' }">
+                <el-card class="input_file" :body-style="{ padding: '0' }">
                     <span class="input_file_ext"><i class="el-icon-document"></i>{{ file | fileExtension }}</span>
                     <div style="padding: 10px; text-align: center;">
                         <a :href="file" target="_blank">{{ file | filename }}</a>

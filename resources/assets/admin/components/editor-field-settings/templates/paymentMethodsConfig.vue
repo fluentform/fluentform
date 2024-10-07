@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <el-label slot="label" :label="listItem.label" :helpText="listItem.help_text" />
+            <el-label :label="listItem.label" :helpText="listItem.help_text" />
         </template>
         <div v-if="isEmpty(value)">
             {{ $t('No Active Payment Method Found.Please configure from Fluent Forms Settings') }}

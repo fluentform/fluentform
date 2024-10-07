@@ -4,9 +4,11 @@
             <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
         <el-input type="number" v-model.number="sizeInput" class="input-with-select">
-            <el-select v-model="max_file_size._valueFrom" slot="prepend" :placeholder="$t('Select')">
-                <el-option v-for="(_, unit) in byteOptions" :label="unit" :value="unit" :key="unit"></el-option>
-            </el-select>
+            <template #prepend>
+                <el-select v-model="max_file_size._valueFrom" :placeholder="$t('Select')">
+                    <el-option v-for="(_, unit) in byteOptions" :label="unit" :value="unit" :key="unit"></el-option>
+                </el-select>
+            </template>
         </el-input>
     </el-form-item>
 </template>

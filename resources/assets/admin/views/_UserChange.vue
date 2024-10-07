@@ -1,13 +1,17 @@
 <template>
     <div class="ff_entry_user_change">
-        <el-button @click="showModal()" type="info" size="mini" icon="el-icon-edit" class="el-button--soft el-button--icon"></el-button>
+        <el-button @click="showModal()" type="info" size="small" class="el-button--soft el-button--icon">
+            <template #icon>
+                <i class="el-icon-edit"></i>
+            </template>
+        </el-button>
         <el-dialog
             :append-to-body="true"
             v-if="showing_modal"
-            :visible.sync="showing_modal"
+            v-model="showing_modal"
             width="40%"
         >
-            <template slot="title">
+            <template #header>
                 <h4>{{$t('Select User for this submission')}}</h4>
             </template>
             <div class="ff_uc_body mt-4">
@@ -36,7 +40,7 @@
                 </el-select>
             </div>
             <div class="dialog-footer mt-4">
-                <el-button type="primary" :disabled="!selected_id || selected_id == submission.user_id" @click="saveUser()">
+                <el-button type="primary" :disabled="!selected_id || selected_id === submission.user_id" @click="saveUser()">
                     {{ $t('Change Submitter') }}
                 </el-button>
                 <el-button @click="showing_modal = false" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
@@ -45,7 +49,7 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
 export default {
     name: 'ChangeSubmissionUser',
     props: ['submission','entry_id'],

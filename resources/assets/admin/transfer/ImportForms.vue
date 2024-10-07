@@ -13,14 +13,14 @@
                 <el-form v-if="!importedForms" label-position="top">
                     <!--Select File-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
+                        <template #label>
                             {{ $t('Select File') }}
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
                                         {{ $t('Click the Choose File button to upload a Fluent Forms export file from your computer') }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>

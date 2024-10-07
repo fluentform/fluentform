@@ -56,10 +56,10 @@
                 </el-col>
             </el-row>
         </div>
-        <div slot="footer" class="dialog-footer mt-4">
+        <template #footer class="dialog-footer mt-4">
             <el-button @click="close()" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
             <el-button type="primary" @click="insert()">{{ $t('Insert') }}</el-button>
-        </div>
+        </template>
     </el-dialog>
 </template>
 

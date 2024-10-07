@@ -148,10 +148,10 @@
                 <p style="font-weight: bold;">{{ $t('Please cancel the subscription from ') }}{{payment_method}}
                     {{ $t('dashboard too.') }}</p>
             </div>
-            <span slot="footer" class="dialog-footer">
+            <template #footer class="dialog-footer">
                 <el-button @click="sub_cancel_modal = false">{{ $t('close') }}</el-button>
                 <el-button type="primary" @click="confirmCancel()">{{ $t('Yes, Cancel this subscription') }}</el-button>
-            </span>
+            </template>
         </el-dialog>
     </div>
 </template>

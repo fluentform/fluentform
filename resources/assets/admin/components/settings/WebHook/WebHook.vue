@@ -38,7 +38,7 @@
                 <div class="ff-table-wrap" v-if="!show_edit">
                     <el-skeleton :loading="loading" animated :rows="6">
                         <el-table class="ff_table_s2" :data="tableData">
-                            <template slot="empty">
+                            <template #empty>
                                 {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
                                 <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
                             </template>

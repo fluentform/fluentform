@@ -13,15 +13,15 @@
                 <el-form label-position="top">
                     <!--Select Forms-->
                     <el-form-item class="ff-form-item">
-                        <template slot="label">
+                        <template #label>
                             {{ $t('Select Forms') }}
 
                             <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                <div slot="content">
+                                <template #content>
                                     <p>
                                         {{ $t('Select the forms you would like to export.') }}
                                     </p>
-                                </div>
+                                </template>
 
                                 <i class="ff-icon ff-icon-info-filled text-primary"></i>
                             </el-tooltip>

@@ -66,15 +66,16 @@
             </template>
 
             <el-form-item class="ff-form-item">
-                <el-label
-                    slot="label"
-                    :label="$t('Media Alt Text')"
-                    :helpText="
-                        $t(
-                            'Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend'
-                        )
-                    "
-                ></el-label>
+                <template #label>
+                    <el-label
+                        :label="$t('Media Alt Text')"
+                        :helpText="
+                            $t(
+                                'Alt text is a short description of an image that will help people with visual impairment. This label is not visible in your frontend'
+                            )
+                        "
+                    ></el-label>
+                </template>
                 <el-input type="textarea" v-model="pref.alt_text" show-input></el-input>
             </el-form-item>
         </template>

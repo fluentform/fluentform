@@ -1,9 +1,9 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
         <el-dialog :visible="visibility" :before-close="close">
-            <span slot="title" class="el-dialog__title">
+            <template #title class="el-dialog__title">
                 {{ $t('Add a New Form') }}
-            </span>
+            </template>
             <el-form :model="{}" label-position="top" @submit.native.prevent="add">
                 <el-form-item :label="$t('Your Form Name')">
                     <el-input class="addNewForm" v-model="form_title" type="text"
@@ -11,13 +11,13 @@
                 </el-form-item>
             </el-form>
 
-            <span slot="footer" class="dialog-footer">
+            <template #footer class="dialog-footer">
                 <el-button @click="close">{{ $t('Cancel') }}</el-button>
                 <el-button :loading="loading" type="primary" @click="add">
                     <span v-if="loading">{{ $t('Creating Form...') }}</span>
                     <span v-else>{{ $t('Add Form') }}</span>
                 </el-button>
-            </span>
+            </template>
         </el-dialog>
     </div>
 </template>

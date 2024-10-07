@@ -16,14 +16,14 @@
                 :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
             />
 
-            <div slot="title">
+            <template #title>
                 <b>
                     {{ $t('Choose a pre - made form template or') }}
                     <a href="#" type="info" @click.prevent="createForm('blank_form')">
                         {{ $t('create a blank form') }}
                     </a>
                 </b>
-            </div>
+            </template>
 
             <div class="form_action_navigations">
                 <div class="form_item_group">

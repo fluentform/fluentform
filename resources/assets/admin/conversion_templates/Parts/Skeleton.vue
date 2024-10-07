@@ -24,7 +24,7 @@
                         <p>{{ $t('Share your form by unique URL or copy and paste the ') }}<em>shorcode</em>{{ $t(' to embed in your page and post') }}</p>
                     </div>
                     <div v-if="(active_tab == 'design' && has_pro) || active_tab == 'meta'" class="ffc_design_submit">
-                        <el-button icon="el-icon-success" size="medium" type="primary" @click="saveDesignSettings()">
+                        <el-button icon="el-icon-success" size="default" type="primary" @click="saveDesignSettings()">
                             {{ $t('Save Settings') }}
                         </el-button>
                     </div>

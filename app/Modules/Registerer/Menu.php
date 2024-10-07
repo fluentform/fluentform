@@ -174,7 +174,7 @@ class Menu
         Vite::registerScript(
             'fluentform_form_entries',
             'assets/admin/form_entries_app.js',
-            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
+            ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
@@ -182,23 +182,7 @@ class Menu
         Vite::registerScript(
             'fluentform_all_entries',
             'assets/admin/AllEntries/all-entries.js',
-            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
-            FLUENTFORM_VERSION,
-            true
-        );
-
-        Vite::registerStaticScript(
-            'fluentform_chart_js',
-            'assets/libs/chartjs/chart.js',
-            [],
-            FLUENTFORM_VERSION,
-            true
-        );
-
-        Vite::registerStaticScript(
-            'fluentform_vue_chart_js',
-            'assets/libs/chartjs/vue-chartjs.js',
-            [],
+            ['jquery'],
             FLUENTFORM_VERSION,
             true
         );
@@ -291,26 +275,24 @@ class Menu
         $formId = intval($this->app->request->get('form_id'));
 
         if ('fluent_forms' == $page && $route && $formId) {
-            if (true) {
-                wp_enqueue_style('fluentform_settings_global');
-                wp_enqueue_script('clipboard');
-                wp_enqueue_script('copier');
+            wp_enqueue_style('fluentform_settings_global');
+            wp_enqueue_script('clipboard');
+            wp_enqueue_script('copier');
 
-                if (Acl::hasPermission('fluentform_forms_manager', $formId)) {
-                    if ('settings' == $route) {
-                        if (function_exists('wp_enqueue_editor')) {
-                            add_filter('user_can_richedit', function ($status) {
-                                return true;
-                            });
+            if (Acl::hasPermission('fluentform_forms_manager', $formId)) {
+                if ('settings' == $route) {
+                    if (function_exists('wp_enqueue_editor')) {
+                        add_filter('user_can_richedit', function ($status) {
+                            return true;
+                        });
 
-                            wp_enqueue_editor();
-                            wp_enqueue_media();
-                        }
-                        do_action('fluentform/loading_settings_assets', $formId);
-                        wp_enqueue_script('fluentform_form_settings');
-                    } elseif ('editor' == $route) {
-                        $this->enqueueEditorAssets();
+                        wp_enqueue_editor();
+                        wp_enqueue_media();
                     }
+                    do_action('fluentform/loading_settings_assets', $formId);
+                    wp_enqueue_script('fluentform_form_settings');
+                } elseif ('editor' == $route) {
+                    $this->enqueueEditorAssets();
                 }
             }
         } elseif ('fluent_forms' == $page) {
@@ -711,7 +693,8 @@ class Menu
     /**
      * Remove the inactive addOn menu items
      *
-     * @param string $addOn
+     * @param $settingsMenus
+     * @param $form_id
      *
      * @return boolean
      */
@@ -759,7 +742,7 @@ class Menu
     public function renderForms()
     {
         if (!get_option('_fluentform_installed_version')) {
-            (new ActivationHandler())->migrate();
+            (new ActivationHandler($this->app))->migrate();
         }
 
         if ($allowForms = FormManagerService::getUserAllowedForms()) {

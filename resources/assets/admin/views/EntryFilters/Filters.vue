@@ -15,14 +15,19 @@
                 width="450"
                 class="ff_contact_filter_pop"
                 v-model="addVisible"
-                trigger="manual">
+                trigger="click">
                 <el-cascader-panel @change="maybeSelected"
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button slot="reference" @click="addVisible = !addVisible" size="small" icon="el-icon-plus">
-                    {{ $t('Add') }}
-                </el-button>
+                <template #reference>
+                    <el-button @click="addVisible = !addVisible" size="small">
+                        {{ $t('Add') }}
+                        <template #icon>
+                            <i class="el-icon-plus"></i>
+                        </template>
+                    </el-button>
+                </template>
             </el-popover>
             {{ $t(add_label) }}
             <el-button style="float: right;" @click="$emit('maybeRemove')" size="mini" type="danger"
@@ -34,23 +39,25 @@
                 :placement="isRTL ? 'left' : 'right'"
                 width="450"
                 v-model="addVisible"
-                trigger="manual">
+                trigger="click">
                 <el-cascader-panel @change="maybeSelected"
                                    style="width: 100%"
                                    :options="filterOptions"
                                    v-model="new_item"/>
-                <el-button @click="addVisible = !addVisible" slot="reference" size="small" icon="el-icon-plus">
-                    {{ $t('Add') }}
-                </el-button>
+                <template #reference>
+                    <el-button @click="addVisible = !addVisible" size="small" icon="el-icon-plus">
+                        {{ $t('Add') }}
+                    </el-button>
+                </template>
             </el-popover>
             {{ $t(add_label) }}
         </div>
     </div>
 </template>
-<script type="text/babel">
-import FilterItem from './_FilterItem';
-import popover from '../../../common/input-popover-dropdown';
-import each from 'lodash/each';
+<script>
+import FilterItem from './_FilterItem.vue';
+import popover from '../../../common/input-popover-dropdown.vue';
+import each from 'lodash/each.js';
 export default {
     name: 'RichContactFilter',
     components: {
@@ -101,7 +108,7 @@ export default {
                     }
                 });
             });
-            return options
+            return options;
         }
     },
     methods: {

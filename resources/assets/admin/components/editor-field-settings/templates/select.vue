@@ -1,7 +1,7 @@
 <template>
     <el-form-item>
         <template #label>
-            <el-label slot="label" :label="listItem.label" :helpText="listItem.help_text"></el-label>
+            <el-label :label="listItem.label" :helpText="listItem.help_text"></el-label>
         </template>
 
         <el-select

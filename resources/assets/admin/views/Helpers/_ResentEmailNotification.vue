@@ -1,15 +1,14 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="dialogVisible=true" type="info" size="medium">{{ $t(btn_text) }}</el-button>
+        <el-button v-if="element_type === 'button'" @click="dialogVisible=true" type="info" size="large">{{ $t(btn_text) }}</el-button>
         <el-dialog
             top="60px"
             @before-close="resetData()"
             :append-to-body="true"
-            :visible.sync="dialogVisible"
+            v-model="dialogVisible"
             :width="has_pro ? '36%' : '50%'"
         >
-
-            <template slot="title">
+            <template #header>
                 <h4>{{$t('Choose Email Notification')}}</h4>
             </template>
 
@@ -27,11 +26,11 @@
                     </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Send To')">
                         <el-radio-group v-model="form.send_to_type" class="el-radio-group-info">
-                            <el-radio-button label="default">{{ $t('Default Recipient') }}</el-radio-button>
-                            <el-radio-button label="custom">{{ $t('Custom Recipient') }}</el-radio-button>
+                            <el-radio-button value="default">{{ $t('Default Recipient') }}</el-radio-button>
+                            <el-radio-button value="custom">{{ $t('Custom Recipient') }}</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
-                    <template v-if="form.send_to_type == 'custom'">
+                    <template v-if="form.send_to_type === 'custom'">
                         <el-form-item class="ff-form-item" :label="$t('Recipient')">
                             <el-input 
                                 v-model="form.send_to_custom_email"
@@ -41,7 +40,7 @@
                 </el-form>
                 <div v-if="error_message" v-html="error_message" class="ff-error"></div>
                 <div v-if="success_message" v-html="success_message" class="ff-success"></div>
-                <div slot="footer" class="dialog-footer mt-5">
+                <div class="dialog-footer mt-5">
                     <btn-group class="ff_btn_group_half">
                         <btn-group-item>
                             <el-button @click="dialogVisible = false" type="info" class="el-button--soft">{{ $t('Cancel') }}</el-button>
@@ -50,8 +49,6 @@
                             <el-button v-loading="sending" :disabled="!isActive" type="primary" @click="send()">{{ $t('Resend this notification') }}</el-button>
                         </btn-group-item>
                     </btn-group>
-                    
-                    
                 </div>
             </div>
 

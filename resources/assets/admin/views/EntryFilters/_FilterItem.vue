@@ -6,7 +6,7 @@
             <span v-if="itemConfig.help">
                 <el-tooltip class="item" effect="dark" placement="top-start">
                     <i class="el-icon el-icon-info"></i>
-                    <span slot="content" v-html="itemConfig.help"></span>
+                    <template #content v-html="itemConfig.help"></template>
                 </el-tooltip>
             </span>
         </td>

@@ -6,8 +6,11 @@
                     {{$t('Submission Notes')}}
                 </div>
                 <div class="entry_info_box_actions">
-                    <el-button @click="add_note_box = !add_note_box" size="medium" type="primary" icon="el-icon-plus" class="el-button--soft">
+                    <el-button @click="add_note_box = !add_note_box" size="default" type="primary" class="el-button--soft">
                         {{ $t('Add Note') }}
+                        <template #icon>
+                            <i class="el-icon-plus"></i>
+                        </template>
                     </el-button>
                 </div>
             </card-head-group>
@@ -23,7 +26,7 @@
                                 :placeholder="$t('Please Provide Note Content')"
                                 v-model="new_note.content">
                             </el-input>
-                            <el-button :loading="isAddingNote" @click="addNewNote()" size="medium" type="info">
+                            <el-button :loading="isAddingNote" @click="addNewNote()" size="default" type="info">
                                 {{ $t('Submit Note') }}
                             </el-button>
                         </div>
@@ -34,7 +37,7 @@
                                 class="wpf_each_entry"
                             >
                                 <div class="wpf_entry_label">
-                                    {{activity.name}} - {{ activity.created_at }} <span v-show="api_log == 'yes'" class="ff_tag">{{activity.meta_key}}</span>
+                                    {{activity.name}} - {{ activity.created_at }} <span v-show="api_log === 'yes'" class="ff_tag">{{activity.meta_key}}</span>
                                 </div>
                                 <div class="wpf_entry_value" v-html="activity.value"></div>
                             </div>
@@ -58,7 +61,7 @@
     </card>
 </template>
 
-<script type="text/babel">
+<script>
     import chunk from 'lodash/chunk';
     import Card from '@/admin/components/Card/Card.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';

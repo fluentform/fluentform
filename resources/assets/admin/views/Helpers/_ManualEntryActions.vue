@@ -1,22 +1,22 @@
 <template>
     <div class="ff_email_resend_inline">
-        <el-button v-if="element_type == 'button'" @click="openModal()" type="info" size="medium">
+        <el-button v-if="element_type === 'button'" @click="openModal()" type="info" size="large">
             {{ $t(btn_text) }}
         </el-button>
         <el-dialog
             top="60px"
             @before-close="resetData()"
             :append-to-body="true"
-            :visible.sync="dialogVisible"
+            v-model="dialogVisible"
             :width="has_pro ? '70%' : '45%'"
         >
-            <template slot="title">
+            <template #title>
                 <h4>{{$t('Choose an Action/Integration Feed and Replay')}}</h4>
             </template>
 
             <div v-if="has_pro" class="mt-4">
                 <div v-loading="loading" :element-loading-text="$t('Loading Feeds...')" class="ff_notification_feeds">
-                    <el-checkbox class="mb-3" true-label="yes" false-label="no" v-model="verify_condition">
+                    <el-checkbox class="mb-3" true-value="yes" false-value="no" v-model="verify_condition">
                         {{ $t('Check Conditional Logic when replaying a feed action') }}
                     </el-checkbox>
 

@@ -118,9 +118,9 @@
 </template>
 
 <script type="text/babel">
-import ReportCard from './reportCard';
-import each from 'lodash/each';
-import EntriesChart from '../../AllEntries/Components/chartView';
+import ReportCard from './reportCard.vue';
+import each from 'lodash/each.js';
+import EntriesChart from '../../AllEntries/Components/chartView.vue';
 import Card from '@/admin/components/Card/Card.vue';
 import CardHead from '@/admin/components/Card/CardHead.vue';
 import CardBody from '@/admin/components/Card/CardBody.vue';

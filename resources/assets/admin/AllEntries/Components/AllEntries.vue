@@ -7,18 +7,18 @@
             <section-head-content>
                 <btn-group as="div">
                     <btn-group-item as="div">
-                        <el-button @click="showImportEntriesModal = true" type="primary" class="el-button">
+                        <el-button @click="showImportEntriesModal = true" type="primary" class="el-button" size="large">
                             {{ $t('Import Entries') }}
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
-                        <el-button @click="toggleChart()" type="primary" class="el-button--soft-2">
-                            {{ chart_status == 'yes' ? $t('Hide Chart') : $t('Show Chart')}}
+                        <el-button @click="toggleChart()" type="primary" class="el-button--soft-2" size="large">
+                            {{ chart_status === 'yes' ? $t('Hide Chart') : $t('Show Chart')}}
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'" size="large">
                                 <span>{{ $t('Filter') }}</span>
                                 <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
@@ -26,11 +26,11 @@
                             <div v-if="advancedFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                        <el-radio value="all">All</el-radio>
-                                        <el-radio value="today">Today</el-radio>
-                                        <el-radio value="yesterday">Yesterday</el-radio>
-                                        <el-radio value="last-week">Last Week</el-radio>
-                                        <el-radio value="last-month">Last Month</el-radio>
+                                        <el-radio value="all">{{ $t('All') }}</el-radio>
+                                        <el-radio value="today">{{ $t('Today') }}</el-radio>
+                                        <el-radio value="yesterday">{{ $t('Yesterday') }}</el-radio>
+                                        <el-radio value="last-week">{{ $t('Last Week') }}</el-radio>
+                                        <el-radio value="last-month">{{ $t('Last Month') }}</el-radio>
                                     </el-radio-group>
                                 </div>
                                 <div class="ff_advanced_search_date_range">
@@ -54,7 +54,7 @@
             </section-head-content>
         </section-head>
 
-        <div v-if="chart_status == 'yes'" ref="entry_chart" class="entry_chart mt-4 mb-4">
+        <div v-if="chart_status === 'yes'" ref="entry_chart" class="entry_chart mt-4 mb-4">
             <entry-chart :form_id="selectedFormId" :date_range="filter_date_range" :entry_status="entry_status" ></entry-chart>
         </div>
 
@@ -105,9 +105,11 @@
                                 clearable
                                 v-model="search"
                                 :placeholder="$t('Search Forms')"
-                                prefix-icon="el-icon-search"
                                 class="ff-input-s1"
                             >
+                                <template #prefix>
+                                    <i class="el-icon-search"></i>
+                                </template>
                             </el-input>
                         </div>
                     </el-col>
@@ -128,9 +130,9 @@
                             <el-table-column :label="$t('Form')" sortable prop="form.title" width="400"></el-table-column>
                             <el-table-column width="150" prop="status" sortable :label="$t('Status')">
                                 <template #default="scope">
-                                    <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
-                                    <span v-else-if="scope.row.status ==  'unread' ">{{$t('Unread')}}</span>
-                                    <span v-else>{{scope.row.status|ucFirst}}</span>
+                                    <span v-if="scope.row.status === 'read' ">{{$t('Read')}}</span>
+                                    <span v-else-if="scope.row.status === 'unread' ">{{$t('Unread')}}</span>
+                                    <span v-else>{{ucFirst(scope.row.status)}}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
@@ -170,12 +172,12 @@
 </template>
 
 <script type="text/babel">
-import EntryChart from './chartView';
+import EntryChart from './chartView.vue';
 import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
 import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
 import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
-import {scrollTop} from '@/admin/helpers';
+import {scrollTop} from '@/admin/helpers.js';
 import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
 
 export default {
@@ -211,7 +213,7 @@ export default {
                         text: 'Yesterday',
                         onClick(picker) {
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24);
                             picker.$emit('pick', [start, start]);
                         }
                     },
@@ -253,7 +255,7 @@ export default {
     },
     methods: {
         fetchEntries(type) {
-            if (type == 'reset') {
+            if (type === 'reset') {
                 this.paginate.current_page = 1;
             }
 	        if (this.advancedFilter) {
@@ -316,7 +318,7 @@ export default {
             return amount + ' ' + row.currency;
         },
         toggleChart() {
-            if (this.chart_status == 'yes') {
+            if (this.chart_status === 'yes') {
                 this.chart_status = 'no';
             } else {
                 this.chart_status = 'yes';
@@ -327,15 +329,15 @@ export default {
 			this.radioOption = '';
 			this.fetchEntries();
         },
-        resetAdvancedFilter() {
-            this.radioOption = "";
-			this.filter_date_range = null;
-            this.fetchEntries();
-        }
+        ucFirst (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        },
     },
     computed: {
 	    hasEnabledDateFilter() {
-			return !!(this.radioOption && this.radioOption != 'all' ||
+			return !!(this.radioOption && this.radioOption !== 'all' ||
 				(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
             );
         }
@@ -370,13 +372,6 @@ export default {
             const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
             this.filter_date_range = [startDate, endDate];
             this.fetchEntries();
-        }
-    },
-    filters: {
-        ucFirst: function (value) {
-            if (!value) return ''
-            value = value.toString()
-            return value.charAt(0).toUpperCase() + value.slice(1)
         }
     },
     mounted() {

@@ -738,6 +738,16 @@ label.el-radio, label.el-checkbox {
   border-radius: $border-radius;
   top: 100%;
   margin-top: 10px;
+  .ff_advanced_search_radios {
+    .el-radio-group {
+      align-items: flex-start;
+    }
+  }
+  .ff_advanced_search_date_range {
+    .el-date-editor {
+      width: 100%;
+    }
+  }
   &_date_range {
     background-color: #ececec;
     padding: 14px;

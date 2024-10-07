@@ -3,7 +3,7 @@
         <el-dialog width="60%" :modal-append-to-body="true" :visible="visibility" :title="$t('Select a Form')" :before-close="close">
             <el-form v-loading="loading" class="text-center" label-position="top" @submit.native.prevent="select">
                 <el-form-item :label="$t('Select a form to view it\'s entries')">
-                    <template slot="label">
+                    <template #label>
                         <label>{{ $t('Select a form to view it\'s entries') }}</label>
                     </template>
                     <el-select v-model="formId" :placeholder="$t('Select form')" @change="select">

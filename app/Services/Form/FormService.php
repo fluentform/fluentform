@@ -608,7 +608,7 @@ class FormService
                 
                 $labels = apply_filters('fluentform/all_entry_labels_with_payment', $labels, false, $form);
             }
-            
+
             return [
                 'inputs' => $inputs,
                 'labels' => $labels,

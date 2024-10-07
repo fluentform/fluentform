@@ -121,7 +121,7 @@
                                 <h6>{{ $t('Post Fields Mapping') }}</h6>
                             </div>
                             <div class="ff-table-container">
-                                <el-table :data="feed.value.post_fields_mapping" size="medium">
+                                <el-table :data="feed.value.post_fields_mapping" size="default">
                                     <el-table-column label="#" type="index"/>
                                     <el-table-column :label="$t('Post Fields')">
                                         <template #default="scope">

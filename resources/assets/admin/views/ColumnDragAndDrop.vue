@@ -32,10 +32,10 @@
         </div>
 
         <div class="mt-5">
-            <el-button type="primary" @click="saveColumnOrder()" size="medium">
+            <el-button type="primary" @click="saveColumnOrder()" size="default">
                 {{ $t('Save') }}
             </el-button>
-            <el-button @click="resetColumnOrder()" type="info" size="medium" class="el-button--soft">
+            <el-button @click="resetColumnOrder()" type="info" size="default" class="el-button--soft">
                 {{ $t('Reset') }}
             </el-button>
         </div>

@@ -8,9 +8,9 @@
             :model-value="visibility"
             @update:model-value="$emit('update:visibility', $event)"
         >
-            <div slot="title">
+            <template #title>
                 <h4>{{$t('Select Post Type')}}</h4>
-            </div>
+            </template>
             <div v-if="hasPro" class="ff_post_type_action_wrap mt-4">
                 <el-select v-model="post_type" class="w-100 ff_post_type_option mb-4">
                     <el-option

@@ -32,7 +32,6 @@
             <el-form-item>
                 <template #label>
                     <el-label
-                        slot="label"
                         :label="$t('Amount Label')"
                         :helpText="$t('Please Provide the Amount Label')"
                     />

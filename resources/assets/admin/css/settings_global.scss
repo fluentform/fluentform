@@ -1343,4 +1343,28 @@ span + .ff_payment_badge{
     }
   }
 }
+
+.ff_filter_form_select {
+  .el-select__input-wrapper {
+    input {
+      border: none;
+    }
+  }
+}
+
+.ff_btn_group_item {
+  .el-select {
+    input {
+      padding: 0;
+      width: inherit !important;
+      border: none;
+    }
+  }
+}
+
+.fluentform-entry-container {
+  .el-row {
+    align-items: flex-start;
+  }
+}
 @import "../styles/responsive";

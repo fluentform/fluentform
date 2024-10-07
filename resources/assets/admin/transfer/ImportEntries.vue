@@ -10,15 +10,15 @@
 						<el-col :lg="12" :md="24">
 							<!--Select Forms-->
 							<el-form-item class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Select Forms') }}
 
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Select the form you would like to map entries.') }}
 											</p>
-										</div>
+										</template>
 
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
@@ -34,14 +34,14 @@
 						<el-col :lg="12" :md="24">
 							<!--File Type-->
 							<el-form-item>
-								<template slot="label">
+								<template #label>
 									{{ $t('File Type') }}
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Choose File type you would like to import') }}
 											</p>
-										</div>
+										</template>
 
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
@@ -55,14 +55,14 @@
 						<el-col :span="24">
 							<!--Csv Delimiter-->
 							<el-form-item v-if="is_csv_file_type" class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Csv Delimiter') }}
 									<el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-										<div slot="content">
+										<template #content>
 											<p>
 												{{ $t('Select your csv file delimiter') }}
 											</p>
-										</div>
+										</template>
 										<i class="ff-icon ff-icon-info-filled text-primary"></i>
 									</el-tooltip>
 								</template>
@@ -77,7 +77,7 @@
 
 							<!--Select File-->
 							<el-form-item class="ff-form-item">
-								<template slot="label">
+								<template #label>
 									{{ $t('Select File') }}
 								</template>
 								<p>{{ file_upload_info }}</p>
@@ -107,7 +107,7 @@
 							:visible="show_mapping_dialog"
 							:before-close="closeInputSelection"
 						>
-							<template slot="title">
+							<template #title>
 								<div class="el-dialog__header_group">
 									<h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
 								</div>
@@ -177,7 +177,7 @@
 								</template>
 							</div>
 
-							<div slot="footer">
+							<template #footer>
 								<el-row :gutter="24">
 									<el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
 										<el-checkbox v-model="delete_existing_submissions">
@@ -199,7 +199,7 @@
 										</p>
 									</el-col>
 								</el-row>
-		                    </div>
+		                    </template>
 						</el-dialog>
 					</div>
 				</el-form>

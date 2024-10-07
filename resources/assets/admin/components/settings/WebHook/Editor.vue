@@ -151,10 +151,11 @@
                             :placeholder="$t('Enter Custom Header')"
                             v-if="editing_item.custom_header_keys[headerKey]"
                             v-model="editing_item.request_headers[headerKey].key">
+                            <template #append>
                             <el-button
-                                slot="append"
                                 icon="el-icon-close"
                                 @click="hideCustomHeaderKeyInput(headerKey)"></el-button>
+                            </template>
                         </el-input>
                     </td>
                     <td>
@@ -186,10 +187,11 @@
                             :placeholder="$t('Enter Value')"
                             v-if="editing_item.custom_header_values[headerKey]"
                             v-model="editing_item.request_headers[headerKey].value">
+                            <template #append>
                             <el-button
-                                slot="append"
                                 icon="el-icon-close"
                                 @click="hideCustomHeaderValueInput(headerKey)"></el-button>
+                            </template>
                         </el-input>
 
                         <div class="action-btns ml-2 mb-1">

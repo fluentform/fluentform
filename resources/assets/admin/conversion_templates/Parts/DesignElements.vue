@@ -2,7 +2,7 @@
     <div class="ffc_design_elements">
         <el-form label-position="left" :data="design_settings">
             <el-form-item class="fcc_label_top" :label="$t('Font')">
-                <el-select size="medium" v-model="design_settings.font_family" clearable filterable :placeholder="$t('Use System Default')">
+                <el-select size="default" v-model="design_settings.font_family" clearable filterable :placeholder="$t('Use System Default')">
                     <el-option-group
                         v-for="(groups, groupName) in fonts"
                         :key="groupName"

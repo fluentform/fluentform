@@ -90,7 +90,7 @@
                             </div>
                             <img :src="instructionImage" alt=""/>
                             <el-dialog :visible.sync="introVisible" :append-to-body="true" width="60%">
-                                <div slot="title">
+                                <template #header>
                                     <h5 class="mb-2">
                                         {{ $t('How to create a form') }}
                                     </h5>

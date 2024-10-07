@@ -1,18 +1,42 @@
-const Pie = window.VueChartJs.Pie;
+import { Pie } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js';
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
-    extends: Pie,
+    name: 'PieChart',
+    components: { Pie },
     props: {
-        chartdata: {
+        chartData: {
             type: Object,
-            default: null
+            required: true
         },
         options: {
             type: Object,
-            default: null
+            default: () => ({})
         }
     },
-    mounted () {
-        this.renderChart(this.chartdata, this.options)
-    }
-}
+    methods: {
+        renderChart() {
+            this.$refs.chart.updateChart();
+        }
+    },
+    mounted() {
+        this.renderChart();
+    },
+    watch: {
+        chartData: {
+            handler() {
+                this.renderChart();
+            },
+            deep: true
+        },
+        options: {
+            handler() {
+                this.renderChart();
+            },
+            deep: true
+        }
+    },
+    template: '<Pie ref="chart" :data="chartData" :options="options" />'
+};

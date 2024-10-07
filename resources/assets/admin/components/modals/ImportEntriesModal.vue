@@ -1,24 +1,25 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
-        <el-dialog :model-value="visibility" @update:model-value="$emit('update:visibility', $event)" :before-close="close">
-            <span slot="title" class="el-dialog__title">
+        <el-dialog :model-value="visibility" @update:model-value="$emit('update:visibility', $event)"
+                   :before-close="close">
+            <template #title class="el-dialog__title">
               <h4> {{ $t('Import Entries') }}</h4>
-            </span>
+            </template>
             <div class="ff_import_entries">
                 <el-form v-if="app.hasPro && app.has_entries_import" label-position="top" class="mt-4">
                     <el-row :gutter="24">
                         <el-col v-if="!form_id" :lg="12" :md="24">
                             <!--Select Forms-->
                             <el-form-item class="ff-form-item">
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('Select Forms') }}
 
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>
                                                 {{ $t('Select the form you would like to map entries.') }}
                                             </p>
-                                        </div>
+                                        </template>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -34,14 +35,14 @@
                         <el-col :lg="form_id ? 24 : 12" :md="24">
                             <!--File Type-->
                             <el-form-item>
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('File Type') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>
                                                 {{ $t('Choose File type you would like to import') }}
                                             </p>
-                                        </div>
+                                        </template>
 
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -55,14 +56,14 @@
                         <el-col :span="24">
                             <!--Csv Delimiter-->
                             <el-form-item v-if="is_csv_file_type" class="ff-form-item">
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('Csv Delimiter') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
-                                        <div slot="content">
+                                        <template #content>
                                             <p>
                                                 {{ $t('Select your csv file delimiter') }}
                                             </p>
-                                        </div>
+                                        </template>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </template>
@@ -77,7 +78,7 @@
 
                             <!--Select File-->
                             <el-form-item class="ff-form-item">
-                                <template slot="label">
+                                <template #label>
                                     {{ $t('Select File') }}
                                 </template>
                                 <p>{{ file_upload_info }}</p>
@@ -89,9 +90,11 @@
                                 <p class="text-danger">{{ errorMessage }}</p>
                             </el-form-item>
 
-                            <el-button :type="is_imported ? 'success' : 'primary'" :icon="is_imported ? 'el-icon-success' : 'el-icon-right'" :disabled="is_imported" @click="goForMapFields"
+                            <el-button :type="is_imported ? 'success' : 'primary'"
+                                       :icon="is_imported ? 'el-icon-success' : 'el-icon-right'" :disabled="is_imported"
+                                       @click="goForMapFields"
                                        :loading="loading_map_columns">
-                                {{ is_imported ? $t('Imported') : $t('Next [Map Columns]')}}
+                                {{ is_imported ? $t('Imported') : $t('Next [Map Columns]') }}
                             </el-button>
                         </el-col>
                     </el-row>
@@ -101,12 +104,12 @@
                         <h5 class="mb-2"><a :href="entries_page_url"> {{ $t('View Entries') }}</a></h5>
                     </div>
                 </el-form>
-	            <notice v-else-if="app.hasPro" type="info-soft" class="ff_alert_between">
-		            <div>
-			            <h6 class="title">{{ $t('Update Needed.') }}</h6>
-			            <p class="text">{{ $t('Update fluentformpro to get access to import entries.') }}</p>
-		            </div>
-	            </notice>
+                <notice v-else-if="app.hasPro" type="info-soft" class="ff_alert_between">
+                    <div>
+                        <h6 class="title">{{ $t('Update Needed.') }}</h6>
+                        <p class="text">{{ $t('Update fluentformpro to get access to import entries.') }}</p>
+                    </div>
+                </notice>
                 <notice v-else type="danger-soft" class="ff_alert_between">
                     <div>
                         <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
@@ -132,7 +135,7 @@
                 :visible="show_mapping_dialog"
                 :before-close="closeInputSelection"
             >
-                <template slot="title">
+                <template #header>
                     <div class="el-dialog__header_group">
                         <h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
                     </div>
@@ -148,8 +151,8 @@
                         </el-col>
                     </el-row>
                     <hr/>
-                    <template v-for="(form_field, key) in form_fields">
-                        <el-row :gutter="24" :key="key">
+                    <template v-for="(form_field, key) in form_fields" :key="key">
+                        <el-row :gutter="24">
                             <el-col :lg="12" :sm="24">
                                 <span>{{ form_field.label }}</span>
                             </el-col>
@@ -181,8 +184,8 @@
                         </el-col>
                     </el-row>
                     <hr/>
-                    <template v-for="(submission_info_field, key) in submission_info_fields">
-                        <el-row :gutter="24" :key="key">
+                    <template v-for="(submission_info_field, key) in submission_info_fields" :key="key">
+                        <el-row :gutter="24">
                             <el-col :lg="12" :sm="24">
                                 <span>{{ submission_info_field.label }}</span>
                             </el-col>
@@ -202,7 +205,7 @@
                     </template>
                 </div>
 
-                <div slot="footer">
+                <template #footer>
                     <el-row :gutter="24">
                         <el-col :lg="12" :sm="24" style="align-self: center;text-align: left;">
                             <el-checkbox v-model="delete_existing_submissions">
@@ -224,179 +227,179 @@
                             </p>
                         </el-col>
                     </el-row>
-                </div>
+                </template>
             </el-dialog>
         </div>
     </div>
 </template>
 
 <script type="text/javascript">
-    import Notice from "@/admin/components/Notice/Notice.vue";
+import Notice from "@/admin/components/Notice/Notice.vue";
 
-    export default {
-        name: 'ImportEntriesModal',
-        components: {
-            Notice
+export default {
+    name: 'ImportEntriesModal',
+    components: {
+        Notice
+    },
+    props: {
+        visibility: Boolean,
+        form_id: Number,
+        app: Object
+    },
+    emits: ['update:visibility'],
+    data() {
+        return {
+            selected_form_id: this.form_id || (this.app.forms?.length > 0 ? this.app.forms[0].id : ''),
+            csv_delimiter: 'auto_guess',
+            file_type: 'json',
+            entries_page_url: '',
+            has_lots_of_entries: false,
+            submission_imported: false,
+            loading_map_columns: false,
+            loading_import_entries: false,
+            map_submission_info_fields: false,
+            delete_existing_submissions: false,
+            form_fields: null,
+            submission_info_fields: null,
+            mapping_fields: null,
+            show_mapping_dialog: false,
+            showError: false,
+            errorMessage: ''
+        }
+    },
+    watch: {
+        file_type() {
+            this.clear();
+            this.entries_page_url = '';
         },
-        props: {
-            visibility: Boolean,
-	        form_id: Number,
-            app: Object
+        selected_form_id() {
+            this.clear();
+            this.entries_page_url = '';
+        }
+    },
+    methods: {
+        clear() {
+            this.loading_map_columns = false;
+            this.loading_import_entries = false;
+            this.has_lots_of_entries = false;
+            this.submission_info_fields = null;
+            this.form_fields = null;
+            this.mapping_fields = null;
+            this.map_submission_info_fields = false;
+            this.delete_existing_submissions = false;
+            this.show_mapping_dialog = false;
+            this.$refs.fileButton.value = '';
         },
-        emits: ['update:visibility'],
-        data() {
-            return {
-                selected_form_id: this.form_id || (this.app.forms?.length > 0 ? this.app.forms[0].id : ''),
-                csv_delimiter: 'auto_guess',
-                file_type: 'json',
-                entries_page_url: '',
-                has_lots_of_entries: false,
-                submission_imported : false,
-                loading_map_columns: false,
-                loading_import_entries: false,
-                map_submission_info_fields: false,
-                delete_existing_submissions: false,
-                form_fields: null,
-                submission_info_fields: null,
-                mapping_fields: null,
-                show_mapping_dialog: false,
-                showError: false,
-                errorMessage: ''
-            }
-        },
-        watch: {
-            file_type() {
-                this.clear();
-                this.entries_page_url = '';
-            },
-            selected_form_id() {
-                this.clear();
-                this.entries_page_url = '';
-            }
-        },
-        methods: {
-            clear() {
+        goForMapFields() {
+            this.loading_map_columns = true;
+            this.showError = false;
+            if (this.form_fields && this.submission_info_fields) {
                 this.loading_map_columns = false;
-                this.loading_import_entries = false;
-                this.has_lots_of_entries = false;
-                this.submission_info_fields = null;
-                this.form_fields = null;
-                this.mapping_fields = null;
-                this.map_submission_info_fields = false;
-                this.delete_existing_submissions = false;
-                this.show_mapping_dialog = false;
-                this.$refs.fileButton.value = '';
-            },
-            goForMapFields() {
-                this.loading_map_columns = true;
-                this.showError = false;
-                if (this.form_fields && this.submission_info_fields) {
-                    this.loading_map_columns = false;
-                    this.show_mapping_dialog = true;
-                    return;
-                }
-                const file = this.$refs.fileButton.files[0];
-                if (!file) {
-                    this.loading_map_columns = false;
-                    this.errorMessage = this.$t('Empty file');
-                    this.showError = true;
-                    return;
-                }
-                let data = new FormData();
-                data.append('form_id', this.selected_form_id);
-                data.append('file_type', this.file_type);
-                data.append('csv_delimiter', this.csv_delimiter);
-                data.append('file', file);
-                data.append('action', 'fluentform-import-entries-map-fields');
-                data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
-                jQuery
-                    .ajax({
-                        url: window.ajaxurl,
-                        type: 'POST',
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        success: (response) => {
-                            this.loading_map_columns = false;
-                            this.form_fields = response.data.form_fields;
-                            this.has_lots_of_entries = response.data.has_lots_of_entries;
-                            this.submission_info_fields = response.data.submission_info_fields;
-                            this.mapping_fields = response.data.mapping_fields;
-                            this.show_mapping_dialog = true;
-                            this.close();
-                        },
-                        error: (error) => {
-                            this.clear();
-                            this.errorMessage = error?.message || error?.responseJSON?.message;
-                            this.showError = true;
-                        }
-                    });
-            },
-            importEntries() {
-                this.loading_import_entries = true;
-                this.showError = true;
-                const file = this.$refs.fileButton.files[0];
-                if (!file) {
-                    this.loading_import_entries = false;
-                    this.errorMessage = this.$t('Empty file');
-                    this.showError = true;
-                    return;
-                }
-                let data = new FormData();
-                data.append('form_id', this.selected_form_id);
-                data.append('file_type', this.file_type);
-                data.append('csv_delimiter', this.csv_delimiter);
-                data.append('file', file);
-                data.append('delete_existing_submissions', this.delete_existing_submissions);
-                data.append('form_fields', JSON.stringify(this.form_fields));
-                data.append('submission_info_fields', JSON.stringify(this.submission_info_fields));
-                data.append('action', 'fluentform-import-entries');
-                data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
-                jQuery
-                    .ajax({
-                        url: window.ajaxurl,
-                        type: 'POST',
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        success: (response) => {
-                            this.close();
-                            this.$success(response.data.message)
-                            this.entries_page_url = response.data.entries_page_url;
-                            this.clear();
-                        },
-                        error: (error) => {
-                            this.errorMessage = error?.message || error?.responseJSON?.message;
-                            if (!this.errorMessage) {
-                                if (this.has_lots_of_entries) {
-                                    this.errorMessage = this.$t("Maximum execution time error, due to lot's of entries. Maybe fail importing some of entries. Please increase server maximum executing time and try again.");
-                                } else {
-                                    this.errorMessage = this.$t("Unknown Error");
-                                }
-                            }
-                            this.showError = true;
-                            this.clear();
-                        }
-                    });
-            },
-            closeInputSelection() {
-                this.show_mapping_dialog = false;
-                this.map_submission_info_fields = false;
-            },
-            close() {
-                this.$emit('update:visibility', false);
-            },
-        },
-        computed: {
-            is_csv_file_type() {
-                return this.file_type === 'csv';
-            },
-            file_upload_info() {
-                return this.is_csv_file_type ? this.$t('Please make sure your csv file delimiter is correct and has unique headers. Otherwise, it may fail to import') : this.$t('Select the FluentForms exported entries (.json) file. Otherwise, it may fail to import');
-            },
-            is_imported() {
-                return !!this.entries_page_url;
+                this.show_mapping_dialog = true;
+                return;
             }
+            const file = this.$refs.fileButton.files[0];
+            if (!file) {
+                this.loading_map_columns = false;
+                this.errorMessage = this.$t('Empty file');
+                this.showError = true;
+                return;
+            }
+            let data = new FormData();
+            data.append('form_id', this.selected_form_id);
+            data.append('file_type', this.file_type);
+            data.append('csv_delimiter', this.csv_delimiter);
+            data.append('file', file);
+            data.append('action', 'fluentform-import-entries-map-fields');
+            data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
+            jQuery
+                .ajax({
+                    url: window.ajaxurl,
+                    type: 'POST',
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: (response) => {
+                        this.loading_map_columns = false;
+                        this.form_fields = response.data.form_fields;
+                        this.has_lots_of_entries = response.data.has_lots_of_entries;
+                        this.submission_info_fields = response.data.submission_info_fields;
+                        this.mapping_fields = response.data.mapping_fields;
+                        this.show_mapping_dialog = true;
+                        this.close();
+                    },
+                    error: (error) => {
+                        this.clear();
+                        this.errorMessage = error?.message || error?.responseJSON?.message;
+                        this.showError = true;
+                    }
+                });
         },
-    };
+        importEntries() {
+            this.loading_import_entries = true;
+            this.showError = true;
+            const file = this.$refs.fileButton.files[0];
+            if (!file) {
+                this.loading_import_entries = false;
+                this.errorMessage = this.$t('Empty file');
+                this.showError = true;
+                return;
+            }
+            let data = new FormData();
+            data.append('form_id', this.selected_form_id);
+            data.append('file_type', this.file_type);
+            data.append('csv_delimiter', this.csv_delimiter);
+            data.append('file', file);
+            data.append('delete_existing_submissions', this.delete_existing_submissions);
+            data.append('form_fields', JSON.stringify(this.form_fields));
+            data.append('submission_info_fields', JSON.stringify(this.submission_info_fields));
+            data.append('action', 'fluentform-import-entries');
+            data.append('fluent_forms_admin_nonce', window.fluent_forms_global_var.fluent_forms_admin_nonce);
+            jQuery
+                .ajax({
+                    url: window.ajaxurl,
+                    type: 'POST',
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: (response) => {
+                        this.close();
+                        this.$success(response.data.message)
+                        this.entries_page_url = response.data.entries_page_url;
+                        this.clear();
+                    },
+                    error: (error) => {
+                        this.errorMessage = error?.message || error?.responseJSON?.message;
+                        if (!this.errorMessage) {
+                            if (this.has_lots_of_entries) {
+                                this.errorMessage = this.$t("Maximum execution time error, due to lot's of entries. Maybe fail importing some of entries. Please increase server maximum executing time and try again.");
+                            } else {
+                                this.errorMessage = this.$t("Unknown Error");
+                            }
+                        }
+                        this.showError = true;
+                        this.clear();
+                    }
+                });
+        },
+        closeInputSelection() {
+            this.show_mapping_dialog = false;
+            this.map_submission_info_fields = false;
+        },
+        close() {
+            this.$emit('update:visibility', false);
+        },
+    },
+    computed: {
+        is_csv_file_type() {
+            return this.file_type === 'csv';
+        },
+        file_upload_info() {
+            return this.is_csv_file_type ? this.$t('Please make sure your csv file delimiter is correct and has unique headers. Otherwise, it may fail to import') : this.$t('Select the FluentForms exported entries (.json) file. Otherwise, it may fail to import');
+        },
+        is_imported() {
+            return !!this.entries_page_url;
+        }
+    },
+};
 </script>

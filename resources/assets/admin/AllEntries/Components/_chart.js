@@ -1,78 +1,96 @@
-const Bar = window.VueChartJs.Bar;
-const mixins = window.VueChartJs.mixins;
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
-const {reactiveProp} = mixins;
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
-    extends: Bar,
-    mixins: [reactiveProp],
-    props: ['maxCumulativeValue'],
+    name: 'SubscriberChart',
+    components: { Bar },
+    props: ['chartData', 'maxCumulativeValue'],
     data() {
         return {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                legend: {
-                    display: false,
-                    labels: {
-                        fontColor: '#353537',
-                        boxWidth: 16,
-                        fontSize: 14
+                aspectRatio: 0.6,
+                height: 600,
+                plugins: {
+                    legend: {
+                        display: false,
+                        labels: {
+                            color: '#353537',
+                            boxWidth: 16,
+                            font: {
+                                size: 14
+                            }
+                        }
                     }
                 },
                 scales: {
-                    yAxes: [
-                        {
-                            id: 'byDate',
-                            type: 'linear',
-                            position: 'left',
-                            gridLines: {
-                                color: '#eee',
-                                drawOnChartArea: true,
-                                zeroLineColor: '#eee'
-                            },
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function(label, index, labels) {
-                                    // when the floored value is the same as the value we have a whole number
-                                    if (Math.floor(label) === label) {
-                                        return label;
-                                    }
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        id: 'byDate',
+                        display: false,
+                        grid: {
+                            color: '#eee',
+                            drawOnChartArea: true,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(label, index, labels) {
+                                if (Math.floor(label) === label) {
+                                    return label;
                                 }
                             }
                         }
-                    ],
-                    xAxes: [
-                        {
-                            gridLines: {
-                                color: '#eee',
-                                drawOnChartArea: true,
-                                zeroLineColor: '#eee'
-                            },
-                            ticks: {
-                                beginAtZero: true,
-                                autoSkip: true,
-                                maxTicksLimit: 10
-                            }
+                    },
+                    x: {
+                        grid: {
+                            color: '#eee',
+                            drawOnChartArea: true,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            minRotation: 45,
+                            beginAtZero: true,
+                            maxTicksLimit: 15
                         }
-                    ]
+                    }
                 },
-                drawBorder: false,
                 layout: {
                     padding: {
                         left: 0,
                         right: 0,
                         top: 0,
-                        bottom: 20
+                        bottom: 10
                     }
                 }
             }
         }
     },
-    methods: {},
-    mounted() {
-        // this.chartData is created in the mixin.
-        // If you want to pass options please create a local options object
-        this.renderChart(this.chartData, this.options)
-    }
+    methods: {
+        updateChart() {
+            this.$refs.chart.updateChart()
+        }
+    },
+    watch: {
+        chartData: {
+            handler() {
+                this.$nextTick(() => {
+                    this.updateChart()
+                })
+            },
+            deep: true
+        }
+    },
+    template: `
+        <Bar
+            :data="chartData"
+            :options="options"
+            ref="chart"
+        />
+    `
 }

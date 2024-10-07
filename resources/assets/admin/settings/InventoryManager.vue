@@ -14,7 +14,7 @@
                             type="primary"
                             icon="ff-icon ff-icon-plus"
                             @click="showForm()"
-                            size="medium"
+                            size="default"
                     >
                         {{ $t('Add Inventory') }}
                     </el-button>
@@ -122,9 +122,9 @@
                     width="36%"
                     class="ff_inventory_form"
             >
-                <div slot="title">
+                <template #header>
                     <h5>{{getModalTitle()}}</h5>
-                </div>
+                </template>
 
                 <el-form :data="inventory" label-position="top" class="mt-4">
                     <el-form-item>

@@ -4,10 +4,10 @@
     </div>
 </template>
 <script type="text/babel">
-    import AllEntries from './Components/AllEntries';
+    import AllEntries from './Components/AllEntries.vue';
 
     export default {
-        name: 'payment-settings',
+        name: 'AllEntriesApp',
         props: ['settings'],
         components: {
             AllEntries

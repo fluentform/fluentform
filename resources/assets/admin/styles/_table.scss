@@ -43,12 +43,6 @@
     .sort-caret{
         border-width: 4px;
     }
-    .sort-caret.ascending{
-        top: 7px;
-    }
-    .sort-caret.descending{
-        bottom: 8px;
-    }
     .cell {
         strong {
             color: $base-color;
