@@ -47,8 +47,8 @@
 									</el-tooltip>
 								</template>
 								<el-radio-group v-model="file_type">
-									<el-radio label="json">JSON (.json)</el-radio>
-									<el-radio label="csv">CSV (.csv)</el-radio>
+									<el-radio value="json">JSON (.json)</el-radio>
+									<el-radio value="csv">CSV (.csv)</el-radio>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
@@ -84,9 +84,11 @@
 								<input type="file" ref="fileButton" id="fileButton" class="file-input w-100"
 								       @click="clear">
 							</el-form-item>
-							<el-button :type="is_imported ? 'success' : 'primary'" :icon="is_imported ? 'el-icon-success' : 'el-icon-right'" :disabled="is_imported" @click="goForMapFields"
-							           :loading="loading_map_columns">
+							<el-button :type="is_imported ? 'success' : 'primary'" :disabled="is_imported" @click="goForMapFields" :loading="loading_map_columns">
 								{{ is_imported ? $t('Imported') : $t('Next [Map Columns]')}}
+                                <template #icon>
+                                    <i :class="is_imported ? 'el-icon-success' : 'el-icon-right'"></i>
+                                </template>
 							</el-button>
 						</el-col>
 					</el-row>
@@ -123,8 +125,8 @@
 									</el-col>
 								</el-row>
 								<hr/>
-								<template v-for="(form_field, key) in form_fields">
-									<el-row :gutter="24" :key="key">
+								<template v-for="(form_field, key) in form_fields" :key="key">
+									<el-row :gutter="24">
 										<el-col :lg="12" :sm="24">
 											<span>{{ form_field.label }}</span>
 										</el-col>
@@ -156,8 +158,8 @@
 									</el-col>
 								</el-row>
 								<hr/>
-								<template v-for="(submission_info_field, key) in submission_info_fields">
-									<el-row :gutter="24" :key="key">
+								<template v-for="(submission_info_field, key) in submission_info_fields" :key="key">
+									<el-row :gutter="24">
 										<el-col :lg="12" :sm="24">
 											<span>{{ submission_info_field.label }}</span>
 										</el-col>

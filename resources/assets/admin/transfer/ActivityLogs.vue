@@ -125,10 +125,13 @@
                                             <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
                                                 <el-button
                                                     class="el-button--icon"
-                                                    size="mini"
+                                                    size="small"
                                                     type="danger"
-                                                    icon="el-icon-delete"
-                                                />
+                                                >
+                                                    <template #icon>
+                                                        <i class="el-icon-delete"></i>
+                                                    </template>
+                                                </el-button>
                                             </remove>
                                         </btn-group-item>
                                     </btn-group>
@@ -156,9 +159,9 @@
     </div>
 </template>
 
-<script type="text/babel">
+<script>
     import each from 'lodash/each';
-    import remove from "../components/confirmRemove";
+    import remove from "../components/confirmRemove.vue";
     import Card from '@/admin/components/Card/Card.vue';
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';

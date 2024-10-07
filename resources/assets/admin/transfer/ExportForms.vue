@@ -34,7 +34,10 @@
                         </el-select>
                     </el-form-item>
 
-                    <el-button type="primary" icon="el-icon-success" @click="exportForms">
+                    <el-button type="primary" @click="exportForms" size="large">
+                        <template #icon>
+                            <i class="el-icon-success"></i>
+                        </template>
                         {{ $t('Export Forms') }}
                     </el-button>
                 </el-form>

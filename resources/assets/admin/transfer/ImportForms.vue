@@ -28,7 +28,10 @@
 
                         <input type="file" id="fileUpload" class="file-input ff_input_width" @click="clear">
                     </el-form-item>
-                    <el-button type="primary" icon="el-icon-success" @click="importForms" :loading="importing">
+                    <el-button type="primary" @click="importForms" :loading="importing" size="large">
+                        <template #icon>
+                            <i class="el-icon-success"></i>
+                        </template>
                         {{ $t('Import Forms') }}
                     </el-button>
                 </el-form>

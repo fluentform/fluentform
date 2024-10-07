@@ -83,8 +83,10 @@
                                     </remove>
                                 </btn-group-item>
                                 <btn-group-item>
-                                    <el-button @click="runActions()" type="info" size="mini">
-                                        <i class="mr-1 ff-icon-refresh"></i>
+                                    <el-button @click="runActions()" type="info" size="default">
+                                        <template #icon>
+                                            <i class="mr-1 ff-icon-refresh"></i>
+                                        </template>
                                         {{ $t('Run Selected Action') }}
                                     </el-button>
                                 </btn-group-item>
@@ -113,7 +115,7 @@
                             <el-table-column sortable prop="form_title" :label="$t('Form')"></el-table-column>
                             <el-table-column sortable prop="status" :label="$t('Status')" width="140">
                                 <template #default="props">
-                                    <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
+                                    <el-tag :type="`${props.row.status === 'failed' ? 'danger' : props.row.status === 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
@@ -128,8 +130,11 @@
                                 <template #default="props">
                                     <btn-group size="sm">
                                         <btn-group-item v-if="hasPro">
-                                            <el-tooltip  popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">
-                                                <el-button v-loading="replaying[props.row.id] ==true" class="el-button--icon" icon="el-icon-refresh" @click="runActions(props.row)" type="info" size="mini">
+                                            <el-tooltip popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">
+                                                <el-button v-loading="replaying[props.row.id]" class="el-button--icon" @click="runActions(props.row)" type="info" size="mini">
+                                                    <template #icon>
+                                                        <i class="el-icon-refresh"></i>
+                                                    </template>
                                                 </el-button>
                                             </el-tooltip>
                                         </btn-group-item>
@@ -139,8 +144,11 @@
                                                     class="el-button--icon"
                                                     size="mini"
                                                     type="danger"
-                                                    icon="el-icon-delete"
-                                                />
+                                                >
+                                                    <template #icon>
+                                                        <i class="el-icon-delete"></i>
+                                                    </template>
+                                                </el-button>
                                             </remove>
                                         </btn-group-item>
                                     </btn-group>
@@ -164,15 +172,13 @@
                     </el-skeleton>
                 </div>
             </div><!-- .ff_card_body -->
-
         </div><!-- .ff_card -->
-
     </div>
 </template>
 
-<script type="text/babel">
+<script>
   import each from 'lodash/each';
-  import remove from "../components/confirmRemove";
+  import remove from "../components/confirmRemove.vue";
   import { scrollTop } from '@/admin/helpers';
   import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
   import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";
