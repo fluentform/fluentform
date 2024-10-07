@@ -151,11 +151,11 @@
                           <b>
                               {{ $t('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.') }}
                           </b>
-                            <div class="mt-4">
-                                <el-button size="large">
-                                    <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
-                                </el-button>
-                            </div>
+                        </p>
+                        <p class="mt-3">
+                            <el-button size="large">
+                                <a href="https://wpmanageninja.com/docs/fluent-form/import-export/fluent-forms-migrator-caldera-forms-ninja-forms-gravity-forms/" target="_blank"> {{ $t('Learn More') }}</a>
+                            </el-button>
                         </p>
                     </el-skeleton>
                 </div>
