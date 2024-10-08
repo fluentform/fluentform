@@ -1,7 +1,7 @@
-import initNetPromoter from "./Pro/dom-net-promoter";
-import {initRepeatButtons, initRepeater} from './Pro/dom-repeat';
+import initNetPromoter from './Pro/dom-net-promoter';
+import { initRepeatButtons, initRepeater } from './Pro/dom-repeat';
 import ratingDom from './Pro/dom-rating';
-import formConditional from "./Pro/form-conditionals";
+import formConditional from './Pro/form-conditionals';
 import fileUploader from './Pro/file-uploader';
 import formSlider from './Pro/slider';
 import calculation from './Pro/calculations';
@@ -18,71 +18,86 @@ import calculation from './Pro/calculations';
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
-       function maybeUpdateDynamicLabels(workStep) {
-            jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
-                var ref = $(item).data('ref');
+        function maybeUpdateDynamicLabels(workStep) {
+            jQuery.each(
+                workStep.find('.ff_dynamic_value'),
+                function (index, item) {
+                    var ref = $(item).data('ref');
 
-                if (ref == 'payment_summary') {
-                    $theForm.trigger('calculate_payment_summary', {
-                        element: $(item)
+                    if (ref == 'payment_summary') {
+                        $theForm.trigger('calculate_payment_summary', {
+                            element: $(item),
+                        });
+                        return;
+                    }
+
+                    var refElement = $theForm.find(
+                        '.ff-el-form-control[name="' + ref + '"]',
+                    );
+
+                    var separator = ' ';
+
+                    if (!refElement.length) {
+                        refElement = $theForm
+                            .find(
+                                '.ff-field_container[data-name="' + ref + '"]',
+                            )
+                            .find('input');
+                    }
+
+                    if (!refElement.length) {
+                        // This may radio element / Checkbox element
+                        refElement = $theForm.find(
+                            '*[name="' + ref + '"]:checked',
+                        );
+                        if (!refElement.length) {
+                            refElement = $theForm.find(
+                                '*[name="' + ref + '[]"]:checked',
+                            );
+                            separator = ', ';
+                        }
+
+                        // maybe it's a multi-select item
+                        if (!refElement.length) {
+                            refElement = $theForm
+                                .find('*[name="' + ref + '[]"]')
+                                .find('option:selected');
+                            separator = ', ';
+                        }
+                    }
+
+                    var refValues = [];
+                    $.each(refElement, function () {
+                        let inputValue = $(this).val();
+                        // if(inputValue) {
+                        //     let tagName = $(this).prop("tagName");
+                        //     if (tagName == 'OPTION') {
+                        //         inputValue = $(this).text();
+                        //     } else if (tagName == 'SELECT') {
+                        //         inputValue = $(this).find('option:selected').text();
+                        //     } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
+                        //         inputValue = $(this).parent().find('span').html();
+                        //     }
+                        // }
+                        if (inputValue) {
+                            refValues.push(inputValue);
+                        }
                     });
-                    return;
-                }
 
-                var refElement = $theForm.find('.ff-el-form-control[name="' + ref + '"]');
-
-                var separator = ' ';
-
-                if (!refElement.length) {
-                    refElement = $theForm.find('.ff-field_container[data-name="' + ref + '"]').find('input');
-                }
-
-                if (!refElement.length) {
-                    // This may radio element / Checkbox element
-                    refElement = $theForm.find('*[name="' + ref + '"]:checked');
-                    if (!refElement.length) {
-                        refElement = $theForm.find('*[name="' + ref + '[]"]:checked');
-                        separator = ', ';
+                    let replaceValue = '';
+                    if (refValues.length) {
+                        replaceValue = refValues.join(separator);
+                    } else {
+                        replaceValue = $(item).data('fallback');
                     }
 
-                    // maybe it's a multi-select item
-                    if (!refElement.length) {
-                        refElement = $theForm.find('*[name="' + ref + '[]"]').find('option:selected');
-                        separator = ', ';
-                    }
-                }
-
-                var refValues = [];
-                $.each(refElement, function () {
-                    let inputValue = $(this).val();
-                    // if(inputValue) {
-                    //     let tagName = $(this).prop("tagName");
-                    //     if (tagName == 'OPTION') {
-                    //         inputValue = $(this).text();
-                    //     } else if (tagName == 'SELECT') {
-                    //         inputValue = $(this).find('option:selected').text();
-                    //     } else if (tagName == 'INPUT' && $(this).attr('type') == 'checkbox') {
-                    //         inputValue = $(this).parent().find('span').html();
-                    //     }
-                    // }
-                    if (inputValue) {
-                        refValues.push(inputValue);
-                    }
-                });
-
-                let replaceValue = '';
-                if (refValues.length) {
-                    replaceValue = refValues.join(separator);
-                } else {
-                    replaceValue = $(item).data('fallback');
-                }
-
-                $(this).html(replaceValue);
-            });
+                    $(this).html(replaceValue);
+                },
+            );
         }
 
         /*
-        * Normals
+         * Normals
          */
         fileUploader($, $theForm, form, window.fluentFormVars, formSelector);
         initRepeater($theForm);
@@ -92,20 +107,25 @@ import calculation from './Pro/calculations';
         ratingDom($, $theForm);
         initNetPromoter($, $theForm);
 
-        if($theForm.hasClass('ff-form-has-steps')) {
-            const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
+        if ($theForm.hasClass('ff-form-has-steps')) {
+            const sliderInstance = formSlider(
+                $,
+                $theForm,
+                window.fluentFormVars,
+                formSelector,
+            );
             sliderInstance.init();
             $theForm.on('update_slider', function (e, data) {
                 sliderInstance.updateSlider(
                     data.goBackToStep,
                     data.animDuration,
                     data.isScrollTop,
-                    data.actionType
+                    data.actionType,
                 );
             });
         }
 
-        if($theForm.hasClass('ff_has_dynamic_smartcode')) {
+        if ($theForm.hasClass('ff_has_dynamic_smartcode')) {
             $theForm.on('ff_render_dynamic_smartcodes', function (e, selector) {
                 maybeUpdateDynamicLabels($(selector));
             });
@@ -116,7 +136,6 @@ import calculation from './Pro/calculations';
 
             maybeUpdateDynamicLabels($theForm);
         }
-        
     });
 })(jQuery);
 
@@ -136,7 +155,9 @@ import calculation from './Pro/calculations';
             if (this_len === undefined || this_len > this.length) {
                 this_len = this.length;
             }
-            return this.substring(this_len - search.length, this_len) === search;
+            return (
+                this.substring(this_len - search.length, this_len) === search
+            );
         };
     }
 
@@ -152,5 +173,4 @@ import calculation from './Pro/calculations';
             return this.indexOf(search, start) !== -1;
         };
     }
-
 })(String.prototype);

@@ -6,37 +6,38 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d
 {
-    public static $prefixLengthsPsr4 = array(
-        'F' =>
-        array(
+    public static $prefixLengthsPsr4 = array (
+        'F' => 
+        array (
             'FluentForm\\Framework\\' => 21,
             'FluentForm\\Dev\\' => 15,
             'FluentForm\\App\\' => 15,
         ),
     );
 
-    public static $prefixDirsPsr4 = array(
-        'FluentForm\\Framework\\' =>
-        array(
+    public static $prefixDirsPsr4 = array (
+        'FluentForm\\Framework\\' => 
+        array (
             0 => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent',
         ),
-        'FluentForm\\Dev\\' =>
-        array(
+        'FluentForm\\Dev\\' => 
+        array (
             0 => __DIR__ . '/../..' . '/dev',
         ),
-        'FluentForm\\App\\' =>
-        array(
+        'FluentForm\\App\\' => 
+        array (
             0 => __DIR__ . '/../..' . '/app',
         ),
     );
 
-    public static $classMap = array(
+    public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FluentForm\\App\\Api\\Entry' => __DIR__ . '/../..' . '/app/Api/Entry.php',
         'FluentForm\\App\\Api\\Form' => __DIR__ . '/../..' . '/app/Api/Form.php',
         'FluentForm\\App\\Api\\FormProperties' => __DIR__ . '/../..' . '/app/Api/FormProperties.php',
         'FluentForm\\App\\Api\\Submission' => __DIR__ . '/../..' . '/app/Api/Submission.php',
         'FluentForm\\App\\App' => __DIR__ . '/../..' . '/app/App.php',
+        'FluentForm\\App\\ComposerScript' => __DIR__ . '/../..' . '/app/ComposerScript.php',
         'FluentForm\\App\\Helpers\\Helper' => __DIR__ . '/../..' . '/app/Helpers/Helper.php',
         'FluentForm\\App\\Helpers\\IntegrationManagerHelper' => __DIR__ . '/../..' . '/app/Helpers/IntegrationManagerHelper.php',
         'FluentForm\\App\\Helpers\\Protector' => __DIR__ . '/../..' . '/app/Helpers/Protector.php',
@@ -44,6 +45,7 @@ class ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d
         'FluentForm\\App\\Helpers\\Traits\\GlobalDefaultMessages' => __DIR__ . '/../..' . '/app/Helpers/Traits/GlobalDefaultMessages.php',
         'FluentForm\\App\\Hooks\\Handlers\\ActivationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/ActivationHandler.php',
         'FluentForm\\App\\Hooks\\Handlers\\DeactivationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/DeactivationHandler.php',
+        'FluentForm\\App\\Hooks\\Handlers\\GlobalNotificationHandler' => __DIR__ . '/../..' . '/app/Hooks/Handlers/GlobalNotificationHandler.php',
         'FluentForm\\App\\Http\\Controllers\\AdminNoticeController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminNoticeController.php',
         'FluentForm\\App\\Http\\Controllers\\AnalyticsController' => __DIR__ . '/../..' . '/app/Http/Controllers/AnalyticsController.php',
         'FluentForm\\App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -350,6 +352,7 @@ class ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d
         'FluentForm\\Framework\\Foundation\\RequestGuard' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/RequestGuard.php',
         'FluentForm\\Framework\\Foundation\\UnAuthorizedException' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/UnAuthorizedException.php',
         'FluentForm\\Framework\\Foundation\\WPException' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Foundation/WPException.php',
+        'FluentForm\\Framework\\Helpers\\ArrayHelper' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Helpers/ArrayHelper.php',
         'FluentForm\\Framework\\Http\\Client' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Client.php',
         'FluentForm\\Framework\\Http\\Controller' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Controller.php',
         'FluentForm\\Framework\\Http\\Cookie' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Http/Cookie.php',
@@ -440,6 +443,7 @@ class ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d
             $loader->prefixLengthsPsr4 = ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit0686cb653dffd2a64b73eee0fb31f94d::$classMap;
+
         }, null, ClassLoader::class);
     }
 }

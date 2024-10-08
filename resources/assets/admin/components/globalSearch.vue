@@ -5,13 +5,12 @@
                 <div class="el-input el-input--prefix">
                     <input
                         ref="searchInput"
-                        prefix-icon="el-icon-search"
                         @input="search($event.target.value)"
                         type="text"
                         name="search"
                         :placeholder="$t(placeholder)"
                         autocomplete="off"
-                    />
+                    >
                     <span class="el-input__prefix"><i class="el-input__icon el-icon-search"></i></span>
                 </div>
 

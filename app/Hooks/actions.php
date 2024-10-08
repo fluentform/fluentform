@@ -771,7 +771,7 @@ add_action('wp', function () use ($app) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
-            Vite::enqueueStyle('fluent-form-preview', 'resources/assets/preview/preview.scss');
+            Vite::enqueueStyle('fluent-form-preview', 'assets/preview/preview.scss');
             if (!defined('FLUENTFORMPRO')) {
                 Vite::enqueueScript(
                     'fluentform-preview_app',

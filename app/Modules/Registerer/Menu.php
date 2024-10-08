@@ -219,13 +219,6 @@ class Menu
         if (is_rtl()) {
             $elementUIStyle = fluentFormMix('css/element-ui-css-rtl.css');
         }
-//        Vite::enqueueStyle(
-//            'fluentform_global_elements',
-//            'assets/admin/css/element-ui-css.scss',
-//            [],
-//            FLUENTFORM_VERSION,
-//            'all'
-//        );
     }
 
     public function isFluentPages()

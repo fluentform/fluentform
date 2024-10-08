@@ -1,5 +1,5 @@
-import Request from "./Request.js";
-import Rest from "./Rest.js";
+import Request from './Request.js';
+import Rest from './Rest.js';
 
 (function ($) {
     class FluentFormsGlobal {
@@ -8,12 +8,17 @@ import Rest from "./Rest.js";
             this.url = fluent_forms_global_var.ajaxurl;
 
             $.ajaxSetup({
-                data:{
-                    fluent_forms_admin_nonce: this.fluent_forms_global_var.fluent_forms_admin_nonce
-                }
+                data: {
+                    fluent_forms_admin_nonce:
+                        this.fluent_forms_global_var.fluent_forms_admin_nonce,
+                },
             });
             // hide all notice
-            jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').not('.fluentform-admin-notice').remove();
+            jQuery(
+                '.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error',
+            )
+                .not('.fluentform-admin-notice')
+                .remove();
         }
 
         $get(data, url = '') {
@@ -32,6 +37,6 @@ import Rest from "./Rest.js";
 
         $rest = Rest;
     }
-    window.FluentFormsGlobal = new FluentFormsGlobal();
 
-})(jQuery)
+    window.FluentFormsGlobal = new FluentFormsGlobal();
+})(jQuery);

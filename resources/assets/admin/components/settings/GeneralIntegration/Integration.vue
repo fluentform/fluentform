@@ -82,8 +82,11 @@
                                                 class="el-button--soft el-button--icon"
                                                 @click="edit(scope.row)"
                                                 type="success"
-                                                icon="ff-icon-setting"
-                                                size="small">
+                                                size="small"
+                                            >
+                                                <template #icon>
+                                                    <i class="ff-icon-setting"></i>
+                                                </template>
                                             </el-button>
                                         </btn-group-item>
                                         <btn-group-item>
@@ -92,8 +95,11 @@
                                                     class="el-button--soft el-button--icon"
                                                     size="small"
                                                     type="danger"
-                                                    icon="ff-icon-trash"
-                                                />
+                                                >
+                                                    <template #icon>
+                                                        <i class="ff-icon-trash"></i>
+                                                    </template>
+                                                </el-button>
                                             </remove>
                                         </btn-group-item>
                                     </btn-group>
