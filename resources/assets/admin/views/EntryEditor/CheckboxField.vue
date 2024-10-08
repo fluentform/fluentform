@@ -4,7 +4,7 @@
             <el-checkbox
                 v-for="(option, option_key) in field.raw.options"
                 :key="option_key"
-                :label="option_key"
+                :value="option_key"
             >
                 {{option}}
             </el-checkbox>
@@ -15,15 +15,15 @@
 <script type="text/babel">
     export default {
         name: 'checkbox-field',
-        props: ['value', 'type', 'field'],
+        props: ['modelValue', 'type', 'field'],
         data() {
             return {
-                model: this.value
+                model: this.modelValue
             }
         },
         watch: {
             model() {
-                this.$emit('input', this.model);
+                this.$emit('update:modelValue', this.model);
             }
         },
         mounted() {

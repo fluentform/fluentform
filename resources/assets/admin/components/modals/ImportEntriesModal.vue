@@ -2,7 +2,7 @@
     <div :class="{'ff_backdrop': visibility}">
         <el-dialog :model-value="visibility" @update:model-value="$emit('update:visibility', $event)"
                    :before-close="close">
-            <template #title class="el-dialog__title">
+            <template #header class="el-dialog__title">
               <h4> {{ $t('Import Entries') }}</h4>
             </template>
             <div class="ff_import_entries">

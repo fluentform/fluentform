@@ -50,7 +50,7 @@
             </el-form-item>
 
             <el-form-item class="fcc_label_top" v-if="design_settings.background_image" :label="$t('BG Brightness')">
-                <el-slider :min="-100" input-size="mini" :max="100"
+                <el-slider :min="-100" input-size="small" :max="100"
                            v-model="design_settings.background_brightness"></el-slider>
             </el-form-item>
             <el-form-item class="fcc_eq_line" :label="$t('Disable Layout on Mobile Devices')">

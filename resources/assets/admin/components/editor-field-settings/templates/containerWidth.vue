@@ -25,8 +25,8 @@
                <template #label>
                 <el-label :label="$t('Auto Width')" :helpText="$t('Enable automatic width calculation for columns')"></el-label>
                </template>
-                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="true">{{ $t('Yes') }}</el-radio>
-                <el-radio v-model="editItem.settings.is_width_auto_calc" :label="false">{{ $t('No') }}</el-radio>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :value="true">{{ $t('Yes') }}</el-radio>
+                <el-radio v-model="editItem.settings.is_width_auto_calc" :value="false">{{ $t('No') }}</el-radio>
             </el-form-item>
         </template>
     </div>

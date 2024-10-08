@@ -15,15 +15,15 @@
 <script type="text/babel">
     export default {
         name: 'select-field',
-        props: ['value', 'type', 'field'],
+        props: ['modelValue', 'type', 'field'],
         data() {
             return {
-                model: this.value
+                model: this.modelValue
             }
         },
         watch: {
             model() {
-                this.$emit('input', this.model);
+                this.$emit('update:modelValue', this.model);
             }
         },
         mounted() {

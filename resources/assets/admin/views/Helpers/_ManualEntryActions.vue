@@ -10,7 +10,7 @@
             v-model="dialogVisible"
             :width="has_pro ? '70%' : '45%'"
         >
-            <template #title>
+            <template #header>
                 <h4>{{$t('Choose an Action/Integration Feed and Replay')}}</h4>
             </template>
 
@@ -48,7 +48,7 @@
                         <el-table-column
                             :label="$t('Actions')">
                             <template #default="scope">
-                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="info" size="mini">
+                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="info" size="small">
                                     {{ $t('Replay') }}
                                 </el-button>
                             </template>

@@ -43,7 +43,7 @@
                 <el-button type="primary" :disabled="!selected_id || selected_id === submission.user_id" @click="saveUser()">
                     {{ $t('Change Submitter') }}
                 </el-button>
-                <el-button @click="showing_modal = false" type="text" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
+                <el-button @click="showing_modal = false" class="el-button--text-light">{{ $t('Cancel') }}</el-button>
             </div>
         </el-dialog>
     </div>

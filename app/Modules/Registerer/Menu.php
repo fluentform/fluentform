@@ -189,7 +189,7 @@ class Menu
 
         Vite::registerStyle(
             'fluentform-add-ons',
-            'assets/admin/css/admin_docs.scss',
+            'assets/admin/css/add-ons.scss',
             [],
             FLUENTFORM_VERSION,
             'all'

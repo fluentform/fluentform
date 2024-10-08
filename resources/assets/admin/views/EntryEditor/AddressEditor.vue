@@ -2,7 +2,7 @@
     <div class="addresss_editor">
         <div v-for="(eachField, fieldKey) in field.raw.fields" class="each_address_field" :key="fieldKey">
             <label>{{getLaebel(eachField)}}</label>
-            <el-input type="text" size="mini" v-model="model[fieldKey]"></el-input>
+            <el-input type="text" size="small" v-model="model[fieldKey]"></el-input>
         </div>
     </div>
 </template>
@@ -10,15 +10,15 @@
 <script type="text/babel">
     export default {
         name: 'AddressEditor',
-        props: ['value', 'field'],
+        props: ['modelValue', 'field'],
 	    data() {
 		    return {
-			    model: this.value
+			    model: this.modelValue
 		    }
 	    },
 	    watch: {
 		    model() {
-			    this.$emit('input', this.model);
+			    this.$emit('update:modelValue', this.model);
 		    }
 	    },
         methods: {

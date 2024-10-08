@@ -16,7 +16,7 @@
                 :postTypeSelectionDialogVisibility="postTypeSelectionDialogVisibility"
             />
 
-            <template #title>
+            <template #header>
                 <b>
                     {{ $t('Choose a pre - made form template or') }}
                     <a href="#" type="info" @click.prevent="createForm('blank_form')">
@@ -28,7 +28,7 @@
             <div class="form_action_navigations">
                 <div class="form_item_group">
                     <label>{{ $t('Category') }}</label>
-                    <el-select size="mini" v-model="category" clearable :placeholder="$t('All Category')">
+                    <el-select size="small" v-model="category" clearable :placeholder="$t('All Category')">
                         <el-option
                             v-for="item in categories"
                             :key="item"
@@ -40,12 +40,18 @@
 
                 <div class="form_item_group form_item_group_search">
                     <el-input
-                        size="mini"
+                        size="small"
                         v-model="search"
                         :placeholder="$t('Search Form')"
                         class="input-with-select"
                     >
-                        <el-button slot="append" icon="el-icon-search"></el-button>
+                        <template #append>
+                            <el-button>
+                                <template #icon>
+                                    <i class="el-icon-search"></i>
+                                </template>
+                            </el-button>
+                        </template>
                     </el-input>
                 </div>
             </div>
@@ -88,10 +94,10 @@
                 </div>
             </div>
 
-            <span slot="footer" class="dialog-footer">
+            <template #footer class="dialog-footer">
                 <el-button
                     v-if="has_post_feature"
-                    size="mini"
+                    size="small"
                     type="info"
                     class="ff_create_post_form"
                     :loading="creatingForm"
@@ -101,9 +107,9 @@
                     <span v-else>{{ $t('Create a Post Form') }}</span>
                 </el-button>
 
-                <el-button size="mini" @click="close">Cancel</el-button>
+                <el-button size="small" @click="close">Cancel</el-button>
                 <el-button
-                    size="mini"
+                    size="small"
                     type="danger"
                     :loading="creatingForm"
                     @click="createForm('blank_form')"
@@ -112,7 +118,7 @@
                     <span v-else>{{ $t('Create a Blank Form') }}</span>
                 </el-button>
 
-            </span>
+            </template>
         </el-dialog>
     </div>
 </template>

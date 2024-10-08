@@ -42,7 +42,8 @@
                         v-for="(fieldLabel, fieldValue) in field.options"
                         :key="fieldValue"
                         :value="fieldValue"
-                    >{{ fieldLabel }}
+                    >
+                        {{ fieldLabel }}
                     </el-radio>
                 </el-radio-group>
             </template>

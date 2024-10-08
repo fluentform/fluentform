@@ -1,7 +1,7 @@
 <template>
     <div class="entry-multi-texts">
         <div v-for="(valueItem, valueKey) in model" :key="valueKey" class="mult-text-each">
-            <el-input size="mini" :placeholder="valueKey" v-model="model[valueKey]"></el-input>
+            <el-input size="small" :placeholder="valueKey" v-model="model[valueKey]"></el-input>
         </div>
     </div>
 </template>
@@ -9,15 +9,15 @@
 <script type="text/babel">
     export default {
         name: 'mult-text-line',
-        props: ['value'],
+        props: ['modelValue'],
         data() {
             return {
-                model: this.value
+                model: this.modelValue
             }
         },
         watch: {
             model() {
-                this.$emit('input', this.model);
+                this.$emit('update:modelValue', this.model);
             }
         }
     }

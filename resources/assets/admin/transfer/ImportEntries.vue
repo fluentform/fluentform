@@ -106,10 +106,10 @@
 							width="70%"
 							element-loading-spinner="el-icon-loading"
 							:loading="loading_map_columns"
-							:visible="show_mapping_dialog"
+							v-model="show_mapping_dialog"
 							:before-close="closeInputSelection"
 						>
-							<template #title>
+							<template #header>
 								<div class="el-dialog__header_group">
 									<h3 class="mr-3">{{ $t('Map responsible fields to import') }}</h3>
 								</div>

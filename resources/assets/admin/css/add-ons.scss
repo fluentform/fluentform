@@ -1,3 +1,5 @@
+@import '../styles/base.scss';
+@import '../../admin/css/element-ui-css.scss';
 @import "../assets/icons/fluentform-icon.css";
 @import "../styles/variables";
 @import "../styles/element_ui_var";
@@ -218,7 +220,16 @@
     color: $--color-white;
     line-height: 28px;
     padding: 10px 20px;
+}
 
+.ff_radio_group {
+    .el-radio-button, .el-radio-button__inner {
+        --el-radio-button-checked-bg-color: #4b4c4d;
+        --el-radio-button-checked-border-color: #4b4c4d;
+        background-color: transparent;
+        border: 0 !important;
+        border-radius: 0 !important;
+    }
 }
 
 @import "../styles/responsive";

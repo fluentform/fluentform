@@ -2,7 +2,7 @@
 	<div v-loading="loading" class="preview-form-style-template-wrap">
 		<div class="preview-form-style-template-head">
 			<h5>{{ $t('Form Style Template') }}</h5>
-			<el-button @click="saveSettings()" type="primary" size="mini" class="ffs_save_settings">
+			<el-button @click="saveSettings()" type="primary" size="small" class="ffs_save_settings">
 				{{ $t('Save Settings') }}
 			</el-button>
 		</div>

@@ -1,13 +1,16 @@
 <template>
     <div class="search-element">
         <div class="ff-input-wrap">
-            <span class="el-icon el-icon-search"></span>
             <el-input
                 :class="[searchElementStr.length > 0 ? 'active' : '']"
                 v-model="searchElementStr"
                 type="text"
                 :placeholder="placeholder"
-            />
+            >
+                <template #prefix>
+                    <span class="el-icon el-icon-search"></span>
+                </template>
+            </el-input>
         </div>
 
         <div class="search-element-result" v-show="searchResult.length">

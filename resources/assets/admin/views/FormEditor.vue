@@ -89,13 +89,13 @@
                                 {{ $t('Video Instruction') }}
                             </div>
                             <img :src="instructionImage" alt=""/>
-                            <el-dialog :visible.sync="introVisible" :append-to-body="true" width="60%">
+                            <el-dialog v-model="introVisible" :append-to-body="true" width="60%">
                                 <template #header>
                                     <h5 class="mb-2">
                                         {{ $t('How to create a form') }}
                                     </h5>
                                     <p>{{ $t('Watch our Fluent Forms video to better understand.') }}</p>
-                                </div>
+                                </template>
                                 <div v-if="introVisible" class="videoWrapper mt-4">
                                     <iframe
                                         class="w-100"

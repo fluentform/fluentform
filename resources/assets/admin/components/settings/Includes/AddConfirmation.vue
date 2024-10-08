@@ -20,7 +20,7 @@
             <el-radio
                 v-for="(redirectOption, optionName) in redirectToOptions"
                 v-model="confirmation.redirectTo"
-                :label="$t(optionName)"
+                :value="$t(optionName)"
                 border
                 :key="optionName"
             >

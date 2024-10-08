@@ -68,11 +68,11 @@
                                 <div v-if="advancedFilter" class="ff_advanced_search">
                                     <div class="ff_advanced_search_radios">
                                         <el-radio-group v-model="radioOption" class="el-radio-group-column">
-                                            <el-radio label="all">{{ $t('All') }}</el-radio>
-                                            <el-radio label="today">{{ $t('Today') }}</el-radio>
-                                            <el-radio label="yesterday">{{ $t('Yesterday') }}</el-radio>
-                                            <el-radio label="last-week">{{ $t('Last Week') }}</el-radio>
-                                            <el-radio label="last-month">{{ $t('Last Month') }}</el-radio>
+                                            <el-radio value="all">{{ $t('All') }}</el-radio>
+                                            <el-radio value="today">{{ $t('Today') }}</el-radio>
+                                            <el-radio value="yesterday">{{ $t('Yesterday') }}</el-radio>
+                                            <el-radio value="last-week">{{ $t('Last Week') }}</el-radio>
+                                            <el-radio value="last-month">{{ $t('Last Month') }}</el-radio>
                                         </el-radio-group>
                                     </div>
                                     <div class="ff_advanced_search_date_range">

@@ -1,6 +1,6 @@
 <template>
     <div class="fc_item_num_selector">
-        <el-input :disabled="disabled" :placeholder="field.numeric_placeholder" size="mini" type="number" :min="0"
+        <el-input :disabled="disabled" :placeholder="field.numeric_placeholder" size="small" type="number" :min="0"
                   v-model="model[1]"></el-input>
         <span v-if="field.input_help">
             <el-tooltip class="item" effect="dark" :content="field.input_help" placement="top-start">

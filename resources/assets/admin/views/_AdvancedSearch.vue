@@ -6,8 +6,7 @@
             </div>
             <div class="ff_cond_or">
                 <em @click="addConditionGroup()"
-                    style="cursor: pointer; color: rgb(0, 119, 204); font-weight: bold;"><i
-                        class="el-icon-plus"></i> {{ $t('OR') }}</em>
+                    style="cursor: pointer; color: rgb(0, 119, 204); font-weight: bold;"><i class="el-icon-plus"></i> {{ $t('OR') }}</em>
             </div>
         </div>
         <el-row :gutter="20">
@@ -16,7 +15,7 @@
             </el-col>
             <el-col :md="12" :xs="24">
                 <div class="text-right">
-                    <el-button type="default" size="small" @click="advanced_filters = [[]]; runSearch()">
+                    <el-button type="primary" size="small" @click="advanced_filters = [[]]; runSearch()">
                         {{ $t('Clear Filters') }}
                     </el-button>
                 </div>

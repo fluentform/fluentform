@@ -51,7 +51,6 @@
 
 <script>
 import Fuse from 'fuse.js';
-import { Search } from '@element-plus/icons-vue';
 
 export default {
     name: 'global-search',
@@ -208,6 +207,13 @@ export default {
                     });
                 }
             }
+        },
+        $t(str) {
+            let transString = window.FluentFormApp?.form_editor_str[str];
+            if (transString) {
+                return transString;
+            }
+            return str;
         },
     },
     created() {

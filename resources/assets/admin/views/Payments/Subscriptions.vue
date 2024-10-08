@@ -52,7 +52,8 @@
                                 <el-button
                                     class="el-button--soft"
                                     @click="cancelSubscription(subscription)"
-                                    v-if="subscription.status == 'active' || subscription.status == 'trialling' || subscription.status == 'failing'" size="mini" type="danger">
+                                    v-if="subscription.status === 'active' || subscription.status === 'trialling' || subscription.status === 'failing'" size="small" type="danger"
+                                >
                                     {{$t('Cancel')}}
                                 </el-button>
                             </btn-group-item>

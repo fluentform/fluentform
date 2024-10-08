@@ -33,8 +33,8 @@
                                         </el-tooltip>
                                     </span>
                                 </template>
-                                <template #scope>
-                                    <el-checkbox v-model="selectedValues" :label="scope.row.value"></el-checkbox>
+                                <template #default="scope">
+                                    <el-checkbox v-model="selectedValues">{{ scope.row.value }}</el-checkbox>
                                 </template>
                             </el-table-column>
                             <el-table-column v-else>

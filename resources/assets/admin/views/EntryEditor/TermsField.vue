@@ -1,21 +1,21 @@
 <template>
     <div class="entry-texts">
-        <el-checkbox true-label="on" false-label="" v-model="model"><span v-html="field.raw.settings.tnc_html"></span></el-checkbox>
+        <el-checkbox true-value="on" false-value="" v-model="model"><span v-html="field.raw.settings.tnc_html"></span></el-checkbox>
     </div>
 </template>
 
 <script type="text/babel">
     export default {
         name: 'mult-text-line',
-        props: ['value', 'type', 'field'],
+        props: ['modelValue', 'type', 'field'],
         data() {
             return {
-                model: this.value
+                model: this.modelValue
             }
         },
         watch: {
             model() {
-                this.$emit('input', this.model);
+                this.$emit('update:modelValue', this.model);
             }
         }
     }

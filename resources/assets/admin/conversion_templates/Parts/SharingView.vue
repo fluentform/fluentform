@@ -9,14 +9,17 @@
                     <h5 class="mb-2">{{ $t('Share Via Direct URL') }}</h5>
                     <p>{{ $t('Get the link or share on social sites') }}</p>
                     <el-input v-model="share_url" :readonly="true">
-                        <el-button
-                            @click="copyText()" 
-                            class="copy_share"
-                            :data-clipboard-text='share_url' 
-                            slot="append"
-                            icon="el-icon-document-copy"
-                        >
-                        </el-button>
+                        <template #append>
+                            <el-button
+                                @click="copyText()"
+                                class="copy_share"
+                                :data-clipboard-text='share_url'
+                            >
+                                <template #icon>
+                                    <i class="el-icon-document-copy"></i>
+                                </template>
+                            </el-button>
+                        </template>
                     </el-input>
                     <social class="mt-3">
                         <social-item :href="'https://www.facebook.com/sharer/sharer.php?u=' + share_url" icon="facebook"></social-item>
@@ -31,13 +34,17 @@
                             <h5 class="mb-2">{{ $t('Shortcode for Conversational Form') }}</h5>
                             <p>{{ $t('Use this following shortcode in your Page or Post') }}</p>
                             <el-input v-model="smart_shortcode" :readonly="true">
-                                <el-button 
-                                    @click="copyText()" 
-                                    class="copy_share"
-                                    :data-clipboard-text='smart_shortcode' 
-                                    slot="append"
-                                    icon="el-icon-document-copy">
-                                </el-button>
+                                <template #append>
+                                    <el-button
+                                        @click="copyText()"
+                                        class="copy_share"
+                                        :data-clipboard-text='smart_shortcode'
+                                    >
+                                        <template #icon>
+                                            <i class="el-icon-document-copy"></i>
+                                        </template>
+                                    </el-button>
+                                </template>
                             </el-input>
                         </card>
                     </el-col>
@@ -46,13 +53,17 @@
                             <h5 class="mb-2">{{ $t('Shortcode for Classic Form') }}</h5>
                             <p>{{ $t('Use this following shortcode in your Page or Post') }}</p>
                             <el-input v-model="classic_shortcode" :readonly="true">
-                                <el-button 
-                                    @click="copyText()" 
-                                    class="copy_share" 
-                                    :data-clipboard-text='classic_shortcode'
-                                    slot="append" 
-                                    icon="el-icon-document-copy">
-                                </el-button>
+                                <template #append>
+                                    <el-button
+                                        @click="copyText()"
+                                        class="copy_share"
+                                        :data-clipboard-text='classic_shortcode'
+                                    >
+                                        <template #icon>
+                                            <i class="el-icon-document-copy"></i>
+                                        </template>
+                                    </el-button>
+                                </template>
                             </el-input>
                         </card>
                     </el-col>

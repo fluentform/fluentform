@@ -1,15 +1,21 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import globalSearch from './global_search';
+import en from 'element-plus/es/locale/lang/en';
+
 import {
-    Loading
-} from 'element-ui';
+    ElLoading
+} from 'element-plus';
 
-
-Vue.use(Loading);
-
-var app = new Vue({
-    el: '#ff_documentation_app',
+const app = createApp({
     components: {
         globalSearch
     }
 });
+app.use(ElLoading);
+
+app.config.globalProperties.$ELEMENT = {locale: en};
+app.config.globalProperties.$loading = ElLoading.service;
+
+app.mount('#ff_documentation_app');
+
+

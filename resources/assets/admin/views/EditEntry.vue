@@ -21,7 +21,7 @@
                     <el-button v-loading="saving" @click="updateEntry()" type="primary">
                         {{ $t('Update Entry') }}
                     </el-button>
-                    <el-button @click="closeModel()" type="text" class="el-button--text-light">
+                    <el-button @click="closeModel()" class="el-button--text-light">
                         {{ $t('Cancel') }}
                     </el-button>
                 </span>

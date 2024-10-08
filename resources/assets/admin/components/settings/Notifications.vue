@@ -293,7 +293,7 @@
                             <el-checkbox-group v-model="selected.value.attachments">
                                 <el-checkbox v-for="attachmentField in attachmentFields"
                                              :key="attachmentField.attributes.name"
-                                             :label="attachmentField.attributes.name">
+                                             :value="attachmentField.attributes.name">
                                     {{ attachmentField.admin_label }}
                                 </el-checkbox>
                             </el-checkbox-group>

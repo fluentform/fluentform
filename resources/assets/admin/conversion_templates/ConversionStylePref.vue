@@ -30,7 +30,7 @@
                         :helpText="$t('Brightness of your selected media')"
                     ></el-label>
                 </template>
-                <el-slider :min="-100" input-size="mini" :max="100" v-model="pref.brightness" show-input></el-slider>
+                <el-slider :min="-100" input-size="small" :max="100" v-model="pref.brightness" show-input></el-slider>
             </el-form-item>
             <template v-if="pref.layout === 'media_right_full' || pref.layout === 'media_left_full'">
                 <el-form-item class="ff-form-item">

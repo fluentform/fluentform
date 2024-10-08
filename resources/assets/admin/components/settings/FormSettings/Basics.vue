@@ -22,7 +22,8 @@
                 v-for="(option, value) in redirectToOptions"
                 :key="option"
                 :label="option"
-                :value="value">
+                :value="value"
+            >
                 {{ option }}
             </el-radio>
         </el-form-item>

@@ -41,7 +41,7 @@
                                 <template v-if="scope.row.forms">
                                     <el-tag
                                         type="info"
-                                        size="mini"
+                                        size="small"
                                         v-for="form in scope.row.forms"
                                         :key="form"
                                         class="mr-1"

@@ -78,7 +78,7 @@
                                     </el-checkbox>
                                 </template>
                                 <template v-else-if="field.type === 'checkbox_yes_no'">
-                                    <el-checkbox true-label="yes" false-label="no" v-model="integration[fieldKey]">
+                                    <el-checkbox true-value="yes" false-value="no" v-model="integration[fieldKey]">
                                         {{ field.checkbox_label }}
                                     </el-checkbox>
                                 </template>

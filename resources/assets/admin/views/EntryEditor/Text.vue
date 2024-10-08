@@ -1,21 +1,21 @@
 <template>
     <div class="entry-texts">
-        <el-input :type="type" size="mini" v-model="model"></el-input>
+        <el-input :type="type" size="small" v-model="model"></el-input>
     </div>
 </template>
 
 <script type="text/babel">
     export default {
         name: 'mult-text-line',
-        props: ['value', 'type'],
+        props: ['modelValue', 'type'],
         data() {
             return {
-                model: this.value
+                model: this.modelValue
             }
         },
         watch: {
             model() {
-                this.$emit('input', this.model);
+                this.$emit('update:modelValue', this.model);
             }
         }
     }

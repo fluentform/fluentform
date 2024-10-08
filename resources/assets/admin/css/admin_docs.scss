@@ -1,3 +1,5 @@
+@import '../styles/base.scss';
+@import '../../admin/css/element-ui-css.scss';
 @import "../assets/icons/fluentform-icon.css";
 @import "../styles/variables";
 @import "../styles/element_ui_var";
@@ -8,8 +10,11 @@
 @import "../styles/responsive";
 
 .ff_documentaion_wrapper{
-  .el-col{
-    margin-bottom: 24px;
+  .el-row {
+    align-items: stretch;
+    .el-col {
+      margin-bottom: 24px;
+    }
   }
 }
 .ff_upgrade_btn_large{

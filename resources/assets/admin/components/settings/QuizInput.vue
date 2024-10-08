@@ -8,7 +8,7 @@
                 {{ original_input.label }}
             </div>
             <div class="quiz-field-setting" v-if="input.enabled === true && hasOptions(input) && !is_personality_quiz">
-                <el-checkbox v-model="input.has_advance_scoring" true-label="yes" false-label="no">
+                <el-checkbox v-model="input.has_advance_scoring" true-value="yes" false-value="no">
                     {{ $t('Advance Scoring') }}
                 </el-checkbox>
             </div>

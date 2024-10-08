@@ -1,7 +1,7 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
         <el-dialog :visible="visibility" :before-close="close">
-            <template #title class="el-dialog__title">
+            <template #header class="el-dialog__title">
                 {{ $t('Add a New Form') }}
             </template>
             <el-form :model="{}" label-position="top" @submit.native.prevent="add">

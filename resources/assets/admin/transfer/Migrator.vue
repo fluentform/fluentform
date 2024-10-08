@@ -64,7 +64,7 @@
                                             <el-button
                                                 v-if="entryImportSupported && props.row.imported_ff_id"
                                                 class="el-button--soft"
-                                                size="mini"
+                                                size="small"
                                                 type="success"
                                                 @click="importEntries( props.row.imported_ff_id, props.row.id )"
                                             >
@@ -77,7 +77,7 @@
                                         <template #default="props">
                                             <el-button
                                                 class="el-button--soft"
-                                                size="mini"
+                                                size="small"
                                                 type="info"
                                                 @click="importForms([props.row.id])"
                                             >

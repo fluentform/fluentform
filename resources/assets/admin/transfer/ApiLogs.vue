@@ -131,7 +131,7 @@
                                     <btn-group size="sm">
                                         <btn-group-item v-if="hasPro">
                                             <el-tooltip popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">
-                                                <el-button v-loading="replaying[props.row.id]" class="el-button--icon" @click="runActions(props.row)" type="info" size="mini">
+                                                <el-button v-loading="replaying[props.row.id]" class="el-button--icon" @click="runActions(props.row)" type="info" size="small">
                                                     <template #icon>
                                                         <i class="el-icon-refresh"></i>
                                                     </template>
@@ -142,7 +142,7 @@
                                             <remove :plain="true" @on-confirm="deleteItems(props.row.id)">
                                                 <el-button
                                                     class="el-button--icon"
-                                                    size="mini"
+                                                    size="small"
                                                     type="danger"
                                                 >
                                                     <template #icon>

@@ -76,12 +76,12 @@
         </draggable>
 
         <el-form-item v-if="has_gmap_api" :label="$t('Autocomplete Feature')">
-            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_autocomplete"
+            <el-checkbox true-value="yes" false-value="no" v-model="editItem.settings.enable_g_autocomplete"
             >{{ $t('Enable Autocomplete(Google Map)') }}
             </el-checkbox>
         </el-form-item>
         <el-form-item v-if="has_gmap_api && editItem.settings.enable_g_autocomplete === 'yes'" :label="$t('Show Map')">
-            <el-checkbox true-label="yes" false-label="no" v-model="editItem.settings.enable_g_map">
+            <el-checkbox true-value="yes" false-value="no" v-model="editItem.settings.enable_g_map">
                 {{ $t('Enable Map(Google Map)') }}
             </el-checkbox>
         </el-form-item>
