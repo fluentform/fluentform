@@ -143,6 +143,8 @@
             <h3>{{ $t('You are about to cancel this subscription') }}</h3>
             <p v-if="payment_method == 'stripe'">{{ $t('This will also ') }} <b>{{ $t('cancel the subscription at stripe.') }}</b>
                 {{ $t('So no further payment will be processed') }}</p>
+	        <p v-else-if="subscription_supported_methods.includes(payment_method)">{{ $t('This will also ') }} <b>{{ $t(`cancel the subscription at ${payment_method}.`) }}</b>
+                {{ $t('So no further payment will be processed') }}</p>
             <div v-else>
                 <p>{{payment_method|ucFirst}} {{ $t('payment gateway does not support remote cancellation at this moment.') }}</p>
                 <p style="font-weight: bold;">{{ $t('Please cancel the subscription from ') }}{{payment_method}}
@@ -257,6 +259,12 @@ export default {
                     this.cancelling = false;
                 });
         }
-    }
+    },
+	computed: {
+		subscription_supported_methods() {
+			let methods = window.fluent_form_entries_vars?.subscription_supported_payment_methods;
+			return Array.isArray(methods) ? methods : [];
+		}
+	}
 }
 </script>
