@@ -739,11 +739,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 html: name
             });
 
-            var progressBarInline = $(
+            var progressBarInline = $(`
                 <div class="ff-upload-progress-inline ff-el-progress">
                     <div style="width: 100%;" class="ff-el-progress-bar"></div>
                 </div>
-            );
+            `);
 
             var removeBtn = $('<span/>', {
                 'data-href': '#',
