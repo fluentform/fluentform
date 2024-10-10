@@ -326,10 +326,14 @@ jQuery(document).ready(function () {
                                 if (res.data.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
-                                        'class': 'ff-message-success'
+                                        'class': 'ff-message-success',
+                                        'role': 'status',
+                                        'aria-live': 'polite'
                                     })
                                         .html(res.data.result.message)
-                                        .insertAfter($theForm);
+                                        .insertAfter($theForm)
+                                        .focus()
+                                    ;
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
@@ -343,10 +347,14 @@ jQuery(document).ready(function () {
                                 }
                                 $('<div/>', {
                                     'id': successMsgId,
-                                    'class': 'ff-message-success'
+                                    'class': 'ff-message-success',
+                                    'role': 'status',
+                                    'aria-live': 'polite'
                                 })
                                     .html(res.data.result.message)
-                                    .insertAfter($theForm);
+                                    .insertAfter($theForm)
+                                    .focus()
+                                ;
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
