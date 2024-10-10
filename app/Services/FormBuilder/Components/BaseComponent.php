@@ -253,7 +253,8 @@ class BaseComponent
             $hasShortCodeIndex = strpos($label, '{dynamic.');
             
             //Handle name field duplicate label accessibility
-            if (strpos(ArrayHelper::get($data,'attributes.name' ) !== false)) {
+            $isNameField = strpos(ArrayHelper::get($data, 'attributes.name', ''), 'name') !== false;
+            if ($isNameField) {
                 $ariaLabel = '';
             } elseif ($hasShortCodeIndex !== false) {
                 $ariaLabel = trim(substr($label, 0, $hasShortCodeIndex));
