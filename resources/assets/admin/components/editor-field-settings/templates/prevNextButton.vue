@@ -16,7 +16,7 @@
             helpText="">
         </elLabel>
 
-        <el-input size="small" v-model="editItem.settings[prop].text"></el-input>
+        <el-input size="small" v-model="sanitizedText"></el-input>
     </el-form-item>
 
     <el-form-item v-if="editItem.settings[prop].type == 'img'">
@@ -43,12 +43,23 @@
 
 <script>
 import elLabel from '../../includes/el-label.vue'
+import DOMPurify from 'dompurify'
 
 export default {
     name: 'prevNextButton',
     props: ['listItem', 'editItem', 'prop'],
     components: {
         elLabel
+    },
+    computed: {
+        sanitizedText: {
+            get() {
+                return this.editItem.settings[this.prop].text
+            },
+            set(value) {
+                this.$set(this.editItem.settings[this.prop], 'text', DOMPurify.sanitize(value))
+            }
+        },
     }
 }
 </script>

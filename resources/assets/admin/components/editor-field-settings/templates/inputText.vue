@@ -7,6 +7,7 @@
 
 <script>
 import elLabel from '../../includes/el-label.vue'
+import DOMPurify from "dompurify";
 
 export default {
     name: 'inputText',
@@ -14,15 +15,16 @@ export default {
     components: {
         elLabel
     },
-    watch: {
-        model() {
-            this.$emit('input', this.model);
+    computed: {
+        model: {
+            get() {
+                return this.value;
+            },
+            set(newValue) {
+                const sanitized = newValue.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+                this.$emit('input', DOMPurify.sanitize(sanitized));
+            }
         }
     },
-    data() {
-        return {
-            model: this.value
-        }
-    }
 }
 </script>
