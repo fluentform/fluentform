@@ -138,7 +138,6 @@
                     return this.meta_settings.description;
                 },
                 set(value) {
-                    console.log(value)
                     this.meta_settings.description = this.sanitizeInput(value);
                 }
             },
