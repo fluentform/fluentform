@@ -16,7 +16,6 @@
 <script type="text/babel">
     import popover from './input-popover-dropdown.vue'
     import ButtonDesigner from './MCE/button';
-    import DOMPurify from 'dompurify';
 
     export default {
         name: 'wp_editor',
@@ -56,16 +55,13 @@
                 buttonInitiated: false,
                 hasWpEditor: !!window.wp.editor,
                 hasMedia: !!FluentFormApp.hasPro,
-                plain_content: DOMPurify.sanitize(this.value, this.domPurifyConfig),
+                plain_content: this.value,
                 cursorPos: this.value.length,
-                domPurifyConfig: {
-                    ADD_ATTR: ['target']
-                }
             }
         },
         watch: {
             plain_content() {
-                this.$emit('input', DOMPurify.sanitize(this.plain_content, this.domPurifyConfig));
+                this.$emit('input', this.customSanitize(this.plain_content));
             }
         },
         methods: {
@@ -102,11 +98,11 @@
             },
             changeContentEvent() {
                 let content = wp.editor.getContent(this.editor_id);
-                this.$emit('input', DOMPurify.sanitize(content, this.domPurifyConfig));
+                this.$emit('input', this.customSanitize(content));
             },
 
             handleCommand(command) {
-                const sanitizedCommand = DOMPurify.sanitize(command, this.domPurifyConfig);
+                const sanitizedCommand = this.customSanitize(command);
                 if(this.hasWpEditor) {
                     tinymce.activeEditor.insertContent(sanitizedCommand);
                 } else {
@@ -121,20 +117,50 @@
                 this.showButtonDesigner = true;
             },
             insertHtml(content) {
-                this.currentEditor.insertContent(DOMPurify.sanitize(content, this.domPurifyConfig));
+                this.currentEditor.insertContent(this.customSanitize(content));
             },
             updateCursorPos() {
                 var cursorPos = jQuery('.wp_vue_editor_plain').prop('selectionStart');
                 this.$set(this, 'cursorPos', cursorPos);
+            },
+            customSanitize(input) {
+                // Remove potential event handlers
+                let sanitized = input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+
+                // Remove http-equiv attributes
+                sanitized = sanitized.replace(/\s*http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+
+                // Process tags
+                sanitized = sanitized.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
+                    if (this.allowedTags.includes(tag.toLowerCase())) {
+                        return this.filterAttributes(match);
+                    }
+                    return match.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                });
+
+                return sanitized;
+            },
+            filterAttributes(tag) {
+                return tag.replace(/(\s+\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+))/gi, (attrMatch, attr) => {
+                    const attrName = attr.split('=')[0].trim().toLowerCase();
+                    return this.allowedAttrs.includes(attrName) ? attrMatch : '';
+                });
             }
         },
         computed: {
+            allowedTags() {
+                return window.FluentFormApp.allowed_tags || [];
+            },
+            allowedAttrs() {
+                return window.FluentFormApp.allowed_attrs || [];
+            },
             sanitizedValue: {
                 get() {
-                    return DOMPurify.sanitize(this.value, this.domPurifyConfig);
+                    return this.value;
                 },
                 set(newValue) {
-                    this.$emit('input', DOMPurify.sanitize(newValue, this.domPurifyConfig));
+                    const sanitized = this.customSanitize(newValue);
+                    this.$emit('input', sanitized);
                 }
             }
         },
