@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import debounce from 'lodash/debounce';
-import cloneDeep from 'lodash/cloneDeep';
 
 const MAX_HISTORY_LENGTH = 20;
 const DEBOUNCE_DELAY = 300; // milliseconds
@@ -16,20 +15,99 @@ class UndoRedo {
         this.debouncedPushChange = debounce(this._pushChange.bind(this), DEBOUNCE_DELAY);
     }
 
+    _cloneContent(content) {
+        // Handle null or undefined
+        if (content === null || content === undefined) {
+            return content;
+        }
+
+        // Handle primitive types
+        if (typeof content !== 'object') {
+            return content;
+        }
+
+        // Handle Date objects
+        if (content instanceof Date) {
+            return new Date(content);
+        }
+
+        // Handle Arrays
+        if (Array.isArray(content)) {
+            const clonedArray = content.map(item => this._cloneContent(item));
+            return Vue.observable(clonedArray);
+        }
+
+        // Handle Objects
+        const clone = {};
+        Object.keys(content).forEach(key => {
+            // Skip Vue internal properties
+            if (key.startsWith('_') || key === '__ob__') {
+                return;
+            }
+
+            const value = content[key];
+
+            // Special handling for fields object
+            if (key === 'fields') {
+                clone[key] = this._cloneFieldsObject(value);
+            } else {
+                clone[key] = this._cloneContent(value);
+            }
+        });
+
+        // Make the object reactive
+        return Vue.observable(clone);
+    }
+
+    _cloneFieldsObject(fields) {
+        if (!fields || typeof fields !== 'object') {
+            return fields;
+        }
+
+        const clonedFields = {};
+        Object.keys(fields).forEach(fieldKey => {
+            const field = fields[fieldKey];
+            if (field && typeof field === 'object') {
+                clonedFields[fieldKey] = {
+                    ...this._cloneContent(field),
+                    settings: this._cloneSettings(field.settings)
+                };
+            } else {
+                clonedFields[fieldKey] = field;
+            }
+        });
+
+        return Vue.observable(clonedFields);
+    }
+
+    _cloneSettings(settings) {
+        if (!settings || typeof settings !== 'object') {
+            return settings;
+        }
+
+        const clonedSettings = {
+            ...settings,
+            visible: settings.visible, // Ensure this property is explicitly copied
+            label: settings.label
+        };
+
+        // Make settings reactive
+        return Vue.observable(clonedSettings);
+    }
+
     pushChange(content, clearFuture = false) {
-        // Ensure you pass a plain object
-        this.debouncedPushChange(this._cloneContent(content), clearFuture);
+        // Ensure we're working with the latest state
+        Vue.nextTick(() => {
+            this.debouncedPushChange(content, clearFuture);
+        });
     }
 
     _pushChange(content, clearFuture) {
-
         if (this.present !== null) {
             this.past.push(this._cloneContent(this.present));
-            this.past = this.past.slice(-MAX_HISTORY_LENGTH); // Keep the past array within the max length
+            this.past = this.past.slice(-MAX_HISTORY_LENGTH);
         }
-
         this.present = this._cloneContent(content);
-
         if (clearFuture) {
             this.future = [];
         }
@@ -37,16 +115,10 @@ class UndoRedo {
         this.isPerformingAction = false;
         this.emitUpdate();
     }
-
-    _cloneContent(content) {
-        return cloneDeep(content);
-        // Use JSON methods to clone state without reactivity
-        return JSON.parse(JSON.stringify(content));
-    }
-
     canUndo() {
         return this.past.length > 0;
     }
+
     getTime() {
         return this.timestamp;
     }
@@ -62,18 +134,14 @@ class UndoRedo {
             this.future.unshift(this._cloneContent(this.present));
         }
 
-        var parsedobj = JSON.parse(JSON.stringify(this.past))
-        console.log(parsedobj)
         const previous = this.past.pop();
-
-        var parsedobj = JSON.parse(JSON.stringify(this.past))
-        console.log(parsedobj)
-
         this.present = this._cloneContent(previous);
-
         this.isPerformingAction = true;
-        this.emitUpdate();
-        this.eventBus.$emit('undo', this);
+
+        Vue.nextTick(() => {
+            this.emitUpdate();
+            this.eventBus.$emit('undo', this);
+        });
     }
 
     redo() {
@@ -85,11 +153,14 @@ class UndoRedo {
 
         const next = this.future.shift();
         this.present = this._cloneContent(next);
-
         this.isPerformingAction = true;
-        this.emitUpdate();
-        this.eventBus.$emit('redo', this);
+
+        Vue.nextTick(() => {
+            this.emitUpdate();
+            this.eventBus.$emit('redo', this);
+        });
     }
+
 
     emitUpdate() {
         this.eventBus.$emit('update', {
@@ -98,7 +169,6 @@ class UndoRedo {
             currentContent: this.present
         });
         this.timestamp = Date.now();
-
     }
 
     on(event, callback) {

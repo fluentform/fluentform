@@ -671,7 +671,6 @@
         form: {
             handler(newValue) {
                 newValue = JSON.parse(JSON.stringify(newValue));
-                console.log(this.isPerformingUndoRedo)
                 if (this.undoRedoManager && !this.isPerformingUndoRedo) {
                     this.undoRedoManager.pushChange(newValue);
                 }
@@ -1133,7 +1132,7 @@
             // Set a timeout to delay the reset of isPerformingUndoRedo
             setTimeout(() => {
                 this.isPerformingUndoRedo = false;
-            }, 800);
+            }, 400);
         });
 
         this.undoRedoManager.on('redo', (data) => {
@@ -1143,7 +1142,7 @@
             // Set a timeout to delay the reset of isPerformingUndoRedo
             setTimeout(() => {
                 this.isPerformingUndoRedo = false;
-            }, 800);
+            }, 400);
 
         });
 
