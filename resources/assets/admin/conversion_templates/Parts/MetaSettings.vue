@@ -121,7 +121,14 @@
         },
         methods: {
             sanitizeInput(input) {
-                return DOMPurify.sanitize(input.replace(/http-equiv\s*=\s*["']?[^"']*["']?/gi, ''));
+                // First, remove http-equiv attributes
+                let sanitized = input.replace(/http-equiv\s*=\s*["']?[^"']*["']?/gi, '');
+
+                // Then, remove any on* event attributes
+                sanitized = sanitized.replace(/\son\w+\s*=\s*["']?[^"']*["']?/gi, '');
+
+                // Finally, use DOMPurify for additional sanitization
+                return DOMPurify.sanitize(sanitized);
             }
         },
         computed: {
