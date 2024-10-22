@@ -33,8 +33,7 @@ class UndoRedo {
 
         // Handle Arrays
         if (Array.isArray(content)) {
-            const clonedArray = content.map(item => this._cloneContent(item));
-            return Vue.observable(clonedArray);
+            return Vue.observable(content.map(item => this._cloneContent(item)));
         }
 
         // Handle Objects
@@ -47,9 +46,9 @@ class UndoRedo {
 
             const value = content[key];
 
-            // Special handling for fields object
-            if (key === 'fields') {
-                clone[key] = this._cloneFieldsObject(value);
+            // Special handling for form_fields
+            if (key === 'form_fields') {
+                clone[key] = this._cloneFormFields(value);
             } else {
                 clone[key] = this._cloneContent(value);
             }
@@ -57,6 +56,21 @@ class UndoRedo {
 
         // Make the object reactive
         return Vue.observable(clone);
+    }
+
+    _cloneFormFields(formFields) {
+        if (typeof formFields !== 'string') {
+            return formFields;
+        }
+
+        try {
+            const parsedFields = JSON.parse(formFields);
+            const clonedFields = this._cloneContent(parsedFields);
+            return JSON.stringify(clonedFields);
+        } catch (error) {
+            console.error('Error parsing form_fields:', error);
+            return formFields;
+        }
     }
 
     _cloneFieldsObject(fields) {

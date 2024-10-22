@@ -734,6 +734,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 }
 
 $app->addAction('fluentform/before_form_render', function ($form, $atts) {
+    dd($form);
     $theme = ArrayHelper::get($atts, 'theme');
     
     $styles = $theme ? [$theme] : [];
