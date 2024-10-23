@@ -122,11 +122,9 @@
         methods: {
             sanitizeInput(input) {
                 // First, remove http-equiv attributes
-                let sanitized = input.replace(/http-equiv\s*=\s*["']?[^"']*["']?/gi, '');
-
+                let sanitized = input.replace(/http-equiv\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>"']+)/gi, '');
                 // Then, remove any on* event attributes
-                sanitized = sanitized.replace(/\son\w+\s*=\s*["']?[^"']*["']?/gi, '');
-
+                sanitized = sanitized.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
                 // Finally, use DOMPurify for additional sanitization
                 return DOMPurify.sanitize(sanitized);
             }
