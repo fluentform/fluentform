@@ -673,10 +673,11 @@ class Component
                 'itemSelectText' => __('Press to select', 'fluentform'),
                 'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
-            'input_mask_vars' => [
+            'input_mask_vars'       => [
                 'clearIfNotMatch' => false,
             ],
-       ];
+            'nonce'                 => wp_create_nonce()
+        ];
     
         $data = apply_filters_deprecated(
             'fluentform_global_form_vars',

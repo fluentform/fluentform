@@ -46,7 +46,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         jQuery(document).ready(e => {
             jQuery.getJSON(fluentFormVars.ajaxUrl, {
                 form_id: $theForm.data('form_id'),
-                action: 'fluentform_step_form_get_data'
+                action: 'fluentform_step_form_get_data',
+                nonce: fluentFormVars?.nonce,
+                hash: fluentFormVars?.hash
             }).then(data => {
                 if (data) {
                     populateFormDataAndSetActiveStep(data);
