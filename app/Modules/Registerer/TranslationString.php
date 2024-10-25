@@ -1168,7 +1168,7 @@ class TranslationString
             'Bulk Edit' => __('Bulk Edit', 'fluentform'),
             'Edit your options' => __('Edit your options', 'fluentform'),
             'Please provide the value as LABEL:VALUE as each line.' => __('Please provider the value as LABEL:VALUE as each line.', 'fluentform'),
-            'You can simply give value only the system will convert the label as value' => __('You can simply give value only the system will convert the label as value', 'fluentform'),
+            'You can simply give value only the system will convert the label as value. To include a colon in either the label or value, use the escape sequence \\:, e.g., LABEL\\:A:VALUE' => __('You can simply give value only the system will convert the label as value. To include a colon in either the label or value, use the escape sequence \\:, e.g., LABEL\\:A:VALUE', 'fluentform'),
             'Confirm' => __('Confirm', 'fluentform'),
             'Calc Values' => __('Calc Values', 'fluentform'),
             'Photo' => __('Photo', 'fluentform'),
