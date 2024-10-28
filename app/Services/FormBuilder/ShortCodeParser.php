@@ -209,7 +209,7 @@ class ShortCodeParser
         }
 
         if ($isHtml) {
-            $originalInput = static::$store['original_inputs'][$key];
+            $originalInput = ArrayHelper::get(static::$store['original_inputs'], $key, '');
             $originalInput = apply_filters_deprecated(
                 'fluentform_response_render_' . $field['element'],
                 [
