@@ -283,6 +283,8 @@ jQuery(document).ready(function () {
                     }
 
                     var that = this;
+                    let responseData;
+
 
                     this.isSending = true;
 
@@ -297,7 +299,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res);
                                 return;
                             }
-
+                            responseData = res;
                             if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
@@ -378,6 +380,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res.responseText);
                                 return;
                             }
+                            responseData = res;
 
                             if (res.responseJSON.append_data) {
                                 addHiddenData(res.responseJSON.append_data);
@@ -403,7 +406,9 @@ jQuery(document).ready(function () {
                         })
                         .always(function (res) {
                             that.isSending = false;
-                            hideFormSubmissionProgress($theForm);
+                            if (!('redirectUrl' in responseData.data.result)) {
+                                hideFormSubmissionProgress($theForm);
+                            }
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
                                 const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
