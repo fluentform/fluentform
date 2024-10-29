@@ -546,7 +546,7 @@ class Form
         $varName = 'fluent_forms_global_var_' . $instanceId;
         wp_localize_script('fluent_forms_conversational_form', $varName, [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'ajaxurl'                  => Helper::getAjaxUrl(),
             'nonce'                    => wp_create_nonce(),
             'form'                     => $this->getLocalizedForm($form),
             'assetBaseUrl'             => FLUENT_CONVERSATIONAL_FORM_DIR_URL . 'public',
@@ -706,7 +706,7 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_form', 'fluent_forms_global_var', [
             'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-            'ajaxurl'                  => admin_url('admin-ajax.php'),
+            'ajaxurl'                  => Helper::getAjaxUrl(),
             'nonce'                    => wp_create_nonce(),
             'form'                     => $this->getLocalizedForm($form),
             'form_id'                  => $form->id,

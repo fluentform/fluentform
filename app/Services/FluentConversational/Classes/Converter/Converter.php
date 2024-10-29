@@ -426,7 +426,7 @@ class Converter
                 $question['settings'] = ArrayHelper::get($field, 'settings');
 
                 $vars = apply_filters('fluentform/save_progress_vars', [
-                    'ajaxurl'                   => admin_url('admin-ajax.php'),
+                    'ajaxurl'                   => Helper::getAjaxUrl(),
                     'sourceurl'                 => home_url($_SERVER['REQUEST_URI']),
                     'form_id'                   => $form->id,
                     'nonce'                     => wp_create_nonce(),

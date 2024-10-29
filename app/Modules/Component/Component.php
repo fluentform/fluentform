@@ -654,7 +654,7 @@ class Component
         $stepText = apply_filters('fluentform/step_string', $stepText);
 
         $data = [
-            'ajaxUrl'               => admin_url('admin-ajax.php'),
+            'ajaxUrl'               => Helper::getAjaxUrl(),
             'forms'                 => [],
             'step_text'             => $stepText,
             'is_rtl'                => is_rtl(),

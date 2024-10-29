@@ -546,6 +546,51 @@
                     </card-body>
                 </card>
 
+                <!--WPML Translations settings-->
+                <card v-if="ff_wpml" id="ff_wpml">
+                    <card-head>
+                        <h5 class="title">{{ $t('Translations using WPML') }}</h5>
+                        <p class="text">
+                            {{ $t('Enable translations using WPML Core and WPML String Translations Plugin.') }}</p>
+                    </card-head>
+                    <card-body>
+                        <el-form label-position="top">
+                            <el-row :gutter="24">
+                                <el-col>
+                                    <el-checkbox true-label="yes" false-label="no" v-model="ff_wpml.enabled">
+                                        {{ $t('Update Form Translations')}}
+                                    </el-checkbox>
+                                </el-col>
+                                <el-col v-if="ff_wpml.enabled === 'yes'">
+                                    <template v-for="(language, languageCode) in ff_wpml.available_languages">
+                                        <template v-if="languageCode !== ff_wpml.default_language">
+                                            <hr>
+                                            <div class="mb-3"><p><b>{{ language.display_name }}</b></p></div>
+                                            <template v-for="(item, index) in ff_wpml.strings">
+                                                <div class="el-form-item__content mb-2">
+                                                    <el-row :gutter="24">
+                                                        <el-col :span="8">
+                                                            {{ item.value }}
+                                                        </el-col>
+                                                        <el-col :span="16">
+                                                            <el-input
+                                                                :placeholder="$t('Translate')"
+                                                                :value="getTranslationValue(item, languageCode)"
+                                                                @input="updateTranslation(item, languageCode, $event)"
+                                                            />
+                                                            <p class="text">{{item.identifier}}</p>
+                                                        </el-col>
+                                                    </el-row>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                    </card-body>
+                </card>
+
                 <!-- Other -->
                 <card id="other">
                     <card-head>
@@ -788,7 +833,8 @@
                 is_conversion_form: !!window.FluentFormApp.is_conversion_form,
                 conv_form_per_step_save: false,
                 conv_form_resume_from_last_step: false,
-                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
+                ff_wpml: false,
             }
         },
         computed: {
@@ -906,6 +952,7 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
+                        this.ff_wpml = response.ff_wpml;
 
                     })
                     .catch(e => {
@@ -936,6 +983,7 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
+                    ff_wpml: JSON.stringify(this.ff_wpml)
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {
@@ -947,6 +995,25 @@
                     .always(() => {
                         this.loading = false;
                     });
+            },
+            getTranslationValue(item, languageCode) {
+                if (!item.translations) {
+                    return '';
+                }
+                if (typeof item.translations === 'object' && !Array.isArray(item.translations)) {
+                    return item.translations[languageCode] || '';
+                }
+                return '';
+            },
+            updateTranslation(item, languageCode, value) {
+                if (!item.translations) {
+                    this.$set(item, 'translations', {});
+                }
+                if (typeof item.translations === 'object' && !Array.isArray(item.translations)) {
+                    this.$set(item.translations, languageCode, value);
+                } else {
+                    this.$set(item, 'translations', { [languageCode]: value });
+                }
             }
         },
         mounted() {
