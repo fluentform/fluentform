@@ -10,7 +10,7 @@ mix.setResourceRoot('../');
 if (!mix.inProduction()) {
     mix.webpackConfig({
         devtool: 'source-map'
-    }).sourceMaps(false);
+    }).sourceMaps(true, 'source-map');
 } else {
     // During production build we'll remove the existing public
     // directory so that the source-maps are deleted as well.
