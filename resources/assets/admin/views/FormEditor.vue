@@ -152,6 +152,16 @@
                         <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
                             <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
                         </li>
+                        <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
+                           <div class="undo_redo" style="display: flex;flex-direction: row;" >
+                               <a href="#" @click.prevent="undo()" :class="{'active': canUndo}">
+                                  <svg height="22px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M447.9,368.2c0-16.8,3.6-83.1-48.7-135.7c-35.2-35.4-80.3-53.4-143.3-56.2V96L64,224l192,128v-79.8   c40,1.1,62.4,9.1,86.7,20c30.9,13.8,55.3,44,75.8,76.6l19.2,31.2H448C448,389.9,447.9,377.1,447.9,368.2z M432.2,361.4   C384.6,280.6,331,256,240,256v64.8L91.9,224.1L240,127.3V192C441,192,432.2,361.4,432.2,361.4z"/></g></svg>
+                               </a>
+                               <a href="#" @click.prevent="redo()" :class="{'active': canRedo}">
+                                   <svg height="22px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M64,400h10.3l19.2-31.2c20.5-32.7,44.9-62.8,75.8-76.6c24.4-10.9,46.7-18.9,86.7-20V352l192-128L256,96v80.3   c-63,2.8-108.1,20.7-143.3,56.2c-52.3,52.7-48.7,119-48.7,135.7C64.1,377.1,64,389.9,64,400z M272,192v-64.7l148.1,96.8L272,320.8   V256c-91,0-144.6,24.6-192.2,105.4C79.8,361.4,71,192,272,192z"/></g></svg>
+                                </a>
+                           </div>
+                        </li>
                     </ul>
 
                     <div style="min-height: 420px;" class="panel-full-height nav-tab-items">
@@ -472,6 +482,8 @@
     import submitButton from '../components/templates/submitButton.vue';
     import editorInserter from '../components/includes/editor-inserter.vue';
     import FormHistory from "@/admin/views/FormHistory";
+    import UndoRedo from "@/admin/views/Editor/UndoRedo.js";
+
     export default {
     name: 'FormEditor',
     props: [
@@ -519,8 +531,13 @@
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
             isCommandKeyPressed : false,
+            undoRedoManager :null,
+            canUndo: false,
+            canRedo: false,
+            isPerformingUndoRedo: false,
         }
     },
+
     computed: {
         ...mapGetters({
             fieldMode: 'fieldMode',
@@ -648,9 +665,18 @@
         },
         isAutoloadCaptchaEnabled() {
             return !!window.FluentFormApp.is_autoload_captcha;
-        }
+        },
     },
     watch: {
+        form: {
+            handler(newValue) {
+                newValue = JSON.parse(JSON.stringify(newValue));
+                if (this.undoRedoManager && !this.isPerformingUndoRedo) {
+                    this.undoRedoManager.pushChange(newValue);
+                }
+            },
+            deep: true
+        },
         form_saving() {
             const saveBtn = jQuery('#saveFormData');
 
@@ -684,13 +710,25 @@
                 this.$delete(this.form.stepsWrapper, 'stepStart');
                 this.$delete(this.form.stepsWrapper, 'stepEnd');
             }
-        }
+        },
+
     },
     methods: {
         ...mapMutations({
             changeFieldMode: 'changeFieldMode',
             updateSidebar: 'updateSidebar'
         }),
+
+        undo() {
+            if (this.undoRedoManager.canUndo()) {
+                this.undoRedoManager.undo();
+            }
+        },
+        redo() {
+            if (this.undoRedoManager.canRedo()) {
+                this.undoRedoManager.redo();
+            }
+        },
 
         moved(o) {
             // vddl has issue with this method.
@@ -1086,6 +1124,33 @@
         this.initSaveBtn();
         this.initRenameForm();
 
+        this.undoRedoManager = new UndoRedo();
+        this.undoRedoManager.on('undo', (data) => {
+            this.isPerformingUndoRedo = true;
+            this.$emit('update:form', data.present);
+
+            // Set a timeout to delay the reset of isPerformingUndoRedo
+            setTimeout(() => {
+                this.isPerformingUndoRedo = false;
+            }, 400);
+        });
+
+        this.undoRedoManager.on('redo', (data) => {
+            this.isPerformingUndoRedo = true;
+            this.$emit('update:form', data.present);
+
+            // Set a timeout to delay the reset of isPerformingUndoRedo
+            setTimeout(() => {
+                this.isPerformingUndoRedo = false;
+            }, 400);
+
+        });
+
+
+        this.undoRedoManager.on('update', (data) => {
+            this.canUndo = data.canUndo;
+            this.canRedo = data.canRedo;
+        });
         /**
          * Dismiss editor inserter popup when clicked outside
          */
@@ -1110,4 +1175,13 @@
     }
 };
 </script>
+<style>
+    .undo_redo svg{
+        fill: gray;
+    }
+    .undo_redo .active  svg{
+        fill: blue;
+    }
+
+</style>
 
