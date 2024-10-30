@@ -280,6 +280,20 @@ class SettingsService
         }
 
         $meta = Arr::get($attributes, 'meta_settings', []);
+        $metaSanitizationMap = [
+            'title'             =>  'sanitize_text_field',
+            'description'       =>  [$this, 'secureMetaDescription'],
+            'featured_image'    =>  'esc_url_raw',
+            'share_key'         =>  'sanitize_text_field',
+            'google_font_href'  =>  'esc_url_raw',
+            'font_css'          =>  'wp_kses_post',
+        ];
+        foreach ($metaSanitizationMap as $key => $sanitizer) {
+            if (isset($meta[$key])) {
+                $meta[$key] = call_user_func($sanitizer, $meta[$key]);
+            }
+        }
+        
         if ($meta) {
             FormMeta::persist($formId, $metaKey . '_meta', $meta);
         }
@@ -332,5 +346,22 @@ class SettingsService
             ];
         }
         throw new \Exception(__('Settings save failed', 'fluentform'));
+    }
+    
+    public function secureMetaDescription($description) {
+        $clean = preg_replace(
+            [
+                '/url\s*=/',          // Remove URL assignments
+                '/http-equiv\s*=/',   // Remove HTTP equiv
+                '/refresh/',          // Remove refresh attempts
+            ],
+            '',
+            $description
+        );
+        
+        $clean = wp_strip_all_tags($clean);
+        $clean = sanitize_text_field($clean);
+        
+        return trim($clean);
     }
 }
