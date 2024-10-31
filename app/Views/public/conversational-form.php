@@ -14,7 +14,7 @@
 
     <meta property="og:title" content="<?php echo esc_html($meta['title']); ?>"/>
 
-    <meta property="og:description" content="<?php echo strip_tags($meta['description']) ?>"/>
+    <meta property="og:description" content="<?php echo esc_attr(strip_tags($meta['description'])) ?>"/>
 
     <?php if (!empty($meta['google_font_href'])): ?>
 
