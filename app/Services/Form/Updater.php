@@ -274,6 +274,13 @@ class Updater
                     }
                 }
             }
+            elseif ('container' == $element) {
+                $columns = $field['columns'];
+                foreach ($columns as $columnIndex => $column) {
+                    $fields[$fieldIndex]['columns'][$columnIndex]['fields'] = $this->sanitizeCustomSubmit($column['fields']);
+                }
+                return $fields;
+            }
         }
         return $fields;
     }
