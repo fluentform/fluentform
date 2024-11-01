@@ -11,7 +11,16 @@
                 <tr v-for="(primary_field, primary_index) in field.primary_fileds" :key="primary_index">
                     <td>
                         <div :class="(primary_field.required) ? 'is-required' : ''" class="el-form-item">
-                            <label class="el-form-item__label">{{primary_field.label}}</label>
+                            <label class="el-form-item__label">{{primary_field.label}}
+                            <template v-if="primary_field.hasOwnProperty('tips')">
+                                <el-tooltip v-if="primary_field.tips" class="item" popper-class="ff_tooltip_wrap" placement="bottom-start">
+                                    <div slot="content">
+                                        <p v-html="primary_field.tips"></p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </template>
+                            </label>
                         </div>
                     </td>
                     <td>
@@ -48,6 +57,22 @@
                                 ></el-option>
                             </el-select>
 
+                            <el-select
+                                v-else-if="primary_field.input_options == 'select'"
+                                class="w-100"
+                                filterable
+                                clearable
+                                :multiple="primary_field.is_multiple"
+                                v-model="settings[primary_field.key]"
+                                :placeholder="primary_field.placeholder"
+                            >
+                                <el-option
+                                    v-for="(option, index) in primary_field.options"
+                                    :key="index"
+                                    :value="index"
+                                    :label="option"
+                                ></el-option>
+                            </el-select>
 
                             <template v-else>
                                 <field-general
