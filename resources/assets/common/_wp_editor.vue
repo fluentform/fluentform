@@ -126,34 +126,12 @@
             customSanitize(input) {
                 // Remove potential event handlers
                 let sanitized = input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
-
                 // Remove http-equiv attributes
                 sanitized = sanitized.replace(/\s*http-equiv\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
-
-                // Process tags
-                sanitized = sanitized.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
-                    if (this.allowedTags.includes(tag.toLowerCase())) {
-                        return this.filterAttributes(match);
-                    }
-                    return match.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                });
-
                 return sanitized;
             },
-            filterAttributes(tag) {
-                return tag.replace(/(\s+\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+))/gi, (attrMatch, attr) => {
-                    const attrName = attr.split('=')[0].trim().toLowerCase();
-                    return this.allowedAttrs.includes(attrName) ? attrMatch : '';
-                });
-            }
         },
         computed: {
-            allowedTags() {
-                return window.FluentFormApp.allowed_tags || [];
-            },
-            allowedAttrs() {
-                return window.FluentFormApp.allowed_attrs || [];
-            },
             sanitizedValue: {
                 get() {
                     return this.value;
