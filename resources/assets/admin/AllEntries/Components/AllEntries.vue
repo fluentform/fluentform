@@ -2,7 +2,7 @@
     <div class="ff_entries_wrapper">
         <section-head class="ff_section_head_between mb-0">
             <section-head-content>
-                <h1 class="ff_section_title">{{$t('Entries from All Forms')}}</h1>
+                <h1 class="ff_section_title">{{selectedFormName ? $t('Entries from ' + selectedFormName) : $t('Entries from All Forms')}}</h1>
             </section-head-content>
             <section-head-content>
                 <btn-group as="div">
@@ -246,7 +246,7 @@ export default {
             chart_status: 'yes',
             entry_status: '',
             search: '',
-            radioOption: 'all',
+            radioOption: localStorage.getItem('ff_entries_date_filter') || 'all',
             showImportEntriesModal: false,
             app: window.fluent_forms_global_var
         }
@@ -332,47 +332,54 @@ export default {
         },
         resetAdvancedFilter() {
             this.radioOption = "";
-			this.filter_date_range = null;
+			this.filter_date_range = 'all';
             this.fetchEntries();
         }
     },
     computed: {
 	    hasEnabledDateFilter() {
-			return !!(this.radioOption && this.radioOption != 'all' ||
+			return !!(this.radioOption ||
 				(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
             );
-        }
+        },
+	    selectedFormName() {
+			return this.available_forms?.find(f => f.id === this.selectedFormId)?.title || '';
+	    }
     },
     watch: {
-        radioOption() {
-            const start = new Date();
-            const end = new Date();
-            let number = 1;
-            switch (this.radioOption) {
-                case 'today' :
-					number = 0;
-					break;
-                case 'yesterday':
-                    end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
-                    break;
-                case 'last-week':
-                    number = 7;
-                    break;
-                case 'last-month':
-                    number = 30;
-                    break;
-                case 'all':
-                    this.filter_date_range = null;
-                    this.fetchEntries();
-                    return;
-                default:
-                    return;
-            }
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
-            const startDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate();
-            const endDate = end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
-            this.filter_date_range = [startDate, endDate];
-            this.fetchEntries();
+        radioOption: {
+	        handler() {
+		        const start = new Date();
+		        const end = new Date();
+		        let number = 1;
+		        localStorage.setItem('ff_entries_date_filter', this.radioOption);
+		        switch (this.radioOption) {
+			        case 'today' :
+				        number = 0;
+				        break;
+			        case 'yesterday':
+				        end.setTime(end.getTime() - 3600 * 1000 * 24 * number);
+				        break;
+			        case 'last-week':
+				        number = 7;
+				        break;
+			        case 'last-month':
+				        number = 30;
+				        break;
+			        case 'all':
+				        this.filter_date_range = 'all';
+				        this.fetchEntries();
+				        return;
+			        default:
+				        return;
+		        }
+		        start.setTime(start.getTime() - 3600 * 1000 * 24 * number);
+		        const startDate = start.getFullYear() + '/' + (start.getMonth() + 1) + '/' + start.getDate();
+		        const endDate = end.getFullYear() + '/' + (end.getMonth() + 1) + '/' + end.getDate();
+		        this.filter_date_range = [startDate, endDate];
+		        this.fetchEntries();
+	        },
+	        immediate: true
         }
     },
     filters: {

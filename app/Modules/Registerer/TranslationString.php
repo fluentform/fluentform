@@ -28,6 +28,7 @@ class TranslationString
             'Click Here to Create Your First Form' => __('Click Here to Create Your First Form', 'fluentform'),
             'Check the video intro' => __('Check the video intro', 'fluentform'),
             'Entries from All Forms' => __('Entries from All Forms', 'fluentform'),
+            'Entries from ' => __('Entries from ', 'fluentform'),
             'Browser' => __('Browser', 'fluentform'),
             'Submitted At' => __('Submitted At', 'fluentform'),
             'Date' => __('Date', 'fluentform'),
