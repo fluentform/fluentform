@@ -47,7 +47,7 @@
                         </el-table-column>
                         <el-table-column
                             :label="$t('Integration Status')"
-                            width="120">
+                            width="180">
                             <template slot-scope="scope">
                                 <el-tag :type="`${scope.row.action_status == 'failed' ? 'danger' : scope.row.action_status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
                                     {{scope.row.action_status}}
