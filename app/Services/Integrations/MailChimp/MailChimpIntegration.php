@@ -187,7 +187,7 @@ class MailChimpIntegration extends IntegrationManagerController
                     'key'                => 'merge_fields',
                     'require_list'       => true,
                     'label'              => __('Map Fields', 'fluentform'),
-                    'tips'               => __('Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list.', 'fluentform'),
+                    'tips'               => __('Associate your Mailchimp merge tags to the appropriate Fluent Forms fields by selecting the appropriate form field from the list. Also, Mailchimp Date fields supports only MM/DD/YYYY and DD/MM/YYYY format.', 'fluentform'),
                     'component'          => 'map_fields',
                     'field_label_remote' => __('Mailchimp Field', 'fluentform'),
                     'field_label_local'  => __('Form Field', 'fluentform'),
