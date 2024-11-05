@@ -165,8 +165,7 @@ class Updater
                 foreach ($columns as $columnIndex => $column) {
                     $fields[$fieldIndex]['columns'][$columnIndex]['fields'] = $this->sanitizeFieldMaps($column['fields']);
                 }
-
-                return $fields;
+                continue;
             }
 
             if ('welcome_screen' == $element) {
