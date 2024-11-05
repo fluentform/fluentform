@@ -87,8 +87,6 @@ class Logger
             }
         }
 
-        $logs->setCollection(Collection::make($logItems));
-    
         $logItems = apply_filters_deprecated(
             'fluentform_all_logs',
             [
@@ -98,6 +96,8 @@ class Logger
             'fluentform/get_logs',
             'Use fluentform/get_logs instead of fluentform_all_logs'
         );
+
+        $logs->setCollection(Collection::make($logItems));
 
         return apply_filters('fluentform/get_logs', $logs);
     }

@@ -38,7 +38,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            :label="$t('Status')"
+                            :label="$t('Feed Status')"
                             width="120">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.enabled">{{ $t('Active') }}</span>
@@ -46,10 +46,22 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            :label="$t('Actions')">
+                            :label="$t('Integration Status')"
+                            width="120">
                             <template slot-scope="scope">
-                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="info" size="mini">
+                                <el-tag :type="`${scope.row.action_status == 'failed' ? 'danger' : scope.row.action_status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
+                                    {{scope.row.action_status}}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                            :label="$t('Action')">
+                            <template slot-scope="scope">
+                                <el-button @click="replayFeed(scope.row.id, scope.row.action_id)" type="success" size="mini">
                                     {{ $t('Replay') }}
+                                </el-button>
+                                <el-button @click="goToFeedLink(scope.row.feed_link)" type="info" size="mini">
+                                    {{ $t('View Feed') }}
                                 </el-button>
                             </template>
                         </el-table-column>
@@ -203,6 +215,9 @@
                 if (this.has_pro) {
                     this.getFeeds();
                 }
+            },
+            goToFeedLink(link) {
+                window.open(link, '_blank');
             }
         }
     }

@@ -4,7 +4,7 @@
             <div class="ff_card_head">
                 <h5 class="title">{{$t('Api Logs')}}</h5>
                 <p class="text" style="max-width: 700px;">
-                    {{ $t('Get external CRM and API call logs here. Track api logs activity. (Last 2 months logs)') }}
+                    {{ $t('Get external CRM and API call logs here to track and manage api logs activity.') }}
                 </p>
             </div><!-- .ff_card_head -->
             <div class="ff_card_body">
@@ -75,18 +75,18 @@
                         <div v-if="multipleSelection.length" class="logs_actions mb-3">
                             <btn-group size="sm">
                                 <btn-group-item>
+                                    <el-button @click="runActions()" type="success" size="mini">
+                                        <i class="mr-1 ff-icon-refresh"></i>
+                                        {{ $t('Run Selected Action') }}
+                                    </el-button>
+                                </btn-group-item>
+                                <btn-group-item>
                                     <remove icon="el-icon-delete" @on-confirm="deleteItems()">
                                         <button type="button" class="el-button el-button--danger el-button--mini">
                                             <i class="el-icon-delete"></i>
                                             <span>{{ $t('Delete Selected Logs') }}</span>
                                         </button>
                                     </remove>
-                                </btn-group-item>
-                                <btn-group-item>
-                                    <el-button @click="runActions()" type="info" size="mini">
-                                        <i class="mr-1 ff-icon-refresh"></i>
-                                        {{ $t('Run Selected Action') }}
-                                    </el-button>
                                 </btn-group-item>
                             </btn-group>
                         </div>
@@ -100,7 +100,7 @@
                             <el-table-column sortable type="selection" width="50"></el-table-column>
                             <el-table-column type="expand">
                                 <template slot-scope="props">
-                                    <p v-html="props.row.note"></p>
+                                    <p v-html="props.row.status === 'processing' ? 'The action is still processing' : props.row.note"></p>
                                 </template>
                             </el-table-column>
                             <el-table-column sortable prop="id" width="100px" :label="$t('ID')">
@@ -129,7 +129,7 @@
                                     <btn-group size="sm">
                                         <btn-group-item v-if="hasPro">
                                             <el-tooltip  popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">
-                                                <el-button v-loading="replaying[props.row.id] ==true" class="el-button--icon" icon="el-icon-refresh" @click="runActions(props.row)" type="info" size="mini">
+                                                <el-button v-loading="replaying[props.row.id] == true" class="el-button--icon" icon="el-icon-refresh" @click="runActions(props.row)" type="success" size="mini">
                                                 </el-button>
                                             </el-tooltip>
                                         </btn-group-item>
@@ -203,10 +203,12 @@
                     last_page: 1,
                     per_page: localStorage.getItem('apiLogsPerPage') || 10
                 },
-                filter_date_range :[],
+                filter_date_range: [],
                 pickerOptions: {
                     disabledDate(time) {
-                        return time.getTime() >= Date.now();
+                        const today = new Date();
+                        today.setHours(23, 59, 59, 999);
+                        return time.getTime() > today.getTime();
                     },
                     shortcuts: [
                         {
@@ -222,9 +224,9 @@
                             onClick(picker) {
                                 const start = new Date();
 	                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-	                            const yesterStart = new Date(start.setHours(0, 0, 1, 0))
-	                            const yesterEnd = new Date(start.setHours(23, 59, 59, 999))
-	                            picker.$emit('pick', [yesterStart, yesterEnd]);
+	                            const yesterdayStart = new Date(start.setHours(0, 0, 1, 0))
+	                            const yesterdayEnd = new Date(start.setHours(23, 59, 59, 999))
+	                            picker.$emit('pick', [yesterdayStart, yesterdayEnd]);
                             }
                         },
                         {
@@ -308,6 +310,7 @@
                     });
             },
             runActions(singlelog = false) {
+                this.loading = true;
                 let logIds = [];
 
                 if (singlelog) {
@@ -359,6 +362,7 @@
                         this.getLogs();
                         this.multipleSelection = [];
                         this.replaying[singlelog.id] = false;
+                        this.loading = false;
                     });
             },
             handleSelectionChange(val) {
@@ -416,13 +420,13 @@
             this.getAvailableFilters();
         },
         created() {
-            if (this.app.status_query != ''){
+            if (this.app.status_query != '') {
                 this.selected_status = [this.app.status_query];
             }
-            if (this.app.source_query != ''){
+            if (this.app.source_query != '') {
                 this.selected_component = [this.app.source_query];
             }
-            if (this.app.date_start_query != '' && this.app.date_end_query != ''){
+            if (this.app.date_start_query != '' && this.app.date_end_query != '') {
                 this.filter_date_range = [this.app.date_start_query,this.app.date_end_query ]
             }
         }

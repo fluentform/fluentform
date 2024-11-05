@@ -1945,3 +1945,7 @@ label.el-radio, label.el-checkbox {
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
   display: none;
 }
+
+.text-capitalize {
+    text-transform: capitalize;
+}
