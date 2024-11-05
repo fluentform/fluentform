@@ -29,6 +29,7 @@ class TranslationString
             'Check the video intro' => __('Check the video intro', 'fluentform'),
             'Entries from All Forms' => __('Entries from All Forms', 'fluentform'),
             'Browser' => __('Browser', 'fluentform'),
+            'Submitted At' => __('Submitted At', 'fluentform'),
             'Date' => __('Date', 'fluentform'),
             'Hide Chart' => __('Hide Chart', 'fluentform'),
             'Show Chart' => __('Show Chart', 'fluentform'),

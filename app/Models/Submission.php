@@ -314,7 +314,10 @@ class Submission extends Model
 
         foreach ($result['data'] as &$entry) {
             $entry['entry_url'] = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry['form_id'] . '#/entries/' . $entry['id']);
-            $entry['human_date'] = human_time_diff(strtotime($entry['created_at']), strtotime(current_time('mysql')));
+
+            if (apply_filters('fluentform/entries_human_date', false)) {
+                $entry['human_date'] = human_time_diff(strtotime($entry['created_at']), strtotime(current_time('mysql')));
+            }
         }
 
         $result['available_forms'] = $this->availableForms();

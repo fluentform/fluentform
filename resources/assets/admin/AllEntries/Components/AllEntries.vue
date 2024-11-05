@@ -134,9 +134,9 @@
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
-                            <el-table-column width="150" :label="$t('Time')">
+	                        <el-table-column width="150" :label="$t('Submitted At')">
                                 <template slot-scope="scope">
-                                    {{scope.row.human_date}} {{$t('ago')}}
+                                    {{scope.row.human_date ? `${scope.row.human_date} ${$t('ago')}` : submittedAt(scope.row.created_at) }}
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">
@@ -160,7 +160,7 @@
                         :current-page.sync="paginate.current_page"
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="parseInt(paginate.per_page)"
-                        layout="total, sizes, prev, pager, next"
+                        layout="total, sizes, prev, pager, next, jumper"
                         :total="paginate.total"
                     ></el-pagination>
                 </div>
@@ -177,7 +177,7 @@ import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
 import {scrollTop} from '@/admin/helpers';
 import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
-
+import moment from 'moment';
 export default {
     name: 'AllEntries',
     components: {
@@ -292,6 +292,9 @@ export default {
                 per_page: data.per_page || localStorage.getItem('entriesPerPage') || 20,
             }
         },
+	    submittedAt(date) {
+			return moment(date).format('MMM DD, YYYY');
+	    },
         goToPage(value) {
             let top = this.chart_status === 'yes' ? this.$refs?.entry_chart.clientHeight : 100;
             scrollTop(top).then((_) => {
