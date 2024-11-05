@@ -159,7 +159,7 @@ class Updater
         $stylePrefKeys = array_keys($stylePrefMap);
         foreach ($fields as $fieldIndex => &$field) {
             $element = Arr::get($field, 'element');
-
+            
             if ('container' == $element) {
                 $columns = $field['columns'];
                 foreach ($columns as $columnIndex => $column) {
@@ -195,7 +195,7 @@ class Updater
             */
             if (!empty($field['fields'])) {
                 $fields[$fieldIndex]['fields'] = $this->sanitizeFieldMaps($field['fields']);
-                return $fields;
+                continue;
             }
             
             if (!empty($field['style_pref'])) {
