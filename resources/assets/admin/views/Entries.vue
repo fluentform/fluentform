@@ -146,7 +146,7 @@
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
                         <label for="search_bar">
-                           <b> {{ $t('Advanced Search') }}</b>
+                           <b> {{ $t('Advanced Filter') }}</b>
                         </label>
                         <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
 
@@ -190,7 +190,7 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
                             <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span>{{ $t('Filter') }}</span>
+                                <span>{{ $t('Date Filter') }}</span>
                                 <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>

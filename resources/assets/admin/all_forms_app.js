@@ -90,7 +90,7 @@ Vue.mixin({
         hasPermission(permission) {
             return (new Acl).verify(permission);
         },
-        
+
         ...notifier
     },
     filters: {
@@ -112,7 +112,7 @@ new Vue({
     data: {},
     beforeCreate() {
         this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
+            jQuery('title').text(`${module} - Fluent Forms`);
         });
         this.$emit('change-title', 'Forms');
     }

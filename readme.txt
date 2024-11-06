@@ -292,7 +292,6 @@ Improve your website’s efficiency by bridging the gap from visitor input to em
 * Twilo
 * GetGist
 * ConvertKit
-* WP Social Ninja
 * BuddyBoss
 * FluentBooking
 * Notion
