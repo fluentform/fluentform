@@ -4,7 +4,7 @@
             <card-head>
                 <card-head-group class="justify-between">
                     <div class="entry_info_box_title">
-                        {{$t('Submission Logs')}}
+                        {{ $t("Submission Logs") }}
                     </div>
                     <div class="entry_info_box_actions">
                         <el-radio-group class="el-radio-group-info" v-model="log_type" size="medium">
@@ -19,15 +19,42 @@
                     <el-skeleton :loading="loading" animated :rows="4">
                         <div class="wpf_entry_details">
                             <template v-if="logs && logs.length">
-                                <div v-for="(log, logKey) in logs" class="entry_submission_log wpf_each_entry" :key="logKey">
+                                <div
+                                    v-for="(log, logKey) in logs"
+                                    class="entry_submission_log wpf_each_entry"
+                                    :key="logKey"
+                                    v-loading="replaying[log.id]"
+                                >
                                     <div class="wpf_entry_label">
-                                        <span class="ff_tag" :class="'log_status_' + log.status">{{log.status}}</span>
-                                        {{ $t('in') }}
-                                        <span class="entry_submission_log_component">{{log.title}}</span>
-                                        {{ $t('at') }}
-                                        {{log.created_at}}
+                                        <span
+                                            class="ff_tag mr-2"
+                                            :class="'log_status_' + log.status"
+                                            >{{ log.status }}
+                                        </span>
+                                        {{ $t("in") }}
+                                        <span
+                                            class="entry_submission_log_component"
+                                            >{{ log.title }}
+                                        </span>
+                                        {{ $t("at") }}
+                                        {{ log.created_at }}
                                         <span class="wpf_entry_remove">
-                                            <remove :plain="true" @on-confirm="removeLog(log.id)">
+                                            <el-button
+                                                v-if="hasPro && log_type === 'api_calls'"
+                                                class="el-button--icon mr-2"
+                                                icon="el-icon-refresh"
+                                                @click="
+                                                    runAction(
+                                                       log
+                                                    )
+                                                "
+                                                type="success"
+                                                size="mini"
+                                            />
+                                            <remove
+                                                :plain="true"
+                                                @on-confirm="removeLog(log.id)"
+                                            >
                                                 <el-button
                                                     class="el-button--icon el-button--soft"
                                                     size="mini"
@@ -37,10 +64,15 @@
                                             </remove>
                                         </span>
                                     </div>
-                                    <div class="entry_submission_log_des" v-html="log.description"></div>
+                                    <div
+                                        class="entry_submission_log_des"
+                                        v-html="log.description"
+                                    ></div>
                                 </div>
                             </template>
-                            <p class="fs-17" v-else>{{$t('Sorry, No Logs found!')}}</p>
+                            <p class="fs-17" v-else>
+                                {{ $t("Sorry, No Logs found!") }}
+                            </p>
                         </div>
                     </el-skeleton>
                 </div>
@@ -50,27 +82,33 @@
 </template>
 <script type="text/babel">
     import remove from "@/admin/components/confirmRemove";
-    import Card from '@/admin/components/Card/Card.vue';
-    import CardBody from '@/admin/components/Card/CardBody.vue';
-    import CardHead from '@/admin/components/Card/CardHead.vue';
-    import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
+    import Card from "@/admin/components/Card/Card.vue";
+    import CardBody from "@/admin/components/Card/CardBody.vue";
+    import CardHead from "@/admin/components/Card/CardHead.vue";
+    import CardHeadGroup from "@/admin/components/Card/CardHeadGroup.vue";
+    import BtnGroupItem from "@/admin/components/BtnGroup/BtnGroupItem.vue";
+    import BtnGroup from "@/admin/components/BtnGroup/BtnGroup.vue";
 
     export default {
-        name: 'submission_logs',
-        props: ['entry_id'],
-        components:{
-          remove,
-                Card,
-                CardHead,
-                CardBody,
-                CardHeadGroup,
+        name: "submission_logs",
+        props: ["entry_id"],
+        components: {
+            BtnGroup,
+            BtnGroupItem,
+            remove,
+            Card,
+            CardHead,
+            CardBody,
+            CardHeadGroup,
         },
         data() {
             return {
                 logs: [],
                 loading: false,
-                log_type: 'logs'
-            }
+                log_type: "logs",
+                singleLoading: false,
+                replaying: {}
+            };
         },
         watch: {
             entry_id() {
@@ -78,6 +116,11 @@
             },
             log_type() {
                 this.fetchLogs();
+            }
+        },
+        computed: {
+            hasPro() {
+                return !!window.fluent_form_entries_vars.has_pro;
             }
         },
         methods: {
@@ -115,6 +158,40 @@
                         console.log(error);
                     });
             },
+            runAction(log) {
+                this.$set(this.replaying, log.id, true);
+                const logObj = [
+                    {
+                        action_id: log.id,
+                        feed_id: log.feed_id,
+                        form_id: log.form_id,
+                        entry_id: log.submission_id,
+                        integration_enabled: log.integration_enabled
+                    }
+                ];
+                let data = {
+                    action: 'ffpro_post_integration_feed_replay',
+                    verify_condition: 'yes',
+                    multiple_actions: false,
+                    logIds: logObj,
+                };
+
+                FluentFormsGlobal.$post(data)
+                    .then(response => {
+                        this.$success(response.data.message);
+                    })
+                    .fail(error => {
+                        if (!error.responseJSON && !error.responseText || error.responseText == '0') {
+                            alert(this.$t('Looks like you are using older version of fluent forms pro. Please update to latest version'));
+                            return;
+                        }
+                        this.$fail(error.responseJSON.data.message);
+                    })
+                    .always(() => {
+                        this.fetchLogs();
+                        this.$set(this.replaying, log.id, false);
+                    });
+            }
         },
         mounted() {
             this.fetchLogs();
