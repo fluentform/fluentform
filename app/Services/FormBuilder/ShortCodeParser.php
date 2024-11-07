@@ -111,6 +111,10 @@ class ShortCodeParser
 
     protected static function parseShortCodeFromString($parsable, $isUrl = false, $isHtml = false)
     {
+        if ('0' === $parsable) {
+            return $parsable;
+        }
+
         if (! $parsable) {
             return '';
         }
