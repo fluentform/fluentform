@@ -563,7 +563,7 @@ class Form
         ]);
     
         /* This filter is deprecated and will be removed soon */
-        $disableAnalytics = apply_filters('fluentform-disabled_analytics', false);
+        $disableAnalytics = apply_filters('fluentform-disabled_analytics', true);
 
         if (!apply_filters('fluentform/disabled_analytics', $disableAnalytics)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
@@ -742,7 +742,7 @@ class Form
             }
         }
         /* This filter is deprecated and will be removed soon */
-        $status = apply_filters('fluentform-disabled_analytics', false);
+        $status = apply_filters('fluentform-disabled_analytics', true);
 
         if (!apply_filters('fluentform/disabled_analytics', $status)) {
             if (!Acl::hasAnyFormPermission($form->id)) {

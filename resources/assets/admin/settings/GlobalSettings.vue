@@ -44,6 +44,7 @@
                     misc: {
                         isIpLogingDisabled: false,
                         file_upload_locations: '',
+                        isAnalyticsDisabled: true,
                     },
 	                default_messages : {}
                 },
