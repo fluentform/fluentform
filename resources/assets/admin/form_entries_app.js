@@ -96,6 +96,7 @@ import Entry from './views/Entry.vue';
 import VisualReports from './views/Reports/VisualReports.vue';
 import notifier from './notifier';
 import globalSearch from './global_search';
+import { _$t } from './helpers';
 
 const routes = [
     {
@@ -143,13 +144,20 @@ Vue.mixin({
         globalSearch
     },
     methods: {
-        $t(str) {
-            let transString = window.fluent_form_entries_vars.form_entries_str[str];
-            if(transString) {
-                return transString;
-            }
-            return str;
+        $t(string) {
+
+            let transString = window.fluent_form_entries_vars.form_entries_str[string] || string
+            return _$t(transString, ...arguments);
+
         },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        },
+
         $storeData(key, value) {
             var prevData = localStorage.getItem('ff_entry_data');
 
