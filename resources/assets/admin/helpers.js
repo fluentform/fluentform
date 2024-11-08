@@ -5,20 +5,20 @@ import moment from 'moment';
     Usage: Helps to clone an item next to it.
  */
 if (typeof Array.prototype.pushAfter === "undefined") {
-    Array.prototype.pushAfter = function(index, item) {
+    Array.prototype.pushAfter = function (index, item) {
         var deepClone = JSON.parse(JSON.stringify(item));
         this.splice(index + 1, 0, deepClone);
     };
 }
 
 if (typeof String.prototype.ucFirst === "undefined") {
-    String.prototype.ucFirst = function() {
+    String.prototype.ucFirst = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 }
 
 if (typeof String.prototype.ucWords === "undefined") {
-    String.prototype.ucWords = function() {
+    String.prototype.ucWords = function () {
         return this.split(' ').map(word => {
             return word.charAt(0).toUpperCase() + word.slice(1)
         }).join(' ');
@@ -52,9 +52,9 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
     // toggle sub-links if curren link has sub-links
     if ($link.hasClass('has_sub_menu')) {
 
-        if(firstLoad){
+        if (firstLoad) {
             $link.find('.ff_list_submenu').show();
-        }else{
+        } else {
             $link.toggleClass('is-submenu'); // toggle sub-link icon
             $link.find('.ff_list_submenu').slideToggle();
         }
@@ -135,5 +135,33 @@ export const tooltipDateTime  = (date)=> {
     }
 
     return dateMoment.format(globalConfig.wp_date_time_format);
+}
+export function _$t(string, ...args) {
+
+
+    // Prepare the arguments, excluding the first one (the string itself)
+     args = Array.prototype.slice.call(args, 1);
+
+    if (args.length === 0) {
+        return string;
+    }
+
+    // Regular expression to match %s, %d, or %1s, %2s, etc.
+    const regex = /%(\d*)s|%d/g;
+
+    // Replace function to handle each match found by the regex
+    let argIndex = 0; // Keep track of the argument index for non-numbered placeholders
+    string = string.replace(regex, (match, number) => {
+        // If it's a numbered placeholder, use the number to find the corresponding argument
+        if (number) {
+            const index = parseInt(number, 10) - 1; // Convert to zero-based index
+            return index < args.length ? args[index] : match; // Replace or keep the placeholder
+        } else {
+            // For non-numbered placeholders, use the next argument in the array
+            return argIndex < args.length ? args[argIndex++] : match; // Replace or keep the placeholder
+        }
+    });
+
+    return string;
 }
 

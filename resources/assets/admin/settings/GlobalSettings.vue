@@ -15,7 +15,7 @@
 
             <!--Save settings-->
             <div class="mt-4">
-                <el-button type="primary" icon="el-icon-success" @click="save">
+                <el-button v-loading="saving" type="primary" icon="el-icon-success" @click="save">
                     {{ $t('Save Settings') }}
                 </el-button>
             </div>
@@ -34,6 +34,7 @@
         data() {
             return {
                 loading: true,
+                saving: false,
                 app_ready: false,
                 formSettings: {
                     layout: {
@@ -123,7 +124,7 @@
             },
 
             save() {
-                this.loading = true;
+                this.saving = true;
                 const url = FluentFormsGlobal.$rest.route('storeGlobalSettings');
 
                 let data = {
@@ -149,7 +150,7 @@
                         this.$fail(this.$t('Something Went Wrong Please Try Again!'))
                     })
                     .finally(() => {
-                        this.loading = false;
+                        this.saving = false;
                     });
                 this.saveFailedIntegrationNotification();
             },
