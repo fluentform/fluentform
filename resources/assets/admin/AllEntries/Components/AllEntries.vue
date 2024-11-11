@@ -134,7 +134,7 @@
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
-                            <el-table-column width="150" :label="$t('Time')">
+                            <el-table-column :width="dateColWidth" :label="$t('Time')">
                                 <template slot-scope="scope">
 
                                     <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
@@ -282,7 +282,6 @@ export default {
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
                     this.entries = response.data;
-                    console.log(response.data)
                     this.setPaginate(response);
                     this.available_forms = response.available_forms;
                 })
@@ -347,7 +346,10 @@ export default {
 			return !!(this.radioOption && this.radioOption != 'all' ||
 				(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
             );
-        }
+        },
+	    dateColWidth() {
+			return window.fluent_forms_global_var.disable_time_diff ? '195' : '150';
+	    }
     },
     watch: {
         radioOption() {

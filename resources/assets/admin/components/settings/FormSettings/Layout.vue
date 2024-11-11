@@ -791,7 +791,7 @@
             if(!this.data.misc.admin_top_nav_status) {
                 this.$set(this.data.misc, 'admin_top_nav_status', 'yes');
             }
-            if(!this.data.misc.deafult_admin_date_time) {
+            if(!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
             }
 

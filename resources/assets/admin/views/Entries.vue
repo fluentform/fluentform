@@ -399,7 +399,7 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
-                                width="120px">
+                                :width="dateColWidth">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
@@ -785,7 +785,11 @@
 				return !!(this.radioOption && this.radioOption != 'all' ||
 					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
                 );
-            }
+            },
+
+	        dateColWidth() {
+		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
+	        }
         },
         methods: {
             getStatusName(status) {
