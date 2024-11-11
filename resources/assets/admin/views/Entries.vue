@@ -1207,9 +1207,10 @@
         },
         mounted() {
             this.getEntryResources();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
@@ -1217,6 +1218,11 @@
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
         },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>
 

@@ -529,9 +529,15 @@
         },
         mounted() {
             this.getEntry();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
-        }
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
+        },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>
