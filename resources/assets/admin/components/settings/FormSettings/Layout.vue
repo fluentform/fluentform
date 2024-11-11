@@ -605,6 +605,7 @@
                     </el-form-item>
                 </div>
 
+                <!-- Email Footer -->
                 <el-form-item class="ff-form-item">
                     <template slot="label">
                         {{ $t('Email Footer Text') }}
@@ -627,6 +628,27 @@
                         v-model="misc.email_footer_text">
                     </el-input>
                 </el-form-item>
+
+                <!-- Date format -->
+                <div class="el-form-item-wrap">
+                    <el-form-item class="ff-form-item">
+                        <template slot="label">
+                            {{ $t('Date & Time Format') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <p>
+                                        {{ $t('Selected Time & Date format will be shown in different admin pages') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="misc.default_admin_date_time">
+                            <el-radio label="time_diff">{{ $t('Date Time difference (EG: 2 hours ago)') }}</el-radio>
+                            <el-radio label="wp_default">{{ $t('WordPress Default') }}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </div>
             </card-body>
         </card>
     </el-form>
@@ -768,6 +790,9 @@
             }
             if(!this.data.misc.admin_top_nav_status) {
                 this.$set(this.data.misc, 'admin_top_nav_status', 'yes');
+            }
+            if(!this.data.misc.deafult_admin_date_time) {
+                this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
             }
 
             this.misc = this.data.misc;

@@ -12,7 +12,7 @@
                     <el-col :span="5">
                         <div class="ff_form_group">
                             <h6 class="fs-15 mb-3">Form</h6>
-                            <el-select class="w-100" @change="getLogs()" multiple clearable v-model="selected_form" :placeholder="$t('Select Form')">
+                            <el-select class="w-100" filterable @change="getLogs()" multiple clearable v-model="selected_form" :placeholder="$t('Select Form')">
                                 <el-option
                                     v-for="item in available_forms"
                                     :key="item.id"
@@ -25,7 +25,7 @@
                     <el-col :span="5">
                         <div class="ff_form_group">
                             <h6 class="fs-15 mb-3">Source</h6>
-                            <el-select class="w-100"  @change="getLogs()" multiple clearable v-model="selected_component" :placeholder="$t('Select Component')">
+                            <el-select class="w-100" filterable @change="getLogs()" multiple clearable v-model="selected_component" :placeholder="$t('Select Component')">
                                 <el-option
                                     v-for="item in available_components"
                                     :key="item.value"
@@ -40,7 +40,7 @@
                     <el-col :span="5">
                         <div class="ff_form_group">
                             <h6 class="fs-15 mb-3">{{ $t('Status') }}</h6>
-                            <el-select class="w-100" @change="getLogs()" multiple clearable v-model="selected_status" :placeholder="$t('Select Status')">
+                            <el-select class="w-100" filterable @change="getLogs()" multiple clearable v-model="selected_status" :placeholder="$t('Select Status')">
                                 <el-option
                                     v-for="item in available_statuses"
                                     :key="item.value"
@@ -73,22 +73,27 @@
                 <div class="ff_activity_logs_body mt-4">
                     <el-skeleton :loading="loading" animated :rows="10">
                         <div v-if="multipleSelection.length" class="logs_actions mb-3">
-                            <btn-group size="sm">
-                                <btn-group-item>
-                                    <remove icon="el-icon-delete" @on-confirm="deleteItems()">
-                                        <button type="button" class="el-button el-button--danger el-button--mini">
-                                            <i class="el-icon-delete"></i>
-                                            <span>{{ $t('Delete Selected Logs') }}</span>
-                                        </button>
-                                    </remove>
-                                </btn-group-item>
-                                <btn-group-item>
-                                    <el-button @click="runActions()" type="info" size="mini">
-                                        <i class="mr-1 ff-icon-refresh"></i>
-                                        {{ $t('Run Selected Action') }}
-                                    </el-button>
-                                </btn-group-item>
-                            </btn-group>
+                            <div class="d-flex justify-between" style="">
+                                <el-button
+                                        type="primary"
+                                        size="mini"
+                                        @click="runActions()"
+                                        class="btn-group-item"
+                                >
+                                    <i class="mr-1 ff-icon-refresh"></i>
+                                    {{ $t('Run Selected Action') }}
+                                </el-button>
+
+                                <el-button
+                                        type="danger"
+                                        size="mini"
+                                        @click="deleteItems()"
+                                        class="btn-group-item"
+                                        icon="el-icon-delete"
+                                >
+                                    <span>{{ $t('Delete Selected Logs') }}</span>
+                                </el-button>
+                            </div>
                         </div>
 
                         <el-table
@@ -97,39 +102,49 @@
                             stripe
                             @selection-change="handleSelectionChange"
                         >
-                            <el-table-column sortable type="selection" width="50"></el-table-column>
+                            <el-table-column sortable type="selection" width="40"></el-table-column>
                             <el-table-column type="expand">
                                 <template slot-scope="props">
                                     <p v-html="props.row.note"></p>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable prop="id" width="100px" :label="$t('ID')">
+                            <el-table-column sortable prop="id" width="70" :label="$t('ID')">
                             </el-table-column>
                             <el-table-column sortable :label="$t('Submission ID')">
                                 <template slot-scope="props">
                                     <a :href="props.row.submission_url">#{{props.row.submission_id}}</a>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable prop="form_title" :label="$t('Form')"></el-table-column>
-                            <el-table-column sortable prop="status" :label="$t('Status')" width="140">
+                            <el-table-column  width="140" sortable prop="form_title" :label="$t('Form')"></el-table-column>
+                            <el-table-column sortable prop="status" :label="$t('Status')" width="100">
                                 <template slot-scope="props">
                                     <el-tag :type="`${props.row.status == 'failed' ? 'danger' : props.row.status == 'success' ? 'success' : 'info'}`" size="small" class="el-tag--pill text-capitalize">
                                         {{props.row.status}}
                                     </el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable :label="$t('Component')">
+                            <el-table-column sortable width="122" :label="$t('Component')">
                                 <template slot-scope="props">
                                     <div>{{getReadableName(props.row.component)}}</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="updated_at" :label="$t('Date')" width="180"></el-table-column>
-                            <el-table-column width="115" fixed="right" align="center" :label="$t('Action')">
+                            <el-table-column prop="updated_at" :label="$t('Date')" width="180">
+                                <template slot-scope="props">
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            {{tooltipDateTime(props.row.updated_at)}}
+                                        </div>
+
+                                        <span>{{humanDiffTime(props.row.updated_at)}}</span>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="100" fixed="right" align="center" :label="$t('Action')">
                                 <template slot-scope="props">
                                     <btn-group size="sm">
                                         <btn-group-item v-if="hasPro">
                                             <el-tooltip  popper-class="ff_tooltip_wrap" :content="$t('Replay Action')" placement="top">
-                                                <el-button v-loading="replaying[props.row.id] ==true" class="el-button--icon" icon="el-icon-refresh" @click="runActions(props.row)" type="info" size="mini">
+                                                <el-button v-loading="replaying[props.row.id] ==true"  type="primary"  class="el-button--icon" icon="el-icon-refresh" @click="runActions(props.row)"  size="mini">
                                                 </el-button>
                                             </el-tooltip>
                                         </btn-group-item>

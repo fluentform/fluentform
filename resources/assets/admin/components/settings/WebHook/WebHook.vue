@@ -6,21 +6,21 @@
                     <h5 class="title">{{ $t('WebHooks Integration') }}</h5>
                     <btn-group>
                         <btn-group-item>
-                            <el-button 
-                                v-if="show_edit" 
+                            <el-button
+                                v-if="show_edit"
                                 @click="backToHome()"
-                                size="medium" 
+                                size="medium"
                                 icon="ff-icon ff-icon-arrow-left"
                                 type="info"
                                 class="el-button--soft"
                             >
                                 {{ $t('Back') }}
                             </el-button>
-                            <el-button 
+                            <el-button
                                 v-else
-                                @click="add" 
+                                @click="add"
                                 type="info"
-                                size="medium" 
+                                size="medium"
                                 icon="ff-icon ff-icon-plus"
                             >
                             {{ $t('Add New') }}
@@ -113,7 +113,7 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
-    
+
     export default {
         name: 'WebHook',
         props: ['form', 'inputs', 'has_pro', 'editorShortcodes'],
@@ -191,10 +191,10 @@
                     });
             },
             remove(id) {
-                let data = { 
+                let data = {
                     action: 'fluentform-delete-webhook',
-                    id: id, 
-                    form_id: this.form.id 
+                    id: id,
+                    form_id: this.form.id
                 };
 
                 FluentFormsGlobal.$post(data )

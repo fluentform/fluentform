@@ -125,7 +125,7 @@
                                     </a>
                                 </template>
                             </el-table-column>
-                            <el-table-column :label="$t('Form')" sortable prop="form.title" width="400"></el-table-column>
+                            <el-table-column :label="$t('Form')" sortable prop="form.title" ></el-table-column>
                             <el-table-column width="150" prop="status" sortable :label="$t('Status')">
                                 <template slot-scope="scope">
                                     <span v-if="scope.row.status ==  'read' ">{{$t('Read')}}</span>
@@ -136,7 +136,15 @@
                             <el-table-column width="150" :label="$t('Browser')" prop="browser"></el-table-column>
                             <el-table-column width="150" :label="$t('Time')">
                                 <template slot-scope="scope">
-                                    {{scope.row.human_date}} {{$t('ago')}}
+
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            {{tooltipDateTime(scope.row.created_at)}}
+                                        </div>
+
+                                        <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                    </el-tooltip>
+
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">
@@ -274,6 +282,7 @@ export default {
             FluentFormsGlobal.$rest.get(url, data)
                 .then(response => {
                     this.entries = response.data;
+                    console.log(response.data)
                     this.setPaginate(response);
                     this.available_forms = response.available_forms;
                 })

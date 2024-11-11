@@ -60,6 +60,7 @@ import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 import notifier from '@/admin/notifier';
+import {humanDiffTime,tooltipDateTime} from '@/admin/helpers';
 import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
@@ -67,6 +68,7 @@ import ApiLogs from './ApiLogs';
 import Migrator from './Migrator';
 import globalSearch from '../global_search';
 import ImportEntries from './ImportEntries';
+
 
 Vue.mixin({
     methods:{
@@ -77,7 +79,9 @@ Vue.mixin({
             }
             return str;
         },
-        ...notifier
+        ...notifier,
+        humanDiffTime,
+        tooltipDateTime
     }
 })
 new Vue({

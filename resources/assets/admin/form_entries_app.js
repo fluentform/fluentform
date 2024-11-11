@@ -86,7 +86,7 @@ Vue.prototype.$message = Message
 
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
-// configure language
+
 locale.use(lang);
 
 import Acl from '@/common/Acl';
@@ -96,6 +96,7 @@ import Entry from './views/Entry.vue';
 import VisualReports from './views/Reports/VisualReports.vue';
 import notifier from './notifier';
 import globalSearch from './global_search';
+import { humanDiffTime,tooltipDateTime } from './helpers';
 
 const routes = [
     {
@@ -266,7 +267,9 @@ Vue.mixin({
                 })
         },
 
-        ...notifier
+        ...notifier,
+        humanDiffTime,
+        tooltipDateTime
     },
     filters: {
         ucFirst(string) {

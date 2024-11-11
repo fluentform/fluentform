@@ -61,6 +61,7 @@ Vue.use(Tooltip);
 import App from './App.vue';
 import globalSearch from '../global_search';
 import notifier from '../notifier';
+import {humanDiffTime, tooltipDateTime} from '../helpers';
 
 locale.use(lang);
 
@@ -73,6 +74,9 @@ Vue.mixin({
             }
             return str;
         },
+
+        humanDiffTime,
+        tooltipDateTime,
         ...notifier
     },
 });

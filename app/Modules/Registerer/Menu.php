@@ -284,6 +284,9 @@ class Menu
             'forms'                    => $forms,
             'hasPro'                   => defined('FLUENTFORMPRO'),
             'has_entries_import'       => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
+            'disable_time_diff'        => Helper::isDefaultWPDateEnabled(),
+            'wp_date_time_format'      => Helper::getDefaultDateTimeFormatForMoment(),
+            'server_time'              => current_time('mysql'),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
