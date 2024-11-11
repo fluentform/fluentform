@@ -6,8 +6,8 @@
                     <h5 class="title">{{ $t('Zapier Integration') }}</h5>
                     <btn-group>
                         <btn-group-item>
-                            <el-button 
-                                v-if="selected" 
+                            <el-button
+                                v-if="selected"
                                 @click="discard"
                                 icon="ff-icon ff-icon-arrow-left"
                                 type="info"
@@ -16,10 +16,10 @@
                             >
                                 {{ $t('Back') }}
                             </el-button>
-                            <el-button 
-                                v-else 
-                                @click="add" 
-                                type="info" 
+                            <el-button
+                                v-else
+                                @click="add"
+                                type="info"
                                 icon="ff-icon ff-icon-plus"
                                 size="medium"
                             >
@@ -54,9 +54,9 @@
                                         <btn-group-item>
                                             <el-button
                                                 class="el-button--icon"
-                                                @click="edit(scope.$index)" 
+                                                @click="edit(scope.$index)"
                                                 type="primary"
-                                                icon="el-icon-setting" 
+                                                icon="el-icon-setting"
                                                 size="mini"
                                             ></el-button>
                                         </btn-group-item>
@@ -114,7 +114,7 @@
                     </el-form-item>
 
                     <div class="mt-4">
-                        <el-button 
+                        <el-button
                             :loading="loading"
                             @click="store"
                             type="primary"
@@ -270,7 +270,7 @@
                 FluentFormsGlobal.$post(data).done(response => {
                     this.selected.id = response.data.id;
                     this.notifications.splice(this.selectedIndex, 1, this.selected);
-                    
+
                     this.$success(this.$t('Notification saved successfully!'));
 
                     // this.selected = this.selectedIndex = null;

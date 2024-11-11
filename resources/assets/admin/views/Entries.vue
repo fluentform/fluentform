@@ -401,7 +401,14 @@
                                 prop="created_at"
                                 width="120px">
                             <template slot-scope="scope">
-                                {{ dateFormat(scope.row.created_at) }}
+                                <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        {{tooltipDateTime(scope.row.created_at)}}
+                                    </div>
+
+                                   <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                </el-tooltip>
+
                             </template>
                         </el-table-column>
 

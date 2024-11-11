@@ -4,7 +4,7 @@
         class="el-dialog-no-header"
         :visible.sync="visibility"
         :before-close="close"
-        width="26%"
+        width="28%"
         :show-close="false"
     >
 
@@ -59,7 +59,6 @@ export default {
     computed: {
         dataLostMsg() {
             let matched = [];
-
             if (this.editItem?.attributes && window.FluentFormApp.used_name_attributes) {
                 matched = window.FluentFormApp.used_name_attributes.filter(
                     name => name.field_name === this.editItem?.attributes.name
