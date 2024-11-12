@@ -996,9 +996,10 @@ label.el-radio, label.el-checkbox {
 }
 
 // global setting
-.ff_global_setting_wrap{
-  .ff_layout_section_sidebar{
-   height: 100%;
+.ff_global_setting_wrap,
+.ff_tools_wrap {
+  .ff_layout_section_sidebar {
+    height: 100%;
   }
 }
 

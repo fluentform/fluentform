@@ -225,6 +225,12 @@
     padding-left: 0;
   }
 
+  .ff_tools_wrap {
+    .ff_settings_sidebar_wrap{
+      height: 100%;
+    }
+  }
+
   .ff_settings_sidebar_wrap{
     position: absolute;
     flex-shrink: 0;
