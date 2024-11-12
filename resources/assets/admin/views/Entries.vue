@@ -452,7 +452,7 @@
             </div><!-- .ff_table -->
 
             <el-row class="mt-4 items-center">
-                <el-col :span="12">
+                <el-col :xs="24" :sm="8" :lg="12">
                     <div class="bulkactions">
                         <email-resend
                                 v-if="entrySelections.length"
@@ -463,7 +463,7 @@
                         <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="16" :lg="12">
                     <div class="ff_pagination_wrap text-right">
                         <el-pagination
                                 class="ff_pagination"

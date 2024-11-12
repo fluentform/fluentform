@@ -358,6 +358,17 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+
+  .ff_pagination_wrap.mt-4 {
+    margin-top: 0 !important;
+  }
+  .ff_pagination {
+    flex-wrap: wrap;
+    margin-top: 24px;
+    .el-pagination__jump {
+      margin: 10px 0 0 0;
+    }
+  }
 }
 
 .el-popover {
