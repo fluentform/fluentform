@@ -19,10 +19,10 @@
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
-                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                                <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }} CSV</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -322,8 +322,8 @@
                                     </div>
 
                                     <div class="inline_actions inline_item" v-else>
-                                            <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                                class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                            <span @click="restoreEntry(scope.row.id, scope.$index)"
+                                                class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
                                     </div>
                                 </div>
                             </template>
@@ -343,7 +343,7 @@
                         </el-table-column>
 
                         <el-table-column
-                                label="Entry Status"
+                                :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
                                 width="120px">
@@ -516,7 +516,7 @@
                         </el-checkbox-group>
 
                         <el-checkbox-group class="ff_2_col_items " v-model="shortcodesToExport" @change="handleCheckedFieldsChange">
-                            <div >
+                            <div>
                                 <p><b>{{ $t('Submission Info') }}</b></p>
                                 <div class="separator mb-4"></div>
                                 <el-checkbox :disabled="!has_pro" v-for="(label,name) in editor_shortcodes"   :label="name" :key="name" >{{ label }}</el-checkbox>

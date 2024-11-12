@@ -4,7 +4,7 @@
         <hr class="mb-3" />
 
         <div v-for="(number, index) in formStepsCount" class="el-form-item" :key="index">
-            <label class="el-form-item__label">{{ $t('Step') }} {{ number }}</label>
+            <label class="el-form-item__label">{{ $t('Step %d', number) }}</label>
             <div class="el-form-item__content">
                 <el-input size="small" v-model="editItem.settings.step_titles[index]"></el-input>
             </div>

@@ -62,17 +62,22 @@ import App from './App.vue';
 import globalSearch from '../global_search';
 import notifier from '../notifier';
 import {humanDiffTime, tooltipDateTime} from '../helpers';
+import {_$t} from "@/admin/helpers";
 
 locale.use(lang);
 
 Vue.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
 
         humanDiffTime,

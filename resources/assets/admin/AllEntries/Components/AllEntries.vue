@@ -144,7 +144,6 @@
 
                                         <span>{{humanDiffTime(scope.row.created_at)}}</span>
                                     </el-tooltip>
-
                                 </template>
                             </el-table-column>
                             <el-table-column width="150" :label="$t('Action')">

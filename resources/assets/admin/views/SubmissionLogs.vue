@@ -26,18 +26,15 @@
                                     v-loading="replaying[log.id]"
                                 >
                                     <div class="wpf_entry_label">
-                                        <span
-                                            class="ff_tag mr-2"
-                                            :class="'log_status_' + log.status"
-                                            >{{ log.status }}
+                                        <span v-html="
+                                            $t(
+                                                '%s in %s at %s',
+                                                `<span class='ff_tag mr-2 log_status_${log.status}'>${log.status}</span>`,
+                                                `<span class='entry_submission_log_component'>${log.title}</span>`,
+                                                log.created_at
+                                            )
+                                        ">
                                         </span>
-                                        {{ $t("in") }}
-                                        <span
-                                            class="entry_submission_log_component"
-                                            >{{ log.title }}
-                                        </span>
-                                        {{ $t("at") }}
-                                        {{ log.created_at }}
                                         <span class="wpf_entry_remove">
                                             <el-button
                                                 v-if="hasPro && log_type === 'api_calls'"

@@ -53,7 +53,7 @@
                                         {{ $t('Customer Name') }}
                                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                             <div slot="content">
-                                                <p> {{ $t('Please select the customer name field from your form inputs.It\'s optional ield but recommended.If user is logged in then this data will be picked from logged in user.') }} </p>
+                                                <p> {{ $t('Please select the customer name field from your form inputs. It\'s an optional but recommended field. If the user is logged in then this data will be picked from logged in user.') }} </p>
                                             </div>
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -72,7 +72,7 @@
                                         {{ $t('Customer Address') }}
                                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                             <div slot="content">
-                                                <p>{{ ('Please select the customer address field from your form\'s address inputs. It\'s required for payments in India.') }} </p>
+                                                <p>{{ $t('Please select the customer address field from your form\'s address inputs. It\'s required for payments in India.') }} </p>
                                             </div>
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -144,15 +144,19 @@
                                 </el-form-item>
 
                                 <h4>
-                                    {{ $t('Please provide your ') }}
-                                    <span class="text-danger">
-                                        {{settings.stripe_custom_config.payment_mode | ucFirst}} {{ $t(' API keys') }}
+                                    <span
+                                        v-html="
+                                            $t('Please provide your %s API Keys%s',
+                                            `<span class='text-danger'>${ucFirst(settings.stripe_custom_config.payment_mode)}`,
+                                            '</span>')
+                                        "
+                                    >
                                     </span>
                                 </h4>
 
                                 <el-form-item class="ff-form-item" :label="$t('Publishable key')">
                                     <template slot="label">
-                                        {{settings.stripe_custom_config.payment_mode | ucFirst}} {{ $t(' Publishable key') }}
+                                        {{ $t('%s Publishable key', ucFirst(settings.stripe_custom_config.payment_mode)) }}
                                     </template>
                                     <el-input
                                         type="text"
@@ -162,20 +166,26 @@
 
                                 <el-form-item class="ff-form-item" label="">
                                     <template slot="label">
-                                        {{settings.stripe_custom_config.payment_mode | ucFirst}} {{ $t(' Secret key') }}
+                                        {{ $t('%s Secret key', ucFirst(settings.stripe_custom_config.payment_mode)) }}
                                     </template>
                                     <el-input type="password" v-model="settings.stripe_custom_config.secret_key"
                                             :placeholder="$t('Secret key')"/>
                                 </el-form-item>
-                                <p>
-                                    {{ $t('You can find the API keys to ') }}
-                                    <a target="_blank" rel="noopener" href="https://dashboard.stripe.com/apikeys">{{ $t('Stripe Dashboard') }}</a>
+                                <p
+                                    v-html="
+                                        $t(
+                                            'You can find the API keys to %sStripe Dashboard%s',
+                                            `<a target='_blank' rel='noopener' href='https://dashboard.stripe.com/apikeys'>`,
+                                            '</a>'
+                                        )
+                                    "
+                                >
                                 </p>
                             </div>
 
                             <el-form-item class="ff-form-item" :label="$t('Stripe Payment Receipt')">
                                 <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_stripe_payment_receipt">
-                                    {{ $t('Disable Payment Receipt Email by Stripe(no recommended)') }}
+                                    {{ $t('Disable Payment Receipt Email by Stripe(not recommended)') }}
                                 </el-checkbox>
                             </el-form-item>
 
@@ -184,7 +194,7 @@
                                     {{ $t('Statement Descriptor') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
-                                            <p>{{ $t('Provide the statement descriptor. If you keep it empty then your form name will be set.(Contains between 5 and 22 characters)') }} </p>
+                                            <p>{{ $t('Provide the statement descriptor. If you keep it empty then your form name will be set. (Contains between 5 and 22 characters)') }} </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
@@ -218,7 +228,7 @@
                                         {{ $t('Payment Mode') }}
                                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                             <div slot="content">
-                                                <p> {{ $t('Select the payment mode. for testing purposes you should select Test Mode otherwise select Live mode.') }}</p>
+                                                <p> {{ $t('Select the payment mode. For testing purposes you should select Test Mode otherwise select Live mode.') }}</p>
                                             </div>
                                             <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                         </el-tooltip>
@@ -380,7 +390,7 @@
                         </div>
                         <div class="mt-4">
                             <el-button icon="el-icon-success" :loading="saving" @click="saveSettings()" type="primary">
-                                {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                {{ $t('%s Settings', saving ? 'Saving' : 'Save') }}
                             </el-button>
                         </div>
                     </el-form>

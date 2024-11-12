@@ -103,7 +103,7 @@
                             >
                                 <div slot="title">
                                     <h5 class="mb-2">{{$t('How to create a form')}}</h5>
-                                    <p>Watch our fluentform's video to better understand.</p>
+                                    <p>{{ $t('Watch our Fluent Form\'s video to understand better.') }}</p>
                                 </div>
                                 <div v-if="introVisible" class="videoWrapper mt-4">
                                     <iframe class="w-100" height="530" style="border-radius: 10px;" src="https://www.youtube.com/embed/ebZUein_foM?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>

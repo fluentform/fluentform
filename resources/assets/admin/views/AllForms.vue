@@ -158,7 +158,7 @@
                                                 active-value="published"
                                                 inactive-value="unpublished"
                                                 v-model="scope.row.status"
-                                                v-loading="changingStatus[scope.row.id] ==true"
+                                                v-loading="changingStatus[scope.row.id] == true"
                                             />
 
                                         </template>

@@ -32,7 +32,7 @@
     <el-form-item v-if="editItem.settings[prop].type == 'img'">
         <elLabel
             slot="label"
-            :label="listItem.label + ' Image ALT Text'"
+            :label="$t('%s Image ALT Text', listItem.label)"
             :helpText="$t('Alt attribute of the image')">
         </elLabel>
 

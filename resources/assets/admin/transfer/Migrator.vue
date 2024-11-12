@@ -18,7 +18,7 @@
                                 :name="migrators.key"
                             >
                                 <div class="ff_migrator_navigation_header mt-1 mb-2">
-                                    <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
+                                    <h5> {{ $t('Import %s', migrators.name) }}</h5>
                                     <el-button v-if="forms.length" size="small" type="primary" @click="importForms()">
                                         {{ $t('Import All Forms') }}
                                     </el-button>

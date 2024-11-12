@@ -35,8 +35,14 @@
                     <el-skeleton :loading="loading" animated :rows="6">
                         <el-table class="ff_table_s2" :data="tableData">
                             <template slot="empty">
-                                {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
-                                <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
+                                <p v-html="
+                                    $t(
+                                        'You don\'t have any feeds configured. Let\'s %sCreate One%s',
+                                        `<a href='#' onclick='window.ffAddWebhookFeed()'>`,
+                                        '</a>'
+                                    )
+                                ">
+                                </p>
                             </template>
 
                             <el-table-column width="100">
@@ -166,7 +172,7 @@
                 let integration = this.integrations[index];
                 this.selectedIndex = 0;
                 this.selected_id = integration.id;
-                this.editing_item =  integration.formattedValue;
+                this.editing_item = integration.formattedValue;
                 this.show_edit = true;
             },
             discard() {
@@ -231,8 +237,16 @@
         beforeMount() {
             this.getFeeds();
         },
+        mounted() {
+            window.ffAddWebhookFeed = () => {
+                this.add();
+            };
+        },
         beforeCreate() {
-            jQuery('head title').text('WebHook Settings - Fluent Forms');
-        }
-    }
+            jQuery("head title").text("WebHook Settings - Fluent Forms");
+        },
+        beforeDestroy() {
+            delete window.ffAddWebhookFeed;
+        },
+    };
 </script>
