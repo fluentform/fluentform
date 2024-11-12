@@ -145,10 +145,8 @@ Vue.mixin({
     },
     methods: {
         $t(string) {
-
             let transString = window.fluent_form_entries_vars.form_entries_str[string] || string
             return _$t(transString, ...arguments);
-
         },
         $_n(singular, plural, count) {
             let number = parseInt(count.toString().replace(/,/g, ''), 10);
@@ -272,6 +270,9 @@ Vue.mixin({
                 })
                 .finally(() => {
                 })
+        },
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         },
 
         ...notifier

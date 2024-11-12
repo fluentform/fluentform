@@ -46,8 +46,8 @@
             </vddl-draggable>
         </vddl-list>
 
-        <el-button v-if="!listItem.hide_default_value" type="warning" size="mini" :disabled="!editItem.attributes.value" @click.prevent="clear">Clear
-            Selection
+        <el-button v-if="!listItem.hide_default_value" type="warning" size="mini" :disabled="!editItem.attributes.value" @click.prevent="clear">
+            {{ $t('Clear Selection') }}
         </el-button>
         <el-button @click="initBulkEdit()" size="mini">{{ $t('Bulk Edit') }}</el-button>
 

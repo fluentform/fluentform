@@ -120,7 +120,7 @@
                             type="primary"
                             icon="el-icon-success"
                         >
-                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Feed') }}
+                            {{ $t('%s Feed', loading ? 'Saving' : 'Save') }}
                         </el-button>
                         <el-button
                             v-if="selected.id"
@@ -224,7 +224,7 @@
 
                 FluentFormsGlobal.$post(data)
                     .done(response => {
-                        this.$success(this.$t('Notification ' + enabled + ' successfully!'));
+                        this.$success(this.$t('Notification %s successfully!', enabled));
                     })
                     .fail(e => console.log(e));
             },

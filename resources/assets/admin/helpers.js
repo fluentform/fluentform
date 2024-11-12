@@ -90,14 +90,12 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
 
 
 export function _$t(string, ...args) {
-
-
-    // Prepare the arguments, excluding the first one (the string itself)
-     args = Array.prototype.slice.call(args, 1);
-
     if (args.length === 0) {
         return string;
     }
+
+    // Prepare the arguments, excluding the first one (the string itself)
+     args = Array.prototype.slice.call(args, 1);
 
     // Regular expression to match %s, %d, or %1s, %2s, etc.
     const regex = /%(\d*)s|%d/g;

@@ -183,7 +183,7 @@
 
                         let handle = feed.value.status ? 'enabled' : 'disabled';
 
-                        this.$success(this.$t('Successfully ' + handle + ' the feed.'));
+                        this.$success(this.$t('Successfully %s the feed.', handle));
                     }).catch(e => {
                         feed.id = id;
                     });

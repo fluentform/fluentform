@@ -16,9 +16,28 @@
                                     </div>
                                     <hr class="mt-3 mb-3"/>
                                     <div v-if="showEditors" class="sub_section_body">
-                                        <p class="mb-4">{{ $t('You may add ') }} <code>.fluent_form_{{form_id}} </code> {{ $t('as your css selector prefix to target this specific form. Alternatively, you can use ') }}<code>.fluent_form_FF_ID</code> {{ $t('where ') }} <b>FF_ID</b> {{ $t('will be replaced with your form id dynamically.') }}</p>
+                                        <p
+                                            class="mb-4"
+                                            v-html="
+                                                $t(
+                                                    'You may add %s as your css selector prefix to target this specific form. Alternatively, you can use %s where %s will be replaced with your form id dynamically.',
+                                                    `<code>.fluent_form_${form_id}</code>`,
+                                                    '<code>.fluent_form_FF_ID</code>',
+                                                    '<b>FF_ID</b>'
+                                                )
+                                            "
+                                        >
+                                        </p>
                                         <ace-editor-css editor_id="wpf_custom_css" mode="css" v-model="custom_css" :aceLoaded="aceLoaded" />
-                                        <p class="mt-2">{{ $t('Please don\'t include ') }}<code>&lt;style&gt;&lt;/style&gt;</code> tag</p>
+                                        <p
+                                            class="mt-2"
+                                            v-html="
+                                            $t(
+                                                'Please don\'t include %s tag',
+                                                '<code>&amp;lt;style&amp;gt;&amp;lt;/style&amp;gt;</code>'
+                                            )"
+                                        >
+                                        </p>
                                     </div>
                                 </div>
 
@@ -31,11 +50,27 @@
                                     <hr class="mt-3 mb-3"/>
                                     <div v-if="showEditors" class="sub_section_body">
                                         <div class="js_instruction mb-4">
-                                            <p>{{ $t('The Following Javascript variables are available that you can use') }}:</p>
-                                            <p><b>$form</b>: {{ $t('The Javascript(jQuery) DOM object of the Form') }}</p>
+                                            <p
+                                                v-html="
+                                                $t(
+                                                    'The Following Javascript variables are available that you can use %s %s$form:%s The Javascript(jQuery) DOM object of the Form',
+                                                    '</br>',
+                                                    '<b>',
+                                                    '</b>',
+                                                )"
+                                            >
+                                            </p>
                                         </div>
                                         <ace-editor-js editor_id="wpf_custom_js" mode="javascript" v-model="custom_js" :aceLoaded="aceLoaded" />
-                                        <p class="mt-2">{{ $t('Please don\'t include ') }} <code>&lt;script>&lt;/script&gt;</code> tag</p>
+                                        <p
+                                            class="mt-2"
+                                            v-html="
+                                            $t(
+                                                'Please don\'t include %s tag',
+                                                '<code>&amp;lt;script&amp;gt;&amp;lt;/script&amp;gt;</code>'
+                                            )"
+                                        >
+                                        </p>
                                     </div>
                                 </div>
                             </div>

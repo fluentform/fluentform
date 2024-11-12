@@ -74,7 +74,7 @@
                                     type="primary"
                                     icon="el-icon-success"
                                     @click="saveSettings">
-                                    {{saving ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                    {{ $t('%s Settings', saving ? 'Saving' : 'Save') }}
                                 </el-button>
                                 <el-tooltip class="item" effect="dark" :content="$t('Click to reset the settings if any quiz inputs name has been changed from the editor')" placement="top-start" v-if="settings.enabled">
                                     <el-button
@@ -82,7 +82,7 @@
                                         icon="el-icon-delete"
                                         :loading="saving"
                                         @click="deleteSettings">
-                                        {{ deleting ? $t('Resetting ') : $t('Reset ') }} {{ $t('Quiz Settings') }}
+                                        {{ $t('%s Quiz Settings', deleting ? 'Resetting' : 'Reset') }}
                                     </el-button>
                                 </el-tooltip>
                             </div>

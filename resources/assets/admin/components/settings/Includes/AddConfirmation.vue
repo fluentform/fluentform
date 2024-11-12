@@ -155,7 +155,7 @@
                         v-model="confirmation.query_strings"
                         :data="inputsFirstShortcodes"
                     ></input-popover>
-                    <p class="mt-1 fs-14"><em>{{ $t('Sample:') }} phone={inputs.phone}&email={inputs.email}</em></p>
+                    <p class="mt-1 fs-14"><em>{{ $t('Sample: %s', 'phone={inputs.phone}&email={inputs.email}') }}</em></p>
                 </div>
             </el-form-item>
 

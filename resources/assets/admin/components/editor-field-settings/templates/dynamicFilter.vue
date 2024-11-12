@@ -29,7 +29,7 @@
 					<elLabel
 						slot="label"
 						:label="$t('Url')"
-						:help-text="$t('The google sheet csv url')"
+						:help-text="$t('The google sheet CSV URL')"
 					></elLabel>
 					<el-row :gutter="20">
 						<el-col :span="24">
@@ -41,14 +41,19 @@
 				<el-form-item>
 					<elLabel
 						slot="label"
-						:label="$t('Csv Delimiter')"
-						:help-text="$t('Select your csv file delimiter')"
+						:label="$t('CSV Delimiter')"
+						:help-text="$t('Select your CSV file delimiter')"
 					></elLabel>
 					<el-select class="w-100" v-model="model.csv_delimiter">
 						<el-option
-							v-for="(delimiter, key) in {comma:'Comma Separated (,)', semicolon: 'Semicolon Separated (;)', auto_guess: 'Auto Guess'}"
+							v-for="(delimiter, key) in {
+                                comma: 'Comma Separated (,)',
+                                semicolon: 'Semicolon Separated (;)',
+                                auto_guess: 'Auto Guess'
+                            }"
 							:key="key"
-							:label="delimiter" :value="key"
+							:label="$t(delimiter)"
+                            :value="key"
 						></el-option>
 					</el-select>
 				</el-form-item>
@@ -92,7 +97,7 @@
 					v-model="model.unique_result"
 					:listItem="{
 						label: $t('Only Show Unique Result'),
-						help_text : $t(`Toggle to display only unique results based on the `) + listItem.sources[model.source]}"
+						help_text : $t('Toggle to display only unique results based on the %s', listItem.sources[model.source])}"
 				></input-yes-no-checkbox>
 			</el-form-item>
 
@@ -122,22 +127,14 @@
 					</el-col>
 					<el-col :span="16">
 						<p>
-							<span>
-								<el-link
-									@click="validOptionsDialog=true"
-									type="primary"
-								>{{ result_counts.valid || 0 }}
-								</el-link>
-							    {{ $t('valid option of ') }}
-							</span>
-							<span>
-								<el-link
-									@click="allOptionsDialog = true"
-									type="primary"
-								>{{ result_counts.total || 0 }}
-								</el-link>
-								{{ $t('results') }}
-							</span>
+                            <span v-html="
+                                $t(
+                                    '%s valid option of %s results',
+                                    `<a class='el-link el-link--primary is-underline' onclick='window.ffDynamicFilterHandleValidOptionsClick()' type='primary'>${result_counts.valid || 0}</a>`,
+                                    `<a class='el-link el-link--primary is-underline' onclick='window.ffDynamicFilterHandleAllOptionsClick()' type='primary'>${result_counts.total || 0}</a>`
+                                )
+                            ">
+                            </span>
 						</p>
 					</el-col>
 				</el-row>
@@ -473,6 +470,16 @@ export default {
 		this.getFilterValueOptions(true);
 		this.getResult();
 		this.maybeSetDefaultCsvDelimiter();
-	}
+        window.ffDynamicFilterHandleValidOptionsClick = () => {
+            this.validOptionsDialog = true;
+        };
+        window.ffDynamicFilterHandleAllOptionsClick = () => {
+            this.allOptionsDialog = true;
+        };
+	},
+    beforeDestroy() {
+        delete window.ffDynamicFilterHandleValidOptionsClick;
+        delete window.ffDynamicFilterHandleAllOptionsClick;
+    },
 }
 </script>

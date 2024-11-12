@@ -8,6 +8,7 @@ import {
     Option,
     Notification
 } from 'element-ui';
+import {_$t} from "@/admin/helpers";
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -19,13 +20,17 @@ Vue.use(Option);
 
 Vue.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_preview_vars?.i18n[str];
-            if (transString) {
-                return transString;
+        $t(string) {
+            let transString = window.fluent_preview_vars?.i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
-        }
+            return this.$t(singular, count);
+        },
     }
 });
 

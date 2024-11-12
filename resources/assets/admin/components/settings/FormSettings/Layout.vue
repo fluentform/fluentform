@@ -253,11 +253,14 @@
         <card id="default-messages">
             <card-head>
                 <h5 class="title">{{$t('Validation Messages') }}</h5>
-                <p class="text">
-                    {{
-                        $t("These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom.")
-                    }}
-	                {{ $t("Use") }} <code>{labels.current_field}</code>{{$t("shortcode for automatically resolve the field label.")}}
+                <p
+                    class="text"
+                    v-html="
+                    $t(
+                        'These messages will be used as default messages of all form. These messages will be ignored when field error message set as custom. Use %s shortcode for automatically resolve the field label.',
+                        `<code>{labels.current_field}</code>`
+                    )
+                ">
                 </p>
             </card-head>
             <card-body>
@@ -279,12 +282,12 @@
                             v-if="field.type === 'textarea'"
                             type="textarea"
                             :row="field.row ? field.row : 3"
-                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            :placeholder="field.placeholder|| $t('Global Message For %s', field.label)"
                             v-model="default_messages[fieldKey]"
                         />
                         <el-input
                             v-else
-                            :placeholder="field.placeholder|| $t('Global Message For ') + field.label"
+                            :placeholder="field.placeholder|| $t('Global Message For %s', field.label)"
                             v-model="default_messages[fieldKey]"
                         />
                     </el-form-item>

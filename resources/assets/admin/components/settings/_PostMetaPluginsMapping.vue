@@ -95,7 +95,7 @@
                         </el-select>
                     </td>
                     <td>
-                        <p v-if="!mapField.field_key">{{ $t('Select') }} {{ labels.remote_label }} First</p>
+                        <p v-if="!mapField.field_key">{{ $t('Select %s First', labels.remote_label) }}</p>
                         <template v-else>
                             <el-select 
                                 class="w-100" 

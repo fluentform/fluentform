@@ -91,7 +91,7 @@
 
                         <div>
                             <el-input
-                                :placeholder="$t('label')"
+                                :placeholder="$t('Label')"
                                 v-model="option.label"
                                 @input="updateValue(option)"
                             />

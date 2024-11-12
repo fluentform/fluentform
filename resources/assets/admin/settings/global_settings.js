@@ -51,7 +51,7 @@ import {
     SkeletonItem
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
-import { handleSidebarActiveLink } from '@/admin/helpers';
+import {_$t, handleSidebarActiveLink} from '@/admin/helpers';
 import CustomComponent from '@/admin/components/CustomComponent';
 
 locale.use(lang);
@@ -87,12 +87,16 @@ Vue.prototype.$loading = Loading.service;
 
 Vue.mixin({
     methods: {
-        $t(str) {
-            let transString = window.FluentFormApp.form_settings_str[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.FluentFormApp.form_settings_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
 
         ...notifier

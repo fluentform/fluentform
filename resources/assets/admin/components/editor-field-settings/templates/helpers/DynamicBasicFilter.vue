@@ -55,7 +55,7 @@
 						<elLabel
 							slot="label"
 							:label="$t('User Role')"
-							:help-text="$t('Chose a role')"
+							:help-text="$t('Choose a role')"
 						></elLabel>
 						<el-select
 							class="el-fluid"

@@ -55,6 +55,7 @@ import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
 import MoreMenu from './views/MoreMenu.vue';
 import {mapActions} from 'vuex';
+import {_$t} from "@/admin/helpers";
 
 Vue.use(Vddl);
 
@@ -341,12 +342,16 @@ window.fluentFormEditorApp = new Vue({
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         },
 
-        $t(str) {
-            let transString = window.FluentFormApp.form_editor_str[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.FluentFormApp.form_editor_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
     },
 

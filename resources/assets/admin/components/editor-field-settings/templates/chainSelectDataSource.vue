@@ -26,7 +26,7 @@
                     :on-remove="onRemove"
                 >
                     <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">{{ $t('Drop file here or') }} <em>{{ $t(' click to upload') }}</em></div>
+                    <div class="el-upload__text" v-html="$t('Drop file here or %sclick to upload%s', '<em>', '</em>')"></div>
                 </el-upload>
             </div>
 

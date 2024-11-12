@@ -11,14 +11,14 @@
             <template v-if="has_payment">
                 <p>{{ $t('You can use smart code for payment specific dynamic data:') }}</p>
                 <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
-                    <li><code>{dynamic.payment_summary}</code>{{ $t(': to show the cart summary') }}</li>
-                    <li><code>{payment_total}</code>{{ $t(': to display total payment amount') }}</li>
+                    <li v-html="$t('%s: to show the cart summary', `<code>{dynamic.payment_summary}</code>`)"></li>
+                    <li v-html="$t('%s: to display total payment amount', `<code>{payment_total}</code>`)"></li>
                 </ul>
             </template>
             <div v-if="!is_conversion_form">
                 <p>{{ $t('Dynamic SmartCodes') }}</p>
                 <ul style="list-style: disc;margin-left: 24px;margin-top: 0px;">
-                    <li><code>{dynamic.YOUR_INPUT_NAME}</code>{{ $t(': to show data from any input') }}</li>
+                    <li v-html="$t('%s: to show data from any input', `<code>{dynamic.YOUR_INPUT_NAME}</code>`)"></li>
                 </ul>
             </div>
         </template>

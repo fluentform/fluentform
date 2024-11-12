@@ -21,11 +21,15 @@
                             <template v-if="logs && logs.length">
                                 <div v-for="(log, logKey) in logs" class="entry_submission_log wpf_each_entry" :key="logKey">
                                     <div class="wpf_entry_label">
-                                        <span class="ff_tag" :class="'log_status_' + log.status">{{log.status}}</span>
-                                        {{ $t('in') }}
-                                        <span class="entry_submission_log_component">{{log.title}}</span>
-                                        {{ $t('at') }}
-                                        {{log.created_at}}
+                                        <span v-html="
+                                            $t(
+                                                '%s in %s at %s',
+                                                `<span class='ff_tag log_status_${log.status}'>${log.status}</span>`,
+                                                `<span class='entry_submission_log_component'>${log.title}</span>`,
+                                                log.created_at
+                                            )
+                                        ">
+                                        </span>
                                         <span class="wpf_entry_remove">
                                             <remove :plain="true" @on-confirm="removeLog(log.id)">
                                                 <el-button

@@ -1,4 +1,5 @@
 import notifier from './notifier';
+import {_$t} from "@/admin/helpers";
 
 export default {
     methods: {
@@ -7,12 +8,16 @@ export default {
          * @param {String}
          * @return {String}
          */
-        $t(str) {
-            let transString = window.FluentFormApp.form_editor_str[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.FluentFormApp.form_editor_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
 
         /**

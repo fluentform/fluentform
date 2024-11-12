@@ -289,7 +289,7 @@
 
                         let handle = confirmation.active ? 'enabled' : 'disabled';
 
-                        this.$success(this.$t('Successfully ' + handle + ' the confirmation.'));
+                        this.$success(this.$t('Successfully %s the confirmation.', handle));
                     })
                     .catch(e => {});
             },
