@@ -225,6 +225,12 @@
     padding-left: 0;
   }
 
+  .ff_tools_wrap {
+    .ff_settings_sidebar_wrap{
+      height: 100%;
+    }
+  }
+
   .ff_settings_sidebar_wrap{
     position: absolute;
     flex-shrink: 0;
@@ -357,6 +363,17 @@
   .ff-form-item-flex{
     flex-wrap: wrap;
     gap: 10px;
+  }
+
+  .ff_pagination_wrap.mt-4 {
+    margin-top: 0 !important;
+  }
+  .ff_pagination {
+    flex-wrap: wrap;
+    margin-top: 24px;
+    .el-pagination__jump {
+      margin: 10px 0 0 0;
+    }
   }
 }
 

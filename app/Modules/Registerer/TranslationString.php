@@ -28,7 +28,9 @@ class TranslationString
             'Click Here to Create Your First Form' => __('Click Here to Create Your First Form', 'fluentform'),
             'Check the video intro' => __('Check the video intro', 'fluentform'),
             'Entries from All Forms' => __('Entries from All Forms', 'fluentform'),
+            'Entries from ' => __('Entries from ', 'fluentform'),
             'Browser' => __('Browser', 'fluentform'),
+            'Submitted At' => __('Submitted At', 'fluentform'),
             'Date' => __('Date', 'fluentform'),
             'Hide Chart' => __('Hide Chart', 'fluentform'),
             'Show Chart' => __('Show Chart', 'fluentform'),
@@ -1556,6 +1558,10 @@ class TranslationString
             'Select the PDF template you would like to map.' => __('Select the PDF template you would like to map.', 'fluentform'),
             'Please upgrade to Fluent Forms PDF to unlock this feature.' => __('Please upgrade to Fluent Forms PDF to unlock this feature.', 'fluentform'),
             'This is a Fluent Forms PDF Feature' => __('This is a Fluent Forms PDF Feature', 'fluentform'),
+            'Integration Feed Name' => __('Integration Feed Name', 'fluentform'),
+            'Feed Status' => __('Feed Status', 'fluentform'),
+            'Integration Status' => __('Integration Status', 'fluentform'),
+            'Action' => __('Action', 'fluentform'),
         );
 
         return apply_filters('fluentform/entries_i18n', $i18n);
@@ -1661,7 +1667,7 @@ class TranslationString
             'End Date' => __('End Date', 'fluentform'),
             'Form' => __('Form', 'fluentform'),
             'Title' => __('Title', 'fluentform'),
-            'Get external CRM and API call logs here. Track api logs activity. (Last 2 months logs)' => __('Get external CRM and API call logs here. Track api logs activity. (Last 2 months logs)', 'fluentform'),
+            'Get external CRM and API call logs here to track and manage api logs activity.' => __('Get external CRM and API call logs here to track and manage api logs activity.', 'fluentform'),
             'ID' => __('ID', 'fluentform'),
             'Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer. Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.' => __('Select the forms you would like to export. When you click the download button below, Fluent Forms will create a JSON file for you to save to your computer. Once you\'ve saved the downloaded file, you can use the Import tool to import the forms.', 'fluentform'),
             'Select' => __('Select', 'fluentform'),
@@ -1669,6 +1675,7 @@ class TranslationString
             'Click the Choose File button to upload a Fluent Forms export file from your computer' => __('Click the Choose File button to upload a Fluent Forms export file from your computer', 'fluentform'),
             'Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.' => __('Migrate other plugins forms into Fluent Forms with ease. Please note that previously imported forms and entries will be reset and updated again.', 'fluentform'),
             'Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.' => __('Migration tools only works if you have any other contact form plugin already installed along with Fluent Forms.', 'fluentform'),
+            'Run Selected Action' => __('Run Selected Action', 'fluentform'),
         );
 
         return apply_filters('fluentform/transfer_i18n', $i18n);

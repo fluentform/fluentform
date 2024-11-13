@@ -774,7 +774,7 @@ class Menu
         $isDisabledAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',

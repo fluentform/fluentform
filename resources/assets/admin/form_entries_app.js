@@ -41,7 +41,8 @@ import {
     Tooltip,
     Cascader,
     TimePicker,
-    CascaderPanel
+    CascaderPanel,
+    Tag
 
 } from 'element-ui';
 Vue.use(Vddl);
@@ -78,6 +79,7 @@ Vue.use(SkeletonItem)
 Vue.use(Tooltip)
 Vue.use(Cascader)
 Vue.use(CascaderPanel)
+Vue.use(Tag)
 
 Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service

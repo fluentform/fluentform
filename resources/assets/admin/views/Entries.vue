@@ -146,7 +146,7 @@
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
                         <label for="search_bar">
-                           <b> {{ $t('Advanced Search') }}</b>
+                           <b> {{ $t('Advanced Filter') }}</b>
                         </label>
                         <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
 
@@ -190,7 +190,7 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
                             <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span>{{ $t('Filter') }}</span>
+                                <span>{{ $t('Date Filter') }}</span>
                                 <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
@@ -459,7 +459,7 @@
             </div><!-- .ff_table -->
 
             <el-row class="mt-4 items-center">
-                <el-col :span="12">
+                <el-col :xs="24" :sm="8" :lg="12">
                     <div class="bulkactions">
                         <email-resend
                                 v-if="entrySelections.length"
@@ -470,7 +470,7 @@
                         <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="16" :lg="12">
                     <div class="ff_pagination_wrap text-right">
                         <el-pagination
                                 class="ff_pagination"
@@ -480,7 +480,7 @@
                                 :current-page.sync="paginate.current_page"
                                 :page-sizes="[5, 10, 20, 50, 100]"
                                 :page-size="parseInt(paginate.per_page)"
-                                layout="total, sizes, prev, pager, next"
+                                layout="total, sizes, prev, pager, next, jumper"
                                 :total="paginate.total">
                         </el-pagination>
                     </div>
@@ -1218,9 +1218,10 @@
         },
         mounted() {
             this.getEntryResources();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
@@ -1228,6 +1229,11 @@
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
         },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>
 

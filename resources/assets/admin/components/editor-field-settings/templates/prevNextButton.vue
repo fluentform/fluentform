@@ -12,7 +12,7 @@
     <el-form-item v-if="editItem.settings[prop].type == 'default'">
         <elLabel
             slot="label"
-            :label="listItem.label + ' Text'"
+            :label="listItem.label"
             helpText="">
         </elLabel>
 

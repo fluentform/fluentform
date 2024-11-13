@@ -253,7 +253,7 @@
                         :current-page.sync="paginate.current_page"
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="parseInt(paginate.per_page)"
-                        layout="total, sizes, prev, pager, next"
+                        layout="total, sizes, prev, pager, next, jumper"
                         :total="paginate.total">
                     </el-pagination>
                 </div>
