@@ -871,7 +871,7 @@ class TranslationString
             'Set error message when IP address is invalid.' => __('Set error message when IP address is invalid.', 'fluentform'),
             'Please setup your geolocation IP token from global settings.' => __('Please setup your geolocation IP token from global settings.', 'fluentform'),
             'Select Country' => __('Select Country', 'fluentform'),
-            'Select country to set restriction.' => __('Select country to set restriction.', 'fluentform'),
+            'Select country to set restriction. If you give Ipinfo.io token in global settings, then country will get from Ipinfo.io, otherwise it will use geolocation.net.' => __('Select country to set restriction. If you give Ipinfo.io token in global settings, then country will get from Ipinfo.io, otherwise it will use geolocation.net.', 'fluentform'),
             'Country Restricted Error Message' => __('Country Error Message', 'fluentform'),
             'Set error message when selected country is restricted.' => __('Set error message when selected country is restricted.', 'fluentform'),
             'Add Keywords' => __('Add Keywords', 'fluentform'),

@@ -411,11 +411,16 @@ jQuery(document).ready(function () {
                                     );
                                 }
                             }
+
+                            hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
                             that.isSending = false;
-                            if (!('redirectUrl' in responseData.data.result)) {
-                                hideFormSubmissionProgress($theForm);
+
+                            if (responseData.data) {
+                                if (!('redirectUrl' in responseData.data.result)) {
+                                    hideFormSubmissionProgress($theForm);
+                                }
                             }
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
