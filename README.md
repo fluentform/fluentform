@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 5.2.3
+Stable tag: 5.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,30 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.5 (Date: November 14, 2024)
+- Adds form editor undo/redo functionality (Beta)
+- Adds global option to select date and time format for entries view
+- Adds submission & field-specific shortcode
+- Adds "Go to page" feature for pagination
+- Adds global settings sidebar custom links sub-menu style
+- Improved vulnerability handling with PSC by Cleantalk
+- Improved accessibility (focus on radio buttons, screen reader support)
+- Improved integrations API logs bulk replay actions functionality
+- Improved submission logs API cals retry action
+- Improved synchronization of "All Entries" chart with form ID and date range
+- Improved initially disabling of analytics
+- Improved Mailchimp date field with more format options
+- Improved checkable field bulk options in the editor (supports : on value & label)
+- Fixes shortcode copy message showing multiple times on entry page
+- Fixes screen reading issue with name fields
+- Fixes mobile responsiveness of tools page sidebar navigation
+- Fixes double submission when submit button is clicked twice with custom URL redirection setup
+- Fixes undefined shortcode key for conditionally hidden fields
+- Fixes FluentCRM dynamic tag selection based on subscriptions plan
+
+= 5.2.4 (Date: October 1, 2024) =
+- Fix calculation issue
 
 = 5.2.3 (Date: September 30, 2024) =
 - Adds form edit history (Beta)
