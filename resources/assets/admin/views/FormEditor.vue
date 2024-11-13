@@ -154,12 +154,21 @@
                         </li>
                         <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
                            <div class="undo_redo" style="display: flex;flex-direction: row;" >
+
                                <a href="#" @click.prevent="undo()" :class="{'active': canUndo}">
-                                  <svg height="22px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M447.9,368.2c0-16.8,3.6-83.1-48.7-135.7c-35.2-35.4-80.3-53.4-143.3-56.2V96L64,224l192,128v-79.8   c40,1.1,62.4,9.1,86.7,20c30.9,13.8,55.3,44,75.8,76.6l19.2,31.2H448C448,389.9,447.9,377.1,447.9,368.2z M432.2,361.4   C384.6,280.6,331,256,240,256v64.8L91.9,224.1L240,127.3V192C441,192,432.2,361.4,432.2,361.4z"/></g></svg>
+
+                                   <svg width="22px"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M10.7071 4.29289C11.0976 4.68342 11.0976 5.31658 10.7071 5.70711L8.41421 8H13.5C16.5376 8 19 10.4624 19 13.5C19 16.5376 16.5376 19 13.5 19H11C10.4477 19 10 18.5523 10 18C10 17.4477 10.4477 17 11 17H13.5C15.433 17 17 15.433 17 13.5C17 11.567 15.433 10 13.5 10H8.41421L10.7071 12.2929C11.0976 12.6834 11.0976 13.3166 10.7071 13.7071C10.3166 14.0976 9.68342 14.0976 9.29289 13.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289L9.29289 4.29289C9.68342 3.90237 10.3166 3.90237 10.7071 4.29289Z" fill="#000000"/>
+                                   </svg>
+
                                </a>
                                <a href="#" @click.prevent="redo()" :class="{'active': canRedo}">
-                                   <svg height="22px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M64,400h10.3l19.2-31.2c20.5-32.7,44.9-62.8,75.8-76.6c24.4-10.9,46.7-18.9,86.7-20V352l192-128L256,96v80.3   c-63,2.8-108.1,20.7-143.3,56.2c-52.3,52.7-48.7,119-48.7,135.7C64.1,377.1,64,389.9,64,400z M272,192v-64.7l148.1,96.8L272,320.8   V256c-91,0-144.6,24.6-192.2,105.4C79.8,361.4,71,192,272,192z"/></g></svg>
+
+                                   <svg width="22px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2929 4.29289C13.6834 3.90237 14.3166 3.90237 14.7071 4.29289L18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L14.7071 13.7071C14.3166 14.0976 13.6834 14.0976 13.2929 13.7071C12.9024 13.3166 12.9024 12.6834 13.2929 12.2929L15.5858 10H10.5C8.567 10 7 11.567 7 13.5C7 15.433 8.567 17 10.5 17H13C13.5523 17 14 17.4477 14 18C14 18.5523 13.5523 19 13 19H10.5C7.46243 19 5 16.5376 5 13.5C5 10.4624 7.46243 8 10.5 8H15.5858L13.2929 5.70711C12.9024 5.31658 12.9024 4.68342 13.2929 4.29289Z" fill="#000000"/>
+                                   </svg>
                                 </a>
+
                            </div>
                         </li>
                     </ul>
@@ -670,9 +679,12 @@
     watch: {
         form: {
             handler(newValue) {
-                newValue = JSON.parse(JSON.stringify(newValue));
+                // Create a clean copy without Vue reactivity
+                const cleanCopy = JSON.parse(JSON.stringify(newValue));
+
+                // Only push changes if manager exists and not currently performing undo/redo
                 if (this.undoRedoManager && !this.isPerformingUndoRedo) {
-                    this.undoRedoManager.pushChange(newValue);
+                    this.undoRedoManager.pushChange(cleanCopy);
                 }
             },
             deep: true
@@ -688,6 +700,7 @@
             } else {
                 saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form');
             }
+            this.undoRedoManager.clear();
         },
 
         formStepsCount() {
@@ -720,16 +733,42 @@
         }),
 
         undo() {
-            if (this.undoRedoManager.canUndo()) {
+            if (this.undoRedoManager?.canUndo()) {
                 this.undoRedoManager.undo();
             }
         },
+
         redo() {
-            if (this.undoRedoManager.canRedo()) {
+            if (this.undoRedoManager?.canRedo()) {
                 this.undoRedoManager.redo();
             }
         },
 
+        initUndoRedo() {
+            this.undoRedoManager = new UndoRedo();
+
+            this.undoRedoManager.on('undo', ({ state }) => {
+                this.handleUndoRedoStateChange(state);
+            });
+
+            this.undoRedoManager.on('redo', ({ state }) => {
+                this.handleUndoRedoStateChange(state);
+            });
+
+            this.undoRedoManager.on('update', ({ canUndo, canRedo }) => {
+                this.canUndo = canUndo;
+                this.canRedo = canRedo;
+            });
+        },
+
+        handleUndoRedoStateChange(newState) {
+            this.isPerformingUndoRedo = true;
+            this.$emit('update:form', newState);
+
+            setTimeout(() => {
+                this.isPerformingUndoRedo = false;
+            }, 400);
+        },
         moved(o) {
             // vddl has issue with this method.
             // we can remove this method once fixed.
@@ -1123,34 +1162,9 @@
         this.garbageCleaner();
         this.initSaveBtn();
         this.initRenameForm();
-
-        this.undoRedoManager = new UndoRedo();
-        this.undoRedoManager.on('undo', (data) => {
-            this.isPerformingUndoRedo = true;
-            this.$emit('update:form', data.present);
-
-            // Set a timeout to delay the reset of isPerformingUndoRedo
-            setTimeout(() => {
-                this.isPerformingUndoRedo = false;
-            }, 400);
-        });
-
-        this.undoRedoManager.on('redo', (data) => {
-            this.isPerformingUndoRedo = true;
-            this.$emit('update:form', data.present);
-
-            // Set a timeout to delay the reset of isPerformingUndoRedo
-            setTimeout(() => {
-                this.isPerformingUndoRedo = false;
-            }, 400);
-
-        });
+        this.initUndoRedo();
 
 
-        this.undoRedoManager.on('update', (data) => {
-            this.canUndo = data.canUndo;
-            this.canRedo = data.canRedo;
-        });
         /**
          * Dismiss editor inserter popup when clicked outside
          */
@@ -1172,15 +1186,21 @@
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.initKeyboardSave);
+        if (this.undoRedoManager) {
+            this.undoRedoManager.off('undo');
+            this.undoRedoManager.off('redo');
+            this.undoRedoManager.off('update');
+        }
     }
 };
 </script>
 <style>
-    .undo_redo svg{
-        fill: gray;
+    .undo_redo a{
+        opacity: 0.5;
     }
-    .undo_redo .active  svg{
-        fill: blue;
+
+    .undo_redo a.active {
+        opacity: 1;
     }
 
 </style>
