@@ -448,6 +448,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Adds global settings sidebar custom links sub-menu style
 - Improved vulnerability handling with PSC by Cleantalk
 - Improved accessibility (focus on radio buttons, screen reader support)
+- Improved translations
 - Improved integrations API logs bulk replay actions functionality
 - Improved submission logs API cals retry action
 - Improved synchronization of "All Entries" chart with form ID and date range
