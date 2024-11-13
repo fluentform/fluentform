@@ -34,7 +34,7 @@
                                     <h6 class="mb-2">{{ $t('Fetching Data... Please wait!') }}</h6>
                                 </div>
                                 <template v-if="!loading">
-                                    <entries-chart :date_range="date_range" :form_id="form_id"></entries-chart>
+                                    <entries-chart :date_range="resolved_date_range" :form_id="form_id"></entries-chart>
                                 </template>
                             </card-body>
                         </card>
@@ -191,7 +191,10 @@ export default {
                 items.push(item_name);
             });
             return items;
-        }
+        },
+	    resolved_date_range() {
+			return this.date_range || 'all';
+	    }
     },
     methods: {
         fetchReport() {
@@ -235,7 +238,14 @@ export default {
         },
         printReport() {
             window.print();
-        }
+        },
+	    // Method to format date as 'yyyy-MM-dd'
+	    formatDate(date) {
+		    const year = date.getFullYear();
+		    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+		    const day = date.getDate().toString().padStart(2, '0');
+		    return `${year}-${month}-${day}`;
+	    },
     },
     mounted() {
         each(this.entry_statuses, (item, key) => {
@@ -243,6 +253,11 @@ export default {
                 this.filter_statuses.push(key);
             }
         });
+	    const end = new Date();
+	    const start = new Date();
+	    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);  // Last month
+	    this.date_range = [this.formatDate(start), this.formatDate(end)]
+
         this.fetchReport();
     }
 }
