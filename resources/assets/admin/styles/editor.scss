@@ -231,6 +231,8 @@
       }
     }
   }
+
+
 }
 
 div#js-form-editor--body {
@@ -1254,6 +1256,30 @@ mark {
 
     &.is-active {
       transform: rotate(180deg);
+    }
+  }
+}
+
+.ff-undo-redo-container {
+  display: flex;
+  gap: 6px;
+  border-right: 1px solid #ececec;
+
+  .ff-undo-button, .ff-redo-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    padding: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    opacity: 0.5;
+
+    &.active {
+      opacity: 1;
+
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 }

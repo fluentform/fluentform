@@ -153,23 +153,7 @@
                             <a href="#" @click.prevent="changeSidebarMode('history')">{{ $t('History') }}</a>
                         </li>
                         <li v-if=" this.form.dropzone.length > 0 " :class="fieldMode == 'history' ? 'active' : ''">
-                           <div class="undo_redo" style="display: flex;flex-direction: row;" >
 
-                               <a href="#" @click.prevent="undo()" :class="{'active': canUndo}">
-
-                                   <svg width="22px"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M10.7071 4.29289C11.0976 4.68342 11.0976 5.31658 10.7071 5.70711L8.41421 8H13.5C16.5376 8 19 10.4624 19 13.5C19 16.5376 16.5376 19 13.5 19H11C10.4477 19 10 18.5523 10 18C10 17.4477 10.4477 17 11 17H13.5C15.433 17 17 15.433 17 13.5C17 11.567 15.433 10 13.5 10H8.41421L10.7071 12.2929C11.0976 12.6834 11.0976 13.3166 10.7071 13.7071C10.3166 14.0976 9.68342 14.0976 9.29289 13.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289L9.29289 4.29289C9.68342 3.90237 10.3166 3.90237 10.7071 4.29289Z" fill="#000000"/>
-                                   </svg>
-
-                               </a>
-                               <a href="#" @click.prevent="redo()" :class="{'active': canRedo}">
-
-                                   <svg width="22px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2929 4.29289C13.6834 3.90237 14.3166 3.90237 14.7071 4.29289L18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L14.7071 13.7071C14.3166 14.0976 13.6834 14.0976 13.2929 13.7071C12.9024 13.3166 12.9024 12.6834 13.2929 12.2929L15.5858 10H10.5C8.567 10 7 11.567 7 13.5C7 15.433 8.567 17 10.5 17H13C13.5523 17 14 17.4477 14 18C14 18.5523 13.5523 19 13 19H10.5C7.46243 19 5 16.5376 5 13.5C5 10.4624 7.46243 8 10.5 8H15.5858L13.2929 5.70711C12.9024 5.31658 12.9024 4.68342 13.2929 4.29289Z" fill="#000000"/>
-                                   </svg>
-                                </a>
-
-                           </div>
                         </li>
                     </ul>
 
@@ -758,6 +742,7 @@
             this.undoRedoManager.on('update', ({ canUndo, canRedo }) => {
                 this.canUndo = canUndo;
                 this.canRedo = canRedo;
+                jQuery(document).trigger('updateUndoState');
             });
         },
 
@@ -1063,6 +1048,42 @@
 
             jQuery('.ff-navigation-right').append(screenButton);
         },
+        initUndoRedoBttn(){
+            const self = this;
+
+            let buttonContainer = jQuery('<div />', {
+                class: 'ff-undo-redo-container' // Custom container class
+            });
+
+            let undoButton = jQuery('<button />', {
+                type: 'button',
+                class: 'ff-undo-button', // Custom undo button class
+                'aria-label': 'Undo',
+                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg>`
+            }).on('click', function(e) {
+                e.preventDefault();
+                if (self.canUndo) {
+                    self.undo();
+                }
+            });
+
+            let redoButton = jQuery('<button />', {
+                type: 'button',
+                class: 'ff-redo-button',
+                'aria-label': 'Redo',
+                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg>`
+            }).on('click', function(e) {
+                e.preventDefault();
+                if (self.canRedo) {
+                    self.redo();
+                }
+            });
+
+            buttonContainer.append(undoButton, redoButton);
+
+            jQuery('.ff_menu_back').after(buttonContainer);
+        },
+
 
         /**
          * Hide editor inserter popup
@@ -1163,7 +1184,13 @@
         this.initSaveBtn();
         this.initRenameForm();
         this.initUndoRedo();
+        this.initUndoRedoBttn();
 
+
+        jQuery(document).on('updateUndoState', () => {
+            jQuery('.ff-undo-button').toggleClass('active', this.canUndo);
+            jQuery('.ff-redo-button').toggleClass('active', this.canRedo);
+        });
 
         /**
          * Dismiss editor inserter popup when clicked outside
@@ -1194,14 +1221,3 @@
     }
 };
 </script>
-<style>
-    .undo_redo a{
-        opacity: 0.5;
-    }
-
-    .undo_redo a.active {
-        opacity: 1;
-    }
-
-</style>
-

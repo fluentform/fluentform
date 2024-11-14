@@ -36,18 +36,30 @@
                                         ">
                                         </span>
                                         <span class="wpf_entry_remove">
-                                            <el-button
-                                                v-if="hasPro && log_type === 'api_calls'"
-                                                class="el-button--icon mr-2"
-                                                icon="el-icon-refresh"
-                                                @click="
+                                             <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                                <div slot="content">
+
+                                                    <p>
+                                                        {{ $t('Run the API action again') }}
+                                                    </p>
+                                                </div>
+
+                                                <el-button
+                                                        v-if="hasPro && log_type === 'api_calls'"
+                                                        class="el-button--icon mr-2"
+                                                        @click="
                                                     runAction(
                                                        log
                                                     )
                                                 "
-                                                type="success"
-                                                size="mini"
-                                            />
+                                                        type="success"
+                                                        size="mini"
+                                                >
+                                                Replay
+                                            </el-button>
+                                            </el-tooltip>
+
+
                                             <remove
                                                 :plain="true"
                                                 @on-confirm="removeLog(log.id)"
