@@ -284,6 +284,7 @@
   }
 }
 
+// mobile device
 @media (max-width: 425px) {
   label.el-checkbox{
     display: inline-flex;
@@ -373,6 +374,30 @@
     margin-top: 24px;
     .el-pagination__jump {
       margin: 10px 0 0 0;
+    }
+  }
+
+  // all entries
+  .ff_all_entries {
+    .ff_section_head_content {
+      margin-top: 24px;
+      .ff_advanced_search {
+        right: unset;
+      }
+    }
+    .ff_entries_details {
+      .ff_section_head {
+        .lead-title {
+          margin-bottom: 10px !important;
+        }
+      }
+      .ff_radio_group_wrap {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        .ff_radio_group_s2 {
+          width: 100%;
+        }
+      }
     }
   }
 }

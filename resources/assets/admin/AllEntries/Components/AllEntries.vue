@@ -66,9 +66,9 @@
                     <el-col :span="24">
                         <div class="lead-title mb-3">Form</div>
                     </el-col>
-                    <el-col :span="17">
+                    <el-col :xs="24" :span="17">
                         <el-row :gutter="18">
-                            <el-col :span="8">
+                            <el-col :xs="24" :span="8">
                                 <div class="ff_entries_select">
                                     <el-select
                                         class="ff_filter_form_select ff-input-s1 w-100"
@@ -87,7 +87,7 @@
                                     </el-select>
                                 </div>
                             </el-col>
-                            <el-col :span="13">
+                            <el-col :xs="24" :span="13">
                                 <div class="ff_radio_group_wrap">
                                     <el-radio-group class="ff_radio_group_s2" @change="fetchEntries('reset')" v-model="entry_status">
                                         <el-radio-button label="">{{ $t('All') }}</el-radio-button>
@@ -98,7 +98,7 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :span="7">
+                    <el-col :xs="24" :span="7">
                         <div class="ff_entries_search_wrap">
                             <el-input
                                 @keyup.enter.native="fetchEntries()"
