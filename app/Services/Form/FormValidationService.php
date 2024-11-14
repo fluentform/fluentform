@@ -343,6 +343,9 @@ class FormValidationService
         }
 
         $ip = $this->app->request->getIp();
+        if (is_array($ip)) {
+            $ip = Arr::get($ip, '0');
+        }
         $this->checkIpRestriction($settings, $ip);
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
