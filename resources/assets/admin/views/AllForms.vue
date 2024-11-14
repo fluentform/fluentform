@@ -147,9 +147,7 @@
                                                 <i class="el-icon-loading" v-if="loadingLocations"></i></a>
                                             </span>
                                             <span class="row-actions-item trash">
-                                                <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                                    <a href="#" @click.prevent>{{ $t('Delete') }}</a>
-                                                </remove>
+                                                <a href="#" @click.prevent="removeFormConfirmation(scope.row.id, scope.$index)">{{ $t('Delete') }}</a>
                                             </span>
                                             <el-switch
                                                 class="el-switch--small"
@@ -470,6 +468,26 @@ export default {
             this.fetchItems();
             this.$nextTick(() => {
                 this.clearingSearchKeyword = false;
+            });
+        },
+        removeFormConfirmation(id, index) {
+            this.$confirm(this.$t('Are you sure you want to delete this form?'), this.$t('Warning'), {
+                confirmButtonText: this.$t('Yes, Delete the form'),
+                cancelButtonText: this.$t('No'),
+                type: 'warning'
+            }).then(() => {
+                this.$prompt(this.$t('Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.', '"DELETE"'), this.$t('Delete Form'), {
+                    confirmButtonText: this.$t('Confirm Delete'),
+                    cancelButtonText: this.$t('Cancel'),
+                }).then((response) => {
+                    if (response.value === 'DELETE') {
+                        this.removeForm(id, index);
+                    } else {
+                        this.$notify.error(this.$t('The verification string does not match'));
+                    }
+                });
+            }).catch((err) => {
+                console.log(err);
             });
         },
         removeForm(id, index) {

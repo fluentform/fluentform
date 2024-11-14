@@ -31,7 +31,8 @@ import {
     DatePicker,
     RadioButton,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    MessageBox
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -65,6 +66,8 @@ Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
 
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'

@@ -216,6 +216,15 @@ class TranslationString
             'Create' => __('Create', 'fluentform'),
             'Import Entries' => __('Import Entries', 'fluentform'),
             'Upgrade to get access to import entries.' => __('Upgrade to get access to import entries.', 'fluentform'),
+            'Are you sure you want to delete this form?' => __('Are you sure you want to delete this form?', 'fluentform'),
+            'Warning' => __('Warning', 'fluentform'),
+            'Yes, Delete the form' => __('Yes, Delete the form', 'fluentform'),
+            'No' => __('No', 'fluentform'),
+            'Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.' => __('Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.', 'fluentform'),
+            'Delete Form' => __('Delete Form', 'fluentform'),
+            'Confirm Delete' => __('Confirm Delete', 'fluentform'),
+            'Cancel' => __('Cancel', 'fluentform'),
+            'The verification string does not match' => __('The verification string does not match', 'fluentform'),
         );
 
         return apply_filters('fluentform/admin_i18n', $i18n);
