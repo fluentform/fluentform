@@ -682,7 +682,7 @@
                 this.clearEditableObject(); // Empty {editItem} after form saved
                 saveBtn.html('<i class="el-icon-loading mr-1"></i> Save Form');
             } else {
-                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form');
+                saveBtn.html('<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>');
             }
             this.undoRedoManager.clear();
         },
@@ -1013,8 +1013,8 @@
             const self = this;
             var saveButton = jQuery('<button />', {
                 id: 'saveFormData',
-                class: 'el-button el-button--primary',
-                html: '<i class="el-icon-success mr-1"></i> Save Form'
+                class: 'el-button el-button--primary ff-keyboard-shortcut-tooltip',
+                html: '<i class="el-icon-success mr-1"></i> Save Form <span class="ff-tooltip">Save ⌘S</span>'
             });
             saveButton.on('click', function () {
                 const $this = jQuery(this);
@@ -1064,9 +1064,9 @@
 
             let undoButton = jQuery('<button />', {
                 type: 'button',
-                class: 'ff-undo-button', // Custom undo button class
+                class: 'ff-undo-button ff-keyboard-shortcut-tooltip', // Custom undo button class
                 'aria-label': 'Undo',
-                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg>`
+	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg> <span class="ff-tooltip">Undo ⌘Z</span>`
             }).on('click', function(e) {
                 e.preventDefault();
                 if (self.canUndo) {
@@ -1076,9 +1076,9 @@
 
             let redoButton = jQuery('<button />', {
                 type: 'button',
-                class: 'ff-redo-button',
+                class: 'ff-redo-button ff-keyboard-shortcut-tooltip',
                 'aria-label': 'Redo',
-                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg>`
+	            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg><span class="ff-tooltip">Redo ⇧⌘Z</span>`
             }).on('click', function(e) {
                 e.preventDefault();
                 if (self.canRedo) {

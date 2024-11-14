@@ -1272,16 +1272,46 @@ mark {
     padding: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
-    opacity: 0.5;
+    svg {
+      opacity: 0.5;
+    }
 
     &.active {
-      opacity: 1;
-
-      &:hover {
-        opacity: 0.8;
+      svg {
+        opacity: 1;
+      }
+      &:hover svg {
+          opacity: 0.8;
       }
     }
   }
 }
+
+.ff-keyboard-shortcut-tooltip {
+  position: relative;
+
+  .ff-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4B4C4D;
+    color: #FFFFFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+  }
+
+  &:hover .ff-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 
 
