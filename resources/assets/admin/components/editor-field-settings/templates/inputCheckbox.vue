@@ -24,15 +24,15 @@ export default {
     name: 'inputCheckbox',
     props: ['listItem', 'value'],
     components: { elLabel },
-    watch: {
-        model() {
-            this.$emit('input', this.model);
-        }
-    },
-    data() {
-        return {
-            model: this.value
-        }
-    }
+	computed: {
+		model: {
+			get() {
+				return this.value;
+			},
+			set(value) {
+				this.$emit('input', value)
+			}
+		}
+	}
 };
 </script>

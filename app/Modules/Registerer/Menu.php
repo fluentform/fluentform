@@ -790,6 +790,7 @@ class Menu
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
             'plugin_public_url'       => fluentformMix(),
+            'siteUrl'                 => site_url(),
         ];
 
         if (defined('FLUENTFORMPRO')){

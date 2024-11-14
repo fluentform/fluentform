@@ -524,7 +524,7 @@
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
             isCommandKeyPressed : false,
-            undoRedoManager :null,
+            undoRedoManager: null,
             canUndo: false,
             canRedo: false,
             isPerformingUndoRedo: false,
@@ -747,6 +747,13 @@
         },
 
         handleUndoRedoStateChange(newState) {
+			// Sync input customization sidebar
+	        if (Object.keys(this.editItem).length) {
+		        let editItem = newState?.dropzone.find(item => item.attributes.name === this.editItem.attributes.name);
+		        if (editItem) {
+			        this.editItem = editItem
+		        }
+	        }
             this.isPerformingUndoRedo = true;
             this.$emit('update:form', newState);
 
@@ -1146,6 +1153,19 @@
                 e.preventDefault();
                 this.save_form();
             }
+        },
+        initKeyboardUndoRedo(e) {
+            const isMac = window.navigator.platform.match('Mac');
+            const modifierKey = isMac ? e.metaKey : e.ctrlKey;
+
+            if (modifierKey && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    this.redo();
+                } else {
+                    this.undo();
+                }
+            }
         }
     },
 
@@ -1210,9 +1230,12 @@
             }, 100);
         }
         document.addEventListener('keydown', this.initKeyboardSave);
+
+        document.addEventListener('keydown', this.initKeyboardUndoRedo);
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.initKeyboardSave);
+        document.removeEventListener('keydown', this.initKeyboardUndoRedo);
         if (this.undoRedoManager) {
             this.undoRedoManager.off('undo');
             this.undoRedoManager.off('redo');

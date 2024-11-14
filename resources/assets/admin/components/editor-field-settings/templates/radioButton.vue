@@ -15,9 +15,6 @@ export default {
     props: ['listItem', 'value'],
     components: { elLabel },
     watch: {
-        model() {
-            this.$emit('input', this.model);
-        },
         "$attrs.editItem.settings.label": function (newVal, oldVal) {
           if (newVal === '') {
             this.show = false;
@@ -31,7 +28,6 @@ export default {
     data() {
         return {
             show : true,
-            model: this.value
         }
     },
     mounted() {
@@ -41,6 +37,16 @@ export default {
               this.$emit('input', '');
             }
         }
-    }
+    },
+	computed: {
+		model: {
+			get() {
+				return this.value;
+			},
+			set(value) {
+				this.$emit('input', value)
+			}
+		}
+	}
 }
 </script>
