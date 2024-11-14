@@ -641,7 +641,8 @@ export default {
             }
         },
         redirectToSharePage(id) {
-            window.open(`https://forms.test/?ff_landing=${id}`, '_blank');
+            const siteUrl = window.FluentFormApp.siteUrl;
+            window.open(`${siteUrl}/?ff_landing=${id}`, '_blank');
         },
         hasPro() {
             return !!window.FluentFormApp.hasPro;
