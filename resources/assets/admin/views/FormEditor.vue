@@ -747,6 +747,13 @@
         },
 
         handleUndoRedoStateChange(newState) {
+			// Sync input customization sidebar
+	        if (Object.keys(this.editItem).length) {
+		        let editItem = newState?.dropzone.find(item => item.attributes.name === this.editItem.attributes.name);
+		        if (editItem) {
+			        this.editItem = editItem
+		        }
+	        }
             this.isPerformingUndoRedo = true;
             this.$emit('update:form', newState);
 
@@ -1228,7 +1235,7 @@
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.initKeyboardSave);
-        document.addEventListener('keydown', this.initKeyboardUndoRedo);
+        document.removeEventListener('keydown', this.initKeyboardUndoRedo);
         if (this.undoRedoManager) {
             this.undoRedoManager.off('undo');
             this.undoRedoManager.off('redo');
