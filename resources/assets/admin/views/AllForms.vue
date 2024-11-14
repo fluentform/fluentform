@@ -146,11 +146,15 @@
                                                     }}
                                                 <i class="el-icon-loading" v-if="loadingLocations"></i></a>
                                             </span>
-                                            <span class="row-actions-item ">
-                                               <div v-if="isLandingPageEnabled(scope.row.id)"  :data-clipboard-text='`[https://forms.test/?ff_landing=1${scope.row.id}`'>
-                                                   Share
-                                               </div>
-                                                
+                                            <span
+                                                v-if="isLandingPageEnabled(scope.row.id)"
+                                                class="row-actions-item"
+                                            >
+                                               <a href="#" @click.prevent="redirectToSharePage(scope.row.id)">
+                                                   {{
+                                                        $t('Share')
+                                                   }}
+                                               </a>
                                             </span>
                                             <span class="row-actions-item trash">
                                                 <a href="#" @click.prevent="removeFormConfirmation(scope.row.id, scope.$index)">{{ $t('Delete') }}</a>
@@ -628,9 +632,20 @@ export default {
 	        location.href = ajaxurl + '?' + jQuery.param(data);
         },
         isLandingPageEnabled(id) {
-            let landingPageIds = window.FluentFormApp.landing_page_enabled_forms;
-            return landingPageIds.includes(id);
+            if (this.hasPro()) {
+                let landingPageIds = window.FluentFormApp.landing_page_enabled_forms;
+                if (landingPageIds) {
+                    return landingPageIds.includes(id);
+                }
+                return false;
+            }
         },
+        redirectToSharePage(id) {
+            window.open(`https://forms.test/?ff_landing=${id}`, '_blank');
+        },
+        hasPro() {
+            return !!window.FluentFormApp.hasPro;
+        }
     },
     computed: {
 	    hasEnabledDateFilter() {

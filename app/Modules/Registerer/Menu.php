@@ -791,7 +791,8 @@ class Menu
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
             'plugin_public_url'       => fluentformMix(),
         ];
-        if(defined('FLUENTFORMPRO')){
+
+        if (defined('FLUENTFORMPRO')){
             $data['landing_page_enabled_forms']= Helper::getLandingPageEnabledForms();
         }
      
