@@ -1160,12 +1160,8 @@ class Helper
             if (method_exists(\FluentFormPro\classes\SharePage\SharePage::class, 'getLandingPageFormIds')) {
                 $sharePage = new \FluentFormPro\classes\SharePage\SharePage();
                 return $sharePage->getLandingPageFormIds();
-            } else {
-                return 'Method getLandingPageFormIds does not exist.';
             }
-        } else {
-            return 'Class FluentFormPro\classes\SharePage\SharePage does not exist.';
         }
-    
+        return [];
     }
 }
