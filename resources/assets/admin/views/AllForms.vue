@@ -483,7 +483,7 @@ export default {
                     if (response.value === 'DELETE') {
                         this.removeForm(id, index);
                     } else {
-                        this.$notify.error(this.$t('The verification string does not match'));
+                        this.$notify.error(this.$t('You must type %s to confirm', 'DELETE'));
                     }
                 });
             }).catch((err) => {

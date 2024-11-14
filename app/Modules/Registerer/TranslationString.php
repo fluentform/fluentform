@@ -224,7 +224,7 @@ class TranslationString
             'Delete Form' => __('Delete Form', 'fluentform'),
             'Confirm Delete' => __('Confirm Delete', 'fluentform'),
             'Cancel' => __('Cancel', 'fluentform'),
-            'The verification string does not match' => __('The verification string does not match', 'fluentform'),
+            'You must type %s to confirm' => __('You must type %s to confirm', 'fluentform'),
         );
 
         return apply_filters('fluentform/admin_i18n', $i18n);
