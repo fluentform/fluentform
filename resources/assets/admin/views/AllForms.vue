@@ -483,7 +483,11 @@ export default {
                     if (response.value === 'DELETE') {
                         this.removeForm(id, index);
                     } else {
-                        this.$notify.error(this.$t('You must type %s to confirm', 'DELETE'));
+                        this.$notify.error({
+                            title: this.$t('Error'),
+                            message:this.$t('You must type %s to confirm', 'DELETE'),
+                            position: 'bottom-right'
+                        });
                     }
                 });
             }).catch((err) => {
