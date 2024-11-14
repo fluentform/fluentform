@@ -446,6 +446,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Adds submission & field-specific shortcode
 - Adds "Go to page" feature for pagination
 - Adds global settings sidebar custom links sub-menu style
+- Adds "DELETE" input prompt on form deletion
 - Improved vulnerability handling with PSC by Cleantalk
 - Improved accessibility (focus on radio buttons, screen reader support)
 - Improved translations

@@ -458,6 +458,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds submission & field-specific shortcode
 - Adds "Go to page" feature for pagination
 - Adds global settings sidebar custom links sub-menu style
+- Adds "DELETE" input prompt on form deletion
 - Improved Security by working with Plugin Security Certification (PSC) by CleanTalk
 - Improved accessibility (focus on radio buttons, screen reader support)
 - Improved translations
