@@ -1153,4 +1153,20 @@ class Helper
         $globalSettings = get_option('_fluentform_global_form_settings');
         return 'wp_default' === ArrayHelper::get($globalSettings, 'misc.default_admin_date_time');
     }
+    
+    public static function getLandingPageEnabledForms()
+    {
+        if (class_exists(\FluentFormPro\classes\SharePage\SharePage::class)) {
+            if (method_exists(\FluentFormPro\classes\SharePage\SharePage::class, 'getLandingPageFormIds')) {
+                $sharePage = new \FluentFormPro\classes\SharePage\SharePage();
+                return $sharePage->getLandingPageFormIds();
+            
+            } else {
+                return 'Method getLandingPageFormIds does not exist.';
+            }
+        } else {
+            return 'Class FluentFormPro\classes\SharePage\SharePage does not exist.';
+        }
+    
+    }
 }

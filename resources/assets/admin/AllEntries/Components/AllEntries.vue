@@ -184,7 +184,6 @@ import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
 import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
 import {scrollTop} from '@/admin/helpers';
 import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
-import moment from 'moment';
 export default {
     name: 'AllEntries',
     components: {

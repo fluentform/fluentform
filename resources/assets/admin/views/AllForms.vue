@@ -146,6 +146,12 @@
                                                     }}
                                                 <i class="el-icon-loading" v-if="loadingLocations"></i></a>
                                             </span>
+                                            <span class="row-actions-item ">
+                                               <div v-if="isLandingPageEnabled(scope.row.id)"  :data-clipboard-text='`[https://forms.test/?ff_landing=1${scope.row.id}`'>
+                                                   Share
+                                               </div>
+                                                
+                                            </span>
                                             <span class="row-actions-item trash">
                                                 <a href="#" @click.prevent="removeFormConfirmation(scope.row.id, scope.$index)">{{ $t('Delete') }}</a>
                                             </span>
@@ -620,7 +626,11 @@ export default {
 	            fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
             };
 	        location.href = ajaxurl + '?' + jQuery.param(data);
-        }
+        },
+        isLandingPageEnabled(id) {
+            let landingPageIds = window.FluentFormApp.landing_page_enabled_forms;
+            return landingPageIds.includes(id);
+        },
     },
     computed: {
 	    hasEnabledDateFilter() {
