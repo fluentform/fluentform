@@ -206,6 +206,9 @@ class Logger
             $entryLogs = [];
 
             foreach ($logs as $log) {
+                if (isset($log->component) && $log->component === 'slack') {
+                    continue;
+                }
                 $entryLogs[] = [
                     'id'          => $log->id,
                     'status'      => $log->status,
