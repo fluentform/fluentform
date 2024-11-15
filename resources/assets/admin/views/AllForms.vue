@@ -632,7 +632,7 @@ export default {
 	        location.href = ajaxurl + '?' + jQuery.param(data);
         },
         isLandingPageEnabled(id) {
-            if (this.hasPro()) {
+            if (this.hasPro() && window.FluentFormApp.landing_page_enabled_forms) {
                 let landingPageIds = window.FluentFormApp.landing_page_enabled_forms;
                 if (landingPageIds) {
                     return landingPageIds.includes(id);
