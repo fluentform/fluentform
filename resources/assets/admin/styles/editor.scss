@@ -1307,6 +1307,11 @@ mark {
     z-index: 11;
   }
 
+  &#saveFormData .ff-tooltip {
+    top: 135%;
+    padding: 6px 12px;
+  }
+
   &:hover .ff-tooltip {
     opacity: 1;
     visibility: visible;
