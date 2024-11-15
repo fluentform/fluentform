@@ -220,7 +220,7 @@ class TranslationString
             'Warning' => __('Warning', 'fluentform'),
             'Yes, Delete the form' => __('Yes, Delete the form', 'fluentform'),
             'No' => __('No', 'fluentform'),
-            'Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.' => __('Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.', 'fluentform'),
+            'Please type %s to confirm. All entries and integration feeds of this form will be deleted' => __('Please type %s to confirm. All entries and integration feeds of this form will be deleted.', 'fluentform'),
             'Delete Form' => __('Delete Form', 'fluentform'),
             'Confirm Delete' => __('Confirm Delete', 'fluentform'),
             'Cancel' => __('Cancel', 'fluentform'),

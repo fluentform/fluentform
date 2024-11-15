@@ -486,7 +486,7 @@ export default {
                 cancelButtonText: this.$t('No'),
                 type: 'warning'
             }).then(() => {
-                this.$prompt(this.$t('Please Type %s to confirm. Please note, all the submissions, feeds of this form will be deleted.', '"DELETE"'), this.$t('Delete Form'), {
+                this.$prompt(this.$t('Please type %s" to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
                     confirmButtonText: this.$t('Confirm Delete'),
                     cancelButtonText: this.$t('Cancel'),
                 }).then((response) => {
