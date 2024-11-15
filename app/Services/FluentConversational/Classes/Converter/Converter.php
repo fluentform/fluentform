@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
@@ -702,7 +703,18 @@ class Converter
                 $form->submit_button = $field;
             }
         }
+
+        $questions = self::getAttributeWithShortcode($questions, $form);
+
         $form->questions = $questions;
+
+        $buttonText = self::getAttributeWithShortcode(
+            [
+                'button_text' => ArrayHelper::get($form->submit_button, 'settings.button_ui.text')
+            ],
+            $form
+        );
+        ArrayHelper::set($form->submit_button, 'settings.button_ui.text', $buttonText);
 
         $form->image_preloads = $imagePreloads;
 
@@ -1157,5 +1169,50 @@ class Converter
         }
 
         return $data;
+    }
+
+    public static function getAttributeWithShortcode($questions, $form)
+    {
+        $supportedAttributes = [
+            'title',
+            'placeholder',
+            'tagline',
+            'button_text',
+            'label',
+        ];
+
+        $buttonText = null;
+
+        $processValue = function(&$item, $key) use (&$processValue, $form, $supportedAttributes, &$buttonText) {
+            if (is_array($item)) {
+                array_walk($item, $processValue);
+            } elseif (is_string($item) && in_array($key, $supportedAttributes)) {
+                preg_match_all('/{(.*?)}/', $item, $matches);
+                $patterns = array_unique($matches[0]);
+
+                $attrDefaultValues = [];
+                foreach ($patterns as $pattern) {
+                    $attrDefaultValues[$pattern] = EditorShortcodeParser::filter($pattern, $form);
+                }
+
+                $processedItem = str_replace(array_keys($attrDefaultValues), array_values($attrDefaultValues), $item);
+
+                if ($key === 'button_text') {
+                    $buttonText = $processedItem;
+                } else {
+                    $item = $processedItem;
+                }
+            }
+        };
+
+        array_walk($questions, $processValue);
+
+        // If button_text was found, return only that
+        if ($buttonText !== null) {
+            return $buttonText;
+        }
+
+        // Otherwise, return the processed questions array
+        return $questions;
     }
 }
