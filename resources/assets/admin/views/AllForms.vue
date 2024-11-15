@@ -484,11 +484,13 @@ export default {
             this.$confirm(this.$t('Are you sure you want to delete this form?'), this.$t('Warning'), {
                 confirmButtonText: this.$t('Yes, Delete the form'),
                 cancelButtonText: this.$t('No'),
-                type: 'warning'
+                type: 'warning',
+                confirmButtonClass: 'ff_form_remove_confirm_class'
             }).then(() => {
                 this.$prompt(this.$t('Please type %s" to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
                     confirmButtonText: this.$t('Confirm Delete'),
                     cancelButtonText: this.$t('Cancel'),
+                    confirmButtonClass: 'ff_form_remove_confirm_class'
                 }).then((response) => {
                     if (response.value === 'DELETE') {
                         this.removeForm(id, index);

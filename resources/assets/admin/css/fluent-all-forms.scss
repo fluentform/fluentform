@@ -135,3 +135,21 @@ small {
         }
     }
 }
+
+.ff_form_remove_confirm_class {
+    color: #FFFFFF;
+    background-color: #FF6154;
+    border-color: #FF6154;
+
+    &:focus {
+        color: #FFFFFF;
+        background-color: #FF6154;
+        border-color: #FF6154;
+    }
+
+    &:hover {
+        color: #FFFFFF;
+        background: #FF8176;
+        border-color: #FF8176;
+    }
+}
