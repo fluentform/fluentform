@@ -9,7 +9,7 @@
                     <div class="entry_info_box_actions">
                         <el-radio-group class="el-radio-group-info" v-model="log_type" size="medium">
                             <el-radio-button label="logs">{{$t('General')}}</el-radio-button>
-                            <el-radio-button label="api_calls">{{$t('API Calls')}}</el-radio-button>
+                            <el-radio-button label="api">{{$t('API Calls')}}</el-radio-button>
                         </el-radio-group>
                     </div>
                 </card-head-group>
@@ -155,7 +155,7 @@
 
                 let data = {
                     log_ids: [logId],
-                    log_type: this.log_type
+                    type: this.log_type
                 };
 
                 FluentFormsGlobal.$rest.delete(url, data)
