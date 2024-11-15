@@ -152,8 +152,11 @@ class GlobalNotificationHandler
 
                 as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
             } else {
-                $scheduleAction['status'] = 'processing';
-                $feed['scheduled_action_id'] = wpFluent()->table('ff_scheduled_actions')->insertGetId($scheduleAction);
+                $isSyncFeedLogsEnable = apply_filters('fluentform/notifying_sync_api_logs_'. $feed['meta_key'], false);
+                if ($isSyncFeedLogsEnable) {
+                    $scheduleAction['status'] = 'processing';
+                    $feed['scheduled_action_id'] = wpFluent()->table('ff_scheduled_actions')->insertGetId($scheduleAction);
+                }
 
                 do_action_deprecated(
                     $oldAction,
