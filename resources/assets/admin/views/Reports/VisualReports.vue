@@ -259,6 +259,16 @@ export default {
 	    this.date_range = [this.formatDate(start), this.formatDate(end)]
 
         this.fetchReport();
+
+        this.clipboard = new ClipboardJS('.copy');
+        this.clipboard.on('success', () => {
+            this.$copy();
+        });
+    },
+    beforeDestroy() {
+        if (this.clipboard) {
+            this.clipboard.destroy();
+        }
     }
 }
 </script>
