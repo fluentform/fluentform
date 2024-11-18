@@ -347,6 +347,6 @@ class BaseComponent
         if ($matches[0]) {
             $label = trim(str_replace($matches[0], '', $label));
         }
-        return $label;
+        return wp_strip_all_tags($label);
     }
 }
