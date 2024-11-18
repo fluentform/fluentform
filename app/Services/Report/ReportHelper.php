@@ -11,7 +11,7 @@ use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class ReportHelper
 {
-    public static function generateReport($form, $statuses = ['read', 'unread'])
+    public static function generateReport($form, $statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed'])
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'element', 'options']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
@@ -29,28 +29,33 @@ class ReportHelper
         $reportableInputs = Helper::getSubFieldReportableInputs();
         $formSubFieldInputs = array_intersect($reportableInputs, array_values($elements));
 
-        $reports = (object)[];
-        if ($formReportableInputs && $formSubFieldInputs) {
-            $inputs = [];
-            $subfieldInputs = [];
-            foreach ($elements as $elementKey => $element) {
-                if (in_array($element, $formReportableInputs)) {
-                    $inputs[$elementKey] = $element;
-                }
-                if (in_array($element, $formSubFieldInputs)) {
-                    $subfieldInputs[$elementKey] = $element;
-                }
+    
+        if (!$formReportableInputs && !$formSubFieldInputs) {
+            return [
+                'report_items'  => (object)[],
+                'total_entries' => 0,
+            ];
+        }
+    
+        $inputs = [];
+        $subfieldInputs = [];
+        foreach ($elements as $elementKey => $element) {
+            if (in_array($element, $formReportableInputs)) {
+                $inputs[$elementKey] = $element;
             }
-
-            $reports = static::getInputReport($form->id, array_keys($inputs), $statuses);
-
-            $subFieldReports = static::getSubFieldInputReport($form->id, array_keys($subfieldInputs), $statuses);
-            $reports = array_merge($reports, $subFieldReports);
-            foreach ($reports as $reportKey => $report) {
-                $reports[$reportKey]['label'] = $inputLabels[$reportKey];
-                $reports[$reportKey]['element'] = Arr::get($inputs, $reportKey, []);
-                $reports[$reportKey]['options'] = $formInputs[$reportKey]['options'];
+            if (in_array($element, $formSubFieldInputs)) {
+                $subfieldInputs[$elementKey] = $element;
             }
+        }
+    
+        $reports = static::getInputReport($form->id, array_keys($inputs), $statuses);
+    
+        $subFieldReports = static::getSubFieldInputReport($form->id, array_keys($subfieldInputs), $statuses);
+        $reports = array_merge($reports, $subFieldReports);
+        foreach ($reports as $reportKey => $report) {
+            $reports[$reportKey]['label'] = $inputLabels[$reportKey];
+            $reports[$reportKey]['element'] = Arr::get($inputs, $reportKey, []);
+            $reports[$reportKey]['options'] = $formInputs[$reportKey]['options'];
         }
 
         return [

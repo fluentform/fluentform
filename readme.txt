@@ -454,13 +454,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.2.5 (Date: November 14, 2024)
 - Adds form editor undo/redo functionality (Beta)
-- Adds global option to select date and time format for entries view
+- Adds global option to select date and time format for admin page views
 - Adds submission & field-specific shortcode
 - Adds "Go to page" feature for pagination
 - Adds global settings sidebar custom links sub-menu style
 - Adds "DELETE" input prompt on form deletion
 - Improved Security by working with Plugin Security Certification (PSC) by CleanTalk
-- Improved accessibility (focus on radio buttons, screen reader support)
+- Improved accessibility (focus on radio buttons,t&c text screen reader support)
 - Improved translations
 - Improved integrations API logs bulk replay actions functionality
 - Improved submission logs API cals retry action
@@ -474,6 +474,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes double submission when submit button is clicked twice with custom URL redirection setup
 - Fixes undefined shortcode key for conditionally hidden fields
 - Fixes FluentCRM dynamic tag selection based on subscriptions plan
+- Fixes Visual Report filter issue
+- Improved minor ux issues
+
 
 = 5.2.4 (Date: October 1, 2024) =
 - Fix calculation issue
@@ -496,6 +499,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes label asterisk style with elementor widget
 - Fixes conditional logic with numeric formatting
 - Fixes Checkable Grid submission issue
+
 
 = 5.2.2 (Date: September 11, 2024) =
 - Update tested WordPress Version

@@ -400,6 +400,7 @@ export default {
         if (status) {
             this.chart_status = status;
         }
+        localStorage.removeItem('entriesCurrentPage');
         this.fetchEntries();
     }
 };
