@@ -2,7 +2,7 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 5.2.5
 License: GPLv2 or later

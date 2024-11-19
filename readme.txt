@@ -2,7 +2,7 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 5.2.5
 License: GPLv2 or later
@@ -452,7 +452,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.2.5 (Date: November 14, 2024)
+= 5.2.5 (Date: November 19, 2024)
 - Adds form editor undo/redo functionality (Beta)
 - Adds global option to select date and time format for admin page views
 - Adds submission & field-specific shortcode
@@ -468,6 +468,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Improved initially disabling of analytics
 - Improved Mailchimp date field with more format options
 - Improved checkable field bulk options in the editor (supports : on value & label)
+- Improved overall ui ux issues
 - Fixes shortcode copy message showing multiple times on entry page
 - Fixes screen reading issue with name fields
 - Fixes mobile responsiveness of tools page sidebar navigation
@@ -475,8 +476,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes undefined shortcode key for conditionally hidden fields
 - Fixes FluentCRM dynamic tag selection based on subscriptions plan
 - Fixes Visual Report filter issue
-- Improved minor ux issues
-
 
 = 5.2.4 (Date: October 1, 2024) =
 - Fix calculation issue
