@@ -134,10 +134,10 @@ class Checkable extends BaseComponent
             $elMarkup .= '</div>';
         }
 
+        $elMarkup .= '</fieldset>';
         if ($hasImageOption) {
             $elMarkup .= '</div>';
         }
-        $elMarkup .= '</fieldset>';
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
     
