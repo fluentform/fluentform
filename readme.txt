@@ -452,7 +452,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.2.5 (Date: November 19, 2024)
+= 5.2.5 (Date: November 19, 2024) =
 - Adds form editor undo/redo functionality (Beta)
 - Adds global option to select date and time format for admin page views
 - Adds submission & field-specific shortcode
