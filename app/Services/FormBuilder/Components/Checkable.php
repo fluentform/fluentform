@@ -78,11 +78,11 @@ class Checkable extends BaseComponent
         if ('yes' == ArrayHelper::get($data, 'settings.randomize_options')) {
             shuffle($formattedOptions);
         }
-    
-        $legendId = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
-        $elMarkup .= '<fieldset role="group"  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;" aria-labelledby="legend_' . $legendId . '">';
-    
-        $elMarkup .= '<legend  style="  position: absolute;width: 1px;height: 1px;padding: 0;margin: 0;overflow: hidden;clip: rect(0, 0, 0, 0);border: 0;"  role="heading" id="legend_' . $legendId . '" class="ff-sreader-only">' . esc_attr($this->removeShortcode($data['settings']['label'])) . '</legend>';
+//        @todo : Find a alternative screen reader support
+//        $legendId = $this->getUniqueid(str_replace(['[', ']'], ['', ''], $data['attributes']['name']));
+//        $elMarkup .= '<fieldset role="group"  style="border: none!important;margin: 0!important;padding: 0!important;background-color: transparent!important;box-shadow: none!important;outline: none!important; min-inline-size: 100%;" aria-labelledby="legend_' . $legendId . '">';
+//
+//        $elMarkup .= '<legend  style="  position: absolute;width: 1px;height: 1px;padding: 0;margin: 0;overflow: hidden;clip: rect(0, 0, 0, 0);border: 0;"  role="heading" id="legend_' . $legendId . '" class="ff-sreader-only">' . esc_attr($this->removeShortcode($data['settings']['label'])) . '</legend>';
     
     
         foreach ($formattedOptions as $option) {
@@ -134,10 +134,10 @@ class Checkable extends BaseComponent
             $elMarkup .= '</div>';
         }
 
-        $elMarkup .= '</fieldset>';
         if ($hasImageOption) {
             $elMarkup .= '</div>';
         }
+//        $elMarkup .= '</fieldset>';
 
         $html = $this->buildElementMarkup($elMarkup, $data, $form);
     

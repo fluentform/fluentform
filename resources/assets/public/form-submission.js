@@ -417,11 +417,10 @@ jQuery(document).ready(function () {
                         .always(function (res) {
                             that.isSending = false;
 
-                            if (responseData.data) {
-                                if (!('redirectUrl' in responseData.data.result)) {
-                                    hideFormSubmissionProgress($theForm);
-                                }
+                            if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
+                                return;
                             }
+                            hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
                                 const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
