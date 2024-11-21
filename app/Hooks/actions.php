@@ -1083,3 +1083,9 @@ add_action('fluentform/before_updating_form',function ($form, $postData){
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');
 }
+
+//Pdf generator initiated
+add_filter('fluent_pdf_hide_menu', '__return_true');
+add_action('fluent_pdf_loaded', function () {
+   new FluentForm\App\Modules\PDF\Manager\FluentFormPdfBuilder();
+});
