@@ -171,6 +171,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 }
 
+                // if date field with flatpickr has advanced config altInput set to true
+                if (typeof flatpickr !== 'undefined') {
+                    if ($el.prop('_flatpickr')) {
+                        const fpInstance = $el.prop('_flatpickr');
+                        if (fpInstance) {
+                            if (fpInstance.config.altInput) {
+                                fpInstance.setDate(value, true);
+                            } else {
+                                $el.val(value).trigger('change');
+                            }
+                        }
+                    }
+                }
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
