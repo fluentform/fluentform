@@ -87,8 +87,6 @@ class Logger
             }
         }
 
-        $logs->setCollection(Collection::make($logItems));
-    
         $logItems = apply_filters_deprecated(
             'fluentform_all_logs',
             [
@@ -98,6 +96,8 @@ class Logger
             'fluentform/get_logs',
             'Use fluentform/get_logs instead of fluentform_all_logs'
         );
+
+        $logs->setCollection(Collection::make($logItems));
 
         return apply_filters('fluentform/get_logs', $logs);
     }
@@ -206,22 +206,27 @@ class Logger
             $entryLogs = [];
 
             foreach ($logs as $log) {
+                if (isset($log->component) && $log->component === 'slack') {
+                    continue;
+                }
                 $entryLogs[] = [
                     'id'          => $log->id,
                     'status'      => $log->status,
                     'title'       => $log->component . ' (' . $log->title . ')',
                     'description' => $log->description,
-                    'created_at'  => (string) $log->created_at,
+                    'created_at'  => (string)$log->created_at,
                 ];
             }
-        }
-        else {
+        } else {
             $columns = [
                 'id',
                 'action',
                 'status',
                 'note',
                 'created_at',
+                'form_id',
+                'feed_id',
+                'origin_id',
             ];
 
             $logs = Scheduler::select($columns)
@@ -245,12 +250,32 @@ class Logger
 
             foreach ($logs as $log) {
                 $entryLog = [
-                    'id'          => $log->id,
-                    'status'      => $log->status,
-                    'title'       => 'n/a',
-                    'description' => $log->note,
-                    'created_at'  => (string) $log->created_at,
+                    'id'                  => $log->id,
+                    'status'              => $log->status,
+                    'title'               => 'n/a',
+                    'description'         => $log->note,
+                    'created_at'          => (string)$log->created_at,
+                    'form_id'             => $log->form_id,
+                    'feed_id'             => $log->feed_id,
+                    'submission_id'       => $log->origin_id,
+                    'integration_enabled' => false
                 ];
+
+                $notificationKeys = apply_filters('fluentform/global_notification_active_types', [], $log->form_id);
+
+                unset($notificationKeys['user_registration_feeds']);
+                unset($notificationKeys['notifications']);
+
+                $notificationKeys = array_flip($notificationKeys);
+
+                $actionName = Helper::getLogInitiator($log->action);
+                if ($actionName) {
+                    $actionName = str_replace(['Fluentform_integration_notify_', 'Fluentform/integration_notify_'], '', $actionName);
+
+                    if (in_array($actionName, $notificationKeys)) {
+                        $entryLog['integration_enabled'] = true;
+                    }
+                }
 
                 if ($log->action) {
                     $entryLog['title'] = Helper::getLogInitiator($log->action, $logType);

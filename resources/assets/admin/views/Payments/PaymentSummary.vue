@@ -32,7 +32,7 @@
                                 <th><span v-html="formatMoney(order_data.order_items_subtotal, submission.currency)"></span></th>
                             </tr>
                             <tr v-for="(discount, index) in order_data.discount_items" :key="index">
-                                <th colspan="3" class="text-right">{{$t('Discount')}}: {{discount.item_name}}</th>
+                                <th colspan="3" class="text-right">{{$t('Discount: %s', discount.item_name)}}</th>
                                 <th>-<span v-html="formatMoney(discount.line_total, submission.currency)"></span></th>
                             </tr>
                         </template>
@@ -57,7 +57,7 @@
         <card v-if="parseFloat(submission.total_paid) || (order_data.transactions && order_data.transactions.length)"
         >
             <card-head>
-                <h6>{{$t('Payment Details')}}</h6> 
+                <h6>{{$t('Payment Details')}}</h6>
             </card-head>
             <card-body class="entry_info_body ff_payment_detail_data">
                 <div class="ff_payment_detail_data_payment">
@@ -90,7 +90,7 @@
                 </div>
 
                 <div v-for="(transaction, index) in order_data.transactions" class="wpf_entry_transaction" :key="index">
-                    <h4 v-show="order_data.transactions.length > 1">{{$t('Transaction')}} #{{ index+1 }}</h4>
+                    <h4 v-show="order_data.transactions.length > 1">{{$t('Transaction #%s', index+1)}}</h4>
                     <ul class="ff_list_items mb-3">
                         <li>
                             <div class="ff_list_header">{{$t('ID')}}</div>
@@ -125,7 +125,7 @@
 
                                 <a v-if="transaction.action_url" target="_blank"
                                    :href="transaction.action_url">
-                                    {{ transaction.charge_id}}
+                                    {{ transaction.charge_id }}
                                 </a>
                                 <span v-else>{{ transaction.charge_id }}</span>
 
@@ -171,13 +171,13 @@
 
         <card v-if="order_data.refunds && order_data.refunds.length">
             <card-head>
-                <h6> {{$t('Refunds')}}</h6> 
+                <h6>{{$t('Refunds')}}</h6>
             </card-head>
             <card-body class="entry_info_body">
                 <div v-for="(transaction, index) in order_data.refunds" class="wpf_entry_transaction" :key="index">
                     <div class="transaction_item_small">
                         <div class="transaction_item_heading">
-                            <div class="transaction_heading_title">{{$t('Refund')}} #{{ index+1 }}</div>
+                            <div class="transaction_heading_title">{{$t('Refund #%s', index+1)}}</div>
                             <div class="transaction_heading_action">
                                 <a class="el-button el-button--danger el-button--mini" v-if="transaction.action_url" target="_blank"
                                    :href="transaction.action_url">
@@ -187,11 +187,25 @@
                         </div>
                         <div class="transaction_item_body">
                             <div class="transaction_item_line">
-                                <span class="ff_badge is-solid small ff_badge_paid" v-html="formatMoney(transaction.payment_total, transaction.currency)"></span> {{$t('has been refunded via')}}
-                                <span class="ff_badge small ff_badge_primary" v-if="transaction.payment_method">{{ transaction.payment_method }}</span> {{$t('at')}}
-                                {{ transaction.created_at }}
+                                <p
+                                    v-html="$t(
+                                        '%s has been refunded via %s at %s',
+                                        `<span class='ff_badge is-solid small ff_badge_paid'>
+                                            ${formatMoney(transaction.payment_total, transaction.currency)}
+                                        </span>`,
+                                        transaction.payment_method
+                                        ? `<span class='ff_badge small ff_badge_primary'>
+                                            ${transaction.payment_method}
+                                        </span>`
+                                        : '',
+                                        transaction.created_at
+                                    )"
+                                >
+                                </p>
                             </div>
-                            <p v-if="transaction.payment_note && typeof transaction.payment_note == 'string'">{{$t('Note')}}: {{transaction.payment_note}}</p>
+                            <p v-if="transaction.payment_note && typeof transaction.payment_note == 'string'">
+                                {{ $t('Note: %s', transaction.payment_note) }}
+                            </p>
                         </div>
                     </div>
                 </div>

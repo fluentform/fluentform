@@ -19,10 +19,10 @@
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
-                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                                <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }} CSV</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -146,7 +146,7 @@
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
                         <label for="search_bar">
-                           <b> {{ $t('Advanced Search') }}</b>
+                           <b> {{ $t('Advanced Filter') }}</b>
                         </label>
                         <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
 
@@ -190,7 +190,7 @@
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
                             <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span>{{ $t('Filter') }}</span>
+                                <span>{{ $t('Date Filter') }}</span>
                                 <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
@@ -322,8 +322,8 @@
                                     </div>
 
                                     <div class="inline_actions inline_item" v-else>
-                                            <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                                class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                            <span @click="restoreEntry(scope.row.id, scope.$index)"
+                                                class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
                                     </div>
                                 </div>
                             </template>
@@ -343,7 +343,7 @@
                         </el-table-column>
 
                         <el-table-column
-                                label="Entry Status"
+                                :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
                                 width="120px">
@@ -399,9 +399,16 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
-                                width="120px">
+                                :width="dateColWidth">
                             <template slot-scope="scope">
-                                {{ dateFormat(scope.row.created_at) }}
+                                <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        {{tooltipDateTime(scope.row.created_at)}}
+                                    </div>
+
+                                   <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                </el-tooltip>
+
                             </template>
                         </el-table-column>
 
@@ -452,7 +459,7 @@
             </div><!-- .ff_table -->
 
             <el-row class="mt-4 items-center">
-                <el-col :span="12">
+                <el-col :xs="24" :sm="8" :lg="12">
                     <div class="bulkactions">
                         <email-resend
                                 v-if="entrySelections.length"
@@ -463,7 +470,7 @@
                         <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="16" :lg="12">
                     <div class="ff_pagination_wrap text-right">
                         <el-pagination
                                 class="ff_pagination"
@@ -473,7 +480,7 @@
                                 :current-page.sync="paginate.current_page"
                                 :page-sizes="[5, 10, 20, 50, 100]"
                                 :page-size="parseInt(paginate.per_page)"
-                                layout="total, sizes, prev, pager, next"
+                                layout="total, sizes, prev, pager, next, jumper"
                                 :total="paginate.total">
                         </el-pagination>
                     </div>
@@ -509,7 +516,7 @@
                         </el-checkbox-group>
 
                         <el-checkbox-group class="ff_2_col_items " v-model="shortcodesToExport" @change="handleCheckedFieldsChange">
-                            <div >
+                            <div>
                                 <p><b>{{ $t('Submission Info') }}</b></p>
                                 <div class="separator mb-4"></div>
                                 <el-checkbox :disabled="!has_pro" v-for="(label,name) in editor_shortcodes"   :label="name" :key="name" >{{ label }}</el-checkbox>
@@ -778,7 +785,11 @@
 				return !!(this.radioOption && this.radioOption != 'all' ||
 					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
                 );
-            }
+            },
+
+	        dateColWidth() {
+		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
+	        }
         },
         methods: {
             getStatusName(status) {
@@ -1207,9 +1218,10 @@
         },
         mounted() {
             this.getEntryResources();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
@@ -1217,6 +1229,11 @@
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
         },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>
 

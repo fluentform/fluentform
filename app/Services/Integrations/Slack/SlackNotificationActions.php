@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\Integrations\Slack;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class SlackNotificationActions
 {
@@ -42,26 +43,12 @@ class SlackNotificationActions
             return;
         }
         $response = Slack::handle($feed, $formData, $form, $entry);
-        if ('success' === $response['status']) {
-            do_action('fluentform/log_data', [
-                'parent_source_id' => $form->id,
-                'source_type'      => 'submission_item',
-                'source_id'        => $entry->id,
-                'component'        => 'slack',
-                'status'           => 'success',
-                'title'            => $feed['meta_key'],
-                'description'      => 'Slack feed has been successfully initialed and pushed data',
-            ]);
+        if ('success' === Arr::get($response, 'status')) {
+            do_action('fluentform/integration_action_result', $feed, 'success',
+                __('Slack feed has been successfully initialed and pushed data', 'fluentformpro'));
         } else {
-            do_action('fluentform/log_data', [
-                'parent_source_id' => $form->id,
-                'source_type'      => 'submission_item',
-                'source_id'        => $entry->id,
-                'component'        => 'slack',
-                'status'           => 'failed',
-                'title'            => $feed['meta_key'],
-                'description'      => $response['message'],
-            ]);
+            $error = Arr::get($response, 'message');
+            do_action('fluentform/integration_action_result', $feed, 'failed', $error);
         }
     }
 }

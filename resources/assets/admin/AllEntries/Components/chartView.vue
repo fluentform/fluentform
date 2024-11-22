@@ -46,7 +46,7 @@
                     date_range: this.date_range,
                     entry_status: this.entry_status
                 };
-                FluentFormsGlobal.$rest.get(url, data)
+                FluentFormsGlobal.$rest.post(url, data)
                     .then(response => {
                         this.stats = response;
                         this.setupChartItems();

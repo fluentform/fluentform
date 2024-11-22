@@ -6,7 +6,7 @@
             </el-col>
             <el-col :span="12" class="text-right">
                 <el-button @click="gotoRegularEntries()" type="primary">
-                    <i class="ff-icon ff-icon-eye fs-15"></i> 
+                    <i class="ff-icon ff-icon-eye fs-15"></i>
                     <span>{{ $t('View Regular Entries') }}</span>
                 </el-button>
             </el-col>
@@ -14,7 +14,7 @@
         <el-row :gutter="24">
             <el-col :sm="24" :md="17">
                 <div class="all_report_items">
-                    <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card': ''">                    
+                    <el-skeleton :loading="loading" animated :rows="10" :class="loading ? 'ff_card': ''">
                         <card>
                             <card-head class="report_header">
                                 <span class="mr-3 title">{{ $t('Submission Stats') }}</span>
@@ -34,7 +34,7 @@
                                     <h6 class="mb-2">{{ $t('Fetching Data... Please wait!') }}</h6>
                                 </div>
                                 <template v-if="!loading">
-                                    <entries-chart :date_range="date_range" :form_id="form_id"></entries-chart>
+                                    <entries-chart :date_range="resolved_date_range" :entry_status="filter_statuses" :form_id="form_id"></entries-chart>
                                 </template>
                             </card-body>
                         </card>
@@ -62,8 +62,8 @@
                         </card-head>
                         <card-body class="entry_info_body report_status_filter">
                             <el-checkbox-group class="el-checkbox-group-column" @change="fetchReport()" v-model="filter_statuses">
-                                <el-checkbox 
-                                    v-for="(status, status_key) in entry_statuses" 
+                                <el-checkbox
+                                    v-for="(status, status_key) in entry_statuses"
                                     :key="status_key"
                                     :label="status_key">
                                     {{ status }}
@@ -105,7 +105,7 @@
                     </card>
                     <btn-group>
                         <btn-group-item>
-                            <el-button @click="printReport()" type="info">{{ $t('Print this report') }}</el-button>
+                            <el-button @click="printReport()" type="info">{{ $t('Print report') }}</el-button>
                         </btn-group-item>
                         <btn-group-item>
                             <el-button @click="resetAnalytics()">{{ $t('Reset Form Analytics') }}</el-button>
@@ -191,7 +191,10 @@ export default {
                 items.push(item_name);
             });
             return items;
-        }
+        },
+	    resolved_date_range() {
+			return this.date_range || 'all';
+	    }
     },
     methods: {
         fetchReport() {
@@ -235,7 +238,14 @@ export default {
         },
         printReport() {
             window.print();
-        }
+        },
+	    // Method to format date as 'yyyy-MM-dd'
+	    formatDate(date) {
+		    const year = date.getFullYear();
+		    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+		    const day = date.getDate().toString().padStart(2, '0');
+		    return `${year}-${month}-${day}`;
+	    },
     },
     mounted() {
         each(this.entry_statuses, (item, key) => {
@@ -243,7 +253,22 @@ export default {
                 this.filter_statuses.push(key);
             }
         });
+	    const end = new Date();
+	    const start = new Date();
+	    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);  // Last month
+	    this.date_range = [this.formatDate(start), this.formatDate(end)]
+
         this.fetchReport();
+
+        this.clipboard = new ClipboardJS('.copy');
+        this.clipboard.on('success', () => {
+            this.$copy();
+        });
+    },
+    beforeDestroy() {
+        if (this.clipboard) {
+            this.clipboard.destroy();
+        }
     }
 }
 </script>

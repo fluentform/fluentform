@@ -102,9 +102,11 @@
                             <span @click="closeSmtp()" class="ff_smtp_close">
                                 <i class="el-icon el-icon-close"></i>
                             </span>
-                            <p>{{
-                                    $t('For better email deliver ability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered ')
-                                }} 💯. {{ $t('Built by Fluent Forms devs for you.') }}</p>
+                            <p>
+                                {{
+                                    $t('For better email deliverability, we recommend to use FluentSMTP Plugin(completely free & Opensource). FluentSMTP connects with your Email Service Provider natively and makes sure your emails including form notifications are being delivered 💯. Built by Fluent Forms Devs for you.')
+                                }}
+                            </p>
                             <a class="el-button el-button--info el-button--medium"
                                :href="smtp_page_url">{{ $t('Setup SMTP') }}</a>
                         </div>
@@ -515,7 +517,7 @@
                     @click="store"
                     type="primary"
                     icon="el-icon-success">
-                    {{ loading ? $t('Saving ') : $t('Save ') }} {{ $t('Notification') }}
+                    {{ $t('%s Notification', loading ? 'Saving' : 'Save') }}
                 </el-button>
             </div>
         </el-form>
@@ -777,7 +779,7 @@ export default {
 
                     let handle = notification.value.enabled ? 'enabled' : 'disabled';
 
-                    this.$success(this.$t('Successfully ' + handle + ' the notification.'));
+                    this.$success(this.$t('Successfully %s the notification.', handle));
                 })
                 .catch(e => {
                     notification.id = id;

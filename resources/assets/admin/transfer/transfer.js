@@ -60,6 +60,7 @@ import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 import notifier from '@/admin/notifier';
+import {humanDiffTime,tooltipDateTime} from '@/admin/helpers';
 import ExportForms from './ExportForms';
 import ImportForms from './ImportForms';
 import ActivityLogs from './ActivityLogs';
@@ -67,17 +68,25 @@ import ApiLogs from './ApiLogs';
 import Migrator from './Migrator';
 import globalSearch from '../global_search';
 import ImportEntries from './ImportEntries';
+import {_$t} from "@/admin/helpers";
+
 
 Vue.mixin({
     methods:{
-        $t(str) {
-            let transString = window.FluentFormApp.transfer_str[str];
-            if(transString) {
-                return transString;
-            }
-            return str;
+        $t(string) {
+            let transString = window.FluentFormApp.transfer_str[string] || string
+            return _$t(transString, ...arguments);
         },
-        ...notifier
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        },
+        ...notifier,
+        humanDiffTime,
+        tooltipDateTime
     }
 })
 new Vue({

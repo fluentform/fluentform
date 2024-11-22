@@ -145,7 +145,7 @@ $router->post('form-submit', 'SubmissionHandlerController@submit')->withPolicy('
 * Form Report
 */
 $router->prefix('report')->withPolicy('ReportPolicy')->group(function ($router) {
-    $router->get('/submissions', 'ReportController@submissions');
+    $router->post('/submissions', 'ReportController@submissions');
     $router->get('/forms/{form_id}', 'ReportController@form');
 });
 /*

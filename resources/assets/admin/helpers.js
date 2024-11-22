@@ -1,22 +1,24 @@
+import moment from 'moment';
+
 /*
     Funciton Type: Array Function
     Usage: Helps to clone an item next to it.
  */
 if (typeof Array.prototype.pushAfter === "undefined") {
-    Array.prototype.pushAfter = function(index, item) {
+    Array.prototype.pushAfter = function (index, item) {
         var deepClone = JSON.parse(JSON.stringify(item));
         this.splice(index + 1, 0, deepClone);
     };
 }
 
 if (typeof String.prototype.ucFirst === "undefined") {
-    String.prototype.ucFirst = function() {
+    String.prototype.ucFirst = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 }
 
 if (typeof String.prototype.ucWords === "undefined") {
-    String.prototype.ucWords = function() {
+    String.prototype.ucWords = function () {
         return this.split(' ').map(word => {
             return word.charAt(0).toUpperCase() + word.slice(1)
         }).join(' ');
@@ -50,9 +52,9 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
     // toggle sub-links if curren link has sub-links
     if ($link.hasClass('has_sub_menu')) {
 
-        if(firstLoad){
+        if (firstLoad) {
             $link.find('.ff_list_submenu').show();
-        }else{
+        } else {
             $link.toggleClass('is-submenu'); // toggle sub-link icon
             $link.find('.ff_list_submenu').slideToggle();
         }
@@ -87,3 +89,77 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
         $link.siblings().find('.ff_list_submenu').slideUp();
     }
 }
+
+
+/**
+ * Converts a date to human-readable relative time or wp default date string - based on global settings.
+ * @param {timestamp} date - The date to convert
+ * @returns {string} Human-readable time difference or formatted date
+ */
+
+export const humanDiffTime  = (date)=> {
+    const dateString = (date === undefined) ? null : date;
+    if (!dateString) {
+        return '';
+    }
+    if (window.fluent_forms_global_var.disable_time_diff) {
+        const dateMoment = moment(dateString);
+        return dateMoment.format(window.fluent_forms_global_var.wp_date_time_format);
+    }
+
+    const endTime = new Date();
+    const appStartTime = new Date();
+    const timeDiff = endTime - appStartTime;
+    const dateObj = moment(dateString);
+    return dateObj.from(moment(window.fluent_forms_global_var.server_time).add(timeDiff, 'milliseconds'));
+}
+
+export const tooltipDateTime  = (date)=> {
+    if (!date) {
+        return '';
+    }
+
+    const dateMoment = moment(date);
+    const globalConfig = window.fluent_forms_global_var;
+
+    if (globalConfig.disable_time_diff) {
+        // Calculate time difference between current time and application start
+        const currentTime = new Date();
+        const serverTime = window.fluent_forms_global_var.server_time;
+        const timeDifference = currentTime - serverTime;
+
+        const adjustedServerTime = moment(globalConfig.server_time)
+            .add(timeDifference, 'milliseconds');
+
+        return dateMoment.from(adjustedServerTime);
+    }
+
+    return dateMoment.format(globalConfig.wp_date_time_format);
+}
+export function _$t(string, ...args) {
+    if (args.length === 0) {
+        return string;
+    }
+
+    // Prepare the arguments, excluding the first one (the string itself)
+     args = Array.prototype.slice.call(args, 1);
+
+    // Regular expression to match %s, %d, or %1s, %2s, etc.
+    const regex = /%(\d*)s|%d/g;
+
+    // Replace function to handle each match found by the regex
+    let argIndex = 0; // Keep track of the argument index for non-numbered placeholders
+    string = string.replace(regex, (match, number) => {
+        // If it's a numbered placeholder, use the number to find the corresponding argument
+        if (number) {
+            const index = parseInt(number, 10) - 1; // Convert to zero-based index
+            return index < args.length ? args[index] : match; // Replace or keep the placeholder
+        } else {
+            // For non-numbered placeholders, use the next argument in the array
+            return argIndex < args.length ? args[argIndex++] : match; // Replace or keep the placeholder
+        }
+    });
+
+    return string;
+}
+

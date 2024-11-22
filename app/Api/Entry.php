@@ -88,7 +88,19 @@ class Entry
         $submission = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
                     ->where('id', $entryId)
                     ->first();
+                    return $this->getFormattedEntry($submission,$includeFormats);
+    }
 
+    public function entryBySerial($serialNumber, $includeFormats = false){
+        
+        $submission = \FluentForm\App\Models\Submission::where('form_id', $this->form->id)
+        ->where('serial_number', $serialNumber)
+        ->first();
+
+       return $this->getFormattedEntry($submission,$includeFormats);
+    }
+
+    public function getFormattedEntry($submission,$includeFormats = false){
         if (!$submission) {
             return null;
         }

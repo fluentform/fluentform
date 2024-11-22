@@ -202,7 +202,7 @@ $element_customization_settings = [
     ],
     'button_ui' => [
         'template'  => 'prevNextButton',
-        'label'     => __('Button Type', 'fluentform'),
+        'label'     => __('Button Text', 'fluentform'),
         'help_text' => __('Set as a default button or image icon type button', 'fluentform'),
     ],
     'align' => [

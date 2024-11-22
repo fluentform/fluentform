@@ -31,7 +31,8 @@ import {
     DatePicker,
     RadioButton,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    MessageBox
 } from 'element-ui';
 
 Vue.use(ButtonGroup);
@@ -65,6 +66,8 @@ Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
 
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -76,21 +79,26 @@ import Acl from '@/common/Acl';
 import AllForms from './views/AllForms.vue';
 import globalSearch from './global_search'
 import notifier from './notifier';
+import { _$t } from './helpers';
 
 Vue.mixin({
     methods: {
-        $t(str) {
-            let transString = window.fluent_forms_global_var.admin_i18n[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.fluent_forms_global_var.admin_i18n[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
         },
 
         hasPermission(permission) {
             return (new Acl).verify(permission);
         },
-        
+
         ...notifier
     },
     filters: {
@@ -112,7 +120,7 @@ new Vue({
     data: {},
     beforeCreate() {
         this.$on('change-title', (module) => {
-            jQuery('title').text(`${module} - FluentForm`);
+            jQuery('title').text(`${module} - Fluent Forms`);
         });
         this.$emit('change-title', 'Forms');
     }
