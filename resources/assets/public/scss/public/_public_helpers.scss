@@ -191,6 +191,14 @@
       background-color: #e9ecef !important;
       opacity: 1;
       pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     label.ff-el-image-input-src {
