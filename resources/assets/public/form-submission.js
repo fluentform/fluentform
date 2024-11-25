@@ -849,6 +849,13 @@ jQuery(document).ready(function () {
                     });
                     $theForm.data('is_initialized', 'yes');
 
+                    $theForm.find('input.ff-read-only').each(function () {
+                        $(this).attr({
+                            'tabindex': '-1',
+                            'readonly': 'readonly'
+                        });
+                    });
+
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
                         const content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
