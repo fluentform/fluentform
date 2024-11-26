@@ -522,6 +522,7 @@
                                 <el-checkbox :disabled="!has_pro" v-for="(label,name) in editor_shortcodes"   :label="name" :key="name" >{{ label }}</el-checkbox>
                             </div>
                         </el-checkbox-group>
+                        <el-checkbox v-model="exportWithNotes">{{ $t('With Notes') }}</el-checkbox>
                     </div>
                     <div  class="text-center" v-if="!has_pro">
                         {{$t('Field selection is available only in Pro version.') }}
@@ -695,7 +696,8 @@
                 showImportEntriesModal: false,
                 app: window.fluent_forms_global_var,
                 advanced_filter_active : false,
-                advanced_filter : {}
+                advanced_filter : {},
+                exportWithNotes : false
             }
         },
         computed: {
@@ -1130,6 +1132,9 @@
                     shortcodes_to_export: selectedShortcodes,
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
+                if (this.exportWithNotes){
+                    data.with_notes = this.exportWithNotes;
+                }
                 if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
