@@ -406,6 +406,8 @@ class Converter
                     } else {
                         $question['answer'] = +$field['attributes']['value'];
                     }
+                } else {
+                    $question['answer'] = +$question['answer'];
                 }
                 
                 $question['min'] = intval($field['attributes']['min']);
