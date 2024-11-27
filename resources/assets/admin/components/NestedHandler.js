@@ -136,7 +136,10 @@ export default {
          * Remove the moved item from it's old place
          * @param {Object} vddl options
          */
-        handleMoved({index, list}) {
+        handleMoved({index, list, draggable}) {
+            if ('container' === draggable?.element) {
+                return;
+            }
             list.splice(index, 1);
         },
 
