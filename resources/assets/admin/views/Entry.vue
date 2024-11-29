@@ -115,7 +115,7 @@
 
 
                         <payment-summary
-                            @reload_payments="getEntry()"
+                            @reload_payments="reloadPayments()"
                             v-if="order_data"
                             :submission="entry"
                             :order_data="order_data"
@@ -124,7 +124,7 @@
                         <template v-if="hasPermission('fluentform_manage_entries')">
                             <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 
-                            <submission_logs  :entry_id="entry_id" />
+                            <submission_logs :reload_logs="reload_logs" :entry_id="entry_id" @reset_reload_logs="resetReloadLogs" />
                             <btn-group as="div">
                                 <btn-group-item as="div">
                                     <email-resend :form_id="form_id" :entry_id="entry_id" />
@@ -333,6 +333,7 @@
                 entry_changing_next : false,
                 entry_changing_prev : false,
                 resources_loading : false,
+                reload_logs: false
             }
         },
         computed: {
@@ -526,6 +527,13 @@
                         this.resources_loading = false;
                     });
             },
+            reloadPayments() {
+                this.getEntry();
+                this.reload_logs = !this.reload_logs;
+            },
+            resetReloadLogs() {
+                this.reload_logs = false;
+            }
         },
         mounted() {
             this.getEntry();
