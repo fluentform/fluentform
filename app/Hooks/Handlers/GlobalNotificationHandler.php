@@ -182,6 +182,8 @@ class GlobalNotificationHandler
 
                 do_action($newAction, $feed, $formData, $entry, $form);
             }
+
+            Helper::setSubmissionMetaAsArrayPush($insertId, '_ff_integration_sent', $feedIdentifier);
         }
         
         if (! $asyncFeeds) {

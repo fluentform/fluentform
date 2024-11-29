@@ -115,7 +115,7 @@
 
 
                         <payment-summary
-                            @reload_payments="getEntry()"
+                            @reload_payments="reloadPayments()"
                             v-if="order_data"
                             :submission="entry"
                             :order_data="order_data"
@@ -124,7 +124,7 @@
                         <template v-if="hasPermission('fluentform_manage_entries')">
                             <entry_notes :entry_id="entry_id" :form_id="form_id"/>
 
-                            <submission_logs  :entry_id="entry_id" />
+                            <submission_logs :reload_logs="reload_logs" :entry_id="entry_id" @reset_reload_logs="resetReloadLogs" />
                             <btn-group as="div">
                                 <btn-group-item as="div">
                                     <email-resend :form_id="form_id" :entry_id="entry_id" />
@@ -348,7 +348,8 @@
                 map: null,
                 googleMap: null,
                 mapMarkers: [],
-                mapBounds: null
+                mapBounds: null,
+                reload_logs: false
             }
         },
         computed: {
@@ -544,7 +545,6 @@
                         this.resources_loading = false;
                     });
             },
-
             extractLatLngs() {
                 return Object.keys(this.original_data)
                     .filter(key => window.fluent_form_entries_vars.address_fields.includes(key))
@@ -619,13 +619,19 @@
 
                 const latLngs = this.extractLatLngs();
 
-              if (Object.keys(latLngs).length){
+                if (Object.keys(latLngs).length){
                   Object.entries(latLngs).forEach(([key, address]) => {
                       this.initializeGMap(address.latitude, address.longitude);
                   });
-              }
+                }
+            },
+            reloadPayments() {
+                this.getEntry();
+                this.reload_logs = !this.reload_logs;
+            },
+            resetReloadLogs() {
+                this.reload_logs = false;
             }
-
         },
         mounted() {
             this.getEntry();
