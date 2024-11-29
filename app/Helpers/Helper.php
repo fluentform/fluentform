@@ -203,6 +203,14 @@ class Helper
         }
         return null;
     }
+
+    public static function setSubmissionMetaAsArrayPush($submissionId, $metaKey, $value, $formId = false)
+    {
+        if ($meta = SubmissionMeta::persistArray($submissionId, $metaKey, $value, $formId)) {
+            return $meta->id;
+        }
+        return null;
+    }
     
     public static function isEntryAutoDeleteEnabled($formId)
     {

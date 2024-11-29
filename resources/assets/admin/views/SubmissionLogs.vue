@@ -100,7 +100,7 @@
 
     export default {
         name: "submission_logs",
-        props: ["entry_id"],
+        props: ["entry_id", "reload_logs"],
         components: {
             BtnGroup,
             BtnGroupItem,
@@ -125,6 +125,14 @@
             },
             log_type() {
                 this.fetchLogs();
+            },
+            reload_logs: {
+                handler: function(value) {
+                    if (value) {
+                        this.fetchLogs();
+                        this.$emit('reset_reload_logs');
+                    }
+                }
             }
         },
         computed: {
