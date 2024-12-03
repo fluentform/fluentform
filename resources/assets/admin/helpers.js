@@ -67,19 +67,15 @@ export const handleSidebarActiveLink = ($link, init = false, firstLoad = false) 
     }
 
     if (init) {
-        const $parentLink = $link.closest('li.ff_list_button_item');
-
-        if ($parentLink.length && $parentLink.hasClass('has_sub_menu')) {
+        const $parentLink = $link.closest('li.ff_list_button_item.has_sub_menu');
+        if ($parentLink.length) {
             if (firstLoad) {
                 $parentLink.addClass('active'); // toggle sub-link icon
                 $parentLink.find('.ff_list_submenu').show();
-
             } else {
                 $parentLink.find('.ff_list_submenu').slideToggle();
                 $parentLink.addClass('is-submenu active'); // toggle sub-link icon
             }
-
-
         }
     }
 

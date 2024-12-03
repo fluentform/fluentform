@@ -98,31 +98,27 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             </ul>
                         </li>
                         <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
-                            <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">
-                                <a
-                                        class="ff_list_button_link ff-payment-settings-root"
-                                        data-hash="payment_settings"
-                                        href="#">
-                                    <?php echo __('Payment', 'fluentform'); ?>
+                            <li class="ff_list_button_item has_sub_menu">
+                                <a class="ff_list_button_link" href="#">
+                                    <?php echo esc_html(ArrayHelper::get($components, 'payment_settings.title', '')); ?>
                                 </a>
                                 <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
                                     <ul class="ff_list_submenu">
                                         <?php
                                         $subMenus = ArrayHelper::get($components, 'payment_settings.sub_menu');
                                         foreach ($subMenus as $subMenu):
-                                            $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
-                                            $baseUrl .= ArrayHelper::get($subMenu, 'path');
                                             ?>
-                                            <li>
-                                                <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($subMenu,
-                                                    'path')); ?>"
-                                                data-component="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
-                                                    '')); ?>"
-                                                data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
-                                                    '')); ?>"
-                                                href="<?php echo esc_url($baseUrl); ?>"
+                                            <li class="<?php echo esc_attr(ArrayHelper::get($subMenu, 'class', '')); ?> ff_list_button_item" >
+                                                <a
+                                                        data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'hash', 'custom_component')) ?>"
+                                                        data-settings_key="custom_component"
+                                                        data-component="custom_component"
+                                                        data-component_name="<?php echo esc_attr(ArrayHelper::get($subMenu, 'component', '')); ?>"
+                                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                                            'hash' => esc_attr(ArrayHelper::get($subMenu, 'hash', 'custom_component')),
+                                                        ])); ?>"
                                                 >
-                                                    <?php echo esc_attr($subMenu['name']); ?>
+                                                    <?php echo esc_attr(ArrayHelper::get($subMenu, 'title', '')); ?>
                                                 </a>
                                             </li>
                                         <?php endforeach; ?>
@@ -334,7 +330,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                     'fluentform/after_global_settings_wrapper',
                     'Use fluentform/after_global_settings_wrapper instead of fluentform_after_global_settings_wrapper.'
                 );
-                do_action('fluentform/after_global_settings_wrapper');
+                do_action('fluentform/after_global_settings_wrapperfluentform/after_global_settings_wrapper');
             ?>
         </div>
     </div>

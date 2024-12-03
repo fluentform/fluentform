@@ -48,7 +48,12 @@ import {
     Popover,
     Pagination,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    Tabs,
+    TabPane,
+    DatePicker,
+    RadioButton,
+    Popconfirm
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
 import {_$t, handleSidebarActiveLink} from '@/admin/helpers';
@@ -56,6 +61,11 @@ import CustomComponent from '@/admin/components/CustomComponent';
 
 locale.use(lang);
 Vue.use(Button);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(DatePicker);
+Vue.use(RadioButton);
+Vue.use(Popconfirm);
 Vue.use(Form);
 Vue.use(Row);
 Vue.use(Col);
@@ -99,7 +109,10 @@ Vue.mixin({
             return this.$t(singular, count);
         },
 
-        ...notifier
+        ...notifier,
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
     }
 })
 
@@ -138,15 +151,8 @@ new Vue({
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component_name = $el.data('component_name') || '';
                 this.component = component;
-                // set route hash
                 location.hash = hash;
-            } else if ($originalEl &&
-                $originalEl.hasClass('ff-payment-settings-root')
-            ) {
-                location.href = $el.attr('href');
-                return 'redirected';
             }
-            return '';
         },
         maybeGetFirstSubLink($el) {
             if (
@@ -171,9 +177,7 @@ new Vue({
         jQuery('.ff_settings_list li a').on('click', function (e) {
             $el = jQuery(this);
             if($el.attr('href') === '#') e.preventDefault();
-            if (that.setRoute(that.maybeGetFirstSubLink($el), $el) === 'redirected') {
-                return;
-            }
+            that.setRoute(that.maybeGetFirstSubLink($el), $el)
             handleSidebarActiveLink($el.parent())
         });
     }

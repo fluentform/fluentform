@@ -1012,9 +1012,6 @@ label.el-radio, label.el-checkbox {
   .el-form-item,
   .el-form-item-wrap {
     margin-bottom: 24px;
-    &:last-child{
-        margin-bottom: 0;
-    }
   }
   .ff_card:not(:last-child) {
     margin-bottom: 32px;
