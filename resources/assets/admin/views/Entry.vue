@@ -3,7 +3,7 @@
         <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
                 <h3>
-                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Details')}} #{{entry.serial_number}}
+                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Serial Number')}} #{{entry.serial_number}}
                 </h3>
             </section-head-content>
             <section-head-content>
@@ -149,7 +149,7 @@
                         <card-body>
                             <ul class="ff_submission_info_list ff_list_border_bottom">
                                 <li>
-                                    <div class="lead-title">{{$t('Entity ID')}}:</div>
+                                    <div class="lead-title">{{$t('Submission ID')}}:</div>
                                     <div class="lead-text">#{{ entry.id }}</div>
                                 </li>
                                 <li>
@@ -232,6 +232,17 @@
                             <div v-html="widget.content"></div>
                         </card-body>
                     </card>
+                    <card v-show="mapMarkers.length != 0">
+                        <card-head>
+                            <div class="entry_info_box_title">
+                                {{$t('Map')}}
+                            </div>
+                        </card-head>
+                        <card-body>
+                                <div id="map" style="height: 300px;"></div>
+                        </card-body>
+                    </card>
+
                 </el-col>
             </el-row>
         </el-skeleton>
@@ -333,6 +344,11 @@
                 entry_changing_next : false,
                 entry_changing_prev : false,
                 resources_loading : false,
+                location: null,
+                map: null,
+                googleMap: null,
+                mapMarkers: [],
+                mapBounds: null
             }
         },
         computed: {
@@ -518,6 +534,8 @@
                         this.nextId = response.next && response.next.id;
                         this.prevId = response.previous && response.previous.id;
 
+                        this.processLatLngs();
+
                     })
                     .catch((error) => {
                         this.$fail(error.message);
@@ -526,6 +544,88 @@
                         this.resources_loading = false;
                     });
             },
+
+            extractLatLngs() {
+                return Object.keys(this.original_data)
+                    .filter(key => window.fluent_form_entries_vars.address_fields.includes(key))
+                    .reduce((result, key) => {
+                        const addressData = this.original_data[key];
+                        const latitude = parseFloat(addressData?.latitude);
+                        const longitude = parseFloat(addressData?.longitude);
+
+                        if (!isNaN(latitude) && !isNaN(longitude)) {
+                            result[key] = { latitude, longitude };
+                        }
+
+                        return result;
+                    }, {});
+            },
+
+            initializeGMap(lat, lng) {
+                if (isNaN(lat) || isNaN(lng)) {
+                    return null;
+                }
+
+                const mapElement = document.getElementById("map");
+                if (!mapElement) {
+                    return null;
+                }
+
+                if (!this.googleMap) {
+                    this.googleMap = new google.maps.Map(mapElement, {
+                        center: { lat, lng },
+                        zoom: 10, // Set a fixed, moderate zoom level
+                        gestureHandling: 'cooperative'
+                    });
+                    this.mapBounds = new google.maps.LatLngBounds();
+                }
+
+                const isDuplicateMarker = this.mapMarkers.some(
+                    marker => marker.getPosition().lat() === lat &&
+                        marker.getPosition().lng() === lng
+                );
+
+                if (!isDuplicateMarker) {
+                    const marker = new google.maps.Marker({
+                        position: { lat, lng },
+                        map: this.googleMap
+
+                    });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<div>Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>`
+                    });
+
+                    marker.addListener('click', () => {
+                        infoWindow.open(this.googleMap, marker);
+                    });
+
+                    this.mapMarkers.push(marker);
+                    if (this.mapMarkers.length > 1) {
+                        this.mapBounds.extend(new google.maps.LatLng(lat, lng));
+
+                        const center = this.mapBounds.getCenter();
+                        this.googleMap.setCenter(center);
+                    }
+                }
+
+                return this.googleMap;
+            },
+
+            processLatLngs() {
+                this.googleMap = null;
+                this.mapMarkers = [];
+                this.mapBounds = null;
+
+                const latLngs = this.extractLatLngs();
+
+              if (Object.keys(latLngs).length){
+                  Object.entries(latLngs).forEach(([key, address]) => {
+                      this.initializeGMap(address.latitude, address.longitude);
+                  });
+              }
+            }
+
         },
         mounted() {
             this.getEntry();
