@@ -1058,7 +1058,6 @@ class Menu
         );
         
         $components = apply_filters('fluentform/global_settings_components', $components);
-    
 
         $components['reCAPTCHA'] = [
             'hash'  => 're_captcha',

@@ -314,14 +314,6 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 
             <div class="ff_settings_container ff_layout_section_container" id="ff_settings_container">
                 <?php
-                do_action_deprecated(
-                    'fluentform_global_settings_component_' . $currentComponent,
-                    [
-                    ],
-                    FLUENTFORM_FRAMEWORK_UPGRADE,
-                    'fluentform/global_settings_component_' . $currentComponent,
-                    'Use fluentform/global_settings_component_' . $currentComponent . ' instead of fluentform_global_settings_component_' . $currentComponent
-                );
                     do_action('fluentform/global_settings_component_' . $currentComponent);
                 ?>
             </div>

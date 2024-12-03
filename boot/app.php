@@ -74,6 +74,7 @@ return function ($file) {
     
     (new FluentConversational)->boot();
     (new FormsMigrator())->boot();
+    (new FluentForm\App\Modules\Payments\PaymentHandler())->init();
     
     /* Plugin Meta Links */
     
