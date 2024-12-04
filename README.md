@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.2.6
+Stable tag: 5.2.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -439,6 +439,17 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.7 (Date: December 06, 2024) =
+- Improve step form accessibility
+- Fixed WordFence vulnerability CVE-2024-10646
+- Fixed hidden field with empty value conditional logic in Conversational Forms
+- Fixed post.permalink editor shortcode link in RTL
+- Fixed ff-read-only class with accessibility
+
+= 5.2.6 (Date: November 19, 2024) =
+- Fixed radio field image issue
+- Fixed conversational dynamic shortcode issue
 
 = 5.2.5 (Date: November 14, 2024)
 - Adds form editor undo/redo functionality (Beta)
