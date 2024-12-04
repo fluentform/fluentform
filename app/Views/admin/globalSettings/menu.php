@@ -97,32 +97,26 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                 </li>
                             </ul>
                         </li>
+
                         <?php if (ArrayHelper::exists($components, 'payment_settings')) : ?>
-                            <li class="<?php echo esc_attr(Helper::getHtmlElementClass('payment_settings', $currentComponent)); ?> ff_list_button_item has_sub_menu">
-                                <a
-                                        class="ff_list_button_link ff-payment-settings-root"
-                                        data-hash="payment_settings"
-                                        href="#">
-                                    <?php echo __('Payment', 'fluentform'); ?>
+                            <li class="ff_list_button_item has_sub_menu">
+                                <a class="ff_list_button_link" href="#">
+                                    <?php echo esc_html(ArrayHelper::get($components, 'payment_settings.title', '')); ?>
                                 </a>
                                 <?php if (ArrayHelper::get($components, 'payment_settings.sub_menu')) : ?>
                                     <ul class="ff_list_submenu">
-                                        <?php
-                                        $subMenus = ArrayHelper::get($components, 'payment_settings.sub_menu');
-                                        foreach ($subMenus as $subMenu):
-                                            $baseUrl = Helper::makeMenuUrl('fluent_forms_settings', $subMenu);
-                                            $baseUrl .= ArrayHelper::get($subMenu, 'path');
-                                            ?>
-                                            <li>
-                                                <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($subMenu,
-                                                    'path')); ?>"
-                                                data-component="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
-                                                    '')); ?>"
-                                                data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'path',
-                                                    '')); ?>"
-                                                href="<?php echo esc_url($baseUrl); ?>"
+                                        <?php $subMenus = ArrayHelper::get($components, 'payment_settings.sub_menu');
+                                        foreach ($subMenus as $subMenu): ?>
+                                            <li class="<?php echo esc_attr(ArrayHelper::get($subMenu, 'class','')); ?> ff_list_button_item">
+                                                <a
+                                                        data-settings_key="payment_component"
+                                                        data-component="payment_component"
+                                                        data-hash="<?php echo esc_attr(ArrayHelper::get($subMenu, 'hash')) ?>"
+                                                        href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                                            'hash' => esc_attr(ArrayHelper::get($subMenu, 'hash')),
+                                                        ])); ?>"
                                                 >
-                                                    <?php echo esc_attr($subMenu['name']); ?>
+                                                    <?php echo esc_attr(ArrayHelper::get($subMenu, 'title', '')); ?>
                                                 </a>
                                             </li>
                                         <?php endforeach; ?>

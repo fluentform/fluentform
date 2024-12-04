@@ -33,9 +33,9 @@ class PaymentHandler
     {
         
         add_filter('fluentform/global_settings_components', [$this, 'pushGlobalSettings'], 1, 1);
-        
-        add_action('fluentform/global_settings_component_payment_settings', [$this, 'renderPaymentSettings']);
-        
+
+        add_filter('fluentform/global_settings_component_settings_data', [$this, 'getGlobalSettingsPaymentVars']);
+
         add_action('wp_ajax_fluentform_handle_payment_ajax_endpoint', [$this, 'handleAjaxEndpoints']);
         
         if (!$this->isEnabled()) {
@@ -273,40 +273,26 @@ class PaymentHandler
     
     public function pushGlobalSettings($components)
     {
-        $components['payment_settings'] = [
-            'hash'  => '',
-            'title' => __('Payment Settings', 'fluentformpro'),
-            'query' => [
-                'component' => 'payment_settings'
+        $subMenuItems = [
+            [
+                'title'     => 'Settings',
+                'hash'      => 'payments/general_settings',
             ],
-            'sub_menu'=>[
-                [
-                    'name' => __('Settings', 'fluentformpro'),
-                    'path' => '#/',
-                    'query' => [
-                        'component' => 'payment_settings/'
-                    ]
-                ],
-                [
-                    'name' => __('Payment Methods', 'fluentformpro'),
-                    'path' => '#/payment_methods',
-                    'query' => [
-                        'component' => 'payment_settings/'
-                    ]
-                ],
-                [
-                    'name' => __('Coupons', 'fluentformpro'),
-                    'path' => '#/coupons',
-                    'query' => [
-                        'component' => 'payment_settings/'
-                    ]
-                ],
+            [
+                'title'     => 'Payment Methods',
+                'hash'      => 'payments/payment_methods',
             ]
+        ];
+        $subMenuItems = apply_filters('fluentform/global_settings_payment_sub_menu_items', $subMenuItems);
+
+        $components['payment_settings'] = [
+            'title' => __('Payment Settings', 'fluentformpro'),
+            'sub_menu'=> $subMenuItems
         ];
         return $components;
     }
     
-    public function renderPaymentSettings()
+    public function getGlobalSettingsPaymentVars($globalSettingVars)
     {
         
         if (isset($_GET['ff_stripe_connect'])) {
@@ -342,8 +328,8 @@ class PaymentHandler
             'fluentform/payment_methods_global_settings',
             'Use fluentform/payment_methods_global_settings instead of fluentformpro_payment_methods_global_settings.'
         );
-        
-        $data = [
+
+        $paymentVars = [
             'is_setup'                  => $isSettingsAvailable,
             'general'                   => $paymentSettings,
             'payment_methods'           => apply_filters('fluentform/available_payment_methods', $paymentMethods),
@@ -359,15 +345,8 @@ class PaymentHandler
                 'payment_method'                => 'paypal'
             ], site_url('index.php'))
         ];
-        
-        wp_enqueue_script('ff-payment-settings', FLUENTFORMPRO_DIR_URL . 'public/js/payment-settings.js', ['jquery'], FLUENTFORMPRO_VERSION, true);
-        wp_enqueue_style('ff-payment-settings', FLUENTFORMPRO_DIR_URL . 'public/css/payment_settings.css', [], FLUENTFORMPRO_VERSION);
-        
-        wp_enqueue_media();
-        
-        wp_localize_script('ff-payment-settings', 'ff_payment_settings', $data);
-        
-        echo '<div id="ff-payment-settings"></div>';
+        $globalSettingVars['payment_vars'] = apply_filters('fluentform/global_settings_component_payment_vars', $paymentVars);
+        return $globalSettingVars;
     }
     
     public function handleAjaxEndpoints()

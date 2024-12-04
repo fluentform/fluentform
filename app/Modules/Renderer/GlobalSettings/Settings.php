@@ -46,11 +46,13 @@ class Settings
     {
         wp_enqueue_script('fluentform-global-settings-js');
 
-        wp_localize_script('fluentform-global-settings-js', 'FluentFormApp', [
+        $globalSettingAppData = [
             'plugin' => $this->app->config->get('app.slug'),
             'akismet_activated' => AkismetHandler::isPluginEnabled(),
             'has_pro' =>  defined('FLUENTFORMPRO'),
             'form_settings_str' => TranslationString::getGlobalSettingsI18n()
-        ]);
+        ];
+        $globalSettingAppData = apply_filters('fluentform/global_settings_component_settings_data', $globalSettingAppData);
+        wp_localize_script('fluentform-global-settings-js', 'FluentFormApp', $globalSettingAppData);
     }
 }
