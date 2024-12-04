@@ -773,7 +773,7 @@ jQuery(document).ready(function () {
                 };
 
                 var initInlineErrorItems = function () {
-                    $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select,textarea', function () {
+                    $theForm.find('.ff-el-group,.ff_repeater_table, .ff_repeater_container').on('change', 'input,select,textarea', function () {
                         if (window.ff_disable_error_clear) {
                             return;
                         }

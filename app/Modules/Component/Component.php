@@ -1211,6 +1211,7 @@ class Component
         $advancedFields = [
             'step_start',
             'repeater_field',
+            'repeater_container',
             'ratings',
             'form_step',
             'input_file',
@@ -1218,7 +1219,6 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
-
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }

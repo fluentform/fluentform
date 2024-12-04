@@ -520,6 +520,7 @@
             },
             renameFormVisibility: false,
             editorInserterInContainer: false,
+            editorInserterInContainerRepeater: false,
             instructionImage: FluentFormApp.plugin_public_url + 'img/help.svg',
             has_payment_features: FluentFormApp.has_payment_features,
             introVisible: false,
@@ -528,6 +529,20 @@
             canUndo: false,
             canRedo: false,
             isPerformingUndoRedo: false,
+            containerSupportedFields : [
+                { key: 'input_text', label: 'Text Field' },
+                { key: 'input_email', label: 'Email Field' },
+                { key: 'select', label: 'Select Field' },
+                { key: 'input_mask', label: 'Mask Field' },
+                { key: 'custom_html', label: 'Custom HTML' },
+                { key: 'textarea', label: 'Text Area' },
+                { key: 'input_number', label: 'Number' },
+                { key: 'input_url', label: 'Url' },
+                { key: 'select_country', label: 'Country' },
+                { key: 'section_break', label: 'Section' },
+                { key: 'input_password', label: 'Password' },
+            ]
+
         }
     },
 
@@ -805,13 +820,26 @@
             if (type != 'existingElement') {
                 this.makeUniqueNameAttr(this.form.dropzone, item);
             }
-            if (item.element == 'container' && this.form.dropzone != list) {
+            if (item.element == 'repeater_container' && this.form.dropzone != list) {
                 this.$message({
                     message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
                 return false;
             }
+
+
+            const isSupportedField = this.containerSupportedFields.some(field => field.key === item.element);
+
+            if (!isSupportedField && this.form.dropzone != list) {
+                const supportedFieldsList = this.containerSupportedFields.map(field => field.label).join(', ');
+
+                this.$message({
+                    message: this.$t(`This field is not supported in the container. Supported fields are: ${supportedFieldsList}`),                    type: 'warning',
+                });
+                return false;
+            }
+
 
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
             if (this.isAutoloadCaptchaEnabled && captchas.includes(item.element)) {
@@ -852,13 +880,23 @@
                 return this.showWhyDisabled(item);
             }
 
-            if (this.editorInserterInContainer && freshCopy.element == 'container') {
+            if (this.editorInserterInContainer && (freshCopy.element === 'container' || freshCopy.element === 'repeater_container')) {
                 this.$message({
                     message: this.$t('You can not insert a container into another.'),
                     type: 'warning',
                 });
 
                 return;
+            }
+
+            const isSupportedField = this.containerSupportedFields.some(field => field.key === item.element);
+
+            if (this.editorInserterInContainerRepeater && !isSupportedField) {
+                const supportedFieldsList = this.containerSupportedFields.map(field => field.label).join(', ');
+                this.$message({
+                    message: this.$t(`This field is not supported in the container repeater. Supported fields are: ${supportedFieldsList}`),                    type: 'warning',
+                });
+                return false;
             }
 
             const captchas = ['recaptcha', 'hcaptcha', 'turnstile'];
@@ -1101,6 +1139,7 @@
             this.insertNext.wrapper = null;
             this.editorInserterVisible = false;
             this.editorInserterInContainer = false;
+            this.editorInserterInContainerRepeater = false;
             jQuery('.js-editor-item').removeClass('is-editor-inserter');
         },
 
@@ -1195,6 +1234,9 @@
          */
         FluentFormEditorEvents.$on('editor-inserter-in-container', _ => {
             this.editorInserterInContainer = true;
+        });
+        FluentFormEditorEvents.$on('editor-inserter-in-container-repeater', _ => {
+            this.editorInserterInContainerRepeater = true;
         });
     },
 

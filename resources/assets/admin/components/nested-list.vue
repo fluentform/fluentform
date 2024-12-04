@@ -13,7 +13,7 @@
 
             <div @click.right.prevent.stop="showContextMenu(index, $event)" @mouseenter='maybeHideContainerActions' @mouseleave="maybeShowContainerActions" @click="editSelected(index, item)" class="item-actions-wrapper"
                  :class="[
-                     item.element == 'container' ? 'hover-action-top-right' : 'hover-action-middle',
+                     item.element == 'container' || item.element == 'repeater_container' ? 'hover-action-top-right' : 'hover-action-middle',
                      { 'context-menu-active': contextMenuIndex[index] }
                  ]">
                 <div :style="contextMenuIndex[index] ? contextMenuStyle[index] : ''" class="item-actions " :class="item.element == 'container' ? 'container-actions' : 'field-actions'">
@@ -56,7 +56,7 @@
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
 
-            <div v-if="item.element == 'container'" class="item-container">
+            <div v-if="item.element == 'container' ||item.element == 'repeater_container' " class="item-container" :class="[ { 'repeater-item-container': item.element === 'repeater_container' }]">
                 <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
                 <vddl-nodrag style="width: 100%">
                     <splitpanes
@@ -92,6 +92,12 @@
                             </pane>
                         </splitpanes>
                 </vddl-nodrag>
+                <div v-if="item.element == 'repeater_container'" class="repeat-field-actions">
+                        <action-btn>
+                            <action-btn-add size="mini"></action-btn-add>
+                            <action-btn-remove size="mini"></action-btn-remove>
+                        </action-btn>
+                </div>
 
             </div>
 

@@ -866,7 +866,11 @@ mark {
 .repeat-field-actions {
   margin-top: 26px;
 }
-
+.repeater-item-container{
+  .repeat-field-actions {
+    margin-top: 52px;
+  }
+}
 .section-break {
   &__title {
     margin-top: 0;
