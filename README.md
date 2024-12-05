@@ -440,8 +440,8 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.2.7 (Date: December 06, 2024) =
-- Improve step form accessibility
+= 5.2.7 (Date: December 05, 2024) =
+- Adds all forms export button
 - Fixed WordFence vulnerability CVE-2024-10646
 - Fixed hidden field with empty value conditional logic in Conversational Forms
 - Fixed post.permalink editor shortcode link in RTL
