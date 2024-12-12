@@ -3,6 +3,7 @@
 namespace FluentForm\App\Hooks\Handlers;
 
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -99,6 +100,14 @@ class GlobalNotificationHandler
         $scheduler = $this->app['fluentFormAsyncRequest'];
         
         foreach ($enabledFeeds as $feed) {
+            $sentIntegrations = Helper::getSubmissionMeta($insertId, '_ff_integration_sent');
+            if ($sentIntegrations) {
+                $sentIntegrations = json_decode($sentIntegrations, true);
+            }
+            $feedIdentifier = ArrayHelper::get($feed, 'settings.name') . '_' . ArrayHelper::get($feed, 'id');
+            if (is_array($sentIntegrations) && in_array($feedIdentifier, $sentIntegrations)) {
+                return;
+            }
             // We will decide if this feed will run on async or sync
             $integrationKey = ArrayHelper::get($feedKeys, $feed['meta_key']);
 
