@@ -105,7 +105,7 @@ class GlobalNotificationHandler
                 $sentIntegrations = json_decode($sentIntegrations, true);
             }
             $feedIdentifier = ArrayHelper::get($feed, 'settings.name') . '_' . ArrayHelper::get($feed, 'id');
-            if (in_array($feedIdentifier, $sentIntegrations)) {
+            if (is_array($sentIntegrations) && in_array($feedIdentifier, $sentIntegrations)) {
                 return;
             }
             // We will decide if this feed will run on async or sync
