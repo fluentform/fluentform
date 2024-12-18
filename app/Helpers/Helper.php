@@ -1034,13 +1034,19 @@ class Helper
                     break;
                 case 'tabular_grid':
                     $rows = array_keys(ArrayHelper::get($rawField, 'settings.grid_rows', []));
+                    $rows = array_map('trim', $rows);
+    
                     $submittedRows = array_keys(ArrayHelper::get($formData, $fieldName, []));
+                    $submittedRows = array_map('trim', $submittedRows);
+    
                     $rowDiff = array_diff($submittedRows, $rows);
+    
                     $isValid = empty($rowDiff);
                     if ($isValid) {
                         $columns = array_keys(ArrayHelper::get($rawField, 'settings.grid_columns', []));
                         $columns = array_map('trim', $columns);
                         $submittedCols = ArrayHelper::flatten(ArrayHelper::get($formData, $fieldName, []));
+                        $submittedCols = array_map('trim', $submittedCols);
                         $colDiff = array_diff($submittedCols, $columns);
                         $isValid = empty($colDiff);
                     }
@@ -1163,5 +1169,19 @@ class Helper
             }
         }
         return [];
+    }
+    
+    public static function sanitizeArrayKeysAndValues($values)
+    {
+        if (is_array($values)) {
+            $sanitized = [];
+            foreach ($values as $key => $value) {
+                $trimmedKey = sanitize_text_field(trim($key));
+                $trimmedValue = sanitize_text_field(trim($value));
+                $sanitized[$trimmedKey] = $trimmedValue;
+            }
+            return $sanitized;
+        }
+        return sanitize_text_field(trim($values));
     }
 }

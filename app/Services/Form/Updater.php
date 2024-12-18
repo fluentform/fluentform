@@ -132,7 +132,7 @@ class Updater
         ];
 
         $attributesKeys = array_keys($attributesMap);
-
+    
         $settingsMap = [
             'container_class'           => 'sanitize_text_field',
             'label'                     => 'fluentform_sanitize_html',
@@ -146,6 +146,8 @@ class Updater
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',
             'description'               => 'fluentform_sanitize_html',
+            'grid_columns'              => [Helper::class, 'sanitizeArrayKeysAndValues'],
+            'grid_rows'                 => [Helper::class, 'sanitizeArrayKeysAndValues'],
         ];
       
 
@@ -157,6 +159,7 @@ class Updater
             'alt_text' => 'sanitize_text_field',
         ];
         $stylePrefKeys = array_keys($stylePrefMap);
+        
         foreach ($fields as $fieldIndex => &$field) {
             $element = Arr::get($field, 'element');
             
@@ -298,5 +301,4 @@ class Updater
         }
         return '';
     }
-    
 }
