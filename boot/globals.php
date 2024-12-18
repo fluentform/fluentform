@@ -93,13 +93,13 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
             $input = sanitize_text_field($input);
         }
     } elseif (is_array($input)) {
-        $sanitized = [];
-        foreach ($input as $key => $value) {
-            $sanitizedKey = sanitize_text_field($key);
-            $newAttribute = $attribute ? $attribute . '[' . $sanitizedKey . ']' : $sanitizedKey;
-            $sanitized[$sanitizedKey] = fluentFormSanitizer($value, $newAttribute, $fields);
+        foreach ($input as $key => &$value) {
+            $attribute = $attribute ? $attribute . '[' . $key . ']' : $key;
+
+            $value = fluentFormSanitizer($value, $attribute, $fields);
+
+            $attribute = null;
         }
-        return $sanitized;
     }
 
     return $input;
