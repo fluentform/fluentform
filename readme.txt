@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.2.7
+Stable tag: 5.2.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -426,10 +426,14 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 5.2.8 (Date: December 18, 2024) =
+- Fixed hidden field with empty value conditional logic issue in Conversational Forms
+- Fixed range slider validation issue in Conversational Forms
+- Improved & Fixed space issue in Checkable Grid
+
 = 5.2.7 (Date: December 05, 2024) =
 - Adds all forms export button
 - Fixed WordFence vulnerability CVE-2024-10646
-- Fixed hidden field with empty value conditional logic in Conversational Forms
 - Fixed post.permalink editor shortcode link in RTL
 - Fixed ff-read-only class with accessibility
 
