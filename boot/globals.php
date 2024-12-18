@@ -94,6 +94,7 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
         }
     } elseif (is_array($input)) {
         foreach ($input as $key => &$value) {
+            $key = fluentFormSanitizer($key);
             $attribute = $attribute ? $attribute . '[' . $key . ']' : $key;
 
             $value = fluentFormSanitizer($value, $attribute, $fields);
