@@ -39,6 +39,10 @@
 
 .nav-tab-list {
     display: flex;
+    flex-wrap: wrap;
+    position: sticky;
+    z-index: 10;
+    top: 0;
     li {
         margin-bottom: 0;
         flex: 1;

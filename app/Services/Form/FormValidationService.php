@@ -341,13 +341,26 @@ class FormValidationService
         if (!Arr::get($settings, 'enabled')) {
             return;
         }
-        $ipInfo = $this->getIpInfo();
-        $country = Arr::get($ipInfo, 'country');
-    
-        $this->checkIpRestriction($settings);
-    
-        $this->checkCountryRestriction($settings, $country);
-    
+
+        $ip = $this->app->request->getIp();
+        if (is_array($ip)) {
+            $ip = Arr::get($ip, '0');
+        }
+        $this->checkIpRestriction($settings, $ip);
+
+        $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
+        if ($ipInfo = $this->getIpInfo()) {
+            $country = Arr::get($ipInfo, 'country');
+            if ($isCountryRestrictionEnabled) {
+                $this->checkCountryRestriction($settings, $country);
+            }
+        } else {
+            if ($isCountryRestrictionEnabled) {
+                $country = $this->getIpBasedOnCountry($ip);
+                $this->checkCountryRestriction($settings, $country);
+            }
+        }
+
         $this->checkKeyWordRestriction($settings);
     }
     
@@ -597,6 +610,31 @@ class FormValidationService
             self::throwValidationException($message);
         }
     }
+
+    /**
+     * Get IP and Country from geoplugin
+     *
+     * @throws ValidationException
+     */
+    private function getIpBasedOnCountry($ip) {
+        $request = wp_remote_get("http://www.geoplugin.net/php.gp?ip={$ip}");
+        $code = wp_remote_retrieve_response_code($request);
+
+        $message = __('Sorry! There is an error occurred in getting Country using geoplugin.net. Please check form settings and try again.', 'fluentform');
+
+        if ($code === 200) {
+            $body = wp_remote_retrieve_body($request);
+            $body = unserialize($body);
+
+            if ($country = Arr::get($body,'geoplugin_countryCode')) {
+                return $country;
+            } else {
+                self::throwValidationException($message);
+            }
+        } else {
+            self::throwValidationException($message);
+        }
+    }
     
     /**
      * @param $value
@@ -620,11 +658,13 @@ class FormValidationService
 
         return false;
     }
-    
-    
-    private function checkIpRestriction($settings)
+
+
+    /**
+     * @throws ValidationException
+     */
+    private function checkIpRestriction($settings, $ip)
     {
-        $ip = $this->app->request->getIp();
         if (Arr::get($settings, 'fields.ip.status') && $ip) {
             $providedIp = array_map('trim', explode(',', Arr::get($settings, 'fields.ip.values')));
 
@@ -640,10 +680,13 @@ class FormValidationService
             }
         }
     }
-    
+
+    /**
+     * @throws ValidationException
+     */
     private function checkCountryRestriction($settings, $country)
     {
-        if (Arr::get($settings, 'fields.country.status') && $country) {
+        if ($country) {
             $providedCountry = Arr::get($settings, 'fields.country.values');
 
             $isFailed = Arr::get($settings, 'fields.country.validation_type') === 'fail_on_condition_met';
@@ -652,7 +695,7 @@ class FormValidationService
             $allowSubmissionIfNotExists = !$isFailed && !in_array($country, $providedCountry);
 
             if ($failedSubmissionIfExists || $allowSubmissionIfNotExists) {
-                $defaultMessage = __('Sorry! You can\'t submit a form from the country you are residing.', 'fluentform');
+                $defaultMessage = __('Sorry! You can\'t submit this form from the country you are residing.', 'fluentform');
                 $message = Arr::get($settings, 'fields.country.message', $defaultMessage);
                 self::throwValidationException($message);
             }

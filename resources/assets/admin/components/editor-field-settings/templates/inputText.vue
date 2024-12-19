@@ -14,15 +14,22 @@ export default {
     components: {
         elLabel
     },
-    watch: {
-        model() {
-            this.$emit('input', this.model);
+    computed: {
+        model: {
+            get() {
+                return this.value;
+            },
+            set(newValue) {
+                const sanitized = this.customSanitize(newValue);
+                this.$emit('input', sanitized);
+            }
         }
     },
-    data() {
-        return {
-            model: this.value
-        }
+    methods: {
+        customSanitize(input) {
+            // Remove potential event handlers
+            return input.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^"'\s>]+)/gi, '');
+        },
     }
 }
 </script>

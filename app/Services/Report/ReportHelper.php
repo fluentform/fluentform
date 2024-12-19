@@ -11,7 +11,7 @@ use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class ReportHelper
 {
-    public static function generateReport($form, $statuses = ['read', 'unread'])
+    public static function generateReport($form, $statuses = ['read', 'unread', 'unapproved', 'approved', 'declined', 'unconfirmed', 'confirmed'])
     {
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'element', 'options']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
@@ -28,13 +28,15 @@ class ReportHelper
         $formReportableInputs = array_intersect($reportableInputs, array_values($elements));
         $reportableInputs = Helper::getSubFieldReportableInputs();
         $formSubFieldInputs = array_intersect($reportableInputs, array_values($elements));
+
+    
         if (!$formReportableInputs && !$formSubFieldInputs) {
             return [
                 'report_items'  => (object)[],
                 'total_entries' => 0,
             ];
         }
-
+    
         $inputs = [];
         $subfieldInputs = [];
         foreach ($elements as $elementKey => $element) {
@@ -45,9 +47,9 @@ class ReportHelper
                 $subfieldInputs[$elementKey] = $element;
             }
         }
-
+    
         $reports = static::getInputReport($form->id, array_keys($inputs), $statuses);
-
+    
         $subFieldReports = static::getSubFieldInputReport($form->id, array_keys($subfieldInputs), $statuses);
         $reports = array_merge($reports, $subFieldReports);
         foreach ($reports as $reportKey => $report) {

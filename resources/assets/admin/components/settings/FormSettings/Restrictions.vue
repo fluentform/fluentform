@@ -260,7 +260,7 @@
                             {{ $t('IP Based Restriction') }}
                         </el-checkbox>
                         <div v-if="form.restrictForm.fields.ip.status && form.restrictForm.enabled" class="conditional-items mb-6">
-                            <div v-if="isIpInfoActive">
+                            <div>
                                 <el-form-item class="ff-form-item">
                                     <template slot="label">
                                         {{ $t('Add IP Address') }}
@@ -304,9 +304,6 @@
                                     </el-radio-group>
                                 </el-form-item>
                             </div>
-                            <div v-else>
-                                <p class="ff_tips_warning">{{ $t('Please setup your geolocation IP token from global settings.') }}</p>
-                            </div>
                         </div>
                     </div>
 
@@ -315,7 +312,7 @@
                             {{ $t('Country Based Restriction') }}
                         </el-checkbox>
                         <div v-if="form.restrictForm.fields.country.status && form.restrictForm.enabled" class="conditional-items mb-6">
-                            <div v-if="isIpInfoActive">
+                            <div>
                                 <el-form-item class="ff-form-item">
                                     <template slot="label">
                                         {{ $t('Select Country') }}
@@ -323,7 +320,7 @@
                                         <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                             <div slot="content">
                                                 <p>
-                                                    {{ $t('Select country to set restriction.') }}
+                                                    {{ $t('Select country to set restriction. If you give Ipinfo.io token in global settings, then country will get from Ipinfo.io, otherwise it will use geolocation.net') }}
                                                 </p>
                                             </div>
 
@@ -364,9 +361,6 @@
                                         <el-radio label="success_on_condition_met">{{ $t('Allow the submission if match') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
-                            </div>
-                            <div v-else>
-                                <p class="ff_tips_warning">{{ $t('Please setup your geolocation IP token from global settings.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -509,9 +503,6 @@
             },
             getCountries() {
                 return window.FluentFormApp.countries;
-            },
-            isIpInfoActive() {
-                return !!window.FluentFormApp.getIpInfo?.length;
             },
             hasFluentformPro() {
                 return !!window.FluentFormApp.hasPro;

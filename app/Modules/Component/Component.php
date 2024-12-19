@@ -4,10 +4,13 @@ namespace FluentForm\App\Modules\Component;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\App\Services\FormBuilder\Notifications\EmailNotificationActions;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+
 
 class Component
 {
@@ -673,10 +676,11 @@ class Component
                 'itemSelectText' => __('Press to select', 'fluentform'),
                 'maxItemText'    => __('Only %%maxItemCount%% options can be added', 'fluentform'),
             ],
-            'input_mask_vars' => [
+            'input_mask_vars'       => [
                 'clearIfNotMatch' => false,
             ],
-       ];
+            'nonce'                 => wp_create_nonce()
+        ];
     
         $data = apply_filters_deprecated(
             'fluentform_global_form_vars',
@@ -761,7 +765,7 @@ class Component
         $disableAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',
@@ -1380,6 +1384,42 @@ class Component
                 return esc_html($value);
             }
             return '';
+        });
+
+        $this->app->addShortcode('ff_entry',function($atts){
+            ob_start();
+    
+            $atts = shortcode_atts([
+                'form_id' => '',
+                'serial_number' => '',
+                'field' => '',
+                'is_html' => true,
+            ], $atts);
+    
+            if (empty($atts['form_id'])  || empty($atts['field'])) {
+                return '';
+            }
+    
+    
+            $formId = (int) $atts['form_id'];
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+            if (!$form) {
+                return __('Form not found.', 'fluentform');
+            }
+            $isHtml = $atts['is_html'] === 'true' ? true : false;
+            $submission = (new \FluentForm\App\Services\Submission\SubmissionService())->findBySerialID($formId, $atts['serial_number'],$isHtml);
+            if (!$submission) {
+                return __('No entry found.', 'fluentform');
+            }
+    
+            $input = $submission->user_inputs;
+            $field = sanitize_text_field($atts['field']);
+            $fieldVal = ArrayHelper::get($input, $field, '');
+    
+            $response = FormDataParser::formatValue($fieldVal);
+            echo $atts['is_html'] ? wp_kses_post($response) : esc_html($response);
+    
+            return ob_get_clean();
         });
 
     }

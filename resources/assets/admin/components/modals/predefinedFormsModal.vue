@@ -17,11 +17,13 @@
             />
 
             <div slot="title">
-                <b>
-                    {{ $t('Choose a pre - made form template or') }}
-                    <a href="#" type="info" @click.prevent="createForm('blank_form')">
-                        {{ $t('create a blank form') }}
-                    </a>
+                <b v-html="
+                    $t(
+                        'Choose a pre - made form template or %screate a blank form%s',
+                        `<a href='#' type='info' @click.prevent='${createForm('blank_form')}'>`,
+                        '</a>'
+                    )
+                ">
                 </b>
             </div>
 

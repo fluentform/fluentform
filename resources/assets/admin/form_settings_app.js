@@ -108,12 +108,19 @@ Vue.mixin({
         }
     },
     methods: {
-        $t(str) {
-            let transString = window.FluentFormApp.form_settings_str[str];
-            if(transString) {
-                return transString;
+        $t(string) {
+            let transString = window.FluentFormApp.form_settings_str[string] || string
+            return _$t(transString, ...arguments);
+        },
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
             }
-            return str;
+            return this.$t(singular, count);
+        },
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         },
 
         ...notifier
@@ -219,6 +226,7 @@ const router = new Router({
 });
 
 import App from './components/settings/SettingsApp.vue';
+import {_$t} from "@/admin/helpers";
 
 const app = new Vue({
     el: '#ff_form_settings_app',

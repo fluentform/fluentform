@@ -292,8 +292,8 @@ $app->addFilter('fluentform/filter_insert_data', function ($data) {
 
 $app->addFilter('fluentform/disabled_analytics', function ($status) {
     $settings = get_option('_fluentform_global_form_settings');
-    if (isset($settings['misc']['isAnalyticsDisabled']) && $settings['misc']['isAnalyticsDisabled']) {
-        return true;
+    if (isset($settings['misc']['isAnalyticsDisabled']) && !$settings['misc']['isAnalyticsDisabled']) {
+        return false;
     }
 
     return $status;

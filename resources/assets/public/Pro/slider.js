@@ -46,7 +46,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         jQuery(document).ready(e => {
             jQuery.getJSON(fluentFormVars.ajaxUrl, {
                 form_id: $theForm.data('form_id'),
-                action: 'fluentform_step_form_get_data'
+                action: 'fluentform_step_form_get_data',
+                nonce: fluentFormVars?.nonce,
+                hash: fluentFormVars?.hash
             }).then(data => {
                 if (data) {
                     populateFormDataAndSetActiveStep(data);
@@ -169,6 +171,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 }
 
+                // if date field with flatpickr has advanced config altInput set to true
+                if (typeof flatpickr !== 'undefined') {
+                    if ($el.prop('_flatpickr')) {
+                        const fpInstance = $el.prop('_flatpickr');
+                        if (fpInstance) {
+                            if (fpInstance.config.altInput) {
+                                fpInstance.setDate(value, true);
+                            } else {
+                                $el.val(value).trigger('change');
+                            }
+                        }
+                    }
+                }
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
@@ -739,11 +754,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 html: name
             });
 
-            var progressBarInline = $(
+            var progressBarInline = $(`
                 <div class="ff-upload-progress-inline ff-el-progress">
                     <div style="width: 100%;" class="ff-el-progress-bar"></div>
                 </div>
-            );
+            `);
 
             var removeBtn = $('<span/>', {
                 'data-href': '#',

@@ -3,7 +3,7 @@
         <section-head class="ff_section_head_between items-center" size="sm">
             <section-head-content>
                 <h3>
-                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Details')}} #{{entry.serial_number}}
+                    <router-link :to="{ name: 'form-entries' }">{{$t('Entries')}}</router-link> <span role="presentation" class="el-breadcrumb__separator">/</span> {{$t('Serial Number')}} #{{entry.serial_number}}
                 </h3>
             </section-head-content>
             <section-head-content>
@@ -149,7 +149,7 @@
                         <card-body>
                             <ul class="ff_submission_info_list ff_list_border_bottom">
                                 <li>
-                                    <div class="lead-title">{{$t('Entity ID')}}:</div>
+                                    <div class="lead-title">{{$t('Submission ID')}}:</div>
                                     <div class="lead-text">#{{ entry.id }}</div>
                                 </li>
                                 <li>
@@ -529,9 +529,15 @@
         },
         mounted() {
             this.getEntry();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
-        }
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
+        },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>

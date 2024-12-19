@@ -222,18 +222,24 @@ import formSlider from "./Pro/slider";
         }
         $theForm.append(`<input type="hidden" value="${ hashKey }" class="__fluent_state_hash" name="__fluent_state_hash"/>`)
 
-        jQuery.getJSON(fluentFormVars.ajaxUrl, {
-            form_id: $theForm.data('form_id'),
-            action: 'fluentform_get_form_state',
-            hash: hashKey,
-            nonce: window.form_state_save_vars.nonce
-        }).then(data => {
-            if (data) {
-                const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
-                sliderInstance.populateFormDataAndSetActiveStep(data);
-            }
-        });
-    })
+        const stepPersistency = $theForm.find(
+            '.ff-step-container'
+        ).attr('data-enable_step_data_persistency') == 'yes';
+
+        if (!stepPersistency) {
+            jQuery.getJSON(fluentFormVars.ajaxUrl, {
+                form_id: $theForm.data('form_id'),
+                action: 'fluentform_get_form_state',
+                hash: hashKey,
+                nonce: window.form_state_save_vars.nonce
+            }).then(data => {
+                if (data) {
+                    const sliderInstance = formSlider($, $theForm, window.fluentFormVars, formSelector);
+                    sliderInstance.populateFormDataAndSetActiveStep(data);
+                }
+            });
+        }
+    });
 
 })(jQuery);
 
