@@ -1142,7 +1142,7 @@ jQuery(document).ready(function () {
                         el = $(element);
                         elName = el.prop('name').replace('[]', '');
 
-                        if (el.data('type') === 'repeater_item') {
+                        if (el.data('type') === 'repeater_item' || el.data('type') === 'repeater_container') {
                             elName = el.attr('data-name');
                             rules[elName] = rules[el.data('error_index')];
                         }

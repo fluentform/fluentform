@@ -1211,7 +1211,6 @@ class Component
         $advancedFields = [
             'step_start',
             'repeater_field',
-            'repeater_container',
             'ratings',
             'form_step',
             'input_file',
