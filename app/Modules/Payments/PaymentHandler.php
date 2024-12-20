@@ -9,19 +9,18 @@ if (!defined('ABSPATH')) {
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\Payments\Orders\OrderData;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentAction;
 use FluentForm\App\Modules\Payments\Classes\PaymentEntries;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
-use FluentForm\App\Modules\Payments\Components\Coupon;
 use FluentForm\App\Modules\Payments\Components\CustomPaymentComponent;
 use FluentForm\App\Modules\Payments\Components\ItemQuantity;
 use FluentForm\App\Modules\Payments\Components\MultiPaymentComponent;
 use FluentForm\App\Modules\Payments\Components\PaymentMethods;
 use FluentForm\App\Modules\Payments\Components\PaymentSummaryComponent;
 use FluentForm\App\Modules\Payments\Components\Subscription;
-use FluentForm\App\Modules\Payments\Orders\OrderData;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\Components\StripeInline;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\ConnectConfig;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\StripeHandler;
@@ -47,14 +46,7 @@ class PaymentHandler
         add_filter('fluentform/form_settings_menu', array($this, 'maybeAddPaymentSettings'), 10, 2);
         // Let's load Payment Methods here
         (new StripeHandler())->init();
-//        (new PayPalHandler())->init();
-//        (new OfflineHandler())->init();
-//        (new MollieHandler())->init();
-//        (new RazorPayHandler())->init();
-//        (new PaystackHandler())->init();
-//        (new SquareHandler())->init();
-//        (new PaddleHandler())->init();
-        
+
         // Let's load the payment method component here
         new MultiPaymentComponent();
         new Subscription();
@@ -62,9 +54,7 @@ class PaymentHandler
         new ItemQuantity();
         new PaymentMethods();
         new PaymentSummaryComponent();
-//        new Coupon();
         new StripeInline();
-//        new SquareInline();
         
         add_action('fluentform/before_insert_payment_form', array($this, 'maybeHandlePayment'), 10, 3);
         
@@ -93,11 +83,16 @@ class PaymentHandler
         add_filter('fluentform/all_entry_labels_with_payment', array($this, 'modifySingleEntryLabels'), 10, 3);
         
         add_action('fluentform/rendering_payment_form', function ($form) {
-            wp_enqueue_script('fluentform-payment-handler', FLUENTFORMPRO_DIR_URL . 'public/js/payment_handler.js', array('jquery'), FLUENTFORM_VERSION, true);
+            wp_enqueue_script('fluentform-payment-handler',
+                fluentformMix('js/payment_handler.js'),
+                array('jquery'),
+                FLUENTFORM_VERSION,
+                true
+            );
             
             wp_enqueue_style(
                 'fluentform-payment-skin',
-                FLUENTFORMPRO_DIR_URL . 'public/css/payment_skin.css',
+                fluentFormMix('css/payment_skin.css'),
                 array(),
                 FLUENTFORM_VERSION
             );
@@ -159,24 +154,24 @@ class PaymentHandler
                     ]
                 ]
             ];
-            
-            wp_localize_script('fluentform-payment-handler', 'fluentform_payment_config_' . $form->id, [
+
+            $paymentConfig = [
                 'currency_settings' => PaymentHelper::getCurrencyConfig($form->id),
                 'stripe'            => [
                     'publishable_key' => $publishableKey,
                     'inlineConfig'    => PaymentHelper::getStripeInlineConfig($form->id),
                     'custom_style'    => apply_filters('fluentform/stripe_inline_custom_css', $stripeCustomCss, $form->id)
                 ],
-                'square' => [
-                    'inline_config'    => PaymentHelper::getSquareInlineConfig($form->id),
-                ],
                 'stripe_app_info'   => array(
                     'name'       => 'Fluent Forms',
-                    'version'    => FLUENTFORMPRO_VERSION,
+                    'version'    => FLUENTFORM_VERSION,
                     'url'        => site_url(),
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d'
                 )
-            ]);
+            ];
+            $paymentConfig = apply_filters('fluentform/payment_config', $paymentConfig, $form->id);
+            
+            wp_localize_script('fluentform-payment-handler', 'fluentform_payment_config_' . $form->id, $paymentConfig);
             
         });
         

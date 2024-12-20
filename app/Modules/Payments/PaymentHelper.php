@@ -11,7 +11,6 @@ use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
-use FluentForm\App\Modules\Payments\PaymentMethods\Square\SquareSettings;
 
 class PaymentHelper
 {
@@ -799,28 +798,6 @@ class PaymentHelper
                     'inline_styles' => $stripeInlineStyles,
                     'verifyZip'     => ArrayHelper::get($methods['stripe'], 'settings.verify_zip_code.value') === 'yes',
                     'disable_link'  => false
-                ],
-                $formId
-            );
-        }
-
-        return [];
-    }
-
-    public static function getSquareInlineConfig($formId)
-    {
-        $methods = static::getFormPaymentMethods($formId);
-
-        $square = ArrayHelper::get($methods, 'square');
-        $squareSettings = SquareSettings::getApiKeys();
-        $squareInlineStyles = ArrayHelper::get(Helper::getFormMeta($formId, '_ff_form_styles', []), 'square_inline_element_style', false);
-        if ($square) {
-            return apply_filters(
-                'fluentform/square_inline_config',
-                [
-                    'is_inline'     => ArrayHelper::get($square, 'settings.embedded_checkout.value') == 'yes',
-                    'inline_styles' => $squareInlineStyles,
-                    'settings'      => $squareSettings
                 ],
                 $formId
             );

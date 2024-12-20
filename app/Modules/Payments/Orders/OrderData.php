@@ -1,12 +1,12 @@
 <?php
 
-namespace FluentFormPro\Payments\Orders;
+namespace FluentForm\App\Modules\Payments\Orders;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentFormPro\Payments\PaymentHelper;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 
 class OrderData
 {

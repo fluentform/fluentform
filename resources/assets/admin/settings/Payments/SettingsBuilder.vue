@@ -3,7 +3,7 @@
         <el-skeleton :loading="loading" animated :rows="10">
             <el-form v-if="settings" style="min-height: 300px;" label-position="top" :model="settings">
                 <div v-for="field in formatted_fields" :key="field.settings_key">
-                    <el-form-item class="ff-form-item" v-if="field.type !== 'html' && field.type !== 'input-color'">
+                    <el-form-item class="ff-form-item payment-methods-item" v-if="field.type !== 'html' && field.type !== 'input-color'">
                         <template slot="label">
                             {{ field.label }}
                             <el-tooltip v-if="field.info_help" placement="bottom-start" popper-class="ff_tooltip_wrap">
@@ -39,7 +39,7 @@
                         <error-view :field="field.settings_key" :errors="errors" />
                     </el-form-item>
                     <template v-else-if="field.type === 'input-color' && settings.checkout_type === 'modal'">
-                        <el-form-item class="ff-form-item">
+                        <el-form-item class="ff-form-item payment-methods-item">
                             <template slot="label">
                                 {{ field.label }}
                                 <el-tooltip v-if="field.info_help" placement="bottom-start" popper-class="ff_tooltip_wrap">

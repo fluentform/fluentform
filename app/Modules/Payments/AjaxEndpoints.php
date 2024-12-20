@@ -6,14 +6,13 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-use FluentForm\App\Databases\Migrations\FormSubmissions;
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\Payments\PaymentMethods\BaseProcessor;
+use FluentForm\Database\Migrations\Submissions;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentForm\App\Modules\Payments\Classes\CouponModel;
 use FluentForm\App\Modules\Payments\Classes\PaymentManagement;
 use FluentForm\App\Modules\Payments\Migrations\Migration;
-use FluentForm\App\Modules\Payments\PaymentMethods\Offline\OfflineProcessor;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\ConnectConfig;
 
 class AjaxEndpoints
@@ -28,10 +27,6 @@ class AjaxEndpoints
             'get_form_settings'            => 'getFormSettings',
             'save_form_settings'           => 'saveFormSettings',
             'update_transaction'           => 'updateTransaction',
-            'get_coupons'                  => 'getCoupons',
-            'enable_coupons'               => 'enableCoupons',
-            'save_coupon'                  => 'saveCoupon',
-            'delete_coupon'                => 'deleteCoupon',
             'get_stripe_connect_config'    => 'getStripeConnectConfig',
             'disconnect_stripe_connection' => 'disconnectStripeConnect',
             'get_pages'                    => 'getWpPages',
@@ -40,6 +35,8 @@ class AjaxEndpoints
 
         if (isset($validRoutes[$route])) {
             $this->{$validRoutes[$route]}();
+        } else {
+            do_action('fluentform/handle_payment_ajax_endpoint', $route);
         }
 
         die();
@@ -73,7 +70,7 @@ class AjaxEndpoints
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
             Migration::migrate();
             // Migrate the database
-            FormSubmissions::migrate(true); // Add payment_total
+            Submissions::migrate(true); // Add payment_total
         }
     }
 
@@ -232,6 +229,13 @@ class AjaxEndpoints
         }
 
         $newStatus = $transactionData['status'];
+
+        // No need abstract method, only need defined method, empty implementation
+        $baseProcessor = new class extends BaseProcessor {
+            public function handlePaymentAction($submissionId, $submissionData, $form, $methodSettings, $hasSubscriptions, $totalPayable) {
+            }
+        };
+
         if (
             ($changingStatus && ($newStatus == 'refunded' || $newStatus == 'partial-refunded')) ||
             ($newStatus == 'partial-refunded' && ArrayHelper::get($transactionData, 'refund_amount'))
@@ -248,11 +252,10 @@ class AjaxEndpoints
             }
 
             if ($refundAmount) {
-                $offlineProcessor = new OfflineProcessor();
-                $offlineProcessor->setSubmissionId($oldTransaction->submission_id);
+                $baseProcessor->setSubmissionId($oldTransaction->submission_id);
 
-                $submission = $offlineProcessor->getSubmission();
-                $offlineProcessor->refund($refundAmount, $oldTransaction, $submission, $oldTransaction->payment_method, 'refund_' . time(), $refundNote);
+                $submission = $baseProcessor->getSubmission();
+                $baseProcessor->refund($refundAmount, $oldTransaction, $submission, $oldTransaction->payment_method, 'refund_' . time(), $refundNote);
             }
 
         }
@@ -267,125 +270,14 @@ class AjaxEndpoints
                     ->delete();
             }
 
-            $offlineProcessor = new OfflineProcessor();
-            $offlineProcessor->setSubmissionId($oldTransaction->submission_id);
-            $offlineProcessor->changeSubmissionPaymentStatus($newStatus);
-            $offlineProcessor->changeTransactionStatus($transactionId, $newStatus);
-            $offlineProcessor->recalculatePaidTotal();
+            $baseProcessor->setSubmissionId($oldTransaction->submission_id);
+            $baseProcessor->changeSubmissionPaymentStatus($newStatus);
+            $baseProcessor->changeTransactionStatus($transactionId, $newStatus);
+            $baseProcessor->recalculatePaidTotal();
         }
 
         wp_send_json_success([
             'message' => __('Successfully updated data', 'fluentformpro')
-        ], 200);
-    }
-
-    public function getCoupons()
-    {
-        $status = get_option('fluentform_coupon_status');
-        if ($status != 'yes') {
-            wp_send_json([
-                'coupon_status' => false
-            ], 200);
-        }
-
-        $couponModel = new CouponModel();
-
-        ob_start();
-        $coupons = $couponModel->getCoupons(true);
-        $errors = ob_get_clean();
-
-        if ($errors) {
-            (new CouponModel())->migrate();
-            $coupons = $couponModel->getCoupons(true);
-        }
-
-        $data = [
-            'coupon_status' => 'yes',
-            'coupons'       => $coupons
-        ];
-
-        if (isset($_REQUEST['page']) && $_REQUEST['page'] == 1) {
-            $forms = wpFluent()->table('fluentform_forms')
-                ->select(['id', 'title'])
-                ->where('has_payment', 1)
-                ->get();
-            $formattedForms = [];
-            foreach ($forms as $form) {
-                $formattedForms[$form->id] = $form->title;
-            }
-            $data['available_forms'] = $formattedForms;
-        }
-
-        wp_send_json($data, 200);
-    }
-
-    public function enableCoupons()
-    {
-        (new CouponModel())->migrate();
-        update_option('fluentform_coupon_status', 'yes', 'no');
-        wp_send_json([
-            'coupon_status' => 'yes'
-        ], 200);
-    }
-
-    public function saveCoupon()
-    {
-        $coupon = wp_unslash($_REQUEST['coupon']);
-
-        $validator = fluentValidator($coupon, [
-            'title'       => 'required',
-            'code'        => 'required',
-            'amount'      => 'required',
-            'coupon_type' => 'required',
-            'status'      => 'required'
-        ]);
-
-        if ($validator->validate()->fails()) {
-            $errors = $validator->errors();
-            wp_send_json([
-                'errors'  => $errors,
-                'message' => __('Please fill up all the required fields', 'fluentformpro')
-            ], 423);
-        }
-
-        $couponId = false;
-
-        if (isset($coupon['id'])) {
-            $couponId = $coupon['id'];
-            unset($coupon['id']);
-        }
-
-        if ($exist = (new CouponModel())->isCouponCodeAvailable($coupon['code'], $couponId)) {
-            wp_send_json([
-                'errors'  => [
-                    'code' => [
-                        'exist' => __('Same coupon code already exists', 'fluentformpro')
-                    ]
-                ],
-                'message' => __('Same coupon code already exists', 'fluentformpro')
-            ], 423);
-        }
-
-        if ($couponId) {
-            (new CouponModel())->update($couponId, $coupon);
-        } else {
-            $couponId = (new CouponModel())->insert($coupon);
-        }
-
-        wp_send_json([
-            'message'   => __('Coupon has been saved successfully', 'fluentformpro'),
-            'coupon_id' => $couponId
-        ], 200);
-
-    }
-
-    public function deleteCoupon()
-    {
-        $couponId = intval($_REQUEST['coupon_id']);
-        (new CouponModel())->delete($couponId);
-        wp_send_json([
-            'message'   => __('Coupon has been successfully deleted', 'fluentformpro'),
-            'coupon_id' => $couponId
         ], 200);
     }
 

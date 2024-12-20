@@ -47,6 +47,7 @@ mix
 
     .js('resources/assets/public/fluentform-advanced.js', `assets/js/fluentform-advanced.js`)
     .js('resources/assets/public/form-submission.js', `assets/js/form-submission.js`)
+    .js('resources/assets/public/payment_handler.js', `assets/js/payment_handler.js`)
     .js('resources/assets/public/form-save-progress.js', `assets/js/form-save-progress.js`)
     .js('resources/assets/admin/fluentform_editor_script.js', `assets/js/fluentform_editor_script.js`)
     .js('resources/assets/admin/copier.js', `assets/js/copier.js`)
@@ -76,6 +77,7 @@ mix
     .sass('resources/assets/public/scss/choices.scss', `assets/css/choices.css`)
     .sass('resources/assets/elementor/fluent-forms-elementor-widget.scss', `assets/css/fluent-forms-elementor-widget.css`)
     .sass('resources/assets/admin/conversion_templates/design_css.scss', `assets/css/conversational_design.css`)
+    .sass('resources/assets/public/scss/skins/_payment.scss', 'assets/css/payment_skin.css')
 
     .less('resources/assets/admin/styles/index.less', `assets/css/fluent-forms-admin.css`, {
         lessOptions: {
