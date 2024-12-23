@@ -137,7 +137,7 @@ abstract class BaseProcessor
             'component'        => 'Payment',
             'status'           => 'paid' === $newStatus ? 'success' : $newStatus,
             'title'            => __('Payment Status changed', 'fluentform'),
-            'description'      => __('Payment status changed to ', 'fluentform')
+            'description'      => __('Payment status changed to ', 'fluentform') . $newStatus
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -517,7 +517,7 @@ abstract class BaseProcessor
             'component'        => 'Payment',
             'status'           => 'info',
             'title'            => __('Refund issued', 'fluentform'),
-            'description'      => __('Refund issued and refund amount: ', 'fluentform')
+            'description'      => __('Refund issued and refund amount: ', 'fluentform') . number_format($refund_amount / 100, 2)
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -1047,7 +1047,7 @@ abstract class BaseProcessor
             'source_id'        => $this->submissionId,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Subscription Status changed to ' . $newStatus, 'fluentform') . $newStatus,
+            'title'            => __('Subscription Status changed to ', 'fluentform') . $newStatus,
             'description'      => $note
         ];
 
