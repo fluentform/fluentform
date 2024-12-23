@@ -24,9 +24,9 @@ class PaymentEntries
 
     public function loadApp()
     {
-        wp_enqueue_style('ff-payment-entries', FLUENTFORMPRO_DIR_URL.'public/css/payment_entries.css', [], FLUENTFORMPRO_VERSION);
-        wp_enqueue_script('ff-payment-entries', FLUENTFORMPRO_DIR_URL . 'public/js/payment-entries.js', ['jquery'], FLUENTFORMPRO_VERSION, true);
-        $settingsUrl = admin_url('admin.php?page=fluent_forms_settings&component=payment_settings');
+        wp_enqueue_style('ff-payment-entries', fluentFormMix('css/payment_entries.css'), [], FLUENTFORM_VERSION);
+        wp_enqueue_script('ff-payment-entries', fluentFormMix('js/payment_entries.js'), ['jquery'], FLUENTFORM_VERSION, true);
+        $settingsUrl = admin_url('admin.php?page=fluent_forms_settings#payments/general_settings');
         do_action_deprecated(
             'fluentform_global_menu',
             [

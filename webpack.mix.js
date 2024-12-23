@@ -43,6 +43,7 @@ mix
     .js('resources/assets/admin/form_settings_app.js', `assets/js/form_settings_app.js`)
     .js('resources/assets/admin/editor_app.js', `assets/js/fluent-forms-editor.js`)
     .js('resources/assets/admin/form_entries_app.js', `assets/js/form_entries.js`)
+    .js('resources/assets/admin/payment_entries.js', `assets/js/payment_entries.js`)
     .js('resources/assets/admin/all_forms_app.js', `assets/js/fluent-all-forms-admin.js`)
 
     .js('resources/assets/public/fluentform-advanced.js', `assets/js/fluentform-advanced.js`)
@@ -72,6 +73,7 @@ mix
     .sass('resources/assets/admin/css/add-ons.scss', 'assets/css/add-ons.css')
     .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
     .sass('resources/assets/admin/css/payment_settings.scss', 'assets/css/payment_settings.css')
+    .sass('resources/assets/admin/css/payment_entries.scss', 'assets/css/payment_entries.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `assets/css/fluent-forms-public.css`)
     .sass('resources/assets/public/scss/fluentform-public-default.scss', `assets/css/fluentform-public-default.css`)
     .sass('resources/assets/preview/preview.scss', `assets/css/preview.css`)
