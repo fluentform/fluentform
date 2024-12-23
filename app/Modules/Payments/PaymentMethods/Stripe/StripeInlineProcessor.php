@@ -113,7 +113,7 @@ class StripeInlineProcessor extends StripeProcessor
                 'amount'      => $signupFee,
                 'currency'    => $submission->currency,
                 'customer'    => $customer->id,
-                'description' => __('Signup fee for ', 'fluentformpro') . $subscription->plan_name
+                'description' => __('Signup fee for ', 'fluentform') . $subscription->plan_name
             ], $submission->form_id);
         }
 
@@ -166,7 +166,7 @@ class StripeInlineProcessor extends StripeProcessor
                 'customer_name'          => ($transaction) ? $transaction->payer_name : '',
                 'customer_email'         => ($transaction) ? $transaction->payer_email : '',
                 'client_secret'          => $invoice->payment_intent->client_secret,
-                'message'                => __('Verifying your card details. Please wait...', 'fluentformpro'),
+                'message'                => __('Verifying your card details. Please wait...', 'fluentform'),
                 'result'                 => [
                     'insert_id' => $submission->id
                 ]
@@ -223,7 +223,7 @@ class StripeInlineProcessor extends StripeProcessor
     {
         if ($invoice->status !== 'paid') {
             wp_send_json([
-                'errors' => __('Stripe Error: Payment Failed! Please try again.', 'fluentformpro')
+                'errors' => __('Stripe Error: Payment Failed! Please try again.', 'fluentform')
             ], 423);
         }
 
@@ -277,7 +277,7 @@ class StripeInlineProcessor extends StripeProcessor
                 'actionName'    => 'initStripeSCAModal',
                 'submission_id' => $submission->id,
                 'client_secret' => $intent->client_secret,
-                'message'       => apply_filters('fluentform/stripe_strong_customer_verify_waiting_message', __('Verifying strong customer authentication. Please wait...', 'fluentformpro')),
+                'message'       => apply_filters('fluentform/stripe_strong_customer_verify_waiting_message', __('Verifying strong customer authentication. Please wait...', 'fluentform')),
                 'result'        => [
                     'insert_id' => $submission->id
                 ]
@@ -289,7 +289,7 @@ class StripeInlineProcessor extends StripeProcessor
 
             $this->handlePaymentSuccess($charge, $transaction, $submission);
         } else {
-            $message = __('Payment Failed! Your card may have been declined.', 'fluentformpro');
+            $message = __('Payment Failed! Your card may have been declined.', 'fluentform');
 
             if (!empty($intent->error->message)) {
                 $message = $intent->error->message;
@@ -324,8 +324,8 @@ class StripeInlineProcessor extends StripeProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Payment Status changed', 'fluentformpro'),
-            'description'      => __('Payment status changed to paid', 'fluentformpro')
+            'title'            => __('Payment Status changed', 'fluentform'),
+            'description'      => __('Payment status changed to paid', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -341,8 +341,8 @@ class StripeInlineProcessor extends StripeProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'success',
-            'title'            => __('Payment Complete', 'fluentformpro'),
-            'description'      => __('One time Payment Successfully made via Stripe. Charge ID: ', 'fluentformpro') . $charge->id
+            'title'            => __('Payment Complete', 'fluentform'),
+            'description'      => __('One time Payment Successfully made via Stripe. Charge ID: ', 'fluentform') . $charge->id
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -440,8 +440,8 @@ class StripeInlineProcessor extends StripeProcessor
             'source_id'        => $submissionId,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Stripe SCA Required', 'fluentformpro'),
-            'description'      => __('SCA is required for this payment. Requested SCA info from customer', 'fluentformpro')
+            'title'            => __('Stripe SCA Required', 'fluentform'),
+            'description'      => __('SCA is required for this payment. Requested SCA info from customer', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);

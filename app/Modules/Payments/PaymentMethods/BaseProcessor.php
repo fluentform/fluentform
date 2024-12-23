@@ -136,8 +136,8 @@ abstract class BaseProcessor
             'source_id'        => $this->submissionId,
             'component'        => 'Payment',
             'status'           => 'paid' === $newStatus ? 'success' : $newStatus,
-            'title'            => __('Payment Status changed', 'fluentformpro'),
-            'description'      => BaseProcessor . php__('Payment status changed to ', 'fluentformpro')
+            'title'            => __('Payment Status changed', 'fluentform'),
+            'description'      => __('Payment status changed to ', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -422,9 +422,9 @@ abstract class BaseProcessor
         if (!empty($returnData['title'])) {
             $title = $returnData['title'];
         } else if ($returnData['type'] == 'success') {
-            $title = __('Payment Success', 'fluentformpro');
+            $title = __('Payment Success', 'fluentform');
         } else {
-            $title = __('Payment Failed', 'fluentformpro');
+            $title = __('Payment Failed', 'fluentform');
         }
 
         $message = $returnData['error'];
@@ -516,8 +516,8 @@ abstract class BaseProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Refund issued', 'fluentformpro'),
-            'description'      => BaseProcessor . php__('Refund issued and refund amount: ', 'fluentformpro')
+            'title'            => __('Refund issued', 'fluentform'),
+            'description'      => __('Refund issued and refund amount: ', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -686,9 +686,9 @@ abstract class BaseProcessor
         } else {
             $returnData = [
                 'insert_id' => $submission->id,
-                'title'     => __('Payment was not marked as paid', 'fluentformpro'),
+                'title'     => __('Payment was not marked as paid', 'fluentform'),
                 'result'    => false,
-                'error'     => __('Looks like you have is still on pending status', 'fluentformpro')
+                'error'     => __('Looks like you have is still on pending status', 'fluentform')
             ];
         }
 
@@ -1024,8 +1024,8 @@ abstract class BaseProcessor
      */
     public function updateSubscriptionStatus($subscription, $newStatus, $note = '')
     {
-        if(!$note) {
-            $note = __('Subscription status has been changed to '.$newStatus.' from '.$subscription->status, 'fluentformpro');
+        if (!$note) {
+            $note = __('Subscription status has been changed to ' . $newStatus . ' from ' . $subscription->status, 'fluentform');
         }
 
         $oldStatus = $subscription->status;
@@ -1047,7 +1047,7 @@ abstract class BaseProcessor
             'source_id'        => $this->submissionId,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => BaseProcessor . php__('Subscription Status changed to ', 'fluentformpro'),
+            'title'            => __('Subscription Status changed to ' . $newStatus, 'fluentform') . $newStatus,
             'description'      => $note
         ];
 
