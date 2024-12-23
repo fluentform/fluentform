@@ -54,6 +54,24 @@ class PaymentHandler
         new ItemQuantity();
         new PaymentMethods();
         new PaymentSummaryComponent();
+
+        add_filter('fluentform/editor_components', function ($components) {
+            if (!defined('FLUENTFORMPRO')) {
+                $components['payments'][] = [
+                    'index'          => 6,
+                    'element'        => 'payment_coupon',
+                    'attributes'     => [],
+                    'settings'       => [],
+                    'editor_options' => [
+                        'title'      => __('Coupon', 'fluentform'),
+                        'icon_class' => 'el-icon-postcard',
+                        'template'   => 'inputText',
+                    ],
+                ];
+            }
+            return $components;
+        }, 11);
+
         new StripeInline();
         
         add_action('fluentform/before_insert_payment_form', array($this, 'maybeHandlePayment'), 10, 3);
@@ -340,6 +358,10 @@ class PaymentHandler
                 'payment_method'                => 'paypal'
             ], site_url('index.php'))
         ];
+
+        // Enqueue payment global settings css
+        wp_enqueue_style('ff-payment-settings', fluentFormMix('css/payment_settings.css'), [], FLUENTFORM_VERSION);
+
         $globalSettingVars['payment_vars'] = apply_filters('fluentform/global_settings_component_payment_vars', $paymentVars);
         return $globalSettingVars;
     }

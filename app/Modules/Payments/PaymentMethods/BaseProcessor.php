@@ -6,8 +6,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
-use FluentFormPro\Payments\PaymentHelper;
 use FluentForm\App\Services\Form\SubmissionHandlerService;
 
 abstract class BaseProcessor

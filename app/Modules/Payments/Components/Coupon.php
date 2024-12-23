@@ -32,7 +32,7 @@ class Coupon extends BaseFieldManager
         add_filter('fluentform/disabled_components', function ($disables) {
             $isEnabled = get_option('fluentform_coupon_status') == 'yes';
             if(!$isEnabled) {
-                $couponUrl = admin_url('admin.php?page=fluent_forms_settings&component=payment_settings#coupon');
+                $couponUrl = admin_url('admin.php?page=fluent_forms_settings#payments/coupons');
                 $disables['payment_coupon'] = [
                     'disabled' => true,
                     'disable_html' => '<div class="text-align-center"><h4 class="mb-5">Please Activate Coupon Module First</h4><a target="_blank" class="el-button el-button--primary" href="'.$couponUrl.'">'. __('Activate Coupon Module', 'fluentformpro') . '</a><p class="mt-3">' . __('After creating your first coupon please reload this page.', 'fluentformpro') . '</p></div>'

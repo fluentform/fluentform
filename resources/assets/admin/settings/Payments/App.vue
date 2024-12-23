@@ -18,7 +18,7 @@
 		                :is="currentComponent"
 		                :settings="app.payment_vars"
 	                ></component>
-                </div><!-- ff_payment_settings -->
+                </div>
             </card>
         </div>
 	    <global-search/>
