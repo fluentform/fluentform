@@ -137,11 +137,14 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             </a>
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
-                                    <?php if (ArrayHelper::get($component, 'hash') == 're_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'h_captcha'
-                                        || ArrayHelper::get($component, 'hash') == 'turnstile'
-                                    ) : ?>
-
+                                    <?php
+                                        if (
+                                            ArrayHelper::get($component, 'hash') == 're_captcha' ||
+                                            ArrayHelper::get($component, 'hash') == 'h_captcha' ||
+                                            ArrayHelper::get($component, 'hash') == 'turnstile' ||
+                                            ArrayHelper::get($component, 'hash') == 'cleantalk'
+                                        ) :
+                                    ?>
                                         <li class="<?php echo esc_attr(Helper::getHtmlElementClass($component['hash'],
                                             $currentComponent)); ?> ff_item_<?php echo esc_attr($componentName); ?>">
                                             <a data-settings_key="<?php echo esc_attr(ArrayHelper::get($component,
@@ -218,9 +221,11 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                             <ul class="ff_list_submenu">
                                 <?php foreach ($components as $componentName => $component): ?>
                                     <?php
-                                        if (ArrayHelper::get($component, 'hash') != 're_captcha'
+                                        if (
+                                            ArrayHelper::get($component, 'hash') != 're_captcha'
                                             && ArrayHelper::get($component, 'hash') != 'h_captcha'
                                             && ArrayHelper::get($component, 'hash') != 'turnstile'
+                                            && ArrayHelper::get($component, 'hash') != 'cleantalk'
                                             && ArrayHelper::get($component, 'query.component') != 'payment_settings'
                                             && ArrayHelper::get($component, 'query.component') != 'license_page'
                                             && ArrayHelper::get($component, 'hash') != 'admin_approval'

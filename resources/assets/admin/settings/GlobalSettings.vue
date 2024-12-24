@@ -56,7 +56,8 @@
                 captcha_status: {
                     'hcaptcha': false,
                     'recaptcha': false,
-                    'turnstile': false
+                    'turnstile': false,
+                    'cleantalk': false
                 },
             }
         },
@@ -111,7 +112,8 @@
                         this.captcha_status = {
                             hcaptcha: response._fluentform_hCaptcha_keys_status,
                             recaptcha: response._fluentform_reCaptcha_keys_status,
-                            turnstile: response._fluentform_turnstile_keys_status
+                            turnstile: response._fluentform_turnstile_keys_status,
+                            cleantalk: response._fluentform_cleantalk_keys_status
                         }
                     })
                     .catch(e => {

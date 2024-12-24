@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\GlobalSettings;
 
+use FluentForm\App\Modules\CleanTalk\CleanTalk;
 use FluentForm\App\Modules\HCaptcha\HCaptcha;
 use FluentForm\App\Modules\ReCaptcha\ReCaptcha;
 use FluentForm\App\Modules\Turnstile\Turnstile;
@@ -202,6 +203,77 @@ class GlobalSettingsHelper
 
                 return([
                     'message' => $message,
+                    'status'  => $status,
+                ]);
+            }
+        }
+
+        return([
+            'message' => $message,
+            'status'  => $status,
+        ]);
+    }
+
+    public function storeCleantalk($attributes)
+    {
+        $data = Arr::get($attributes, 'cleantalk');
+
+        if ('clear-settings' == $data) {
+            delete_option('_fluentform_cleantalk_details');
+
+            update_option('_fluentform_cleantalk_keys_status', false, 'no');
+
+            return([
+                'message' => __('Your CleanTalk settings are deleted.', 'fluentform'),
+                'status'  => false,
+            ]);
+        }
+        
+        $status = false;
+        $message = __('Sorry, Your CleanTalk access key is not valid, Please try again', 'fluentform');
+
+        $accessKey = Arr::get($data, 'accessKey');
+        if ($accessKey) {
+            // Validate the CleanTalk response.
+            $status = CleanTalk::validate($accessKey);
+
+            // CleanTalk is valid. So proceed to store.
+            if ($status) {
+                $data = [
+                    'accessKey' => sanitize_text_field($accessKey),
+                    'services'  => Arr::get($data, 'services'),
+                ];
+
+                // Update the CleanTalk details with siteKey & secretKey.
+                update_option('_fluentform_cleantalk_details', $data, 'no');
+
+                // Update the CleanTalk validation status.
+                update_option('_fluentform_cleantalk_keys_status', $status, 'no');
+
+                $configFile = FLUENTFORM_DIR_PATH . 'app/Services/Libraries/cleantalk-check-bot/src/CleantalkCheckBot/config.php';
+                $configContent = file_get_contents($configFile);
+
+                if ($configContent === false) {
+                    return([
+                        'message' => __('Your CleanTalk configuration not found.', 'fluentform'),
+                        'status'  => false,
+                    ]);
+                }
+                
+                $pattern = "/'access_key'\s*=>\s*\"[^\"]*\"/";
+                $replacement = "'access_key' => \"$accessKey\"";
+                $newConfigContent = preg_replace($pattern, $replacement, $configContent);
+
+                if (file_put_contents($configFile, $newConfigContent) === false) {
+                    return([
+                        'message' => __('Your CleanTalk configuration not updated.', 'fluentform'),
+                        'status'  => false,
+                    ]);
+                }
+
+                // Send success response
+                return([
+                    'message' => __('Your CleanTalk is valid and saved.', 'fluentform'),
                     'status'  => $status,
                 ]);
             }

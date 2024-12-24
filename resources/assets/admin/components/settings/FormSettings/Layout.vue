@@ -585,6 +585,7 @@
                         <el-radio :disabled="!captcha_status.recaptcha" label="recaptcha">{{ $t('Google ReCaptcha') }}</el-radio>
                         <el-radio :disabled="!captcha_status.hcaptcha"  label="hcaptcha">{{ $t('hCaptcha') }}</el-radio>
                         <el-radio :disabled="!captcha_status.turnstile"  label="turnstile">{{ $t('Turnstile') }}</el-radio>
+                        <el-radio :disabled="!captcha_status.cleantalk"  label="cleantalk">{{ $t('CleanTalk') }}</el-radio>
                     </el-radio-group>
                 </div>
                 <!-- Toggle Admin Top Navigation -->

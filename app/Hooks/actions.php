@@ -759,6 +759,8 @@ $app->addAction('fluentform/before_form_render', function ($form, $atts) {
         $form->id,
         $styles
     );
+    
+    \FluentForm\App\Modules\Form\CleanTalkHandler::enqueueCleantalk();
 }, 10, 2);
 
 add_action('fluentform/load_form_assets', function ($formId, $styles = []) {
