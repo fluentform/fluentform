@@ -455,7 +455,6 @@
             :insertItemOnClick="insertItemOnClick"/>
 
         <RenameForm
-            v-if="form.title"
             :formTitle="form.title"
             @rename-success="formRenameSuccess"
             :visible.sync="renameFormVisibility"/>
