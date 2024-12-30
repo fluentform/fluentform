@@ -428,6 +428,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.2.9 (Date: January 02, 2025) =
 - Improve Step Form accessibility
+- Update Akismet option with spam submission skips integration
 - Fixes WP Forms multipage form migration
 - Fixes container drop inside another container
 - Fixes radio selection on the entry editor
