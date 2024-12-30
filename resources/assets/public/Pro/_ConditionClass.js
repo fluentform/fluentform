@@ -24,6 +24,10 @@ class ConditionApp {
     }
 
     evaluate(item, key) {
+        if (item._visited) {
+            console.warn(`Circular dependency detected for field: ${key} , `);
+            return false;
+        }
         let mainResult = false;
         if (item.status) {
             this.counter++;
@@ -32,6 +36,7 @@ class ConditionApp {
             if (type == 'any') {
                 result = 0;
             }
+            item._visited = true;
             item.conditions.forEach(condition => {
                 let evalValue = this.getItemEvaluateValue(condition, this.formData[condition.field]);
 
@@ -51,6 +56,7 @@ class ConditionApp {
                 }
             });
             mainResult = result == 1;
+            item._visited = false;
         }
 
         if(item.status && item.conditions.length && !mainResult) {
@@ -58,14 +64,14 @@ class ConditionApp {
         }
 
         if (item.container_condition) {
-            mainResult = this.evaluate(item.container_condition);
+            mainResult = this.evaluate(item.container_condition, key);
         }
         return mainResult;
     }
 
     getItemEvaluateValue(item, val) {
         val = val || null;
-        
+
         const $el = jQuery(`[name='${item.field}']`);
 
         if (item.operator == '=') {
@@ -88,7 +94,7 @@ class ConditionApp {
             if (typeof val == 'object') {
                 return val !== null && val.indexOf(item.value) == -1;
             }
-            
+
             if ($el.hasClass('ff_numeric') ) {
                 return this.parseFormattedNumericValue($el, val) != this.parseFormattedNumericValue($el, item.value);
             }
@@ -135,7 +141,7 @@ class ConditionApp {
     parseFormattedNumericValue($el, val) {
         if ($el.hasClass('ff_numeric') ) {
             let formatConfig = JSON.parse($el.attr('data-formatter'));
-            
+
             return currency(val, formatConfig).value;
         }
 

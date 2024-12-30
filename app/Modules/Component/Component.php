@@ -1224,7 +1224,6 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
-
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }

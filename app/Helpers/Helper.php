@@ -1031,6 +1031,7 @@ class Helper
                     $isValid = in_array($inputValue, $validCountries);
                     break;
                 case 'repeater_field':
+                case 'repeater_container':
                     foreach (ArrayHelper::get($rawField, 'fields', []) as $index => $repeaterField) {
                         $repeaterFieldValue = array_filter(array_column($inputValue, $index));
                         if ($repeaterFieldValue && $error = static::validateInput($repeaterField, $formData, $form,
