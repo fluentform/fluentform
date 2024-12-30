@@ -8,7 +8,7 @@
                        @change="updateColumnNumber"
                        class="el-fluid">
                 <el-option
-                        v-for="value in [2, 3, 4, 5, 6]"
+                        v-for="value in [1, 2, 3, 4, 5, 6]"
                         :value="value"
                         :key="value">
                     {{ value }}
