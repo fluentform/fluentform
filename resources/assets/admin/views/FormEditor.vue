@@ -447,11 +447,13 @@
             :dropzone="dropzone"
             :postMockList="postMockList"
             :taxonomyMockList="taxonomyMockList"
-            :generalMockList="generalMockList"
+            :generalMockList="filteredGeneralMockList"
             :paymentsMockList="paymentsMockList"
-            :advancedMockList="advancedMockList"
+            :advancedMockList="filteredAdvancedMockList"
             :visible.sync="editorInserterVisible"
             :containerMockList="containerMockList"
+            :isInserterInContainerRepeater="editorInserterInContainerRepeater"
+            :isInserterInContainer="editorInserterInContainer"
             :insertItemOnClick="insertItemOnClick"/>
 
         <RenameForm
@@ -558,6 +560,24 @@
             containerMockList: 'containerMockList',
             isMockLoaded: 'isMockLoaded',
         }),
+
+	    filteredGeneralMockList() {
+		    if (this.editorInserterInContainerRepeater) {
+			    return this.generalMockList.filter(item =>
+				    this.containerSupportedFields.find(field => field.key === item.element)
+			    );
+		    }
+		    return this.generalMockList;
+	    },
+
+	    filteredAdvancedMockList() {
+		    if (this.editorInserterInContainerRepeater) {
+			    return this.advancedMockList.filter(item =>
+				    this.containerSupportedFields.find(field => field.key === item.element)
+			    );
+		    }
+		    return this.advancedMockList;
+	    },
 
         /**
          * Make chunks of item draggable

@@ -45,7 +45,7 @@
                         <i class="el-icon el-icon-delete"></i>
                         <span>Delete</span>
                     </div>
-                    <div v-if="item.element == 'container' && item.columns.length > 1 && item.modified"
+                    <div v-if="(item.element == 'container' || item.element == 'repeater_container') && item.columns.length > 1 && item.modified"
                          @click.stop="resetContainer()"
                          class="context-menu__item">
                         <i class="el-icon el-icon-refresh-right"></i>
@@ -56,7 +56,7 @@
 
             <i @click.stop="editorInserterPopup(index, wrapper)" class="popup-search-element ff-icon ff-icon-plus"></i>
 
-            <div v-if="item.element == 'container' ||item.element == 'repeater_container' " class="item-container" :class="[ { 'repeater-item-container': item.element === 'repeater_container' }]">
+            <div v-if="item.element == 'container' || item.element == 'repeater_container' " class="item-container" :class="[ { 'repeater-item-container': item.element === 'repeater_container' }]">
                 <div class="ff_condition_icon" v-html="maybeConditionIcon(item.settings)"></div>
                 <vddl-nodrag style="width: 100%">
                     <splitpanes
