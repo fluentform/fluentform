@@ -867,8 +867,9 @@ mark {
   margin-top: 26px;
 }
 .repeater-item-container{
+  display: flex;
   .repeat-field-actions {
-    margin-top: 52px;
+    align-self: center;
   }
 }
 .section-break {
