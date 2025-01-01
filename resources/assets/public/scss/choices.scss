@@ -396,6 +396,7 @@ $inner-border-color: #ced4da;
   }
 }
 .choices__list {
+  max-width: 100%;
   &.choices__list--dropdown.is-active {
     display: block !important;
   }
