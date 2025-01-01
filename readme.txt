@@ -432,6 +432,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes WP Forms multipage form migration
 - Fixes container drop inside another container
 - Fixes radio selection on the entry editor
+- Fixes dropdown field smart choose long options width
 
 = 5.2.8 (Date: December 18, 2024) =
 - Fixed hidden field with empty value conditional logic issue in Conversational Forms

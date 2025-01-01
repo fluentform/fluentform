@@ -446,6 +446,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 - Fixes WP Forms multipage form migration
 - Fixes container drop inside another container
 - Fixes radio selection on the entry editor
+- Fixes dropdown field smart choose long options width
 
 = 5.2.7 (Date: December 05, 2024) =
 - Adds all forms export button
