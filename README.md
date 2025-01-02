@@ -441,6 +441,7 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 == Changelog ==
 
 = 5.2.9 (Date: January 02, 2025) =
+- Adds CleanTalk Spam Protection
 - Improve Step Form accessibility
 - Update Akismet option with spam submission skips integration
 - Fixes WP Forms multipage form migration

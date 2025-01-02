@@ -427,6 +427,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 5.2.9 (Date: January 02, 2025) =
+- Adds CleanTalk Spam Protection
 - Improve Step Form accessibility
 - Update Akismet option with spam submission skips integration
 - Fixes WP Forms multipage form migration
