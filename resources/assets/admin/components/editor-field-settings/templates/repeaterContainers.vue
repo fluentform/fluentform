@@ -1,8 +1,9 @@
 <template>
     <div>
-        <el-form-item label="Container Columns">
-            <el-select v-if="!listItem.disable_labels" filterable clearable
-                       id="settings_country_list"
+        <el-form-item >
+            <elLabel slot="label" :label="listItem.label" :helpText="listItem.help_text"></elLabel>
+            <el-select v-if="!listItem.disable_labels" filterable
+                       id="settings_column_list"
                        v-model="editItem.settings.repeater_columns"
                        :placeholder="$t('None')"
                        @change="updateColumnNumber"
