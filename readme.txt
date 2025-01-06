@@ -109,6 +109,7 @@ Our drag-and-drop form builder allows you to easily create any form you can imag
 * Password Field
 * Custom Submit Button
 * One/Two/Three/Four/Five/Six Column Container
+* Container Repeater
 
 **Available in the Pro Version**
 
@@ -426,7 +427,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 5.2.9 (Date: January 02, 2025) =
+= 5.2.9 (Date: January 06, 2025) =
 - Adds CleanTalk Spam Protection
 - Improve Step Form accessibility
 - Update Akismet option with spam submission skips integration

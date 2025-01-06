@@ -418,8 +418,8 @@
 
                 </template>
 
-                <template v-if="cleantalk_available">
-                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
+                <template >
+                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width"  :class="{ 'ff-disabled': !cleantalk_available }">
                         <template slot="label">
                             <span>
                                 <span>
@@ -435,11 +435,12 @@
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
+                                <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
+                                <p class="text-note mt-1" v-else>{{ $t('Recommended Settings: Enabled') }}</p>
                             </span>
                         </template>
 
-                        <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
+                        <el-switch class="el-switch-lg" :disabled="!cleantalk_available" active-value="yes" inactive-value="no"
                                    v-model="misc.cleantalk_status"></el-switch>
                     </el-form-item>
 
