@@ -411,7 +411,55 @@
                         <el-radio-group v-model="misc.akismet_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
                             <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
-<!--                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>-->
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
+                        </el-radio-group>
+
+                    </el-form-item>
+
+                </template>
+
+                <template >
+                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width"  :class="{ 'ff-disabled': !cleantalk_available }">
+                        <template slot="label">
+                            <span>
+                                <span>
+                                    {{ $t('Enable CleanTalk Integration') }}
+                                    <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            <p>
+                                                {{
+                                                    $t('If you enable this then Fluent Forms will verify the form submission with CleanTalk. It will save you from spam form submission.')
+                                                }}
+                                            </p>
+                                        </div>
+                                        <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                    </el-tooltip>
+                                </span>
+                                <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
+                                <p class="text-note mt-1" v-else>{{ $t('Recommended Settings: Enabled') }}</p>
+                            </span>
+                        </template>
+
+                        <el-switch class="el-switch-lg" :disabled="!cleantalk_available" active-value="yes" inactive-value="no"
+                                   v-model="misc.cleantalk_status"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item v-if="misc.cleantalk_status == 'yes'">
+                        <template slot="label">
+                            {{ $t('Spam Validation') }}
+                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                <div slot="content">
+                                    <h3>{{ $t('Spam Validation') }}</h3>
+                                    <p>
+                                        {{ $t('Please select what will be happened once a submission marked as spam') }}
+                                    </p>
+                                </div>
+                                <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                            </el-tooltip>
+                        </template>
+                        <el-radio-group v-model="misc.cleantalk_validation">
+                            <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
+                            <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
                         </el-radio-group>
 
                     </el-form-item>

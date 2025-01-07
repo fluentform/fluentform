@@ -49,7 +49,7 @@ class CleanTalkHandler
             'contact_form_subject' => $form->title,
             'referrer'             => urlencode($data['_wp_http_referer']),
             'page_url'             => htmlspecialchars(@$_SERVER['SERVER_NAME'] . @$_SERVER['REQUEST_URI']),
-            'submit_time'          => time() - (int)$_SESSION['ct_submit_time'],
+            'submit_time'          => isset($_SESSION['ct_submit_time']) ? time() - (int)$_SESSION['ct_submit_time'] : null, //@todo Improve this
             'agent'                => 'php-api',
             'js_on'                => 1,
             'sender_nickname'      => '',

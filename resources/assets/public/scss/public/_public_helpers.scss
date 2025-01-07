@@ -673,6 +673,34 @@ table.ff_repeater_table {
   }
 }
 
+.ff-repeater-container {
+  display: flex;
+  flex-direction: column;
+
+  .repeat_btn {
+    display: flex;
+    align-self: center;
+  }
+  .ff_repeater_header, .ff_repeater_cont_row {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .ff_repeater_cont_row {
+    &:only-child .repeat-minus {
+      visibility: hidden;
+    }
+  }
+  .ff_repeater_header_item, .ff_repeater_cell {
+    padding: 0px 15px 15px 0;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .ff-el-repeat-buttons-list  {
+    margin-top: 34%;
+    display: flex;
+  }
+}
+
 .ff_repeater_table{
   &.mobile{
     tbody{

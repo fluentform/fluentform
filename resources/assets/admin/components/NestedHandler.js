@@ -38,7 +38,11 @@ import paymentMethodHolder from './templates/paymentMethodHolder.vue'
 import inputMultiPayment from './templates/inputMultiPayment.vue';
 import inputSubscriptionPayment from './templates/inputSubscriptionPayment.vue';
 import inputCalendar from './templates/inputCalendar.vue';
+
 import { Splitpanes, Pane } from 'splitpanes'
+import ActionBtn from "@/admin/components/ActionBtn/ActionBtn";
+import ActionBtnRemove from "@/admin/components/ActionBtn/ActionBtnRemove";
+import ActionBtnAdd from "@/admin/components/ActionBtn/ActionBtnAdd";
 
 export default {
     name: 'list',
@@ -93,6 +97,7 @@ export default {
         ff_inputSubscriptionPayment: inputSubscriptionPayment,
         ff_fieldsRepeatSettings: repeatFields,
         ff_inputCalendar: inputCalendar,
+        ActionBtn, ActionBtnRemove, ActionBtnAdd,
         Splitpanes, Pane
     },
     data() {
@@ -136,7 +141,10 @@ export default {
          * Remove the moved item from it's old place
          * @param {Object} vddl options
          */
-        handleMoved({index, list}) {
+        handleMoved({index, list, draggable}) {
+            if ('container' === draggable?.element) {
+                return;
+            }
             list.splice(index, 1);
         },
 
@@ -207,6 +215,9 @@ export default {
 
             if (jQuery(event.target).closest('.item-container').length) {
                 FluentFormEditorEvents.$emit('editor-inserter-in-container');
+            }
+            if (jQuery(event.target).closest('.repeater-item-container').length) {
+                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater');
             }
         },
 
