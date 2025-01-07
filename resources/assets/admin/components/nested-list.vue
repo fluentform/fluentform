@@ -86,6 +86,7 @@
                                         :handleEdit="handleEdit"
                                         :allElements="allElements"
                                         :editItem="editItem"
+                                        :fieldNotSupportInContainerRepeater="fieldNotSupportInContainerRepeater"
                                         :wrapper="containerRow.fields">
                                     </list>
                                 </vddl-list>
