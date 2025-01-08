@@ -487,7 +487,13 @@ class SubmissionHandlerService
     {
         if ('spam' == Arr::get($insertData, 'status')) {
             $settings = get_option('_fluentform_global_form_settings');
-            if ($settings && 'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.akismet_validation')) {
+            if (
+                $settings &&
+                (
+                    'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.akismet_validation') ||
+                    'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.cleantalk_validation')
+                )
+            ) {
                 return $this->processSpamSubmission($insertData);
             }
         }
