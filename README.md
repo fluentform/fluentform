@@ -4,7 +4,7 @@ Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, f
 Requires at least: 4.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.2.9
+Stable tag: 5.2.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -440,7 +440,12 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 
 == Changelog ==
 
-= 5.2.9 (Date: January 02, 2025) =
+= 5.2.10 (Date: January 07, 2025) =
+- Fixes unsupported field disappears inside container
+- Fixes names/address fields '0' required validation
+- Fixes custom button style reset border radius 0px
+
+= 5.2.9 (Date: January 06, 2025) =
 - Adds CleanTalk Spam Protection
 - Improve Step Form accessibility
 - Update Akismet option with spam submission skips integration
