@@ -567,6 +567,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.1.12 (Date: April 18, 2024) =
 - Adds Name Field on conversational form
+- Adds CSS Variable support for forms
 - Adds label shortcode
 - Improved container action UI
 - Fixes mask input on Elementor popup
@@ -576,6 +577,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes checkbox and radio smart UI keyboard tab navigation
 - Fixes name fields individual label placement
 - Fixes checkbox & radio field issue with condition
+
 
 = 5.1.11 (Date: February 26, 2024) =
 - Fixes URL escaping bug
