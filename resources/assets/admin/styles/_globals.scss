@@ -328,6 +328,10 @@ span + .ff-icon,
   color: $base-text;
   font-weight: 400;
 }
+.ff-disabled{
+  opacity: 0.5;
+  pointer-events: none;
+}
 .mx-auto{
   margin-right: auto;
   margin-left: auto;

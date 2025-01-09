@@ -261,6 +261,11 @@
                         <el-input type="textarea" v-model="editingTransaction.refund_note"></el-input>
                     </el-form-item>
                 </template>
+                <el-form-item class="ff-form-item" :label="$t('Run Actions')" v-if="editingTransaction.status === 'paid'">
+                    <el-checkbox true-label="yes" false-label="no" v-model="editingTransaction.should_run_actions">
+                        {{ $t('Do you want to run all the integrations and email notifications?') }}
+                    </el-checkbox>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="transactionModal = false" type="info" class="el-button--soft">{{$t('Cancel')}}</el-button>
@@ -297,6 +302,7 @@
             },
             initTransactionEditor(transaction) {
                 this.editingTransaction = transaction;
+                this.$set(this.editingTransaction, 'should_run_actions', 'no');
                 this.original_editing_status = JSON.parse(JSON.stringify(transaction.status));
                 this.transactionModal = true;
             },
@@ -310,17 +316,19 @@
                     route: 'update_transaction'
                 })
                 .then(response => {
+                    this.original_editing_status = '';
+                    this.editing = false;
+                    this.editingTransaction = false;
+                    this.transactionModal = false;
                     this.$success(response.data.message);
                     this.$emit('reload_payments');
-                    this.transactionModal = false;
-                    this.editingTransaction = false;
-                    this.original_editing_status = '';
                 })
                 .fail((errors) => {
                     console.log(errors);
                 })
                 .always(() => {
                     this.editing = false;
+                    this.transactionModal = false;
                 });
             },
             emitReload() {

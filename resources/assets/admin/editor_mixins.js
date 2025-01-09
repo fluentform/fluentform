@@ -141,7 +141,6 @@ export default {
                     });
                 } else {
                     let name = this.getUniqueNameAttr(existingAttrNames, newItem);
-                    console.log(name);
                     newItem.attributes.name = name;
                 }
             }
