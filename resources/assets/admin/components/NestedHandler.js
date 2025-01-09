@@ -56,6 +56,9 @@ export default {
         'allElements',
         'handleDragend',
         'handleDragstart',
+        'editorInserterInContainer',
+        'editorInserterInContainerRepeater',
+        'fieldNotSupportInContainerRepeater',
     ],
     components: {
         ff_select: select,
@@ -142,9 +145,17 @@ export default {
          * @param {Object} vddl options
          */
         handleMoved({index, list, draggable}) {
-            if ('container' === draggable?.element) {
+            if (('container' === draggable?.element || 'repeater_container' === draggable?.element) && this.editorInserterInContainer) {
+                FluentFormEditorEvents.$emit('editor-inserter-in-container', false);
+                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater', false);
                 return;
             }
+
+            if (this.fieldNotSupportInContainerRepeater) {
+                FluentFormEditorEvents.$emit('not-supported-in-container-repeater', false);
+                return;
+            }
+
             list.splice(index, 1);
         },
 
@@ -214,10 +225,10 @@ export default {
             FluentFormEditorEvents.$emit('editor-inserter-popup', index, wrapper, this.$el);
 
             if (jQuery(event.target).closest('.item-container').length) {
-                FluentFormEditorEvents.$emit('editor-inserter-in-container');
+                FluentFormEditorEvents.$emit('editor-inserter-in-container', true);
             }
             if (jQuery(event.target).closest('.repeater-item-container').length) {
-                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater');
+                FluentFormEditorEvents.$emit('editor-inserter-in-container-repeater', true);
             }
         },
 

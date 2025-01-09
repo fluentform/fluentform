@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.2.9
+Stable tag: 5.2.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -427,6 +427,11 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+= 5.2.10 (Date: January 07, 2025) =
+- Fixes unsupported field disappears inside container
+- Fixes names/address fields '0' required validation
+- Fixes custom button style reset border radius 0px
+
 = 5.2.9 (Date: January 06, 2025) =
 - Adds CleanTalk Spam Protection
 - Improve Step Form accessibility
@@ -562,6 +567,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.1.12 (Date: April 18, 2024) =
 - Adds Name Field on conversational form
+- Adds CSS Variable support for forms
 - Adds label shortcode
 - Improved container action UI
 - Fixes mask input on Elementor popup
@@ -571,6 +577,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes checkbox and radio smart UI keyboard tab navigation
 - Fixes name fields individual label placement
 - Fixes checkbox & radio field issue with condition
+
 
 = 5.1.11 (Date: February 26, 2024) =
 - Fixes URL escaping bug
