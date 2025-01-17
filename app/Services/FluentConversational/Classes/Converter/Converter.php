@@ -691,6 +691,8 @@ class Converter
                         $question['answer'] = json_decode($coupons);
                     }
                 }
+            } elseif ('shortcode' === $field['element']) {
+                $question['content'] = do_shortcode(ArrayHelper::get($field, 'settings.shortcode', ''));
             }
             
             do_action('fluentform/conversational_question', $question, $field, $form);
@@ -819,6 +821,7 @@ class Converter
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
 //            $fieldTypes['save_progress_button'] = 'FlowFormSaveAndResumeType';
             $fieldTypes['dynamic_field'] = 'FlowFormDynamicFieldType';
+            $fieldTypes['shortcode'] = 'FlowFormSectionBreakType';
         }
         
         return apply_filters('fluentform/conversational_field_types', $fieldTypes);

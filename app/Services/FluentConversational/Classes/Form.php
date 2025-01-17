@@ -327,7 +327,7 @@ class Form
             'rangeslider',
             'save_progress_button',
             'dynamic_field',
-            'rangeslider'
+            'shortcode'
         ];
 
         $acceptedFieldElements = apply_filters(
