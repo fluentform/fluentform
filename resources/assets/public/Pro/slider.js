@@ -520,7 +520,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
 
                 //skip saving the last step
-                let isLastStep = activeStep === totalSteps - 1;
+                let isLastStep = activeStep === totalSteps;
 
                 // Fire ajax request to persist the step state/data
                 if (stepPersistency && !isPopulatingStepData && !isLastStep) {
