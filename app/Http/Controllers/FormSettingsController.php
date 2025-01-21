@@ -39,7 +39,6 @@ class FormSettingsController extends Controller
 
     public function store(SettingsService $settingsService)
     {
-        dd($settingsService);
         try {
             [$settingsId, $settings] = $settingsService->store($this->request->all());
 
