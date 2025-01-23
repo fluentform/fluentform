@@ -134,6 +134,7 @@ import EditGeneralIntegration from './components/settings/GeneralIntegration/Int
 import PdfFeeds from './components/settings/PdfFeeds.vue';
 import PaymentSettings from './components/settings/PaymentSettings.vue';
 import QuizSettings from './components/settings/QuizSettings.vue';
+import FFWpmlSettings from './components/settings/FFWpmlSettings.vue';
 import CustomComponent from './components/CustomComponent.vue';
 
 const routes = [
@@ -206,6 +207,11 @@ const routes = [
         path: '/quiz_settings',
         name: 'quiz_settings',
         component: QuizSettings
+    },
+    {
+        path: '/ff-wpml',
+        name: 'ff_wpml',
+        component: FFWpmlSettings
     },
     {
         path: '/custom-settings-component/:component_name',
