@@ -551,7 +551,8 @@
                     <card-head>
                         <h5 class="title">{{ $t('Translations using WPML') }}</h5>
                         <p class="text">
-                            {{ $t('Enable translations using WPML Core and WPML String Translations Plugin.') }}</p>
+                            {{ $t('Enable translations using WPML Core and WPML String Translations Plugin.') }}
+                        </p>
                     </card-head>
                     <card-body>
                         <el-form label-position="top">
@@ -562,12 +563,15 @@
                                     </el-checkbox>
                                 </el-col>
                                 <el-col v-if="ff_wpml.enabled === 'yes'">
-                                    <template v-for="(language, languageCode) in ff_wpml.available_languages">
-                                        <template v-if="languageCode !== ff_wpml.default_language">
-                                            <hr>
-                                            <div class="mb-3"><p><b>{{ language.display_name }}</b></p></div>
+                                    <el-tabs v-model="activeLanguageTab">
+                                        <el-tab-pane
+                                            v-for="(language, languageCode) in nonDefaultLanguages"
+                                            :key="languageCode"
+                                            :label="language.display_name"
+                                            :name="languageCode"
+                                        >
                                             <template v-for="(item, index) in ff_wpml.strings">
-                                                <div class="el-form-item__content mb-2">
+                                                <div class="el-form-item__content mb-2" :key="index">
                                                     <el-row :gutter="24">
                                                         <el-col :span="8">
                                                             {{ item.value }}
@@ -583,8 +587,8 @@
                                                     </el-row>
                                                 </div>
                                             </template>
-                                        </template>
-                                    </template>
+                                        </el-tab-pane>
+                                    </el-tabs>
                                 </el-col>
                             </el-row>
                         </el-form>
@@ -750,6 +754,8 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import TabItem from "@/admin/components/Tab/TabItem.vue";
+    import TabLink from "@/admin/components/Tab/TabLink.vue";
 
     export default {
         name: 'FormSettings',
@@ -763,6 +769,7 @@
             'inputs': Object
         },
         components: {
+            TabLink, TabItem,
             wpEditor,
             'form_restriction': form_restriction,
             errorView,
@@ -835,6 +842,7 @@
                 conv_form_resume_from_last_step: false,
                 hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
                 ff_wpml: false,
+                activeLanguageTab: null,
             }
         },
         computed: {
@@ -842,7 +850,36 @@
                 return _ff.filter(this.inputs, (input) => {
                     return input.attributes.type === 'email';
                 });
+            },
+            nonDefaultLanguages() {
+                if (!this.ff_wpml || !this.ff_wpml.available_languages) {
+                    return {};
+                }
+
+                const allLanguages = this.ff_wpml.available_languages;
+                const defaultLanguageCode = this.ff_wpml.default_language;
+
+                const nonDefaultLanguageEntries = Object.entries(allLanguages)
+                    .filter(([languageCode, languageInfo]) => languageCode !== defaultLanguageCode);
+
+                return nonDefaultLanguageEntries.reduce((nonDefaultLangs, [languageCode, languageInfo]) => {
+                    nonDefaultLangs[languageCode] = languageInfo;
+                    return nonDefaultLangs;
+                }, {});
+            },
+            firstNonDefaultLanguageCode() {
+                return Object.keys(this.nonDefaultLanguages)[0] || null;
             }
+        },
+        watch: {
+            'ff_wpml.enabled': {
+                immediate: true,
+                handler(newValue) {
+                    if (newValue === 'yes' && this.firstNonDefaultLanguageCode) {
+                        this.activeLanguageTab = this.firstNonDefaultLanguageCode;
+                    }
+                }
+            }  
         },
         methods: {
             setDefaultSettings() {
