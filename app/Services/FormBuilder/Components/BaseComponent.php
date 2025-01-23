@@ -5,6 +5,7 @@ namespace FluentForm\App\Services\FormBuilder\Components;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\Framework\Support\Helper;
+use stdClass;
 
 class BaseComponent
 {
@@ -103,7 +104,7 @@ class BaseComponent
      *
      * @param array $element [Html element being compiled]
      *
-     * @return boolean
+     * @return bool
      */
     protected function hasConditions($element)
     {
@@ -196,7 +197,7 @@ class BaseComponent
      *
      * @param string    $elMarkup [Predifined partial markup]
      * @param array     $data
-     * @param \stdClass $form     [Form object]
+     * @param stdClass $form     [Form object]
      *
      * @return string [Compiled markup]
      */
@@ -244,21 +245,28 @@ class BaseComponent
         }
 
         $labelMarkup = '';
-    
+        
         if (!empty($data['settings']['label'])) {
             $label = ArrayHelper::get($data, 'settings.label');
             $ariaLabel = $label;
             
             $hasShortCodeIndex = strpos($label, '{dynamic.');
-            if ($hasShortCodeIndex !== false) {
+            
+            //Handle name field duplicate label accessibility
+            $isNameField = strpos(ArrayHelper::get($data, 'attributes.name', ''), 'name') !== false;
+            if ($isNameField) {
+                $ariaLabel = '';
+            } elseif ($hasShortCodeIndex !== false) {
                 $ariaLabel = trim(substr($label, 0, $hasShortCodeIndex));
+            } else {
+                $ariaLabel = $label;
             }
-    
+            
             $labelMarkup = sprintf(
-                '<div class="%1$s"><label %2$s aria-label="%3$s">%4$s</label>%5$s</div>',
+                '<div class="%1$s"><label %2$s %3$s>%4$s</label>%5$s</div>',
                 esc_attr($labelClass),
                 $forStr,
-                esc_attr($this->removeShortcode($label)),
+                $ariaLabel != '' ? 'aria-label="'.esc_attr($this->removeShortcode($label)).'"' : '',
                 fluentform_sanitize_html($label),
                 fluentform_sanitize_html($labelHelpText)
             );
@@ -339,6 +347,6 @@ class BaseComponent
         if ($matches[0]) {
             $label = trim(str_replace($matches[0], '', $label));
         }
-        return $label;
+        return wp_strip_all_tags($label);
     }
 }

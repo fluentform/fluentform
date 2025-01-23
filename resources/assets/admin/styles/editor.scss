@@ -98,8 +98,8 @@
         background-color: $white;
         li {
           flex: 0;
-          padding-left: 20px;
-          padding-right: 20px;
+          padding-left: 10px;
+          padding-right: 10px;
           a {
             text-align: left;
             padding: 15px 0;
@@ -231,6 +231,8 @@
       }
     }
   }
+
+
 }
 
 div#js-form-editor--body {
@@ -587,6 +589,9 @@ div.mce-inline-toolbar-grp.mce-arrow-up,
       color: $base-text;
     }
   }
+  .el-button--mini{
+    padding: 7px 12px;
+  }
 }
 
 
@@ -861,7 +866,12 @@ mark {
 .repeat-field-actions {
   margin-top: 26px;
 }
-
+.repeater-item-container{
+  display: flex;
+  .repeat-field-actions {
+    align-self: center;
+  }
+}
 .section-break {
   &__title {
     margin-top: 0;
@@ -1254,5 +1264,64 @@ mark {
     }
   }
 }
+
+.ff-undo-redo-container {
+  display: flex;
+  gap: 6px;
+  border-right: 1px solid #ececec;
+
+  .ff-undo-button, .ff-redo-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    padding: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    svg {
+      opacity: 0.5;
+    }
+
+    &.active {
+      svg {
+        opacity: 1;
+      }
+      &:hover svg {
+          opacity: 0.8;
+      }
+    }
+  }
+}
+
+.ff-keyboard-shortcut-tooltip {
+  position: relative;
+
+  .ff-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4B4C4D;
+    color: #FFFFFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 11;
+  }
+
+  &#saveFormData .ff-tooltip {
+    top: 135%;
+    padding: 6px 12px;
+  }
+
+  &:hover .ff-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 
 

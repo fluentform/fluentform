@@ -171,6 +171,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 }
 
+                // if date field with flatpickr has advanced config altInput set to true
+                if (typeof flatpickr !== 'undefined') {
+                    if ($el.prop('_flatpickr')) {
+                        const fpInstance = $el.prop('_flatpickr');
+                        if (fpInstance) {
+                            if (fpInstance.config.altInput) {
+                                fpInstance.setDate(value, true);
+                            } else {
+                                $el.val(value).trigger('change');
+                            }
+                        }
+                    }
+                }
 
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
@@ -197,14 +210,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         isPopulatingStepData = true;
-        // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
-        // if (stepResume || saveProgressForm) {
+        const animDuration = fluentFormVars.stepAnimationDuration;
         if (stepResume) {
-            updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true)
+            updateSlider(step_completed, animDuration, true)
                 .then(() => {
-                    trapFocus($(`${formSelector} .fluentform-step.active`));
-
-                    focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                    handleFocus(animDuration);
                 })
                 .catch(error => {
                     console.error("An error occurred during the slider update:", error);
@@ -267,6 +277,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             let formInstance = getFormInstance();
             let $this = $(this);
             let currentStep = 0;
+            const animDuration = fluentFormVars.stepAnimationDuration;
 
             try {
                 let targetStep = $this.data('step-number');
@@ -284,11 +295,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 });
 
-                updateSlider(targetStep, fluentFormVars.stepAnimationDuration, true)
+                updateSlider(targetStep, animDuration, true)
                     .then(() => {
-                        trapFocus($(`${formSelector} .fluentform-step.active`));
-
-                        focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                        handleFocus(animDuration);
                     })
                     .catch(error => {
                         console.error("An error occurred during the slider update:", error);
@@ -297,11 +306,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 if (!(e instanceof window.ffValidationError)) {
                     throw e;
                 }
-                updateSlider(currentStep, fluentFormVars.stepAnimationDuration, true)
+                updateSlider(currentStep, animDuration, true)
                     .then(() => {
-                        trapFocus($(`${formSelector} .fluentform-step.active`));
-
-                        focusOnInputAfterStepChange(fluentFormVars.stepAnimationDuration)
+                        handleFocus(animDuration);
                     })
                     .catch(error => {
                         console.error("An error occurred during the slider update:", error);
@@ -355,7 +362,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
      * @return void
      */
     var registerStepNavigators = function (animDuration) {
-        trapFocus($(`${formSelector} .fluentform-step.active`));
+        handleFocus(animDuration);
 
         $(formSelector).on('click', '.fluentform-step  .step-nav button, .fluentform-step  .step-nav img', function (e) {
             const btn = $(this).data('action');
@@ -402,9 +409,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             updateSlider(activeStep, animDuration, autoScroll, actionType)
                 .then(() => {
-                    trapFocus($(`${formSelector} .fluentform-step.active`));
-
-                    focusOnInputAfterStepChange(animDuration)
+                    handleFocus(animDuration);
                 })
                 .catch(error => {
                     console.error("An error occurred during the slider update:", error);
@@ -412,41 +417,11 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         });
     };
 
-    // Function to determine the focus element
-    function focusOnInputAfterStepChange(timeout) {
-        const getFocusElement = () => {
-            const $activeStep = $(`${formSelector} .fluentform-step.active`);
-            const isLastStepActive = $theForm.find('.fluentform-step').last().hasClass('active');
-            let focusElement = null;
-
-            if (isLastStepActive) {
-                const allChildrenHidden = $activeStep.children().not('.ff-inner_submit_container').toArray().every(child => $(child).hasClass('ff_excluded'));
-
-                focusElement = allChildrenHidden
-                    ? $activeStep.find('button[type="submit"]').first()
-                    : $activeStep.find('input, select, textarea').first();
-            } else {
-                focusElement = $activeStep.find('input, select, textarea').first();
-            }
-
-            return focusElement;
-        };
-
-        // Adding a small delay to ensure the element is ready
-        setTimeout(() => {
-            const focusElement = getFocusElement();
-
-            if (focusElement && focusElement.length) {
-                focusElement.focus();
-            }
-        }, timeout);
-    }
-
     /**
      * Update slider position in multistep form
      * @param  {int} goBackToStep
      * @param  {int} animDuration
-     * @param  {bool} isScrollTop
+     * @param  {boolean} isScrollTop
      * @return {Promise}
      */
     var updateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
@@ -504,25 +479,24 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             };
 
             // Animate step
-            let inlineCssObj = {
-                left: -(activeStep * 100) + '%',
-            };
-            if (isRtl) {
-                inlineCssObj = {right: -(activeStep * 100) + '%'};
-            }
+            let inlineCssObj = isRtl ? { right: -(activeStep * 100) + '%' } : { left: -(activeStep * 100) + '%' };
 
             const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
             let animationPromise;
 
             switch (animationType) {
                 case 'slide':
-                    animationPromise = stepsWrapper.animate(inlineCssObj, animDuration).promise();
+                    stepsWrapper.css('transition', `all ${animDuration}ms`);
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration));
                     break;
                 case 'fade':
-                    stepsWrapper.css({opacity: 0});
-                    animationPromise = stepsWrapper.animate(inlineCssObj, animDuration)
-                        .animate({opacity: 1}, animDuration)
-                        .promise();
+                    stepsWrapper.css('transition', `all ${animDuration}ms`);
+                    stepsWrapper.css({opacity: 0, ...inlineCssObj});
+                    setTimeout(() => {
+                        stepsWrapper.css({opacity: 1});
+                    }, 50);
+                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration * 2));
                     break;
                 case 'slide_down':
                     stepsWrapper.hide();
@@ -531,7 +505,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     break;
                 case 'none':
                     stepsWrapper.css(inlineCssObj);
-                    animationPromise = Promise.resolve(); // No animation, resolve immediately
+                    animationPromise = Promise.resolve();
                     break;
                 default:
                     stepsWrapper.css(inlineCssObj);
@@ -539,12 +513,14 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             }
 
             animationPromise.then(() => {
+                stepsWrapper.css('pointer-events', ''); // Re-enable pointer events
+
                 if (isScrollTop) {
                     scrollTop();
                 }
 
                 //skip saving the last step
-                let isLastStep = activeStep === 0;
+                let isLastStep = activeStep === totalSteps - 1;
 
                 // Fire ajax request to persist the step state/data
                 if (stepPersistency && !isPopulatingStepData && !isLastStep) {
@@ -598,32 +574,122 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         });
     };
 
-    function trapFocus(container) {
-        const focusableElements = container.find('input, select, textarea, button').filter(':visible');
-        const firstFocusableElement = focusableElements.first();
-        const lastFocusableElement = focusableElements.last();
+    let isInitialLoad = true;
+    function handleFocus(animDuration) {
+        let isAnimating = false;
 
-        container.on('keydown', function (e) {
-            const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+        function getCurrentStepIndex() {
+            return $theForm.find(".fluentform-step").index($theForm.find(".fluentform-step.active"));
+        }
 
-            if (!isTabPressed) {
-                return;
+        function getTotalSteps() {
+            return $theForm.find(".fluentform-step").length;
+        }
+
+        function focusOnStep(step, shouldFocus = false) {
+            const autoFocusEnabled = $theForm.find(".ff-step-container").attr("data-disable_auto_focus") != "yes";
+
+            if (!isInitialLoad) {
+                if (!autoFocusEnabled) {
+                    setTimeout(() => {
+                        $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
+                    }, animDuration);
+
+                    isInitialLoad = false;
+                } else {
+                    const focusableElements = step.find("input, select, textarea, button, a").filter(":visible");
+
+                    if (focusableElements.length && shouldFocus) {
+                        setTimeout(() => {
+                            focusableElements.first().focus();
+                        }, animDuration + 50);
+                    }
+
+                    isInitialLoad = false;
+                }
+            }
+        }
+
+        function handleStepChange() {
+            isAnimating = true;
+            setTimeout(() => {
+                isAnimating = false;
+                focusOnStep($theForm.find(".fluentform-step.active"), true);
+            }, animDuration + 50);
+        }
+
+        function handleStepNavigation(e, direction) {
+            if (isAnimating) return;
+
+            const currentStepIndex = getCurrentStepIndex();
+            const isFirstStep = currentStepIndex === 0;
+            const isLastStep = currentStepIndex === getTotalSteps() - 1;
+
+            if ((direction === "prev" && isFirstStep) || (direction === "next" && isLastStep)) {
+                return; // Allow focus to move out of the form
             }
 
-            if (e.shiftKey) {
-                // If Shift + Tab is pressed
-                if (document.activeElement === firstFocusableElement[0]) {
-                    lastFocusableElement.focus();
-                    e.preventDefault();
-                }
-            } else {
-                // If Tab is pressed
-                if (document.activeElement === lastFocusableElement[0]) {
-                    firstFocusableElement.focus();
-                    e.preventDefault();
-                }
+            e.preventDefault();
+            e.stopPropagation();
+            const buttonSelector = direction === "prev" ? ".ff-btn-prev" : ".ff-btn-next";
+            const button = $(`${formSelector} .fluentform-step.active`).find(`.step-nav ${buttonSelector}`);
+
+            if (button.length) {
+                button.click();
+                handleStepChange();
             }
+        }
+
+        function setupKeyboardNavigation() {
+            $theForm.off("keydown.stepNavigation").on("keydown.stepNavigation", function (e) {
+                if (isAnimating) return;
+
+                const isTabPressed = e.key === "Tab" || e.keyCode === 9;
+
+                if (!isTabPressed) {
+                    return;
+                }
+
+                const focusableElements = $(`${formSelector} .fluentform-step.active`).find("input, select, textarea, button, a").filter(":visible");
+                const firstFocusableElement = focusableElements.first();
+                const lastFocusableElement = focusableElements.last();
+                const currentStepIndex = getCurrentStepIndex();
+                const isFirstStep = currentStepIndex === 0;
+                const isLastStep = currentStepIndex === getTotalSteps() - 1;
+
+                if (e.shiftKey) {
+                    // If Shift + Tab is pressed
+                    if (document.activeElement === firstFocusableElement[0]) {
+                        if (!isFirstStep) {
+                            handleStepNavigation(e, "prev");
+                        }
+                    }
+                } else {
+                    // If Tab is pressed
+                    if (document.activeElement === lastFocusableElement[0]) {
+                        if (!isLastStep) {
+                            handleStepNavigation(e, "next");
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup keyboard navigation
+        setupKeyboardNavigation();
+
+        // Handle focus after step changes, including conditional skips
+        $theForm.on('ff_to_next_page ff_to_prev_page', function() {
+            handleStepChange();
         });
+
+        // Only focus if autoFocus is enabled, it's not the first step, and it's not the initial load
+        const autoFocusEnabled = $theForm.find(".ff-step-container").attr("data-disable_auto_focus") != "yes";
+        if (autoFocusEnabled && getCurrentStepIndex() !== 0 && !isInitialLoad) {
+            focusOnStep($(`${formSelector} .fluentform-step.active`), true);
+        }
+
+        isInitialLoad = false;
     }
 
 

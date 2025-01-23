@@ -6,21 +6,21 @@
                     <h5 class="title">{{ $t('WebHooks Integration') }}</h5>
                     <btn-group>
                         <btn-group-item>
-                            <el-button 
-                                v-if="show_edit" 
+                            <el-button
+                                v-if="show_edit"
                                 @click="backToHome()"
-                                size="medium" 
+                                size="medium"
                                 icon="ff-icon ff-icon-arrow-left"
                                 type="info"
                                 class="el-button--soft"
                             >
                                 {{ $t('Back') }}
                             </el-button>
-                            <el-button 
+                            <el-button
                                 v-else
-                                @click="add" 
+                                @click="add"
                                 type="info"
-                                size="medium" 
+                                size="medium"
                                 icon="ff-icon ff-icon-plus"
                             >
                             {{ $t('Add New') }}
@@ -35,8 +35,14 @@
                     <el-skeleton :loading="loading" animated :rows="6">
                         <el-table class="ff_table_s2" :data="tableData">
                             <template slot="empty">
-                                {{ $t('You don\'t have any feeds configured. Let\'s go ') }}
-                                <a href="#" @click.prevent="add">{{ $t(' create one!') }}</a>
+                                <p v-html="
+                                    $t(
+                                        'You don\'t have any feeds configured. Let\'s %sCreate One%s',
+                                        `<a href='#' onclick='window.ffAddWebhookFeed()'>`,
+                                        '</a>'
+                                    )
+                                ">
+                                </p>
                             </template>
 
                             <el-table-column width="100">
@@ -113,7 +119,7 @@
     import CardBody from '@/admin/components/Card/CardBody.vue';
     import CardHead from '@/admin/components/Card/CardHead.vue';
     import CardHeadGroup from '@/admin/components/Card/CardHeadGroup.vue';
-    
+
     export default {
         name: 'WebHook',
         props: ['form', 'inputs', 'has_pro', 'editorShortcodes'],
@@ -166,7 +172,7 @@
                 let integration = this.integrations[index];
                 this.selectedIndex = 0;
                 this.selected_id = integration.id;
-                this.editing_item =  integration.formattedValue;
+                this.editing_item = integration.formattedValue;
                 this.show_edit = true;
             },
             discard() {
@@ -191,10 +197,10 @@
                     });
             },
             remove(id) {
-                let data = { 
+                let data = {
                     action: 'fluentform-delete-webhook',
-                    id: id, 
-                    form_id: this.form.id 
+                    id: id,
+                    form_id: this.form.id
                 };
 
                 FluentFormsGlobal.$post(data )
@@ -231,8 +237,16 @@
         beforeMount() {
             this.getFeeds();
         },
+        mounted() {
+            window.ffAddWebhookFeed = () => {
+                this.add();
+            };
+        },
         beforeCreate() {
-            jQuery('head title').text('WebHook Settings - Fluent Forms');
-        }
-    }
+            jQuery("head title").text("WebHook Settings - Fluent Forms");
+        },
+        beforeDestroy() {
+            delete window.ffAddWebhookFeed;
+        },
+    };
 </script>

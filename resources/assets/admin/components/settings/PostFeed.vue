@@ -54,8 +54,15 @@
                                 {{ $t('Allow Logged out user to create posts') }}
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
-                                        <p>
-                                            {{ $t(`Allow guest user to ${isUpdate? 'update' : 'create'} post. If allowed post can be ${isUpdate? 'updatable' : 'creatable'} with out login in.`)}}
+                                        <p
+                                            v-html="
+                                                $t(
+                                                    'Allow guest user to %s post. If allowed post can be %s with out login in.',
+                                                    isUpdate ? 'update' : 'create',
+                                                    isUpdate? 'updatable' : 'creatable'
+                                                )
+                                            "
+                                        >
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -272,7 +279,7 @@
                                 @click="saveFeed"
                                 icon="el-icon-success"
                             >
-                                {{ saving ? $t('Saving') : 'Save' }} {{'Feed'}}
+                                {{ $t('%s Feed', saving ? 'Saving' : 'Save') }}
                             </el-button>
                         </div>
                     </el-form>

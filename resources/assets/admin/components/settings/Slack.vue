@@ -24,12 +24,13 @@
 
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
-                                        <p>
-                                            {{$t('The')}}
-                                            <a href="https://api.slack.com/incoming-webhooks" target="_blank">
-                                                {{ $t('slack webhook URL') }}
-                                            </a> 
-                                            {{ $t(' where Fluent Forms will send JSON payload.') }}
+                                        <p v-html="
+                                            $t(
+                                                'The %sSlack webhook URL%s where Fluent Forms will send JSON payload.',
+                                                `<a href='https://api.slack.com/incoming-webhooks' target='_blank'>`,
+                                                '</a>'
+                                            )
+                                        ">
                                         </p>
                                     </div>
 
@@ -56,9 +57,15 @@
                                     :disabled="!hasPro"
                                 ></el-checkbox>
                             </el-checkbox-group>
-                            <div v-show="!hasPro" class="mt-3 text-danger">
-                                {{ $t('Select Fields is a pro feature. Please') }}
-                                <a href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree" target="_blank">{{$t('Upgrade to Pro')}}.</a>
+                            <div
+                                v-show="!hasPro" class="mt-3 text-danger"
+                                v-html="
+                                    $t(
+                                        'Select Fields is a pro feature. Please %sUpgrade to Pro.%s',
+                                        `<a href='https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree' target='_blank'>`,
+                                        '</a>'
+                                    )
+                            ">
                             </div>
                         </el-form-item>
 
@@ -69,7 +76,7 @@
 
                     <div>
                         <el-button type="primary" icon="el-icon-success" @click="save">
-                            {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                            {{ $t('%s Feed', loading ? 'Saving' : 'Save') }}
                         </el-button>
                     </div>
                 </el-form>

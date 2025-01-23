@@ -49,7 +49,6 @@ class Updater
             $formFields = apply_filters('fluentform/form_fields_update', $formFields, $formId);
             $formFields = $this->sanitizeFields($formFields);
             $data['form_fields'] = $formFields;
-            
             /**
              * Fires before a Form is updated.
              * @since 5.2.1
@@ -97,7 +96,7 @@ class Updater
         if (fluentformCanUnfilteredHTML()) {
             return $formFields;
         }
-
+    
         $fieldsArray = json_decode($formFields, true);
 
         if (isset($fieldsArray['submitButton'])) {
@@ -111,8 +110,9 @@ class Updater
                 );
             }
         }
-
         $fieldsArray['fields'] = $this->sanitizeFieldMaps($fieldsArray['fields']);
+        $fieldsArray['fields'] = $this->sanitizeCustomSubmit($fieldsArray['fields']);
+        
 
         return json_encode($fieldsArray);
     }
@@ -132,10 +132,11 @@ class Updater
         ];
 
         $attributesKeys = array_keys($attributesMap);
-
+    
         $settingsMap = [
             'container_class'           => 'sanitize_text_field',
-            'label'                     => 'wp_kses_post',
+            'label'                     => 'fluentform_sanitize_html',
+            'tnc_html'                  => 'fluentform_sanitize_html',
             'label_placement'           => 'sanitize_text_field',
             'help_message'              => 'wp_kses_post',
             'admin_field_label'         => 'sanitize_text_field',
@@ -145,7 +146,10 @@ class Updater
             'advanced_options'          => 'fluentform_options_sanitize',
             'html_codes'                => 'fluentform_sanitize_html',
             'description'               => 'fluentform_sanitize_html',
+            'grid_columns'              => [Helper::class, 'sanitizeArrayKeysAndValues'],
+            'grid_rows'                 => [Helper::class, 'sanitizeArrayKeysAndValues'],
         ];
+      
 
         $settingsKeys = array_keys($settingsMap);
 
@@ -154,36 +158,25 @@ class Updater
             'media'    => 'sanitize_url',
             'alt_text' => 'sanitize_text_field',
         ];
-
         $stylePrefKeys = array_keys($stylePrefMap);
-
+        
         foreach ($fields as $fieldIndex => &$field) {
             $element = Arr::get($field, 'element');
-
+            
             if ('container' == $element) {
                 $columns = $field['columns'];
                 foreach ($columns as $columnIndex => $column) {
                     $fields[$fieldIndex]['columns'][$columnIndex]['fields'] = $this->sanitizeFieldMaps($column['fields']);
                 }
-
-                return $fields;
+                continue;
             }
 
-            // Welcome Screen element button text sanitization
             if ('welcome_screen' == $element) {
                 if ($value = Arr::get($field, 'settings.button_ui.text')) {
                     $field['settings']['button_ui']['text'] = sanitize_text_field($value);
                 }
             }
-
-            /*
-             * Handle Name or address fields
-             */
-            if (!empty($field['fields'])) {
-                $fields[$fieldIndex]['fields'] = $this->sanitizeFieldMaps($field['fields']);
-
-                return $fields;
-            }
+            
 
             if (!empty($field['attributes'])) {
                 $attributes = array_filter(Arr::only($field['attributes'], $attributesKeys));
@@ -194,13 +187,19 @@ class Updater
             }
 
             if (!empty($field['settings'])) {
-                $settings = array_filter(Arr::only($field['settings'], $settingsKeys));
-
+                $settings = array_filter(Arr::only($field['settings'], array_values($settingsKeys)));
                 foreach ($settings as $key => $value) {
                     $fields[$fieldIndex]['settings'][$key] = call_user_func($settingsMap[$key], $value);
                 }
             }
-
+            /*
+            * Handle Name or address fields
+            */
+            if (!empty($field['fields'])) {
+                $fields[$fieldIndex]['fields'] = $this->sanitizeFieldMaps($field['fields']);
+                continue;
+            }
+            
             if (!empty($field['style_pref'])) {
                 $settings = array_filter(Arr::only($field['style_pref'], $stylePrefKeys));
 
@@ -220,7 +219,7 @@ class Updater
                 }
             }
         }
-
+        
         return $fields;
     }
 
@@ -236,5 +235,70 @@ class Updater
         }
 
         FormMeta::persist($form->id, '_primary_email_field', $emailInputName);
+    }
+    
+    private function sanitizeCustomSubmit($fields)
+    {
+        $customSubmitSanitizationMap = [
+            'hover_styles'  => [
+                'backgroundColor' => [$this, 'sanitizeRgbColor'],
+                'borderColor'     => [$this, 'sanitizeRgbColor'],
+                'color'           => [$this, 'sanitizeRgbColor'],
+                'borderRadius'    => 'sanitize_text_field',
+                'minWidth'        => [$this, 'sanitizeMinWidth']
+            ],
+            'normal_styles' => [
+                'backgroundColor' => [$this, 'sanitizeRgbColor'],
+                'borderColor'     => [$this, 'sanitizeRgbColor'],
+                'color'           => [$this, 'sanitizeRgbColor'],
+                'borderRadius'    => 'sanitize_text_field',
+                'minWidth'        => [$this, 'sanitizeMinWidth']
+            ],
+            'button_ui'     => [
+                'type'    => 'sanitize_text_field',
+                'text'    => 'sanitize_text_field',
+                'img_url' => 'esc_url_raw',
+            ],
+        ];
+        foreach ($fields as $fieldIndex => $field) {
+            $element = Arr::get($field, 'element');
+            
+            if ('custom_submit_button' == $element) {
+                $styleAttr = ['hover_styles', 'normal_styles', 'button_ui'];
+                foreach ($styleAttr as $attr) {
+                    if ($styleConfigs = Arr::get($field, 'settings.' . $attr)) {
+                        foreach ($styleConfigs as $key => $value) {
+                            if (isset($customSubmitSanitizationMap[$attr][$key])) {
+                                $sanitizeFunction = $customSubmitSanitizationMap[$attr][$key];
+                                $fields[$fieldIndex]['settings'][$attr][$key] = $sanitizeFunction($value);
+                            }
+                        }
+                    }
+                }
+            }
+            elseif ('container' == $element) {
+                $columns = $field['columns'];
+                foreach ($columns as $columnIndex => $column) {
+                    $fields[$fieldIndex]['columns'][$columnIndex]['fields'] = $this->sanitizeCustomSubmit($column['fields']);
+                }
+                return $fields;
+            }
+        }
+        return $fields;
+    }
+    
+    public function sanitizeMinWidth($value)
+    {
+        if (is_string($value) && preg_match('/^\d+%$/', $value)) {
+            return $value;
+        }
+        return '';
+    }
+    
+    public function sanitizeRgbColor($value) {
+        if (preg_match('/^rgba?\((\d{1,3}\s*,\s*){2,3}(0|1|0?\.\d+)\)$/', $value)) {
+            return $value;
+        }
+        return '';
     }
 }

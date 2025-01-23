@@ -85,20 +85,20 @@
                             class="entry_submission_log ff_table_s2"
                             @selection-change="handleSelectionChange"
                         >
-                            <el-table-column sortable type="selection" width="50"></el-table-column>
+                            <el-table-column sortable type="selection" width="40"></el-table-column>
                             <el-table-column type="expand">
                                 <template slot-scope="props">
                                     <p v-html="props.row.description"></p>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable prop="id" width="100px" :label="$t('ID')"></el-table-column>
+                            <el-table-column sortable prop="id" width="60" :label="$t('ID')"></el-table-column>
                             <el-table-column sortable width="140px" :label="$t('Submission ID')">
                                 <template slot-scope="props">
                                     <a v-if="props.row.submission_url" :href="props.row.submission_url">#{{props.row.source_id}}</a>
                                     <span v-else>n/a</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column sortable :label="$t('Form')">
+                            <el-table-column sortable :label="$t('Form')"  width="140">
                                 <template slot-scope="props">
                                     <span v-if="props.row.form_title">{{props.row.form_title}}</span>
                                     <span v-else>{{ $t('General Log') }}</span>
@@ -117,7 +117,17 @@
                                     <div>{{ props.row.component }}</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="created_at" :label="$t('Date')" width="180"></el-table-column>
+                            <el-table-column prop="created_at" :label="$t('Date')" width="180">
+                                <template slot-scope="props">
+                                    <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                        <div slot="content">
+                                            {{tooltipDateTime(props.row.created_at)}}
+                                        </div>
+
+                                        <span>{{humanDiffTime(props.row.created_at)}}</span>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
                             <el-table-column width="115" fixed="right" align="center" :label="$t('Action')">
                                 <template slot-scope="props">
                                     <btn-group size="sm">

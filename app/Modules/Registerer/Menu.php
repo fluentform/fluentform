@@ -284,6 +284,9 @@ class Menu
             'forms'                    => $forms,
             'hasPro'                   => defined('FLUENTFORMPRO'),
             'has_entries_import'       => defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.1.7', '>='),
+            'disable_time_diff'        => Helper::isDefaultWPDateEnabled(),
+            'wp_date_time_format'      => Helper::getDefaultDateTimeFormatForMoment(),
+            'server_time'              => current_time('mysql'),
         ]);
 
         $page = sanitize_text_field($this->app->request->get('page'));
@@ -771,7 +774,7 @@ class Menu
         $isDisabledAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',
@@ -787,7 +790,13 @@ class Menu
             'adminUrlWithoutPageHash' => admin_url('admin.php'),
             'isDisableAnalytics'      => $this->app->applyFilters('fluentform/disabled_analytics', $isDisabledAnalytics),
             'plugin_public_url'       => fluentformMix(),
+            'siteUrl'                 => site_url(),
         ];
+
+        if (defined('FLUENTFORMPRO')){
+            $data['landing_page_enabled_forms']= Helper::getLandingPageEnabledForms();
+        }
+     
 
         $data = apply_filters_deprecated(
             'fluent_all_forms_vars',
@@ -985,6 +994,7 @@ class Menu
 				    'net_promoter_score',
 				    'rangeslider',
 				    'custom_payment_component',
+                    'item_quantity_component'
 			    ]
 		    ];
 	    }

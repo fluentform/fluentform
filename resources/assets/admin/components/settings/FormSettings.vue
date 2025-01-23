@@ -19,7 +19,7 @@
                                         @click="saveSettings"
                                         size="medium"
                                     >
-                                        {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                                        {{ $t('%s Settings', loading ? 'Saving' : 'Save') }}
                                     </el-button>
                                 </btn-group-item>
                             </btn-group>
@@ -93,7 +93,7 @@
                                         :editor-shortcodes="editorShortcodes"
                                         v-model="double_optin.confirmation_message"/>
 
-                                    <p class="mt-1 fs-14">{{ $t('This message will be shown after the intial form submission') }}</p>
+                                    <p class="mt-1 fs-14">{{ $t('This message will be shown after the initial form submission') }}</p>
                                 </el-form-item>
 
                                 <el-form-item class="ff-form-item" :label="$t('Email Type')">
@@ -157,7 +157,8 @@
 
                                 <div v-if="hasFluentCRM" class="form_item">
                                     <el-checkbox true-label="yes" false-label="no" v-model="double_optin.skip_if_fc_subscribed">
-                                        {{ $t('Disable Double Optin if contact email is subscribed in ')}}<b>FluentCRM</b>
+                                        <span v-html="$t('Disable Double Optin if contact email is subscribed in %s', '<b>FluentCRM</b>')">
+                                        </span>
                                     </el-checkbox>
                                 </div>
                             </template>
@@ -170,8 +171,17 @@
                 <card v-if="admin_approval" id="admin_approval">
                     <card-head>
                         <h5 class="title">{{ $t('Admin approval') }}</h5>
-                        <p class="text">
-                            {{ $t('Enable admin approval email notifications to inform the admin of pending submissions from') }} <a href="?page=fluent_forms_settings#admin_approval">{{ $t('Global Settings') }}</a>. {{$t('After approve form data & email notification will be processed.You can configure an email for users declined submissions.') }}</p>
+                        <p
+                            class="text"
+                            v-html="
+                                $t(
+                                    'Enable admin approval email notifications to inform the admin of pending submissions from %sGlobal Settings%s. After approve form data & email notification will be processed. You can configure an email for users declined submissions.',
+                                    `<a target='_blank' href='?page=fluent_forms_settings#admin_approval'>`,
+                                    '</a>'
+                                )
+                            "
+                        >
+                        </p>
                     </card-head>
                     <card-body>
 
@@ -436,11 +446,16 @@
                 <card id="advanced-form-validation">
                     <card-head>
                         <h5 class="title">{{ $t('Advanced Form Validation') }}</h5>
-                        <p class="text">
-                            {{$t('You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions.')}}
-                            <a target="_blank" rel="noopener" href="https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/">
-                                {{ $t('Learn More here')}}
-                            </a>
+                        <p
+                            class="text"
+                            v-html="
+                                $t(
+                                    'You can set rules to the user input and based on the rules you can prevent the form submission. This is very useful feature for preventing spam / bot submissions. %sLearn More%s',
+                                    `<a target='_blank' rel='noopener' href='https://wpmanageninja.com/docs/fluent-form/advanced-features-functionalities-in-wp-fluent-form/advanced-form-validation-in-wp-fluent-forms-wordpress-plugin/'>`,
+                                    '</a>'
+                                )
+                            "
+                        >
                         </p>
                     </card-head>
 
@@ -525,10 +540,18 @@
                                     <div class="el-form-item__content">
                                         <el-input-number :min="1" v-model="formSettings.auto_delete_days"/>
                                     </div>
-                                    <p class="mt-2 text-danger" v-if="formSettings.auto_delete_days">
-                                        {{ $t('Entries older than ') }}
-                                        <b>{{formSettings.auto_delete_days}} {{ $t(' days ') }}</b>
-                                        {{ $t('will be deleted automatically') }}
+                                    <p
+                                        class="mt-2 text-danger"
+                                        v-if="formSettings.auto_delete_days"
+                                        v-html="
+                                            $t(
+                                                'Entries older than %s%s days%s will be deleted automatically.',
+                                                '<b>',
+                                                formSettings.auto_delete_days,
+                                                '</b>'
+                                            )
+                                        "
+                                    >
                                     </p>
                                 </div>
                             </div>
@@ -681,7 +704,7 @@
                         icon="el-icon-success"
                         @click="saveSettings"
                     >
-                        {{loading ? $t('Saving ') : $t('Save ')}} {{ $t('Settings') }}
+                        {{ $t('%s Settings', loading ? 'Saving' : 'Save') }}
                     </el-button>
                 </div>
             </template>

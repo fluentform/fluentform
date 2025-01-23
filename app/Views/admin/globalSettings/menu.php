@@ -261,6 +261,32 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                         <!-- Render Custom links -->
                         <?php if ($customLinks) : ?>
                             <?php foreach ($customLinks as $customLink): ?>
+                                <?php if($subLinks = ArrayHelper::get($customLink, 'sub_links')) :?>
+                                    <li class="ff_list_button_item has_sub_menu">
+                                        <a class="ff_list_button_link" href="#">
+                                            <?php echo esc_html(ArrayHelper::get($customLink, 'title', '')); ?>
+                                        </a>
+                                        <ul class="ff_list_submenu">
+                                            <?php foreach ($subLinks as $customSubLink): ?>
+                                                <li
+                                                        class="<?php echo esc_attr(ArrayHelper::get($customSubLink, 'class', '')); ?> ff_list_button_item"
+                                                >
+                                                    <a
+                                                            data-hash="<?php echo esc_attr(ArrayHelper::get($customSubLink, 'hash', 'custom_component')) ?>"
+                                                            data-settings_key="custom_component"
+                                                            data-component="custom_component"
+                                                            data-component_name="<?php echo esc_attr(ArrayHelper::get($customSubLink, 'component', '')); ?>"
+                                                            href="<?php echo esc_url(Helper::makeMenuUrl('fluent_forms_settings', [
+                                                                'hash' => esc_attr(ArrayHelper::get($customSubLink, 'hash', 'custom_component')),
+                                                            ])); ?>"
+                                                    >
+                                                        <?php echo esc_attr(ArrayHelper::get($customSubLink, 'title', '')); ?>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </li>
+                                <?php else: ?>
                                 <li
                                     class="<?php echo esc_attr(ArrayHelper::get($customLink, 'class', '')); ?> ff_list_button_item"
                                 >
@@ -277,6 +303,7 @@ use FluentForm\Framework\Helpers\ArrayHelper;
                                         <?php echo esc_attr(ArrayHelper::get($customLink, 'title', '')); ?>
                                     </a>
                                 </li>
+                                <?php endif ?>
                             <?php endforeach; ?>
                             <?php do_action('fluentform/global_settings_custom_component'); ?>
                         <?php endif ?>

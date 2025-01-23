@@ -107,7 +107,11 @@ trait MailChimpSubscriber
             );
 
             foreach ($mergeFieldsSettings as $fieldSettings) {
-                if ('address' == $fieldSettings['type'] || 'birthday' == $fieldSettings['type']) {
+                if (
+                    'address' == $fieldSettings['type'] ||
+                    'birthday' == $fieldSettings['type'] ||
+                    'date' == $fieldSettings['type']
+                ) {
                     $fieldName = $fieldSettings['tag'];
 
                     $formFieldName = ArrayHelper::get($feed, 'settings.merge_fields.' . $fieldName);
@@ -119,8 +123,8 @@ trait MailChimpSubscriber
 
                         $formFieldValue = ArrayHelper::get($formData, $formFieldName);
 
-                        if ($formFieldValue && is_array($formFieldValue)) {
-                            if('address' == $fieldSettings['type']) {
+                        if ($formFieldValue) {
+                            if (is_array($formFieldValue) && 'address' == $fieldSettings['type']) {
                                 $mergeFields[$fieldName] = [
                                     'addr1'   => ArrayHelper::get($formFieldValue, 'address_line_1'),
                                     'city'    => ArrayHelper::get($formFieldValue, 'city'),
@@ -133,8 +137,14 @@ trait MailChimpSubscriber
                                     $mergeFields[$fieldName]['addr2'] = ArrayHelper::get($formFieldValue, 'address_line_2');
                                 }
                             }
-                            else {
+                            elseif ('birthday' == $fieldSettings['type']) {
                                 $mergeFields[$fieldName] = date('d/m', strtotime($formFieldValue));
+                            } else {
+                                $date = \DateTime::createFromFormat('d/m/Y', $formFieldValue) ?: \DateTime::createFromFormat('m/d/Y', $formFieldValue);
+
+                                if ($date) {
+                                    $mergeFields[$fieldName] = $date->format('Y-m-d\T00:00:00.001\Z');
+                                }
                             }
                         }
                     }
@@ -193,7 +203,7 @@ trait MailChimpSubscriber
         $existingMember = $this->getMemberByEmail($listId, $arguments['email_address']);
 
         $isNew = true;
-        if (! empty($existingMember['id'])) {
+        if (!empty($existingMember['id'])) {
             $isNew = false;
             if (ArrayHelper::isTrue($feedData, 'resubscribe')) {
                 //for resubscribing unsubscribed contact ; status = subscribed || pending

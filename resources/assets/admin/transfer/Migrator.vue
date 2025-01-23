@@ -18,8 +18,8 @@
                                 :name="migrators.key"
                             >
                                 <div class="ff_migrator_navigation_header mt-1 mb-2">
-                                    <h5> {{ $t('Import ') }} {{ migrators.name }}</h5>
-                                    <el-button v-if="forms.length" size="small" type="info" @click="importForms()">
+                                    <h5> {{ $t('Import %s', migrators.name) }}</h5>
+                                    <el-button v-if="forms.length" size="small" type="primary" @click="importForms()">
                                         {{ $t('Import All Forms') }}
                                     </el-button>
                                 </div>
@@ -61,6 +61,7 @@
                                         label=""
                                     >
                                         <template slot-scope="props">
+
                                             <el-button
                                                 v-if="entryImportSupported && props.row.imported_ff_id"
                                                 class="el-button--soft"
@@ -76,9 +77,8 @@
                                     <el-table-column width="160" :label="$t('Action')" align="right">
                                         <template slot-scope="props">
                                             <el-button
-                                                class="el-button--soft"
                                                 size="mini"
-                                                type="info"
+                                                type="primary" plain
                                                 @click="importForms([props.row.id])"
                                             >
                                                 {{ $t('Import Form') }}
@@ -95,7 +95,7 @@
                                 <el-button
                                     v-if="multipleSelection.length"
                                     size="small"
-                                    type="info"
+                                    type="success"
                                     icon="el-icon-success"
                                     @click="importForms(multipleSelection)"
                                 >

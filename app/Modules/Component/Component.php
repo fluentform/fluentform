@@ -4,10 +4,13 @@ namespace FluentForm\App\Modules\Component;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Services\FormBuilder\EditorShortcodeParser;
 use FluentForm\App\Services\FormBuilder\Notifications\EmailNotificationActions;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
+
 
 class Component
 {
@@ -736,7 +739,10 @@ class Component
         }
 
         $otherScripts = '';
-        ob_start();
+        $otherScriptsRenderImmediately = apply_filters('fluentform/load_form_instance_js_var_immediately', false);
+        if (!$otherScriptsRenderImmediately) {
+            ob_start();
+        }
         ?>
         <script type="text/javascript">
             window.fluent_form_<?php echo esc_attr($instanceCssClass); ?> = <?php echo wp_json_encode($form_vars); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form_vars is escaped before being passed in.?>;
@@ -757,12 +763,15 @@ class Component
         </script>
         <?php
         $this->addInlineVars();
-        $otherScripts .= ob_get_clean();
+        if (!$otherScriptsRenderImmediately) {
+            $otherScripts .= ob_get_clean();
+        }
+
 
         $disableAnalytics = apply_filters_deprecated(
             'fluentform-disabled_analytics',
             [
-                false
+                true
             ],
             FLUENTFORM_FRAMEWORK_UPGRADE,
             'fluentform/disabled_analytics',
@@ -1215,7 +1224,6 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
-
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }
@@ -1381,6 +1389,42 @@ class Component
                 return esc_html($value);
             }
             return '';
+        });
+
+        $this->app->addShortcode('ff_entry',function($atts){
+            ob_start();
+    
+            $atts = shortcode_atts([
+                'form_id' => '',
+                'serial_number' => '',
+                'field' => '',
+                'is_html' => true,
+            ], $atts);
+    
+            if (empty($atts['form_id'])  || empty($atts['field'])) {
+                return '';
+            }
+    
+    
+            $formId = (int) $atts['form_id'];
+            $form = wpFluent()->table('fluentform_forms')->find($formId);
+            if (!$form) {
+                return __('Form not found.', 'fluentform');
+            }
+            $isHtml = $atts['is_html'] === 'true' ? true : false;
+            $submission = (new \FluentForm\App\Services\Submission\SubmissionService())->findBySerialID($formId, $atts['serial_number'],$isHtml);
+            if (!$submission) {
+                return __('No entry found.', 'fluentform');
+            }
+    
+            $input = $submission->user_inputs;
+            $field = sanitize_text_field($atts['field']);
+            $fieldVal = ArrayHelper::get($input, $field, '');
+    
+            $response = FormDataParser::formatValue($fieldVal);
+            echo $atts['is_html'] ? wp_kses_post($response) : esc_html($response);
+    
+            return ob_get_clean();
         });
 
     }

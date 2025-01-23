@@ -105,6 +105,65 @@ class SubmissionService
             );
         }
     }
+
+
+    public function findBySerialID($formId,$serialNumber=null,$isHtml = false)
+    {
+        try {
+            if (!defined('FLUENTFORM_RENDERING_ENTRY')) {
+                define('FLUENTFORM_RENDERING_ENTRY', true);
+            }
+        
+    
+            $submission = Submission::where('form_id', $formId)
+                ->when($serialNumber, function ($query) use ($serialNumber) {
+                    return $query->where('serial_number', $serialNumber);
+                })
+                ->when(!$serialNumber && !$formId && !empty($uidHash), function ($query) use ($uidHash) {
+                    // Apply the condition to check _entry_uid_hash in submissionMeta if serialNumber and formId are not set
+                    return $query->whereHas('submissionMeta', function ($metaQuery) use ($uidHash) {
+                        $metaQuery->where('_entry_uid_hash', $uidHash);
+                    });
+                })
+                ->orderBy('serial_number', 'desc')
+                ->first();
+            
+        
+            if (!$submission) {
+                return;
+            }
+            $form = $submission->form;
+        
+            $autoRead = apply_filters('fluentform/auto_read_submission', true, $form);
+        
+            if ('unread' === $submission->status && $autoRead) {
+                $submission->fill(['status' => 'read'])->save();
+            }
+        
+            $submission = FormDataParser::parseFormEntry($submission, $form, null, $isHtml);
+        
+            if ($submission->user_id) {
+                $user = get_user_by('ID', $submission->user_id);
+                $userDisplayName = trim($user->first_name . ' ' . $user->last_name);
+                if (!$userDisplayName) {
+                    $userDisplayName = $user->display_name;
+                }
+                if ($user) {
+                    $submission->user = [
+                        'ID'        => $user->ID,
+                        'name'      => $userDisplayName,
+                        'permalink' => get_edit_user_link($user->ID)
+                    ];
+                }
+            }
+        
+            return apply_filters('fluentform/find_submission', $submission, $form->id)->makeHidden('form');
+        } catch (Exception $e) {
+            throw new Exception(
+                __('No Entry found.' . $e->getMessage(), 'fluentform')
+            );
+        }
+    }
     
     public function resources($attributes)
     {
@@ -260,6 +319,10 @@ class SubmissionService
                 'status'     => $actionType,
                 'updated_at' => current_time('mysql'),
             ]);
+
+            foreach ($submissionIds as $submissionId) {
+                do_action('fluentform/after_submission_status_update', $submissionId, $actionType);
+            }
             
             $message = 'Selected entries successfully marked as ' . $statuses[$actionType];
         } elseif ('other.delete_permanently' == $actionType) {

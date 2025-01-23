@@ -93,13 +93,18 @@ function fluentFormSanitizer($input, $attribute = null, $fields = [])
             $input = sanitize_text_field($input);
         }
     } elseif (is_array($input)) {
+        $sanitizedInput = [];
+        
         foreach ($input as $key => &$value) {
+            $key = fluentFormSanitizer($key);
             $attribute = $attribute ? $attribute . '[' . $key . ']' : $key;
 
             $value = fluentFormSanitizer($value, $attribute, $fields);
-
             $attribute = null;
+            $sanitizedInput[$key] = $value;
         }
+        
+        $input = $sanitizedInput;
     }
 
     return $input;
@@ -345,7 +350,12 @@ function fluentform_sanitize_html($html)
     if (!$html) {
         return $html;
     }
-
+    
+    $html = preg_replace([
+        '/\son\w+\s*=/',       // Remove event handlers
+        '/javascript\s*:/i',    // Remove javascript protocol
+    ], '', $html);
+    
     // Return $html if it's just a plain text
 //    if (!preg_match('/<[^>]*>/', $html)) {
 //        return $html;
@@ -371,6 +381,7 @@ function fluentform_sanitize_html($html)
         'allowfullscreen' => [],
         'style'           => [],
     ];
+    
     //button
     $tags['button']['onclick'] = [];
 

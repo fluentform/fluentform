@@ -17,21 +17,27 @@
                             <span class="ff_subscription_data_item_name">
                                 ({{ subscription.item_name }})
                             </span>
-                            <span class="ff_sub_id">#{{subscription.id}}</span>
+                            <span class="ff_sub_id">{{ $t("#%s", subscription.id) }}</span>
                         </p>
                         <div class="ff_subscription_data_item_payment">
-                            <span class="pay_amount" v-html="mayBeHandleDiscount(subscription.recurring_amount)"/>
-                            <span>/ {{ subscription.billing_interval }}</span><span v-if="subscription.quantity > 1"> x {{subscription.quantity}}</span>
-                            <span :class="'ff_badge ff_badge_' + subscription.status">
-                                <i :class="getPaymentStatusIcon(subscription.status)"></i> {{ subscription.status }}
-                            </span>
-                            <span v-show="parseInt(subscription.initial_amount)"> {{ $t('& Signup Fee:') }} <em
-                                v-html="formatMoney(subscription.initial_amount)"></em></span>
+                            <p
+                                v-html="$t(
+                                    '%s/ %s %s %s %s',
+                                    `<span class='pay_amount'>${mayBeHandleDiscount(subscription.recurring_amount)}</span>`,
+                                    `<span>${subscription.billing_interval}<span>`,
+                                    subscription.quantity > 1 ? `<span>x ${subscription.quantity}</span>` : '',
+                                    `<span class='ff_badge ff_badge_${subscription.status}'>
+                                        <i class='${getPaymentStatusIcon(subscription.status)}'></i>
+                                        ${subscription.status }
+                                    </span>`,
+                                    parseInt(subscription.initial_amount) ?
+                                    `<span>& Signup Fee: <em>${formatMoney(subscription.initial_amount)}</em></span>` : ''
+                                )"
+                            ></p>
                         </div>
 
                         <p class="ff_subscription_data_item_total">
-                            <span>{{ $t('Total Bills:')}}</span>
-                            <span class="table_payment_amount" v-html="subscription.bill_count"/>
+                            <span class="table_payment_amount">{{ $t('Total Bills: %d', subscription.bill_count)}}</span>
                         </p>
                         <p v-html="subscriptionHumanText(subscription.original_plan)"></p>
                     </div><!-- .ff_subscription_data_item -->
@@ -45,7 +51,7 @@
                                     v-show="getSubscriptionUrl(subscription)"
                                     class="el-button el-button--primary el-button--soft el-button--mini"
                                 >
-                                    {{ $t('View on') }} {{ payment_method }}
+                                    {{ $t('View on %s', payment_method) }}
                                 </a>
                             </btn-group-item>
                             <btn-group-item>
@@ -59,7 +65,7 @@
                         </btn-group>
                     </div><!-- .ff_subscription_data_item -->
                 </div><!-- .ff_subscription_data -->
-                
+
                 <div v-if="subscription && subscription.related_payments" class="payment_head_bottom wpf_entry_order_items">
                     <h3>{{ $t('Related Payments') }}</h3>
 
@@ -141,15 +147,14 @@
             v-loading="cancelling"
             width="50%">
             <h3>{{ $t('You are about to cancel this subscription') }}</h3>
-            <p v-if="payment_method == 'stripe'">{{ $t('This will also ') }} <b>{{ $t('cancel the subscription at stripe.') }}</b>
-                {{ $t('So no further payment will be processed') }}</p>
+            <p v-if="payment_method == 'stripe'" v-html="$t('This will also %s cancel the subscription at stripe.%s So no further payment will be processed.', '<b>', '</b>')"></p>
+	        <p v-else-if="subscription_supported_methods.includes(payment_method)" v-html="$t('This will also %s cancel the subscription at %s.%s So no further payment will be processed.', '<b>', payment_method, '</b>')"></p>
             <div v-else>
-                <p>{{payment_method|ucFirst}} {{ $t('payment gateway does not support remote cancellation at this moment.') }}</p>
-                <p style="font-weight: bold;">{{ $t('Please cancel the subscription from ') }}{{payment_method}}
-                    {{ $t('dashboard too.') }}</p>
+                <p>{{ $t('%s payment gateway does not support remote cancellation at this moment.', ucFirst(payment_method)) }}</p>
+                <p style="font-weight: bold;">{{ $t('Please cancel the subscription from %s dashboard too.', payment_method) }}</p>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="sub_cancel_modal = false">{{ $t('close') }}</el-button>
+                <el-button @click="sub_cancel_modal = false">{{ $t('Close') }}</el-button>
                 <el-button type="primary" @click="confirmCancel()">{{ $t('Yes, Cancel this subscription') }}</el-button>
             </span>
         </el-dialog>
@@ -168,7 +173,7 @@ export default {
     name: "Subscriptions",
     components: {
         Card,
-        CardHead, 
+        CardHead,
         CardBody,
         BtnGroup,
         BtnGroupItem
@@ -257,6 +262,12 @@ export default {
                     this.cancelling = false;
                 });
         }
-    }
+    },
+	computed: {
+		subscription_supported_methods() {
+			let methods = window.fluent_form_entries_vars?.subscription_supported_payment_methods;
+			return Array.isArray(methods) ? methods : [];
+		}
+	}
 }
 </script>

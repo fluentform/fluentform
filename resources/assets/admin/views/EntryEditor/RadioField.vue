@@ -4,7 +4,7 @@
             <el-radio
                 v-for="(option, option_key) in field.raw.options"
                 :key="option_key"
-                :label="option"
+                :label="option_key"
             >
                 {{option}}
             </el-radio>

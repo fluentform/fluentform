@@ -70,7 +70,9 @@ class SubmissionHandlerService
          */
         foreach ($formDataRaw as $name => $input) {
             if (is_array($input)) {
-                $formDataRaw[$name] = array_filter($input);
+                $formDataRaw[$name] = array_filter($input, function($value) {
+                    return $value !== null && $value !== false && $value !== '';
+                });
             }
         }
 
@@ -427,10 +429,16 @@ class SubmissionHandlerService
     
         $insertData = $this->prepareInsertData();
         
-        if ($this->validationService->isSpam($this->formData, $this->form)) {
+        if ($this->validationService->isAkismetSpam($this->formData, $this->form)) {
             $insertData['status'] = 'spam';
-            $this->validationService->handleSpamError();
+            $this->validationService->handleAkismetSpamError();
         }
+
+        if ($this->validationService->isCleanTalkSpam($this->formData, $this->form)) {
+            $insertData['status'] = 'spam';
+            $this->validationService->handleCleanTalkSpamError();
+        }
+
         return $insertData;
     }
     

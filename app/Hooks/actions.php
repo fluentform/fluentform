@@ -182,14 +182,30 @@ add_action('wp_print_scripts', function () {
             }
 
             $pluginUrl = plugins_url();
+            // Get an array of slugs to exclude from dequeue
+            $excludeSlugs = apply_filters('fluentform/exclude_js_slugs_from_dequeue', ['fluentform']);
+
             foreach ($wp_scripts->queue as $script) {
                 if (!isset($wp_scripts->registered[$script])) {
                     continue;
                 }
 
                 $src = $wp_scripts->registered[$script]->src;
-                if (false !== strpos($src, $pluginUrl) && false !== !strpos($src, 'fluentform')) {
-                    wp_dequeue_script($wp_scripts->registered[$script]->handle);
+
+                // Check if the script is in the plugins directory
+                if (false !== strpos($src, $pluginUrl)) {
+                    // Only dequeue if none of the exclude slugs are in the script src
+                    $shouldDequeue = true;
+                    foreach ($excludeSlugs as $slug) {
+                        if (false !== strpos($src, $slug)) {
+                            $shouldDequeue = false;
+                            break;
+                        }
+                    }
+
+                    if ($shouldDequeue) {
+                        wp_dequeue_script($wp_scripts->registered[$script]->handle);
+                    }
                 }
             }
         }

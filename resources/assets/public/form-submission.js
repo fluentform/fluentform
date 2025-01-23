@@ -283,6 +283,8 @@ jQuery(document).ready(function () {
                     }
 
                     var that = this;
+                    let responseData;
+
 
                     this.isSending = true;
 
@@ -297,7 +299,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res);
                                 return;
                             }
-
+                            responseData = res;
                             if (res.data.append_data) {
                                 addHiddenData(res.data.append_data);
                             }
@@ -326,10 +328,14 @@ jQuery(document).ready(function () {
                                 if (res.data.result.message) {
                                     $('<div/>', {
                                         'id': formId + '_success',
-                                        'class': 'ff-message-success'
+                                        'class': 'ff-message-success',
+                                        'role': 'status',
+                                        'aria-live': 'polite'
                                     })
                                         .html(res.data.result.message)
-                                        .insertAfter($theForm);
+                                        .insertAfter($theForm)
+                                        .focus()
+                                    ;
                                     $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
                                 }
 
@@ -343,10 +349,14 @@ jQuery(document).ready(function () {
                                 }
                                 $('<div/>', {
                                     'id': successMsgId,
-                                    'class': 'ff-message-success'
+                                    'class': 'ff-message-success',
+                                    'role': 'status',
+                                    'aria-live': 'polite'
                                 })
                                     .html(res.data.result.message)
-                                    .insertAfter($theForm);
+                                    .insertAfter($theForm)
+                                    .focus()
+                                ;
 
                                 $theForm.find('.ff-el-is-error').removeClass('ff-el-is-error');
 
@@ -378,6 +388,7 @@ jQuery(document).ready(function () {
                                 showErrorMessages(res.responseText);
                                 return;
                             }
+                            responseData = res;
 
                             if (res.responseJSON.append_data) {
                                 addHiddenData(res.responseJSON.append_data);
@@ -400,9 +411,15 @@ jQuery(document).ready(function () {
                                     );
                                 }
                             }
+
+                            hideFormSubmissionProgress($theForm);
                         })
                         .always(function (res) {
                             that.isSending = false;
+
+                            if (responseData?.data?.result?.hasOwnProperty('redirectUrl')) {
+                                return;
+                            }
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
@@ -756,7 +773,7 @@ jQuery(document).ready(function () {
                 };
 
                 var initInlineErrorItems = function () {
-                    $theForm.find('.ff-el-group,.ff_repeater_table').on('change', 'input,select,textarea', function () {
+                    $theForm.find('.ff-el-group,.ff_repeater_table, .ff_repeater_container').on('change', 'input,select,textarea', function () {
                         if (window.ff_disable_error_clear) {
                             return;
                         }
@@ -831,6 +848,13 @@ jQuery(document).ready(function () {
                         return e.which !== 13;
                     });
                     $theForm.data('is_initialized', 'yes');
+
+                    $theForm.find('input.ff-read-only').each(function () {
+                        $(this).attr({
+                            'tabindex': '-1',
+                            'readonly': 'readonly'
+                        });
+                    });
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
                         const content = $(this).data('content');
@@ -1125,7 +1149,7 @@ jQuery(document).ready(function () {
                         el = $(element);
                         elName = el.prop('name').replace('[]', '');
 
-                        if (el.data('type') === 'repeater_item') {
+                        if (el.data('type') === 'repeater_item' || el.data('type') === 'repeater_container') {
                             elName = el.attr('data-name');
                             rules[elName] = rules[el.data('error_index')];
                         }

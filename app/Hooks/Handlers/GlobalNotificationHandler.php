@@ -3,6 +3,7 @@
 namespace FluentForm\App\Hooks\Handlers;
 
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
@@ -131,27 +132,33 @@ class GlobalNotificationHandler
                 'fluentform/notifying_async_' . $integrationKey,
                 'Use fluentform/notifying_async_' . $integrationKey . ' instead of fluentform_notifying_async_' . $integrationKey
             );
-            
+
+            $scheduleAction = [
+                'action'     => $newAction,
+                'form_id'    => $form->id,
+                'origin_id'  => $insertId,
+                'feed_id'    => $feed['id'],
+                'type'       => 'submission_action',
+                'status'     => 'pending',
+                'data'       => maybe_serialize($feed),
+                'created_at' => current_time('mysql'),
+                'updated_at' => current_time('mysql'),
+            ];
+
             if (apply_filters('fluentform/notifying_async_' . $integrationKey, $isAsync, $form->id)) {
                 // It's async
-                $asyncFeed = [
-                    'action'     => $newAction,
-                    'form_id'    => $form->id,
-                    'origin_id'  => $insertId,
-                    'feed_id'    => $feed['id'],
-                    'type'       => 'submission_action',
-                    'status'     => 'pending',
-                    'data'       => maybe_serialize($feed),
-                    'created_at' => current_time('mysql'),
-                    'updated_at' => current_time('mysql'),
-                ];
+                $asyncFeeds[] = $scheduleAction;
 
-                $asyncFeeds[] = $asyncFeed;
-
-                $queueId = $scheduler->queue($asyncFeed);
+                $queueId = $scheduler->queue($scheduleAction);
 
                 as_enqueue_async_action('fluentform/schedule_feed', ['queueId' => $queueId], 'fluentform');
             } else {
+                $isSyncFeedLogsEnable = apply_filters("fluentform/notifying_sync_{$integrationKey}_api_logs", false, $form->id);
+                if ($isSyncFeedLogsEnable) {
+                    $scheduleAction['status'] = 'processing';
+                    $feed['scheduled_action_id'] = wpFluent()->table('ff_scheduled_actions')->insertGetId($scheduleAction);
+                }
+
                 do_action_deprecated(
                     $oldAction,
                     [

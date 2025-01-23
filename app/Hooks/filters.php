@@ -177,6 +177,10 @@ foreach ($elements as $element) {
             }
         }
 
+        if ('address' == $element) {
+            unset($response->latitude, $response->longitude);
+        }
+
         if ('select_country' == $element) {
             $countryList = getFluentFormCountryList();
             if (isset($countryList[$response])) {
@@ -292,8 +296,8 @@ $app->addFilter('fluentform/filter_insert_data', function ($data) {
 
 $app->addFilter('fluentform/disabled_analytics', function ($status) {
     $settings = get_option('_fluentform_global_form_settings');
-    if (isset($settings['misc']['isAnalyticsDisabled']) && $settings['misc']['isAnalyticsDisabled']) {
-        return true;
+    if (isset($settings['misc']['isAnalyticsDisabled']) && !$settings['misc']['isAnalyticsDisabled']) {
+        return false;
     }
 
     return $status;

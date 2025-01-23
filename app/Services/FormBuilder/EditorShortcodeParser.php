@@ -86,11 +86,11 @@ class EditorShortcodeParser
                 if (is_array($value) || is_object($value)) {
                     return '';
                 }
-                return $value;
+                return esc_html($value);
             }
 
             if (false !== strpos($handler, 'date.')) {
-                return self::parseDate($handler);
+                return esc_html(self::parseDate($handler));
             }
 
             if (false !== strpos($handler, 'embed_post.meta.')) {
@@ -99,7 +99,7 @@ class EditorShortcodeParser
                 if ($post) {
                     $value = get_post_meta($post->ID, $key, true);
                     if (! is_array($value) && ! is_object($value)) {
-                        return $value;
+                        return esc_html($value);
                     }
                 }
                 return '';
@@ -127,10 +127,10 @@ class EditorShortcodeParser
                 $ref = $dynamicKey[0];
 
                 if ('payment_summary' == $ref) {
-                    return '<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>';
+                    return fluentform_sanitize_html('<div class="ff_dynamic_value ff_dynamic_payment_summary" data-ref="payment_summary"><div class="ff_payment_summary"></div><div class="ff_payment_summary_fallback">' . $fallBack . '</div></div>');
                 }
 
-                return '<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>';
+                return fluentform_sanitize_html('<span class="ff_dynamic_value" data-ref="' . $ref . '" data-fallback="' . $fallBack . '">' . $fallBack . '</span>');
             }
 
             // if it's multi line then just return
@@ -222,12 +222,12 @@ class EditorShortcodeParser
                 $data = get_user_meta($userId, $metaKey, true);
                 $data = maybe_unserialize($data);
                 if (!is_array($data)) {
-                    return $data;
+                    return esc_html($data);
                 }
-                return implode(',', $data);
+                return esc_html(implode(',', $data));
             }
 
-            return $user->{$prop};
+            return esc_html($user->{$prop});
         }
 
         return '';
@@ -255,7 +255,7 @@ class EditorShortcodeParser
             if ($authorId) {
                 $data = get_the_author_meta($authorProperty, $authorId);
                 if (! is_array($data)) {
-                    return $data;
+                    return esc_html($data);
                 }
             }
             return '';
@@ -264,7 +264,7 @@ class EditorShortcodeParser
             $postId = $post->ID;
             $data = get_post_meta($postId, $metaKey, true);
             if (! is_array($data)) {
-                return $data;
+                return esc_html($data);
             }
             return '';
         } elseif (false !== strpos($key, 'acf.')) {
@@ -273,18 +273,18 @@ class EditorShortcodeParser
             if (function_exists('get_field')) {
                 $data = get_field($metaKey, $postId, true);
                 if (! is_array($data)) {
-                    return $data;
+                    return esc_html($data);
                 }
                 return '';
             }
         }
 
         if ('permalink' == $prop) {
-            return site_url(esc_attr(wpFluentForm('request')->server('REQUEST_URI')));
+            return site_url(esc_attr(urldecode(wpFluentForm('request')->server('REQUEST_URI'))));
         }
 
         if (property_exists($post, $prop)) {
-            return $post->{$prop};
+            return esc_html($post->{$prop});
         }
         return '';
     }
@@ -299,16 +299,16 @@ class EditorShortcodeParser
     private static function parseWPProperties($value, $form = null)
     {
         if ('{wp.admin_email}' == $value) {
-            return get_option('admin_email');
+            return esc_html(get_option('admin_email'));
         }
         if ('{wp.site_url}' == $value) {
-            return site_url();
+            return esc_url(site_url());
         }
         if ('{wp.site_title}' == $value) {
-            return get_option('blogname');
+            return esc_html(get_option('blogname'));
         }
         if ('{http_referer}' == $value) {
-            return wp_get_referer();
+            return esc_url(wp_get_referer());
         }
 
         return '';
@@ -325,9 +325,9 @@ class EditorShortcodeParser
     {
         $browser = new Browser();
         if ('{browser.name}' == $value) {
-            return $browser->getBrowser();
+            return esc_html($browser->getBrowser());
         } elseif ('{browser.platform}' == $value) {
-            return $browser->getPlatform();
+            return esc_html($browser->getPlatform());
         }
 
         return '';
@@ -343,7 +343,7 @@ class EditorShortcodeParser
     private static function parseIp($value, $form = null)
     {
         $ip = wpFluentForm('request')->getIp();
-        return $ip ? $ip : $value;
+        return $ip ? esc_html($ip) : $value;
     }
 
     /**
@@ -357,7 +357,7 @@ class EditorShortcodeParser
     {
         $format = substr(str_replace(['}', '{'], '', $value), 5);
         $date = date($format, strtotime(current_time('mysql')));
-        return $date ? $date : '';
+        return $date ? esc_html($date) : '';
     }
 
     /**
@@ -398,6 +398,6 @@ class EditorShortcodeParser
         $prefix = array_pop($exploded);
         $value = $prefix . uniqid();
 
-        return apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, new static());
+        return esc_html(apply_filters('fluentform/shortcode_parser_callback_random_string', $value, $prefix, new static()));
     }
 }
