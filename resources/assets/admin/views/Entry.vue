@@ -143,7 +143,10 @@
 		                        <div class="entry_info_box_title">
 			                        {{$t('Submission Info')}}
 		                        </div>
-		                        <el-button size="small" icon="ff-icon el-icon-printer" @click="printEntry({form_id, submission_ids : [entry_id]})"></el-button>
+		                        <div>
+                                    <el-button size="small" icon="ff-icon el-icon-printer" @click="printEntry({form_id, submission_ids : [entry_id]})"></el-button>
+                                    <el-button v-if="entry.entry_uid_link" size="small" icon="ff-icon el-icon-link" @click="entryFrontEndLink({form_id, submission_ids : [entry_id]})"></el-button>
+                                </div>
 	                        </div>
                         </card-head>
                         <card-body>
@@ -630,6 +633,9 @@
                       this.initializeGMap(address.latitude, address.longitude);
                   });
                 }
+            },
+            entryFrontEndLink(){
+                window.open(this.entry.entry_uid_link, '_blank');
             },
             reloadPayments() {
                 this.getEntry();

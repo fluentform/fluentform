@@ -728,8 +728,6 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
-    import TabItem from "@/admin/components/Tab/TabItem.vue";
-    import TabLink from "@/admin/components/Tab/TabLink.vue";
 
     export default {
         name: 'FormSettings',
@@ -743,7 +741,6 @@
             'inputs': Object
         },
         components: {
-            TabLink, TabItem,
             wpEditor,
             'form_restriction': form_restriction,
             errorView,
@@ -814,7 +811,7 @@
                 is_conversion_form: !!window.FluentFormApp.is_conversion_form,
                 conv_form_per_step_save: false,
                 conv_form_resume_from_last_step: false,
-                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume
             }
         },
         computed: {
@@ -932,6 +929,12 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
+                        this.front_end_entry_view = response.front_end_entry_view || {
+                            status: 'no',
+                            forLoggedInUser: 'no',
+                            bgColor: '#ffffff',
+                            content: '{all_data}'
+                        };
 
                     })
                     .catch(e => {
@@ -973,7 +976,7 @@
                     .always(() => {
                         this.loading = false;
                     });
-            },
+            }
         },
         mounted() {
             this.fetchSettings();
