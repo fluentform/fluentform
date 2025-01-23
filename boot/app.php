@@ -67,6 +67,7 @@ return function ($file) {
         );
 
         do_action('fluentform/loaded', $app);
+        
     });
 
     fluentformLoadFile('Services/FluentConversational/plugin.php');

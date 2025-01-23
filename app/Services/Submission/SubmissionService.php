@@ -55,9 +55,12 @@ class SubmissionService
                 define('FLUENTFORM_RENDERING_ENTRY', true);
             }
             
-            $submission = $this->model->with(['form'])->findOrFail($submissionId);
+            $submission = $this->model->with(['form','submissionMeta' => function($q) {
+                $q->where('meta_key', '_entry_uid_hash');
+            }])->findOrFail($submissionId);
             
             $form = $submission->form;
+            
             
             $autoRead = apply_filters_deprecated(
                 'fluentform_auto_read',
@@ -71,7 +74,14 @@ class SubmissionService
             if ('unread' === $submission->status && $autoRead) {
                 $submission->fill(['status' => 'read'])->save();
             }
-            
+    
+            $meta = $submission->submissionMeta;
+            if($meta){
+                $submission->_entry_uid_hash = Arr::get($meta, '0.value');
+        
+                $link = site_url('?ff_entry=1&hash='. $submission->_entry_uid_hash);
+                $submission->entry_uid_link  = $link;
+            }
             $submission = FormDataParser::parseFormEntry($submission, $form, null, true);
             
             
@@ -105,32 +115,57 @@ class SubmissionService
             );
         }
     }
-
-
-    public function findBySerialID($formId,$serialNumber=null,$isHtml = false)
+    
+    
+    /**
+     * @param array{
+     *     formId?: int,         // Optional when using uidHash
+     *     serialNumber?: int,   // Required if using formId without uidHash
+     *     uidHash?: string,     // Can be used with or without formId
+     *     isHtml?: bool
+     * } $params Either (formId + serialNumber) OR uidHash required
+     *
+     * @return Submission
+     * @throws Exception
+     */
+    public function findByParams($params)
     {
         try {
             if (!defined('FLUENTFORM_RENDERING_ENTRY')) {
                 define('FLUENTFORM_RENDERING_ENTRY', true);
             }
         
-    
-            $submission = Submission::where('form_id', $formId)
-                ->when($serialNumber, function ($query) use ($serialNumber) {
-                    return $query->where('serial_number', $serialNumber);
-                })
-                ->when(!$serialNumber && !$formId && !empty($uidHash), function ($query) use ($uidHash) {
-                    // Apply the condition to check _entry_uid_hash in submissionMeta if serialNumber and formId are not set
-                    return $query->whereHas('submissionMeta', function ($metaQuery) use ($uidHash) {
-                        $metaQuery->where('_entry_uid_hash', $uidHash);
-                    });
-                })
-                ->orderBy('serial_number', 'desc')
-                ->first();
-            
+            $formId = $params['formId'] ?? null;
+            $serialNumber = $params['serialNumber'] ?? null;
+            $uidHash = $params['uidHash'] ?? null;
+            $isHtml = $params['isHtml'] ?? false;
+            if (!($uidHash || ($formId && $serialNumber))) {
+                throw new \Exception(
+                    __('Either uidHash or (formId + serialNumber) must be provided', 'fluentform')
+                );
+            }
+        
+            $query = Submission::query();
+        
+            if ($formId) {
+                $query->where('form_id', $formId);
+            }
+        
+            if ($serialNumber) {
+                $query->where('serial_number', $serialNumber);
+            } else {
+                $query->whereHas('submissionMeta', function ($metaQuery) use ($uidHash) {
+                    $metaQuery->where('meta_key', '_entry_uid_hash')
+                        ->where('value', $uidHash); // Changed to 'value' column
+                });
+            }
+        
+            $submission = $query->orderBy('serial_number', 'desc')->first();
         
             if (!$submission) {
-                return;
+                throw new \Exception(
+                    __('No entry found matching the criteria', 'fluentform')
+                );
             }
             $form = $submission->form;
         
@@ -157,7 +192,7 @@ class SubmissionService
                 }
             }
         
-            return apply_filters('fluentform/find_submission', $submission, $form->id)->makeHidden('form');
+            return apply_filters('fluentform/find_submission', $submission, $form->id);
         } catch (Exception $e) {
             throw new Exception(
                 __('No Entry found.' . $e->getMessage(), 'fluentform')
