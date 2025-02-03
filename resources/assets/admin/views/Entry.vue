@@ -145,7 +145,7 @@
 		                        </div>
 		                        <div>
                                     <el-button size="small" icon="ff-icon el-icon-printer" @click="printEntry({form_id, submission_ids : [entry_id]})"></el-button>
-                                    <el-button size="small" icon="ff-icon el-icon-link" @click="entryFrontEndLink({form_id, submission_ids : [entry_id]})"></el-button>
+                                    <el-button v-if="entry.entry_uid_link" size="small" icon="ff-icon el-icon-link" @click="entryFrontEndLink({form_id, submission_ids : [entry_id]})"></el-button>
                                 </div>
 	                        </div>
                         </card-head>
