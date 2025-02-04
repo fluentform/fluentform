@@ -3,11 +3,11 @@
 namespace FluentForm\App\Services\FluentConversational\Classes\Converter;
 
 use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Component\Component;
 use FluentForm\App\Services\FormBuilder\Components\DateTime;
 use FluentForm\App\Modules\Form\FormFieldsParser;
-use FluentFormPro\classes\DraftSubmissionsManager;
 
 class Converter
 {
@@ -459,7 +459,7 @@ class Converter
                 
                 $type = $field['attributes']['type'];
                 $question['subscriptionFieldType'] = $type;
-                $currency = \FluentFormPro\Payments\PaymentHelper::getFormCurrency($form->id);
+                $currency = PaymentHelper::getFormCurrency($form->id);
                 
                 foreach ($field['settings']['subscription_options'] as $index => &$option) {
                     $hasCustomPayment = false;
@@ -473,7 +473,7 @@ class Converter
                         }
                     }
                     
-                    $paymentSummaryText = \FluentFormPro\Payments\PaymentHelper::getPaymentSummaryText($option, $form->id, $currency, false);
+                    $paymentSummaryText = PaymentHelper::getPaymentSummaryText($option, $form->id, $currency, false);
                     
                     $planValue = 'single' == $type ? $option['subscription_amount'] : $index;
                     
@@ -757,30 +757,36 @@ class Converter
     public static function fieldTypes()
     {
         $fieldTypes = [
-            'input_url'             => 'FlowFormUrlType',
-            'input_date'            => 'FlowFormDateType',
-            'input_text'            => 'FlowFormTextType',
-            'input_email'           => 'FlowFormEmailType',
-            'input_hidden'          => 'FlowFormHiddenType',
-            'input_number'          => 'FlowFormNumberType',
-            'select'                => 'FlowFormDropdownType',
-            'select_country'        => 'FlowFormDropdownType',
-            'textarea'              => 'FlowFormLongTextType',
-            'input_password'        => 'FlowFormPasswordType',
-            'custom_html'           => 'FlowFormSectionBreakType',
-            'section_break'         => 'FlowFormSectionBreakType',
-            'welcome_screen'        => 'FlowFormWelcomeScreenType',
-            'input_checkbox'        => 'FlowFormMultipleChoiceType',
-            'input_radio'           => 'FlowFormMultipleChoiceType',
-            'terms_and_condition'   => 'FlowFormTermsAndConditionType',
-            'gdpr_agreement'        => 'FlowFormTermsAndConditionType',
-            'MultiplePictureChoice' => 'FlowFormMultiplePictureChoiceType',
-            'recaptcha'             => 'FlowFormReCaptchaType',
-            'hcaptcha'              => 'FlowFormHCaptchaType',
-            'turnstile'             => 'FlowFormTurnstileType',
-            'address'               => 'FlowFormAddressType',
-            'input_name'            => 'FlowFormNameType',
-            'ffc_custom'            => 'FlowFormCustomType',
+            'input_url'                      => 'FlowFormUrlType',
+            'input_date'                     => 'FlowFormDateType',
+            'input_text'                     => 'FlowFormTextType',
+            'input_email'                    => 'FlowFormEmailType',
+            'input_hidden'                   => 'FlowFormHiddenType',
+            'input_number'                   => 'FlowFormNumberType',
+            'select'                         => 'FlowFormDropdownType',
+            'select_country'                 => 'FlowFormDropdownType',
+            'textarea'                       => 'FlowFormLongTextType',
+            'input_password'                 => 'FlowFormPasswordType',
+            'custom_html'                    => 'FlowFormSectionBreakType',
+            'section_break'                  => 'FlowFormSectionBreakType',
+            'welcome_screen'                 => 'FlowFormWelcomeScreenType',
+            'input_checkbox'                 => 'FlowFormMultipleChoiceType',
+            'input_radio'                    => 'FlowFormMultipleChoiceType',
+            'terms_and_condition'            => 'FlowFormTermsAndConditionType',
+            'gdpr_agreement'                 => 'FlowFormTermsAndConditionType',
+            'MultiplePictureChoice'          => 'FlowFormMultiplePictureChoiceType',
+            'recaptcha'                      => 'FlowFormReCaptchaType',
+            'hcaptcha'                       => 'FlowFormHCaptchaType',
+            'turnstile'                      => 'FlowFormTurnstileType',
+            'address'                        => 'FlowFormAddressType',
+            'input_name'                     => 'FlowFormNameType',
+            'ffc_custom'                     => 'FlowFormCustomType',
+            'payment_method'                 => 'FlowFormPaymentMethodType',
+            'multi_payment_component'        => 'FlowFormPaymentType',
+            'custom_payment_component'       => 'FlowFormPaymentType',
+            'item_quantity_component'        => 'FlowFormPaymentType',
+            'payment_summary_component'      => 'FlowFormPaymentSummaryType',
+            'subscription_payment_component' => 'FlowFormSubscriptionType',
         ];
         
         if (defined('FLUENTFORMPRO')) {
@@ -789,12 +795,6 @@ class Converter
             $fieldTypes['input_file'] = 'FlowFormFileType';
             $fieldTypes['ratings'] = 'FlowFormRateType';
             $fieldTypes['tabular_grid'] = 'FlowFormMatrixType';
-            $fieldTypes['payment_method'] = 'FlowFormPaymentMethodType';
-            $fieldTypes['multi_payment_component'] = 'FlowFormPaymentType';
-            $fieldTypes['custom_payment_component'] = 'FlowFormPaymentType';
-            $fieldTypes['item_quantity_component'] = 'FlowFormPaymentType';
-            $fieldTypes['payment_summary_component'] = 'FlowFormPaymentSummaryType';
-            $fieldTypes['subscription_payment_component'] = 'FlowFormSubscriptionType';
             $fieldTypes['payment_coupon'] = 'FlowFormCouponType';
             $fieldTypes['quiz_score'] = 'FlowFormHiddenType';
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
@@ -1089,7 +1089,7 @@ class Converter
                 $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
             }
 
-            DraftSubmissionsManager::migrate();
+            \FluentFormPro\classes\DraftSubmissionsManager::migrate();
 
             $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
 

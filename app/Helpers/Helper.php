@@ -1168,7 +1168,22 @@ class Helper
         $globalSettings = get_option('_fluentform_global_form_settings');
         return 'wp_default' === ArrayHelper::get($globalSettings, 'misc.default_admin_date_time');
     }
-    
+
+    public static function isPaymentCompatible()
+    {
+        if (!self::hasPro()) {
+            return true;
+        } else {
+            return version_compare(FLUENTFORMPRO_VERSION, '5.2.10', '>') &&
+                version_compare(FLUENTFORM_VERSION, '5.2.12', '>');
+        }
+    }
+
+    public static function hasPro()
+    {
+        return defined('FLUENTFORMPRO');
+    }
+
     public static function getLandingPageEnabledForms()
     {
         if (class_exists(\FluentFormPro\classes\SharePage\SharePage::class)) {
