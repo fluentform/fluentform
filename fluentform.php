@@ -19,7 +19,7 @@ define('FLUENTFORM_DIR_PATH', plugin_dir_path(__FILE__));
 
 define('FLUENTFORM_FRAMEWORK_UPGRADE', '4.3.22');
 
-defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '5.2.10');
+defined('FLUENTFORM_VERSION') or define('FLUENTFORM_VERSION', '5.2.12');
 
 if (!defined('FLUENTFORM_HAS_NIA')) {
     define('FLUENTFORM_HAS_NIA', true);

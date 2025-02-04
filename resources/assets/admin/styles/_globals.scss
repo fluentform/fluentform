@@ -1016,7 +1016,7 @@ label.el-radio, label.el-checkbox {
   .el-form-item,
   .el-form-item-wrap {
     margin-bottom: 24px;
-    &:last-child{
+    &:last-child:not(.payment-methods-item){
         margin-bottom: 0;
     }
   }
