@@ -317,19 +317,19 @@ class FormService
             'recaptcha'   => [
                 'disabled'    => $isReCaptchaDisabled,
                 'title'       => __('reCaptcha', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->reCaptcha', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->reCaptcha', 'fluentform'),
                 'hidePro'     => true,
             ],
             'hcaptcha'    => [
                 'disabled'    => $isHCaptchaDisabled,
                 'title'       => __('hCaptcha', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->hCaptcha', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->hCaptcha', 'fluentform'),
                 'hidePro'     => true,
             ],
             'turnstile'   => [
                 'disabled'    => $isTurnstileDisabled,
                 'title'       => __('Turnstile', 'fluentform'),
-                'description' => __('Please enter a valid API key on FluentForms->Settings->Turnstile', 'fluentform'),
+                'description' => __('Please enter a valid API key on Global Settings->Security->Turnstile', 'fluentform'),
                 'hidePro'     => true,
             ],
             'input_image' => [

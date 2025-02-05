@@ -46,7 +46,9 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         jQuery(document).ready(e => {
             jQuery.getJSON(fluentFormVars.ajaxUrl, {
                 form_id: $theForm.data('form_id'),
-                action: 'fluentform_step_form_get_data'
+                action: 'fluentform_step_form_get_data',
+                nonce: fluentFormVars?.nonce,
+                hash: fluentFormVars?.hash
             }).then(data => {
                 if (data) {
                     populateFormDataAndSetActiveStep(data);
@@ -58,7 +60,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         let choiceJsInputs = [] ;
         jQuery.each(response, (key, value) => {
             if (!value) return;
-
             let type = Object.prototype.toString.call(value);
 
 
@@ -111,7 +112,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
             } else if (type === '[object Array]') {
                 let $el = jQuery(`[name=${key}]`);
-
                 $el = $el.length ? $el : jQuery(`[data-name=${key}]`);
                 $el = $el.length ? $el : jQuery(`[name=${key}\\[\\]]`);
                 if ($el.attr('type') == 'file') {
@@ -162,6 +162,29 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             } else {
                 // Others
                 let $el = jQuery(`[name=${key}]`);
+
+                //rich text
+                if ($el.hasClass('fluentform-post-content')) {
+                    if (window.wp && window.wp.editor) {
+                        let editorId = $el.attr('id');
+                        window.tinymce.get(editorId).setContent(value);
+                    }
+                }
+
+                // if date field with flatpickr has advanced config altInput set to true
+                if (typeof flatpickr !== 'undefined') {
+                    if ($el.prop('_flatpickr')) {
+                        const fpInstance = $el.prop('_flatpickr');
+                        if (fpInstance) {
+                            if (fpInstance.config.altInput) {
+                                fpInstance.setDate(value, true);
+                            } else {
+                                $el.val(value).trigger('change');
+                            }
+                        }
+                    }
+                }
+
                 if ($el.prop('type') === 'radio' || $el.prop('type') === 'checkbox') {
                     jQuery(`[name=${key}][value="${value}"]`).prop('checked', true).change();
                 } else {
@@ -187,10 +210,15 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         }
 
         isPopulatingStepData = true;
-        // let saveProgressForm = $(formSelector).hasClass('ff-form-has-save-progress');
-        // if (stepResume || saveProgressForm) {
+        const animDuration = fluentFormVars.stepAnimationDuration;
         if (stepResume) {
-            updateSlider(step_completed, fluentFormVars.stepAnimationDuration, true);
+            updateSlider(step_completed, animDuration, true)
+                .then(() => {
+                    handleFocus(animDuration);
+                })
+                .catch(error => {
+                    console.error("An error occurred during the slider update:", error);
+                });
         }
 
         isPopulatingStepData = false;
@@ -216,9 +244,14 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         $(formSteps[activeStep]).addClass('active');
         $(stepTitles[activeStep]).addClass('active');
 
+        const firstStep = formSteps.first();
+        if (firstStep.hasClass('active')) {
+            firstStep.find('button[data-action="next"]').css('visibility', 'visible');
+        }
+
         // submit button should only be printed on last step
         if (formSteps.length && !formSteps.last().hasClass('active')) {
-            $theForm.find('button[type="submit"]').css('display', 'none');
+            $theForm.find('button[type="submit"]').css('visibility', 'hidden');
         }
 
         stepProgressBarHandle({activeStep, totalSteps});
@@ -244,6 +277,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             let formInstance = getFormInstance();
             let $this = $(this);
             let currentStep = 0;
+            const animDuration = fluentFormVars.stepAnimationDuration;
 
             try {
                 let targetStep = $this.data('step-number');
@@ -261,13 +295,24 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     }
                 });
 
-                updateSlider(targetStep, fluentFormVars.stepAnimationDuration, true);
-
+                updateSlider(targetStep, animDuration, true)
+                    .then(() => {
+                        handleFocus(animDuration);
+                    })
+                    .catch(error => {
+                        console.error("An error occurred during the slider update:", error);
+                    });
             } catch (e) {
                 if (!(e instanceof window.ffValidationError)) {
                     throw e;
                 }
-                updateSlider(currentStep, fluentFormVars.stepAnimationDuration, true);
+                updateSlider(currentStep, animDuration, true)
+                    .then(() => {
+                        handleFocus(animDuration);
+                    })
+                    .catch(error => {
+                        console.error("An error occurred during the slider update:", error);
+                    });
                 formInstance.showErrorMessages(e.messages);
                 formInstance.scrollToFirstError(350);
             }
@@ -317,14 +362,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
      * @return void
      */
     var registerStepNavigators = function (animDuration) {
-
-        $(document).on('keydown', formSelector + ' .fluentform-step > .step-nav button', function (e) {
-            if (e.which == 9) {
-                if ($(this).data('action') == 'next') {
-                    e.preventDefault();
-                }
-            }
-        });
+        handleFocus(animDuration);
 
         $(formSelector).on('click', '.fluentform-step  .step-nav button, .fluentform-step  .step-nav img', function (e) {
             const btn = $(this).data('action');
@@ -369,170 +407,291 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             let autoScroll = $theForm.find('.ff-step-container').attr('data-disable_auto_focus') != 'yes';
 
-            updateSlider(activeStep, animDuration, autoScroll, actionType);
+            updateSlider(activeStep, animDuration, autoScroll, actionType)
+                .then(() => {
+                    handleFocus(animDuration);
+                })
+                .catch(error => {
+                    console.error("An error occurred during the slider update:", error);
+                });
         });
     };
 
     /**
-     * Update slider position in multisteps form
+     * Update slider position in multistep form
      * @param  {int} goBackToStep
      * @param  {int} animDuration
-     * @param  {bool} isScrollTop
-     * @return {void}
+     * @param  {boolean} isScrollTop
+     * @return {Promise}
      */
     var updateSlider = function (goBackToStep, animDuration, isScrollTop = true, actionType = 'next') {
-        $('div' + formSelector + '_errors').empty();
-        activeStep = goBackToStep;
+        return new Promise((resolve) => {
+            $('div' + formSelector + '_errors').empty();
+            activeStep = goBackToStep;
 
-        var stepsWrapper = $theForm.find('.ff-step-body');
-        var stepTitles = $theForm.find('.ff-step-titles li'),
-            formSteps = $theForm.find('.fluentform-step'),
-            totalSteps = formSteps.length,
-            formTop = $theForm.offset().top - (!!$('#wpadminbar') ? 32 : 0) - 20;
+            var stepsWrapper = $theForm.find('.ff-step-body');
+            var stepTitles = $theForm.find('.ff-step-titles li'),
+                formSteps = $theForm.find('.fluentform-step'),
+                totalSteps = formSteps.length;
 
-        // change active step
-        formSteps.removeClass('active');
-        $(formSteps[activeStep]).addClass('active');
+            // Change active step
+            formSteps.removeClass('active');
+            $(formSteps[activeStep]).addClass('active');
 
-        // change step title
-        stepTitles.removeClass('ff_active ff_completed');
-
-        $.each([...Array(activeStep).keys()], (setp) => {
-            $($(stepTitles[setp])).addClass('ff_completed');
-        });
-
-        $(stepTitles[activeStep]).addClass('ff_active');
-
-        // animate step on click next/prev
-        var scrollTop = function () {
-            if (window.ff_disable_step_scroll) {
-                return;
-            }
-
-            const scrollElement = $theForm.find('.ff_step_start');
-
-            if (window.ff_scroll_top_offset) {
-                var formTop = window.ff_scroll_top_offset;
-            } else {
-                var formTop = scrollElement.offset().top - 20
-            }
-
-            var isInViewport = function ($el) {
-                var elementTop = $el.offset().top;
-                var elementBottom = elementTop + $el.outerHeight();
-
-                var viewportTop = $(window).scrollTop();
-                var viewportBottom = viewportTop + $(window).height();
-
-                return elementBottom > viewportTop && elementTop < viewportBottom;
-            };
-
-            const isVisible = isInViewport(scrollElement);
-
-            if (!isVisible || window.ff_force_scroll) {
-                $('html, body').delay(animDuration).animate({
-                    scrollTop: formTop
-                }, 0);
-            }
-        };
-
-        let inlineCssObj = {
-            left: -(activeStep * 100) + '%',
-        };
-
-        if (isRtl) {
-            inlineCssObj = {
-                right: -(activeStep * 100) + '%'
-            };
-        }
-        const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
-        switch (animationType) {
-            case 'slide':
-                //slide
-                stepsWrapper.animate(inlineCssObj, animDuration, () => {
-                    isScrollTop && scrollTop();
-                    stepsWrapper.css({width: wrapperWidth});
-                });
-                break;
-            case 'fade':
-                //fadeIn
-                stepsWrapper.css({opacity: 0})
-                stepsWrapper.animate(inlineCssObj, animDuration, () => {
-                    isScrollTop && scrollTop();
-                    stepsWrapper.css({width: wrapperWidth});
-                });
-                stepsWrapper.animate({
-                    opacity: 1,
-                }, animDuration);
-                break;
-            case 'slide_down':
-                //slideDown
-                stepsWrapper.hide();
-                stepsWrapper.css(inlineCssObj);
-                stepsWrapper.slideDown(animDuration);
-                break;
-            case 'none':
-                //fadeIn
-                stepsWrapper.css(inlineCssObj);
-                break;
-            default:
-                stepsWrapper.css(inlineCssObj);
-
-        }
-
-        //skip saving the last step
-        let isLastStep = activeStep === 0;
-
-        // Fire ajax request to persist the step state/data
-        if (stepPersistency && !isPopulatingStepData & !isLastStep) {
-            saveStepData($theForm, activeStep).then(response => {
-                console.log(response);
+            // Change step title
+            stepTitles.removeClass('ff_active ff_completed');
+            $.each([...Array(activeStep).keys()], (step) => {
+                $($(stepTitles[step])).addClass('ff_completed');
             });
-        }
+            $(stepTitles[activeStep]).addClass('ff_active');
 
-        // update progressbar
-        stepProgressBarHandle({activeStep, totalSteps});
+            var scrollTop = function () {
+                if (window.ff_disable_step_scroll) {
+                    return;
+                }
 
-        // now we have to check if there has any visible elements or not
+                const scrollElement = $theForm.find('.ff_step_start');
+                let formTop;
 
-        // submit button should only be printed on last step
-        if (formSteps.last().hasClass('active')) {
-            $theForm.find('button[type="submit"]').css('display', 'inline-block');
-            return;
-        } else {
-            $theForm.find('button[type="submit"]').css('display', 'none');
-        }
+                if (window.ff_scroll_top_offset) {
+                    formTop = window.ff_scroll_top_offset;
+                } else {
+                    formTop = scrollElement.offset().top - 20;
+                }
 
-        if (!window.ff_disable_auto_step) {
+                var isInViewport = function ($el) {
+                    var elementTop = $el.offset().top;
+                    var elementBottom = elementTop + $el.outerHeight();
 
-            let timeout = 0;
-            if ($theForm.find('.fluentform-step.active .ff_excluded').length) {
-                timeout = 50;
+                    var viewportTop = $(window).scrollTop();
+                    var viewportBottom = viewportTop + $(window).height();
+
+                    return elementBottom > viewportTop && elementTop < viewportBottom;
+                };
+
+                const isVisible = isInViewport(scrollElement);
+
+                if (!isVisible || window.ff_force_scroll) {
+                    $('html, body').delay(animDuration).animate({
+                        scrollTop: formTop
+                    }, 0);
+                }
+            };
+
+            // Animate step
+            let inlineCssObj = isRtl ? { right: -(activeStep * 100) + '%' } : { left: -(activeStep * 100) + '%' };
+
+            const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
+            let animationPromise;
+
+            switch (animationType) {
+                case 'slide':
+                    stepsWrapper.css('transition', `all ${animDuration}ms`);
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration));
+                    break;
+                case 'fade':
+                    stepsWrapper.css('transition', `all ${animDuration}ms`);
+                    stepsWrapper.css({opacity: 0, ...inlineCssObj});
+                    setTimeout(() => {
+                        stepsWrapper.css({opacity: 1});
+                    }, 50);
+                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration * 2));
+                    break;
+                case 'slide_down':
+                    stepsWrapper.hide();
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = stepsWrapper.slideDown(animDuration).promise();
+                    break;
+                case 'none':
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = Promise.resolve();
+                    break;
+                default:
+                    stepsWrapper.css(inlineCssObj);
+                    animationPromise = Promise.resolve();
             }
 
-            setTimeout(() => {
-                let $activeStepDom = $theForm.find('.fluentform-step.active');
-                let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
-                let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
+            animationPromise.then(() => {
+                stepsWrapper.css('pointer-events', ''); // Re-enable pointer events
 
-                if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
-                    childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
-                    childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
-                    hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+                if (isScrollTop) {
+                    scrollTop();
+                }
 
-                    if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
-                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
-                        hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
-                        hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                //skip saving the last step
+                let isLastStep = activeStep === totalSteps;
+
+                // Fire ajax request to persist the step state/data
+                if (stepPersistency && !isPopulatingStepData && !isLastStep) {
+                    saveStepData($theForm, activeStep).then(response => {
+                        console.log(response);
+                    });
+                }
+
+                // Update progress bar and titles after animation completes
+                stepProgressBarHandle({activeStep, totalSteps});
+
+                // Show submit button on last step
+                if (formSteps.last().hasClass('active')) {
+                    $theForm.find('button[type="submit"]').css('visibility', 'visible');
+                } else {
+                    $theForm.find('button[type="submit"]').css('visibility', 'hidden');
+                }
+
+                // Step skipping logic
+                if (!window.ff_disable_auto_step) {
+                    let $activeStepDom = $theForm.find('.fluentform-step.active');
+                    let childDomCounts = $theForm.find('.fluentform-step.active > div').length - 1;
+                    let hiddenDomCounts = $theForm.find('.fluentform-step.active > .ff_excluded').length;
+
+                    if ($theForm.find('.fluentform-step.active > .ff-t-container').length) {
+                        childDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container').length;
+                        childDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > div').length;
+                        hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container > .ff-t-cell > .ff_excluded').length;
+
+                        if ($theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length) {
+                            hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded').length;
+                            hiddenDomCounts -= $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > .ff_excluded').length;
+                            hiddenDomCounts += $theForm.find('.fluentform-step.active > .ff-t-container.ff_excluded > .ff-t-cell > div').length;
+                        }
+                    }
+
+                    if (childDomCounts === hiddenDomCounts) {
+                        $activeStepDom.find('.step-nav button[data-action=' + actionType + '], .step-nav img[data-action=' + actionType + ']').click();
+                        resolve(); // Ensure that we resolve the promise here if we are skipping steps
+                        return;
                     }
                 }
 
-                if (childDomCounts == hiddenDomCounts) {
-                    $activeStepDom.find('.step-nav button[data-action=' + actionType + '], .step-nav img[data-action=' + actionType + ']').click();
-                }
-            }, timeout);
-        }
+                $theForm.find('.fluentform-step.active').find('.step-nav button[data-action="next"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav button[data-action="prev"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav img[data-action="next"]').css('visibility', 'visible');
+                $theForm.find('.fluentform-step.active').find('.step-nav img[data-action="prev"]').css('visibility', 'visible');
+
+                resolve(); // Resolve the promise after animations, scrolling, and step skipping logic
+            });
+        });
     };
+
+    let isInitialLoad = true;
+    function handleFocus(animDuration) {
+        let isAnimating = false;
+
+        function getCurrentStepIndex() {
+            return $theForm.find(".fluentform-step").index($theForm.find(".fluentform-step.active"));
+        }
+
+        function getTotalSteps() {
+            return $theForm.find(".fluentform-step").length;
+        }
+
+        function focusOnStep(step, shouldFocus = false) {
+            const autoFocusEnabled = $theForm.find(".ff-step-container").attr("data-disable_auto_focus") != "yes";
+
+            if (!isInitialLoad) {
+                if (!autoFocusEnabled) {
+                    setTimeout(() => {
+                        $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
+                    }, animDuration);
+
+                    isInitialLoad = false;
+                } else {
+                    const focusableElements = step.find("input, select, textarea, button, a").filter(":visible");
+
+                    if (focusableElements.length && shouldFocus) {
+                        setTimeout(() => {
+                            focusableElements.first().focus();
+                        }, animDuration + 50);
+                    }
+
+                    isInitialLoad = false;
+                }
+            }
+        }
+
+        function handleStepChange() {
+            isAnimating = true;
+            setTimeout(() => {
+                isAnimating = false;
+                focusOnStep($theForm.find(".fluentform-step.active"), true);
+            }, animDuration + 50);
+        }
+
+        function handleStepNavigation(e, direction) {
+            if (isAnimating) return;
+
+            const currentStepIndex = getCurrentStepIndex();
+            const isFirstStep = currentStepIndex === 0;
+            const isLastStep = currentStepIndex === getTotalSteps() - 1;
+
+            if ((direction === "prev" && isFirstStep) || (direction === "next" && isLastStep)) {
+                return; // Allow focus to move out of the form
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            const buttonSelector = direction === "prev" ? ".ff-btn-prev" : ".ff-btn-next";
+            const button = $(`${formSelector} .fluentform-step.active`).find(`.step-nav ${buttonSelector}`);
+
+            if (button.length) {
+                button.click();
+                handleStepChange();
+            }
+        }
+
+        function setupKeyboardNavigation() {
+            $theForm.off("keydown.stepNavigation").on("keydown.stepNavigation", function (e) {
+                if (isAnimating) return;
+
+                const isTabPressed = e.key === "Tab" || e.keyCode === 9;
+
+                if (!isTabPressed) {
+                    return;
+                }
+
+                const focusableElements = $(`${formSelector} .fluentform-step.active`).find("input, select, textarea, button, a").filter(":visible");
+                const firstFocusableElement = focusableElements.first();
+                const lastFocusableElement = focusableElements.last();
+                const currentStepIndex = getCurrentStepIndex();
+                const isFirstStep = currentStepIndex === 0;
+                const isLastStep = currentStepIndex === getTotalSteps() - 1;
+
+                if (e.shiftKey) {
+                    // If Shift + Tab is pressed
+                    if (document.activeElement === firstFocusableElement[0]) {
+                        if (!isFirstStep) {
+                            handleStepNavigation(e, "prev");
+                        }
+                    }
+                } else {
+                    // If Tab is pressed
+                    if (document.activeElement === lastFocusableElement[0]) {
+                        if (!isLastStep) {
+                            handleStepNavigation(e, "next");
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup keyboard navigation
+        setupKeyboardNavigation();
+
+        // Handle focus after step changes, including conditional skips
+        $theForm.on('ff_to_next_page ff_to_prev_page', function() {
+            handleStepChange();
+        });
+
+        // Only focus if autoFocus is enabled, it's not the first step, and it's not the initial load
+        const autoFocusEnabled = $theForm.find(".ff-step-container").attr("data-disable_auto_focus") != "yes";
+        if (autoFocusEnabled && getCurrentStepIndex() !== 0 && !isInitialLoad) {
+            focusOnStep($(`${formSelector} .fluentform-step.active`), true);
+        }
+
+        isInitialLoad = false;
+    }
+
 
     var saveStepData = function ($theForm, activeStep) {
         var $inputs = $theForm.find(':input').filter(function (i, el) {
@@ -649,10 +808,10 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             });
 
             var progressBarInline = $(`
-									<div class="ff-upload-progress-inline ff-el-progress">
-										<div style="width: 100%;" class="ff-el-progress-bar"></div>
-									</div>
-								`);
+                <div class="ff-upload-progress-inline ff-el-progress">
+                    <div style="width: 100%;" class="ff-el-progress-bar"></div>
+                </div>
+            `);
 
             var removeBtn = $('<span/>', {
                 'data-href': '#',
@@ -710,8 +869,6 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
         removePrevFromFirstFirstStep();
         initStepSlider();
         maybeAutoSlider();
-
-
     };
 
     return {

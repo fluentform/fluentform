@@ -22,7 +22,7 @@
                             <span v-else> {{$t('Custom')}} </span>
                             {{$t('Error Message')}}
                             <el-tooltip popper-class="ff_tooltip_wrap"
-                                        :content="`${$t('This message will be shown if validation fails for')} ${repoItem.label}. Configure Global Message from: Global settings > Validation Messages`"
+                                        :content="$t('This message will be shown if validation fails for %s. Configure Global Message from: Global settings > Validation Messages', repoItem.label)"
                                         placement="top">
                                 <i class="tooltip-icon el-icon-info"></i>
                             </el-tooltip>

@@ -36,17 +36,17 @@ class FormDataParser
 
     public static function parseFormSubmission($submission, $form, $fields, $isHtml = false)
     {
-        $hasSubmission = static::$submissionId != $submission->id;
+        // Sometimes submission will change inside loop. So we need to parse submission data for new one
+        $newSubmission = $submission->id != static::$submissionId;
 
-        if (is_null(static::$data) || $hasSubmission) {
-            static::$submissionId = $submission->id;
-
+        if (is_null(static::$data) || $newSubmission) {
             static::$data = static::parseData(
                 json_decode($submission->response),
                 $fields,
                 $form->id,
                 $isHtml
             );
+            static::$submissionId = $submission->id;
         }
 
         $submission->user_inputs = static::$data;
@@ -280,6 +280,7 @@ class FormDataParser
         $columns = $data['settings']['grid_columns'];
 
         foreach ($rows as $rowKey => $rowValue) {
+            $rowKey = trim($rowKey);
             $table[$rowKey] = [
                 'name'    => $rowKey,
                 'label'   => $rowValue,
@@ -288,12 +289,11 @@ class FormDataParser
 
             foreach ($columns as $columnKey => $columnValue) {
                 $table[$rowKey]['columns'][] = [
-                    'name'  => $columnKey,
+                    'name'  => trim($columnKey),
                     'label' => $columnValue,
                 ];
             }
         }
-
         return $table;
     }
 

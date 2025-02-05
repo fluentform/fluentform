@@ -40,6 +40,10 @@ import {
     Skeleton,
     SkeletonItem,
     OptionGroup,
+    Link,
+    Table,
+    TableColumn,
+    DatePicker
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en';
@@ -51,6 +55,7 @@ import Errors from '../common/Errors';
 import FormEditor from './views/FormEditor.vue';
 import MoreMenu from './views/MoreMenu.vue';
 import {mapActions} from 'vuex';
+import {_$t} from "@/admin/helpers";
 
 Vue.use(Vddl);
 
@@ -85,6 +90,10 @@ Vue.use(Alert);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
 Vue.use(OptionGroup);
+Vue.use(Link);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(DatePicker);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
@@ -192,7 +201,10 @@ window.fluentFormEditorApp = new Vue({
             }
         },
         loading: false,
-        form_saving: false
+        form_saving: false,
+        isClicked: false,
+        editHistoryIndex: null,
+        tempFormData : {}
     },
     methods: {
         ...mapActions(["loadResources"]),
@@ -251,7 +263,7 @@ window.fluentFormEditorApp = new Vue({
         },
 
         /**
-         * The the form data into the server
+         * The form data into the server
          */
         saveForm() {
             this.form_saving = true;
@@ -299,22 +311,51 @@ window.fluentFormEditorApp = new Vue({
             });
         },
 
+        /*
+        * Show Preview of Form from history
+        */
+        updateFormFromEditHistory(editHistory) {
+            this.form.dropzone = editHistory.fields
+            this.form.submitButton = editHistory.submitButton
+        },
+        /*
+        * return to original form from preview
+        */
+        resetFormToOriginal() {
+            if (this.tempFormData) {
+                this.form.dropzone = this.tempFormData.dropzone || [];
+                this.form.submitButton = this.tempFormData.submitButton || [];
+            }
+        },
+
+        /**
+         * Save a deep copy of the original form data
+         */
+        saveOriginalForm() {
+            this.tempFormData = JSON.parse(JSON.stringify({
+                dropzone: this.form.dropzone,
+                submitButton: this.form.submitButton
+            }));
+        },
+
         saveHash() {
             this.dropzoneHash = JSON.stringify(this.form.dropzone);
         },
 
-        $t(str) {
-            let transString = window.FluentFormApp.form_editor_str[str];
-            if(transString) {
-                return transString;
-            }
-            return str;
+        $t(string) {
+            let transString = window.FluentFormApp.form_editor_str[string] || string
+            return _$t(transString, ...arguments);
         },
-
+        $_n(singular, plural, count) {
+            let number = parseInt(count.toString().replace(/,/g, ''), 10);
+            if (number > 1) {
+                return this.$t(plural, count);
+            }
+            return this.$t(singular, count);
+        },
     },
 
     beforeCreate() {
-        // Event listener for page title updater
         this.$on("change-title", module => {
             jQuery("title").text(`${module} - Fluentform`);
         });
@@ -328,6 +369,30 @@ window.fluentFormEditorApp = new Vue({
         if (this.is_conversion_form) {
             jQuery('#wpcontent').addClass('ff_conversion_editor');
         }
+
+        /**
+         *
+         */
+        FluentFormEditorEvents.$on('editor-history-preview',(editHistory,type,index) =>{
+
+            if (type == 'enter') {
+                this.saveOriginalForm();
+                this.updateFormFromEditHistory(editHistory);
+            }else if (type == 'leave') {
+                if (!this.isClicked && this.editHistoryIndex != index) {
+                    this.resetFormToOriginal(editHistory);
+                }
+            }else if (type == 'restore') {
+                this.isClicked = true;
+                this.editHistoryIndex = index;
+                setTimeout(() => {
+                    this.isClicked = false;
+                }, 1000);
+                this.updateFormFromEditHistory(editHistory);
+                this.$success('Restored from History! Click Save to Confirm');
+            }
+
+        });
     },
 });
 

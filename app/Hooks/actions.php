@@ -182,14 +182,30 @@ add_action('wp_print_scripts', function () {
             }
 
             $pluginUrl = plugins_url();
+            // Get an array of slugs to exclude from dequeue
+            $excludeSlugs = apply_filters('fluentform/exclude_js_slugs_from_dequeue', ['fluentform']);
+
             foreach ($wp_scripts->queue as $script) {
                 if (!isset($wp_scripts->registered[$script])) {
                     continue;
                 }
 
                 $src = $wp_scripts->registered[$script]->src;
-                if (false !== strpos($src, $pluginUrl) && false !== !strpos($src, 'fluentform')) {
-                    wp_dequeue_script($wp_scripts->registered[$script]->handle);
+
+                // Check if the script is in the plugins directory
+                if (false !== strpos($src, $pluginUrl)) {
+                    // Only dequeue if none of the exclude slugs are in the script src
+                    $shouldDequeue = true;
+                    foreach ($excludeSlugs as $slug) {
+                        if (false !== strpos($src, $slug)) {
+                            $shouldDequeue = false;
+                            break;
+                        }
+                    }
+
+                    if ($shouldDequeue) {
+                        wp_dequeue_script($wp_scripts->registered[$script]->handle);
+                    }
                 }
             }
         }
@@ -789,6 +805,12 @@ $app->addAction('fluentform/before_insert_submission', function ($insertData, $r
     $honeyPot->verify($insertData, $requestData, $form->id);
 }, 9, 3);
 
+// Maybe update current user allowed form ids,
+// if current user has specific form permission and capable to create form
+$app->addAction('fluentform/inserted_new_form', function ($formId){
+    \FluentForm\App\Services\Manager\FormManagerService::maybeAddUserAllowedFormIds($formId);
+});
+
 add_action('fluentform/log_data', function ($data) use ($app) {
     $dataLogger = new \FluentForm\App\Modules\Logger\DataLogger($app);
     $dataLogger->log($data);
@@ -1069,6 +1091,10 @@ if (function_exists('register_block_type')) {
     });
 }
 
+
+add_action('fluentform/before_updating_form',function ($form, $postData){
+    (new FluentForm\App\Services\Form\HistoryService())->init($form, $postData);
+},10,2);
 // require the CLI
 if (defined('WP_CLI') && WP_CLI) {
     \WP_CLI::add_command('fluentform', '\FluentForm\App\Modules\CLI\Commands');

@@ -2,9 +2,9 @@
 Contributors: techjewel,adreastrian,heera,pyrobd,hrdelwar,dhrupo,wpmanageninja
 Tags: contact form, quiz, wp forms, forms, form builder, contact form builder, fluent forms, custom form, order form, contact forms
 Requires at least: 4.5
-Tested up to: 6.5.3
+Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.1.17
+Stable tag: 5.2.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,7 +256,7 @@ Here are a few forms from those that we have packed for you:
 <li>Trello – Create Trello Cards in your boards on form submission</li>
 <li>Drip – Fluent Forms Drip Module allows you to create Drip subscribers from WordPress, so you can grow your email list</li>
 <li>iContact – Connect iContact with Fluent Forms and subscribe a contact when a form is submitted</li>
-<li>Sendinblue – Connect Your Contact Forms with Sendinblue CRM</li>
+<li>Brevo – Connect Your Contact Forms with Brevo (formerly SendinBlue) CRM</li>
 <li>Automizy – Connect Your Contact Forms with Automizy Marketing Solution</li>
 <li>User Registration – Create WordPress users from fluent form submissions</li>
 <li>Post/CPT integration – Create any type of posts from form submission. You can visually map the ACF fields from fluent forms</li>
@@ -439,6 +439,98 @@ The entire source code is <a href="https://github.com/fluentform/fluentform">ava
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.10 (Date: January 07, 2025) =
+- Fixes unsupported field disappears inside container
+- Fixes names/address fields '0' required validation
+- Fixes custom button style reset border radius 0px
+
+= 5.2.9 (Date: January 06, 2025) =
+- Adds CleanTalk Spam Protection
+- Improve Step Form accessibility
+- Update Akismet option with spam submission skips integration
+- Fixes WP Forms multipage form migration
+- Fixes container drop inside another container
+- Fixes radio selection on the entry editor
+- Fixes dropdown field smart choose long options width
+
+= 5.2.7 (Date: December 05, 2024) =
+- Adds all forms export button
+- Fixed WordFence vulnerability CVE-2024-10646
+- Fixed hidden field with empty value conditional logic in Conversational Forms
+- Fixed post.permalink editor shortcode link in RTL
+- Fixed ff-read-only class with accessibility
+
+= 5.2.6 (Date: November 19, 2024) =
+- Fixed radio field image issue
+- Fixed conversational dynamic shortcode issue
+
+= 5.2.5 (Date: November 14, 2024)
+- Adds form editor undo/redo functionality (Beta)
+- Adds global option to select date and time format for entries view
+- Adds submission & field-specific shortcode
+- Adds "Go to page" feature for pagination
+- Adds global settings sidebar custom links sub-menu style
+- Adds "DELETE" input prompt on form deletion
+- Improved vulnerability handling with PSC by Cleantalk
+- Improved accessibility (focus on radio buttons, screen reader support)
+- Improved translations
+- Improved integrations API logs bulk replay actions functionality
+- Improved submission logs API cals retry action
+- Improved synchronization of "All Entries" chart with form ID and date range
+- Improved initially disabling of analytics
+- Improved Mailchimp date field with more format options
+- Improved checkable field bulk options in the editor (supports : on value & label)
+- Fixes shortcode copy message showing multiple times on entry page
+- Fixes screen reading issue with name fields
+- Fixes mobile responsiveness of tools page sidebar navigation
+- Fixes double submission when submit button is clicked twice with custom URL redirection setup
+- Fixes undefined shortcode key for conditionally hidden fields
+- Fixes FluentCRM dynamic tag selection based on subscriptions plan
+
+= 5.2.4 (Date: October 1, 2024) =
+- Fix calculation issue
+
+= 5.2.3 (Date: September 30, 2024) =
+- Adds form edit history (Beta)
+- Adds editor keyboard navigation and shortcuts
+- Adds form-specific permissions in the permission manager
+- Improved condition change event handling
+- Fixes exposing the conversational form URL
+- Fixes empty URL GET parameters in conversational form shortcodes
+- Fixes all form filter selections being retained on page reload
+- Fixes next button trapping keyboard focus
+- Fixes confirmation redirect URL handling for spaces
+- Fixes entries export issue for forms with a large number of fields (250+ fields)
+- Fixes dynamic SmartCodes in conditional fields
+- Fixes checkable field “not-equal” condition on conversation form
+- Fixes exporting numeric fields to Excel
+- Fixes label asterisk style with elementor widget
+- Fixes conditional logic with numeric formatting
+
+= 5.2.2 (Date: September 11, 2024) =
+- Fixes Gutenblock widget
+
+= 5.2.1 (Date: September 10, 2024) =
+- Fixes custom error messages vulnerability (Allowing admin to inject script in custom error messages)
+- Fixes dropdown field in conversational forms after conditional multi-select
+- Fixes checkbox field "not-equal" condition in conversational forms
+
+= 5.2.0 (Date: Aug 2, 2024) =
+- Adds dynamic field
+- Adds print entries
+- Adds context menu in editor
+- Fixes PDF feed watermarks
+- Fixes inactive conversational form pretty permalink
+- Fixes address field country hide label
+- Fixes GDPR attribute target=_blank
+- Fixes Cloudflare Turnstile multiple widget
+- Fixes PHP 8.3 deprecation warning
+
+= 5.1.20 (Date: July 25, 2024) =
+- Fixes inject arbitrary web scripts in checkboxes vulnerability (CVE-2024-6518, CVE-2024-6520) reported by WordFence
+- Fixes textarea fields insufficient input sanitization and output escaping vulnerability (CVE-2024-6521) reported by WordFence
+- Fixes cross-site scripting via the ‘description’ and 'btn_txt' parameters vulnerability (CVE-2024-6703) reported by WordFence
 
 = 5.1.19 (Date: June 11, 2024)
 - Adds injectable custom Vue component on form settings and global settings

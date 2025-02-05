@@ -4,6 +4,7 @@ namespace FluentForm\App\Services\FluentConversational\Classes;
 
 use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Acl\Acl;
+use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Form\Settings\FormCssJs;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
@@ -209,6 +210,9 @@ class Form
 
         if ((isset($request[$paramKey])) && !wp_doing_ajax()) {
             $formId = (int) ArrayHelper::get($request, $paramKey);
+            if (!Helper::isConversionForm($formId)) {
+                return;
+            }
             $shareKey = ArrayHelper::get($request, 'form');
             $this->renderFormHtml($formId, $shareKey);
         }
@@ -238,7 +242,7 @@ class Form
             $buttonHoverStyles = ArrayHelper::get($data, 'settings.hover_styles', []);
             $activeStates = '';
             foreach ($buttonActiveStyles as $styleAtr => $styleValue) {
-                if (!$styleValue) {
+                if ('0' != $styleValue && !$styleValue) {
                     continue;
                 }
                 if ('borderRadius' == $styleAtr) {
@@ -251,7 +255,7 @@ class Form
             }
             $hoverStates = '';
             foreach ($buttonHoverStyles as $styleAtr => $styleValue) {
-                if (!$styleValue) {
+                if ('0' != $styleValue && !$styleValue) {
                     continue;
                 }
                 if ('borderRadius' == $styleAtr) {
@@ -322,7 +326,9 @@ class Form
             'turnstile',
             'quiz_score',
             'rangeslider',
-//            'save_progress_button'
+            'save_progress_button',
+            'dynamic_field',
+            'shortcode'
         ];
 
         $acceptedFieldElements = apply_filters(
@@ -556,9 +562,22 @@ class Form
             'paymentConfig'            => $this->getPaymentConfig($form),
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n()
         ]);
+
+        $hasSaveProgressButton = false;
+        $saveProgressButton = [];
+        foreach ($form->fields['fields'] as $item) {
+            if (isset($item['element']) && $item['element'] === 'save_progress_button') {
+                $hasSaveProgressButton = true;
+                $saveProgressButton = $item;
+            }
+        }
+
+        if ($hasSaveProgressButton && $saveProgressButton) {
+            $this->localizeSaveProgressButton($saveProgressButton, $formId);
+        }
     
         /* This filter is deprecated and will be removed soon */
-        $disableAnalytics = apply_filters('fluentform-disabled_analytics', false);
+        $disableAnalytics = apply_filters('fluentform-disabled_analytics', true);
 
         if (!apply_filters('fluentform/disabled_analytics', $disableAnalytics)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
@@ -646,8 +665,13 @@ class Form
 
         $form->settings = json_decode($formSettings->value, true);
 
-        if($form->status == 'unpublished' && !Acl::hasAnyFormPermission($formId)) {
-            return '';
+        if ($form->status == 'unpublished') {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header(404);
+            nocache_headers();
+            include(get_query_template('404'));
+            exit();
         }
 
         $metaSettings = $this->getMetaSettings($formId);
@@ -711,6 +735,19 @@ class Form
             'date_i18n'                => \FluentForm\App\Modules\Component\Component::getDatei18n(),
             'rest'                     => Helper::getRestInfo()
         ]);
+        
+        $hasSaveProgressButton = false;
+        $saveProgressButton = [];
+        foreach ($form->fields['fields'] as $item) {
+            if (isset($item['element']) && $item['element'] === 'save_progress_button') {
+                $hasSaveProgressButton = true;
+                $saveProgressButton = $item;
+            }
+        }
+
+        if ($hasSaveProgressButton && $saveProgressButton) {
+            $this->localizeSaveProgressButton($saveProgressButton, $formId);
+        }
 
         $this->printLoadedScripts();
 
@@ -732,7 +769,7 @@ class Form
             }
         }
         /* This filter is deprecated and will be removed soon */
-        $status = apply_filters('fluentform-disabled_analytics', false);
+        $status = apply_filters('fluentform-disabled_analytics', true);
 
         if (!apply_filters('fluentform/disabled_analytics', $status)) {
             if (!Acl::hasAnyFormPermission($form->id)) {
@@ -877,5 +914,27 @@ class Form
             'has_save_link'             => $form->save_state?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
+    }
+    
+    public function localizeSaveProgressButton($field, $formId)
+    {
+        $vars = apply_filters('fluentform/save_progress_vars', [
+            'ajaxurl'                   => admin_url('admin-ajax.php'),
+            'source_url'                => home_url($_SERVER['REQUEST_URI']),
+            'form_id'                   => $formId,
+            'nonce'                     => wp_create_nonce(),
+            'copy_button'               => fluentFormMix('img/copy.svg'),
+            'copy_success_button'       => fluentFormMix('img/check.svg'),
+            'email_button'              => fluentFormMix('img/email.svg'),
+            'email_placeholder_str'     => __('Your Email Here', 'fluentformpro'),
+            'email_resume_link_enabled' => false,
+            'save_progress_btn_name'    => ArrayHelper::get($field, 'attributes.name'),
+        ]);
+
+        if (ArrayHelper::get($field, 'settings.email_resume_link_enabled')) {
+            $vars['email_resume_link_enabled'] = true;
+        }
+
+        wp_localize_script('fluent_forms_conversational_form', 'form_state_save_vars', $vars);
     }
 }

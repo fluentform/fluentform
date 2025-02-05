@@ -191,12 +191,105 @@ const registerRepeaterHandler = function ($theForm) {
         $table.trigger('repeat_change');
     });
 
+    //repeater container
+
+    $theForm.on('click', '.js-container-repeat-buttons .repeat-plus', function (e) {
+        let $btnPlus = jQuery(this);
+
+        let $repeaterList = $btnPlus.closest('.ff-repeater-container');
+        let $row = $btnPlus.closest('.ff_repeater_cont_row');
+        let maxRepeat = parseInt($repeaterList.attr('data-max_repeat'));
+        let rootName = $repeaterList.attr('data-root_name');
+
+        let existingCount = $repeaterList.find('.ff_repeater_cont_row').length;
+
+        if(maxRepeat && existingCount == maxRepeat) {
+            $repeaterList.addClass('repeat-maxed');
+            return;
+        }
+
+        var $freshCopy = $row.clone();
+
+        $freshCopy.find('.ff_repeater_cell').each(function (i, cell) {
+            var el = jQuery(this).find('.ff-el-form-control:last-child');
+            var newId = 'ffrpt-' + (new Date()).getTime() + i;
+            var itemProp = {
+                value: el.attr('data-default') || '',
+                id: newId
+            };
+            el.prop(itemProp);
+            var dataMask = el.attr('data-mask');
+            if (dataMask) {
+                el.mask(dataMask);
+            }
+
+            // Update the 'for' attribute of the label
+            jQuery(this).find('label').attr('for', newId);
+        });
+        $freshCopy.insertAfter($row);
+
+        // Now let's fix the name
+        let firstTabIndex = 0;
+        $repeaterList.find('.ff_repeater_cont_row').each(function (i, row) {
+            var els = jQuery(this).find('.ff-el-form-control');
+            els.each(function (index, el) {
+                let $el = jQuery(el);
+                if(i == 0) {
+                    firstTabIndex = $el.attr('tabindex');
+                }
+                $el.prop({
+                    'name': rootName+'['+i+'][]'
+                });
+                $el.attr('data-name',  rootName+'_'+index+'_'+i);
+                if(firstTabIndex) {
+                    $el.attr('tabindex',  firstTabIndex);
+                }
+            });
+        });
+
+        $freshCopy.find('.ff-el-form-control')[0].focus();
+
+        $repeaterList.trigger('repeat_change');
+
+        if(maxRepeat && existingCount+1 == maxRepeat) {
+            $repeaterList.addClass('repeat-maxed');
+        }
+    });
+
+    // Remove row functionality
+    $theForm.on('click', '.js-container-repeat-buttons .repeat-minus', function (e) {
+        let $btnMinus = jQuery(this);
+        let $repeaterList = $btnMinus.closest('.ff-repeater-container');
+        let $row = $btnMinus.closest('.ff_repeater_cont_row');
+        if ($repeaterList.find('.ff_repeater_cont_row').length > 1) {
+            $row.remove();
+            $repeaterList.removeClass('repeat-maxed');
+            $repeaterList.trigger('repeat_change');
+        }
+    });
+
 
 };
+const registerKeyboardShort = function ($theForm) {
 
+    $theForm.on('keydown', '.repeat-plus', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            jQuery(this).click();
+        }
+    });
+
+    $theForm.on('keydown', '.repeat-minus', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            jQuery(this).click();
+        }
+    });
+}
 const initRepeater = function($theForm) {
     registerRepeaterButtonsOldVersion($theForm);
     registerRepeaterHandler($theForm);
+    registerKeyboardShort($theForm);
 };
 
 export {initRepeatButtons, initRepeater};

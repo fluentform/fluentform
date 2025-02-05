@@ -107,7 +107,7 @@
                     }
                 }
 
-                return message && "We don't have Subscription Field support for " + message;
+                return message && this.$t("We don't have Subscription Field support for %s",  message);
             }
         },
         methods: {

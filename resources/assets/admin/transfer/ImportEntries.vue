@@ -195,7 +195,7 @@
 									</el-col>
 									<el-col :span="24" v-if="loading_import_entries && has_lots_of_entries">
 										<p>
-											{{ $t("It's take some times. Please wail...") }}
+											{{ $t("It will take some times. Please wait...") }}
 										</p>
 									</el-col>
 								</el-row>

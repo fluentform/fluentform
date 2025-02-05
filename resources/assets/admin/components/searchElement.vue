@@ -2,13 +2,14 @@
     <div class="search-element">
         <div class="ff-input-wrap">
             <span class="el-icon el-icon-search"></span>
-            <el-input :class="[searchElementStr.length > 0 ? 'active' : '']" v-model="searchElementStr" type="text" :placeholder="placeholder" />
+            <el-input ref="searchInput" :class="[searchElementStr.length > 0 ? 'active' : '']" v-model="searchElementStr" type="text" :placeholder="placeholder" />
         </div>
 
         <div class="search-element-result" v-show="searchResult.length" style="margin-top: 15px;">
             <div v-for="(itemMockList, i) in searchResult" :key="i" class="v-row mb15">
-                <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i">
+                <div class="v-col--50" v-for="(itemMock, i) in itemMockList" :key="i"   @keydown.enter.prevent="insertItemOnClick(itemMock,$event.target.querySelector('span'))"  >
                     <vddl-draggable
+                        :tabindex="0"
                         class="btn-element"
                         :draggable="itemMock"
                         :selected="insertItemOnClick"
@@ -81,6 +82,12 @@ export default {
         }
     },
     methods: {
+        handleSearchFocus(e) {
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                e.preventDefault();
+                this.$refs.searchInput.focus();
+            }
+        },
         makeSearchString(field) {
             let searchStr = '';
             const { name, type } = field.attributes || {};
@@ -97,6 +104,13 @@ export default {
             }
             return searchStr.toString();
         }
+    },
+    mounted() {
+        this.$refs.searchInput.focus()
+        document.addEventListener('keydown', this.handleSearchFocus);
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this.handleSearchFocus);
     }
 }
 </script>

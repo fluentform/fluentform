@@ -9,12 +9,7 @@
                     <btn-group-item as="div">
                         <el-button @click="gotoVisualReport()" type="primary">
                             <i class="ff-icon ff-icon-donut-chart"></i>
-                            <span>{{ $t('View Visual Report') }}</span>
-                        </el-button>
-                    </btn-group-item>
-                    <btn-group-item as="div">
-                        <el-button @click="showImportEntriesModal = true"  class="el-button">
-                            {{ $t('Import') }}
+                            <span>{{ $t('Visual Report') }}</span>
                         </el-button>
                     </btn-group-item>
                     <btn-group-item as="div">
@@ -24,10 +19,10 @@
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="csv">{{ $t('Export as') }} CSV</el-dropdown-item>
-                                <el-dropdown-item command="xlsx">{{ $t('Export as') }} Excel (xlsv)</el-dropdown-item>
-                                <el-dropdown-item command="ods">{{ $t('Export as') }} ODS</el-dropdown-item>
-                                <el-dropdown-item command="json">{{ $t('Export as') }} JSON Data</el-dropdown-item>
+                                <el-dropdown-item command="csv">{{ $t('Export as %s', 'CSV') }}</el-dropdown-item>
+                                <el-dropdown-item command="xlsx">{{ $t('Export as %s', 'Excel (xlsv)') }}</el-dropdown-item>
+                                <el-dropdown-item command="ods">{{ $t('Export as %s', 'ODS') }}</el-dropdown-item>
+                                <el-dropdown-item command="json">{{ $t('Export as %s', 'JSON Data') }}</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
@@ -52,6 +47,21 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </btn-group-item>
+                    <el-dropdown
+                            @command="showImport"
+                            class="more_menu"
+                    >
+                        <span class="el-dropdown-link">
+                            <i class="ff-icon ff-icon-more-vertical"/>
+                        </span>
+                        <el-dropdown-menu slot="dropdown" >
+                            <el-dropdown-item  >
+                                    {{ $t('Import') }}
+                            </el-dropdown-item >
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
+
                 </btn-group>
             </section-head-content>
         </section-head>
@@ -135,6 +145,13 @@
             <section-head-content>
                 <btn-group class="ff_entries_report_wrap" as="div">
                     <btn-group-item as="div">
+                        <label for="search_bar">
+                           <b> {{ $t('Advanced Filter') }}</b>
+                        </label>
+                        <el-switch inactive-color="#afb3ba" class="el-switch-sm " v-model="advanced_filter_active" />
+
+                    </btn-group-item>
+                    <btn-group-item as="div">
                         <label for="search_bar" class="screen-reader-text">
                             {{ $t('Search Entry') }}
                         </label>
@@ -149,7 +166,7 @@
                     </btn-group-item>
 
                     <btn-group-item as="div">
-                        <el-dropdown trigger="click" class="current_form_name_column" :hide-on-click="false">
+                        <el-dropdown v-if="!entrySelections.length" trigger="click" class="current_form_name_column" :hide-on-click="false">
                             <el-button>
                                  {{ $t('Columns') }}
                                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -172,12 +189,12 @@
                     </btn-group-item>
                     <btn-group-item as="div">
                         <div class="ff_advanced_filter_wrap">
-                            <el-button @click="advancedFilter = !advancedFilter" :class="this.filter_date_range && 'ff_filter_selected'">
-                                <span>{{ $t('Filter') }}</span>
-                                <i v-if="advancedFilter" class="ff-icon el-icon-circle-close"></i>
+                            <el-button @click="basicFilter = !basicFilter" :class="this.filter_date_range && 'ff_filter_selected'">
+                                <span>{{ $t('Date Filter') }}</span>
+                                <i v-if="basicFilter" class="ff-icon el-icon-circle-close"></i>
                                 <i v-else class="ff-icon ff-icon-filter"></i>
                             </el-button>
-                            <div v-if="advancedFilter" class="ff_advanced_search">
+                            <div v-if="basicFilter" class="ff_advanced_search">
                                 <div class="ff_advanced_search_radios">
                                     <el-radio-group v-model="radioOption" class="el-radio-group-column">
                                         <el-radio label="all">{{$t('All')}}</el-radio>
@@ -236,6 +253,18 @@
             :description="$t('You can disable the auto delete option from Settings & Integrations Tab')"
             type="error">
         </el-alert>
+	    <template v-if="advanced_filter_active">
+                <AdvancedSearch v-if="has_pro" @runSearch="runAdvanceSearch"  :advanced_filter="advanced_filter"/>
+			    <notice v-else type="danger-soft" class="ff_alert_between mb-4">
+				    <div>
+					    <h6 class="title">{{ $t('You are using the free version of Fluent Forms.') }}</h6>
+					    <p class="text">{{ $t('Upgrade to get access to all the advanced features.') }}</p>
+				    </div>
+				    <a target="_blank" href="https://fluentforms.com/pricing/?utm_source=plugin&amp;utm_medium=wp_install&amp;utm_campaign=ff_upgrade&amp;theme_style=twentytwentythree" class="el-button el-button--danger el-button--small">
+					    {{ $t('Upgrade to Pro') }}
+				    </a>
+			    </notice>
+	    </template>
 
         <div style="min-height: 300px;" class="entries_table">
             <div class="ff_table">
@@ -293,8 +322,8 @@
                                     </div>
 
                                     <div class="inline_actions inline_item" v-else>
-                                            <span @click="restoreEntry(scope.row.id, scope.$index)" title="Restore"
-                                                class="el-icon-circle-check action_button">{{ $t(' Restore') }}</span>
+                                            <span @click="restoreEntry(scope.row.id, scope.$index)"
+                                                class="el-icon-circle-check action_button">{{ $t('Restore') }}</span>
                                     </div>
                                 </div>
                             </template>
@@ -314,7 +343,7 @@
                         </el-table-column>
 
                         <el-table-column
-                                label="Entry Status"
+                                :label="$t('Entry Status')"
                                 sortable
                                 prop="status"
                                 width="120px">
@@ -370,9 +399,16 @@
                                 :label="$t('Submitted at')"
                                 sortable
                                 prop="created_at"
-                                width="120px">
+                                :width="dateColWidth">
                             <template slot-scope="scope">
-                                {{ dateFormat(scope.row.created_at) }}
+                                <el-tooltip class="item" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        {{tooltipDateTime(scope.row.created_at)}}
+                                    </div>
+
+                                   <span>{{humanDiffTime(scope.row.created_at)}}</span>
+                                </el-tooltip>
+
                             </template>
                         </el-table-column>
 
@@ -423,7 +459,7 @@
             </div><!-- .ff_table -->
 
             <el-row class="mt-4 items-center">
-                <el-col :span="12">
+                <el-col :xs="24" :sm="8" :lg="12">
                     <div class="bulkactions">
                         <email-resend
                                 v-if="entrySelections.length"
@@ -434,7 +470,7 @@
                         <el-checkbox class="compact_input" v-model="isCompact" @change="handleCompactView">{{ $t('Compact View') }}</el-checkbox>
                     </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :xs="24" :sm="16" :lg="12">
                     <div class="ff_pagination_wrap text-right">
                         <el-pagination
                                 class="ff_pagination"
@@ -444,7 +480,7 @@
                                 :current-page.sync="paginate.current_page"
                                 :page-sizes="[5, 10, 20, 50, 100]"
                                 :page-size="parseInt(paginate.per_page)"
-                                layout="total, sizes, prev, pager, next"
+                                layout="total, sizes, prev, pager, next, jumper"
                                 :total="paginate.total">
                         </el-pagination>
                     </div>
@@ -480,12 +516,13 @@
                         </el-checkbox-group>
 
                         <el-checkbox-group class="ff_2_col_items " v-model="shortcodesToExport" @change="handleCheckedFieldsChange">
-                            <div >
+                            <div>
                                 <p><b>{{ $t('Submission Info') }}</b></p>
                                 <div class="separator mb-4"></div>
                                 <el-checkbox :disabled="!has_pro" v-for="(label,name) in editor_shortcodes"   :label="name" :key="name" >{{ label }}</el-checkbox>
                             </div>
                         </el-checkbox-group>
+                        <el-checkbox v-model="exportWithNotes">{{ $t('With Notes') }}</el-checkbox>
                     </div>
                     <div  class="text-center" v-if="!has_pro">
                         {{$t('Field selection is available only in Pro version.') }}
@@ -516,11 +553,14 @@
     import SectionHead from '@/admin/components/SectionHead/SectionHead.vue';
     import SectionHeadContent from '@/admin/components/SectionHead/SectionHeadContent.vue';
     import ImportEntriesModal from "@/admin/components/modals/ImportEntriesModal.vue";
+    import AdvancedSearch from "@/admin/views/_AdvancedSearch";
+    import Notice from '@/admin/components/Notice/Notice.vue'
 
     export default {
         name: 'FormEntries',
         props: ['form_id', 'has_pdf'],
         components: {
+            AdvancedSearch,
             Confirm,
             EmailResend,
             ColumnDragAndDrop,
@@ -528,6 +568,7 @@
             BtnGroupItem,
             SectionHead,
             SectionHeadContent,
+	        Notice,
             ImportEntriesModal
         },
         watch: {
@@ -593,7 +634,7 @@
                 payment_statuses: window.fluent_form_entries_vars.payment_statuses,
                 has_payment: !!window.fluent_form_entries_vars.has_payment,
                 isCompact: true,
-                advancedFilter: false,
+                basicFilter: false,
                 filter_date_range: null,
                 autoDeleteStatus: window.fluent_form_entries_vars.enabled_auto_delete,
                 pickerOptions: {
@@ -653,7 +694,10 @@
                 isIndeterminateFieldsSelection: true,
                 checkAllFields : false,
                 showImportEntriesModal: false,
-                app: window.fluent_forms_global_var
+                app: window.fluent_forms_global_var,
+                advanced_filter_active : false,
+                advanced_filter : {},
+                exportWithNotes : false
             }
         },
         computed: {
@@ -672,7 +716,11 @@
                         {
                             label: 'Remove from Favorites',
                             action: 'other.unmark_favorite'
-                        }
+                        },
+	                    {
+                            label: 'Print Entries',
+                            action: 'print'
+                        },
                     ]
                 };
 
@@ -739,7 +787,11 @@
 				return !!(this.radioOption && this.radioOption != 'all' ||
 					(Array.isArray(this.filter_date_range) && this.filter_date_range.join(''))
                 );
-            }
+            },
+
+	        dateColWidth() {
+		        return window.fluent_forms_global_var.disable_time_diff ? '180' : '120';
+	        }
         },
         methods: {
             getStatusName(status) {
@@ -782,6 +834,10 @@
                         this.getData();
                     });
             },
+            runAdvanceSearch(query){
+                this.advanced_filter = query
+                this.getData();
+            },
             getData() {
                 let data = {
                     form_id: this.form_id,
@@ -797,8 +853,11 @@
                 if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                 }
-	            if (this.advancedFilter) {
-		            this.advancedFilter = false;
+	            if (this.basicFilter) {
+		            this.basicFilter = false;
+	            }
+	            if (this.advanced_filter_active) {
+                    data.advanced_filter = this.advanced_filter;
 	            }
 
                 this.loading = true;
@@ -901,6 +960,10 @@
                 }
             },
             operationOnSelectedEntries(actionType) {
+				if ('print' === actionType) {
+					this.printEntry({submission_ids: this.selection_ids, form_id : this.form_id, sort_by: this.sort_by});
+					return;
+				}
                 let data = {
                     form_id: this.form_id,
                     entries: this.selection_ids,
@@ -1065,14 +1128,20 @@
                     sort_by: this.sort_by,
                     search: this.search_string,
                     payment_statuses: this.selectedPaymentStatuses,
-                    fields_to_export: this.fieldsToExport,
+                    fields_to_export: JSON.stringify(this.fieldsToExport),
                     shortcodes_to_export: selectedShortcodes,
 	                fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
                 };
+                if (this.exportWithNotes){
+                    data.with_notes = this.exportWithNotes;
+                }
                 if (this.hasEnabledDateFilter) {
                     data.date_range = this.filter_date_range;
                     data.is_favourite = this.show_favorites;
                 }
+				if (this.advanced_filter_active) {
+					data.advanced_filter = this.advanced_filter;
+				}
 	            location.href = ajaxurl + '?' + jQuery.param(data);
             },
             dateFormat(date, format) {
@@ -1147,13 +1216,17 @@
                 this.checkAll = checkedCount === shortCodeCountCount + fieldsCount;
 
                 this.isIndeterminateFieldsSelection = checkedCount > 0 && checkedCount <  shortCodeCountCount + fieldsCount;
-            }
+            },
+            showImport() {
+                this.showImportEntriesModal = !this.showImportEntriesModal;
+            },
         },
         mounted() {
             this.getEntryResources();
-            (new ClipboardJS('.copy')).on('success', (e) => {
-                this.$copy();
-            });
+	        this.clipboard = new ClipboardJS('.copy');
+	        this.clipboard.on('success', () => {
+		        this.$copy();
+	        });
             this.isCompact = ( localStorage.getItem('compactView') == 'true' || localStorage.getItem("compactView") === null) ? true : false;
             this.fieldsToExport = Object.keys(this.input_labels)
             this.shortcodesToExport = ['{submission.id}','{submission.created_at}','{submission.status}']
@@ -1161,6 +1234,11 @@
         beforeCreate() {
             ffEntriesEvents.$emit('change-title', 'All Entries');
         },
+	    beforeDestroy() {
+		    if (this.clipboard) {
+			    this.clipboard.destroy();
+		    }
+	    }
     };
 </script>
 

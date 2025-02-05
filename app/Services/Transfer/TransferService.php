@@ -10,6 +10,7 @@ use FluentForm\App\Models\Submission;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
+use FluentForm\App\Services\Submission\SubmissionService;
 use FluentForm\Framework\Foundation\App;
 use FluentForm\Framework\Request\File;
 use FluentForm\Framework\Support\Arr;
@@ -112,13 +113,7 @@ class TransferService
                             }
                         }
                     }
-                    do_action_deprecated('fluentform_form_imported', [
-                            $formId
-                        ],
-                        FLUENTFORM_FRAMEWORK_UPGRADE,
-                        'fluentform/form_imported',
-                        'Use fluentform/form_imported instead of fluentform_form_imported.'
-                    );
+               
                     do_action('fluentform/form_imported', $formId);
                 }
 
@@ -155,7 +150,12 @@ class TransferService
         $formInputs = FormFieldsParser::getEntryInputs($form, ['admin_label', 'raw']);
         $inputLabels = FormFieldsParser::getAdminLabels($form, $formInputs);
         $selectedLabels = Arr::get($args,'fields_to_export');
+        if (is_string($selectedLabels) && Helper::isJson($selectedLabels)) {
+            $selectedLabels = \json_decode($selectedLabels, true);
+        }
         $selectedLabels = fluentFormSanitizer($selectedLabels);
+    
+        $withNotes = isset($args['with_notes']);
        
         //filter out unselected fields
         foreach ($inputLabels as $key => $value) {
@@ -163,15 +163,16 @@ class TransferService
                 unset($inputLabels[$key]); // Remove the element with the specified key
             }
         }
-    
+        
         $submissions = self::getSubmissions($args);
         $submissions = FormDataParser::parseFormEntries($submissions, $form, $formInputs);
         $parsedShortCodes = [];
         $exportData = [];
+        $submissionService = new SubmissionService();
         foreach ($submissions as $submission) {
 
             $submission->response = json_decode($submission->response, true);
-           
+         
             $temp = [];
             foreach ($inputLabels as $field => $label) {
                 
@@ -179,10 +180,20 @@ class TransferService
                 if (isset($formInputs[$field]['element']) && "tabular_grid" === $formInputs[$field]['element']) {
                     $gridRawData = Arr::get($submission->response, $field);
                     $content = Helper::getTabularGridFormatValue($gridRawData, Arr::get($formInputs, $field), ' | ');
+                } elseif (isset($formInputs[$field]['element']) && "subscription_payment_component" === $formInputs[$field]['element']) {
+                    //resolve plane name for subscription field
+                    $planIndex = Arr::get($submission->user_inputs, $field);
+                    $planLabel = Arr::get($formInputs,  "{$field}.raw.settings.subscription_options.{$planIndex}.name");
+                    if ($planLabel) {
+                        $content = $planLabel;
+                    } else {
+                        $content = self::getFieldExportContent($submission, $field);
+                    }
                 } else {
-                    $content = trim(wp_strip_all_tags(FormDataParser::formatValue(
-                                Arr::get($submission->user_inputs, $field)))
-                    );
+                    $content = self::getFieldExportContent($submission, $field);
+                    if (Arr::get($formInputs, $field . '.element') === "input_number" && is_numeric($content)) {
+                        $content = $content + 0;
+                    }
                 }
                 $temp[] = Helper::sanitizeForCSV($content);
             }
@@ -203,6 +214,12 @@ class TransferService
                     }
                 }
             }
+            if($withNotes){
+                $notes = $submissionService->getNotes($submission->id, ['form_id' => $form->id])->pluck('value');
+                if(!empty($notes)){
+                    $temp[] = implode(", ",$notes->toArray());
+                }
+            }
             
             $exportData[] = $temp;
         }
@@ -214,23 +231,27 @@ class TransferService
                 $extraLabels[] = Arr::get($code,'label');
             }
         }
+        
         $inputLabels = array_merge($inputLabels, $extraLabels);
+        if($withNotes){
+            $inputLabels[] = __('Notes','fluentform');
+        }
         $data = array_merge([array_values($inputLabels)], $exportData);
-        $data = apply_filters_deprecated(
-            'fluentform_export_data',
-            [
-                $data,
-                $form,
-                $exportData,
-                $inputLabels
-            ],
-            FLUENTFORM_FRAMEWORK_UPGRADE,
-            'fluentform/export_data',
-            'Use fluentform/export_data instead of fluentform_export_data'
-        );
+        
         $data = apply_filters('fluentform/export_data', $data, $form, $exportData, $inputLabels);
         $fileName = sanitize_title($form->title, 'export', 'view') . '-' . date('Y-m-d');
         self::downloadOfficeDoc($data, $type, $fileName);
+    }
+
+    private static function getFieldExportContent($submission, $fieldName)
+    {
+        return trim(
+            wp_strip_all_tags(
+                FormDataParser::formatValue(
+                    Arr::get($submission->user_inputs, $fieldName)
+                )
+            )
+        );
     }
 
     private static function exportAsJSON($form, $args)
@@ -254,6 +275,11 @@ class TransferService
         $query->when(is_array($entries) && (count($entries) > 0), function ($q) use ($entries) {
             return $q->whereIn('id', $entries);
         });
+
+        if (Arr::get($args, 'advanced_filter')) {
+            $query = apply_filters('fluentform/apply_entries_advance_filter', $query, $args);
+        }
+
         return $query->get();
     }
 
@@ -267,7 +293,12 @@ class TransferService
                 return $itemValue;
             }, $item);
         }, $data);
-        require_once (App::getInstance())->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        $autoloaderPath = App::getInstance()->make('path.app') . '/Services/Spout/Autoloader/autoload.php';
+        // Check if the file is already included
+        if (!in_array(realpath($autoloaderPath), get_included_files())) {
+            // Include the autoloader file if it has not been included yet
+            require_once $autoloaderPath;
+        }
         $fileName = ($fileName) ? $fileName . '.' . $type : 'export-data-' . date('d-m-Y') . '.' . $type;
         $writer = \Box\Spout\Writer\WriterFactory::create($type);
         $writer->openToBrowser($fileName);

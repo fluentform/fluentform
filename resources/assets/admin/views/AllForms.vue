@@ -146,10 +146,18 @@
                                                     }}
                                                 <i class="el-icon-loading" v-if="loadingLocations"></i></a>
                                             </span>
+                                            <span
+                                                v-if="isLandingPageEnabled(scope.row.id)"
+                                                class="row-actions-item"
+                                            >
+                                               <a href="#" @click.prevent="redirectToSharePage(scope.row.id)">
+                                                   {{
+                                                        $t('Share')
+                                                   }}
+                                               </a>
+                                            </span>
                                             <span class="row-actions-item trash">
-                                                <remove @on-confirm="removeForm(scope.row.id, scope.$index)">
-                                                    <a href="#" @click.prevent>{{ $t('Delete') }}</a>
-                                                </remove>
+                                                <a href="#" @click.prevent="removeFormConfirmation(scope.row.id, scope.$index)">{{ $t('Delete') }}</a>
                                             </span>
                                             <el-switch
                                                 class="el-switch--small"
@@ -158,7 +166,7 @@
                                                 active-value="published"
                                                 inactive-value="unpublished"
                                                 v-model="scope.row.status"
-                                                v-loading="changingStatus[scope.row.id] ==true"
+                                                v-loading="changingStatus[scope.row.id] == true"
                                             />
 
                                         </template>
@@ -253,7 +261,7 @@
                         :current-page.sync="paginate.current_page"
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="parseInt(paginate.per_page)"
-                        layout="total, sizes, prev, pager, next"
+                        layout="total, sizes, prev, pager, next, jumper"
                         :total="paginate.total">
                     </el-pagination>
                 </div>
@@ -374,7 +382,7 @@ export default {
                 }
               ]
             },
-            filter_by:'all',
+            filter_by:'published',
             form_statuses: {
                 all: 'All',
                 published: 'Active',
@@ -415,6 +423,7 @@ export default {
                 })
                 .finally(() => {
                     this.changingStatus[id] = false;
+                    this.fetchItems();
                 });
         },
         goToPage(val) {
@@ -471,6 +480,32 @@ export default {
                 this.clearingSearchKeyword = false;
             });
         },
+        removeFormConfirmation(id, index) {
+            this.$confirm(this.$t('Are you sure you want to delete this form?'), this.$t('Warning'), {
+                confirmButtonText: this.$t('Yes, Delete the form'),
+                cancelButtonText: this.$t('No'),
+                type: 'warning',
+                confirmButtonClass: 'ff_form_remove_confirm_class'
+            }).then(() => {
+                this.$prompt(this.$t('Please type %s" to confirm. All entries and integration feeds of this form will be deleted', '"DELETE"'), this.$t('Delete Form'), {
+                    confirmButtonText: this.$t('Confirm Delete'),
+                    cancelButtonText: this.$t('Cancel'),
+                    confirmButtonClass: 'ff_form_remove_confirm_class'
+                }).then((response) => {
+                    if (response.value === 'DELETE') {
+                        this.removeForm(id, index);
+                    } else {
+                        this.$notify.error({
+                            title: this.$t('Error'),
+                            message:this.$t('You must type %s to confirm', 'DELETE'),
+                            position: 'bottom-right'
+                        });
+                    }
+                });
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
         removeForm(id, index) {
             const url = FluentFormsGlobal.$rest.route('deleteForm', id);
 
@@ -503,6 +538,8 @@ export default {
             if (column.order) {
                 this.sort_column = column.prop;
                 this.sort_by = (column.order === 'ascending') ? 'ASC' : 'DESC';
+                localStorage.setItem('ff_all_form_sort_column', this.sort_column);
+                localStorage.setItem('ff_all_form_sort_by', this.sort_by);
                 this.fetchItems();
             }
         },
@@ -552,6 +589,8 @@ export default {
           this.search_string = '';
           this.setDefaultPaginate();
           this.fetchItems();
+          localStorage.setItem('selectedFormType', this.filter_by);
+
         },
         setDefaultPaginate() {
           this.paginate = {
@@ -593,6 +632,22 @@ export default {
 	            fluent_forms_admin_nonce: window.fluent_forms_global_var.fluent_forms_admin_nonce
             };
 	        location.href = ajaxurl + '?' + jQuery.param(data);
+        },
+        isLandingPageEnabled(id) {
+            if (this.hasPro() && window.FluentFormApp.landing_page_enabled_forms) {
+                let landingPageIds = window.FluentFormApp.landing_page_enabled_forms;
+                if (landingPageIds) {
+                    return landingPageIds.includes(id);
+                }
+                return false;
+            }
+        },
+        redirectToSharePage(id) {
+            const siteUrl = window.FluentFormApp.siteUrl;
+            window.open(`${siteUrl}/?ff_landing=${id}`, '_blank');
+        },
+        hasPro() {
+            return !!window.FluentFormApp.hasPro;
         }
     },
     computed: {
@@ -603,10 +658,23 @@ export default {
         }
     },
     mounted() {
-        this.fetchItems();
         (new Clipboard('.copy')).on('success', event => {
             this.$copy();
         });
+        const savedOption = localStorage.getItem('selectedFormType');
+        if (savedOption) {
+            this.filter_by = savedOption;
+        }
+
+        const savedSortColumn = localStorage.getItem('ff_all_form_sort_column');
+        const savedSortBy = localStorage.getItem('ff_all_form_sort_by');
+
+        if (savedSortColumn && savedSortBy) {
+            this.sort_column = savedSortColumn;
+            this.sort_by = savedSortBy;
+        }
+        this.fetchItems();
+
     },
     created() {
         let hash = window.location.hash;

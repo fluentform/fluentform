@@ -1,9 +1,9 @@
 <template>
     <div :class="{'ff_backdrop': visibility}">
         <el-dialog :visible="visibility" :before-close="close">
-            <span slot="title" class="el-dialog__title">
+            <div slot="title" class="el-dialog__title">
               <h4> {{ $t('Import Entries') }}</h4>
-            </span>
+            </div>
             <div class="ff_import_entries">
                 <el-form v-if="app.hasPro && app.has_entries_import" label-position="top" class="mt-4">
                     <el-row :gutter="24">
@@ -56,11 +56,11 @@
                             <!--Csv Delimiter-->
                             <el-form-item v-if="is_csv_file_type" class="ff-form-item">
                                 <template slot="label">
-                                    {{ $t('Csv Delimiter') }}
+                                    {{ $t('CSV Delimiter') }}
                                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                         <div slot="content">
                                             <p>
-                                                {{ $t('Select your csv file delimiter') }}
+                                                {{ $t('Select your CSV file delimiter') }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -220,7 +220,7 @@
                         </el-col>
                         <el-col :span="24" v-if="loading_import_entries && has_lots_of_entries">
                             <p>
-                                {{ $t("It's take some times. Please wail...") }}
+                                {{ $t("It will take some times. Please wail...") }}
                             </p>
                         </el-col>
                     </el-row>

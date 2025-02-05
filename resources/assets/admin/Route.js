@@ -32,6 +32,8 @@ class Route {
     getFormFields = this.findForm + "/fields";
     getFormShortcodes = this.findForm + "/shortcodes";
     findFormShortCodePage = this.findForm + "/findShortCodePage";
+    getFormEditHistory = this.findForm + "/editHistory";
+    clearFormEditHistory = this.findForm + "/clearHistory";
 
     getFormSettings = "settings/{param}";
     storeFormSettings = this.getFormSettings;
@@ -54,6 +56,7 @@ class Route {
     getSubmissionsResources = this.getSubmissions + '/resources';
     handleSubmissionsBulkActions = this.getSubmissions + '/bulk-actions';
     getAllSubmissions = this.getSubmissions + '/all';
+    printSubmissions = this.getSubmissions + '/print';
 
     findSubmission = this.getSubmissions + '/{param}'; // not implemented
     deleteSubmission = this.findSubmission;

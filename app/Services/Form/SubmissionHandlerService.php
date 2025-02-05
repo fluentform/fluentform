@@ -70,7 +70,9 @@ class SubmissionHandlerService
          */
         foreach ($formDataRaw as $name => $input) {
             if (is_array($input)) {
-                $formDataRaw[$name] = array_filter($input);
+                $formDataRaw[$name] = array_filter($input, function($value) {
+                    return $value !== null && $value !== false && $value !== '';
+                });
             }
         }
 
@@ -359,7 +361,7 @@ class SubmissionHandlerService
                         $paramArray = explode('=', $queryParam);
                         if (!empty($paramArray[1])) {
                             if (strpos($paramArray[1], '%') === false) {
-                                $params[$paramArray[0]] = urlencode($paramArray[1]);
+                                $params[$paramArray[0]] = rawurlencode($paramArray[1]);
                             } else {
                                 // Param string is URL-encoded
                                 $params[$paramArray[0]] = $paramArray[1];
@@ -384,7 +386,7 @@ class SubmissionHandlerService
                 true
             );
     
-            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect(urldecode($redirectUrl)), $insertId, $form, $formData);
+            $redirectUrl = apply_filters('fluentform/redirect_url_value', wp_sanitize_redirect(rawurldecode($redirectUrl)), $insertId, $form, $formData);
             $returnData = [
                 'redirectUrl' => esc_url_raw($redirectUrl),
                 'message'     => fluentform_sanitize_html($message),
@@ -427,10 +429,16 @@ class SubmissionHandlerService
     
         $insertData = $this->prepareInsertData();
         
-        if ($this->validationService->isSpam($this->formData, $this->form)) {
+        if ($this->validationService->isAkismetSpam($this->formData, $this->form)) {
             $insertData['status'] = 'spam';
-            $this->validationService->handleSpamError();
+            $this->validationService->handleAkismetSpamError();
         }
+
+        if ($this->validationService->isCleanTalkSpam($this->formData, $this->form)) {
+            $insertData['status'] = 'spam';
+            $this->validationService->handleCleanTalkSpamError();
+        }
+
         return $insertData;
     }
     
@@ -479,7 +487,13 @@ class SubmissionHandlerService
     {
         if ('spam' == Arr::get($insertData, 'status')) {
             $settings = get_option('_fluentform_global_form_settings');
-            if ($settings && 'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.akismet_validation')) {
+            if (
+                $settings &&
+                (
+                    'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.akismet_validation') ||
+                    'mark_as_spam_and_skip_processing' == Arr::get($settings, 'misc.cleantalk_validation')
+                )
+            ) {
                 return $this->processSpamSubmission($insertData);
             }
         }
