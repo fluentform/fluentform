@@ -428,7 +428,7 @@
                                         <div slot="content">
                                             <p>
                                                 {{
-                                                    $t('If you enable this then Fluent Forms will verify the form submission with CleanTalk. It will save you from spam form submission.')
+                                                    $t('If you enable this then Fluent Forms will verify the form submission CleanTalk Anti-spam plugin. It will save you from spam form submission.')
                                                 }}
                                             </p>
                                         </div>
@@ -436,7 +436,7 @@
                                     </el-tooltip>
                                 </span>
                                 <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
-                                <p class="text-note mt-1" v-else>{{ $t('Recommended Settings: Enabled') }}</p>
+                                <p class="text-note mt-1" v-else>{{ $t('Please use the CleanTalk option found in the Security submenu. This version utilizes an API and does not require the CleanTalk Anti-Spam Plugin.') }}</p>
                             </span>
                         </template>
 
@@ -460,10 +460,9 @@
                         <el-radio-group v-model="misc.cleantalk_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
                             <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
                         </el-radio-group>
-
                     </el-form-item>
-
                 </template>
 
                 <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
