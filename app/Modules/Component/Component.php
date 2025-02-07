@@ -581,7 +581,6 @@ class Component
         }
 
         $form->fields = json_decode($form->form_fields, true);
-
         if (!$form->fields['fields']) {
             return '';
         }

@@ -1955,3 +1955,150 @@ label.el-radio, label.el-checkbox {
 .text-capitalize {
     text-transform: capitalize;
 }
+
+
+
+.ff_conditions_warp {
+  .group-container {
+    background: #f5f7fa;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    .preview-section{
+      text-align: center;
+    }
+
+    .conditional-logic{
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid #c0c5d0;
+    }
+
+
+    .group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e4e7ed;
+
+
+      .group-title {
+        font-weight: 500;
+        color: #606266;
+      }
+    }
+
+    .group-preview {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #606266;
+      margin-top: 10px;
+      border: 1px dashed #dcdfe6;
+      line-height: 1.5;
+
+      .preview-label {
+        color: #909399;
+        margin-right: 5px;
+        font-weight: normal;
+      }
+
+      .preview-operator {
+        font-weight: 600;
+        color: #303133;
+      }
+
+      .preview-and {
+        font-weight: 600;
+        color: #409EFF;
+        margin: 0 5px;
+      }
+
+      .preview-field {
+        color: #606266;
+      }
+
+      .preview-value {
+        color: #606266;
+      }
+    }
+  }
+
+  .group-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+
+    span {
+      color: #909399;
+      padding: 0 15px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px dashed #efefef;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .add-group-btn {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .conditional-logic {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4e7ed;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .group-title {
+        color: #606266;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: #409EFF;
+        }
+
+        .title-input {
+          width: 150px;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}
