@@ -432,6 +432,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.2.11 (Date: February 10, 2025) =
 - Adds CleanTalk Spam Protection with API
+- Improve Honeypot spam protection
 - Fixes WordFence vulnerability IP-Spoofing CVE-2024-13666
 - Fixes fluentform/load_default_public filter not affects Block Editor
 
