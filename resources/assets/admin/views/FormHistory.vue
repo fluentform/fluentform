@@ -2,7 +2,7 @@
     <div class="ff-edit-history-wrap option-fields-section" style="min-height: 100px;">
         <div class="option-fields-section--title active">
             <div>
-                <h5>{{ $t("History (Beta)") }}</h5>
+                <h5>{{ $t("History") }}</h5>
             </div>
             <div>
                 <el-button
