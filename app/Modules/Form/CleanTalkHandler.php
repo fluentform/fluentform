@@ -111,7 +111,6 @@ class CleanTalkHandler
         }
 
         $response = json_decode(wp_remote_retrieve_body($response));
-        dd($response);
 
         if ($response->allow == 1 && $response->spam == 0 && $response->account_status == 1) {
             return false;

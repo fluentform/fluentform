@@ -31,7 +31,7 @@ class Converter
         $hasSaveAndResume = static::hasSaveAndResume($form);
         $saveAndResumeData = [];
         
-        if ($hasSaveAndResume && ArrayHelper::get($form->settings, 'conv_form_per_step_save')) {
+        if ($hasSaveAndResume) {
             $saveAndResumeData = static::getSaveAndResumeData($form);
             
             $form->stepCompleted = intval(ArrayHelper::get($saveAndResumeData, 'step_completed', 0));
@@ -420,8 +420,7 @@ class Converter
                 $question['is_calculable'] = true;
                 $question['type'] = 'FlowFormRangesliderType';
             } elseif ('save_progress_button' === $field['element']) {
-                $question['id'] = 'save_and_resume-' . ArrayHelper::get($field, 'uniqElKey');
-                $question['name'] = ArrayHelper::get($field, 'uniqElKey');
+                $question['id'] = ArrayHelper::get($field, 'attributes.name');
                 $question['title'] = ArrayHelper::get($field, 'editor_options.title');
                 $question['settings'] = ArrayHelper::get($field, 'settings');
             } elseif ('multi_payment_component' === $field['element']) {
@@ -1036,34 +1035,36 @@ class Converter
             return false;
         }
         
+        $hasSaveProgressButton = FormFieldsParser::hasElement($form, 'save_progress_button');
         $perStepSave = ArrayHelper::get($form->settings, 'conv_form_per_step_save');
-        if (!$perStepSave) {
-            return false;
+        
+        if ($perStepSave || $hasSaveProgressButton) {
+            $saveAndResume = false;
+            $hash = '';
+            $form->save_state = false;
+
+            $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+
+            if ($key) {
+                $hash = base64_decode($key);
+                $form->save_state = true;
+            } else {
+                $cookieName = 'fluentform_step_form_hash_' . $form->id;
+                $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
+            }
+
+            DraftSubmissionsManager::migrate();
+
+            $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
+
+            if ($draftForm) {
+                $saveAndResume = true;
+            }
+
+            return $saveAndResume;
         }
-        
-        $saveAndResume = false;
-        $hash = '';
-        $form->save_state = false;
-        
-        $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
-        
-        if ($key) {
-            $hash = base64_decode($key);
-            $form->save_state = true;
-        } else {
-            $cookieName = 'fluentform_step_form_hash_' . $form->id;
-            $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
-        }
-        
-        DraftSubmissionsManager::migrate();
-        
-        $draftForm = wpFluent()->table('fluentform_draft_submissions')->where('hash', $hash)->first();
-        
-        if ($draftForm) {
-            $saveAndResume = true;
-        }
-        
-        return $saveAndResume;
+
+        return false;
     }
     
     
