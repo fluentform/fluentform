@@ -6,6 +6,7 @@ import GlobalSettings from './GlobalSettings.vue';
 import reCaptcha from './reCaptcha.vue';
 import hCaptcha from './hCaptcha.vue';
 import turnstile from './turnstile.vue';
+import cleantalk from './cleantalk.vue';
 import pdf_settings from './Pdf.vue';
 import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
@@ -111,6 +112,7 @@ new Vue({
         re_captcha: reCaptcha,
         h_captcha: hCaptcha,
         turnstile: turnstile,
+        cleantalk: cleantalk,
         pdf_settings: pdf_settings,
         'general-integration-settings': GeneralIntegrationSettings,
         'double_optin_settings': DoubleOptinSettings,
