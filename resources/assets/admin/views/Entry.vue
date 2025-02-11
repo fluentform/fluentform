@@ -539,7 +539,8 @@
 
                     })
                     .catch((error) => {
-                        this.$fail(error.message);
+                        console.log(error)
+                        // this.$fail(error.message);
                     })
                     .finally(() => {
                         this.resources_loading = false;
