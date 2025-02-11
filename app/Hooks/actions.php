@@ -350,6 +350,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             $item['settings']['is_width_auto_calc'] = true;
         }
 
+        if (!isset($item['settings']['render_recaptcha_v3_badge'])) {
+            $item['settings']['render_recaptcha_v3_badge'] = false;
+        }
+
         $shouldSetWidth = !empty($item['columns']) && (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
 
         if ($shouldSetWidth) {

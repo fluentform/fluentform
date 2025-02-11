@@ -431,6 +431,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 5.2.11 (Date: February 10, 2025) =
 - Adds CleanTalk Spam Protection with API
 - Adds Hungarian Language Translation
+- Adds form editor options for reCaptcha V3 badge rendering
 - Improve Honeypot spam protection
 - Fixes WordFence vulnerability IP-Spoofing CVE-2024-13666
 - Fixes fluentform/load_default_public filter not affects Block Editor
@@ -512,6 +513,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fixes label asterisk style with elementor widget
 - Fixes conditional logic with numeric formatting
 - Fixes Checkable Grid submission issue
+- Fixes reCaptcha V3 badge hide
 
 = 5.2.2 (Date: September 11, 2024) =
 - Update tested WordPress Version
