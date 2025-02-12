@@ -83,6 +83,7 @@ const formConditional = function ($, $theForm, form) {
                 }
             });
             $theForm.trigger('do_calculation');
+            $theForm.trigger('ff_render_dynamic_smartcodes', $theForm);
         };
 
         const getFormData = function () {
