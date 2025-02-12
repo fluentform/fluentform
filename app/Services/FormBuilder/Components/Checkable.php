@@ -120,7 +120,7 @@ class Checkable extends BaseComponent
             $ariaLabel = esc_attr($label);
             // Here we can push the visual items
             if ($hasImageOption) {
-                $elMarkup .= "<label style='background-image: url(" . esc_url($option['image']) . ")' class='ff-el-image-input-src' for='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}'></label>";
+                $elMarkup .= "<label style='background-image: url(" . esc_url($option['image']) . ")' class='ff-el-image-input-src' for='{$id}' aria-label='{$this->removeShortcode($ariaLabel)}' tabindex='0'></label>";
             }
 
             $ariaRequired = 'false';
