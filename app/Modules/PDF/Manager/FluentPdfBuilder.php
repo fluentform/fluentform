@@ -5,13 +5,15 @@ namespace FluentForm\App\Modules\PDF\Manager;
 use FluentForm\App\Helpers\Protector;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Services\FormBuilder\ShortCodeParser;
-use FluentFormPdf\Support\Arr;
-use FluentFormPdf\Classes\Controller\AvailableOptions;
-use FluentFormPdf\Classes\Controller\FontDownloader;
-use FluentFormPdf\Classes\Controller\Activator;
-use FluentFormPdf\API\Pdf;
+use FluentPdf\Classes\PdfBuilder;
+use FluentPdf\Classes\Vite;
+use FluentPdf\Support\Arr;
+use FluentPdf\Classes\Controller\AvailableOptions;
+use FluentPdf\Classes\Controller\FontDownloader;
+use FluentPdf\Classes\Controller\Activator;
+use FluentPdf\API\Pdf;
 
-class FluentFormPdfBuilder
+class FluentPdfBuilder
 {
     protected $optionKey = '_fluentform_pdf_settings';
 
@@ -32,15 +34,14 @@ class FluentFormPdfBuilder
             [$this, 'getFormTemplateSettings']
         );
 
-        add_action('wp_ajax_fluentform_pdf_admin_ajax_actions', [$this, 'ajaxRoutes']);
-        /*
-                 * Changed from : fluentform_single_entry_widgets
-                 */
+//        add_action('wp_ajax_fluentform_pdf_admin_ajax_actions', [$this, 'ajaxRoutes']);
+        add_action('wp_ajax_fluent_pdf_admin_ajax_actions', [$this, 'ajaxRoutes']);
+
         add_filter('fluentform/submissions_widgets', array($this, 'pushPdfButtons'), 10, 3);
 
         add_filter('fluentform/email_attachments', array($this, 'maybePushToEmail'), 10, 5);
 
-        add_action('fluentform/addons_page_render_fluentform_pdf_settings', array($this, 'renderGlobalPage'));
+        add_action('fluentform/addons_page_render_fluent_pdf_settings', array($this, 'renderGlobalPage'));
 
         add_filter('fluentform/pdf_body_parse', function ($content, $entryId, $formData, $form) {
 
@@ -390,22 +391,22 @@ class FluentFormPdfBuilder
                 'name' => 'General',
                 'class' => '\FluentForm\App\Modules\PDF\Templates\GeneralTemplate',
                 'key' => 'general',
-                'preview' => FLUENTFORM_PDF_URL . 'assets/images/basic_template.png'
+                'preview' => FLUENTFORM_DIR_PATH . 'assets/images/basic_template.png'
             ],
             "custom" => [
                 'name' => 'PDF Builder',
                 'class' => '\FluentForm\App\Modules\PDF\Templates\CustomTemplate',
                 'key' => 'custom',
-                'preview' => FLUENTFORM_PDF_URL . 'assets/images/basic_template.png'
+                'preview' => FLUENTFORM_DIR_PATH . 'assets/images/basic_template.png'
             ]
         ];
 
         if ($form->has_payment) {
             $templates['invoice'] = [
                 'name' => 'Invoice',
-                'class' => '\FluentFormPdf\Classes\Templates\InvoiceTemplate',
+                'class' => '\FluentForm\Classes\Templates\InvoiceTemplate',
                 'key' => 'invoice',
-                'preview' => FLUENTFORM_PDF_URL . 'assets/images/tabular.png'
+                'preview' => FLUENTFORM_DIR_PATH . 'assets/images/tabular.png'
             ];
         }
 
@@ -503,7 +504,7 @@ class FluentFormPdfBuilder
 
         $contents = '<ul class="ff_list_items">';
         foreach ($feeds as $feed) {
-            $contents .= '<li><a href="' . admin_url('admin-ajax.php?action=fluentform_pdf_admin_ajax_actions&fluent_forms_admin_nonce=' . $fluent_forms_admin_nonce . '&$fluent_forms_admin_nonce=&route=download_pdf&submission_id=' . $submission->id . '&id=' . $feed['id']) . '" target="_blank"><span style="font-size: 12px;" class="dashicons dashicons-arrow-down-alt"></span>' . $feed['name'] . '</a></li>';
+            $contents .= '<li><a href="' . admin_url('admin-ajax.php?action=fluent_pdf_admin_ajax_actions&fluent_forms_admin_nonce=' . $fluent_forms_admin_nonce . '&$fluent_forms_admin_nonce=&route=download_pdf&submission_id=' . $submission->id . '&id=' . $feed['id']) . '" target="_blank"><span style="font-size: 12px;" class="dashicons dashicons-arrow-down-alt"></span>' . $feed['name'] . '</a></li>';
         }
         $contents .= '</ul>';
         $widgetData['content'] = $contents;
@@ -618,28 +619,27 @@ class FluentFormPdfBuilder
 
     public function renderGlobalPage()
     {
-        wp_enqueue_script('fluentform_pdf_admin', FLUENTFORM_PDF_URL . 'assets/js/admin.js', ['jquery'], FLUENTFORM_PDF_VERSION, true);
+        Vite::enqueueScript('fluent_pdf_admin', 'admin/FontManager/FontManager.js', array('jquery'), FLUENT_PDF_VERSION, true);
         $fontManager = new FontDownloader();
         $downloadableFiles = $fontManager->getDownloadableFonts();
 
-        wp_localize_script('fluentform_pdf_admin', 'fluentform_pdf_admin', [
-            'ajaxUrl' => admin_url('admin-ajax.php')
+        wp_localize_script('fluent_pdf_admin', 'fluent_pdf_admin', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('fluent_pdf_admin_nonce'),
         ]);
-        $inheritStyle = true;
+
         $statuses = [];
         $globalSettingsUrl = '#';
         if (!$downloadableFiles) {
             $statuses = $this->getSystemStatuses();
-          
-    
             $globalSettingsUrl = admin_url('admin.php?page=fluent_forms_settings#pdf_settings');
 
             if (!get_option($this->optionKey)) {
-                update_option($this->optionKey, Pdf::getGlobalConfig(), 'no');
+                update_option($this->optionKey, (new PdfBuilder())->getConfig(), 'no');
             }
         }
 
-        include FLUENTFORM_PDF_PATH . '/views/admin_screen.php';
+        include FLUENT_PDF_PATH . 'views/admin_screen.php';
     }
 
     public function downloadFonts()

@@ -4,7 +4,7 @@ namespace FluentForm\App\Modules\PDF\Templates;
 
 use FluentForm\App\Services\Emogrifier\Emogrifier;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
-use FluentFormPdf\Classes\Controller\AvailableOptions;
+use FluentPdf\Classes\Controller\AvailableOptions;
 
 abstract class TemplateManager
 {
@@ -125,17 +125,14 @@ abstract class TemplateManager
             $footer .= '<p style="text-align: center;">Powered By <a target="_blank" href="https://wpmanageninja.com/downloads/fluentform-pro-add-on/">Fluent Forms</a></p>';
         }
 
-        $mpdfExtraConfig = [];
-
         $pdfGenerator = $this->getGenerator($mpdfConfig);
+
         if (Arr::get($appearance, 'security_pass')) {
-            $password = Arr::get($appearance, 'security_pass');
-            $mpdfExtraConfig['password'] = $password;
+            $pdfGenerator->SetProtection(array(), Arr::get($appearance, 'security_pass'));
         }
 
         if (Arr::get($appearance, 'language_direction') == 'rtl') {
-
-            $mpdfExtraConfig['direction'] = 'rtl';
+            $pdfGenerator->SetDirectionality('rtl');
             $body = '<div class="ff_rtl">' . $body . '</div>';
             if ($footer) {
                 $footer = '<div class="ff_rtl">' . $footer . '</div>';
@@ -144,48 +141,44 @@ abstract class TemplateManager
                 $this->headerHtml = '<div class="ff_rtl">' . $this->headerHtml . '</div>';
             }
         }
+
         if ($this->headerHtml) {
-            
             $this->headerHtml = $this->applyInlineCssStyles($this->headerHtml, $appearance);
-            $mpdfExtraConfig['htmlHeader'] = $this->headerHtml;
+            $pdfGenerator->SetHTMLHeader($this->headerHtml);
         }
 
         $body = $this->applyInlineCssStyles($body, $appearance, true);
+
         if (!empty($appearance['watermark_text']) || !empty($appearance['watermark_image'])) {
-            $alpha = Arr::get($appearance, 'watermark_opacity');
-            if (!$alpha || $alpha > 100) {
-                $alpha = 5;
-            }
-            $alpha = $alpha / 100;
+            $alpha = Arr::get($appearance, 'watermark_opacity', 5) / 100;
 
             if (!empty($appearance['watermark_image'])) {
-                $mpdfExtraConfig['watermark_image'] = [
-                    'image' => $appearance['watermark_image'],
-                    'alpha' => $alpha,
-                    'behind' => Arr::isTrue($appearance, 'watermark_img_behind')
-                ];
-
+                $pdfGenerator->SetWatermarkImage(
+                    $appearance['watermark_image'],
+                    $alpha,
+                    array(),
+                    array(),
+                    Arr::isTrue($appearance, 'watermark_img_behind')
+                );
             } else {
-                $mpdfExtraConfig['watermark_text'] = [
-                    'text' => $appearance['watermark_text'],
-                    'alpha' => $alpha,
-                ];
+                $pdfGenerator->SetWatermarkText($appearance['watermark_text'], $alpha);
             }
+            $pdfGenerator->showWatermarkText = true;
+            $pdfGenerator->showWatermarkImage = true;
         }
+
         $footer = $this->applyInlineCssStyles($footer, $appearance);
-        
+        $pdfGenerator->SetHTMLFooter($footer);
+
         $content = '<div class="ff_pdf_wrapper">' . $body . '</div>';
 
-        do_action('fluent_pdf_make', [
-                'footer'=> $footer, 
-                'body' => $content
-            ], 
-            $fileName,
-            $outPut,
-            $mpdfConfig, 
-            $mpdfExtraConfig
-        );
-        return ;
+        $pdfGenerator->WriteHTML($content);
+
+        if ($outPut == 'S') {
+            return $pdfGenerator->Output('', 'S');
+        }
+
+        $pdfGenerator->Output($fileName . '.pdf', $outPut);
     }
 
     public function getPdfCss($appearance)

@@ -473,6 +473,22 @@ $app->addAction('fluentform/addons_page_render_fluentform_pdf', function () use 
     ]);
 });
 
+
+$app->addAction('fluentform/addons_page_render_fluent_pdf', function () use ($app) {
+    $url = '';
+    if (!defined('FLUENT_PDF_VERSION')) {
+        $url = wp_nonce_url(
+            self_admin_url('update.php?action=install-plugin&plugin=fluent-pdf'),
+            'install-plugin_fluent-pdf'
+        );
+    }
+    $app->view->render('admin.addons.fluent_pdf_promo', [
+        'public_url'   => fluentFormMix(),
+        'install_url'  => $url,
+        'is_installed' => defined('FLUENT_PDF_VERSION'),
+    ]);
+});
+
 $app->addAction('fluentform/installed_by', function ($by) {
     if (is_string($by) && !get_option('_ff_ins_by')) {
         update_option('_ff_ins_by', sanitize_text_field($by), 'no');
@@ -923,5 +939,5 @@ if (defined('WP_CLI') && WP_CLI) {
 //Pdf generator initiated
 add_filter('fluent_pdf_hide_menu', '__return_true');
 add_action('fluent_pdf_loaded', function () {
-   new FluentForm\App\Modules\PDF\Manager\FluentFormPdfBuilder();
+   new FluentForm\App\Modules\PDF\Manager\FluentPdfBuilder();
 });
