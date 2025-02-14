@@ -850,3 +850,52 @@ table.ff_flexible_table {
     }
   }
 }
+
+@media only screen and (max-width: 400px) {
+  .ff_repeater_table {
+    width: 100%;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+
+      td {
+        display: block;
+        text-align: left;
+        padding: 5px 0;
+        width: 100% !important;
+
+        .ff-el-input--content {
+          width: 100%;
+        }
+      }
+    }
+
+    .repeat_btn {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 10px;
+
+      .ff-el-repeat-buttons-list {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+          padding: 5px 10px;
+          background-color: #f0f0f0;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
