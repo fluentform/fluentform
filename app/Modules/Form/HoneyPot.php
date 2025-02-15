@@ -21,13 +21,27 @@ class HoneyPot
         }
     
         $fieldName = $this->getFieldName($form->id);
-        $fieldId = 'ff_' . $form->id . '_item_sf' ;
+        $fieldId = 'ff_' . $form->id . '_item_sf';
         $randomClass = 'form_field_' . rand(10, 99) .'_item_sf';
     
         $labels = ['Newsletter', 'Updates', 'Contact', 'Subscribe', 'Notify'];
         $randomLabel = $labels[array_rand($labels)];
         ?>
-        <div class="ff-el-group <?php echo esc_attr($randomClass); ?>">
+        <style>
+            .<?php echo esc_attr($randomClass); ?> {
+                display: none !important;
+                position: absolute !important;
+                transform: translateX(1000%) !important;
+            }
+        </style>
+        <script>
+            (function() {
+                const style = document.createElement('style');
+                style.textContent = '.<?php echo esc_js($randomClass); ?> { display: none !important; position: absolute !important; transform: translateX(1000%) !important; }';
+                document.head.appendChild(style);
+            })();
+        </script>
+        <div class="ff-el-group <?php echo esc_attr($randomClass); ?>" style="display: none !important; position: absolute !important; transform: translateX(1000%) !important;">
             <div class="ff-el-input--label asterisk-right">
                 <label for="<?php echo esc_attr($fieldId); ?>" aria-label="<?php echo esc_attr($randomLabel); ?>">
                     <?php echo esc_html($randomLabel); ?>
@@ -41,15 +55,7 @@ class HoneyPot
                 >
             </div>
         </div>
-        <style>
-            .<?php echo esc_attr($randomClass); ?> {
-                display: none!important;
-                position: absolute!important;
-                transform: translateX(1000%)!important;
-            }
-        </style>
         <?php
-        
     }
     
     public function verify($insertData, $requestData, $formId)
