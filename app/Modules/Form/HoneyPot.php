@@ -21,27 +21,11 @@ class HoneyPot
         }
     
         $fieldName = $this->getFieldName($form->id);
-        $fieldId = 'ff_' . $form->id . '_item_sf';
-        $randomClass = 'form_field_' . rand(10, 99) .'_item_sf';
-    
+        $fieldId = 'ff_' . $form->id . '_item_sf' ;
         $labels = ['Newsletter', 'Updates', 'Contact', 'Subscribe', 'Notify'];
         $randomLabel = $labels[array_rand($labels)];
         ?>
-        <style>
-            .<?php echo esc_attr($randomClass); ?> {
-                display: none !important;
-                position: absolute !important;
-                transform: translateX(1000%) !important;
-            }
-        </style>
-        <script>
-            (function() {
-                const style = document.createElement('style');
-                style.textContent = '.<?php echo esc_js($randomClass); ?> { display: none !important; position: absolute !important; transform: translateX(1000%) !important; }';
-                document.head.appendChild(style);
-            })();
-        </script>
-        <div class="ff-el-group <?php echo esc_attr($randomClass); ?>" style="display: none !important; position: absolute !important; transform: translateX(1000%) !important;">
+        <div class="ff-el-group ff-honeypot-container">
             <div class="ff-el-input--label asterisk-right">
                 <label for="<?php echo esc_attr($fieldId); ?>" aria-label="<?php echo esc_attr($randomLabel); ?>">
                     <?php echo esc_html($randomLabel); ?>
@@ -52,7 +36,7 @@ class HoneyPot
                        name="<?php echo esc_attr($fieldName); ?>"
                        class="ff-el-form-control"
                        id="<?php echo esc_attr($fieldId); ?>"
-                >
+                />
             </div>
         </div>
         <?php
@@ -64,10 +48,15 @@ class HoneyPot
             return;
         }
 
-        if (ArrayHelper::get($requestData, $this->getFieldName($formId))) {
+        $honeyPotName = $this->getFieldName($formId);
+
+        if (
+                !ArrayHelper::exists($requestData, $honeyPotName) &&
+                !empty(ArrayHelper::get($requestData, $honeyPotName))
+        ) {
             wp_send_json(
                 [
-                    'errors' => 'Sorry! You can not submit this form at this moment!',
+                    'errors' => __('Sorry! You can not submit this form at this moment!', 'fluentform'),
                 ],
                 422
             );
@@ -79,7 +68,6 @@ class HoneyPot
     {
         $option = get_option('_fluentform_global_form_settings');
         $status = 'yes' == ArrayHelper::get($option, 'misc.honeypotStatus');
-        
         return apply_filters('fluentform/honeypot_status', $status, $formId);
     }
     
