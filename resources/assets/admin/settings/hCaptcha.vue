@@ -161,12 +161,14 @@
                 FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
                         this.hCaptcha_status = response.status;
-                        this.$success(response.message);
+                        if (this.hCaptcha_status === 1) {
+                            this.$success(response.message);
+                        }
+                        this.$fail(response.message);
                     })
                     .catch((error) => {
                         this.hCaptcha_status = parseInt(error.status, 10);
-                        let method = this.hCaptcha_status === 1 ? "$warning" : "$error";
-                        this[method](error.message);
+                        this.$fail(error.message);
                     })
                     .finally((r) => {
                         this.saving = false;
@@ -185,7 +187,10 @@
                     .then((response) => {
                         this.hCaptcha_status = response.status;
                         this.hCaptcha = {siteKey: "", secretKey: ""};
-                        this.$success(response.message);
+                        if (this.hCaptcha_status === 1) {
+                            this.$success(response.message);
+                        }
+                        this.$fail(response.message);
                     })
                     .catch((error) => {
                         this.hCaptcha_status = error.status;
