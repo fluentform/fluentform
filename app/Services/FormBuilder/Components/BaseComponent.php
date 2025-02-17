@@ -119,16 +119,16 @@ class BaseComponent
     
                 $groups = array_filter($groups, function ($group) {
                     $rules = ArrayHelper::get($group, 'rules', []);
-                    return !empty(array_filter($rules, fn($rule) => !empty($rule['field']) && !empty($rule['operator'])
-                    ));
+                    return !empty(array_filter($rules, fn($rule) => !empty($rule['field']) && !empty($rule['operator'])));
                 });
                 return !!$groups;
             }
-            
-            return array_filter($conditionals['conditions'], function ($item) {
+
+            return !!array_filter($conditionals['conditions'], function ($item) {
                 return $item['field'] && $item['operator'];
             });
         }
+        return false;
     }
     
     /**

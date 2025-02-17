@@ -53,7 +53,7 @@ class Converter
             $validationsRules = self::resolveValidationsRules($field, $form);
             
             $question = static::buildBaseQuestion($field, $validationsRules, $form);
-            
+
             if (!$hasSaveAndResume && $answer = self::setDefaultValue(ArrayHelper::get($field, 'attributes.value'), $field, $form)) {
                 $question['answer'] = $answer;
             }
@@ -984,26 +984,62 @@ class Converter
     private static function parseConditionalLogic($field)
     {
         $logics = ArrayHelper::get($field, 'settings.conditional_logics', []);
-        
+
         if (! $logics || ! $logics['status']) {
             return [];
         }
-        
-        $validConditions = [];
-        foreach ($logics['conditions'] as $condition) {
-            if (empty($condition['field']) || empty($condition['operator'])) {
-                continue;
-            }
-            $validConditions[] = $condition;
+
+        $type = ArrayHelper::get($logics, 'type', '');
+        if ($type === 'group') {
+            return self::parseGroupConditionalLogic($logics);
+        } else {
+            return self::parseSimpleConditionalLogic($logics);
         }
-        
-        if (! $validConditions) {
+    }
+
+    private static function parseSimpleConditionalLogic($logics)
+    {
+        $validConditions = self::parseConditions(ArrayHelper::get($logics, 'conditions'));
+
+        if (!$validConditions) {
             return [];
         }
         
         $logics['conditions'] = $validConditions;
-        
         return $logics;
+    }
+
+    private static function parseGroupConditionalLogic($logics)
+    {
+        $validGroups = [];
+        $conditionGroups = ArrayHelper::get($logics, 'condition_groups', []);
+
+        foreach ($conditionGroups as $group) {
+            $validConditions = self::parseConditions(ArrayHelper::get($group, 'rules'));
+
+            if ($validConditions) {
+                $validGroups[] = [
+                    'rules' => $validConditions,
+                ];
+            }
+        }
+
+        if (!$validGroups) {
+            return [];
+        }
+
+        $logics['condition_groups'] = $validGroups;
+        return $logics;
+    }
+
+    private static function parseConditions($conditions)
+    {
+        if (!$conditions) {
+            return [];
+        }
+        return array_filter($conditions, function($condition) {
+            return !empty($condition['field']) && !empty($condition['operator']);
+        });
     }
     
     private static function getAdvancedOptions($field)
