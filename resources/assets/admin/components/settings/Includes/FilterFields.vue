@@ -19,7 +19,7 @@
 	        <div v-if="conditionals.type === 'group'" class="ff_conditions_warp">
 		        <div v-for="(group, groupIndex) in items" :key="groupIndex" class="group-container" :class="{'is-empty': isGroupEmpty(group)}">
 			        <el-row class="group-header" >
-				        <el-col :md="11">
+				        <el-col :md="11" class="mb-1">
 					        <div class="title-section">
 						        <template v-if="group.isEditingTitle">
 							        <el-input
@@ -28,8 +28,6 @@
 								        class="title-input"
 								        @blur="finishTitleEdit(group)"
 								        @keyup.enter.native="finishTitleEdit(group)"
-								        v-clickoutside="() => finishTitleEdit(group)"
-								        v-focus
 							        />
 						        </template>
 						        <template v-else>
@@ -41,21 +39,23 @@
 						        </template>
 					        </div>
 				        </el-col>
-				        <el-col :md="8">
+				        <el-col :md="8" class="mb-1">
 					        <div class="group-relationship">
 						        <b> {{ groupIndex === 0 ? $t('IF') : $t('OR IF') }} </b>
 					        </div>
 				        </el-col>
-				        <el-col :md="4"><div class="actions">
-					        <el-button size="mini" v-if="items.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
-					        </el-button>
-					        <el-button size="mini" v-if="items.length > 1" @click="toggleGroup(group)" type="default" plain>
-						        <i :class="[
-                                    { 'el-icon-arrow-up': group.isGroupOpen },
-                                    { 'el-icon-arrow-down': !group.isGroupOpen }
-                                ]"></i>
-					        </el-button>
-				        </div></el-col>
+				        <el-col :md="4" class="mt-1">
+					        <div class="actions">
+						        <el-button size="mini" v-if="items.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
+						        </el-button>
+						        <el-button size="mini" v-if="items.length > 1" @click="toggleGroup(group)" plain>
+							        <i :class="[
+	                                    { 'el-icon-arrow-up': group.isGroupOpen },
+	                                    { 'el-icon-arrow-down': !group.isGroupOpen }
+	                                ]"></i>
+						        </el-button>
+				            </div>
+				        </el-col>
 			        </el-row>
 
 			        <el-row v-for="(logic, ruleIndex) in group.rules" :key="`${groupIndex}-${ruleIndex}`" :gutter="5" class="items-center conditional-logic" v-show="group.isGroupOpen">

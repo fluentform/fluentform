@@ -94,8 +94,6 @@
                                         class="title-input"
                                         @blur="finishTitleEdit(group)"
                                         @keyup.enter.native="finishTitleEdit(group)"
-                                        v-clickoutside="() => finishTitleEdit(group)"
-                                        v-focus
                                 />
                             </template>
                             <template v-else>
