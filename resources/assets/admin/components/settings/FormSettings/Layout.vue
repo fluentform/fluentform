@@ -370,6 +370,30 @@
                                v-model="misc.honeypotStatus"></el-switch>
                 </el-form-item>
 
+                <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
+                    <template slot="label">
+                        <div>
+                            <span>
+                                {{ $t('Token Based Spam Protection') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{
+                                                $t('Enable token based spam protection for better spam protection')
+                                            }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                            <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
+                        </div>
+                    </template>
+
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
+                               v-model="misc.tokenBasedSpamProtectionStatus"></el-switch>
+                </el-form-item>
+
                 <template v-if="akismet_available">
                     <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
                         <template slot="label">
