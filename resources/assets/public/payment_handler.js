@@ -89,7 +89,7 @@ export class Payment_handler {
         jQuery.each(discounts, (index, discount) => {
             let discountAmount = discount.amount;
             if (discount.coupon_type === 'percent') {
-                discountAmount = (discount.amount / 100) * totalAmount;
+                discountAmount = (discount.amount / 100) * this.totalAmount;
             }
             this.totalAmount -= discountAmount;
         });
