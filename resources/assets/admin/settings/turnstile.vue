@@ -66,9 +66,9 @@
                             </el-tooltip>
                         </template>
 
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="always">{{$t('Always (Default)')}}</el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="execute">{{$t('Execute')}}</el-radio>
-                        <el-radio class="mr-3" v-model="turnstile.appearance" label="interaction-only">{{$t('Interaction-only (Hidden)')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="always">{{$t('Managed')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="execute">{{$t('Non-interactive')}}</el-radio>
+                        <el-radio class="mr-3" v-model="turnstile.appearance" label="interaction-only">{{$t('Invisible')}}</el-radio>
                     </el-form-item>
 
                     <el-form-item class="ff-form-item">
