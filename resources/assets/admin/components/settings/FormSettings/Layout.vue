@@ -391,7 +391,7 @@
                     </template>
 
                     <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
-                               v-model="misc.tokenBasedSpamProtectionStatus"></el-switch>
+                               v-model="misc.tokenBasedProtectionStatus"></el-switch>
                 </el-form-item>
 
                 <template v-if="akismet_available">
@@ -872,6 +872,10 @@
             }
             if(!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if(!this.data.misc.tokenBasedProtectionStatus) {
+                this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
             }
 
             this.misc = this.data.misc;
