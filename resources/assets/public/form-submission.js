@@ -990,7 +990,7 @@ jQuery(document).ready(function () {
 
             maybeInitSpamTokenProtection: function() {
                 const formContainers = jQuery('.frm-fluent-form');
-                
+
                 formContainers.each((index, formElement) => {
                     const formContainer = jQuery(formElement);
                     const spamProtectionField = formContainer.find('.fluent-form-token-field');
@@ -1017,13 +1017,13 @@ jQuery(document).ready(function () {
 
                     // Handle auto-selected fields with human activity check
                     if (hasAutoSelectedFields) {
-                        setTimeout(() => {
+                        formContainer.one('mousedown mousemove keydown scroll touchstart', function() {
                             generateTokenIfNeeded();
-                        }, 1100);
+                        });
                     }
 
                     // Generate token on first user interaction with form
-                    formContainer.one('focus change', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                    formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
                         generateTokenIfNeeded();
                     });
                 });
