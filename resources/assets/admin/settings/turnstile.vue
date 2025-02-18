@@ -202,10 +202,11 @@ export default {
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.turnstile_status = response.status;
-                    if (this.turnstile_status === 1) {
+                    if (this.turnstile_status == 1) {
                         this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
                     }
-                    this.$fail(response.message);
                     this.siteKeyChanged = false;
                     this.turnstile.token = null;
                 })
@@ -230,10 +231,11 @@ export default {
                 .then(response => {
                     this.turnstile_status = response.status;
                     this.turnstile = {siteKey: '', secretKey: ''};
-                    if (this.turnstile_status === 1) {
+                    if (this.turnstile_status == 1) {
                         this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
                     }
-                    this.$fail(response.message);
                 })
                 .catch(error => {
                     this.turnstile_status = error.status;
