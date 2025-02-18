@@ -800,7 +800,6 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
-    
 });
 
 $app->addAction('fluentform/form_element_start', function ($form) use ($app) {

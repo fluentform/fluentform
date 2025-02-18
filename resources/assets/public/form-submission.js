@@ -991,21 +991,49 @@ jQuery(document).ready(function () {
             maybeInitSpamTokenProtection: function() {
                 const formContainers = jQuery('.frm-fluent-form');
 
+                // Set up human activity detection once for all forms
+                let humanActivity = false;
+                jQuery(document).one('mousemove keydown scroll touchstart', function() {
+                    humanActivity = true;
+                });
+
                 formContainers.each((index, formElement) => {
                     const formContainer = jQuery(formElement);
-
-                    if (formContainer.hasClass('ff_tokenizing') || formContainer.hasClass('ff_tokenized')) {
-                        return;
-                    }
-
                     const spamProtectionField = formContainer.find('.fluent-form-token-field');
-                    if (spamProtectionField.length === 0) {
+
+                    // Skip if no protection field or already processing/processed
+                    if (spamProtectionField.length === 0 ||
+                        formContainer.hasClass('ff_tokenizing') ||
+                        formContainer.hasClass('ff_tokenized')) {
                         return;
                     }
 
-                    formContainer.one('focus', '.ff-el-form-control', () => {
-                        formContainer.addClass('ff_tokenizing');
-                        this.generateAndSetToken(formContainer, spamProtectionField);
+                    // Helper function to generate token
+                    const generateTokenIfNeeded = () => {
+                        if (!formContainer.hasClass('ff_tokenized') && !formContainer.hasClass('ff_tokenizing')) {
+                            formContainer.addClass('ff_tokenizing');
+                            this.generateAndSetToken(formContainer, spamProtectionField);
+                        }
+                    };
+
+                    // Check for auto-selected fields
+                    const hasAutoSelectedFields =
+                        formContainer.find('.ff_selected_payment_method').length > 0 ||
+                        formContainer.find('input[type="radio"]:checked, input[type="checkbox"]:checked').length > 0;
+
+                    // Handle auto-selected fields with human activity check
+                    if (hasAutoSelectedFields) {
+                        setTimeout(() => {
+                            console.log('x',humanActivity)
+                            if (humanActivity) {
+                                generateTokenIfNeeded();
+                            }
+                        }, 1100);
+                    }
+
+                    // Generate token on first user interaction with form
+                    formContainer.one('focus change', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        generateTokenIfNeeded();
                     });
                 });
             },
