@@ -1,8 +1,9 @@
 <?php
 namespace FluentForm\App\Modules\Form;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Helpers\Protector;
-use FluentForm\Framework\Support\Arr;
+use FluentForm\Framework\Helpers\ArrayHelper as Arr;
 
 class TokenBasedSpamProtection
 {
@@ -66,7 +67,13 @@ class TokenBasedSpamProtection
     
     public function verify($insertData, $requestData, $formId)
     {
-        if (!$this->isEnabled($formId)) {
+        if (
+            !$this->isEnabled($formId) ||
+            (
+                Helper::isConversionForm($formId) &&
+                Arr::isTrue($requestData, 'isFFConversational')
+            )
+        ) {
             return;
         }
         
