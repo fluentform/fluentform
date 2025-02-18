@@ -432,6 +432,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 = 5.2.12 (Date: February 18, 2025) =
 - Adds token-based spam protection for enhanced form security
+- Adds Italian Language Translation
 - Improve Honeypot Security for better bot detection
 - Improve Turnstile appearance option names for clarity
 
