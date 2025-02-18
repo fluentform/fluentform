@@ -990,13 +990,7 @@ jQuery(document).ready(function () {
 
             maybeInitSpamTokenProtection: function() {
                 const formContainers = jQuery('.frm-fluent-form');
-
-                // Set up human activity detection once for all forms
-                let humanActivity = false;
-                jQuery(document).one('mousemove keydown scroll touchstart', function() {
-                    humanActivity = true;
-                });
-
+                
                 formContainers.each((index, formElement) => {
                     const formContainer = jQuery(formElement);
                     const spamProtectionField = formContainer.find('.fluent-form-token-field');
@@ -1024,10 +1018,7 @@ jQuery(document).ready(function () {
                     // Handle auto-selected fields with human activity check
                     if (hasAutoSelectedFields) {
                         setTimeout(() => {
-                            console.log('x',humanActivity)
-                            if (humanActivity) {
-                                generateTokenIfNeeded();
-                            }
+                            generateTokenIfNeeded();
                         }, 1100);
                     }
 
