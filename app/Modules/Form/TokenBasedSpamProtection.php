@@ -61,7 +61,7 @@ class TokenBasedSpamProtection
         $fieldName = $this->getFieldName($formId);
         $data = implode('|', [$timeStamp, $formId, $fieldName]);
         
-        return apply_filters('fluentform/generated_protection_token', Protector::encrypt($data), $formId, $timestamp);
+        return apply_filters('fluentform/generated_protection_token', Protector::encrypt($data), $formId, $timeStamp);
     }
     
     public function verify($insertData, $requestData, $formId)
