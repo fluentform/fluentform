@@ -118,7 +118,7 @@
       }
     }
     &.ff-hpsf-container {
-      display: none;
+      display: none!important;
       position: absolute!important;
       transform: translateX(1000%)!important;
     }
