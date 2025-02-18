@@ -1010,18 +1010,6 @@ jQuery(document).ready(function () {
                         }
                     };
 
-                    // Check for auto-selected fields
-                    const hasAutoSelectedFields =
-                        formContainer.find('.ff_selected_payment_method').length > 0 ||
-                        formContainer.find('input[type="radio"]:checked, input[type="checkbox"]:checked').length > 0;
-
-                    // Handle auto-selected fields with human activity check
-                    if (hasAutoSelectedFields) {
-                        formContainer.one('mousedown mousemove keydown scroll touchstart', function() {
-                            generateTokenIfNeeded();
-                        });
-                    }
-
                     // Generate token on first user interaction with form
                     formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
                         generateTokenIfNeeded();
