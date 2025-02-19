@@ -442,7 +442,7 @@
 
                 </template>
 
-                <template >
+                <template  v-if="cleantalk_available">
                     <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width"  :class="{ 'ff-disabled': !cleantalk_available }">
                         <template slot="label">
                             <span>
@@ -459,12 +459,11 @@
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
-                                <p class="text-note mt-1" v-else>{{ $t('Please use the CleanTalk option found in the Security submenu. This version utilizes an API and does not require the CleanTalk Anti-Spam Plugin.') }}</p>
+                                <p class="text-note mt-1" >{{ $t('Please use the CleanTalk option found in the Security submenu. This version utilizes an API and does not require the CleanTalk Anti-Spam Plugin.') }}</p>
                             </span>
                         </template>
 
-                        <el-switch class="el-switch-lg" :disabled="!cleantalk_available" active-value="yes" inactive-value="no"
+                        <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
                                    v-model="misc.cleantalk_status"></el-switch>
                     </el-form-item>
 
