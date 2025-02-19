@@ -718,6 +718,8 @@ class TranslationString
             'Customize Form Settings' => __('Customize Form Settings', 'fluentform'),
             'You can disable it here.' => __('You can disable it here.', 'fluentform'),
             'Honeypot Security' => __('Honeypot Security', 'fluentform'),
+            'Token Based Spam Protection' => __('Token Based Spam Protection', 'fluentform'),
+            'Enable token based spam protection for better spam protection' => __('Enable token based spam protection for better spam protection', 'fluentform'),
             'Enable Akismet Integration' => __('Enable Akismet Integration', 'fluentform'),
             'Akismet Integration' => __('Akismet Integration', 'fluentform'),
             'If you enable this then Fluent Forms will verify the form submission with Akismet. It will save you from spam form submission.' => __('If you enable this then Fluent Forms will verify the form submission with Akismet. It will save you from spam form submission.', 'fluentform'),

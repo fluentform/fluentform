@@ -117,8 +117,8 @@
         }
       }
     }
-    &.ff-honeypot-container {
-      display: none;
+    &.ff-hpsf-container {
+      display: none!important;
       position: absolute!important;
       transform: translateX(1000%)!important;
     }

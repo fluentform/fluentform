@@ -206,10 +206,11 @@ export default {
             FluentFormsGlobal.$rest.post(url, data)
                 .then(response => {
                     this.reCaptcha_status = response.status;
-                    if (this.reCaptcha_status === 1) {
+                    if (this.reCaptcha_status == 1) {
                         this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
                     }
-                    this.$fail(response.message);
                 })
                 .catch(error => {
                     this.reCaptcha_status = parseInt(error.status, 10);
@@ -230,10 +231,11 @@ export default {
                 .then(response => {
                     this.reCaptcha_status = response.status;
                     this.reCaptcha = {siteKey: '', secretKey: ''};
-                    if (this.reCaptcha_status === 1) {
+                    if (this.reCaptcha_status == 1) {
                         this.$success(response.message);
+                    } else {
+                        this.$fail(response.message);
                     }
-                    this.$fail(response.message);
                 })
                 .catch(error => {
                     this.reCaptcha_status = error.status;

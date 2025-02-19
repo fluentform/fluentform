@@ -985,7 +985,64 @@ jQuery(document).ready(function () {
                 this.initMask();
                 this.initNumericFormat();
                 this.initCheckableActive();
+                this.maybeInitSpamTokenProtection();
             },
+
+            maybeInitSpamTokenProtection: function() {
+                const formContainers = jQuery('.frm-fluent-form');
+
+                formContainers.each((index, formElement) => {
+                    const formContainer = jQuery(formElement);
+                    const spamProtectionField = formContainer.find('.fluent-form-token-field');
+
+                    // Skip if no protection field or already processing/processed
+                    if (spamProtectionField.length === 0 ||
+                        formContainer.hasClass('ff_tokenizing') ||
+                        formContainer.hasClass('ff_tokenized')) {
+                        return;
+                    }
+
+                    // Helper function to generate token
+                    const generateTokenIfNeeded = () => {
+                        if (!formContainer.hasClass('ff_tokenized') && !formContainer.hasClass('ff_tokenizing')) {
+                            formContainer.addClass('ff_tokenizing');
+                            this.generateAndSetToken(formContainer, spamProtectionField);
+                        }
+                    };
+
+                    // Generate token on first user interaction with form
+                    formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        generateTokenIfNeeded();
+                    });
+                });
+            },
+
+            generateAndSetToken: function(formContainer, spamProtectionField) {
+                const form_id = formContainer.data('form_id');
+                const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
+
+                jQuery.post(ajaxRequestUrl, {
+                    action: 'fluentform_generate_protection_token',
+                    form_id: form_id,
+                    nonce: fluentFormVars?.token_nonce
+                })
+                    .done(function(response) {
+                        if (response.success && response.data.token) {
+                            spamProtectionField.val(response.data.token);
+                            formContainer.addClass('ff_tokenized');
+                        } else {
+                            spamProtectionField.val(null);
+                            console.error('Token generation failed for form ID:', form_id);
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('Error generating token for form ID:', form_id, error);
+                    })
+                    .always(function() {
+                        formContainer.removeClass('ff_tokenizing');
+                    });
+            },
+
 
             /**
              * Init choice2
