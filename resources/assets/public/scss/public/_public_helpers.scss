@@ -117,6 +117,11 @@
         }
       }
     }
+    &.ff-hpsf-container {
+      display: none!important;
+      position: absolute!important;
+      transform: translateX(1000%)!important;
+    }
   }
 
   div.ff-el-form-hide_label > .ff-el-input--label {
