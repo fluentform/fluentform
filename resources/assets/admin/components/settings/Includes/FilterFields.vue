@@ -7,24 +7,29 @@
         <div v-if="conditionals.status" class="mt-3">
             <div class="mb-3">
                 {{ $t(labels.notification_if_start) }}
-                <select class="ff-select ff-select-small ml-1 mr-1" v-model="conditionals.type">
-                    <option v-for="(label, value) in {all: 'All', any: 'Any', group: 'Group'}" :key="value" :value="value">
-                        {{ label }}
-                    </option>
-                </select>
+	            <el-select
+		            style="width: 90px;"
+		            :placeholder="$t('Select')"
+		            popper-class="ff-mw-100"
+		            v-model="conditionals.type"
+	            >
+		            <el-option
+			            v-for="(field, key) in {all: 'All', any: 'Any', group: 'Group'}" :key="key"
+			            :label="field" :value="key"
+		            ></el-option>
+	            </el-select>
                 {{ $t(labels.notification_if_end) }}
             </div>
 
 
 	        <div v-if="conditionals.type === 'group'" class="ff_conditions_warp">
 		        <div v-for="(group, groupIndex) in items" :key="groupIndex" class="group-container" :class="{'is-empty': isGroupEmpty(group)}">
-			        <el-row class="group-header" >
+			        <el-row class="group-header items-center" >
 				        <el-col :md="11" class="mb-1">
 					        <div class="title-section">
 						        <template v-if="group.isEditingTitle">
 							        <el-input
 								        v-model="group.title"
-								        size="small"
 								        class="title-input"
 								        @blur="finishTitleEdit(group)"
 								        @keyup.enter.native="finishTitleEdit(group)"
@@ -46,9 +51,9 @@
 				        </el-col>
 				        <el-col :md="4" class="mt-1">
 					        <div class="actions">
-						        <el-button size="mini" v-if="items.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
+						        <el-button v-if="items.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
 						        </el-button>
-						        <el-button size="mini" v-if="items.length > 1" @click="toggleGroup(group)" plain>
+						        <el-button v-if="items.length > 1" @click="toggleGroup(group)" plain>
 							        <i :class="[
 	                                    { 'el-icon-arrow-up': group.isGroupOpen },
 	                                    { 'el-icon-arrow-down': !group.isGroupOpen }
@@ -62,7 +67,6 @@
 				        <el-col :md="8" class="mb-2">
 					        <div>
 						        <el-select
-							        size="mini"
 							        :placeholder="$t('Select')"
 							        popper-class="ff-mw-100"
 							        v-model="logic.field"
@@ -78,7 +82,7 @@
 
 				        <el-col :md="5" class="mb-2">
 					        <div>
-						        <el-select :placeholder="$t('Select')" size="mini" v-model="logic.operator">
+						        <el-select :placeholder="$t('Select')"  v-model="logic.operator">
 							        <el-option-group :label="$t('General Operators')">
 								        <el-option value="=" :label="$t('equal')"></el-option>
 								        <el-option value="!=" :label="$t('not equal')"></el-option>
@@ -103,15 +107,14 @@
 					        </div>
 				        </el-col>
 
-				        <el-col :md="7" class="mb-2">
+				        <el-col :md="8" class="mb-2">
 					        <div >
 						        <template v-if="logic.operator == 'length_equal' || logic.operator == 'length_less_than' || logic.operator == 'length_greater_than'">
-							        <el-input size="mini" type="number" step="1" :placeholder="('Enter length in number')" v-model="logic.value" />
+							        <el-input  type="number" step="1" :placeholder="('Enter length in number')" v-model="logic.value" />
 						        </template>
 						        <template v-else>
 							        <el-select
 								        v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
-								        size="mini"
 							                   v-model="logic.value"
 								        clearable filterable allow-create
 								        style="width: 100%">
@@ -123,7 +126,6 @@
 								        ></el-option>
 							        </el-select>
 							        <el-input
-								        size="mini"
 								        v-else
 								        :placeholder="$t('Enter a value')"
 								        v-model="logic.value"
@@ -132,10 +134,10 @@
 					        </div>
 				        </el-col>
 
-				        <el-col :md="3">
+				        <el-col :md="2" class="mb-2">
 					        <action-btn>
-						        <action-btn-add @click="addCondition(groupIndex, ruleIndex)" size="mini"/>
-						        <action-btn-remove v-if="group.rules.length > 1" @click="removeCondition(groupIndex, ruleIndex)" size="mini"/>
+						        <action-btn-add @click="addCondition(groupIndex, ruleIndex)" />
+						        <action-btn-remove v-if="group.rules.length > 1" @click="removeCondition(groupIndex, ruleIndex)" />
 					        </action-btn>
 				        </el-col>
 			        </el-row>
@@ -163,7 +165,7 @@
 				        @click="addGroup"
 				        type="primary"
 				        plain
-				        size="small">
+			        >
 				        {{ $t('+ Add New Group') }}
 			        </el-button>
 		        </div>
@@ -281,6 +283,13 @@
                 }
             }
         },
+	    watch: {
+		    'conditionals.type'(newType) {
+			    if (newType === 'group' && (!this.conditionals.condition_groups || !this.conditionals.condition_groups.length)) {
+				    this.addGroup();
+			    }
+		    }
+	    },
         computed: {
 	        items() {
 		        return this.conditionals.type === 'group'
@@ -311,7 +320,7 @@
 				    title: '',
 				    isEditingTitle: false,
 				    isGroupOpen: true,
-				    isPreviewOpen: true,
+				    isPreviewOpen: false,
 				    rules: [{...this.defaultRules}]
 			    });
 		    },
