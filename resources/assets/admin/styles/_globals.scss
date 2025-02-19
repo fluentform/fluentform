@@ -2065,6 +2065,10 @@ label.el-radio, label.el-checkbox {
     gap: 8px;
     margin-bottom: 10px;
     align-items: center;
+    .action-btns {
+      display: flex;
+      justify-content: center;
+    }
   }
   .group-header {
     display: flex;
