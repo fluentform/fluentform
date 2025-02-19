@@ -4,7 +4,7 @@ Tags: contact form, wp forms, forms, form builder, custom form
 Requires at least: 4.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.2.12
+Stable tag: 5.2.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -428,6 +428,15 @@ You can get support from our official support thread at <a href="https://wpmanag
 12. Asset Loading Comparison with Other Plugins
 
 == Changelog ==
+
+= 5.2.13 (Date: February 26, 2025) =
+- Adds Payment fields for free users (except Coupon)
+- Adds Stripe payment gateway for free users
+- Adds Advanced Conditionals group for enhanced form logic
+- Improves responsive CSS for repeater fields on mobile devices
+- Fixes Stripe fields language issues
+- Fixes "customer_name" issue for Stripe
+- Fixes conditional {dynamic.} shortcode in Custom HTML fields
 
 = 5.2.12 (Date: February 18, 2025) =
 - Adds token-based spam protection for enhanced form security
