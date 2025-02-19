@@ -85,9 +85,9 @@ class PaymentAction
                 }
             } else if ($element == 'payment_method') {
                 $paymentMethod = $field;
-            } else if ($element == 'payment_coupon') {
+            } else if ($element == 'payment_coupon' && Helper::hasPro()) {
                 $couponField = $field;
-            } else if ($element === 'subscription_payment_component') {
+            } else if ($element === 'subscription_payment_component' && Helper::hasPro()) {
                 $subscriptionInputs[$fieldKey] = $field;
             }
         }
@@ -109,21 +109,22 @@ class PaymentAction
             $couponCodes = ArrayHelper::get($this->data, '__ff_all_applied_coupons', '');
             if ($couponCodes) {
                 $couponCodes = \json_decode($couponCodes, true);
-                if ($couponCodes) {
+                if ($couponCodes && class_exists('FluentFormPro\Payments\Classes\CouponModel')) {
                     $couponCodes = array_unique($couponCodes);
-                    $this->discountCodes = (new CouponModel())->getCouponsByCodes($couponCodes);
+                    $this->discountCodes = (new \FluentFormPro\Payments\Classes\CouponModel())->getCouponsByCodes($couponCodes);
                     $this->couponField = $couponField;
                 }
             }
         }
 
-        if ($this->subscriptionInputs) {
-            // Maybe we have subscription items with bill times = 1
-            // Or if we have discount codes then we have to apply the discount codes
-            $this->validateSubscriptionInputs();
+        if (Helper::hasPro()) {
+            if ($this->subscriptionInputs) {
+                // Maybe we have subscription items with bill times = 1
+                // Or if we have discount codes then we have to apply the discount codes
+                $this->validateSubscriptionInputs();
+            }
+            $this->applyDiscountCodes();
         }
-
-        $this->applyDiscountCodes();
     }
 
     public function isConditionPass()
@@ -512,6 +513,10 @@ class PaymentAction
 
     public function getSubscriptionItems()
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
+
         if ($this->subscriptionItems) {
             return $this->subscriptionItems;
         }
@@ -805,8 +810,13 @@ class PaymentAction
 
         $fixedAmountApplied = 0; // in cents
 
-	    $couponModel = new CouponModel();
-        $this->discountCodes = $couponModel->getValidCoupons($this->discountCodes, $this->form->id, $grandTotal);
+        if (Helper::hasPro() && class_exists('FluentFormPro\Payments\Classes\CouponModel')) {
+            $couponModel = new \FluentFormPro\Payments\Classes\CouponModel();
+            $this->discountCodes = $couponModel->getValidCoupons($this->discountCodes, $this->form->id, $grandTotal);
+        } else {
+            $this->discountCodes = [];
+        }
+
         foreach ($this->discountCodes as $coupon) {
             $discountAmount = $coupon->amount;
             if ($coupon->coupon_type == 'percent') {

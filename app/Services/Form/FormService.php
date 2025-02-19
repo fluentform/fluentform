@@ -3,6 +3,7 @@
 namespace FluentForm\App\Services\Form;
 
 use Exception;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\Framework\Foundation\App;
@@ -374,7 +375,7 @@ class FormService
             ],
         ];
         
-        if (!defined('FLUENTFORMPRO')) {
+        if (!Helper::hasPro()) {
             $disabled['ratings'] = [
                 'disabled'    => true,
                 'title'       => __('Ratings', 'fluentform'),
@@ -469,6 +470,15 @@ class FormService
                 'description' => __('Color Picker is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/color-picker.png'),
+                'video'       => '',
+            ];
+            $disabled['subscription_payment_component'] = [
+                'disabled'    => true,
+                'is_payment'  => true,
+                'title'       => __('Subscription Field', 'fluentform'),
+                'description' => __('Subscription Field is not available with the free version. Please upgrade to pro to get all the advanced features.',
+                    'fluentform'),
+                'image'       => fluentformMix('img/pro-fields/subscription-field.png'),
                 'video'       => '',
             ];
             $disabled['payment_coupon'] = [

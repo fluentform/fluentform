@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Api;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
 class Submission
@@ -96,6 +97,9 @@ class Submission
 
     public function subscriptions($submissionId, $withTransactions = false)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $subscriptions = wpFluent()->table('fluentform_subscriptions')
             ->where('submission_id', $submissionId)
             ->get();
@@ -111,6 +115,9 @@ class Submission
 
     public function getSubscription($subscriptionId, $withTransactions = false)
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         $subscription = wpFluent()->table('fluentform_subscriptions')
             ->where('id', $subscriptionId)
             ->first();
@@ -173,7 +180,9 @@ class Submission
 
     public function transactionsBySubscriptionId($subscriptionId)
     {
-
+        if (!Helper::hasPro()) {
+            return [];
+        }
         return wpFluent()->table('fluentform_transactions')
             ->where('subscription_id', $subscriptionId)
             ->orderBy('id', 'DESC')
@@ -189,6 +198,9 @@ class Submission
 
     public function subscriptionsByUserId($userId = false, $args = [])
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
         if (!$userId) {
             $userId = get_current_user_id();
         }
