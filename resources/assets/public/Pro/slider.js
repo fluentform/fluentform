@@ -591,9 +591,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             if (!isInitialLoad) {
                 if (!autoFocusEnabled) {
-                    setTimeout(() => {
-                        $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
-                    }, animDuration);
+                    const focusOnStepChange = !!window.fluentFormVars?.step_change_focus;
+                    if (focusOnStepChange) {
+                        setTimeout(() => {
+                            $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
+                        }, animDuration);
+                    }
 
                     isInitialLoad = false;
                 } else {
