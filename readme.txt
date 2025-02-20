@@ -434,7 +434,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds Payment fields for free users (except Coupon)
 - Adds Stripe payment gateway for free users
 - Adds Advanced Conditionals group for enhanced form logic
-- Improves responsive CSS for repeater fields on mobile devices
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe
 - Fixes conditional {dynamic.} shortcode in Custom HTML fields

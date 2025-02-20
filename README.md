@@ -159,11 +159,13 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 5.2.13 (Date: February 19, 2025)
-- Adds token-based spam protection for enhanced form security
-- Adds Italian Language Translation
-- Improve Honeypot Security for better bot detection
-- Improve Turnstile appearance option names for clarity
+### 5.2.13 (Date: February 26, 2025)
+- Adds Payment fields for free users (except Coupon)
+- Adds Stripe payment gateway for free users
+- Adds Advanced Conditionals group for enhanced form logic
+- Fixes Stripe fields language issues
+- Fixes "customer_name" issue for Stripe
+- Fixes conditional {dynamic.} shortcode in Custom HTML fields
 
 ### 5.2.12 (Date: February 18, 2025)
 - Adds token-based spam protection for enhanced form security

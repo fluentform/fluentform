@@ -518,13 +518,9 @@
 
                 // Ensure condition_groups exists and has at least one group with an empty rule
                 if (!this.conditional_logics.condition_groups) {
-                    this.$set(this.conditional_logics, 'condition_groups', [{
-                        rules: [{ ...this.emptyRules }]
-                    }]);
+					this.addNewGroup();
                 } else if (!this.conditional_logics.condition_groups.length) {
-                    this.conditional_logics.condition_groups.push({
-                        rules: [{ ...this.emptyRules }]
-                    });
+	                this.addNewGroup();
                 } else {
                     // Ensure each existing group has at least one rule
                     this.conditional_logics.condition_groups.forEach(group => {
@@ -560,11 +556,6 @@
                 };
 
                 this.conditional_logics.condition_groups.push(newGroup);
-
-                // Ensure the conditional_logics type is set to 'group'
-                if (this.conditional_logics.type !== 'group') {
-                    this.conditional_logics.type = 'group';
-                }
             },
             formatOptions(items) {
                 let options = [];
