@@ -694,7 +694,9 @@ class Component
             'input_mask_vars'       => [
                 'clearIfNotMatch' => false,
             ],
-            'nonce'                 => wp_create_nonce()
+            'nonce'                 => wp_create_nonce(),
+            'form_id'               => $form_id,
+            'step_change_focus'     => true,
         ];
     
         $data = apply_filters_deprecated(
