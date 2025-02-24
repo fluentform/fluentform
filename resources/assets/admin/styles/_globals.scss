@@ -1960,11 +1960,16 @@ label.el-radio, label.el-checkbox {
 
 .ff_conditions_warp {
   .group-container {
-    background: #f5f7fa;
-    border: 1px solid #e4e7ed;
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 20px;
+    .group-items{
+      background: #f5f7fa;
+      border: 1px solid #e4e7ed;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 15px;
+      &:hover {
+        border: 1px solid #c0c5d0;
+      }
+    }
     .preview-section{
       text-align: center;
     }
@@ -1974,10 +1979,35 @@ label.el-radio, label.el-checkbox {
       transition: all 0.3s ease;
     }
 
-    &:hover {
-      border: 1px solid #c0c5d0;
-    }
+    .ff_cond_or {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      width: 100%;
+      margin: 15px 0;
+      font-weight: bold;
+      text-transform: uppercase;
+      span{
+        color: #555;
+      }
+      &::before,
+      &::after {
+        content: "";
+        flex-grow: 1;
+        height: 1px;
+        border-top: 2px dotted #ccc;
+        position: relative;
+        top: 50%;
+      }
+      &::before {
+        margin-right: 10px;
+      }
 
+      &::after {
+        margin-left: 10px;
+      }
+    }
 
     .group-header {
       display: flex;
@@ -1986,12 +2016,6 @@ label.el-radio, label.el-checkbox {
       margin-bottom: 15px;
       padding-bottom: 10px;
       border-bottom: 1px solid #e4e7ed;
-
-
-      .group-title {
-        font-weight: 500;
-        color: #606266;
-      }
     }
 
     .group-preview {
@@ -2009,12 +2033,10 @@ label.el-radio, label.el-checkbox {
         margin-right: 5px;
         font-weight: normal;
       }
-
       .preview-operator {
         font-weight: 600;
         color: #303133;
       }
-
       .preview-and {
         font-weight: 600;
         color: #409EFF;
@@ -2024,7 +2046,6 @@ label.el-radio, label.el-checkbox {
       .preview-field {
         color: #606266;
       }
-
       .preview-value {
         color: #606266;
       }
@@ -2102,7 +2123,6 @@ label.el-radio, label.el-checkbox {
     .actions {
       display: flex;
       align-items: center;
-      gap: 8px;
     }
   }
 }
