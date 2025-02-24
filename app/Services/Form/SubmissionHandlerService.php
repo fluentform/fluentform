@@ -426,22 +426,27 @@ class SubmissionHandlerService
         $this->validationService->setFormData($this->formData);
 
         $this->validationService->validateSubmission($this->fields, $this->formData);
-    
-        $insertData = $this->prepareInsertData();
+        $hasSpam = false;
         
         if ($this->validationService->isAkismetSpam($this->formData, $this->form)) {
-            $insertData['status'] = 'spam';
+            $hasSpam = true;
             $this->validationService->handleAkismetSpamError();
         }
 
         if ($this->validationService->isCleanTalkSpam($this->formData, $this->form)) {
-            $insertData['status'] = 'spam';
+            $hasSpam = true;
             $this->validationService->handleCleanTalkSpamError();
         }
 
         if ($this->validationService->isCleanTalkSpamUsingApi($this->formData, $this->form)) {
-            $insertData['status'] = 'spam';
+            $hasSpam = true;
             $this->validationService->handleCleanTalkSpamErrorUsingAPi();
+            unset($this->formData['ff_ct_form_load_time'], $this->formData['ct_bot_detector_event_token']);
+        }
+        
+        $insertData = $this->prepareInsertData();
+        if ($hasSpam) {
+            $insertData['status'] = 'spam';
         }
 
         return $insertData;
