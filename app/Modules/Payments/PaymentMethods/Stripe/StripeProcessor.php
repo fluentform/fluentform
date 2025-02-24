@@ -607,9 +607,17 @@ class StripeProcessor extends BaseProcessor
 
             $customer = $this->retrieveCustomerDetailsFromCharge($charge);
 
+            $customerName = isset($charge->billing_details->name) &&
+            !empty($charge->billing_details->name) ?
+                $charge->billing_details->name : (
+                isset($invoice->customer_name) &&
+                !empty($invoice->customer_name) ?
+                    $invoice->customer_name : ''
+                );
+
             $customer = array_merge($customer, [
                 'payer_email' => $invoice->customer_email,
-                'payer_name'  => $invoice->customer_name,
+                'payer_name'  => $customerName,
             ]);
         }
 
