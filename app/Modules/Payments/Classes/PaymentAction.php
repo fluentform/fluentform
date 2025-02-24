@@ -132,8 +132,7 @@ class PaymentAction
         $conditionSettings = ArrayHelper::get($this->methodField, 'settings.conditional_logics', []);
         if (
             !$conditionSettings ||
-            !ArrayHelper::isTrue($conditionSettings, 'status') ||
-            !count(ArrayHelper::get($conditionSettings, 'conditions'))
+            !ArrayHelper::isTrue($conditionSettings, 'status')
         ) {
             return true;
         }
