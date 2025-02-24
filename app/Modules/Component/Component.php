@@ -656,6 +656,7 @@ class Component
             'nonce'                 => wp_create_nonce(),
             'form_id'               => $form_id,
             'step_change_focus'     => true,
+            'has_cleantalk'         => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated()
         ];
     
         $data = apply_filters_deprecated(

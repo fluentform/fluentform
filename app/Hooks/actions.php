@@ -808,6 +808,9 @@ $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
 
     $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
     $tokenBasedSpamProtection->renderTokenField($form);
+
+    $cleanTalk = new \FluentForm\App\Modules\Form\CleanTalkHandler();
+    $cleanTalk->setCleanTalkScript();
 });
 
 $app->addAction('fluentform/before_insert_submission', function ($insertData, $requestData, $form) use ($app) {

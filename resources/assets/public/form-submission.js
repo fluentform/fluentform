@@ -1027,6 +1027,7 @@ jQuery(document).ready(function () {
                 this.initNumericFormat();
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
+                this.handleCleanTalkSubmitTime();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1084,6 +1085,19 @@ jQuery(document).ready(function () {
                     });
             },
 
+            handleCleanTalkSubmitTime: function() {
+                if (!!window.fluentFormVars?.has_cleantalk) {
+                    const formContainers = jQuery('.frm-fluent-form');
+
+                    formContainers.each((index, formElement) => {
+                        const formContainer = jQuery(formElement);
+                        const formLoadTimeField = formContainer.find('.ff_ct_form_load_time');
+                        if (formLoadTimeField.length) {
+                            formLoadTimeField.val(Math.floor(Date.now() / 1000)); // Set timestamp in seconds
+                        }
+                    });
+                }
+            },
 
             /**
              * Init choice2
