@@ -2048,6 +2048,10 @@ label.el-radio, label.el-checkbox {
       }
       .preview-value {
         color: #606266;
+        &.empty-value {
+          color: #c0c4cc;
+          font-style: italic;
+        }
       }
     }
   }
@@ -2086,6 +2090,12 @@ label.el-radio, label.el-checkbox {
     gap: 8px;
     margin-bottom: 10px;
     align-items: center;
+    .action-btn-wrapper {
+      flex-grow: 1;
+      .action-btns {
+        justify-content: end;
+      }
+    }
     .action-btns {
       display: flex;
       justify-content: center;
@@ -2126,3 +2136,12 @@ label.el-radio, label.el-checkbox {
     }
   }
 }
+
+.ff-filter-fields-wrap {
+  .ff_conditions_warp {
+    .group-container .conditional-logic {
+      gap: 0;
+    }
+  }
+}
+

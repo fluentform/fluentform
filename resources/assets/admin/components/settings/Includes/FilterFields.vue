@@ -34,10 +34,11 @@
 
                                     <template v-if="group.isEditingTitle">
                                         <el-input
-                                                v-model="group.title"
-                                                class="title-input"
-                                                @blur="finishTitleEdit(group)"
-                                                @keyup.enter.native="finishTitleEdit(group)"
+	                                        size="small"
+                                            v-model="group.title"
+                                            class="title-input"
+                                            @blur="finishTitleEdit(group)"
+                                            @keyup.enter.native="finishTitleEdit(group)"
                                         />
                                     </template>
                                     <template v-else>
@@ -52,10 +53,21 @@
 
                             <el-col :md="12" class=" mb-0">
                                 <div class="actions pull-right">
-
-                                    <el-button class="el-button--icon"  size="mini" v-if="items.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" >
+                                    <el-button
+	                                    class="el-button--icon"
+	                                    size="mini"
+	                                    v-if="items.length > 1"
+	                                    @click="removeGroup(groupIndex)"
+	                                    icon="el-icon-delete"
+	                                    type="danger"
+                                    >
                                     </el-button>
-                                    <el-button class="el-button--icon"   size="mini" v-if="items.length > 1" @click="toggleGroup(group)" plain>
+                                    <el-button
+	                                    class="el-button--icon"
+	                                    size="mini"
+	                                    @click="toggleGroup(group)"
+	                                    plain
+                                    >
                                         <i :class="[
 	                                    { 'el-icon-arrow-up': group.isGroupOpen },
 	                                    { 'el-icon-arrow-down': !group.isGroupOpen }
@@ -65,15 +77,17 @@
                             </el-col>
                         </el-row>
 
-                        <el-row v-for="(logic, ruleIndex) in group.rules" :key="`${groupIndex}-${ruleIndex}`" :gutter="5" class="items-center conditional-logic" v-show="group.isGroupOpen">
+                        <el-row v-for="(logic, ruleIndex) in group.rules" :key="`${groupIndex}-${ruleIndex}`" :gutter="10" class="items-center conditional-logic" v-show="group.isGroupOpen">
                             <el-col :md="8" class="mb-0">
                                 <div>
                                     <el-select
-                                            size="small"
-                                            :placeholder="$t('Select')"
-                                            popper-class="ff-mw-100"
-                                            v-model="logic.field"
-                                            style="width: 100%" @change="logic.value = ''">
+                                        size="small"
+                                        :placeholder="$t('Select')"
+                                        popper-class="ff-mw-100"
+                                        v-model="logic.field"
+                                        style="width: 100%"
+                                        @change="logic.value = ''"
+                                    >
                                         <el-option
                                                 v-for="(field, key) in fields" :key="key"
                                                 :label="field.admin_label" :value="key"
@@ -85,8 +99,11 @@
 
                             <el-col :md="5" class="mb-0">
                                 <div>
-                                    <el-select                                         size="small"
-                                                                                       :placeholder="$t('Select')"  v-model="logic.operator">
+                                    <el-select
+	                                    size="small"
+	                                    :placeholder="$t('Select')"
+	                                    v-model="logic.operator"
+                                    >
                                         <el-option-group :label="$t('General Operators')">
                                             <el-option value="=" :label="$t('equal')"></el-option>
                                             <el-option value="!=" :label="$t('not equal')"></el-option>
@@ -114,13 +131,17 @@
                             <el-col :md="8" class="mb-0">
                                 <div >
                                     <template v-if="logic.operator == 'length_equal' || logic.operator == 'length_less_than' || logic.operator == 'length_greater_than'">
-                                        <el-input                                         size="small"
-                                                                                          type="number" step="1" :placeholder="('Enter length in number')" v-model="logic.value" />
+                                        <el-input
+	                                        size="small"
+	                                        type="number"
+	                                        step="1"
+	                                        :placeholder="('Enter length in number')"
+	                                        v-model="logic.value"
+                                        />
                                     </template>
                                     <template v-else>
                                         <el-select
                                                 size="small"
-
                                                 v-if="fields[logic.field] && Object.keys(fields[logic.field].options || {}).length"
                                                 v-model="logic.value"
                                                 clearable filterable allow-create
@@ -134,7 +155,6 @@
                                         </el-select>
                                         <el-input
                                                 size="small"
-
                                                 v-else
                                                 :placeholder="$t('Enter a value')"
                                                 v-model="logic.value"
@@ -143,7 +163,7 @@
                                 </div>
                             </el-col>
 
-                            <el-col :md="2" class="mb-0 ">
+                            <el-col :md="3" class="mb-0">
                                 <action-btn class="pull-right">
                                     <action-btn-remove size="mini" v-if="group.rules.length > 1" @click="removeCondition(groupIndex, ruleIndex)" />
                                     <action-btn-add size="mini"  @click="addCondition(groupIndex, ruleIndex)" />
@@ -151,7 +171,7 @@
                             </el-col>
                         </el-row>
 
-                        <div class="preview-section"  v-if="group.rules.length > 0">
+                        <div class="preview-section"  v-if="group.rules.length > 0 && getGroupPreview(group)">
                             <div class="preview-header" @click="togglePreview(group)">
                                 <div class="preview-toggle">
                                     <i :class="[
@@ -309,6 +329,26 @@
 		        return this.conditionals.type === 'group'
 			        ? (this.conditionals.condition_groups || [])
 			        : (this.conditionals.conditions || []);
+	        },
+	        getGroupPreview() {
+		        return (group) => {
+					if (!group || !group.rules) return '';
+			        const conditions = group.rules.map(rule => {
+				        if (!rule.field || !rule.operator) return '';
+
+				        const fieldLabel = this.fields[rule.field]?.admin_label || rule.field;
+				        const value = this.fields[rule.field]?.options[rule.value] || rule.value;
+				        const operator = this.getOperatorLabel(rule.operator);
+
+				        return `
+                <span class="preview-field">${ fieldLabel }</span>
+                <span class="preview-operator">${ operator }</span>
+                <span class="preview-value ${!value ? 'empty-value' : ''}">${value || 'Empty'}</span>
+            `;
+			        }).filter(preview => preview);
+
+			        return conditions.join('<span class="preview-and">AND</span>');
+		        };
 	        }
         },
 	    methods: {
@@ -361,23 +401,6 @@
 		    },
 		    isGroupEmpty(group) {
 			    return group.rules.length === 0;
-		    },
-		    getGroupPreview(group) {
-			    const conditions = group.rules.map(rule => {
-				    if (!rule.field || !rule.operator) return '';
-
-				    const fieldLabel = this.fields[rule.field]?.admin_label || rule.field;
-				    const value = this.fields[rule.field]?.options[rule.value] || rule.value;
-				    const operator = this.getOperatorLabel(rule.operator);
-
-				    return `
-                <span class="preview-field">${fieldLabel}</span>
-                <span class="preview-operator">${operator}</span>
-                <span class="preview-value">${value || ''}</span>
-            `;
-			    }).filter(preview => preview);
-
-			    return conditions.join('<span class="preview-and">AND</span>');
 		    },
 
 		    getOperatorLabel(operator) {
