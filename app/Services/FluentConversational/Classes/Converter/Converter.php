@@ -61,9 +61,8 @@ class Converter
             if ($hasSaveAndResume && $saveAndResumeData) {
                 $response = ArrayHelper::get($saveAndResumeData, 'response');
                 $questionId = ArrayHelper::get($question, 'id');
-                $value = ArrayHelper::get($response, $questionId);
-                
-                if (isset($value)) {
+                $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
+                if (!empty($value)) {
                     if (ArrayHelper::get($field, 'element') == 'input_file') {
                         $files = ArrayHelper::get($response, $questionId);
                         foreach ($files as $file) {
