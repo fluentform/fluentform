@@ -71,13 +71,6 @@ use FluentForm\Framework\Helpers\ArrayHelper;
 								<?php echo __('Compliance Settings', 'fluentform'); ?>
 							</a>
 						</li>
-                        <?php if (\FluentForm\App\Helpers\IntegrationManagerHelper::isIntegrationEnabled('ff_wpml')): ?>
-                            <li>
-                                <a class="ff-page-scroll" href="#ff_wpml">
-                                    <?php echo __('Translations', 'fluentform'); ?>
-                                </a>
-                            </li>
-                        <?php endif ?>
 						<li>
 							<a class="ff-page-scroll"
 								href="#other">
