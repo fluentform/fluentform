@@ -33,8 +33,8 @@ class Converter
         
         if ($hasSaveAndResume) {
             $saveAndResumeData = static::getSaveAndResumeData($form);
-            
             $form->stepCompleted = intval(ArrayHelper::get($saveAndResumeData, 'step_completed', 0));
+            $form->hasSaveAndRuseme = true;
         }
         
         foreach ($fields as $field) {

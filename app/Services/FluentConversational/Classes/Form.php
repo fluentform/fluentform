@@ -913,6 +913,7 @@ class Form
             'has_per_step_save'         => ArrayHelper::get($form->settings, 'conv_form_per_step_save', false),
             'has_resume_from_last_step' => ArrayHelper::get($form->settings, 'conv_form_resume_from_last_step', false),
             'has_save_link'             => $form->save_state?? false,
+            'has_save_and_resume'       => $form->hasSaveAndRuseme ?? false,
             'step_completed'            => $form->stepCompleted ?? 0
         ];
     }
