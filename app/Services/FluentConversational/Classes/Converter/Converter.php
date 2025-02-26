@@ -34,7 +34,6 @@ class Converter
         if ($hasSaveAndResume) {
             $saveAndResumeData = static::getSaveAndResumeData($form);
             $form->stepCompleted = intval(ArrayHelper::get($saveAndResumeData, 'step_completed', 0));
-            $form->hasSaveAndRuseme = true;
         }
         
         foreach ($fields as $field) {
@@ -419,9 +418,20 @@ class Converter
                 $question['is_calculable'] = true;
                 $question['type'] = 'FlowFormRangesliderType';
             } elseif ('save_progress_button' === $field['element']) {
-                $question['id'] = ArrayHelper::get($field, 'attributes.name');
-                $question['title'] = ArrayHelper::get($field, 'editor_options.title');
-                $question['settings'] = ArrayHelper::get($field, 'settings');
+                // Add the save progress button data to the previous question
+                if ($questions && count($questions) > 0) {
+                    $lastQuestion = &$questions[count($questions) - 1];
+                    $question['id'] = ArrayHelper::get($field, 'attributes.name');
+                    $question['parent_id'] = $lastQuestion['id'];
+                    $question['title'] = ArrayHelper::get($field, 'editor_options.title');
+                    $question['settings'] = ArrayHelper::get($field, 'settings');
+                    $question['counter'] = count($questions) - 1;
+                    $lastQuestion['has_save_and_resume_button'] = true;
+                    $lastQuestion['save_and_resume_button'] = $question;
+                    $form->hasSaveAndRusemeButton = true;
+                }
+                // Skip Save Progress Button as a separate question
+                continue;
             } elseif ('multi_payment_component' === $field['element']) {
                 $type = $field['attributes']['type'];
                 
@@ -1133,7 +1143,7 @@ class Converter
     private static function getSaveAndResumeData($form)
     {
         $draftForm = null;
-        $data = null;
+        $data = [];
         $formId = $form->id;
         $cookieName = 'fluentform_step_form_hash_' . $formId;
         $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
