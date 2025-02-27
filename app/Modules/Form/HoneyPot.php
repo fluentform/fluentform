@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -12,34 +13,19 @@ class HoneyPot
     public function __construct(Application $application)
     {
         $this->app = $application;
+        
+        add_filter('fluentform/global_form_vars', [$this, 'localizeHoneyPot'], 10, 1);
     }
-
-    public function renderHoneyPot($form)
-    {
-        if (!$this->isEnabled($form->id)) {
-            return;
-        }
     
-        $fieldName = $this->getFieldName($form->id);
-        $fieldId = 'ff_' . $form->id . '_item_sf' ;
-        $labels = ['Newsletter', 'Updates', 'Contact', 'Subscribe', 'Notify'];
-        $randomLabel = $labels[array_rand($labels)];
-        ?>
-        <div class="ff-el-group ff-hpsf-container">
-            <div class="ff-el-input--label asterisk-right">
-                <label for="<?php echo esc_attr($fieldId); ?>" aria-label="<?php echo esc_attr($randomLabel); ?>">
-                    <?php echo esc_html($randomLabel); ?>
-                </label>
-            </div>
-            <div class="ff-el-input--content">
-                <input type="text"
-                       name="<?php echo esc_attr($fieldName); ?>"
-                       class="ff-el-form-control"
-                       id="<?php echo esc_attr($fieldId); ?>"
-                />
-            </div>
-        </div>
-        <?php
+    public function localizeHoneyPot($data)
+    {
+        if ($status = $this->isEnabled()) {
+            $data['honeypot'] = [
+                'status' => $status,
+                'field_name' => $this->getFieldName($data['form_id'])
+            ];
+        }
+        return $data;
     }
     
     public function verify($insertData, $requestData, $formId)
@@ -49,7 +35,7 @@ class HoneyPot
         }
 
         $honeyPotName = $this->getFieldName($formId);
-
+        
         if (
                 !ArrayHelper::exists($requestData, $honeyPotName) &&
                 !empty(ArrayHelper::get($requestData, $honeyPotName))

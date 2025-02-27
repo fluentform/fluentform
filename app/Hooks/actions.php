@@ -804,7 +804,6 @@ $app->addAction('init', function () use ($app) {
 
 $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
-    $honeyPot->renderHoneyPot($form);
 
     $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
     $tokenBasedSpamProtection->renderTokenField($form);

@@ -837,6 +837,8 @@ jQuery(document).ready(function () {
                         });
                         $el.attr('data-hcaptcha_widget_id', hcaptchaWidgetId);
                     }
+
+                    this.maybeInitHoneyPot();
                 };
 
                 var initTriggers = function () {
@@ -986,6 +988,8 @@ jQuery(document).ready(function () {
                 this.initNumericFormat();
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
+                this.mayBeHandleCleanTalkSubmitTime();
+                this.maybeInitHoneyPot();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1043,6 +1047,62 @@ jQuery(document).ready(function () {
                     });
             },
 
+            mayBeHandleCleanTalkSubmitTime: function() {
+                if (!!window.fluentFormVars?.has_cleantalk) {
+                    const formContainers = jQuery('.frm-fluent-form');
+
+                    formContainers.each((index, formElement) => {
+                        const formContainer = jQuery(formElement);
+                        const formLoadTimeField = formContainer.find('.ff_ct_form_load_time');
+                        if (formLoadTimeField.length) {
+                            formLoadTimeField.val(Math.floor(Date.now() / 1000)); // Set timestamp in seconds
+                        }
+                    });
+                }
+            },
+
+            maybeInitHoneyPot: function() {
+                if (!!window.fluentFormVars?.honeypot?.status) {
+                    const getRandomLabel = function () {
+                        const labels = ['Newsletter', 'Updates', 'Contact', 'Subscribe', 'Notify'];
+                        return labels[Math.floor(Math.random() * labels.length)];
+                    };
+
+                    const getFieldName = function () {
+                        return window.fluentFormVars?.honeypot?.field_name;
+                    };
+
+                    const addHoneyPotField = function (form, index) {
+                        const formId = form.data('form_id');
+                        const fieldName = getFieldName();
+                        const fieldId = `ff_${formId}_${index}_item_sf`;
+                        const randomLabel = getRandomLabel();
+
+                        const honeyPotHtml = `
+                            <div style="display: none!important; position: absolute!important; transform: translateX(1000%)!important;" class="ff-el-group ff-hpsf-container">
+                                <div class="ff-el-input--label asterisk-right">
+                                    <label for="${fieldId}" aria-label="${randomLabel}">
+                                        ${randomLabel}
+                                    </label>
+                                </div>
+                                <div class="ff-el-input--content">
+                                    <input type="text" name="${fieldName}" class="ff-el-form-control" id="${fieldId}"/>
+                                </div>
+                            </div>
+                        `;
+
+                        form.append(honeyPotHtml);
+                    };
+
+                    // Add honeypot to each form
+                    const formContainers = jQuery('.frm-fluent-form');
+                    formContainers.each((index, formElement) => {
+                        const formContainer = jQuery(formElement);
+                        const formInstanceCount = index + 1;
+                        addHoneyPotField(formContainer, formInstanceCount);
+                    });
+                }
+            },
 
             /**
              * Init choice2
