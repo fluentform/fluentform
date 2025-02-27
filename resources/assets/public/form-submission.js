@@ -1027,7 +1027,7 @@ jQuery(document).ready(function () {
                 this.initNumericFormat();
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
-                this.handleCleanTalkSubmitTime();
+                this.maybeHandleCleanTalkSubmitTime();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1085,7 +1085,7 @@ jQuery(document).ready(function () {
                     });
             },
 
-            handleCleanTalkSubmitTime: function() {
+            maybeHandleCleanTalkSubmitTime: function() {
                 if (!!window.fluentFormVars?.has_cleantalk) {
                     const formContainers = jQuery('.frm-fluent-form');
 
