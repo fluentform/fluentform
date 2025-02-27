@@ -1052,6 +1052,11 @@ jQuery(document).ready(function () {
                         }
                     };
 
+                    // Maybe generate token on step form step change
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                        generateTokenIfNeeded();
+                    });
+
                     // Generate token on first user interaction with form
                     formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
                         generateTokenIfNeeded();
@@ -1059,10 +1064,10 @@ jQuery(document).ready(function () {
                 });
             },
 
-            generateAndSetToken: function(formContainer, spamProtectionField) {
+            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
                 const form_id = formContainer.data('form_id');
                 const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
-
+                const _this = this;
                 jQuery.post(ajaxRequestUrl, {
                     action: 'fluentform_generate_protection_token',
                     form_id: form_id,
@@ -1079,6 +1084,10 @@ jQuery(document).ready(function () {
                     })
                     .fail(function(xhr, status, error) {
                         console.error('Error generating token for form ID:', form_id, error);
+                        // Retry
+                        if (retry) {
+                            _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                        }
                     })
                     .always(function() {
                         formContainer.removeClass('ff_tokenizing');
