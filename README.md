@@ -5,7 +5,7 @@
 **Requires at least:** 4.5  
 **Tested up to:** 6.7  
 **Requires PHP:** 7.4  
-**Stable tag:** 5.2.13  
+**Stable tag:** 6.0.0
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,9 +159,9 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 5.2.13 (Date: February 26, 2025)
+### 6.0.0 (Date: March 04, 2025)
 - Adds Payment fields for free users (except Coupon)
-- Adds Stripe payment gateway for free users
+- Adds Stripe payment gateway for free users (2.5% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe

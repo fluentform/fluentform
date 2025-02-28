@@ -1176,8 +1176,8 @@ class Helper
         if (!self::hasPro()) {
             return true;
         } else {
-            return version_compare(FLUENTFORMPRO_VERSION, '5.2.10', '>') &&
-                version_compare(FLUENTFORM_VERSION, '5.2.12', '>');
+            return version_compare(FLUENTFORMPRO_VERSION, '6.0.0', '>=') &&
+                version_compare(FLUENTFORM_VERSION, '6.0.0', '>=');
         }
     }
 

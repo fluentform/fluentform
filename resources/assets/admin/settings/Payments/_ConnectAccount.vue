@@ -26,6 +26,23 @@
                 <el-button size="small" slot="reference">{{$t('Disconnect')}}</el-button>
             </el-popconfirm>
         </div>
+
+	    <div
+		    v-if="connect_config.should_apply_application_fee"
+		    class="mt-3"
+		    :class="(!connect || connect.error) ? 'ff_connect_require': 'ff_connect_ok'"
+	    >
+		    <h6 class="mb-1">{{ $t('Pay-as-you-go Pricing') }}</h6>
+		    <p>
+			    {{ $t('2.5% platform fee per transaction + Stripe fees.') }}
+			    <a target="_blank"
+			       href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree"
+			    >
+				    <strong>{{ $t('Upgrade to Pro') }}</strong>
+			    </a>
+			    {{ $t(' and activate license to remove additional fees and unlock powerful features.') }}
+		    </p>
+	    </div>
     </div>
 </template>
 
