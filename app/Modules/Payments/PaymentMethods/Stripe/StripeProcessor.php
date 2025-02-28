@@ -174,6 +174,16 @@ class StripeProcessor extends BaseProcessor
 
         $checkoutArgs = apply_filters('fluentform/stripe_checkout_args', $checkoutArgs, $submission, $transaction, $form);
 
+        if (PaymentHelper::shouldApplyStripeApplicationFee()) {
+            if ($transaction->transaction_type == 'subscription') {
+                $checkoutArgs['subscription_data']['application_fee_percent'] = 2.5; // 2.5%
+            } else {
+                // Calculate 2.5% of the total amount
+                $applicationFeeAmount = (int)round(round($transaction->payment_total / 100, 2) * 0.025, 2);
+                $checkoutArgs['payment_intent_data']['application_fee_amount'] = $applicationFeeAmount;
+            }
+        }
+
         $session = CheckoutSession::create($checkoutArgs);
 
         if (!empty($session->error) || is_wp_error($session)) {

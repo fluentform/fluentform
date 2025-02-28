@@ -60,8 +60,6 @@ class StripeInlineProcessor extends StripeProcessor
             $this->handlePaymentChargeError($customer->get_error_message(), $submission, $transaction);
         }
 
-        $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.03, 2);
-
         if ($transaction->transaction_type == 'subscription') {
             $this->handleSetupIntent($submission, $paymentMethodId, $customer, $transaction, $totalPayable);
         } else {
@@ -79,13 +77,14 @@ class StripeInlineProcessor extends StripeProcessor
                 'metadata'                    => $this->getIntentMetaData($submission, $form, $transaction, $paymentSettings),
                 'customer'                    => $customer->id
             ];
-            
-            if (!defined('FLUENTFORMPRO')) {
+
+            $intentArgs = apply_filters('fluentform/stripe_checkout_args_inline', $intentArgs, $submission, $transaction, $form);
+
+            if (PaymentHelper::shouldApplyStripeApplicationFee()) {
+                // Calculate 2.5% of the total amount
+                $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.025, 2);
                 $intentArgs['application_fee_amount'] = $applicationFeeAmount;
             }
-            
-            $intentArgs = apply_filters('fluentform/stripe_checkout_args_inline', $intentArgs, $submission, $transaction, $form);
-    
             $this->handlePaymentIntent($transaction, $submission, $intentArgs);
         }
     }
@@ -135,11 +134,11 @@ class StripeInlineProcessor extends StripeProcessor
             $subscriptionArgs['trial_end'] = $localtime + $subscription->trial_days * 86400;
         }
 
-        if (!defined('FLUENTFORMPRO')) {
-            $subscriptionArgs['application_fee_percent'] = 3;
-        }
-
         $subscriptionArgs = apply_filters('fluentform/stripe_subscription_args_inline', $subscriptionArgs, $submission, $transaction, $this->getForm());
+
+        if (PaymentHelper::shouldApplyStripeApplicationFee()) {
+            $subscriptionArgs['application_fee_percent'] = 2.5; // 2.5%
+        }
 
         $subscriptionPayment = Plan::subscribe($subscriptionArgs, $submission->form_id);
 

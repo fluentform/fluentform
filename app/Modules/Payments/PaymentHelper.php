@@ -806,6 +806,30 @@ class PaymentHelper
         return [];
     }
 
+    /**
+     * Check if Stripe application fee should be applied.
+     * The fee is applied if FluentForm Pro is not installed or if the license is not valid.
+     *
+     * @return bool true if fee should be applied, false otherwise.
+     */
+    public static function shouldApplyStripeApplicationFee()
+    {
+        // If FluentForm Pro is not installed, apply the fee
+        if (!Helper::hasPro()) {
+            return true;
+        }
+
+        // Check license status based on whether it's a multisite installation or not
+        if (is_multisite()) {
+            $status = trim(get_network_option(get_main_network_id(), '_ff_fluentform_pro_license_status'));
+        } else {
+            $status = trim(get_option('_ff_fluentform_pro_license_status'));
+        }
+
+        // If the license status is not 'valid', apply the fee
+        return $status !== 'valid';
+    }
+
     public static function log($data, $submission = false, $forceInsert = false)
     {
         if (!$forceInsert) {
