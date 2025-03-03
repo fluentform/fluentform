@@ -1145,9 +1145,14 @@ class Converter
         $draftForm = null;
         $data = [];
         $formId = $form->id;
-        $cookieName = 'fluentform_step_form_hash_' . $formId;
-        $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
-        
+        $key = isset($_GET['fluent_state']) ? sanitize_text_field($_GET['fluent_state']) : false;
+        if ($key) {
+            $hash = base64_decode($key);
+        } else {
+            $cookieName = 'fluentform_step_form_hash_' . $formId;
+            $hash = ArrayHelper::get($_COOKIE, $cookieName, wp_generate_uuid4());
+        }
+
         if ($hash) {
             $draftForm = wpFluent()->table('fluentform_draft_submissions')
                 ->where('hash', $hash)
