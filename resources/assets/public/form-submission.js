@@ -1086,7 +1086,9 @@ jQuery(document).ready(function () {
                         console.error('Error generating token for form ID:', form_id, error);
                         // Retry
                         if (retry) {
-                            _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                            setTimeout(() => {
+                                _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                            }, 1000);
                         }
                     })
                     .always(function() {
