@@ -162,11 +162,12 @@
                         <!--additional field based on the send to selection-->
                         <template v-if="selected.value.sendTo.type === 'email'">
                             <el-form-item
-                                :label="$t('Send to Email')"
+                                :label="$t('Send to Emailx')"
                                 class="conditional-items ff-form-item"
                                 :class="errors.has('sendTo.email') ? 'is-error' : ''"
+
                             >
-                                <el-input v-model="selected.value.sendTo.email"></el-input>
+                                <el-input  :placeholder="$t('Use comma for multiple emails')" v-model="selected.value.sendTo.email"></el-input>
 
                                 <error-view field="sendTo.email" :errors="errors"></error-view>
                             </el-form-item>

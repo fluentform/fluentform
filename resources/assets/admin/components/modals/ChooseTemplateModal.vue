@@ -4,6 +4,7 @@
             :visible.sync="visibility"
             width="100%"
             top= "50px"
+            @open="focusSearch"
             :before-close="close"
         >
             <template slot="title">
@@ -35,6 +36,7 @@
                 <div class="ff_predefined_main">
                     <div class="form_item_group form_item_group_search mb-5">
                         <el-input
+                            ref="searchInput"
                             v-model="search"
                             :placeholder="$t('Search a form template')"
                             class="el-input-search el-input-border"
@@ -215,27 +217,15 @@
                 path = path.substring(0, index);
                 path += 'fluent_forms_transfer#importforms';
                 window.location.href = path;
+            },
+            focusSearch() {
+                this.$nextTick(() => {
+                    this.$refs.searchInput.focus();
+                });
             }
-            // stickyMenu(){
-            //     let stickyElem = jQuery('#sticky-menu');
-            //     let stickyTop = stickyElem.offset().top;
-
-            //     jQuery(window).on('scroll', function() {
-            //         let windowTop = jQuery(window).scrollTop();
-            //         if (stickyTop < windowTop) {
-            //             stickyElem.addClass('is-sticky');
-            //         } else {
-            //             stickyElem.removeClass("is-sticky");
-            //         }
-            //     });
-            // }
 
         },
         mounted() {
-            // this.createForm();
-            // this.fetchPredefinedForms();
-            // this.forms = this.predefinedForms;
-            // this.categories = this.categories;
 
         }
     };
