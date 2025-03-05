@@ -160,9 +160,10 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 ## Changelog
 
 ### 6.0.0 (Date: March 04, 2025)
-- Adds Payment fields for free users (except Coupon)
-- Adds Stripe payment gateway for free users (2.5% fee per transaction)
+- Adds Payment fields for free users (except subscription and coupon fields)
+- Adds Stripe payment gateway for free users (1.9% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
+- Improves hCaptcha settings saving method
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe
 - Fixes conditional {dynamic.} shortcode in Custom HTML fields

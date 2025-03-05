@@ -431,13 +431,13 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 6.0.0 (Date: March 04, 2025) =
-- Adds Payment fields for free users (except subscription and copupon fields)
-- Adds Stripe payment gateway for free users (2.5% fee per transaction)
+- Adds Payment fields for free users (except subscription and coupon fields)
+- Adds Stripe payment gateway for free users (1.9% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
+- Improves hCaptcha settings saving method
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe
 - Fixes conditional {dynamic.} shortcode in Custom HTML fields
-- Imroves hCaptcha settings saving method
 
 = 5.2.12 (Date: February 18, 2025) =
 - Adds token-based spam protection for enhanced form security
