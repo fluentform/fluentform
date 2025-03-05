@@ -905,13 +905,13 @@ jQuery(document).ready(function () {
                     }
 
                     // Turnstile
-                    if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
-                        window.turnstile.ready(function () {
-                            $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
-                                renderCaptcha('cf-turnstile', $(this), turnstile.render);
-                            });
-                        });
-                    }
+                    // if ($theForm.find('.ff-el-turnstile.cf-turnstile').length && window.turnstile && typeof window.turnstile.ready === 'function') {
+                    //     window.turnstile.ready(function () {
+                    //         $theForm.find('.ff-el-turnstile.cf-turnstile').each(function() {
+                    //             renderCaptcha('cf-turnstile', $(this), turnstile.render);
+                    //         });
+                    //     });
+                    // }
 
                     // hCaptcha
                     if ($theForm.find('.ff-el-hcaptcha.h-captcha').length && window.hcaptcha) {
@@ -1566,7 +1566,14 @@ jQuery(document).ready(function () {
             if (!formInstance) {
                 return false;
             }
-            formInstance.reinitExtras();
+            
+            const formContainers = jQuery('.frm-fluent-form');
+            formContainers.each((index, formElement) => {
+                const formContainer = jQuery(formElement);
+                formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                    formInstance.reinitExtras();
+                });
+            });
 
             initSingleForm($theForm);
             fluentFormCommonActions.init();
