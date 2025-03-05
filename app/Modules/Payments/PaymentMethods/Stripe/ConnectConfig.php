@@ -2,7 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
-use FluentForm\App\Modules\Payments\PaymentHelper;
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\Account;
 
@@ -38,7 +38,7 @@ class ConnectConfig
                 'live_redirect' => add_query_arg($liveArgs, $configBase),
                 'test_redirect' => add_query_arg($testArgs, $configBase),
                 'image_url'     => fluentformMix('img/payment/stripe-connect.png'),
-                'should_apply_application_fee' => PaymentHelper::shouldApplyStripeApplicationFee(),
+                'should_apply_application_fee' => !Helper::hasPro(),
             ],
             'test_account'   => self::getAccountInfo($settings, 'test'),
             'live_account'   => self::getAccountInfo($settings, 'live')

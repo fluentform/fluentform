@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments\PaymentMethods\Stripe;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\PaymentMethods\Stripe\API\SCA;
@@ -80,9 +81,9 @@ class StripeInlineProcessor extends StripeProcessor
 
             $intentArgs = apply_filters('fluentform/stripe_checkout_args_inline', $intentArgs, $submission, $transaction, $form);
 
-            if (PaymentHelper::shouldApplyStripeApplicationFee()) {
-                // Calculate 2.5% of the total amount
-                $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.025, 2);
+            // If FluentForm Pro is not installed, apply the fee 1.9% of the total amount
+            if (!Helper::hasPro()) {
+                $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.019, 2);
                 $intentArgs['application_fee_amount'] = $applicationFeeAmount;
             }
             $this->handlePaymentIntent($transaction, $submission, $intentArgs);
@@ -136,8 +137,9 @@ class StripeInlineProcessor extends StripeProcessor
 
         $subscriptionArgs = apply_filters('fluentform/stripe_subscription_args_inline', $subscriptionArgs, $submission, $transaction, $this->getForm());
 
-        if (PaymentHelper::shouldApplyStripeApplicationFee()) {
-            $subscriptionArgs['application_fee_percent'] = 2.5; // 2.5%
+        // If FluentForm Pro is not installed, apply the fee 1.9%
+        if (!Helper::hasPro()) {
+            $subscriptionArgs['application_fee_percent'] = 1.9;
         }
 
         $subscriptionPayment = Plan::subscribe($subscriptionArgs, $submission->form_id);

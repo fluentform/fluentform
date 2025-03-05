@@ -174,12 +174,13 @@ class StripeProcessor extends BaseProcessor
 
         $checkoutArgs = apply_filters('fluentform/stripe_checkout_args', $checkoutArgs, $submission, $transaction, $form);
 
-        if (PaymentHelper::shouldApplyStripeApplicationFee()) {
+        // If FluentForm Pro is not installed, apply the fee 1.9%
+        if (!Helper::hasPro()) {
             if ($transaction->transaction_type == 'subscription') {
-                $checkoutArgs['subscription_data']['application_fee_percent'] = 2.5; // 2.5%
+                $checkoutArgs['subscription_data']['application_fee_percent'] = 1.9; // 1.9%
             } else {
-                // Calculate 2.5% of the total amount
-                $applicationFeeAmount = (int)round(round($transaction->payment_total / 100, 2) * 0.025, 2);
+                // Total amount of 1.9%
+                $applicationFeeAmount = (int)round(round($transaction->payment_total / 100, 2) * 0.019, 2);
                 $checkoutArgs['payment_intent_data']['application_fee_amount'] = $applicationFeeAmount;
             }
         }
