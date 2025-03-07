@@ -277,6 +277,20 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             return;
         }
 
+        // Add this line to assign step numbers to each title
+        $.each(stepTitlesNavs, function (i, elm) {
+            $(elm).attr('data-step-number', i);
+
+            // Also add these for accessibility and visual indication
+            $(elm).attr({
+                'role': 'button',
+                'tabindex': '0',
+                'aria-label': 'Go to step ' + (i + 1),
+                'style': 'cursor: pointer;'
+            });
+        });
+
+        // Rest of your function remains the same
         stepTitlesNavs.on('click keydown', function (e) {
             // Handle keyboard events
             if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32)) {
