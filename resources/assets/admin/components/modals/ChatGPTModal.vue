@@ -7,12 +7,18 @@
             :before-close="close"
         >
             <template slot="title">
-                <h3 class="title">{{$t('Create Using ChatGPT')}}</h3>
-                <p>{{ $t('Use AI to create the initial structure. The response uses ChatGPT, so please note that there might be some inaccuracy in the output.') }}</p>
+                <h3 class="title">{{$t(`Create Using ${ai_model === 'chat_gpt' ? $t('ChatGPT') : $t('Gemini')}`)}}</h3>
+                <p>{{ $t(`Use AI to create the initial structure. The response uses ${ ai_model === 'chat_gpt' ? 'ChatGPT' : 'Gemini'}, so please note that there might be some inaccuracy in the output.`) }}</p>
             </template>
 
             <div class="mt-6">
                 <el-form class="mt-4" :model="{}" label-position="top" >
+	                <el-form-item v-if="has_chat_gpt" class="ff-form-item" :label="$t('Choose a model')">
+		                <el-radio-group v-model="ai_model">
+			                <el-radio-button label="default">{{ $t('Fluentform Default (Gemini)') }}</el-radio-button>
+			                <el-radio-button label="chat_gpt">{{ $t('OpenAI ChatGPT') }}</el-radio-button>
+		                </el-radio-group>
+	                </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Create a form for')">
                         <el-input :placeholder="$t('Customer Review for product')"  type="textarea" v-model="query">
                         </el-input>
@@ -40,6 +46,8 @@
         data() {
             return {
                 query: '',
+	            ai_model: !!window.FluentFormApp.has_gpt_feature ? 'chat_gpt' : 'default',
+	            has_chat_gpt: !!window.FluentFormApp.has_gpt_feature,
                 additional_query: '',
                 creatingForm: false,
                 loading: false,
@@ -57,9 +65,10 @@
             createForm() {
                 this.loading = true;
 	            FluentFormsGlobal.$post({
-			            action: 'fluentform_chat_gpt_create_form',
+			            action: 'fluentform_ai_create_form',
 			            query: this.query,
 			            additional_query: this.additional_query,
+			            ai_model: this.ai_model,
 		            })
                 .then((response) => {
                     this.$notify.success({
