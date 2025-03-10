@@ -15,6 +15,7 @@ export class Payment_handler {
     init() {
         this.boot();
         this.initStripeElement();
+        this.handleAccessibility();
     }
 
     $t(stringKey) {
@@ -738,6 +739,21 @@ export class Payment_handler {
         setTimeout(() => {
             this.maybeRemoveSubmitError();
         }, 500)
+    }
+
+    handleAccessibility() {
+        const observer = new MutationObserver(() => {
+            document.querySelectorAll("iframe").forEach(iframe => {
+                if (!iframe.hasAttribute("title")) {
+                    // Stripe iframe
+                    if (iframe.name.startsWith("__privateStripeFrame")) {
+                        iframe.setAttribute("title", "Secure Stripe Payment Frame");
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 
     stripeSetupIntent(data) {

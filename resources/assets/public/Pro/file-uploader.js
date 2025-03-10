@@ -270,8 +270,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
         });
 
         // handling accessibility
-        $form.find('.ff_upload_btn').on('keyup', function (e) {
-            if (e.keyCode == 32) {
+        $form.find('.ff_upload_btn').on('keyup click', function (e) {
+            if (e.keyCode == 32 || e.type == 'click') {
                 $(this).siblings('input[type=file]').trigger('click');
             }
         })
