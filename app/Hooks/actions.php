@@ -71,6 +71,7 @@ $app->addAction(
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
+    (new \FluentForm\App\Modules\Ai\AiController())->boot();
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
