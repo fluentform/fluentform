@@ -1770,7 +1770,7 @@ class TranslationString
             'Are you sure to disconnect this account?' => __('Are you sure to disconnect this account?', 'fluentform'),
             'Pay-as-you-go Pricing' => __('Pay-as-you-go Pricing', 'fluentform'),
             'Upgrade to Pro' => __('Upgrade to Pro', 'fluentform'),
-            '2.5% platform fee per transaction + Stripe fees.' => __('2.5% platform fee per transaction + Stripe fees.', 'fluentform'),
+            '1.9% platform fee per transaction + Stripe fees.' => __('2.5% platform fee per transaction + Stripe fees.', 'fluentform'),
             ' and activate license to remove additional fees and unlock powerful features.' => __(' and activate license to remove additional fees and unlock powerful features.', 'fluentform'),
             'Disconnect' => __('Disconnect', 'fluentform'),
             'Page Settings' => __('Page Settings', 'fluentform'),

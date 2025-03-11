@@ -34,7 +34,7 @@
 	    >
 		    <h6 class="mb-1">{{ $t('Pay-as-you-go Pricing') }}</h6>
 		    <p>
-			    {{ $t('2.5% platform fee per transaction + Stripe fees.') }}
+			    {{ $t('1.9% platform fee per transaction + Stripe fees.') }}
 			    <a target="_blank"
 			       href="https://fluentforms.com/pricing/?utm_source=plugin&utm_medium=wp_install&utm_campaign=ff_upgrade&theme_style=twentytwentythree"
 			    >
