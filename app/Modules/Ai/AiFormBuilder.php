@@ -8,6 +8,7 @@ use FluentForm\App\Models\Form;
 use FluentForm\App\Models\FormMeta;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\Form\FormFieldsParser;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Form\FormService;
 use FluentForm\Framework\Helpers\ArrayHelper as Arr;
@@ -92,15 +93,17 @@ class AiFormBuilder extends FormService
         if ($isUsingChatGpt) {
             (new \FluentFormPro\classes\Chat\ChatFormBuilder())->buildForm();
         }
-        
-        $prompt = $this->generateAIPrompt($args);
-        
+
+        $paymentSetting = PaymentHelper::getPaymentSettings();
         $queryArgs = [
-            'content' => $prompt,
-            'role'    => 'model',
+            'user_prompt'=>  $this->getUserPrompt($args),
+            'site_url'   => site_url(),
+            'site_title' => get_bloginfo('name'),
+            'has_pro'    => Helper::hasPro(),
+            'has_payment'=> $paymentSetting['status'] == 'yes',
         ];
 
-        $result = (new FluentFormAIAPI())->makeRequest([$queryArgs]);
+        $result = (new FluentFormAIAPI())->makeRequest($queryArgs);
         
         if (is_wp_error($result)) {
             throw new Exception($result->get_error_message());
@@ -385,7 +388,7 @@ class AiFormBuilder extends FormService
         ];
     }
     
-    private function generateAIPrompt($args)
+    private function getUserPrompt($args)
     {
         $startingQuery = "Create a form for ";
         $query = Sanitizer::sanitizeTextField(Arr::get($args, 'query'));
@@ -398,51 +401,6 @@ class AiFormBuilder extends FormService
         if ($additionalQuery) {
             $query .= "\n including questions for information like  " . $additionalQuery . ".";
         }
-        $fields = json_encode($this->getDefaultFields());
-        $calculationForm = '[{"index":17,"element":"custom_html","attributes":[],"settings":{"html_codes":"<h3 id=\"header_1\" class=\"form-header\" style=\"text-align: left;\" data-comp>Pay Raise Calculator</h3>","conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"container_class":""},"editor_options":{"title":"Custom HTML","icon_class":"ff-edit-html","template":"customHTML"},"uniqElKey":"el_1724749029122"},{"index":1,"element":"container","attributes":[],"settings":{"container_class":"","conditional_logics":[],"container_width":"","is_width_auto_calc":true},"columns":[{"width":50,"fields":[{"index":6,"element":"input_number","attributes":{"type":"number","name":"numeric_field","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Current Pay","admin_field_label":"","label_placement":"","help_message":"","number_step":"","prefix_label":"$","suffix_label":"","numeric_formatter":"","validation_rules":{"required":{"value":false,"message":"This field is required","global_message":"This field is required","global":true},"numeric":{"value":true,"message":"This field must contain numeric value","global_message":"This field must contain numeric value","global":true},"min":{"value":"","message":"Validation fails for minimum value","global_message":"Validation fails for minimum value","global":true},"max":{"value":"","message":"Validation fails for maximum value","global_message":"Validation fails for maximum value","global":true},"digits":{"value":"","message":"Validation fails for limited digits","global_message":"Validation fails for limited digits","global":true}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"calculation_settings":{"status":false,"formula":""}},"editor_options":{"title":"Numeric Field","icon_class":"ff-edit-numeric","template":"inputText"},"uniqElKey":"el_173614402532913"}]},{"width":50,"fields":[{"index":6,"element":"input_number","attributes":{"type":"number","name":"numeric_field_1","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"","label":"Percent Increase","admin_field_label":"","label_placement":"","help_message":"","number_step":"","prefix_label":"","suffix_label":"%","numeric_formatter":"","validation_rules":{"required":{"value":false,"message":"This field is required","global_message":"This field is required","global":true},"numeric":{"value":true,"message":"This field must contain numeric value","global_message":"This field must contain numeric value","global":true},"min":{"value":"","message":"Validation fails for minimum value","global_message":"Validation fails for minimum value","global":true},"max":{"value":"","message":"Validation fails for maximum value","global_message":"Validation fails for maximum value","global":true},"digits":{"value":"","message":"Validation fails for limited digits","global_message":"Validation fails for limited digits","global":true}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"calculation_settings":{"status":false,"formula":""}},"editor_options":{"title":"Numeric Field","icon_class":"ff-edit-numeric","template":"inputText"},"uniqElKey":"el_173614405614830"}]}],"editor_options":{"title":"Two Column Container","icon_class":"ff-edit-column-2"},"uniqElKey":"el_1736144019549"},{"index":6,"element":"input_number","attributes":{"type":"number","name":"numeric_field_2","value":"","id":"","class":"","placeholder":""},"settings":{"container_class":"ff-hidden","label":"Raised Pay","admin_field_label":"","label_placement":"","help_message":"","number_step":"","prefix_label":"","suffix_label":"","numeric_formatter":"","validation_rules":{"required":{"value":false,"message":"This field is required","global_message":"This field is required","global":true},"numeric":{"value":true,"message":"This field must contain numeric value","global_message":"This field must contain numeric value","global":true},"min":{"value":"","message":"Validation fails for minimum value","global_message":"Validation fails for minimum value","global":true},"max":{"value":"","message":"Validation fails for maximum value","global_message":"Validation fails for maximum value","global":true},"digits":{"value":"","message":"Validation fails for limited digits","global_message":"Validation fails for limited digits","global":true}},"conditional_logics":{"type":"any","status":false,"conditions":[{"field":"","value":"","operator":""}]},"calculation_settings":{"status":true,"formula":"({input.numeric_field}*({input.numeric_field_1}/100))+{input.numeric_field}"}},"editor_options":{"title":"Numeric Field","icon_class":"ff-edit-numeric","template":"inputText"},"uniqElKey":"el_1736144105914"},{"index":17,"element":"custom_html","attributes":[],"settings":{"html_codes":"<p>Your salary after the pay raise</p>\n<h3>${dynamic.numeric_field_2}</h3>","conditional_logics":{"type":"all","status":false,"conditions":[{"field":"numeric_field_2","value":"","operator":""}]},"container_class":""},"editor_options":{"title":"Custom HTML","icon_class":"ff-edit-html","template":"customHTML"},"uniqElKey":"el_172474443042320"}]';
-        
-        $query .= <<<EOD
-Generate a JSON-based form structure strictly following FluentForm's format.
-
-### Field Requirements:
-- Each field must include:
-  - 'element' (e.g., input_text, input_email, input_number, select, input_radio, input_checkbox, etc.)
-  - 'name' (unique identifier)
-  - 'label' (clear and meaningful)
-  - 'placeholder' (if applicable, clear and meaningful)
-  - 'required' (true/false)
-
-### Special Field Rules:
-- If a field has 'options', format them as an array of objects with 'value' and 'label' pairs.
-- Field type mapping:
-  - Fields related to product,payment → **element: 'multi_payment_component'**
-  - Fields related to donation → **element: 'custom_payment_component'**
-  - Fields related to product quantity → **element: 'item_quantity_component'**
-  - Fields related to subscription → **element: 'subscription_payment_component'**
-  - Fields related to payment summery → **element: 'payment_summary_component'**
-  - Fields related to payment method → **element: 'payment_method'**
-  - Fields related to full name, first name, or last name → **element: 'input_name'**
-  - Fields related to phone numbers → **element: 'phone'**
-  - Fields related to ratings, review, feedback, or stars → **element: 'ratings'** (include 'options' as 'label' => 'value' pairs)
-  - Fields related to sliders, ranges, or scales → **element: 'rangeslider'** (include 'min' and 'max' properties)
-  - Fields that serve as layout containers → **element: 'container'** (include inner fields in the 'fields' array)
-  - Forms with steps, tabs, or multiple pages → **insert a field with 'element': 'form_step'** at each step break
-  
-### Additional Form Attributes:
-  - Include an **'is_conversational'** key (true/false) to indicate if the form follows a conversational format.
-  - Include a **'title'** key to define the form's title.
-  - The JSON output must be structured with a **'fields' array** containing only form fields.
-  - Ensure **'label', 'admin_field_label', 'placeholder', and 'name'** are clear and well-defined.
-  
-### FluentForm JSON Format:
-Return the JSON structure adhering to FluentForm’s format as seen in the default fields below:
-    ```json  $fields ```
-    
-### Special Case: Calculation Forms
-- If the form includes **calculations**, ensure fields are structured correctly using FluentForm’s calculation feature.
-- Example: A percentage-based salary raise form should include numeric fields with formulas, similar to:
-```json $calculationForm ```
-EOD;
         return $startingQuery . $query;
     }
     

@@ -19,17 +19,6 @@ class FluentFormAIAPI
             'Content-Type' => 'application/json',
         ];
         
-        $bodyArgs = [
-            'messages' => $requestData,
-            'request_id' => uniqid('ffgemini_'),
-            'wp_auth' => [
-                'nonce' => wp_create_nonce('wp_fluent_form_ai_api'),
-                'site_url' => site_url(),
-                'timestamp' => time(),
-                'plugin_version' => FLUENTFORM_VERSION,
-            ],
-        ];
-        
         $request_url = $this->url;
         
         add_filter('http_request_timeout', function ($timeout) {
@@ -38,10 +27,8 @@ class FluentFormAIAPI
         
         $request = wp_remote_post($request_url, [
             'headers' => $headers,
-            'body'    => json_encode($bodyArgs)
+            'body'    => json_encode($requestData)
         ]);
-       
-        
         
         if (did_filter('http_request_timeout')) {
             add_filter('http_request_timeout', function ($timeout) {
