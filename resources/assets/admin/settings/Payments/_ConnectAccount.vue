@@ -40,7 +40,7 @@
 			    >
 				    <strong>{{ $t('Upgrade to Pro') }}</strong>
 			    </a>
-			    {{ $t(' and activate license to remove additional fees and unlock powerful features.') }}
+			    {{ $t(' to eliminate transaction fees and access advanced features.') }}
 		    </p>
 	    </div>
     </div>

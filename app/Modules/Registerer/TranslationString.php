@@ -1771,7 +1771,7 @@ class TranslationString
             'Pay-as-you-go Pricing' => __('Pay-as-you-go Pricing', 'fluentform'),
             'Upgrade to Pro' => __('Upgrade to Pro', 'fluentform'),
             '1.9% platform fee per transaction + Stripe fees.' => __('2.5% platform fee per transaction + Stripe fees.', 'fluentform'),
-            ' and activate license to remove additional fees and unlock powerful features.' => __(' and activate license to remove additional fees and unlock powerful features.', 'fluentform'),
+            ' to eliminate transaction fees and access advanced features.' => __(' to eliminate transaction fees and access advanced features.', 'fluentform'),
             'Disconnect' => __('Disconnect', 'fluentform'),
             'Page Settings' => __('Page Settings', 'fluentform'),
             'FluentForms uses the pages below for handling the display of payment history and payment receipt.Please select the pages and add the instructed shortcodes accordingly.' => __('FluentForms uses the pages below for handling the display of payment history and payment receipt.Please select the pages and add the instructed shortcodes accordingly.', 'fluentform'),
