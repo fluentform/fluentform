@@ -532,7 +532,7 @@ class Component
         
         $formSettings = wpFluent()
             ->table('fluentform_form_meta')
-            ->where('form_id', $form_id)
+            ->where('form_id', $form->id)
             ->where('meta_key', 'formSettings')
             ->first();
 
