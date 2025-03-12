@@ -87,10 +87,7 @@ class EmailNotificationActions
         );
 
         $emailData = $feed['processedValues'];
-        $emailAttachments = $this->getAttachments($emailData, $formData, $entry, $form);
-        if ($emailAttachments) {
-            $emailData['attachments'] = $emailAttachments;
-        }
+        $emailData['attachments'] = $this->getAttachments($emailData, $formData, $entry, $form);
 
         $notifier->notify($emailData, $formData, $form, $entry->id);
     }
