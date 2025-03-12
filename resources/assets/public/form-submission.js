@@ -889,12 +889,17 @@ jQuery(document).ready(function () {
 
                     $(document).on('lity:open', function () {
                         window.turnstile?.remove();
-                        renderCaptchas();
+                        mayBeRenderCaptchas();
                     });
-                    renderCaptchas();
+
+                    $theForm.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        mayBeRenderCaptchas();
+                    });
+
+                    mayBeRenderCaptchas();
                 };
 
-                let renderCaptchas = function () {
+                let mayBeRenderCaptchas = function () {
                     // reCAPTCHA
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
@@ -926,32 +931,42 @@ jQuery(document).ready(function () {
                     var id = $el.attr('id');
                     var formId = $el.closest('form').data('form_id');
                     var widgetIdAttr = `data-${type}_widget_id`;
-                    var renderedDataAttr = `${type}-rendered`;
 
-                    if (!$el.data(renderedDataAttr)) {
-                        try {
-                            let container = id;
-                            let options = {
-                                'sitekey': siteKey,
-                                'callback': function(token) {
-                                    $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val(token);
-                                },
-                                'expired-callback': function() {
-                                    $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val('');
-                                }
-                            };
+                    try {
+                        // For Turnstile specifically, check if it's already properly rendered
+                        if (type === 'cf-turnstile') {
+                            let $responseInput = $el.find('input[name="cf-turnstile-response"]');
 
-                            // Special case for Turnstile
-                            if (type === 'cf-turnstile') {
-                                container = '#' + id;
+                            if ($responseInput.length && $responseInput.val()) {
+                                return;
                             }
 
-                            const widgetId = renderFunction(container, options);
-                            $el.attr(widgetIdAttr, widgetId);
-                            $el.data(renderedDataAttr, true);
-                        } catch (error) {
-                            console.error(`Error rendering ${type}:`, error);
+                            let widgetId = $el.attr(widgetIdAttr);
+                            if (widgetId && window.turnstile) {
+                                turnstile.remove(widgetId);
+                            }
                         }
+
+                        let container = id;
+                        let options = {
+                            'sitekey': siteKey,
+                            'callback': function(token) {
+                                $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val(token);
+                            },
+                            'expired-callback': function() {
+                                $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val('');
+                            }
+                        };
+
+                        // Special case for Turnstile
+                        if (type === 'cf-turnstile') {
+                            container = '#' + id;
+                        }
+
+                        const widgetId = renderFunction(container, options);
+                        $el.attr(widgetIdAttr, widgetId);
+                    } catch (error) {
+                        console.error(`Error rendering ${type}:`, error);
                     }
                 }
 
