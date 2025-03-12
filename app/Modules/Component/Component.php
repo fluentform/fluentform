@@ -1055,7 +1055,10 @@ class Component
      */
     private function addInlineVars()
     {
-        if (!defined('ELEMENTOR_PRO_VERSION') || $this->elementorPopUpHandler) {
+        $elementorProActive = defined('ELEMENTOR_PRO_VERSION');
+        $diviOverlaysActive = defined('DOV_VERSION');
+
+        if ((!$elementorProActive && !$diviOverlaysActive) || $this->elementorPopUpHandler) {
             return '';
         }
 
@@ -1070,18 +1073,13 @@ class Component
             $actionName = 'admin_footer';
         }
 
-        add_action($actionName, function () {
+        add_action($actionName, function () use ($elementorProActive, $diviOverlaysActive) {
             ?>
             <script type="text/javascript">
-                <?php if (defined('ELEMENTOR_PRO_VERSION')): ?>
+                function initializeFluentForms(container) {
+                    var ffForms = jQuery(container).find('form.frm-fluent-form');
 
-                window.addEventListener('elementor/popup/show', function (e) {
-                    var ffForms = jQuery('#elementor-popup-modal-' + e.detail.id).find('form.frm-fluent-form');
-
-                    /**
-                     * Support conversation form in elementor popup
-                     * No regular form found, check for conversational form
-                     */
+                    // Support conversational forms if no regular forms found
                     if (!ffForms.length) {
                         const elements = document.getElementsByClassName('ffc_conv_form');
                         if (elements.length) {
@@ -1090,18 +1088,52 @@ class Component
                             });
                             document.dispatchEvent(jsEvent);
                         }
+                        return;
                     }
+
+                    // Initialize regular forms
                     if (ffForms.length) {
                         jQuery.each(ffForms, function(index, ffForm) {
                             jQuery(ffForm).trigger('reInitExtras');
                             jQuery(document).trigger('ff_reinit', [ffForm]);
                         });
+
+                        // Also check for conversational forms within container
+                        const convForms = jQuery(container).find('.ffc_conv_form');
+                        if (convForms.length) {
+                            let jsEvent = new CustomEvent('ff-elm-conv-form-event', {
+                                detail: convForms
+                            });
+                            document.dispatchEvent(jsEvent);
+                        }
                     }
-                });
+                }
+
+                <?php if ($elementorProActive): ?>
+                // Elementor popup support
+                    window.addEventListener('elementor/popup/show', function (e) {
+                        initializeFluentForms('#elementor-popup-modal-' + e.detail.id);
+                    });
+                <?php endif; ?>
+
+                <?php if ($diviOverlaysActive): ?>
+                // Divi Overlays support
+                    (function($) {
+                        // Find all overlays on the page and register event handlers
+                        $('.divioverlay').each(function() {
+                            const overlayId = this.id.replace('overlay-', '');
+    
+                            // Create a specific event handler for each overlay
+                            $(document).on('divioverlays:onShow:' + overlayId, function(e) {
+                                initializeFluentForms('#overlay-' + overlayId);
+                            });
+                        });
+                    })(jQuery);
                 <?php endif; ?>
             </script>
             <?php
         }, 999);
+        
         return '';
     }
 
