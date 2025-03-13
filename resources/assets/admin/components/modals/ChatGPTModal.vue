@@ -136,6 +136,7 @@
 
             createForm() {
                 this.loading = true;
+                this.visibility = false;
 	            FluentFormsGlobal.$post({
 			            action: 'fluentform_ai_create_form',
 			            query: this.query,
@@ -153,7 +154,7 @@
                     }
                 })
                 .fail(error => {
-	                console.log(error)
+	                this.visibility = true;
                     this.$notify.error({
 	                    title: this.$t('Error'),
 	                    message: error.responseJSON?.data.message,

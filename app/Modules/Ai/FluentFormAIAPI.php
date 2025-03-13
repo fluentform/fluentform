@@ -4,7 +4,7 @@ namespace FluentForm\App\Modules\Ai;
 
 /**
  *  Handling AI Api.
- * @since 5.1.5
+ * @since 6.0.0
  */
 class FluentFormAIAPI
 {
