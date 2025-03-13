@@ -155,6 +155,10 @@ class AiFormBuilder extends FormService
         }
         $formatField = $matchedField;
         if ($settings = Arr::get($field, 'settings')) {
+            // Admin field is more accurate label, add it to main label
+            if (isset($settings['label']) && $adminFieldLabel = Arr::get($settings, 'admin_field_label')) {
+                $settings['label'] = $adminFieldLabel;
+            }
             $formatField['settings'] = wp_parse_args($settings, $matchedField['settings']);
         }
         if ($attributes = Arr::get($field, 'attributes')) {
@@ -186,6 +190,17 @@ class AiFormBuilder extends FormService
             }
             if ($max = intval(Arr::get($field, 'max', 10))) {
                 $formatField['attributes']['max'] = $max;
+            }
+        }
+
+        if (in_array($element, ['input_name', 'address']) && $fields = Arr::get($field, 'fields')) {
+            foreach ($formatField['fields'] as $name => &$field) {
+                if ($targetAttributes = Arr::get($fields, "$name.attributes")) {
+                    $field['attributes'] = wp_parse_args($targetAttributes, $field['attributes']);
+                }
+                if ($targetSettings = Arr::get($fields, "$name.settings")) {
+                    $field['settings'] = wp_parse_args($targetSettings, $field['settings']);
+                }
             }
         }
         
