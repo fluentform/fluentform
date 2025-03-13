@@ -44,12 +44,28 @@
                         <el-input :placeholder="$t('User satisfaction level, most liked and disliked features')"  type="textarea" v-model="additional_query">
                         </el-input>
                     </el-form-item>
-                    <el-button v-loading="loading" @click="createForm">
+                    <el-button @click="createForm">
                         {{ $t('Create') }}
                     </el-button>
                 </el-form>
             </div><!-- .ff_predefined_options -->
         </el-dialog>
+
+	    <!-- Loading Dialog -->
+	    <div class="ff-ai-creating-form-loading-wrap" :class="{'ff_backdrop': loading}">
+		    <el-dialog
+			    :visible.sync="loading"
+			    width="30%"
+			    :show-close="false"
+			    :close-on-click-modal="false"
+			    :close-on-press-escape="false"
+		    >
+			    <div class="ff-ai-creating-form-loading-container">
+				    <img :src="loadingImg" alt="Loading" class="ff-ai-creating-form-loading-image" />
+				    <p>{{ $t('Creating your form') }} <span class="typing-indicator"><span>.</span><span>.</span><span>.</span></span></p>
+			    </div>
+		    </el-dialog>
+	    </div>
     </div>
 </template>
 
@@ -65,6 +81,7 @@
                 query: '',
 	            ai_model: !!window.FluentFormApp.has_gpt_feature ? 'chat_gpt' : 'default',
 	            has_chat_gpt: !!window.FluentFormApp.has_gpt_feature,
+	            loadingImg:  window.FluentFormApp.plugin_public_url + 'img/ai-form-create-loading.gif',
                 additional_query: '',
                 creatingForm: false,
                 loading: false,

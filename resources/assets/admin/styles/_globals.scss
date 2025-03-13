@@ -1861,6 +1861,50 @@ label.el-radio, label.el-checkbox {
   }
 }
 
+// ai form creating loading modal
+.ff-ai-creating-form-loading{
+  &-wrap .el-dialog__header{
+     display: none;
+  }
+  &-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    .typing-indicator {
+      display: inline-block;
+    }
+
+    .typing-indicator span {
+      opacity: 0;
+      animation: typingDots 3s infinite;
+      margin-left: 2px;
+      font-weight: bold;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.9s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 2s;
+    }
+
+    @keyframes typingDots {
+      0%, 25% { opacity: 0; }
+      50%, 75% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  }
+  &-image{
+    max-width: 200px;
+    max-height: 200px;
+    margin-bottom: 20px;
+  }
+}
+
 // ff_settings_container
 .ff_settings_container{
   .notice{
