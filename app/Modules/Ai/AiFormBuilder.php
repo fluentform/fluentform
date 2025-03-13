@@ -159,9 +159,11 @@ class AiFormBuilder extends FormService
         }
         $formatField = $matchedField;
         if ($settings = Arr::get($field, 'settings')) {
-            // Admin field is more accurate label, add it to main label
+            // Replace 'label' with 'admin_field_label' if 'label' is shorter
             if (isset($settings['label']) && $adminFieldLabel = Arr::get($settings, 'admin_field_label')) {
-                $settings['label'] = $adminFieldLabel;
+                if (strlen($settings['label']) < strlen($adminFieldLabel)) {
+                    $settings['label'] = $adminFieldLabel;
+                }
             }
             $formatField['settings'] = wp_parse_args($settings, $matchedField['settings']);
         }
