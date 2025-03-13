@@ -58,11 +58,15 @@ class AiFormBuilder extends FormService
         $hasStep = false;
         $lastFieldIndex = count($fields) - 1;
 
+        $disableFields = array_keys($this->getDisabledComponents());
         foreach ($fields as $index => $field) {
             if (count($field) == 1) {
                 $field = reset($field);
             }
             if ($element = $this->resolveInput($field)) {
+                if (in_array($element, $disableFields)) {
+                    continue;
+                }
                 if (!$hasStep && 'form_step' === $element) {
                     if (0 === $index || $lastFieldIndex === $index) {
                         continue;

@@ -333,49 +333,49 @@ class FormService
                 'description' => __('Please enter a valid API key on Global Settings->Security->Turnstile', 'fluentform'),
                 'hidePro'     => true,
             ],
-            'input_image' => [
+        ];
+        
+        if (!Helper::hasPro()) {
+            $disabled['input_image'] = [
                 'disabled'    => true,
                 'title'       => __('Image Upload', 'fluentform'),
                 'description' => __('Image Upload is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/Yb3FSoZl9Zg',
-            ],
-            'input_file'  => [
+            ];
+            $disabled['input_file']  = [
                 'disabled'    => true,
                 'title'       => __('File Upload', 'fluentform'),
                 'description' => __('File Upload is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/bXbTbNPM_4k',
-            ],
-            'shortcode'   => [
+            ];
+            $disabled['shortcode']   = [
                 'disabled'    => true,
                 'title'       => __('Shortcode', 'fluentform'),
                 'description' => __('Shortcode is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/op3mEQxX1MM',
-            ],
-            'action_hook' => [
+            ];
+            $disabled['action_hook'] = [
                 'disabled'    => true,
                 'title'       => __('Action Hook', 'fluentform'),
                 'description' => __('Action Hook is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => fluentformMix('img/pro-fields/action-hook.png'),
                 'video'       => '',
-            ],
-            'form_step'   => [
+            ];
+            $disabled['form_step']   = [
                 'disabled'    => true,
                 'title'       => __('Form Step', 'fluentform'),
                 'description' => __('Form Step is not available with the free version. Please upgrade to pro to get all the advanced features.',
                     'fluentform'),
                 'image'       => '',
                 'video'       => 'https://www.youtube.com/embed/VQTWnM6BbRU',
-            ],
-        ];
-        
-        if (!Helper::hasPro()) {
+            ];
             $disabled['ratings'] = [
                 'disabled'    => true,
                 'title'       => __('Ratings', 'fluentform'),
