@@ -379,7 +379,7 @@
                                     <div slot="content">
                                         <p>
                                             {{
-                                                $t('Enable token based spam protection for better spam protection')
+                                                $t('Token based spam protection is generated only after interacting with the form, ensuring human engagement. Please interact with the form before submitting to validate the token.')
                                             }}
                                         </p>
                                     </div>
