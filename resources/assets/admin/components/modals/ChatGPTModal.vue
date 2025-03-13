@@ -6,38 +6,40 @@
             top= "50px"
             :before-close="close"
             @opened="focusInput"
-
         >
             <template slot="title">
-                <h3 class="title">{{$t(`Create Using ${ai_model === 'chat_gpt' ? $t('ChatGPT') : $t('Gemini')}`)}}</h3>
-                <p>{{ $t(`Use AI to create the initial structure. The response uses ${ ai_model === 'chat_gpt' ? 'ChatGPT' : 'Gemini'}, so please note that there might be some inaccuracy in the output.`) }}</p>
+                <h3 class="title">{{$t(`Create Using ${ai_model === 'chat_gpt' ? $t('ChatGPT') : $t('AI')}`)}}</h3>
+                <p>{{ $t(`Use AI to create the initial structure. ${ ai_model === 'chat_gpt' ? 'The response uses ChatGPT, so please' : 'Please'} note that there might be some inaccuracy in the output.`) }}</p>
             </template>
 
             <div class="mt-6">
                 <el-form class="mt-4" :model="{}" label-position="top" >
 	                <el-form-item v-if="has_chat_gpt" class="ff-form-item" :label="$t('Choose a model')">
 		                <el-radio-group v-model="ai_model">
-			                <el-radio-button label="default">{{ $t('Fluentform Default (Gemini)') }}</el-radio-button>
+			                <el-radio-button label="default">{{ $t('Fluent Forms AI-Assisted') }}</el-radio-button>
 			                <el-radio-button label="chat_gpt">{{ $t('OpenAI ChatGPT') }}</el-radio-button>
 		                </el-radio-group>
 	                </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Create a form for')">
                         <el-input  ref="queryInput" :placeholder="$t('Customer Review for product')"  type="textarea" v-model="query">
                         </el-input>
-                        <div class="mt-2 flex-col">
-                            <el-button
-                                    v-for="(item, index) in suggestions"
-                                    :key="index"
-                                    type="primary"
-                                    plain
-                                    class="mt-2"
-                                    size="small"
-                                    @click="setQuery(item)"
-                            >
-                                {{ item.key }}
-                            </el-button>
-                        </div>
                     </el-form-item>
+
+	                <el-form-item class="ff-form-item" :label="$t('Suggestions')">
+		                <div class="flex-col">
+			                <el-button
+				                v-for="(item, index) in suggestions"
+				                :key="index"
+				                type="primary"
+				                plain
+				                class="mb-2"
+				                size="small"
+				                @click="setQuery(item)"
+			                >
+				                {{ item.key }}
+			                </el-button>
+		                </div>
+	                </el-form-item>
                     <el-form-item class="ff-form-item" :label="$t('Including these questions')">
                         <el-input :placeholder="$t('User satisfaction level, most liked and disliked features')"  type="textarea" v-model="additional_query">
                         </el-input>

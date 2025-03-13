@@ -3,7 +3,7 @@
 namespace FluentForm\App\Modules\Ai;
 
 /**
- *  Handling Gemini Api.
+ *  Handling AI Api.
  * @since 5.1.5
  */
 class FluentFormAIAPI

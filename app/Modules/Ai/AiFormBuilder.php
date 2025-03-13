@@ -96,11 +96,12 @@ class AiFormBuilder extends FormService
 
         $paymentSetting = PaymentHelper::getPaymentSettings();
         $queryArgs = [
-            'user_prompt'=>  $this->getUserPrompt($args),
-            'site_url'   => site_url(),
-            'site_title' => get_bloginfo('name'),
-            'has_pro'    => Helper::hasPro(),
-            'has_payment'=> $paymentSetting['status'] == 'yes',
+            'user_prompt'    => $this->getUserPrompt($args),
+            'site_url'       => site_url(),
+            'site_title'     => get_bloginfo('name'),
+            'has_pro'        => Helper::hasPro(),
+            'has_payment'    => $paymentSetting['status'] == 'yes',
+            'request_id'     => uniqid('ff_ai_')
         ];
 
         $result = (new FluentFormAIAPI())->makeRequest($queryArgs);
