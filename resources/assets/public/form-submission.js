@@ -893,6 +893,14 @@ jQuery(document).ready(function () {
                     });
 
                     $theForm.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        $theForm.trigger('fluentform_first_interaction');
+                    });
+
+                    $theForm.on('fluentform_first_interaction', function() {
+                        mayBeRenderCaptchas();
+                    });
+
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
                         mayBeRenderCaptchas();
                     });
 
@@ -929,12 +937,17 @@ jQuery(document).ready(function () {
                 let renderCaptcha = function (type, $el, renderFunction) {
                     var siteKey = $el.data('sitekey');
                     var id = $el.attr('id');
-                    var formId = $el.closest('form').data('form_id');
                     var widgetIdAttr = `data-${type}_widget_id`;
 
                     try {
-                        // For Turnstile specifically, check if it's already properly rendered
-                        if (type === 'cf-turnstile') {
+                        let widgetId = $el.attr(widgetIdAttr);
+                        
+                        if (type === 'g-recaptcha' || type === 'h-captcha') {
+                            if (widgetId && $el.find('iframe').length > 0) {
+                                return; // Already rendered properly
+                            }
+                        }
+                        else if (type === 'cf-turnstile') {
                             let $responseInput = $el.find('input[name="cf-turnstile-response"]');
 
                             if ($responseInput.length && $responseInput.val()) {
@@ -947,15 +960,10 @@ jQuery(document).ready(function () {
                             }
                         }
 
+                        // rendering captcha code
                         let container = id;
                         let options = {
-                            'sitekey': siteKey,
-                            'callback': function(token) {
-                                $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val(token);
-                            },
-                            'expired-callback': function() {
-                                $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val('');
-                            }
+                            'sitekey': siteKey
                         };
 
                         // Special case for Turnstile
@@ -963,7 +971,8 @@ jQuery(document).ready(function () {
                             container = '#' + id;
                         }
 
-                        const widgetId = renderFunction(container, options);
+                        // Render the captcha
+                        widgetId = renderFunction(container, options);
                         $el.attr(widgetIdAttr, widgetId);
                     } catch (error) {
                         console.error(`Error rendering ${type}:`, error);
@@ -1073,7 +1082,7 @@ jQuery(document).ready(function () {
                     });
 
                     // Generate token on first user interaction with form
-                    formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                    formContainer.on('fluentform_first_interaction', function() {
                         generateTokenIfNeeded();
                     });
                 });
@@ -1586,7 +1595,6 @@ jQuery(document).ready(function () {
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');
-
         });
 
         fluentFormCommonActions.init();
