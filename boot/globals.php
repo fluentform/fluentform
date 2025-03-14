@@ -350,16 +350,12 @@ function fluentform_sanitize_html($html)
     if (!$html) {
         return $html;
     }
-    
-    $html = preg_replace([
-        '/\son\w+\s*=/',       // Remove event handlers
-        '/javascript\s*:/i',    // Remove javascript protocol
-    ], '', $html);
-    
-    // Return $html if it's just a plain text
-//    if (!preg_match('/<[^>]*>/', $html)) {
-//        return $html;
-//    }
+
+    // Remove event handlers (e.g., onerror, onclick, onmouseover)
+    $html = preg_replace('/\s*on\w+\s*=\s*(["\'])?.*?(\1|(?=\s|>))/i', '', $html);
+
+    // Remove JavaScript protocol (e.g., `href="javascript:alert(1)"`)
+    $html = preg_replace('/javascript\s*:/i', '', $html);
 
     $tags = wp_kses_allowed_html('post');
     $tags['style'] = [
