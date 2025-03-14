@@ -140,7 +140,20 @@ class AiFormBuilder extends FormService
         $general = Arr::get($editorComponents, 'general', []);
         $advanced = Arr::get($editorComponents, 'advanced', []);
         $container = Arr::get($editorComponents, 'container', []);
-        $editorComponents = apply_filters('fluentform/editor_components', $components->sort()->toArray(), 0);
+
+        // Apply filter to get additional components
+        // The second parameter (true) is passed to prevent field loss when form ID is falsy loss some field
+        $editorComponents = apply_filters('fluentform/editor_components', [], true);
+        if ($generalExtra = Arr::get($editorComponents, 'general')) {
+            $generalExtra = array_column($generalExtra, null, 'element');
+            $general = array_merge($general, $generalExtra);
+        }
+
+        if ($advancedExtra = Arr::get($editorComponents, 'advanced')) {
+            $advancedExtra = array_column($advancedExtra, null, 'element');
+            $advanced = array_merge($advanced, $advancedExtra);
+        }
+
         $payments = Arr::get($editorComponents, 'payments', []);
         $payments = array_column($payments, null, 'element');
         $this->allDefaultFields = array_merge($general, $payments, $advanced, ['container' => $container]);
