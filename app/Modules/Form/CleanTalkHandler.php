@@ -58,6 +58,8 @@ class CleanTalkHandler
 
     public static function spamSubmissionCheckWithApi($formData, $form)
     {
+        global $cleantalk_executed;
+        
         $accessKey = ArrayHelper::get(get_option('_fluentform_cleantalk_details'), 'accessKey');
 
         if (!$accessKey) {
@@ -84,7 +86,8 @@ class CleanTalkHandler
             'phone'           => '',
             'agent'           => 'wordpress-fluentforms-' . FLUENTFORM_VERSION,
             'post_info'       => [
-                'comment_type' => 'fluent_forms_vendor_integration__use_api'
+                'comment_type' => 'fluent_forms_vendor_integration__use_api',
+                'post_url'     => $_SERVER['HTTP_REFERER']
             ],
             'all_headers'   => strtolower(json_encode(wpFluentForm()->request->header())),
         ];
@@ -130,11 +133,11 @@ class CleanTalkHandler
 
         $response = json_decode(wp_remote_retrieve_body($response));
 
-        if ($response->allow == 1 && $response->spam == 0 && $response->account_status == 1) {
-            return false;
-        } else {
-            return true;
-        }
+        $cleantalkPassed = $response->allow == 1 && $response->spam == 0 && $response->account_status == 1;
+
+        $cleantalk_executed = true;
+
+        return !$cleantalkPassed;
     }
 
     public static function isCleantalkActivated()
