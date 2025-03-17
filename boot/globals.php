@@ -352,10 +352,10 @@ function fluentform_sanitize_html($html)
     }
 
     // Remove event handlers (e.g., onerror, onclick, onmouseover)
-    $html = preg_replace('/\s*on\w+\s*=\s*(["\'])?.*?(\1|(?=\s|>))/i', '', $html);
+    $html = preg_replace('/\s+on[a-z]+\s*=\s*([\'"])[^\'"]*\1/i', '', $html);
 
     // Remove JavaScript protocol (e.g., `href="javascript:alert(1)"`)
-    $html = preg_replace('/javascript\s*:/i', '', $html);
+    $html = preg_replace('/\bjavascript\s*:/i', '', $html);
 
     $tags = wp_kses_allowed_html('post');
     $tags['style'] = [
