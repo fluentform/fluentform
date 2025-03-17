@@ -93,7 +93,7 @@ class Form
 
         wp_localize_script('fluent_forms_conversational_design', 'ffc_conv_vars', [
             'form_id'     => $formId,
-            'preview_url' => site_url('?' . $paramKey . '=' . $formId),
+            'preview_url' => Helper::getFrontendFacingUrl('?' . $paramKey . '=' . $formId),
             'fonts'       => Fonts::getFonts(),
             'has_pro'     => defined('FLUENTFORMPRO'),
         ]);
@@ -922,7 +922,7 @@ class Form
     {
         $vars = apply_filters('fluentform/save_progress_vars', [
             'ajaxurl'                   => admin_url('admin-ajax.php'),
-            'source_url'                => home_url($_SERVER['REQUEST_URI']),
+            'source_url'                => Helper::getFrontendFacingUrl($_SERVER['REQUEST_URI']),
             'form_id'                   => $formId,
             'nonce'                     => wp_create_nonce(),
             'copy_button'               => fluentFormMix('img/copy.svg'),

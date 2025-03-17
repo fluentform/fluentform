@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Payments   ;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Helpers\ArrayHelper;
 use FluentForm\App\Modules\Payments\Classes\PaymentReceipt;
 use FluentForm\App\Modules\Payments\Orders\OrderData;
@@ -329,7 +330,7 @@ class TransactionShortcodes
             $urlBase = add_query_arg([
                 'fluentform_payment' => 'view',
                 'route'              => 'payment'
-            ], site_url('index.php'));
+            ], Helper::getFrontendFacingUrl('index.php'));
         }
     
         $urlBase = apply_filters_deprecated(

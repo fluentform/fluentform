@@ -654,10 +654,10 @@ class Helper
             $paramKey = 'fluent-form';
         }
         if ($key) {
-            return site_url('?' . $paramKey . '=' . $formId . '&form=' . $key);
+            return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId . '&form=' . $key);
         }
         
-        return site_url('?' . $paramKey . '=' . $formId);
+        return static::getFrontendFacingUrl('?' . $paramKey . '=' . $formId);
     }
     
     public static function fileUploadLocations()
@@ -1209,5 +1209,10 @@ class Helper
             return $sanitized;
         }
         return sanitize_text_field(trim($values));
+    }
+    
+    public static function getFrontendFacingUrl($args = '')
+    {
+        return home_url($args);
     }
 }
