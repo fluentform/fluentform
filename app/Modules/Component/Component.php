@@ -995,7 +995,7 @@ class Component
         $count = $query->count();
 
         if ($count >= $maxAllowedEntries) {
-            $isRenderable['message'] = $restrictions['limitReachedMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/entry_limit_reached_message', $restrictions['limitReachedMsg'], $form);
             return false;
         }
 
@@ -1020,12 +1020,12 @@ class Component
         $end = strtotime($restrictions['end']);
 
         if ($time < $start) {
-            $isRenderable['message'] = $restrictions['pendingMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_pending_message', $restrictions['pendingMsg'], $form->id);
             return false;
         }
 
         if ($time >= $end) {
-            $isRenderable['message'] = $restrictions['expiredMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form->id);
 
             return false;
         }
@@ -1034,7 +1034,7 @@ class Component
         $selectedWeekDays = ArrayHelper::get($restrictions, 'selectedDays');
         //skip if it was not set initially and $selectedWeekDays is null
         if ($selectedWeekDays && is_array($selectedWeekDays) && !in_array($weekDayToday, $selectedWeekDays)) {
-            $isRenderable['message'] = $restrictions['expiredMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/schedule_form_expired_message', $restrictions['expiredMsg'], $form);
             return false;
         }
 
@@ -1055,7 +1055,7 @@ class Component
         }
 
         if (!($isLoggedIn = is_user_logged_in())) {
-            $isRenderable['message'] = $restrictions['requireLoginMsg'];
+            $isRenderable['message'] = apply_filters('fluentform/form_requires_login_message', $restrictions['requireLoginMsg'], $form);
         }
 
         return $isLoggedIn;

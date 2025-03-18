@@ -315,7 +315,7 @@ class FormValidationService
                 );
                 if (!count(Helper::arrayFilterRecursive($filteredFormData))) {
                     $defaultMessage = __('Sorry! You can\'t submit an empty form.','fluentform');
-                    $customMessage = Arr::get($settings, 'message');
+                    $customMessage = apply_filters('fluentform/deny_empty_submission_message', Arr::get($settings, 'message'), $this->form);
                     
                     throw new ValidationException('', 422, null,  [
                         'errors' => [
@@ -707,7 +707,7 @@ class FormValidationService
 
             if ($failedSubmissionIfExists || $allowSubmissionIfNotExists) {
                 $defaultMessage = __('Sorry! You can\'t submit a form from your IP address.', 'fluentform');
-                $message = Arr::get($settings, 'fields.ip.message', $defaultMessage);
+                $message = apply_filters('fluentform/ip_restriction_message', Arr::get($settings, 'fields.ip.message', $defaultMessage), $this->form);
                 self::throwValidationException($message);
             }
         }
@@ -728,7 +728,7 @@ class FormValidationService
 
             if ($failedSubmissionIfExists || $allowSubmissionIfNotExists) {
                 $defaultMessage = __('Sorry! You can\'t submit this form from the country you are residing.', 'fluentform');
-                $message = Arr::get($settings, 'fields.country.message', $defaultMessage);
+                $message = apply_filters('fluentform/country_restriction_message', Arr::get($settings, 'fields.country.message', $defaultMessage), $this->form);
                 self::throwValidationException($message);
             }
         }
@@ -751,7 +751,7 @@ class FormValidationService
             )
         );
         $defaultMessage = __('Sorry! Your submission contains some restricted keywords.', 'fluentform');
-        $message = Arr::get($settings, 'fields.keywords.message', $defaultMessage);
+        $message = apply_filters('fluentform/keyword_restriction_message', Arr::get($settings, 'fields.keywords.message', $defaultMessage), $this->form);
 
         self::checkKeywordsMatching($inputSubmission, $message, $providedKeywords);
     }
