@@ -436,6 +436,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds Advanced Conditionals group for enhanced form logic
 - Adds FluentFormAI for creating AI assisted forms
 - Adds a filter hook for validating webhook settings
+- New form templates
 - Update site_url() to home _url() for sub directory installations
 - Improves hCaptcha settings saving method
 - Fixes Stripe fields language issues
