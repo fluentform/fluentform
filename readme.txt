@@ -434,7 +434,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Adds Payment fields for free users (except subscription and coupon fields)
 - Adds Stripe payment gateway for free users (1.9% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
-- Adds FluentFormAI for creating forms
+- Adds FluentFormAI for creating AI assisted forms
+- Adds a filter hook for validating webhook settings
+- Update site_url() to home _url() for sub directory installations
 - Improves hCaptcha settings saving method
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe

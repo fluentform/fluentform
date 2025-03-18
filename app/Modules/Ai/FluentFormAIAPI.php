@@ -8,50 +8,45 @@ namespace FluentForm\App\Modules\Ai;
  */
 class FluentFormAIAPI
 {
-    public function __construct()
-    {
-        $this->url = 'https://fluent-form-chatgpt.nakib-un.workers.dev/';
-    }
+    private $url = 'https://ai.fluentforms.com/';
     
     public function makeRequest($requestData = [])
     {
         $headers = [
             'Content-Type' => 'application/json',
         ];
-        
-        $request_url = $this->url;
-        
+    
+        $originalTimeout = apply_filters('http_request_timeout', 5);
+    
         add_filter('http_request_timeout', function ($timeout) {
-            return 60; // Set timeout to 60 seconds
+            return 60;
         });
-        
-        $request = wp_remote_post($request_url, [
+    
+        $response = wp_remote_post($this->url, [
             'headers' => $headers,
-            'body'    => json_encode($requestData)
+            'body'    => json_encode($requestData),
         ]);
-        
-        if (did_filter('http_request_timeout')) {
-            add_filter('http_request_timeout', function ($timeout) {
-                return 5; // Set timeout to original 5 seconds
-            });
+    
+        add_filter('http_request_timeout', function ($timeout) use ($originalTimeout) {
+            return $originalTimeout;
+        });
+    
+        if (is_wp_error($response)) {
+            return new \WP_Error(423, $response->get_error_message());
         }
-        
-        if (is_wp_error($request)) {
-            $message = $request->get_error_message();
-            return new \WP_Error(423, $message);
+    
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $code = wp_remote_retrieve_response_code($response);
+    
+        $error_message = __('Something went wrong.', 'fluentform');
+        if (isset($body['error']['message'])) {
+            $error_message = __($body['error']['message'], 'fluentform');
         }
-        
-        $body = json_decode(wp_remote_retrieve_body($request), true);
-        $code = wp_remote_retrieve_response_code($request);
-        
+    
         if ($code !== 200) {
-            $error = __('Something went wrong.', 'fluentform');
-            if (isset($body['error']['message'])) {
-                $error = __($body['error']['message'], 'fluentform');
-            }
-            return new \WP_Error(423, $error);
+            return new \WP_Error(423, $error_message);
         }
-
+    
         return $body;
     }
 }
