@@ -87,7 +87,7 @@
                     </template>
                 </template>
 
-                <div v-if="settings.is_active == 'yes'" class="ff_payment_sub_section">
+                <div v-if="settings.is_active == 'yes'" class="ff_payment_sub_section mt-3">
                     <h5 class="mb-2">
                         {{ $t('Stripe Webhook (Recommended for Recurring Payments)') }}
                     </h5>

@@ -30,7 +30,6 @@
 	    <div
 		    v-if="connect_config.should_apply_application_fee"
 		    class="mt-3"
-		    :class="(!connect || connect.error) ? 'ff_connect_require': 'ff_connect_ok'"
 	    >
 		    <h6 class="mb-1">{{ $t('Pay-as-you-go Pricing') }}</h6>
 		    <p>
