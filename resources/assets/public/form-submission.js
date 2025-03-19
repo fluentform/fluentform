@@ -223,8 +223,8 @@ jQuery(document).ready(function () {
 
                         // Init reCaptcha if available.
                         if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
-                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
-                            if (grecaptchaWidgetId) {
+                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                            if (typeof grecaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'g-recaptcha-response': grecaptcha.getResponse(grecaptchaWidgetId)
                                 });
@@ -233,8 +233,8 @@ jQuery(document).ready(function () {
 
                         // Init hCaptcha if available.
                         if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('hcaptcha_widget_id');
-                            if (hcaptchaWidgetId) {
+                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                            if (typeof hcaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'h-captcha-response': hcaptcha.getResponse(hcaptchaWidgetId)
                                 });
@@ -243,8 +243,8 @@ jQuery(document).ready(function () {
 
                         // Init turnstile if available.
                         if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('turnstile_widget_id');
-                            if (turnstileWidgetId) {
+                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                            if (typeof turnstileWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'cf-turnstile-response': turnstile.getResponse(turnstileWidgetId)
                                 });
@@ -423,20 +423,20 @@ jQuery(document).ready(function () {
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
-                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
-                                if (grecaptchaWidgetId) {
+                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                                if (typeof grecaptchaWidgetId !== "undefined") {
                                     grecaptcha.reset(grecaptchaWidgetId);
                                 }
                             }
                             if (window.hcaptcha) {
-                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('hcaptcha_widget_id');
-                                if (hcaptchaWidgetId) {
-                                    hcaptcha.reset(hcaptchaWidgetId); //two recapthca on same page creates conflicts
+                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                                if (typeof hcaptchaWidgetId !== "undefined") {
+                                    hcaptcha.reset(hcaptchaWidgetId);
                                 }
                             }
                             if (window.turnstile) {
-                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('turnstile_widget_id');
-                                if (turnstileWidgetId) {
+                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                                if (typeof turnstileWidgetId !== "undefined") {
                                     turnstile.reset(turnstileWidgetId);
                                 }
                             }
