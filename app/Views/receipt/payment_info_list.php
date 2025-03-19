@@ -1,12 +1,12 @@
 <ul class="ffp_payment_info_table">
     <li>
-        <b><?php _e('Amount:', 'fluentformpro');?></b> <?php echo $orderTotal; ?></b>
+        <b><?php _e('Amount:', 'fluentform');?></b> <?php echo $orderTotal; ?></b>
     </li>
     <?php
     $paymentMethod = $submission->payment_method;
     if($paymentMethod): ?>
         <li>
-            <b><?php _e('Payment Method:', 'fluentformpro');?></b> <?php
+            <b><?php _e('Payment Method:', 'fluentform');?></b> <?php
             $paymentMethod = apply_filters_deprecated(
                 'fluentform_payment_method_public_name_' . $paymentMethod,
                 [
@@ -32,7 +32,7 @@
         }
         ?>
         <li>
-            <b><?php _e('Payment Status:', 'fluentformpro');?></b> <?php echo $submission->payment_status; ?></b>
+            <b><?php _e('Payment Status:', 'fluentform');?></b> <?php echo $submission->payment_status; ?></b>
         </li>
     <?php endif; ?>
 </ul>

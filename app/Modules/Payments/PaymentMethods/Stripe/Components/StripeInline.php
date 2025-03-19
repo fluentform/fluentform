@@ -43,7 +43,7 @@ class StripeInline extends BaseFieldManager
         }, 10, 2);
 
         $elementId = $data['attributes']['name'] . '_' . $form->id . '_' . $form->instance_index . '_stripe_inline';
-        $label = ArrayHelper::get($method, 'settings.option_label.value', __('Pay with Stripe', 'fluentformpro'));
+        $label = ArrayHelper::get($method, 'settings.option_label.value', __('Pay with Stripe', 'fluentform'));
         $display = $method['is_default'] ? 'block' : 'none';
 
         $markup = '<div class="stripe-inline-wrapper ff_pay_inline ff_pay_inline_stripe" style="display: ' . $display . '">';
@@ -64,7 +64,7 @@ class StripeInline extends BaseFieldManager
         $markup .= '<div class="ff_card-errors text-danger" role="alert"></div>';
 
         if (!StripeSettings::isLive($form->id)) {
-            $stripeTestModeMessage = __('Stripe test mode activated', 'fluentformpro');
+            $stripeTestModeMessage = __('Stripe test mode activated', 'fluentform');
             $markup .= '<span style="margin-top: 5px;padding: 0;font-style: italic;font-size: 12px">' . $stripeTestModeMessage . '</span>';
         }
 

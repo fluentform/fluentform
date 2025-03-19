@@ -116,7 +116,7 @@ class StripeProcessor extends BaseProcessor
                 $checkoutArgs['line_items'][] = [
                     'amount'   => $price,
                     'currency' => $transaction->currency,
-                    'name'     => __('Signup fee for ', 'fluentformpro') . $subscription->plan_name,
+                    'name'     => __('Signup fee for ', 'fluentform') . $subscription->plan_name,
                     'quantity' => 1
                 ];
             }
@@ -189,14 +189,14 @@ class StripeProcessor extends BaseProcessor
         $session = CheckoutSession::create($checkoutArgs);
 
         if (!empty($session->error) || is_wp_error($session)) {
-            $error = __('Something is wrong', 'fluentformpro');
+            $error = __('Something is wrong', 'fluentform');
             if (is_wp_error($session)) {
                 $error = $session->get_error_message();
             } else if (!empty($session->error->message)) {
                 $error = $session->error->message;
             }
             wp_send_json([
-                'errors' => __('Stripe Error: ', 'fluentformpro') . $error
+                'errors' => __('Stripe Error: ', 'fluentform') . $error
             ], 423);
         }
 
@@ -208,8 +208,8 @@ class StripeProcessor extends BaseProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Redirect to Stripe', 'fluentformpro'),
-            'description'      => __('User redirect to Stripe for completing the payment', 'fluentformpro')
+            'title'            => __('Redirect to Stripe', 'fluentform'),
+            'description'      => __('User redirect to Stripe for completing the payment', 'fluentform')
         ];
         do_action('fluentform/log_data', $logData);
 
@@ -217,7 +217,7 @@ class StripeProcessor extends BaseProcessor
             'nextAction' => 'payment',
             'actionName' => 'stripeRedirectToCheckout',
             'sessionId'  => $session->id,
-            'message'    => __('You are redirecting to stripe.com to complete the purchase. Please wait while you are redirecting....', 'fluentformpro'),
+            'message'    => __('You are redirecting to stripe.com to complete the purchase. Please wait while you are redirecting....', 'fluentform'),
             'result'     => [
                 'insert_id' => $submission->id
             ]
@@ -318,7 +318,7 @@ class StripeProcessor extends BaseProcessor
                     }
                     $returnData = [
                         'insert_id' => $submission->id,
-                        'title'     => __('Failed to retrieve session data', 'fluentformpro'),
+                        'title'     => __('Failed to retrieve session data', 'fluentform'),
                         'result'    => false,
                         'error'     => $error
                     ];
@@ -328,7 +328,7 @@ class StripeProcessor extends BaseProcessor
             $returnData = [
                 'insert_id' => $submission->id,
                 'result'    => false,
-                'error'     => __('Looks like you have cancelled the payment. Please try again!', 'fluentformpro')
+                'error'     => __('Looks like you have cancelled the payment. Please try again!', 'fluentform')
             ];
         }
 
@@ -497,8 +497,8 @@ class StripeProcessor extends BaseProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'success',
-            'title'            => __('Stripe Subscription Charged', 'fluentformpro'),
-            'description'      => __('Stripe recurring subscription successfully initiated', 'fluentformpro')
+            'title'            => __('Stripe Subscription Charged', 'fluentform'),
+            'description'      => __('Stripe recurring subscription successfully initiated', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -547,8 +547,8 @@ class StripeProcessor extends BaseProcessor
             'source_id'        => $submission->id,
             'component'        => 'Payment',
             'status'           => 'info',
-            'title'            => __('Stripe Billing Address Logged', 'fluentformpro'),
-            'description'      => __('Billing address from stripe has been logged in the submission data', 'fluentformpro')
+            'title'            => __('Stripe Billing Address Logged', 'fluentform'),
+            'description'      => __('Billing address from stripe has been logged in the submission data', 'fluentform')
         ];
 
         do_action('fluentform/log_data', $logData);
@@ -703,15 +703,15 @@ class StripeProcessor extends BaseProcessor
                 'source_id'        => $submission->id,
                 'component'        => 'Payment',
                 'status'           => 'error',
-                'title'            => __('Stripe Payment Error', 'fluentformpro'),
-                'description'      => __($message, 'fluentformpro')
+                'title'            => __('Stripe Payment Error', 'fluentform'),
+                'description'      => __($message, 'fluentform')
             ];
 
             do_action('fluentform/log_data', $logData);
         }
 
         wp_send_json([
-            'errors'      => __('Stripe Error: ', 'fluentformpro') . $message,
+            'errors'      => __('Stripe Error: ', 'fluentform') . $message,
             'append_data' => [
                 '__entry_intermediate_hash' => Helper::getSubmissionMeta($submission->id, '__entry_intermediate_hash')
             ]

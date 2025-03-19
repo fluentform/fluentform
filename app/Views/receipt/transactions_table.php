@@ -14,12 +14,12 @@
     <table style="width: 100%;border: 1px solid #cbcbcb;margin-top: 0;" class="table ffp_order_items_table ffp_table table_bordered">
         <thead>
             <tr>
-                <th class="ff_th_id"><?php _e('ID', 'fluentformpro'); ?></th>
-                <th class="ff_th_amount"><?php _e('Amount', 'fluentformpro'); ?></th>
-                <th class="ff_th_status"><?php _e('Status', 'fluentformpro'); ?></th>
-                <th class="ff_th_payment_method"><?php _e('Payment Method', 'fluentformpro'); ?></th>
-                <th class="ff_th_date"><?php _e('Date', 'fluentformpro'); ?></th>
-                <th class="ff_th_action"><?php _e('Action', 'fluentformpro'); ?></th>
+                <th class="ff_th_id"><?php _e('ID', 'fluentform'); ?></th>
+                <th class="ff_th_amount"><?php _e('Amount', 'fluentform'); ?></th>
+                <th class="ff_th_status"><?php _e('Status', 'fluentform'); ?></th>
+                <th class="ff_th_payment_method"><?php _e('Payment Method', 'fluentform'); ?></th>
+                <th class="ff_th_date"><?php _e('Date', 'fluentform'); ?></th>
+                <th class="ff_th_action"><?php _e('Action', 'fluentform'); ?></th>
                 <?php
                     do_action_deprecated(
                         'fluentform_transaction_table_thead_row',

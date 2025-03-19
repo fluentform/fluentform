@@ -108,11 +108,11 @@ class PaymentEntries
         $actionType = sanitize_text_field($_REQUEST['action_type']);
         if (!$actionType || !count($entries)) {
             wp_send_json_error([
-                'message' => __('Please select entries & action first', 'fluentformpro')
+                'message' => __('Please select entries & action first', 'fluentform')
             ], 400);
         }
         
-        $message = __("Invalid action", 'fluentformpro');
+        $message = __("Invalid action", 'fluentform');
         $statusCode = 400;
         // permanently delete payment entries from transactions
         if ($actionType == 'delete_items') {
@@ -132,7 +132,7 @@ class PaymentEntries
 
             try {
                 if( !$submission_ids || !$transactionData ){
-                    throw new \Exception(__('Invalid transaction id', 'fluentformpro'));
+                    throw new \Exception(__('Invalid transaction id', 'fluentform'));
                 }
                 do_action_deprecated(
                     'fluentform_before_entry_payment_deleted',
@@ -166,8 +166,8 @@ class PaymentEntries
                         'source_id'        => $data->submission_id,
                         'component'        => 'payment',
                         'status'           => 'info',
-                        'title'            => __('Payment data successfully deleted', 'fluentformpro'),
-                        'description'      => __('Payment record cleared from transaction history and order items', 'fluentformpro'),
+                        'title'            => __('Payment data successfully deleted', 'fluentform'),
+                        'description'      => __('Payment record cleared from transaction history and order items', 'fluentform'),
                     ];
                     do_action('fluentform/log_data', $logData);
                 }
@@ -182,7 +182,7 @@ class PaymentEntries
                     'Use fluentform/after_entry_payment_deleted instead of fluentform_after_entry_payment_deleted.'
                 );
                 do_action('fluentform/after_entry_payment_deleted', $entries, $transactionData);
-                $message = __('Selected entries successfully deleted', 'fluentformpro');
+                $message = __('Selected entries successfully deleted', 'fluentform');
                 $statusCode = 200;
         
             } catch (\Exception $exception) {
@@ -237,7 +237,7 @@ class PaymentEntries
                 continue;
             }
             if ($method->payment_method == 'test') {
-                $formattedMethods[] = ['value' => __('Offline', 'fluentformpro'), 'key' => $method->payment_method];
+                $formattedMethods[] = ['value' => __('Offline', 'fluentform'), 'key' => $method->payment_method];
             } else {
                 $formattedMethods[] = ['value' => ucfirst($method->payment_method), 'key' => $method->payment_method];
             }

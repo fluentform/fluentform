@@ -1,8 +1,8 @@
 <table style="width: 100%;border: 1px solid #cbcbcb;margin-top: 0; margin-bottom: 15px;" class="table ffp_order_items_table ffp_table table_bordered">
     <thead>
     <tr>
-        <th><?php _e('Item', 'fluentformpro'); ?></th>
-        <th><?php _e('Status', 'fluentformpro'); ?></th>
+        <th><?php _e('Item', 'fluentform'); ?></th>
+        <th><?php _e('Status', 'fluentform'); ?></th>
     </tr>
     </thead>
     <tbody>

@@ -140,8 +140,8 @@ class PaymentMethods extends BaseFieldManager
         return [
             'payment_methods' => array(
                 'template'  => 'paymentMethodsConfig',
-                'label'     => __('Payment Methods', 'fluentformpro'),
-                'help_text' => __('Please Select and Configure the payment methods for this form, At least 1 method is required. If you select only one it will not show on the form for selection but will process that payment with the selected method.', 'fluentformpro')
+                'label'     => __('Payment Methods', 'fluentform'),
+                'help_text' => __('Please Select and Configure the payment methods for this form, At least 1 method is required. If you select only one it will not show on the form for selection but will process that payment with the selected method.', 'fluentform')
             )
         ];
     }
@@ -205,7 +205,7 @@ class PaymentMethods extends BaseFieldManager
         if (!$activatedMethods) {
             echo wp_sprintf(
                 '<p class="ff-error ff-payment-method-error">%s</p>',
-                __('No activated payment method found. If you are an admin please check the payment settings', 'fluentformpro')
+                __('No activated payment method found. If you are an admin please check the payment settings', 'fluentform')
             );
             return;
         }

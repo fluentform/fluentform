@@ -45,7 +45,7 @@ class ItemQuantity extends BaseFieldManager
             'settings' => array(
                 'container_class' => '',
                 'is_payment_field' => 'yes',
-                'label' => __('Quantity', 'fluentformpro'),
+                'label' => __('Quantity', 'fluentform'),
                 'admin_field_label' => '',
                 'label_placement' => '',
                 'help_message' => '',
@@ -82,7 +82,7 @@ class ItemQuantity extends BaseFieldManager
                 'conditional_logics' => array()
             ),
             'editor_options' => array(
-                'title' => __('Item Quantity', 'fluentformpro'),
+                'title' => __('Item Quantity', 'fluentform'),
                 'icon_class' => 'ff-edit-keyboard-o',
                 'template' => 'inputText'
             ),
@@ -122,8 +122,8 @@ class ItemQuantity extends BaseFieldManager
         return [
             'target_product' => array(
                 'template'  => 'targetProduct',
-                'label' => __('Product Field Mapping', 'fluentformpro'),
-                'help_text' => __('Select which Product this field is tied to', 'fluentformpro'),
+                'label' => __('Product Field Mapping', 'fluentform'),
+                'help_text' => __('Select which Product this field is tied to', 'fluentform'),
             )
         ];
     }

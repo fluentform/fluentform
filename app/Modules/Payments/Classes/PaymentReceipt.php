@@ -68,7 +68,7 @@ class PaymentReceipt
         }
 
         if($property == 'payment_method' && $value == 'test') {
-            return __('Offline', 'fluentformpro');
+            return __('Offline', 'fluentform');
         }
 
         return ucfirst($value);
@@ -113,7 +113,7 @@ class PaymentReceipt
         $submission = $this->entry;
 
         if (!$submission) {
-            return '<p class="ff_invalid_receipt">' . __('Invalid submission. No receipt found', 'fluentformpro') . '</p>';
+            return '<p class="ff_invalid_receipt">' . __('Invalid submission. No receipt found', 'fluentform') . '</p>';
         }
 
         $html = $this->beforePaymentReceipt();
@@ -121,12 +121,12 @@ class PaymentReceipt
         $html .= $this->paymentInfo();
 
         if ($this->orderItems) {
-	        $html .= '<h4>' . __('Order Details', 'fluentformpro') . '</h4>';
+	        $html .= '<h4>' . __('Order Details', 'fluentform') . '</h4>';
 	        $html .= $this->itemDetails();
         }
 
         if ($this->subscriptions) {
-        	$html .= '<h4>' . __('Subscriptions', 'fluentformpro') . '</h4>';
+        	$html .= '<h4>' . __('Subscriptions', 'fluentform') . '</h4>';
         	$html .= $this->subscriptionDetails();
         }
 
@@ -198,7 +198,7 @@ class PaymentReceipt
         $submission = $this->entry;
 
         if($submission->payment_method == 'test') {
-            $submission->payment_method = __('Offline', 'fluentformpro');
+            $submission->payment_method = __('Offline', 'fluentform');
         }
 
         $discountItems = $this->getDiscountItems();

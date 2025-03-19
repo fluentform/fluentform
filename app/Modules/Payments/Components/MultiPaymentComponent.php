@@ -49,7 +49,7 @@ class MultiPaymentComponent extends BaseFieldManager
             ),
             'settings' => array(
                 'container_class' => '',
-                'label' => __('Payment Item', 'fluentformpro'),
+                'label' => __('Payment Item', 'fluentform'),
                 'admin_field_label' => '',
                 'label_placement' => '',
                 'display_type' => '',
@@ -63,7 +63,7 @@ class MultiPaymentComponent extends BaseFieldManager
                     ]
                 ),
                 'dynamic_default_value' => '',
-                'price_label' => __('Price:', 'fluentformpro'),
+                'price_label' => __('Price:', 'fluentform'),
                 'enable_quantity' => false,
                 'enable_image_input' => false,
                 'is_element_lock' => false,
@@ -79,7 +79,7 @@ class MultiPaymentComponent extends BaseFieldManager
                 'conditional_logics' => array(),
             ),
             'editor_options' => array(
-                'title' => __('Payment Item', 'fluentformpro'),
+                'title' => __('Payment Item', 'fluentform'),
                 'icon_class' => 'ff-edit-shopping-cart',
                 'element' => 'input-radio',
                 'template' => 'inputMultiPayment'

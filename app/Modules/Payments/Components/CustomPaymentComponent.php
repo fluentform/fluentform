@@ -62,7 +62,7 @@ class CustomPaymentComponent extends BaseFieldManager
             'settings'       => array(
                 'container_class'      => '',
                 'is_payment_field'     => 'yes',
-                'label'                => __('Custom Payment Amount', 'fluentformpro'),
+                'label'                => __('Custom Payment Amount', 'fluentform'),
                 'admin_field_label'    => '',
                 'label_placement'      => '',
                 'help_message'         => '',
@@ -102,7 +102,7 @@ class CustomPaymentComponent extends BaseFieldManager
                 )
             ),
             'editor_options' => array(
-                'title'      => __('Custom Payment Amount', 'fluentformpro'),
+                'title'      => __('Custom Payment Amount', 'fluentform'),
                 'icon_class' => 'ff-edit-keyboard-o',
                 'template'   => 'inputText'
             ),

@@ -55,13 +55,13 @@ class PaymentSummaryComponent extends BaseFieldManager
             'element' => $this->key,
             'attributes' => array(),
             'settings' => array(
-                'html_codes' => __('<p>Payment Summary will be shown here</p>', 'fluentformpro'),
-                'cart_empty_text' => __('No payment items has been selected yet', 'fluentformpro'),
+                'html_codes' => __('<p>Payment Summary will be shown here</p>', 'fluentform'),
+                'cart_empty_text' => __('No payment items has been selected yet', 'fluentform'),
                 'conditional_logics' => array(),
                 'container_class' => ''
             ),
             'editor_options' => array(
-                'title' => __('Payment Summary', 'fluentformpro'),
+                'title' => __('Payment Summary', 'fluentform'),
                 'icon_class' => 'ff-edit-html',
                 'template' => 'customHTML'
             ),
@@ -80,8 +80,8 @@ class PaymentSummaryComponent extends BaseFieldManager
         return [
             'cart_empty_text' => [
                 'template' => 'inputHTML',
-                'label' => __('Empty Payment Selected Text', 'fluentformpro'),
-                'help_text' => __('The provided text will show if no payment item is selected yet', 'fluentformpro'),
+                'label' => __('Empty Payment Selected Text', 'fluentform'),
+                'help_text' => __('The provided text will show if no payment item is selected yet', 'fluentform'),
                 'hide_extra' => 'yes'
             ]
         ];

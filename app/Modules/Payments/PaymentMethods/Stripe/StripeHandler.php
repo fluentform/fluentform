@@ -90,7 +90,7 @@ class StripeHandler
         }
 
         $methods[$this->key] = [
-            'title'        => __('Credit/Debit Card (Stripe)', 'fluentformpro'),
+            'title'        => __('Credit/Debit Card (Stripe)', 'fluentform'),
             'enabled'      => 'yes',
             'method_value' => $this->key,
             'settings'     => [
@@ -98,19 +98,19 @@ class StripeHandler
                     'type'     => 'text',
                     'template' => 'inputText',
                     'value'    => 'Pay with Card (Stripe)',
-                    'label'    => __('Method Label', 'fluentformpro')
+                    'label'    => __('Method Label', 'fluentform')
                 ],
                 'embedded_checkout'     => [
                     'type'     => 'checkbox',
                     'template' => 'inputYesNoCheckbox',
                     'value'    => 'yes',
-                    'label'    => __('Embedded Checkout', 'fluentformpro')
+                    'label'    => __('Embedded Checkout', 'fluentform')
                 ],
                 'require_billing_info'  => [
                     'type'       => 'checkbox',
                     'template'   => 'inputYesNoCheckbox',
                     'value'      => 'no',
-                    'label'      => __('Require Billing info', 'fluentformpro'),
+                    'label'      => __('Require Billing info', 'fluentform'),
                     'dependency' => array(
                         'depends_on' => 'embedded_checkout/value',
                         'value'      => 'yes',
@@ -121,7 +121,7 @@ class StripeHandler
                     'type'       => 'checkbox',
                     'template'   => 'inputYesNoCheckbox',
                     'value'      => 'no',
-                    'label'      => __('Collect Shipping Info', 'fluentformpro'),
+                    'label'      => __('Collect Shipping Info', 'fluentform'),
                     'dependency' => array(
                         'depends_on' => 'embedded_checkout/value',
                         'value'      => 'yes',
@@ -132,7 +132,7 @@ class StripeHandler
                     'type'     => 'checkbox',
                     'template' => 'inputYesNoCheckbox',
                     'value'    => 'no',
-                    'label'    => __('Verify Zip/Postal Code', 'fluentformpro')
+                    'label'    => __('Verify Zip/Postal Code', 'fluentform')
                 ],
             ]
         ];
@@ -154,16 +154,16 @@ class StripeHandler
         $mode = $settings['payment_mode'];
 
         if (empty($settings[$mode . '_publishable_key'])) {
-            $errors[$mode . '_publishable_key'] = __(ucfirst($mode) . ' Publishable Key is required', 'fluentformpro');
+            $errors[$mode . '_publishable_key'] = __(ucfirst($mode) . ' Publishable Key is required', 'fluentform');
         }
 
         if (empty($settings[$mode . '_secret_key'])) {
-            $errors[$mode . '_secret_key'] = __(ucfirst($mode) . ' Secret Key is required', 'fluentformpro');
+            $errors[$mode . '_secret_key'] = __(ucfirst($mode) . ' Secret Key is required', 'fluentform');
         }
 
         if (ArrayHelper::get($settings, 'provider') === 'connect' && count($errors)) {
             $errors = [
-                'connect' => __('Connect with Stripe was not successful. Please try again!', 'fluentformpro')
+                'connect' => __('Connect with Stripe was not successful. Please try again!', 'fluentform')
             ];
         }
 
@@ -181,7 +181,7 @@ class StripeHandler
         }
 
         if ($transaction->status == 'requires_capture') {
-            $transaction->additional_note = __('<b>Action Required: </b> The payment has been authorized but not captured yet. Please <a target="_blank" rel="noopener" href="' . $transaction->action_url . '">Click here</a> to capture this payment in stripe.com', 'fluentformpro');
+            $transaction->additional_note = __('<b>Action Required: </b> The payment has been authorized but not captured yet. Please <a target="_blank" rel="noopener" href="' . $transaction->action_url . '">Click here</a> to capture this payment in stripe.com', 'fluentform');
         }
 
         return $transaction;

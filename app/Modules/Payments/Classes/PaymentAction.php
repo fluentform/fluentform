@@ -149,7 +149,7 @@ class PaymentAction
         if (count($subscriptionItems) >= 2) {
             // We are not supporting multiple subscription items at this moment
             wp_send_json_error([
-                'message' => __('Sorry, multiple subscription item is not supported', 'fluentformpro')
+                'message' => __('Sorry, multiple subscription item is not supported', 'fluentform')
             ]);
         }
 

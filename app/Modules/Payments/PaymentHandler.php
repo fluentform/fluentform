@@ -128,16 +128,16 @@ class PaymentHandler
             
             wp_localize_script('fluentform-payment-handler', 'fluentform_payment_config', [
                 'i18n' => [
-                    'item'            => __('Item', 'fluentformpro'),
-                    'price'           => __('Price', 'fluentformpro'),
-                    'qty'             => __('Qty', 'fluentformpro'),
-                    'line_total'      => __('Line Total', 'fluentformpro'),
-                    'total'           => __('Total', 'fluentformpro'),
-                    'not_found'       => __('No payment item selected yet', 'fluentformpro'),
-                    'discount:'       => __('Discount:', 'fluentformpro'),
-                    'processing_text' => __('Processing payment. Please wait...', 'fluentformpro'),
-                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentformpro'),
-                    'Signup Fee for'  => __('Signup Fee for', 'fluentformpro')
+                    'item'            => __('Item', 'fluentform'),
+                    'price'           => __('Price', 'fluentform'),
+                    'qty'             => __('Qty', 'fluentform'),
+                    'line_total'      => __('Line Total', 'fluentform'),
+                    'total'           => __('Total', 'fluentform'),
+                    'not_found'       => __('No payment item selected yet', 'fluentform'),
+                    'discount:'       => __('Discount:', 'fluentform'),
+                    'processing_text' => __('Processing payment. Please wait...', 'fluentform'),
+                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
+                    'Signup Fee for'  => __('Signup Fee for', 'fluentform')
                 ]
             ]);
             
@@ -315,7 +315,7 @@ class PaymentHandler
         $subMenuItems = apply_filters('fluentform/global_settings_payment_sub_menu_items', $subMenuItems);
 
         $components['payment_settings'] = [
-            'title' => __('Payment Settings', 'fluentformpro'),
+            'title' => __('Payment Settings', 'fluentform'),
             'sub_menu'=> $subMenuItems
         ];
         return $components;
@@ -418,7 +418,7 @@ class PaymentHandler
                 !$paymentAction->selectedPaymentMethod
             ) {
                 wp_send_json([
-                    'errors' => [__('Sorry! No selected payment method found. Please select a valid payment method', 'fluentformpro')]
+                    'errors' => [__('Sorry! No selected payment method found. Please select a valid payment method', 'fluentform')]
                 ], 423);
             }
         }
@@ -465,7 +465,7 @@ class PaymentHandler
         if ($form->has_payment) {
             $menus = array_merge(array_slice($menus, 0, 1), array(
                 'payment_settings' => [
-                    'title' => __('Payment Settings', 'fluentformpro'),
+                    'title' => __('Payment Settings', 'fluentform'),
                     'slug'  => 'form_settings',
                     'hash'  => 'payment_settings',
                     'route' => '/payment-settings',
@@ -518,7 +518,7 @@ class PaymentHandler
         $originalUid = Helper::getSubmissionMeta($submissionId, '_entry_uid_hash');
         
         if ($originalUid != $uid) {
-            die(__('Transaction UID is invalid', 'fluentformpro'));
+            die(__('Transaction UID is invalid', 'fluentform'));
         }
         
         return true;
@@ -574,39 +574,39 @@ class PaymentHandler
     public function paymentTranslations($i18n)
     {
         $paymentI18n = array(
-            'Order Details' => __('Order Details', 'fluentformpro'),
-            'Product' => __('Product', 'fluentformpro'),
-            'Qty' => __('Qty', 'fluentformpro'),
-            'Unit Price' => __('Unit Price', 'fluentformpro'),
-            'Total' => __('Total', 'fluentformpro'),
-            'Sub-Total' => __('Sub-Total', 'fluentformpro'),
-            'Discount' => __('Discount', 'fluentformpro'),
-            'Price' => __('Price', 'fluentformpro'),
-            'Payment Details' => __('Payment Details', 'fluentformpro'),
-            'From Subscriptions' => __('From Subscriptions', 'fluentformpro'),
-            'Card Last 4' => __('Card Last 4', 'fluentformpro'),
-            'Payment Total' => __('Payment Total', 'fluentformpro'),
-            'Payment Status' => __('Payment Status', 'fluentformpro'),
-            'Transaction ID' => __('Transaction ID', 'fluentformpro'),
-            'Payment Method' => __('Payment Method', 'fluentformpro'),
-            'Transaction' => __('Transaction', 'fluentformpro'),
-            'Refunds' => __('Refunds', 'fluentformpro'),
-            'Refund' => __('Refund', 'fluentformpro'),
-            'at' => __('at', 'fluentformpro'),
-            'View' => __('View', 'fluentformpro'),
-            'has been refunded via' => __('has been refunded via', 'fluentformpro'),
-            'Note' => __('Note', 'fluentformpro'),
-            'Edit Transaction' => __('Edit Transaction', 'fluentformpro'),
-            'Billing Name' => __('Billing Name', 'fluentformpro'),
-            'Billing Email' => __('Billing Email', 'fluentformpro'),
-            'Billing Address' => __('Billing Address', 'fluentformpro'),
-            'Shipping Address' => __('Shipping Address', 'fluentformpro'),
-            'Reference ID' => __('Reference ID', 'fluentformpro'),
-            'refunds-to-be-handled-from-provider-text' => __('Please note that, Actual Refund needs to be handled in your Payment Service Provider.', 'fluentformpro'),
-            'Please Provide new refund amount only.' => __('Please Provide new refund amount only.', 'fluentformpro'),
-            'Refund Note' => __('Refund Note', 'fluentformpro'),
-            'Cancel' => __('Cancel', 'fluentformpro'),
-            'Confirm' => __('Confirm', 'fluentformpro'),
+            'Order Details' => __('Order Details', 'fluentform'),
+            'Product' => __('Product', 'fluentform'),
+            'Qty' => __('Qty', 'fluentform'),
+            'Unit Price' => __('Unit Price', 'fluentform'),
+            'Total' => __('Total', 'fluentform'),
+            'Sub-Total' => __('Sub-Total', 'fluentform'),
+            'Discount' => __('Discount', 'fluentform'),
+            'Price' => __('Price', 'fluentform'),
+            'Payment Details' => __('Payment Details', 'fluentform'),
+            'From Subscriptions' => __('From Subscriptions', 'fluentform'),
+            'Card Last 4' => __('Card Last 4', 'fluentform'),
+            'Payment Total' => __('Payment Total', 'fluentform'),
+            'Payment Status' => __('Payment Status', 'fluentform'),
+            'Transaction ID' => __('Transaction ID', 'fluentform'),
+            'Payment Method' => __('Payment Method', 'fluentform'),
+            'Transaction' => __('Transaction', 'fluentform'),
+            'Refunds' => __('Refunds', 'fluentform'),
+            'Refund' => __('Refund', 'fluentform'),
+            'at' => __('at', 'fluentform'),
+            'View' => __('View', 'fluentform'),
+            'has been refunded via' => __('has been refunded via', 'fluentform'),
+            'Note' => __('Note', 'fluentform'),
+            'Edit Transaction' => __('Edit Transaction', 'fluentform'),
+            'Billing Name' => __('Billing Name', 'fluentform'),
+            'Billing Email' => __('Billing Email', 'fluentform'),
+            'Billing Address' => __('Billing Address', 'fluentform'),
+            'Shipping Address' => __('Shipping Address', 'fluentform'),
+            'Reference ID' => __('Reference ID', 'fluentform'),
+            'refunds-to-be-handled-from-provider-text' => __('Please note that, Actual Refund needs to be handled in your Payment Service Provider.', 'fluentform'),
+            'Please Provide new refund amount only.' => __('Please Provide new refund amount only.', 'fluentform'),
+            'Refund Note' => __('Refund Note', 'fluentform'),
+            'Cancel' => __('Cancel', 'fluentform'),
+            'Confirm' => __('Confirm', 'fluentform'),
         );
         return array_merge($i18n,$paymentI18n);
     }
@@ -618,7 +618,7 @@ class PaymentHandler
             $selectedPlanIndex = $formData[$field['name']];
             $acceptedSubscriptionPlan = is_numeric($selectedPlanIndex) && in_array($selectedPlanIndex, array_keys($subscriptionOptions));
             if (!$acceptedSubscriptionPlan) {
-                $error = __('This subscription plan is invalid', 'fluentformpro');
+                $error = __('This subscription plan is invalid', 'fluentform');
             }
             $selectedPlan = ArrayHelper::get($subscriptionOptions, $selectedPlanIndex, []);
             if ('yes' === ArrayHelper::get($selectedPlan, 'user_input')) {
@@ -626,7 +626,7 @@ class PaymentHandler
                 $userGivenValue = $userGivenValue ?: 0;
                 $planMinValue = ArrayHelper::get($selectedPlan, 'user_input_min_value');
                 if (!is_numeric($userGivenValue) || ($planMinValue && $userGivenValue < $planMinValue)) {
-                    $error = __('This subscription plan value is invalid', 'fluentformpro');
+                    $error = __('This subscription plan value is invalid', 'fluentform');
                 }
             }
         }
@@ -656,7 +656,7 @@ class PaymentHandler
                 }
                 
                 if (!$acceptedPaymentPlan) {
-                    $error = __('This payment item is invalid', 'fluentformpro');
+                    $error = __('This payment item is invalid', 'fluentform');
                 }
             }
         }
@@ -669,7 +669,7 @@ class PaymentHandler
         if ($selectedMethod = ArrayHelper::get($formData, $field['name'])) {
             $activeMethods = array_keys(PaymentHelper::getFormPaymentMethods($form->id));
             if (!in_array($selectedMethod, $activeMethods)) {
-                $error = __('This payment method is invalid', 'fluentformpro');
+                $error = __('This payment method is invalid', 'fluentform');
             }
         }
         return $error;

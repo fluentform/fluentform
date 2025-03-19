@@ -857,15 +857,15 @@ class Form
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d',
                 ],
                 'i18n'              => [
-                    'item'            => __('Item', 'fluentformpro'),
-                    'price'           => __('Price', 'fluentformpro'),
-                    'qty'             => __('Qty', 'fluentformpro'),
-                    'line_total'      => __('Line Total', 'fluentformpro'),
-                    'total'           => __('Total', 'fluentformpro'),
-                    'not_found'       => __('No payment item selected yet', 'fluentformpro'),
-                    'discount:'       => __('Discount:', 'fluentformpro'),
-                    'processing_text' => __('Processing payment. Please wait...', 'fluentformpro'),
-                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentformpro'),
+                    'item'            => __('Item', 'fluentform'),
+                    'price'           => __('Price', 'fluentform'),
+                    'qty'             => __('Qty', 'fluentform'),
+                    'line_total'      => __('Line Total', 'fluentform'),
+                    'total'           => __('Total', 'fluentform'),
+                    'not_found'       => __('No payment item selected yet', 'fluentform'),
+                    'discount:'       => __('Discount:', 'fluentform'),
+                    'processing_text' => __('Processing payment. Please wait...', 'fluentform'),
+                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
                 ],
             ];
 
@@ -928,7 +928,7 @@ class Form
             'copy_button'               => fluentFormMix('img/copy.svg'),
             'copy_success_button'       => fluentFormMix('img/check.svg'),
             'email_button'              => fluentFormMix('img/email.svg'),
-            'email_placeholder_str'     => __('Your Email Here', 'fluentformpro'),
+            'email_placeholder_str'     => __('Your Email Here', 'fluentform'),
             'email_resume_link_enabled' => false,
             'save_progress_btn_name'    => ArrayHelper::get($field, 'attributes.name'),
         ]);

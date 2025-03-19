@@ -40,7 +40,7 @@ class Plan
             return static::processResponse($response);
         } catch (\Exception $e) {
             // Something else happened, completely unrelated to Stripe
-            return static::errorHandler('non_stripe', esc_html__('General Error', 'fluentformpro') . ': ' . $e->getMessage());
+            return static::errorHandler('non_stripe', esc_html__('General Error', 'fluentform') . ': ' . $e->getMessage());
         }
     }
 

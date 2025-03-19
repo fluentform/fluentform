@@ -18,7 +18,7 @@ class PaymentManager
         }
 
         if(!$submission || $submission->payment_method != 'stripe') {
-            return new \WP_Error('method_mismatch', __('Failed to cancel this subscription', 'fluentformpro'));
+            return new \WP_Error('method_mismatch', __('Failed to cancel this subscription', 'fluentform'));
         }
 
         // Get the first transaction to determine the payment mode
@@ -29,13 +29,13 @@ class PaymentManager
             ->first();
 
         if(!$lastTransaction) {
-            return new \WP_Error('transaction_mismatch', __('Failed to cancel this subscription', 'fluentformpro'));
+            return new \WP_Error('transaction_mismatch', __('Failed to cancel this subscription', 'fluentform'));
         }
 
         $vendorSubscriptionId = $subscription->vendor_subscription_id;
 
         if(!$vendorSubscriptionId) {
-            return new \WP_Error('no_vendor_subscription_found', __('Failed to cancel this subscription', 'fluentformpro'));
+            return new \WP_Error('no_vendor_subscription_found', __('Failed to cancel this subscription', 'fluentform'));
         }
 
         $secretKey = StripeSettings::getSecretKey($submission->form_id);
@@ -52,8 +52,8 @@ class PaymentManager
             'source_id'        => $submission->id,
             'component'        => 'General',
             'status'           => 'info',
-            'title'            => __('Subscription has been cancelled by ', 'fluentformpro') . $scope,
-            'description'      => __('Subscription has been cancelled from ', 'fluentformpro') . $submission->payment_method
+            'title'            => __('Subscription has been cancelled by ', 'fluentform') . $scope,
+            'description'      => __('Subscription has been cancelled from ', 'fluentform') . $submission->payment_method
         ]);
 
         // It's a success so let's send a valid response

@@ -2,10 +2,10 @@
     <table style="width: 100%;border: 1px solid #cbcbcb;margin-top: 0;" class="table ffp_order_items_table ffp_table table_bordered">
         <thead>
         <tr>
-            <th><?php _e('Amount', 'fluentformpro'); ?></th>
-            <th><?php _e('Date', 'fluentformpro'); ?></th>
+            <th><?php _e('Amount', 'fluentform'); ?></th>
+            <th><?php _e('Date', 'fluentform'); ?></th>
             <?php if($config['has_view_action']): ?>
-            <th><?php _e('Actions', 'fluentformpro'); ?></th>
+            <th><?php _e('Actions', 'fluentform'); ?></th>
             <?php endif; ?>
         </tr>
         </thead>

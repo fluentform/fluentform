@@ -51,8 +51,8 @@ class PaymentManagement
                 'source_id'        => $submission->id,
                 'component'        => 'General',
                 'status'           => 'info',
-                'title'            => __('Subscription has been cancelled by admin', 'fluentformpro'),
-                'description'      => __('Subscription has been cancelled locally. Subscription may not cancelled at ', 'fluentformpro') . $submission->payment_method
+                'title'            => __('Subscription has been cancelled by admin', 'fluentform'),
+                'description'      => __('Subscription has been cancelled locally. Subscription may not cancelled at ', 'fluentform') . $submission->payment_method
             ]);
         }
 

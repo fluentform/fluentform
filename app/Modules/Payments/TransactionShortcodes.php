@@ -78,7 +78,7 @@ class TransactionShortcodes
                     $html .= $withTitleHtml . $subscriptionsHtml . '</div>';
                 }
             } else if ($atts['type'] == 'subscriptions') {
-                return '<p class="ff_no_sub">' . __('No subscription payments found', 'fluentformpro') . '</p>';
+                return '<p class="ff_no_sub">' . __('No subscription payments found', 'fluentform') . '</p>';
             }
         }
 
@@ -102,7 +102,7 @@ class TransactionShortcodes
         if(!$transaction) {
             if($echo) {
                 status_header(200);
-                echo __('Sorry no transaction found', 'fluentformpro');
+                echo __('Sorry no transaction found', 'fluentform');
                 exit(200);
             }
             return '';
@@ -181,9 +181,9 @@ class TransactionShortcodes
 
             if ($subscription->status == 'active') {
                 if ($subscription->bill_times) {
-                    $billingText = sprintf(esc_html__('Will be cancelled after %d payments', 'fluentformpro'), $subscription->bill_times);
+                    $billingText = sprintf(esc_html__('Will be cancelled after %d payments', 'fluentform'), $subscription->bill_times);
                 } else {
-                    $billingText = __('will be billed until cancelled', 'fluentformpro');
+                    $billingText = __('will be billed until cancelled', 'fluentform');
                 }
             }
 
@@ -254,7 +254,7 @@ class TransactionShortcodes
 
         if (!$subscriptionId) {
             wp_send_json_error([
-                'message' => __('Invalid Subscription ID', 'fluentformpro'),
+                'message' => __('Invalid Subscription ID', 'fluentform'),
             ], 423);
         }
 
@@ -269,7 +269,7 @@ class TransactionShortcodes
 
         if (!$subscription) {
             wp_send_json_error([
-                'message' => __('Invalid Subscription ID', 'fluentformpro'),
+                'message' => __('Invalid Subscription ID', 'fluentform'),
             ], 423);
         }
 
@@ -277,7 +277,7 @@ class TransactionShortcodes
 
         if (!$transactions) {
             wp_send_json_error([
-                'message' => __('Sorry, no related payments found', 'fluentformpro'),
+                'message' => __('Sorry, no related payments found', 'fluentform'),
             ], 423);
         }
 
@@ -308,7 +308,7 @@ class TransactionShortcodes
             'config'       => $viewConfig
         ]);
 
-        $html = '<h4>' . __('Related Payments', 'fluentformpro') . '</h4>' . $html;
+        $html = '<h4>' . __('Related Payments', 'fluentform') . '</h4>' . $html;
 
         wp_send_json_success([
             'html' => $html
@@ -355,15 +355,15 @@ class TransactionShortcodes
 
         $config = [
             'new_tab'                    => false,
-            'view_text'                  => __('View', 'fluentformpro'),
+            'view_text'                  => __('View', 'fluentform'),
             'base_url'                   => $urlBase,
             'date_format'                => get_option('date_format'),
             'date_time_format'           => $wpDateTimeFormat,
-            'transactions_title'         => __('Payments', 'fluentformpro'),
-            'subscriptions_title'        => __('Subscriptions', 'fluentformpro'),
-            'sub_cancel_confirm_heading' => __('Are you sure you want to cancel this subscription?', 'fluentformpro'),
-            'sub_cancel_confirm_btn'     => __('Yes, cancel this subscription', 'fluentformpro'),
-            'sub_cancel_close'           => __('Close', 'fluentformpro')
+            'transactions_title'         => __('Payments', 'fluentform'),
+            'subscriptions_title'        => __('Subscriptions', 'fluentform'),
+            'sub_cancel_confirm_heading' => __('Are you sure you want to cancel this subscription?', 'fluentform'),
+            'sub_cancel_confirm_btn'     => __('Yes, cancel this subscription', 'fluentform'),
+            'sub_cancel_close'           => __('Close', 'fluentform')
         ];
 
         $config = apply_filters_deprecated(
@@ -385,7 +385,7 @@ class TransactionShortcodes
         $nonce = sanitize_text_field($_REQUEST['_nonce']);
         if (!wp_verify_nonce($nonce, 'fluentform_transactions')) {
             wp_send_json_error([
-                'message' => __('Security validation failed. Please try again', 'fluentformpro')
+                'message' => __('Security validation failed. Please try again', 'fluentform')
             ], 423);
         }
     }
@@ -433,13 +433,13 @@ class TransactionShortcodes
         $subscriptionId = ArrayHelper::get($_REQUEST, 'subscription_id');
 
         if (!$subscriptionId) {
-            $this->sendError(__('Invalid Request', 'fluentformpro'));
+            $this->sendError(__('Invalid Request', 'fluentform'));
         }
 
         $subscription = fluentFormApi('submissions')->getSubscription($subscriptionId);
 
         if (!$subscription) {
-            $this->sendError(__('No subscription found', 'fluentformpro'));
+            $this->sendError(__('No subscription found', 'fluentform'));
         }
 
         // validate the subscription
@@ -447,7 +447,7 @@ class TransactionShortcodes
         $submission = fluentFormApi('submissions')->find($subscription->submission_id);
 
         if (!$submission && $submission->user_id != $userid || $this->canCancelSubscription($submission)) {
-            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentformpro'));
+            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
     
         $handler = apply_filters_deprecated(
@@ -464,7 +464,7 @@ class TransactionShortcodes
         $handler = apply_filters('fluentform/payment_manager_class_' . $submission->payment_method, $handler);
 
         if (!$handler || !method_exists($handler, 'cancelSubscription')) {
-            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentformpro'));
+            $this->sendError(__('Sorry, you can not cancel this subscription at this moment', 'fluentform'));
         }
 
         $response = $handler->cancelSubscription($subscription, 'user', $submission);
@@ -474,7 +474,7 @@ class TransactionShortcodes
         }
 
         wp_send_json_success([
-            'message' => __('Your subscription has been cancelled. Refreshing the page...', 'fluentformpro')
+            'message' => __('Your subscription has been cancelled. Refreshing the page...', 'fluentform')
         ], 200);
 
     }

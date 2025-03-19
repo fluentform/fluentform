@@ -17,7 +17,7 @@ class Customer
 		$errors = static::validate($customerArgs);
 
 		if ($errors) {
-			return static::errorHandler('validation_failed', __('Payment data validation failed', 'fluentformpro'), $errors);
+			return static::errorHandler('validation_failed', __('Payment data validation failed', 'fluentform'), $errors);
 		}
 
 		try {
@@ -55,7 +55,7 @@ class Customer
 			return $response;
 		} catch (\Exception $e) {
 			// Something else happened, completely unrelated to Stripe
-			return static::errorHandler('non_stripe', esc_html__('General Error', 'fluentformpro') . ': ' . $e->getMessage());
+			return static::errorHandler('non_stripe', esc_html__('General Error', 'fluentform') . ': ' . $e->getMessage());
 		}
 	}
 
@@ -64,7 +64,7 @@ class Customer
 		$errors = [];
 
 		if (empty($args['source']) && empty($args['payment_method'])) {
-			$errors['source'] = __('Stripe token/payment_method is required', 'fluentformpro');
+			$errors['source'] = __('Stripe token/payment_method is required', 'fluentform');
 		}
 
 		return $errors;

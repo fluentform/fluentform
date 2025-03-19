@@ -25,13 +25,13 @@
                 </div>
                 <div class="ff_plan_info">
                     <p class="ff_billing_dates">
-                        <span class="ff_sub_start"><?php _e('Started:', 'fluentformpro') ?> <?php echo $subscription->starting_date_formated; ?></span>
+                        <span class="ff_sub_start"><?php _e('Started:', 'fluentform') ?> <?php echo $subscription->starting_date_formated; ?></span>
                     </p>
                     <div class="ff_payment_count_btn">
-                        <button data-subscription_id="<?php echo $subscription->id; ?>" class="ff_show_payments"><?php _e('View Payments', 'fluentformpro'); ?>
+                        <button data-subscription_id="<?php echo $subscription->id; ?>" class="ff_show_payments"><?php _e('View Payments', 'fluentform'); ?>
                         </button>
                         <?php if($subscription->can_cancel): ?>
-                        <button data-submission_id="<?php echo $subscription->submission_id; ?>" data-subscription_id="<?php echo $subscription->id; ?>" class="ff_cancel_subscription"><?php _e('Cancel', 'fluentformpro'); ?>
+                        <button data-submission_id="<?php echo $subscription->submission_id; ?>" data-subscription_id="<?php echo $subscription->id; ?>" class="ff_cancel_subscription"><?php _e('Cancel', 'fluentform'); ?>
                         </button>
                         <?php endif; ?>
                     </div>

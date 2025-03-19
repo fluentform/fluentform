@@ -52,7 +52,7 @@ class AjaxEndpoints
         // send response to reload the page
 
         wp_send_json_success([
-            'message'  => __('Payment Module successfully enabled!', 'fluentformpro'),
+            'message'  => __('Payment Module successfully enabled!', 'fluentform'),
             'settings' => $settings,
             'reload'   => 'yes'
         ]);
@@ -83,7 +83,7 @@ class AjaxEndpoints
 
         // send response to reload the page
         wp_send_json_success([
-            'message'  => __('Settings successfully updated!', 'fluentformpro'),
+            'message'  => __('Settings successfully updated!', 'fluentform'),
             'settings' => $settings,
             'reload'   => 'yes'
         ]);
@@ -131,7 +131,7 @@ class AjaxEndpoints
 
         if ($validationErrors) {
             wp_send_json_error([
-                'message' => __('Failed to save settings', 'fluentformpro'),
+                'message' => __('Failed to save settings', 'fluentform'),
                 'errors'  => $validationErrors
             ], 423);
         }
@@ -151,7 +151,7 @@ class AjaxEndpoints
         update_option('fluentform_payment_settings_' . $method, $settings, 'yes');
 
         wp_send_json_success([
-            'message' => __('Settings successfully updated', 'fluentformpro')
+            'message' => __('Settings successfully updated', 'fluentform')
         ]);
     }
 
@@ -181,7 +181,7 @@ class AjaxEndpoints
         Helper::setFormMeta($formId, '_payment_settings', $settings);
 
         wp_send_json_success([
-            'message' => __('Settings successfully saved', 'fluentformpro')
+            'message' => __('Settings successfully saved', 'fluentform')
         ], 200);
     }
 
@@ -277,7 +277,7 @@ class AjaxEndpoints
         }
 
         wp_send_json_success([
-            'message' => __('Successfully updated data', 'fluentformpro')
+            'message' => __('Successfully updated data', 'fluentform')
         ], 200);
     }
 
@@ -313,7 +313,7 @@ class AjaxEndpoints
 
         if (!$subscription) {
             wp_send_json_error([
-                'message' => __('Subscription could not be found', 'fluentformpro')
+                'message' => __('Subscription could not be found', 'fluentform')
             ], 423);
         }
 
