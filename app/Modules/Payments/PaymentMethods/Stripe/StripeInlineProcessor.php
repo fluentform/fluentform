@@ -83,7 +83,10 @@ class StripeInlineProcessor extends StripeProcessor
 
             // If FluentForm Pro is not installed, apply the fee 1.9% of the total amount
             if (!Helper::hasPro()) {
-                $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.019, 2);
+
+                $applicationFeeAmount = (int) ($totalPayable * 0.019);
+               // $applicationFeeAmount = (int) round(round($totalPayable / 100, 2) * 0.019, 2)
+
                 $intentArgs['application_fee_amount'] = $applicationFeeAmount;
             }
             $this->handlePaymentIntent($transaction, $submission, $intentArgs);

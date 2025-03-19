@@ -180,7 +180,8 @@ class StripeProcessor extends BaseProcessor
                 $checkoutArgs['subscription_data']['application_fee_percent'] = 1.9; // 1.9%
             } else {
                 // Total amount of 1.9%
-                $applicationFeeAmount = (int)round(round($transaction->payment_total / 100, 2) * 0.019, 2);
+                $applicationFeeAmount = (int) ($transaction->payment_total * 0.019);
+//                $applicationFeeAmount = (int)round(round($transaction->payment_total / 100, 2) * 0.019, 2);
                 $checkoutArgs['payment_intent_data']['application_fee_amount'] = $applicationFeeAmount;
             }
         }
