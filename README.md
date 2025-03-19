@@ -163,11 +163,16 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Adds Payment fields for free users (except subscription and coupon fields)
 - Adds Stripe payment gateway for free users (1.9% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
-- Adds FluentFormAI for creating forms
+- Adds FluentFormAI for creating AI assisted forms
+- Adds New Form Templates
 - Improves hCaptcha settings saving method
+- Improves Captchas Loading after first interactions on Popups
+- Improves CleanTalk API
+- Improves spam processing logs
 - Fixes Stripe fields language issues
 - Fixes "customer_name" issue for Stripe
 - Fixes conditional {dynamic.} shortcode in Custom HTML fields
+- Fixes front end facing site_url with home_url
 
 ### 5.2.12 (Date: February 18, 2025)
 - Adds token-based spam protection for enhanced form security
