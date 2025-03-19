@@ -430,8 +430,8 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.0.0 (Date: March 04, 2025) =
-- Adds Payment fields for free users (except subscription and coupon fields)
+= 6.0.0 (Date: March 19, 2025) =
+- Adds Payment fields for free users (except coupon fields)
 - Adds Stripe payment gateway for free users (1.9% fee per transaction)
 - Adds Advanced Conditionals group for enhanced form logic
 - Adds FluentFormAI for creating AI assisted forms
