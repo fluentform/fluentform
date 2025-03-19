@@ -16,6 +16,7 @@
                 <div class="ff_payment_settings">
 	                <component
 		                :is="currentComponent"
+		                :has_pro="app.has_pro"
 		                :settings="app.payment_vars"
 	                ></component>
                 </div>

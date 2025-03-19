@@ -8,7 +8,7 @@
                 {{ $t('Currency') }}
             </li>
             <li @click="current_page = 'pages'" :class="{ff_active: current_page == 'pages'}">
-                {{ $t('Pages & Subscription Management') }}
+                {{ has_pro ? $t('Pages & Subscription Management') : $t('Payment Pages Management') }}
             </li>
         </ul>
 
@@ -134,7 +134,7 @@
                 </div>
 
                 <div v-else-if="current_page == 'pages'" class="ff_pay_section">
-                    <page-settings :settings="general_settings" />
+                    <page-settings :settings="general_settings" :has_pro="has_pro" />
                 </div>
 
             </div>
@@ -160,7 +160,7 @@ import PageSettings from './_PageSettings';
 
 export default {
     name: 'general_payment_settings',
-    props: ['settings'],
+    props: ['settings', 'has_pro'],
     components: {
         PhotoUploader,
         PageSettings
