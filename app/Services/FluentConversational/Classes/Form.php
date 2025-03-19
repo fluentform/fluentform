@@ -852,7 +852,7 @@ class Form
                 ],
                 'stripe_app_info'   => [
                     'name'       => 'Fluent Forms',
-                    'version'    => FLUENTFORMPRO_VERSION,
+                    'version'    => FLUENTFORM_VERSION,
                     'url'        => site_url(),
                     'partner_id' => 'pp_partner_FN62GfRLM2Kx5d',
                 ],

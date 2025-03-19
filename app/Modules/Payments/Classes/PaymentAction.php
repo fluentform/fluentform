@@ -87,7 +87,7 @@ class PaymentAction
                 $paymentMethod = $field;
             } else if ($element == 'payment_coupon' && Helper::hasPro()) {
                 $couponField = $field;
-            } else if ($element === 'subscription_payment_component' && Helper::hasPro()) {
+            } else if ($element === 'subscription_payment_component') {
                 $subscriptionInputs[$fieldKey] = $field;
             }
         }
@@ -117,14 +117,13 @@ class PaymentAction
             }
         }
 
-        if (Helper::hasPro()) {
-            if ($this->subscriptionInputs) {
-                // Maybe we have subscription items with bill times = 1
-                // Or if we have discount codes then we have to apply the discount codes
-                $this->validateSubscriptionInputs();
-            }
-            $this->applyDiscountCodes();
+        if ($this->subscriptionInputs) {
+            // Maybe we have subscription items with bill times = 1
+            // Or if we have discount codes then we have to apply the discount codes
+            $this->validateSubscriptionInputs();
         }
+
+        $this->applyDiscountCodes();
     }
 
     public function isConditionPass()
@@ -512,10 +511,6 @@ class PaymentAction
 
     public function getSubscriptionItems()
     {
-        if (!Helper::hasPro()) {
-            return [];
-        }
-
         if ($this->subscriptionItems) {
             return $this->subscriptionItems;
         }

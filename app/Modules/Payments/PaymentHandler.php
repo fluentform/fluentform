@@ -49,6 +49,7 @@ class PaymentHandler
 
         // Let's load the payment method component here
         new MultiPaymentComponent();
+        new Subscription();
         new CustomPaymentComponent();
         new ItemQuantity();
         new PaymentMethods();
@@ -58,18 +59,6 @@ class PaymentHandler
             if (!Helper::hasPro()) {
                 $components['payments'][] = [
                     'index'          => 6,
-                    'element'        => 'subscription_payment_component',
-                    'attributes'     => [],
-                    'settings'       => [],
-                    'editor_options' => [
-                        'title'      => __('Subscription', 'fluentform'),
-                        'icon_class' => 'ff-edit-shopping-cart',
-                        'element'    => 'input-radio',
-                        'template'   => 'inputSubscriptionPayment',
-                    ],
-                ];
-                $components['payments'][] = [
-                    'index'          => 7,
                     'element'        => 'payment_coupon',
                     'attributes'     => [],
                     'settings'       => [],

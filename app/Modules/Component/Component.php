@@ -395,14 +395,6 @@ class Component
                 'image'       => fluentformMix('img/pro-fields/color-picker.png'),
                 'video'       => '',
             ];
-            $disabled['subscription_payment_component'] = [
-                'disabled'    => true,
-                'is_payment'  => true,
-                'title'       => __('Subscription Field', 'fluentform'),
-                'description' => __('Subscription Field is not available with the free version. Please upgrade to pro to get all the advanced features.', 'fluentform'),
-                'image'       => fluentformMix('img/pro-fields/subscription-field.png'),
-                'video'       => '',
-            ];
             $disabled['payment_coupon'] = [
                 'disabled'    => true,
                 'title'       => __('Coupon', 'fluentform'),

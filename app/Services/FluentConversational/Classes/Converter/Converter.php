@@ -795,6 +795,7 @@ class Converter
             'custom_payment_component'       => 'FlowFormPaymentType',
             'item_quantity_component'        => 'FlowFormPaymentType',
             'payment_summary_component'      => 'FlowFormPaymentSummaryType',
+            'subscription_payment_component' => 'FlowFormSubscriptionType',
         ];
         
         if (Helper::hasPro()) {
@@ -803,7 +804,6 @@ class Converter
             $fieldTypes['input_file'] = 'FlowFormFileType';
             $fieldTypes['ratings'] = 'FlowFormRateType';
             $fieldTypes['tabular_grid'] = 'FlowFormMatrixType';
-            $fieldTypes['subscription_payment_component'] = 'FlowFormSubscriptionType';
             $fieldTypes['payment_coupon'] = 'FlowFormCouponType';
             $fieldTypes['quiz_score'] = 'FlowFormHiddenType';
             $fieldTypes['rangeslider'] = 'FlowFormRangesliderType';
