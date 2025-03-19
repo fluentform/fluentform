@@ -9,20 +9,19 @@ use FluentForm\App\Helpers\Helper;
 
 return function ($file) {
     add_action('plugins_loaded', function () {
-        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, '5.0.0', '<');
-        $message = '<div><h3>' . __('Fluent Forms Pro is not working. Update required!',
-                'fluentform') . '</h3><p>' . __('Current version of the pro plugin is not compatible with the latest version of Core Plugin.',
-                'fluentform') . '<a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __('Please update Fluent Forms Pro to latest version.',
-                'fluentform') . '</a></p></div>';
+        $isNotCompatible = defined('FLUENTFORMPRO') && version_compare(FLUENTFORMPRO_VERSION, FLUENTFORM_MINIMUM_PRO_VERSION, '<');
+        $message = '<div style="padding: 15px 10px;" ><b>' . __('Heads UP: ',
+                'fluentform') . '</b>' . __('Fluent Forms Pro Plugin needs to be updated to the latest version.',
+                'fluentform') . '<a href="' . admin_url('plugins.php?s=fluentformpro&plugin_status=all&force-check=1') . '">' . __(' Please update Fluent Forms Pro to latest version.',
+                'fluentform') . '</a></div>';
         if ($isNotCompatible) {
             $actions = [
                 'fluentform/global_menu',
                 'fluentform/after_form_menu',
-                'admin_notices'
             ];
             foreach ($actions as $action) {
                 add_action($action, function () use ($message) {
-                    printf('<div class="fluentform-admin-notice notice notice-error">%1$s</div>', $message);
+                    printf('<div class="fluentform-admin-notice notice notice-success">%1$s</div>', $message);
                 });
             }
         }
