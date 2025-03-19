@@ -13,7 +13,6 @@
                 >
                 </p>
                 <p
-	                v-if="has_pro"
                     v-html="
                         $t(
                             'Also %splease check the documentation%s to learn how to accept %sRecurring Payments%s',
@@ -33,7 +32,7 @@
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
                             <p>
-                                {{ $t(`This is where user can view their single payments ${has_pro? 'and subscriptions' : ''}.`) }}
+                                {{ $t('This is where user can view their single payments and subscriptions.') }}
                             </p>
                         </div>
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -52,7 +51,7 @@
                     class="mt-2 text-note"
                     v-html="
                         $t(
-                            `Add shortcode %s[fluentform_payments]%s in the selected page. This shortcode will show payments ${has_pro? 'and subscriptions ' : ''}to the logged-in user`,
+                            'Add shortcode %s[fluentform_payments]%s in the selected page. This shortcode will show single and subscriptions to the logged-in user',
                             '<b>',
                             '</b>'
                         )
@@ -66,7 +65,7 @@
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                         <div slot="content">
                             <p>
-                                {{ $t(`This is where user can view their payment receipt${ has_pro?' and manage single subscription payment' : '' }.`) }}
+                                {{ $t('This is where user can view their payment receipt and manage single subscription payment.') }}
                             </p>
                         </div>
                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
@@ -93,7 +92,7 @@
                 >
                 </p>
             </el-form-item>
-            <el-form-item class="ff-form-item" v-if="has_pro">
+            <el-form-item class="ff-form-item">
                 <template slot="label">
                     {{ $t('Subscription Management') }}
                     <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
@@ -116,7 +115,7 @@
 <script type="text/babel">
 export default {
     name: 'PageSettings',
-    props: ['settings', 'has_pro'],
+    props: ['settings'],
     data() {
         return {
             pages: [],
