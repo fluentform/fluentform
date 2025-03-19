@@ -46,7 +46,7 @@
         "rtlcss": "^3.5.0",
         "sass": "^1.63.5",
         "sass-loader": "^13.3.2",
-        "vue-loader": "^15.9.8",
+        "vue-loader": "^17.4.2",
         "vue-template-compiler": "^2.6.14",
         "webpack-bundle-analyzer": "^4.10.2"
     }
