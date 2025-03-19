@@ -10,7 +10,7 @@
  * License: GPLv2 or later
  * Text Domain: fluentform
  * Domain Path: /resources/languages
-*/
+ */
 
 defined('ABSPATH') or die;
 defined('FLUENTFORM') or define('FLUENTFORM', true);
