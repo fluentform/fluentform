@@ -66,6 +66,11 @@ class ConditionApp {
 
 
             item._visited = false;
+
+            // If field conditions exist but failed, return immediately without checking container_condition
+            if ((item.conditions?.length || item.condition_groups?.length) && !mainResult) {
+                return mainResult;
+            }
         }
 
         if (item.container_condition) {
