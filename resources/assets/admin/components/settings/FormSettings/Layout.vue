@@ -370,6 +370,30 @@
                                v-model="misc.honeypotStatus"></el-switch>
                 </el-form-item>
 
+                <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
+                    <template slot="label">
+                        <div>
+                            <span>
+                                {{ $t('Token Based Spam Protection') }}
+                                <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+                                    <div slot="content">
+                                        <p>
+                                            {{
+                                                $t('Token based spam protection is generated only after interacting with the form, ensuring human engagement. Please interact with the form before submitting to validate the token.')
+                                            }}
+                                        </p>
+                                    </div>
+                                    <i class="ff-icon ff-icon-info-filled text-primary"></i>
+                                </el-tooltip>
+                            </span>
+                            <p class="text-note mt-1">{{ $t('Recommended Settings: Enabled') }}</p>
+                        </div>
+                    </template>
+
+                    <el-switch class="el-switch-lg" active-value="yes" inactive-value="no"
+                               v-model="misc.tokenBasedProtectionStatus"></el-switch>
+                </el-form-item>
+
                 <template v-if="akismet_available">
                     <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
                         <template slot="label">
@@ -419,7 +443,7 @@
                 </template>
 
                 <template >
-                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width"  :class="{ 'ff-disabled': !cleantalk_available }">
+                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width" v-if="cleantalk_available">
                         <template slot="label">
                             <span>
                                 <span>
@@ -428,15 +452,14 @@
                                         <div slot="content">
                                             <p>
                                                 {{
-                                                    $t('If you enable this then Fluent Forms will verify the form submission with CleanTalk. It will save you from spam form submission.')
+                                                    $t('Please use the CleanTalk option found in the Security submenu, which utilizes CleanTalk API and does not require the CleanTalk Anti-Spam Plugin which is recommended.')
                                                 }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
-                                <p class="text-note mt-1" v-else>{{ $t('Recommended Settings: Enabled') }}</p>
+                                <p class="text-note mt-1" v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
                             </span>
                         </template>
 
@@ -460,10 +483,9 @@
                         <el-radio-group v-model="misc.cleantalk_validation">
                             <el-radio label="mark_as_spam">{{ $t('Mark as Spam') }}</el-radio>
                             <el-radio label="validation_failed">{{ $t('Make the Form Submission as Failed') }}</el-radio>
+                            <el-radio label="mark_as_spam_and_skip_processing">{{ $t('Mark as Spam and Skip Processing') }}</el-radio>
                         </el-radio-group>
-
                     </el-form-item>
-
                 </template>
 
                 <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width">
@@ -849,6 +871,10 @@
             }
             if(!this.data.misc.default_admin_date_time) {
                 this.$set(this.data.misc, 'default_admin_date_time', 'time_diff');
+            }
+
+            if(!this.data.misc.tokenBasedProtectionStatus) {
+                this.$set(this.data.misc, 'tokenBasedProtectionStatus', 'no');
             }
 
             this.misc = this.data.misc;

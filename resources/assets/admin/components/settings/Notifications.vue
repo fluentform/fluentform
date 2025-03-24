@@ -162,11 +162,12 @@
                         <!--additional field based on the send to selection-->
                         <template v-if="selected.value.sendTo.type === 'email'">
                             <el-form-item
-                                :label="$t('Send to Email')"
+                                :label="$t('Send to Emailx')"
                                 class="conditional-items ff-form-item"
                                 :class="errors.has('sendTo.email') ? 'is-error' : ''"
+
                             >
-                                <el-input v-model="selected.value.sendTo.email"></el-input>
+                                <el-input  :placeholder="$t('Use comma for multiple emails')" v-model="selected.value.sendTo.email"></el-input>
 
                                 <error-view field="sendTo.email" :errors="errors"></error-view>
                             </el-form-item>
@@ -240,7 +241,7 @@
                                 <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
                                     <div slot="content">
                                         <p>
-                                            {{ $t('Allow this feed conditionally') }}
+	                                        {{ $t('Allow this feed notification conditionally. Select to match whether all rules are required, any rule is sufficient, or use group logic. If the conditions match, the notification will be sent. For groups, if any group\'s conditions are fully met, the notification will be sent.') }}
                                         </p>
                                     </div>
                                     <i class="ff-icon ff-icon-info-filled text-primary"></i>

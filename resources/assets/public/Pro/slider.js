@@ -520,7 +520,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                 }
 
                 //skip saving the last step
-                let isLastStep = activeStep === totalSteps - 1;
+                let isLastStep = activeStep === totalSteps;
 
                 // Fire ajax request to persist the step state/data
                 if (stepPersistency && !isPopulatingStepData && !isLastStep) {
@@ -591,9 +591,12 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             if (!isInitialLoad) {
                 if (!autoFocusEnabled) {
-                    setTimeout(() => {
-                        $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
-                    }, animDuration);
+                    const focusOnStepChange = !!window.fluentFormVars?.step_change_focus;
+                    if (focusOnStepChange) {
+                        setTimeout(() => {
+                            $(`${formSelector} .fluentform-step.active`).attr("tabindex", "-1").focus().removeAttr("tabindex");
+                        }, animDuration);
+                    }
 
                     isInitialLoad = false;
                 } else {

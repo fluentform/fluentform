@@ -704,10 +704,13 @@ class Menu
 
         $currentRoute = sanitize_key($this->app->request->get('sub_route', ''));
 
+        $hasDoubleOptinEnable = 'yes' === ArrayHelper::get(get_option('_fluentform_double_optin_settings'), 'enabled');
+
         $this->app->view->render('admin.form.settings_wrapper', [
             'form_id'           => $form_id,
             'settings_menus'    => $settingsMenus,
             'current_sub_route' => $currentRoute,
+            'has_double_opt_in' => $hasDoubleOptinEnable
         ]);
     }
 
@@ -976,7 +979,7 @@ class Menu
             'element_search_tags'            => $searchTags,
             'element_settings_placement'     => $elementPlacements,
             'all_forms_url'                  => admin_url('admin.php?page=fluent_forms'),
-            'has_payment_features'           => !defined('FLUENTFORMPRO'),
+            'has_payment_features'           => true,
             'upgrade_url'                    => fluentform_upgrade_url(),
             'is_conversion_form'             => Helper::isConversionForm($formId),
             'is_autoload_captcha'            => Helper::isAutoloadCaptchaEnabled(),
@@ -1059,7 +1062,6 @@ class Menu
         );
         
         $components = apply_filters('fluentform/global_settings_components', $components);
-    
 
         $components['reCAPTCHA'] = [
             'hash'  => 're_captcha',
@@ -1074,6 +1076,11 @@ class Menu
         $components['Turnstile'] = [
             'hash'  => 'turnstile',
             'title' => 'Turnstile',
+        ];
+
+        $components['CleanTalk'] = [
+            'hash'  => 'cleantalk',
+            'title' => 'CleanTalk',
         ];
 
         $customLinks = apply_filters('fluentform/global_settings_menu', []);

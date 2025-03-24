@@ -71,6 +71,7 @@ $app->addAction(
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
+    (new \FluentForm\App\Modules\Ai\AiController())->boot();
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -350,6 +351,10 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
             $item['settings']['is_width_auto_calc'] = true;
         }
 
+        if (!isset($item['settings']['render_recaptcha_v3_badge'])) {
+            $item['settings']['render_recaptcha_v3_badge'] = false;
+        }
+
         $shouldSetWidth = !empty($item['columns']) && (!isset($item['columns'][0]['width']) || !$item['columns'][0]['width']);
 
         if ($shouldSetWidth) {
@@ -622,19 +627,21 @@ add_action('wp', function () use ($app) {
             ]);
             wp_enqueue_style('fluent-form-styles');
             $form = wpFluent()->table('fluentform_forms')->find(intval($app->request->get('preview_id')));
+            $postId = get_the_ID() ?: 0;
 
             $loadPublicStyle = apply_filters_deprecated(
                 'fluentform_load_default_public',
                 [
                     true,
-                    $form
+                    $form,
+                    $postId
                 ],
                 FLUENTFORM_FRAMEWORK_UPGRADE,
                 'fluentform/load_default_public',
                 'Use fluentform/load_default_public instead of fluentform_load_default_public.'
             );
 
-            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, $form)) {
+            if (apply_filters('fluentform/load_default_public', $loadPublicStyle, $form, $postId)) {
                 wp_enqueue_style('fluentform-public-default');
             }
             wp_enqueue_script('fluent-form-submission');
@@ -793,16 +800,26 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
+    new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
 });
 
 $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->renderHoneyPot($form);
+
+    $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    $tokenBasedSpamProtection->renderTokenField($form);
+
+    $cleanTalk = new \FluentForm\App\Modules\Form\CleanTalkHandler();
+    $cleanTalk->setCleanTalkScript();
 });
 
 $app->addAction('fluentform/before_insert_submission', function ($insertData, $requestData, $form) use ($app) {
     $honeyPot = new \FluentForm\App\Modules\Form\HoneyPot($app);
     $honeyPot->verify($insertData, $requestData, $form->id);
+
+    $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    $tokenBasedSpamProtection->verify($insertData, $requestData, $form->id);
 }, 9, 3);
 
 // Maybe update current user allowed form ids,
@@ -1030,13 +1047,28 @@ add_action('enqueue_block_editor_assets', function () {
         [],
         FLUENTFORM_VERSION
     );
-    
-    wp_enqueue_style(
-        'fluentform-public-default',
-        $fluentFormPublicDefaultCss,
-        [],
-        FLUENTFORM_VERSION
+
+    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    $loadPublicStyle = apply_filters_deprecated(
+        'fluentform_load_default_public',
+        [
+            true,
+            (object)[],
+            $post_id
+        ],
+        FLUENTFORM_FRAMEWORK_UPGRADE,
+        'fluentform/load_default_public',
+        'Use fluentform/load_default_public instead of fluentform_load_default_public.'
     );
+
+    if (apply_filters('fluentform/load_default_public', $loadPublicStyle, (object)[], $post_id)) {
+        wp_enqueue_style(
+            'fluentform-public-default',
+            $fluentFormPublicDefaultCss,
+            [],
+            FLUENTFORM_VERSION
+        );
+    }
 });
 
 

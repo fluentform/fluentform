@@ -150,7 +150,13 @@ class FormValidationService
                     $errors[$inputName] = [];
                 }
                 if (is_string($error)) {
-                    $error = [$error];
+                    $error = [fluentform_sanitize_html($error)];
+                } else {
+                    if (is_array($error)) {
+                        foreach ($error as $rule => $message) {
+                            $error[$rule] = fluentform_sanitize_html($message);
+                        }
+                    }
                 }
                 $errors[$inputName] = array_merge($error, $errors[$inputName]);
             }
@@ -431,6 +437,26 @@ class FormValidationService
         ];
         throw new ValidationException('', 422, null, ['errors' => $errors]);
     }
+
+    /** Validate CleanTalk Spam While Using API
+     * @throws ValidationException
+     */
+    public function handleCleanTalkSpamErrorUsingAPi()
+    {
+        $cleantalkSettings = get_option('_fluentform_cleantalk_details');
+
+        if (
+            !$cleantalkSettings ||
+            'validation_failed' != Arr::get($cleantalkSettings, 'validation')
+        ) {
+            return;
+        }
+
+        $errors = [
+            '_fluentformcleantalk' => __('Submission marked as spammed. Please try again', 'fluentform'),
+        ];
+        throw new ValidationException('', 422, null, ['errors' => $errors]);
+    }
     
     public function isAkismetSpam($formData, $form)
     {
@@ -482,6 +508,23 @@ class FormValidationService
             return false;
         }
         $isSpam = CleanTalkHandler::isSpamSubmission($formData, $form);
+
+        return apply_filters('fluentform/cleantalk_spam_result', $isSpam, $form->id, $formData);
+    }
+
+    public function isCleanTalkSpamUsingApi($formData, $form)
+    {
+        if (!CleanTalkHandler::isCleantalkActivated()) {
+            return false;
+        }
+
+        $isSpamCheck = apply_filters('fluentform/cleantalk_check_spam', true, $form->id, $formData);
+
+        if (!$isSpamCheck) {
+            return false;
+        }
+
+        $isSpam = CleanTalkHandler::spamSubmissionCheckWithApi($formData, $form);
 
         return apply_filters('fluentform/cleantalk_spam_result', $isSpam, $form->id, $formData);
     }

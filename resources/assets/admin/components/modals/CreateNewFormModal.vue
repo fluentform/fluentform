@@ -95,7 +95,7 @@
                                 </template>
                             </el-skeleton>
                         </el-col>
-                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5" v-if="has_gpt_feature">
+                        <el-col :sm="has_post_feature ? 6 : 8" class="mb-5">
                             <el-skeleton :loading="loading" animated class="h-100">
                                 <template slot="template">
                                     <el-skeleton-item variant="image" style="margin-bottom: 16px; height: 214px;"/>
@@ -105,8 +105,8 @@
                                 <template>
                                     <card class="ff_card_form_action ff_card_shadow_lg hover-zoom"  @click="showChatGPT" :img="chatGptImg" imgClass="mb-3">
                                         <card-body>
-                                            <h6 class="mb-2 ff_card_title">{{$t('Create Using ChatGPT')}}</h6>
-                                            <p class="ff_card_text">{{$t('Create a form with AI using ChatGPT')}}</p>
+                                            <h6 class="mb-2 ff_card_title">{{$t('Create Using AI')}}</h6>
+                                            <p class="ff_card_text">{{$t('Create a form with AI')}}</p>
                                         </card-body>
                                     </card>
                                 </template>
@@ -165,7 +165,6 @@
                 innerVisible: false,
                 chatQuery: '',
                 has_post_feature: !!window.FluentFormApp.has_post_feature,
-                has_gpt_feature: !!window.FluentFormApp.has_gpt_feature,
                 postFormData: {
                     type: 'post',
                     predefined: 'blank_form',
@@ -179,7 +178,7 @@
                 search: '',
                 has_pro: !!window.FluentFormApp.hasPro,
                 blankFormImg:  window.FluentFormApp.plugin_public_url + 'img/blank-form.png',
-                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/ff-chatgpt-form.png',
+                chatGptImg:  window.FluentFormApp.plugin_public_url + 'img/ff-ai-form.png',
                 chooseTemplateImg:  window.FluentFormApp.plugin_public_url + 'img/choose-template.png',
                 conversationalFormImg:  window.FluentFormApp.plugin_public_url + 'img/conversational-form.png',
                 postTypeFormImg:  window.FluentFormApp.plugin_public_url + 'img/post-type-form.png',

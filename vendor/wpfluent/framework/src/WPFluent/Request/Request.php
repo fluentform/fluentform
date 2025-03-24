@@ -139,15 +139,19 @@ class Request
      */
     public function getIp()
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $this->server('HTTP_CLIENT_IP');
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Prioritize REMOTE_ADDR as WordFence Suggestion
+        $ip = $this->server('REMOTE_ADDR');
+
+        if (empty($ip) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $this->server('HTTP_X_FORWARDED_FOR');
-        } else {
-            $ip = $this->server('REMOTE_ADDR');
         }
 
-        return $ip;
+        if (empty($ip) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $this->server('HTTP_CLIENT_IP');
+        }
+
+        // If no valid IP is found, return '0.0.0.0'
+        return !empty($ip) ? $ip : '0.0.0.0';
     }
 
     public function server($key = null, $default = null)
