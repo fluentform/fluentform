@@ -46,6 +46,9 @@ class SubmissionHandlerService
         if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
             return $returnData;
         }
+        if (isset($insertData['spam_from'])) {
+            unset($insertData['spam_from']);
+        }
         $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
     
         return $this->processSubmissionData($insertId, $this->formData, $this->form);
