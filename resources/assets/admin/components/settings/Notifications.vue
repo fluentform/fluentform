@@ -162,7 +162,7 @@
                         <!--additional field based on the send to selection-->
                         <template v-if="selected.value.sendTo.type === 'email'">
                             <el-form-item
-                                :label="$t('Send to Emailx')"
+                                :label="$t('Send to Email')"
                                 class="conditional-items ff-form-item"
                                 :class="errors.has('sendTo.email') ? 'is-error' : ''"
 
