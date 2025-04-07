@@ -46,9 +46,6 @@ class SubmissionHandlerService
         if ($returnData = $this->isSpamAndSkipProcessing($insertData)) {
             return $returnData;
         }
-        if (isset($insertData['spam_from'])) {
-            unset($insertData['spam_from']);
-        }
         $insertId = $this->insertSubmission($insertData, $formDataRaw, $formId);
     
         return $this->processSubmissionData($insertId, $this->formData, $this->form);
@@ -418,16 +415,16 @@ class SubmissionHandlerService
         );
     }
 
-    private function isSpamAndSkipProcessing($insertData)
+    private function isSpamAndSkipProcessing(&$insertData)
     {
-        if (Arr::get($insertData, 'status') !== 'spam') {
-            return false;
-        }
-
         $spamSources = Arr::get($insertData, 'spam_from', []);
-        
+
         if ($spamSources) {
             unset($insertData['spam_from']);
+        }
+        
+        if (Arr::get($insertData, 'status') !== 'spam') {
+            return false;
         }
 
         $insertId = Submission::insertGetId($insertData);
