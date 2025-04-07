@@ -319,7 +319,7 @@ class PaymentHandler
         }
         
         $paymentSettings = PaymentHelper::getPaymentSettings();
-        $isSettingsAvailable = !!get_option('__fluentform_payment_module_settings');
+        $isSettingsAvailable = PaymentHelper::hasPaymentSettings();
         
         $nav = 'general';
         
