@@ -196,7 +196,7 @@ class PaymentHandler
             
             wp_localize_script('fluentform-payment-handler', 'fluentform_payment_config_' . $form->id, $paymentConfig);
             
-        });
+        }, 11);
         
         if (isset($_GET['fluentform_payment']) && isset($_GET['payment_method'])) {
             add_action('wp', function () {
