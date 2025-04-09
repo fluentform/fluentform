@@ -676,6 +676,10 @@ export class Payment_handler {
                 if (this.paymentMethod === 'square') {
                     jQuery(event.target).closest('.ff-el-input--content').find('.square-inline-wrapper').css({display: 'block'});
                 }
+
+                if (this.paymentMethod === 'paypal' ) {
+                    jQuery(event.target).closest('.ff-el-input--content').find('.paypal-standard-checkout-wrapper').css({display: 'block'});
+                }
             });
         }
     }
@@ -745,7 +749,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -774,7 +778,7 @@ export class Payment_handler {
             console.error('Stripe is not initialized');
             return;
         }
-        
+
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret
