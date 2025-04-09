@@ -8,6 +8,7 @@
         "production": "mix --production"
     },
     "dependencies": {
+        "apexcharts": "^4.5.0",
         "chroma-js": "^2.4.2",
         "clipboard": "^2.0.11",
         "dompurify": "^3.0.8",
@@ -24,6 +25,7 @@
         "splitpanes": "^2.4.1",
         "vddl": "^0.7.1",
         "vue": "^2.6.14",
+        "vue-apexcharts": "^1.7.0",
         "vue-html-to-paper": "^1.4.4",
         "vue-router": "^3.5.3",
         "vuex": "^3.6.2"

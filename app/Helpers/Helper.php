@@ -275,7 +275,8 @@ class Helper
             'fluent_forms_add_ons',
             'fluent_forms_docs',
             'fluent_forms_payment_entries',
-            'fluent_forms_smtp'
+            'fluent_forms_smtp',
+            'fluent_forms_reports'
         ];
         
         $status = true;

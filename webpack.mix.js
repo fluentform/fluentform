@@ -58,6 +58,7 @@ mix
     .js('resources/assets/admin/documentation.js', `assets/js/docs.js`)
     .js('resources/assets/admin/form_preview_app.js', `assets/js/form_preview_app.js`)
     .js('resources/assets/admin/AllEntries/all-entries.js', `assets/js/all_entries.js`)
+    .js('resources/assets/admin/Reports/reports.js', `assets/js/reports.js`)
     .js('resources/assets/admin/conversion_templates/conversational_design.js', `assets/js/conversational_design.js`)
     .vue({
         version: 2,
