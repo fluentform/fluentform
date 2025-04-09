@@ -3,6 +3,7 @@
 namespace FluentForm\App\Models;
 
 use Exception;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Support\Arr;
 
@@ -262,10 +263,10 @@ class Submission extends Model
 
         EntryDetails::whereIn('submission_id', $submissionIds)->delete();
 
-        //delete the pro models this way for now
-        // todo: handle these pro models deletion
+        //delete  models this way for now
+        // todo: update wpFluent to the framework model
         try {
-            if(defined('FLUENTFORMPRO_VERSION')) {
+            if (PaymentHelper::hasPaymentSettings()) {
                 wpFluent()->table('fluentform_order_items')
                     ->whereIn('submission_id', $submissionIds)
                     ->delete();

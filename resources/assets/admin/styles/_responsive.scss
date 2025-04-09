@@ -270,6 +270,13 @@
       width: 100%;
     }
   }
+  .ff-filter-fields-wrap {
+    .ff_conditions_warp {
+      .group-container .conditional-logic {
+        gap: 10px;
+      }
+    }
+  }
   .el-radio-button-group{
     border: 0;
     .el-radio-button{

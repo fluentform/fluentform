@@ -106,6 +106,7 @@
                 hCaptcha: {
                     siteKey: "",
                     secretKey: "",
+                    token: ""
                 },
                 hCaptcha_status: false,
                 siteKeyChanged: false,
@@ -131,18 +132,23 @@
                     let siteKey = this.hCaptcha.siteKey;
                     const self = this;
                     $hCaptcha.html("");
-                    const widgetId = hcaptcha.render(id, {
-                        sitekey: siteKey,
-                    });
-                    hcaptcha
-                        .execute(widgetId, {async: true})
-                        .then(function ({response, key}) {
-                            self.hCaptcha.token = response;
-                            self.disabled = false;
-                        })
-                        .catch(function (err) {
-                            console.log(err);
+                    if (typeof hcaptcha !== 'undefined') {
+                        const widgetId = hcaptcha.render(id, {
+                            sitekey: siteKey,
+                            callback: function(token) {
+                                self.hCaptcha.token = token;
+                                self.disabled = false; // Enable the save button
+                            },
+                            'error-callback': function() {
+                                // This will be called when there's an error
+                                self.disabled = true;
+                                self.$fail(self.$t('hCaptcha verification failed.'));
+                            }
                         });
+                    } else {
+                        self.disabled = true;
+                        self.$fail(self.$t('hCaptcha script failed to load.'));
+                    }
                 });
             },
             save() {
@@ -187,7 +193,7 @@
                 FluentFormsGlobal.$rest.post(url, data)
                     .then((response) => {
                         this.hCaptcha_status = response.status;
-                        this.hCaptcha = {siteKey: "", secretKey: ""};
+                        this.hCaptcha = {siteKey: "", secretKey: "", token: ""};
                         if (this.hCaptcha_status == 1) {
                             this.$success(response.message);
                         } else {
@@ -221,6 +227,7 @@
                         const hcaptcha = response._fluentform_hCaptcha_details || {
                             siteKey: "",
                             secretKey: "",
+                            token: ""
                         };
                         this.hCaptcha = hcaptcha;
                         this.hCaptcha_status = response._fluentform_hCaptcha_keys_status;
@@ -232,9 +239,7 @@
         },
         created() {
             let hCaptchaScript = document.createElement("script");
-
             hCaptchaScript.setAttribute("src", "https://js.hcaptcha.com/1/api.js");
-
             document.body.appendChild(hCaptchaScript);
         },
     };

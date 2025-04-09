@@ -18,6 +18,20 @@ import calculation from './Pro/calculations';
         const formId = form.form_id_selector;
         const formSelector = '.' + form.form_instance;
 
+        function sanitizeDynamicValue(input) {
+            // Remove dangerous tags and event handlers
+            input = input.replace(/<script.*?>.*?<\/script>/gis, '')
+                .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                .replace(/javascript:/gi, '');
+
+            // Escape all HTML tags
+            input = input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            // Allow <br> and convert \n to <br>
+            return input.replace(/&lt;br\s*\/?&gt;/gi, '<br/>').replace(/\n/g, '<br/>');
+        }
+
        function maybeUpdateDynamicLabels(workStep) {
             jQuery.each(workStep.find('.ff_dynamic_value'), function (index, item) {
                 var ref = $(item).data('ref');
@@ -100,7 +114,8 @@ import calculation from './Pro/calculations';
                     replaceValue = $(item).data('fallback');
                 }
 
-                $(this).html(replaceValue);
+                // Sanitize the replacement value before inserting it
+                $(this).html(sanitizeDynamicValue(replaceValue));
             });
         }
 

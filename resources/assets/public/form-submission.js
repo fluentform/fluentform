@@ -223,8 +223,8 @@ jQuery(document).ready(function () {
 
                         // Init reCaptcha if available.
                         if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length) {
-                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
-                            if (grecaptchaWidgetId) {
+                            const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                            if (typeof grecaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'g-recaptcha-response': grecaptcha.getResponse(grecaptchaWidgetId)
                                 });
@@ -233,8 +233,8 @@ jQuery(document).ready(function () {
 
                         // Init hCaptcha if available.
                         if ($theForm.find('.ff-el-hcaptcha.h-captcha').length) {
-                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('hcaptcha_widget_id');
-                            if (hcaptchaWidgetId) {
+                            const hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                            if (typeof hcaptchaWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'h-captcha-response': hcaptcha.getResponse(hcaptchaWidgetId)
                                 });
@@ -243,8 +243,8 @@ jQuery(document).ready(function () {
 
                         // Init turnstile if available.
                         if ($theForm.find('.ff-el-turnstile.cf-turnstile').length) {
-                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('turnstile_widget_id');
-                            if (turnstileWidgetId) {
+                            const turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                            if (typeof turnstileWidgetId !== "undefined") {
                                 formData['data'] += '&' + $.param({
                                     'cf-turnstile-response': turnstile.getResponse(turnstileWidgetId)
                                 });
@@ -423,20 +423,20 @@ jQuery(document).ready(function () {
                             hideFormSubmissionProgress($theForm);
                             // reset reCaptcha if available.
                             if (window.grecaptcha) {
-                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('grecaptcha_widget_id');
-                                if (grecaptchaWidgetId) {
+                                const grecaptchaWidgetId = $theForm.find('.ff-el-recaptcha.g-recaptcha').data('g-recaptcha_widget_id');
+                                if (typeof grecaptchaWidgetId !== "undefined") {
                                     grecaptcha.reset(grecaptchaWidgetId);
                                 }
                             }
                             if (window.hcaptcha) {
-                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('hcaptcha_widget_id');
-                                if (hcaptchaWidgetId) {
-                                    hcaptcha.reset(hcaptchaWidgetId); //two recapthca on same page creates conflicts
+                                let hcaptchaWidgetId = $theForm.find('.ff-el-hcaptcha.h-captcha').data('h-captcha_widget_id');
+                                if (typeof hcaptchaWidgetId !== "undefined") {
+                                    hcaptcha.reset(hcaptchaWidgetId);
                                 }
                             }
                             if (window.turnstile) {
-                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('turnstile_widget_id');
-                                if (turnstileWidgetId) {
+                                let turnstileWidgetId = $theForm.find('.ff-el-turnstile.cf-turnstile').data('cf-turnstile_widget_id');
+                                if (typeof turnstileWidgetId !== "undefined") {
                                     turnstile.reset(turnstileWidgetId);
                                 }
                             }
@@ -889,12 +889,25 @@ jQuery(document).ready(function () {
 
                     $(document).on('lity:open', function () {
                         window.turnstile?.remove();
-                        renderCaptchas();
+                        mayBeRenderCaptchas();
                     });
-                    renderCaptchas();
+
+                    $theForm.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                        $theForm.trigger('fluentform_first_interaction');
+                    });
+
+                    $theForm.on('fluentform_first_interaction', function() {
+                        mayBeRenderCaptchas();
+                    });
+
+                    $theForm.on('ff_to_next_page ff_to_prev_page', function(e) {
+                        mayBeRenderCaptchas();
+                    });
+
+                    mayBeRenderCaptchas();
                 };
 
-                let renderCaptchas = function () {
+                let mayBeRenderCaptchas = function () {
                     // reCAPTCHA
                     if ($theForm.find('.ff-el-recaptcha.g-recaptcha').length && window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
                         window.grecaptcha.ready(function () {
@@ -924,34 +937,45 @@ jQuery(document).ready(function () {
                 let renderCaptcha = function (type, $el, renderFunction) {
                     var siteKey = $el.data('sitekey');
                     var id = $el.attr('id');
-                    var formId = $el.closest('form').data('form_id');
                     var widgetIdAttr = `data-${type}_widget_id`;
-                    var renderedDataAttr = `${type}-rendered`;
 
-                    if (!$el.data(renderedDataAttr)) {
-                        try {
-                            let container = id;
-                            let options = {
-                                'sitekey': siteKey,
-                                'callback': function(token) {
-                                    $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val(token);
-                                },
-                                'expired-callback': function() {
-                                    $el.closest('form').find(`input[name="${type}-response-${formId}"]`).val('');
-                                }
-                            };
+                    try {
+                        let widgetId = $el.attr(widgetIdAttr);
+                        
+                        if (type === 'g-recaptcha' || type === 'h-captcha') {
+                            if (widgetId && $el.find('iframe').length > 0) {
+                                return; // Already rendered properly
+                            }
+                        }
+                        else if (type === 'cf-turnstile') {
+                            let $responseInput = $el.find('input[name="cf-turnstile-response"]');
 
-                            // Special case for Turnstile
-                            if (type === 'cf-turnstile') {
-                                container = '#' + id;
+                            if ($responseInput.length && $responseInput.val()) {
+                                return;
                             }
 
-                            const widgetId = renderFunction(container, options);
-                            $el.attr(widgetIdAttr, widgetId);
-                            $el.data(renderedDataAttr, true);
-                        } catch (error) {
-                            console.error(`Error rendering ${type}:`, error);
+                            let widgetId = $el.attr(widgetIdAttr);
+                            if (widgetId && window.turnstile) {
+                                turnstile.remove(widgetId);
+                            }
                         }
+
+                        // rendering captcha code
+                        let container = id;
+                        let options = {
+                            'sitekey': siteKey
+                        };
+
+                        // Special case for Turnstile
+                        if (type === 'cf-turnstile') {
+                            container = '#' + id;
+                        }
+
+                        // Render the captcha
+                        widgetId = renderFunction(container, options);
+                        $el.attr(widgetIdAttr, widgetId);
+                    } catch (error) {
+                        console.error(`Error rendering ${type}:`, error);
                     }
                 }
 
@@ -1027,7 +1051,7 @@ jQuery(document).ready(function () {
                 this.initNumericFormat();
                 this.initCheckableActive();
                 this.maybeInitSpamTokenProtection();
-                this.handleCleanTalkSubmitTime();
+                this.maybeHandleCleanTalkSubmitTime();
             },
 
             maybeInitSpamTokenProtection: function() {
@@ -1052,17 +1076,22 @@ jQuery(document).ready(function () {
                         }
                     };
 
+                    // Maybe generate token on step form step change
+                    formContainer.one('ff_to_next_page ff_to_prev_page', function(e) {
+                        generateTokenIfNeeded();
+                    });
+
                     // Generate token on first user interaction with form
-                    formContainer.one('focus', 'input, select, textarea, input[type="checkbox"], input[type="radio"]', () => {
+                    formContainer.on('fluentform_first_interaction', function() {
                         generateTokenIfNeeded();
                     });
                 });
             },
 
-            generateAndSetToken: function(formContainer, spamProtectionField) {
+            generateAndSetToken: function(formContainer, spamProtectionField, retry = true) {
                 const form_id = formContainer.data('form_id');
                 const ajaxRequestUrl = fluentFormVars.ajaxUrl + '?t=' + Date.now();
-
+                const _this = this;
                 jQuery.post(ajaxRequestUrl, {
                     action: 'fluentform_generate_protection_token',
                     form_id: form_id,
@@ -1079,13 +1108,19 @@ jQuery(document).ready(function () {
                     })
                     .fail(function(xhr, status, error) {
                         console.error('Error generating token for form ID:', form_id, error);
+                        // Retry
+                        if (retry) {
+                            setTimeout(() => {
+                                _this.generateAndSetToken(formContainer, spamProtectionField, false);
+                            }, 1000);
+                        }
                     })
                     .always(function() {
                         formContainer.removeClass('ff_tokenizing');
                     });
             },
 
-            handleCleanTalkSubmitTime: function() {
+            maybeHandleCleanTalkSubmitTime: function() {
                 if (!!window.fluentFormVars?.has_cleantalk) {
                     const formContainers = jQuery('.frm-fluent-form');
 
@@ -1560,7 +1595,6 @@ jQuery(document).ready(function () {
             initSingleForm($theForm);
             fluentFormCommonActions.init();
             $theForm.attr('data-ff_reinit', 'yes');
-
         });
 
         fluentFormCommonActions.init();

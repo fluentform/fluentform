@@ -12,6 +12,7 @@ import GeneralIntegrationSettings from './GeneralIntegrationSettings.vue';
 import DoubleOptinSettings from './DoubleOptinSettings.vue';
 import ManagersSettings from './ManagersSettings.vue';
 import InventoryManager from './InventoryManager.vue';
+import PaymentSettings from './Payments/App.vue';
 
 
 import License from './License.vue';
@@ -49,13 +50,20 @@ import {
     Popover,
     Pagination,
     Skeleton,
-    SkeletonItem
+    SkeletonItem,
+    Tabs,
+    TabPane,
+    DatePicker,
+    RadioButton,
+    Popconfirm
 } from 'element-ui';
 import e from 'jquery-datetimepicker';
 import {_$t, handleSidebarActiveLink} from '@/admin/helpers';
 import CustomComponent from '@/admin/components/CustomComponent';
 
 locale.use(lang);
+
+// Use all components
 Vue.use(Button);
 Vue.use(Form);
 Vue.use(Row);
@@ -82,9 +90,20 @@ Vue.use(Popover);
 Vue.use(Pagination);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(DatePicker);
+Vue.use(RadioButton);
+Vue.use(Popconfirm);
 
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
+
+const is_payment_compatible = window.FluentFormApp.is_payment_compatible;
+
+if (is_payment_compatible) {
+    Vue.prototype.payment_vars = window.ff_payment_settings || {};
+}
 
 Vue.mixin({
     methods: {
@@ -99,29 +118,36 @@ Vue.mixin({
             }
             return this.$t(singular, count);
         },
-
-        ...notifier
+        ...notifier,
+        ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
     }
 })
 
+const components = {
+    globalSearch,
+    settings: GlobalSettings,
+    re_captcha: reCaptcha,
+    h_captcha: hCaptcha,
+    turnstile: turnstile,
+    cleantalk: cleantalk,
+    pdf_settings: pdf_settings,
+    'general-integration-settings': GeneralIntegrationSettings,
+    'double_optin_settings': DoubleOptinSettings,
+    managers: ManagersSettings,
+    inventory_manager: InventoryManager,
+    custom_component: CustomComponent,
+    license: License
+};
+
+if (is_payment_compatible) {
+    components.payment_component = PaymentSettings;
+}
+
 new Vue({
     el: '#ff_global_settings_option_app',
-    components: {
-        globalSearch,
-        settings: GlobalSettings,
-        re_captcha: reCaptcha,
-        h_captcha: hCaptcha,
-        turnstile: turnstile,
-        cleantalk: cleantalk,
-        pdf_settings: pdf_settings,
-        'general-integration-settings': GeneralIntegrationSettings,
-        'double_optin_settings': DoubleOptinSettings,
-        managers: ManagersSettings,
-        inventory_manager: InventoryManager,
-        custom_component: CustomComponent,
-        license: License
-
-    },
+    components: components,
     data: {
         component: 'settings',
         App: window.FluentFormApp,
@@ -132,6 +158,12 @@ new Vue({
         setRoute($el, $originalEl = false) {
             // get component by hash
             let hash = $el.data('hash');
+            if (is_payment_compatible && hash.startsWith('payments/')) {
+                this.component = 'payment_component';
+                this.component_name = hash;
+                return;
+            }
+
             let component = hash;
             if ($el.data('component')) {
                 component = $el.data('component');
@@ -140,15 +172,11 @@ new Vue({
                 this.settings_key = jQuery($el).attr('data-settings_key');
                 this.component_name = $el.data('component_name') || '';
                 this.component = component;
-                // set route hash
                 location.hash = hash;
-            } else if ($originalEl &&
-                $originalEl.hasClass('ff-payment-settings-root')
-            ) {
+            } else if ($originalEl && $originalEl.hasClass('ff-payment-settings-root')) {
                 location.href = $el.attr('href');
                 return 'redirected';
             }
-            return '';
         },
         maybeGetFirstSubLink($el) {
             if (
@@ -163,7 +191,12 @@ new Vue({
     },
     created() {
         let hash = location.hash.substr(1) || 'settings';
-        let $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']').first();
+        let $el;
+        if (is_payment_compatible && hash.startsWith('payments/')) {
+            $el = jQuery('.ff_settings_list li').find('a[data-hash="' + hash + '"]').first();
+        } else {
+            $el = jQuery('.ff_settings_list li').find('a[data-hash=' + hash + ']').first();
+        }
         if ($el.length) {
             $el = this.maybeGetFirstSubLink($el);
             this.setRoute($el);
@@ -180,4 +213,3 @@ new Vue({
         });
     }
 });
-
