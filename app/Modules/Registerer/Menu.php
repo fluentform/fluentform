@@ -180,6 +180,14 @@ class Menu
         );
 
         wp_register_script(
+            'fluentform_reports',
+            fluentFormMix('js/reports.js'),
+            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
+            FLUENTFORM_VERSION,
+            true
+        );
+
+        wp_register_script(
             'fluentform_all_entries',
             fluentFormMix('js/all_entries.js'),
             ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
@@ -325,7 +333,8 @@ class Menu
         } elseif (
             'fluent_forms_settings' == $page ||
             'fluent_forms_payment_entries' == $page ||
-            'fluent_forms_all_entries' == $page
+            'fluent_forms_all_entries' == $page ||
+            'fluent_forms_reports' == $page
         ) {
             wp_enqueue_style('fluentform_settings_global');
         } elseif ('fluent_forms_add_ons' == $page) {
@@ -453,6 +462,16 @@ class Menu
                 [$this, 'renderAllEntriesAdminRoute']
             );
 
+            // Register Reports sub menu page.
+            add_submenu_page(
+                'fluent_forms',
+                __('Reports', 'fluentform'),
+                __('Reports', 'fluentform'),
+                $fromRole ?  $settingsCapability : 'fluentform_entries_viewer',
+                'fluent_forms_reports',
+                [$this, 'renderReports']
+            );
+
             $isShowPaymentSubmission = apply_filters_deprecated(
                 'fluentform_show_payment_entries',
                 [
@@ -543,6 +562,7 @@ class Menu
                 'editor'   => 'fluentform_forms_manager',
                 'settings' => 'fluentform_forms_manager',
                 'entries'  => 'fluentform_entries_viewer',
+                'reports'  => 'fluentform_entries_viewer',
             ]);
 
             $toVerifyPermission = ArrayHelper::get(
@@ -1213,6 +1233,25 @@ class Menu
             'banner_image' => fluentformMix('img/fluentsmtp-banner.png'),
             'is_installed' => defined('FLUENTMAIL'),
             'setup_url'    => admin_url('options-general.php?page=fluent-mail#/connections'),
+        ]);
+    }
+
+    public function renderReports()
+    {
+        wp_enqueue_script('fluentform_reports');
+        $showPayment = false;
+        if (defined('FLUENTFORMPRO')) {
+            $showPayment = !get_option('__fluentform_payment_module_settings');
+            if ($showPayment) {
+                $formCount = wpFluent()->table('fluentform_forms')->count();
+                $showPayment = $formCount > 2;
+            }
+        }
+
+        $this->app->view->render('admin.reports', [
+            'logo' => fluentformMix('img/fluentform-logo.svg'),
+            'show_payment'         => $showPayment,
+            'show_payment_entries' => apply_filters('fluentform/show_payment_entries', false),
         ]);
     }
 
