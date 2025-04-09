@@ -1,0 +1,887 @@
+@import "../assets/icons/fluentform-icon.css";
+@import "../styles/variables";
+@import "../styles/navbar";
+@import "../styles/globals";
+@import "../styles/card";
+@import "../styles/table";
+@import "../styles/tab";
+@import "../styles/_el_customize";
+@import "../styles/responsive";
+
+// Common Shared Styles
+.fluentform-reports {
+    // Card Component Base Styles
+    .ff_card {
+        border-radius: 8px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 24px;
+        padding: 0;
+
+        .ff_card_head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 0;
+            height: 56px;
+
+            h3, h4 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: #1f2937;
+            }
+
+            .card-controls, .chart-controls {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+        }
+
+        .ff_card_body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+
+            .chart-wrapper {
+                margin: 20px 0;
+                flex: 1;
+            }
+        }
+    }
+
+    // Advanced Filter Component (Shared)
+    .advanced-filter-section {
+        position: absolute;
+        z-index: 1;
+        width: 96%;
+        top: 1%;
+        padding: 16px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 20px;
+
+        .filter-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: nowrap;
+
+            @media (max-width: 768px) {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+
+            .filter-label {
+                font-size: 13px;
+                font-weight: 500;
+                color: #374151;
+                min-width: 80px;
+                white-space: nowrap;
+            }
+
+            .el-select {
+                .el-input__inner {
+                    border-color: #d1d5db;
+                    font-size: 13px;
+
+                    &:focus {
+                        border-color: #3b82f6;
+                    }
+                }
+            }
+        }
+    }
+
+    // Tooltip Component (Shared)
+    .tooltip {
+        position: fixed; // Use fixed instead of absolute to handle scrolling correctly
+        background-color: #1f2937;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateX(-50%); // Center horizontally
+
+        // Default arrow (pointing down when tooltip is above cell)
+        &::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #1f2937;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        // When positioned below the cell, arrow points up
+        &.tooltip-bottom::after {
+            border-top: none;
+            border-bottom: 6px solid #1f2937;
+            bottom: auto;
+            top: -6px;
+        }
+
+        &.tooltip-right-adjusted::after {
+            left: auto;
+            right: 20px;
+        }
+
+        &.tooltip-right-adjusted.tooltip-bottom::after {
+            left: auto;
+            right: 20px;
+        }
+    }
+
+    // Pagination Component (Shared)
+    .pagination-container {
+        text-align: right;
+        margin-top: 24px;
+    }
+
+    // Reports Header
+    .reports-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .reports-title h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .reports-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .date-range-display {
+                font-size: 14px;
+                color: #6b7280;
+                font-weight: 500;
+                padding: 8px 12px;
+                background: #f3f4f6;
+                border-radius: 6px;
+            }
+
+            .el-select {
+                width: 120px;
+            }
+
+            .el-date-editor {
+                width: 280px;
+                height: 40px;
+            }
+        }
+    }
+
+    // Charts Row
+    .charts-row {
+        margin-bottom: 24px;
+    }
+}
+
+// Form Stats Section
+.form-stats-section {
+    margin-bottom: 32px;
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 16px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    // Form Stats Card Styles
+    .stats-card {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+        }
+
+        .stats-content {
+            flex: 1;
+
+            .stats-title {
+                font-size: 14px;
+                color: #6b7280;
+                margin-bottom: 4px;
+                font-weight: 500;
+            }
+
+            .stats-value {
+                display: inline-block;
+                font-size: 24px;
+                font-weight: 500;
+                color: #1f2937;
+                margin: 4px 0;
+            }
+
+            .stats-change {
+                display: inline-block;
+                font-size: 12px;
+                font-weight: 600;
+                margin: 4px 6px;
+                vertical-align: bottom;
+
+                &.stats-change--up {
+                    color: #10b981;
+                }
+
+                &.stats-change--down {
+                    color: #ef4444;
+                }
+
+                &.stats-change--neutral {
+                    color: #909399;
+                }
+
+                i {
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}
+
+// Overview/Conversion Chart Section
+.conversion-chart-section {
+    height: 550px;
+    .chart-header {
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+    }
+
+    .chart-legend {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f3f4f6;
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+
+            .legend-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+
+                &.views { background-color: #3b82f6; }
+                &.entries { background-color: #8b5cf6; }
+                &.conversions { background-color: #f59e0b; }
+                &.submission { background-color: #7B5CFA; }
+                &.payments { background-color: #4CAF50; }
+            }
+        }
+
+        .legend-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .info-label {
+                font-size: 14px;
+                color: #6b7280;
+            }
+
+            .info-value {
+                font-size: 16px;
+                font-weight: 600;
+                color: #1f2937;
+            }
+        }
+    }
+
+    .chart-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #f3f4f6;
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+
+            &:hover {
+                color: #3b82f6;
+            }
+
+            i {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+// Completion Rates Gauge Section
+.completion-rates-gauge-section {
+    height: 550px;
+    .form-selector {
+        .el-select .el-input__inner {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            background-color: #f9fafb;
+
+            &:focus {
+                border-color: #3b82f6;
+                background-color: white;
+            }
+        }
+    }
+
+    .gauge-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .gauge-wrapper {
+            position: relative;
+            margin: 0 auto;
+            height: 280px;
+
+            .gauge-center {
+                position: absolute;
+                top: 65%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                z-index: 10;
+
+                .gauge-label {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: #6b7280;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 6px;
+                }
+
+                .gauge-percentage {
+                    font-size: 32px;
+                    font-weight: 700;
+                    color: #1f2937;
+                    line-height: 1;
+                }
+            }
+        }
+    }
+
+    .stats-bar-horizintal {
+        padding: 1px;
+        width: 100%;
+        background-color: #F2F2F2;
+        margin-bottom: 20px;
+    }
+
+    .completion-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+
+            .stats-bar-vertical {
+                padding: 1px;
+                height: 100%;
+                background-color: #E1E4EA;
+            }
+
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 8px;
+                flex: 1;
+
+                .stat-icon {
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    font-size: 20px;
+                    padding: 20px;
+
+                    &.incomplete {
+                        background-color: #ddd6fe;
+                        color: #8b5cf6;
+                    }
+
+                    &.complete {
+                        background-color: #d1fae5;
+                        color: #10b981;
+                    }
+                }
+
+                .stat-details {
+                    flex: 1;
+
+                    .stat-label {
+                        font-size: 12px;
+                        color: #6b7280;
+                        margin-bottom: 2px;
+                        font-weight: 500;
+                    }
+
+                    .stat-value {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: #1f2937;
+                    }
+                }
+            }
+        }
+
+        .weekly-average {
+            text-align: center;
+            padding: 16px;
+            margin-top: 16px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+    }
+}
+
+// Submission Heatmap Section
+.submission-heatmap-section {
+    // Heatmap Navigation in Card Head
+    .heatmap-navigation {
+        display: flex;
+        gap: 8px;
+    }
+
+    // Heatmap specific styles
+    .heatmap-container {
+        padding: 20px 0;
+        overflow-x: auto;
+
+        @media (max-width: 768px) {
+            .heatmap-header,
+            .heatmap-row {
+                min-width: 600px;
+            }
+        }
+    }
+
+    .heatmap-header {
+        display: grid;
+        grid-template-columns: 80px repeat(8, 1fr);
+        gap: 16px;
+        margin-bottom: 4px;
+
+        .time-header {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: 500;
+
+            @media (max-width: 768px) {
+                font-size: 10px;
+                padding: 6px 2px;
+            }
+        }
+    }
+
+    .heatmap-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .heatmap-row {
+        display: grid;
+        grid-template-columns: 80px repeat(8, 1fr);
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .date-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        font-size: 13px;
+        color: #374151;
+
+        .date-number {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .date-day {
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .date-number {
+                font-size: 13px;
+            }
+
+            .date-day {
+                font-size: 11px;
+            }
+        }
+    }
+
+    .data-cell {
+        height: 40px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+
+        .cell-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+        }
+
+        &.level-0 {
+            background-color: #f3f4f6;
+            .cell-value { color: #6b7280; }
+        }
+
+        &.level-1 {
+            background-color: #bfdbfe;
+            .cell-value { color: #1e40af; }
+        }
+
+        &.level-2 {
+            background-color: #93c5fd;
+            .cell-value { color: white; }
+        }
+
+        &.level-3 {
+            background-color: #60a5fa;
+            .cell-value { color: white; }
+        }
+
+        &.level-4 {
+            background-color: #3b82f6;
+            .cell-value { color: white; }
+        }
+
+        &.level-5 {
+            background-color: #1d4ed8;
+            .cell-value { color: white; }
+        }
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            height: 36px;
+            .cell-value { font-size: 12px; }
+        }
+    }
+}
+
+// Transactions Table Section
+.transactions-table-section {
+    .transactions-table {
+        height: 420px;
+
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+
+            h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: #1f2937;
+            }
+
+            .table-controls {
+                display: flex;
+                align-items: center;
+            }
+        }
+        
+        &-body {
+            overflow: scroll;
+        }
+    }
+
+    .modern-table {
+        border-radius: 8px;
+        overflow: hidden;
+
+        ::v-deep .el-table__header-wrapper {
+            background-color: #f9fafb;
+        }
+
+        ::v-deep .el-table__header th {
+            background-color: #f9fafb;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 8px;
+        }
+
+        ::v-deep .el-table__body td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .transaction-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .date-text {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .amount-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .payment-method {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .status-tag {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+    }
+}
+
+// Subscription Stats Section
+.subscription-stats-section {
+    height: 420px;
+    .subscription-summary {
+        margin-bottom: 20px;
+
+        .summary-row {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+    }
+
+    .subscription-amount {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+
+        p {
+            margin: 0;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .subscription-total {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .total-amount {
+                font-size: 24px;
+                font-weight: 700;
+                color: #1f2937;
+            }
+
+            .growth-indicator {
+                font-size: 12px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                &.positive {
+                    color: #10b981;
+                }
+
+                &.negative {
+                    color: #ef4444;
+                }
+            }
+        }
+    }
+
+    .subscription-chart {
+        margin-top: 20px;
+
+        .loading-chart, .no-data {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 280px;
+            color: #9ca3af;
+            text-align: center;
+            gap: 12px;
+
+            i {
+                font-size: 24px;
+            }
+        }
+    }
+}
+
+// API Logs Chart Section
+.api-logs-chart-section {
+    .api-logs-header {
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+    }
+
+    .api-logs-body {
+        position: relative;
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+
+            .loading-spinner {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+
+                i {
+                    font-size: 24px;
+                    color: #3b82f6;
+                }
+
+                span {
+                    font-size: 14px;
+                    color: #6b7280;
+                }
+            }
+        }
+    }
+}
