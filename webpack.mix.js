@@ -156,8 +156,7 @@ mix.then(() => {
     });
 });
 
-mix.js('resources/assets/admin/fluent_gutenblock.js','assets/js/fluent_gutenblock.js').react()
-
+mix.js('guten_block/src/index.js','assets/js/fluent_gutenblock.js').react()
 mix
     .copyDirectory('resources/assets/libs', 'assets/libs')
     .copyDirectory('resources/img', 'assets/img')
