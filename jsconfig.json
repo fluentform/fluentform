@@ -5,6 +5,6 @@
       "@/*": ["./resources/assets/*"]
     }
   },
-  "include": ["resources/assets/**/*"],
+  "include": ["resources/assets/**/*", "guten_block/src/edit.js", "guten_block/src/save.js"],
   "exclude": ["node_modules", "resources/assets/libs/**/*"]
 }
