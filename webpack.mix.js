@@ -157,6 +157,8 @@ mix.then(() => {
 });
 
 mix.js('guten_block/src/index.js','assets/js/fluent_gutenblock.js').react()
+mix.sass('guten_block/src/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
+
 mix
     .copyDirectory('resources/assets/libs', 'assets/libs')
     .copyDirectory('resources/img', 'assets/img')

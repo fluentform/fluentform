@@ -997,6 +997,12 @@ add_action('enqueue_block_editor_assets', function () {
         ['wp-element', 'wp-polyfill', 'wp-i18n', 'wp-blocks', 'wp-components','wp-server-side-render', 'wp-block-editor'],
         FLUENTFORM_VERSION
     );
+    wp_enqueue_style(
+        'fluentform-gutenberg-block',
+        fluentFormMix('css/fluent_gutenblock.css'),
+        ['wp-edit-blocks'],
+        FLUENTFORM_VERSION
+    );
     
     
     $forms = wpFluent()->table('fluentform_forms')

@@ -1,0 +1,115 @@
+/**
+ * Fluent Forms Gutenberg Block - Admin Editor Styles
+ * These styles apply to the block settings in the WordPress editor
+ */
+
+
+.fluent-form-block-style-tabs {
+
+
+  .components-tab-panel__tabs {
+  }
+  .components-tab-panel__tabs-item {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #D1E5FE;
+    &.is-active{
+      background: #eef5fc;
+
+    }
+  }
+}
+
+/* Tab panel styling */
+.fluent-form-style-tabs .components-tab-panel__tabs {
+  display: flex;
+  justify-content: stretch;
+  border-bottom: 1px solid #e2e4e7;
+}
+
+.fluent-form-style-tabs .components-tab-panel__tab-content {
+  padding: 5px;
+}
+
+.fluent-form-style-tabs .components-tab-panel__tabs-item {
+  padding: 6px 4px;
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.fluent-form-style-tabs .components-tab-panel__tabs-item.is-active {
+  box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 #007cba;
+  color: #007cba;
+}
+
+/* Custom controls styling */
+.ffblock-control-field {
+  margin-bottom: 16px;
+}
+
+.ffblock-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.ffblock-color-ball {
+  cursor: pointer;
+}
+
+.fluent-typography-preview {
+  padding: 8px 12px;
+  background: #f7f7f7;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.fluent-typography-edit-btn {
+  padding: 2px !important;
+  min-width: auto !important;
+  height: auto !important;
+}
+
+.ffblock-space-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ffblock-space-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ffblock-space-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ffblock-space-labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  font-size: 10px;
+  color: #757575;
+  text-align: center;
+}
+
+.ffblock-linked-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+.ffblock-device-selector {
+  display: flex;
+  gap: 4px;
+}

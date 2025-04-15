@@ -1,0 +1,112 @@
+/* Styles for the enhanced Border Box Control with collapsible panels and tabs */
+
+.ffblock-border-box-control {
+    margin-bottom: 16px;
+}
+
+/* Control Panel Styles */
+.ffblock-control-panel {
+    margin-bottom: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.ffblock-control-panel.is-active {
+    border-color: #007cba;
+}
+
+.ffblock-control-panel .components-panel__body-title {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ffblock-control-panel.is-active .components-panel__body-title {
+    background-color: #f0f6fc;
+    border-bottom-color: #007cba;
+}
+
+/* State Tabs Styles */
+.ffblock-state-tabs-container {
+    padding: 8px 0;
+}
+
+.ffblock-state-tabs .components-tab-panel__tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 16px;
+}
+
+.ffblock-state-tabs .components-tab-panel__tabs-item {
+    flex: 1;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.ffblock-state-tabs .components-tab-panel__tabs-item.is-active {
+    color: #007cba;
+    border-bottom-color: #007cba;
+    box-shadow: none;
+}
+
+.ffblock-state-tabs .components-tab-panel__tabs-item:focus:not(:disabled) {
+    box-shadow: none;
+    outline: none;
+    border-bottom-color: #007cba;
+}
+
+.ffblock-state-tabs .components-tab-panel__tab-content {
+    padding: 8px 0;
+}
+
+/* Control Specific Styles */
+.ffblock-radius-control {
+    margin-top: 16px;
+}
+
+.ffblock-spacing-control {
+    margin-top: 16px;
+}
+
+/* Improve the appearance of the BoxControl component */
+.ffblock-spacing-control .components-box-control__dimensions {
+    margin-bottom: 8px;
+}
+
+/* Add some spacing between controls */
+.ffblock-control-content > * + * {
+    margin-top: 16px;
+}
+
+/* Style for the active panel */
+.ffblock-control-panel.is-active .components-panel__body-toggle.components-button {
+    color: #007cba;
+}
+
+/* Make the tabs more visually appealing */
+.ffblock-tab-normal, .ffblock-tab-hover {
+    position: relative;
+}
+
+.ffblock-tab-normal::before, .ffblock-tab-hover::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+.ffblock-tab-normal.is-active::before, .ffblock-tab-hover.is-active::before {
+    background-color: #007cba;
+}
+
+/* Add some spacing inside the panel body */
+.ffblock-control-panel > .components-panel__body-content {
+    padding: 8px;
+}

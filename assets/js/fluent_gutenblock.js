@@ -2,10 +2,160 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./guten_block/src/edit.js":
-/*!*********************************!*\
-  !*** ./guten_block/src/edit.js ***!
-  \*********************************/
+/***/ "./guten_block/src/components/controls/FluentColorPicker.js":
+/*!******************************************************************!*\
+  !*** ./guten_block/src/components/controls/FluentColorPicker.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+/**
+ * Fluent Forms Custom Color Picker Component
+ */
+var _wp$components = wp.components,
+  Button = _wp$components.Button,
+  Flex = _wp$components.Flex,
+  Popover = _wp$components.Popover;
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useRef = _wp$element.useRef,
+  useEffect = _wp$element.useEffect;
+
+// Custom Color Picker Component with direct ColorPicker and conditional reset button
+var FluentColorPicker = function FluentColorPicker(_ref) {
+  var label = _ref.label,
+    value = _ref.value,
+    onChange = _ref.onChange,
+    _ref$defaultColor = _ref.defaultColor,
+    defaultColor = _ref$defaultColor === void 0 ? '' : _ref$defaultColor;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isOpen = _useState2[0],
+    setIsOpen = _useState2[1];
+  var containerRef = useRef(null);
+  var buttonRef = useRef(null);
+  var popoverRef = useRef(null);
+
+  // Check if current value is different from default
+  var isColorChanged = value !== defaultColor && value !== undefined && value !== null;
+  var toggleColorPicker = function toggleColorPicker(e) {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+  var resetToDefault = function resetToDefault() {
+    console.log(defaultColor);
+    onChange(defaultColor);
+  };
+
+  // Handle clicks outside to close the color picker
+  useEffect(function () {
+    if (!isOpen) return;
+    var handleOutsideClick = function handleOutsideClick(event) {
+      // Check if the click is outside both the button and popover content
+      if (buttonRef.current && !buttonRef.current.contains(event.target) && popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return function () {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isOpen]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    className: "ffblock-control-field ffblock-control-color-wrap",
+    ref: containerRef,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
+      align: "center",
+      justify: "space-between",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+        className: "ffblock-label",
+        children: label
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        },
+        children: [isColorChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          icon: "image-rotate",
+          isSmall: true,
+          onClick: resetToDefault,
+          label: "Reset to default",
+          className: "ffblock-color-reset-button",
+          style: {
+            padding: '2px'
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+          className: "ffblock-color-button",
+          onClick: toggleColorPicker,
+          ref: buttonRef,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+            style: {
+              backgroundColor: value || 'transparent',
+              backgroundImage: !value || value === 'transparent' || value.includes('rgba') ? 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC")' : 'none',
+              backgroundPosition: '0 0',
+              backgroundSize: '10px 10px',
+              backgroundRepeat: 'repeat',
+              width: '24px',
+              height: '24px',
+              borderRadius: '2px',
+              boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.2)',
+              cursor: 'pointer'
+            }
+          })
+        })]
+      })]
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+      className: "ffblock-color-popover-wrapper",
+      style: {
+        position: "relative"
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
+        onClose: function onClose() {} // Remove auto-close functionality
+        ,
+        anchor: buttonRef.current,
+        focusOnMount: false,
+        noArrow: true,
+        position: "bottom right",
+        expandOnMobile: true,
+        className: "ffblock-color-popover",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+          style: {
+            padding: '12px'
+          },
+          ref: popoverRef,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(wp.components.ColorPicker, {
+            color: value,
+            onChangeComplete: function onChangeComplete(color) {
+              onChange(color.hex);
+            },
+            disableAlpha: false
+          })
+        })
+      })
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentColorPicker);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/controls/FluentSpaceControl.js":
+/*!*******************************************************************!*\
+  !*** ./guten_block/src/components/controls/FluentSpaceControl.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -16,6 +166,2063 @@ __webpack_require__.r(__webpack_exports__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 
 
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+/**
+ * Fluent Forms Custom Space/Margin/Padding Control
+ */
+var _wp$components = wp.components,
+  Button = _wp$components.Button,
+  ButtonGroup = _wp$components.ButtonGroup,
+  TextControl = _wp$components.TextControl;
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect;
+
+// Custom Space/Margin/Padding Control
+var FluentSpaceControl = function FluentSpaceControl(_ref) {
+  var label = _ref.label,
+    values = _ref.values,
+    onChange = _ref.onChange,
+    _ref$units = _ref.units,
+    units = _ref$units === void 0 ? [{
+      value: 'px',
+      key: 'px-unit'
+    }, {
+      value: 'em',
+      key: 'em-unit'
+    }, {
+      value: '%',
+      key: 'percent-unit'
+    }] : _ref$units;
+  var _useState = useState(true),
+    _useState2 = _slicedToArray(_useState, 2),
+    isLinked = _useState2[0],
+    setIsLinked = _useState2[1];
+  var _useState3 = useState('px'),
+    _useState4 = _slicedToArray(_useState3, 2),
+    activeUnit = _useState4[0],
+    setActiveUnit = _useState4[1];
+  var _useState5 = useState('desktop'),
+    _useState6 = _slicedToArray(_useState5, 2),
+    activeDevice = _useState6[0],
+    setActiveDevice = _useState6[1];
+
+  // Default values structure
+  var defaultValues = {
+    desktop: {
+      unit: 'px',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      linked: true
+    },
+    tablet: {
+      unit: 'px',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      linked: true
+    },
+    mobile: {
+      unit: 'px',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      linked: true
+    }
+  };
+  var currentValues = values || defaultValues;
+
+  // Set initial state from props
+  useEffect(function () {
+    if (currentValues[activeDevice]) {
+      setIsLinked(currentValues[activeDevice].linked !== false);
+      setActiveUnit(currentValues[activeDevice].unit || 'px');
+    }
+  }, [activeDevice]);
+  var handleUnitChange = function handleUnitChange(unit) {
+    setActiveUnit(unit);
+    updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
+      unit: unit
+    }));
+  };
+  var toggleLinked = function toggleLinked() {
+    var newLinkedState = !isLinked;
+    setIsLinked(newLinkedState);
+    updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
+      linked: newLinkedState
+    }));
+  };
+  var updateValues = function updateValues(newDeviceValues) {
+    onChange(_objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({}, activeDevice, newDeviceValues)));
+  };
+  var handleValueChange = function handleValueChange(position, value) {
+    var numValue = value === '' ? 0 : parseInt(value);
+    if (isLinked) {
+      // If linked, update all sides
+      updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
+        top: numValue,
+        right: numValue,
+        bottom: numValue,
+        left: numValue
+      }));
+    } else {
+      // Otherwise just update the changed side
+      updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, _defineProperty({}, position, numValue)));
+    }
+  };
+  var deviceValues = currentValues[activeDevice] || defaultValues[activeDevice];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    className: "ffblock-control-field ffblock-control-space",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "ffblock-space-header",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+        className: "ffblock-label",
+        children: label
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        className: "ffblock-space-controls",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+          className: "ffblock-device-selector",
+          children: [{
+            device: 'desktop',
+            icon: 'desktop'
+          }, {
+            device: 'tablet',
+            icon: 'tablet'
+          }, {
+            device: 'mobile',
+            icon: 'smartphone'
+          }].map(function (item) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+              icon: item.icon,
+              isSmall: true,
+              isPrimary: activeDevice === item.device,
+              onClick: function onClick() {
+                return setActiveDevice(item.device);
+              }
+            }, item.device);
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+          className: "ffblock-unit-selector",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
+            children: units.map(function (unit) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+                isSmall: true,
+                isPrimary: activeUnit === unit.value,
+                onClick: function onClick() {
+                  return handleUnitChange(unit.value);
+                },
+                children: unit.value.toUpperCase()
+              }, unit.key);
+            })
+          })
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "ffblock-space-inputs",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        className: "ffblock-space-input-row",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+          type: "number",
+          value: deviceValues.top,
+          onChange: function onChange(value) {
+            return handleValueChange('top', value);
+          },
+          min: 0
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+          type: "number",
+          value: deviceValues.right,
+          onChange: function onChange(value) {
+            return handleValueChange('right', value);
+          },
+          min: 0
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+          type: "number",
+          value: deviceValues.bottom,
+          onChange: function onChange(value) {
+            return handleValueChange('bottom', value);
+          },
+          min: 0
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+          type: "number",
+          value: deviceValues.left,
+          onChange: function onChange(value) {
+            return handleValueChange('left', value);
+          },
+          min: 0
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          icon: isLinked ? 'admin-links' : 'editor-unlink',
+          onClick: toggleLinked,
+          className: "ffblock-linked-button"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        className: "ffblock-space-labels",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          children: "TOP"
+        }, "label-top"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          children: "RIGHT"
+        }, "label-right"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          children: "BOTTOM"
+        }, "label-bottom"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+          children: "LEFT"
+        }, "label-left")]
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentSpaceControl);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/controls/FluentTypography.js":
+/*!*****************************************************************!*\
+  !*** ./guten_block/src/components/controls/FluentTypography.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+
+
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+/**
+ * Fluent Forms Custom Typography Control Component
+ */
+var _wp$components = wp.components,
+  Button = _wp$components.Button,
+  Flex = _wp$components.Flex,
+  Popover = _wp$components.Popover,
+  SelectControl = _wp$components.SelectControl,
+  RangeControl = _wp$components.RangeControl;
+var useState = wp.element.useState;
+
+// Custom Typography Control Component
+var FluentTypography = function FluentTypography(_ref) {
+  var label = _ref.label,
+    settings = _ref.settings,
+    onChange = _ref.onChange;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isOpen = _useState2[0],
+    setIsOpen = _useState2[1];
+
+  // Default values
+  var _ref2 = settings || {},
+    _ref2$fontSize = _ref2.fontSize,
+    fontSize = _ref2$fontSize === void 0 ? '' : _ref2$fontSize,
+    _ref2$fontWeight = _ref2.fontWeight,
+    fontWeight = _ref2$fontWeight === void 0 ? '400' : _ref2$fontWeight,
+    _ref2$lineHeight = _ref2.lineHeight,
+    lineHeight = _ref2$lineHeight === void 0 ? '' : _ref2$lineHeight,
+    _ref2$letterSpacing = _ref2.letterSpacing,
+    letterSpacing = _ref2$letterSpacing === void 0 ? '' : _ref2$letterSpacing,
+    _ref2$textTransform = _ref2.textTransform,
+    textTransform = _ref2$textTransform === void 0 ? 'none' : _ref2$textTransform,
+    _ref2$fontFamily = _ref2.fontFamily,
+    fontFamily = _ref2$fontFamily === void 0 ? '' : _ref2$fontFamily;
+
+  // Font options
+  var fontOptions = [{
+    value: '',
+    label: 'Default',
+    key: 'default-font'
+  }, {
+    value: 'Arial, sans-serif',
+    label: 'Arial',
+    key: 'arial-font'
+  }, {
+    value: 'Helvetica, sans-serif',
+    label: 'Helvetica',
+    key: 'helvetica-font'
+  }, {
+    value: 'Georgia, serif',
+    label: 'Georgia',
+    key: 'georgia-font'
+  }, {
+    value: '"Times New Roman", serif',
+    label: 'Times New Roman',
+    key: 'times-font'
+  }, {
+    value: 'Verdana, sans-serif',
+    label: 'Verdana',
+    key: 'verdana-font'
+  }];
+  var fontWeightOptions = [{
+    value: '300',
+    label: 'Light (300)',
+    key: 'light-weight'
+  }, {
+    value: '400',
+    label: 'Regular (400)',
+    key: 'regular-weight'
+  }, {
+    value: '500',
+    label: 'Medium (500)',
+    key: 'medium-weight'
+  }, {
+    value: '600',
+    label: 'Semi Bold (600)',
+    key: 'semibold-weight'
+  }, {
+    value: '700',
+    label: 'Bold (700)',
+    key: 'bold-weight'
+  }, {
+    value: '800',
+    label: 'Extra Bold (800)',
+    key: 'extrabold-weight'
+  }];
+  var textTransformOptions = [{
+    value: 'none',
+    label: 'None',
+    key: 'none-transform'
+  }, {
+    value: 'capitalize',
+    label: 'Capitalize',
+    key: 'capitalize-transform'
+  }, {
+    value: 'uppercase',
+    label: 'UPPERCASE',
+    key: 'uppercase-transform'
+  }, {
+    value: 'lowercase',
+    label: 'lowercase',
+    key: 'lowercase-transform'
+  }];
+  var togglePopover = function togglePopover() {
+    return setIsOpen(!isOpen);
+  };
+  var updateSetting = function updateSetting(property, value) {
+    onChange(_objectSpread(_objectSpread({}, settings), {}, _defineProperty({}, property, value)));
+  };
+
+  // Preview style
+  var previewStyle = {
+    fontFamily: fontFamily || 'inherit',
+    fontSize: fontSize ? "".concat(fontSize, "px") : 'inherit',
+    fontWeight: fontWeight,
+    lineHeight: lineHeight || 'normal',
+    letterSpacing: letterSpacing ? "".concat(letterSpacing, "px") : 'normal',
+    textTransform: textTransform
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    className: "ffblock-control-field ffblock-control-typography-wrap",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
+      align: "center",
+      justify: "space-between",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+        className: "ffblock-label",
+        children: label
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        icon: "edit",
+        isSmall: true,
+        onClick: togglePopover,
+        className: "fluent-typography-edit-btn"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "fluent-typography-preview",
+      style: previewStyle,
+      children: [fontSize ? "".concat(fontSize, "px") : '16px', " / ", fontWeight, " / ", fontFamily || 'Default']
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
+      className: "fluent-typography-popover",
+      onClose: togglePopover,
+      position: "bottom center",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        style: {
+          width: '300px',
+          padding: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", {
+          style: {
+            marginTop: 0,
+            marginBottom: '12px'
+          },
+          children: "Typography Settings"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Font Family"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+            value: fontFamily,
+            options: fontOptions,
+            onChange: function onChange(value) {
+              return updateSetting('fontFamily', value);
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Font Size (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+            value: fontSize ? parseInt(fontSize) : '',
+            min: 8,
+            max: 72,
+            onChange: function onChange(value) {
+              return updateSetting('fontSize', value);
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Font Weight"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+            value: fontWeight,
+            options: fontWeightOptions,
+            onChange: function onChange(value) {
+              return updateSetting('fontWeight', value);
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Line Height"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+            value: lineHeight ? parseFloat(lineHeight) : '',
+            min: 0.1,
+            max: 3,
+            step: 0.1,
+            onChange: function onChange(value) {
+              return updateSetting('lineHeight', value);
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Letter Spacing (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
+            value: letterSpacing ? parseFloat(letterSpacing) : 0,
+            min: -5,
+            max: 10,
+            step: 0.1,
+            onChange: function onChange(value) {
+              return updateSetting('letterSpacing', value);
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          style: {
+            marginBottom: '12px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+            style: {
+              display: 'block',
+              marginBottom: '4px'
+            },
+            children: "Text Transform"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
+            value: textTransform,
+            options: textTransformOptions,
+            onChange: function onChange(value) {
+              return updateSetting('textTransform', value);
+            }
+          })]
+        })]
+      })
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentTypography);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/controls/MyBorderBoxControl.js":
+/*!*******************************************************************!*\
+  !*** ./guten_block/src/components/controls/MyBorderBoxControl.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _border_box_control_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./border-box-control.css */ "./guten_block/src/components/controls/border-box-control.css");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+// Import React components
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  useRef = _wp$element.useRef;
+var __ = wp.i18n.__;
+
+// Import styles
+
+
+// Import WordPress components correctly
+
+
+
+var _wp$components = wp.components,
+  __experimentalBorderBoxControl = _wp$components.__experimentalBorderBoxControl,
+  __experimentalBoxControl = _wp$components.__experimentalBoxControl,
+  RangeControl = _wp$components.RangeControl,
+  Flex = _wp$components.Flex,
+  Button = _wp$components.Button,
+  ButtonGroup = _wp$components.ButtonGroup,
+  ColorPalette = _wp$components.ColorPalette,
+  SelectControl = _wp$components.SelectControl,
+  Panel = _wp$components.Panel,
+  PanelBody = _wp$components.PanelBody,
+  PanelRow = _wp$components.PanelRow,
+  TabPanel = _wp$components.TabPanel;
+
+// If experimental components are not available, they might not exist in your WordPress version
+var BorderBoxControl = __experimentalBorderBoxControl;
+var BoxControl = __experimentalBoxControl;
+
+/**
+ * Dynamic Border Box Control Component
+ *
+ * @param {Object} props Component props
+ * @param {string} props.label Label for the control
+ * @param {Object} props.value Current border values for normal state
+ * @param {Object} props.hoverValue Current border values for hover state
+ * @param {Object} props.spacingValue Current spacing values for normal state
+ * @param {Object} props.spacingHoverValue Current spacing values for hover state
+ * @param {Function} props.onChange Callback when border values change for normal state
+ * @param {Function} props.onHoverChange Callback when border values change for hover state
+ * @param {Function} props.onSpacingChange Callback when spacing values change for normal state
+ * @param {Function} props.onSpacingHoverChange Callback when spacing values change for hover state
+ * @param {Array} props.colors Custom color palette
+ * @param {Object} props.defaultBorder Default border settings
+ * @param {boolean} props.showRadius Whether to show radius controls
+ * @param {boolean} props.showBorderControls Whether to show border controls
+ * @param {boolean} props.showSpacingControls Whether to show spacing controls
+ * @param {boolean} props.showHoverControls Whether to show hover state controls
+ * @param {string} props.className Additional CSS class
+ */
+var MyBorderBoxControl = function MyBorderBoxControl(_ref) {
+  var _ref$label = _ref.label,
+    label = _ref$label === void 0 ? __('Borders') : _ref$label,
+    value = _ref.value,
+    hoverValue = _ref.hoverValue,
+    spacingValue = _ref.spacingValue,
+    spacingHoverValue = _ref.spacingHoverValue,
+    onChange = _ref.onChange,
+    onHoverChange = _ref.onHoverChange,
+    onSpacingChange = _ref.onSpacingChange,
+    onSpacingHoverChange = _ref.onSpacingHoverChange,
+    _ref$colors = _ref.colors,
+    colors = _ref$colors === void 0 ? [{
+      name: 'Blue 20',
+      color: '#72aee6'
+    }, {
+      name: 'Red',
+      color: '#e65054'
+    }, {
+      name: 'Green',
+      color: '#68de7c'
+    }, {
+      name: 'Yellow',
+      color: '#f2d675'
+    }, {
+      name: 'Black',
+      color: '#000000'
+    }] : _ref$colors,
+    _ref$defaultBorder = _ref.defaultBorder,
+    defaultBorder = _ref$defaultBorder === void 0 ? {
+      color: '#72aee6',
+      style: 'solid',
+      width: '1px'
+    } : _ref$defaultBorder,
+    _ref$showRadius = _ref.showRadius,
+    showRadius = _ref$showRadius === void 0 ? true : _ref$showRadius,
+    _ref$showBorderContro = _ref.showBorderControls,
+    showBorderControls = _ref$showBorderContro === void 0 ? true : _ref$showBorderContro,
+    _ref$showSpacingContr = _ref.showSpacingControls,
+    showSpacingControls = _ref$showSpacingContr === void 0 ? true : _ref$showSpacingContr,
+    _ref$showHoverControl = _ref.showHoverControls,
+    showHoverControls = _ref$showHoverControl === void 0 ? true : _ref$showHoverControl,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? '' : _ref$className;
+  // Default border structure
+  var defaultBorderStructure = {
+    top: defaultBorder,
+    right: defaultBorder,
+    bottom: defaultBorder,
+    left: defaultBorder,
+    linked: true,
+    radius: {
+      topLeft: 0,
+      topRight: 0,
+      bottomRight: 0,
+      bottomLeft: 0,
+      linked: true
+    }
+  };
+
+  // Initialize borders state with provided value or defaults
+  var _useState = useState(value || defaultBorderStructure),
+    _useState2 = _slicedToArray(_useState, 2),
+    borders = _useState2[0],
+    setBorders = _useState2[1];
+
+  // Initialize hover borders state with provided value or defaults
+  var _useState3 = useState(hoverValue || defaultBorderStructure),
+    _useState4 = _slicedToArray(_useState3, 2),
+    hoverBorders = _useState4[0],
+    setHoverBorders = _useState4[1];
+
+  // Default spacing structure
+  var defaultSpacingStructure = {
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px'
+  };
+
+  // Initialize spacing state with provided value or defaults
+  var _useState5 = useState(spacingValue || defaultSpacingStructure),
+    _useState6 = _slicedToArray(_useState5, 2),
+    spacing = _useState6[0],
+    setSpacing = _useState6[1];
+
+  // Initialize hover spacing state with provided value or defaults
+  var _useState7 = useState(spacingHoverValue || defaultSpacingStructure),
+    _useState8 = _slicedToArray(_useState7, 2),
+    hoverSpacing = _useState8[0],
+    setHoverSpacing = _useState8[1];
+
+  // Track active tab (normal or hover)
+  var _useState9 = useState('normal'),
+    _useState10 = _slicedToArray(_useState9, 2),
+    activeTab = _useState10[0],
+    setActiveTab = _useState10[1];
+
+  // Track active control tab (border or spacing)
+  var _useState11 = useState('border'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    activeControlTab = _useState12[0],
+    setActiveControlTab = _useState12[1];
+
+  // Border styles options
+  var borderStyles = [{
+    label: __('Solid'),
+    value: 'solid'
+  }, {
+    label: __('Dashed'),
+    value: 'dashed'
+  }, {
+    label: __('Dotted'),
+    value: 'dotted'
+  }, {
+    label: __('Double'),
+    value: 'double'
+  }, {
+    label: __('Groove'),
+    value: 'groove'
+  }, {
+    label: __('Ridge'),
+    value: 'ridge'
+  }, {
+    label: __('Inset'),
+    value: 'inset'
+  }, {
+    label: __('Outset'),
+    value: 'outset'
+  }];
+
+  // Using refs to prevent the initial render from triggering onChange
+  var isInitialNormalMount = useRef(true);
+  var isInitialHoverMount = useRef(true);
+  var isInitialSpacingMount = useRef(true);
+  var isInitialSpacingHoverMount = useRef(true);
+
+  // Update parent component when normal borders change
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onChange calls
+    if (isInitialNormalMount.current) {
+      isInitialNormalMount.current = false;
+      return;
+    }
+
+    // Only call onChange if it exists and borders is defined
+    if (onChange && borders) {
+      onChange(borders);
+    }
+  }, [borders, onChange]);
+
+  // Update parent component when hover borders change
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onHoverChange calls
+    if (isInitialHoverMount.current) {
+      isInitialHoverMount.current = false;
+      return;
+    }
+
+    // Only call onHoverChange if it exists and hoverBorders is defined
+    if (onHoverChange && hoverBorders) {
+      onHoverChange(hoverBorders);
+    }
+  }, [hoverBorders, onHoverChange]);
+
+  // Update parent component when normal spacing changes
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onSpacingChange calls
+    if (isInitialSpacingMount.current) {
+      isInitialSpacingMount.current = false;
+      return;
+    }
+
+    // Only call onSpacingChange if it exists and spacing is defined
+    if (onSpacingChange && spacing) {
+      onSpacingChange(spacing);
+    }
+  }, [spacing, onSpacingChange]);
+
+  // Update parent component when hover spacing changes
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onSpacingHoverChange calls
+    if (isInitialSpacingHoverMount.current) {
+      isInitialSpacingHoverMount.current = false;
+      return;
+    }
+
+    // Only call onSpacingHoverChange if it exists and hoverSpacing is defined
+    if (onSpacingHoverChange && hoverSpacing) {
+      onSpacingHoverChange(hoverSpacing);
+    }
+  }, [hoverSpacing, onSpacingHoverChange]);
+
+  // Get the current borders based on active tab
+  var getCurrentBorders = function getCurrentBorders() {
+    return activeTab === 'normal' ? borders : hoverBorders;
+  };
+
+  // Set the current borders based on active tab
+  var setCurrentBorders = function setCurrentBorders(newBorders) {
+    if (activeTab === 'normal') {
+      setBorders(newBorders);
+    } else {
+      setHoverBorders(newBorders);
+    }
+  };
+
+  // Get the current spacing based on active tab
+  var getCurrentSpacing = function getCurrentSpacing() {
+    return activeTab === 'normal' ? spacing : hoverSpacing;
+  };
+
+  // Set the current spacing based on active tab
+  var setCurrentSpacing = function setCurrentSpacing(newSpacing) {
+    if (activeTab === 'normal') {
+      setSpacing(newSpacing);
+    } else {
+      setHoverSpacing(newSpacing);
+    }
+  };
+
+  // Handle border changes
+  var handleBorderChange = function handleBorderChange(newBorders) {
+    var currentBorders = getCurrentBorders();
+    // Preserve radius and linked properties
+    var updatedBorders = _objectSpread(_objectSpread({}, newBorders), {}, {
+      radius: currentBorders.radius || {
+        topLeft: 0,
+        topRight: 0,
+        bottomRight: 0,
+        bottomLeft: 0,
+        linked: true
+      },
+      linked: currentBorders.linked !== undefined ? currentBorders.linked : true
+    });
+    setCurrentBorders(updatedBorders);
+  };
+
+  // Handle radius changes
+  var handleRadiusChange = function handleRadiusChange(newRadius) {
+    var currentBorders = getCurrentBorders();
+    var updatedBorders = _objectSpread(_objectSpread({}, currentBorders), {}, {
+      radius: newRadius
+    });
+    setCurrentBorders(updatedBorders);
+  };
+
+  // Toggle linked borders
+  var toggleLinkedBorders = function toggleLinkedBorders() {
+    var currentBorders = getCurrentBorders();
+    setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, {
+      linked: !currentBorders.linked
+    }));
+  };
+
+  // Toggle linked radius
+  var toggleLinkedRadius = function toggleLinkedRadius() {
+    var _currentBorders$radiu, _currentBorders$radiu2, _currentBorders$radiu3;
+    var currentBorders = getCurrentBorders();
+    var radiusValue = ((_currentBorders$radiu = currentBorders.radius) === null || _currentBorders$radiu === void 0 ? void 0 : _currentBorders$radiu.topLeft) || 0;
+    setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, {
+      radius: _objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+        linked: !((_currentBorders$radiu2 = currentBorders.radius) !== null && _currentBorders$radiu2 !== void 0 && _currentBorders$radiu2.linked)
+      }, (_currentBorders$radiu3 = currentBorders.radius) !== null && _currentBorders$radiu3 !== void 0 && _currentBorders$radiu3.linked ? {} : {
+        topLeft: radiusValue,
+        topRight: radiusValue,
+        bottomRight: radiusValue,
+        bottomLeft: radiusValue
+      })
+    }));
+  };
+
+  // Update a specific border property
+  var updateBorderProperty = function updateBorderProperty(property, value) {
+    var side = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var currentBorders = getCurrentBorders();
+    if (currentBorders.linked && !side) {
+      // Update all sides if linked
+      setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, {
+        top: _objectSpread(_objectSpread({}, currentBorders.top), {}, _defineProperty({}, property, value)),
+        right: _objectSpread(_objectSpread({}, currentBorders.right), {}, _defineProperty({}, property, value)),
+        bottom: _objectSpread(_objectSpread({}, currentBorders.bottom), {}, _defineProperty({}, property, value)),
+        left: _objectSpread(_objectSpread({}, currentBorders.left), {}, _defineProperty({}, property, value))
+      }));
+    } else if (side) {
+      // Update specific side
+      setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, _defineProperty({}, side, _objectSpread(_objectSpread({}, currentBorders[side]), {}, _defineProperty({}, property, value)))));
+    }
+  };
+
+  // Handle spacing changes
+  var handleSpacingChange = function handleSpacingChange(newSpacing) {
+    setCurrentSpacing(newSpacing);
+  };
+
+  // Render the border controls based on the current state
+  var renderBorderControls = function renderBorderControls() {
+    var currentBorders = getCurrentBorders();
+    if (BorderBoxControl && showBorderControls) {
+      var _currentBorders$radiu4, _currentBorders$radiu5, _currentBorders$radiu6, _currentBorders$radiu7, _currentBorders$radiu8, _currentBorders$radiu9, _currentBorders$radiu10, _currentBorders$radiu11, _currentBorders$radiu12, _currentBorders$radiu13;
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BorderBoxControl, {
+          colors: colors,
+          label: label,
+          onChange: handleBorderChange,
+          value: currentBorders
+        }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+          className: "ffblock-radius-control",
+          style: {
+            marginTop: '16px'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(PanelBody, {
+            title: __('Border Radius'),
+            initialOpen: false,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Flex, {
+              align: "flex-start",
+              justify: "flex-start",
+              style: {
+                marginBottom: '8px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(ButtonGroup, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+                  isPrimary: (_currentBorders$radiu4 = currentBorders.radius) === null || _currentBorders$radiu4 === void 0 ? void 0 : _currentBorders$radiu4.linked,
+                  isSecondary: !((_currentBorders$radiu5 = currentBorders.radius) !== null && _currentBorders$radiu5 !== void 0 && _currentBorders$radiu5.linked),
+                  onClick: toggleLinkedRadius,
+                  children: __('Linked')
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+                  isPrimary: !((_currentBorders$radiu6 = currentBorders.radius) !== null && _currentBorders$radiu6 !== void 0 && _currentBorders$radiu6.linked),
+                  isSecondary: (_currentBorders$radiu7 = currentBorders.radius) === null || _currentBorders$radiu7 === void 0 ? void 0 : _currentBorders$radiu7.linked,
+                  onClick: toggleLinkedRadius,
+                  children: __('Individual')
+                })]
+              })
+            }), (_currentBorders$radiu8 = currentBorders.radius) !== null && _currentBorders$radiu8 !== void 0 && _currentBorders$radiu8.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+              label: __('Radius'),
+              value: ((_currentBorders$radiu9 = currentBorders.radius) === null || _currentBorders$radiu9 === void 0 ? void 0 : _currentBorders$radiu9.topLeft) || 0,
+              onChange: function onChange(value) {
+                handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                  topLeft: value,
+                  topRight: value,
+                  bottomRight: value,
+                  bottomLeft: value
+                }));
+              },
+              min: 0,
+              max: 100
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+                label: __('Top Left'),
+                value: ((_currentBorders$radiu10 = currentBorders.radius) === null || _currentBorders$radiu10 === void 0 ? void 0 : _currentBorders$radiu10.topLeft) || 0,
+                onChange: function onChange(value) {
+                  handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                    topLeft: value
+                  }));
+                },
+                min: 0,
+                max: 100
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+                label: __('Top Right'),
+                value: ((_currentBorders$radiu11 = currentBorders.radius) === null || _currentBorders$radiu11 === void 0 ? void 0 : _currentBorders$radiu11.topRight) || 0,
+                onChange: function onChange(value) {
+                  handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                    topRight: value
+                  }));
+                },
+                min: 0,
+                max: 100
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+                label: __('Bottom Right'),
+                value: ((_currentBorders$radiu12 = currentBorders.radius) === null || _currentBorders$radiu12 === void 0 ? void 0 : _currentBorders$radiu12.bottomRight) || 0,
+                onChange: function onChange(value) {
+                  handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                    bottomRight: value
+                  }));
+                },
+                min: 0,
+                max: 100
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+                label: __('Bottom Left'),
+                value: ((_currentBorders$radiu13 = currentBorders.radius) === null || _currentBorders$radiu13 === void 0 ? void 0 : _currentBorders$radiu13.bottomLeft) || 0,
+                onChange: function onChange(value) {
+                  handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                    bottomLeft: value
+                  }));
+                },
+                min: 0,
+                max: 100
+              })]
+            })]
+          })
+        })]
+      });
+    }
+
+    // Fallback if BorderBoxControl is not available
+    return renderFallbackBorderControls();
+  };
+
+  // Render the spacing controls based on the current state
+
+  // Render fallback border controls if BorderBoxControl is not available
+  var renderFallbackBorderControls = function renderFallbackBorderControls() {
+    var _currentBorders$radiu14, _currentBorders$radiu15, _currentBorders$radiu16, _currentBorders$radiu17, _currentBorders$radiu18, _currentBorders$radiu19, _currentBorders$radiu20, _currentBorders$radiu21, _currentBorders$radiu22, _currentBorders$radiu23;
+    // Fallback if BorderBoxControl is not available
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(PanelBody, {
+      title: label,
+      initialOpen: true,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Flex, {
+        align: "flex-start",
+        justify: "flex-start",
+        style: {
+          marginBottom: '8px'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(ButtonGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+            isPrimary: currentBorders.linked,
+            isSecondary: !currentBorders.linked,
+            onClick: toggleLinkedBorders,
+            children: __('Linked')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+            isPrimary: !currentBorders.linked,
+            isSecondary: currentBorders.linked,
+            onClick: toggleLinkedBorders,
+            children: __('Individual')
+          })]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(PanelRow, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(SelectControl, {
+          label: __('Border Style'),
+          value: currentBorders.top.style,
+          options: borderStyles,
+          onChange: function onChange(value) {
+            return updateBorderProperty('style', value);
+          }
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(PanelRow, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          label: __('Border Width'),
+          value: parseInt(currentBorders.top.width) || 0,
+          onChange: function onChange(value) {
+            return updateBorderProperty('width', "".concat(value, "px"));
+          },
+          min: 0,
+          max: 20
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(PanelRow, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+          children: __('Border Color')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ColorPalette, {
+          colors: colors,
+          value: currentBorders.top.color,
+          onChange: function onChange(value) {
+            return updateBorderProperty('color', value);
+          }
+        })]
+      }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+            style: {
+              marginTop: '16px',
+              marginBottom: '8px'
+            },
+            children: __('Border Radius')
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Flex, {
+          align: "flex-start",
+          justify: "flex-start",
+          style: {
+            marginBottom: '8px'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(ButtonGroup, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+              isPrimary: (_currentBorders$radiu14 = currentBorders.radius) === null || _currentBorders$radiu14 === void 0 ? void 0 : _currentBorders$radiu14.linked,
+              isSecondary: !((_currentBorders$radiu15 = currentBorders.radius) !== null && _currentBorders$radiu15 !== void 0 && _currentBorders$radiu15.linked),
+              onClick: toggleLinkedRadius,
+              children: __('Linked')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+              isPrimary: !((_currentBorders$radiu16 = currentBorders.radius) !== null && _currentBorders$radiu16 !== void 0 && _currentBorders$radiu16.linked),
+              isSecondary: (_currentBorders$radiu17 = currentBorders.radius) === null || _currentBorders$radiu17 === void 0 ? void 0 : _currentBorders$radiu17.linked,
+              onClick: toggleLinkedRadius,
+              children: __('Individual')
+            })]
+          })
+        }), (_currentBorders$radiu18 = currentBorders.radius) !== null && _currentBorders$radiu18 !== void 0 && _currentBorders$radiu18.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          label: __('Radius'),
+          value: ((_currentBorders$radiu19 = currentBorders.radius) === null || _currentBorders$radiu19 === void 0 ? void 0 : _currentBorders$radiu19.topLeft) || 0,
+          onChange: function onChange(value) {
+            handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+              topLeft: value,
+              topRight: value,
+              bottomRight: value,
+              bottomLeft: value
+            }));
+          },
+          min: 0,
+          max: 100
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Top Left'),
+            value: ((_currentBorders$radiu20 = currentBorders.radius) === null || _currentBorders$radiu20 === void 0 ? void 0 : _currentBorders$radiu20.topLeft) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                topLeft: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Top Right'),
+            value: ((_currentBorders$radiu21 = currentBorders.radius) === null || _currentBorders$radiu21 === void 0 ? void 0 : _currentBorders$radiu21.topRight) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                topRight: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Bottom Right'),
+            value: ((_currentBorders$radiu22 = currentBorders.radius) === null || _currentBorders$radiu22 === void 0 ? void 0 : _currentBorders$radiu22.bottomRight) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                bottomRight: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Bottom Left'),
+            value: ((_currentBorders$radiu23 = currentBorders.radius) === null || _currentBorders$radiu23 === void 0 ? void 0 : _currentBorders$radiu23.bottomLeft) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                bottomLeft: value
+              }));
+            },
+            min: 0,
+            max: 100
+          })]
+        })]
+      })]
+    });
+  };
+
+  // Render the content based on active control tab
+  var renderActiveControlContent = function renderActiveControlContent() {
+    if (activeControlTab === 'border') {
+      return renderBorderControls();
+    } else if (activeControlTab === 'spacing') {
+      return renderSpacingControls();
+    }
+    return null;
+  };
+
+  // Main component render with collapsible panels
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    className: "ffblock-border-box-control ".concat(className),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(PanelBody, {
+      title: __('Border Controls'),
+      initialOpen: false,
+      onToggle: function onToggle() {
+        return setActiveControlTab('border');
+      },
+      className: "ffblock-control-panel ".concat(activeControlTab === 'border' ? 'is-active' : ''),
+      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "ffblock-state-tabs-container",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TabPanel, {
+          className: "ffblock-state-tabs",
+          activeClass: "is-active",
+          onSelect: function onSelect(tabName) {
+            return setActiveTab(tabName);
+          },
+          tabs: [{
+            name: 'normal',
+            title: __('Normal'),
+            className: 'ffblock-tab-normal'
+          }, {
+            name: 'hover',
+            title: __('Hover'),
+            className: 'ffblock-tab-hover'
+          }],
+          children: function children() {
+            return activeControlTab === 'border' && renderBorderControls();
+          }
+        })
+      }) : activeControlTab === 'border' && renderBorderControls()
+    })
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyBorderBoxControl);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/TabAdvanced.js":
+/*!********************************************************!*\
+  !*** ./guten_block/src/components/tabs/TabAdvanced.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+/**
+ * Fluent Forms Gutenberg Block Advanced Tab Component
+ */
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  TextControl = _wp$components.TextControl;
+var TabAdvanced = function TabAdvanced(_ref) {
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
+      title: __('Custom CSS'),
+      initialOpen: true,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
+        children: "Add custom CSS to further customize your form appearance."
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
+        label: "CSS Class",
+        value: attributes.customCssClass || '',
+        onChange: function onChange(value) {
+          return setAttributes({
+            customCssClass: value
+          });
+        },
+        help: "Add custom CSS class to the form container"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        style: {
+          marginTop: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
+          className: "ffblock-label",
+          children: "Custom CSS"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("textarea", {
+          className: "components-textarea-control__input",
+          value: attributes.customCss || '',
+          onChange: function onChange(e) {
+            return setAttributes({
+              customCss: e.target.value
+            });
+          },
+          rows: 8,
+          style: {
+            width: '100%'
+          },
+          placeholder: ".fluent-form .ff-el-form-control { /* Your custom styles */\n}"
+        })]
+      })]
+    })
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabAdvanced);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/TabGeneral.js":
+/*!*******************************************************!*\
+  !*** ./guten_block/src/components/tabs/TabGeneral.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/MyBorderBoxControl */ "./guten_block/src/components/controls/MyBorderBoxControl.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
+
+
+
+
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useRef = _wp$element.useRef,
+  useEffect = _wp$element.useEffect;
+/**
+ * Fluent Forms Gutenberg Block General Tab Component
+ */
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  SelectControl = _wp$components.SelectControl,
+  ToggleControl = _wp$components.ToggleControl,
+  TextControl = _wp$components.TextControl,
+  BorderControl = _wp$components.BorderControl;
+var TabGeneral = function TabGeneral(_ref) {
+  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5, _attributes$labelTypo6, _attributes$inputTATy, _attributes$inputTATy2, _attributes$inputTATy3, _attributes$inputTATy4, _attributes$inputTATy5, _attributes$inputTATy6;
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes,
+    state = _ref.state,
+    handlePresetChange = _ref.handlePresetChange,
+    toggleCustomizePreset = _ref.toggleCustomizePreset;
+  var customizePreset = state.customizePreset;
+  var config = window.fluentform_block_vars;
+  var presets = config.style_presets;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(PanelBody, {
+      title: __("Form Style Template"),
+      initialOpen: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SelectControl, {
+        label: __("Choose a Template"),
+        value: attributes.themeStyle,
+        options: presets,
+        onChange: function onChange(themeStyle) {
+          setAttributes({
+            themeStyle: themeStyle,
+            isThemeChange: true
+          });
+          // Update the selected preset in the parent component
+          if (handlePresetChange) {
+            handlePresetChange(themeStyle);
+          }
+        }
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+      title: __("Label Styles"),
+      initialOpen: true,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Color",
+        value: attributes.labelColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            labelColor: value
+          });
+        },
+        defaultColor: ""
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$labelTypo = attributes.labelTypo) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
+          fontWeight: ((_attributes$labelTypo2 = attributes.labelTypo) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
+          lineHeight: ((_attributes$labelTypo3 = attributes.labelTypo) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
+          letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypo) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
+          textTransform: ((_attributes$labelTypo5 = attributes.labelTypo) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none',
+          fontFamily: ((_attributes$labelTypo6 = attributes.labelTypo) === null || _attributes$labelTypo6 === void 0 ? void 0 : _attributes$labelTypo6.family) || ''
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            labelTypo: _objectSpread(_objectSpread({}, attributes.labelTypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight,
+              lineHeight: newTypo.lineHeight,
+              letterSpacing: newTypo.letterSpacing,
+              textTransform: newTypo.textTransform,
+              family: newTypo.fontFamily
+            })
+          });
+        }
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+      title: __("Input & Textarea"),
+      initialOpen: false,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Text Color",
+        value: attributes.inputTAColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputTAColor: value
+          });
+        },
+        defaultColor: "#333333"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Background Color",
+        value: attributes.inputTABGColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputTABGColor: value
+          });
+        },
+        defaultColor: "#ffffff"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$inputTATy = attributes.inputTATypo) === null || _attributes$inputTATy === void 0 || (_attributes$inputTATy = _attributes$inputTATy.size) === null || _attributes$inputTATy === void 0 ? void 0 : _attributes$inputTATy.lg) || '',
+          fontWeight: ((_attributes$inputTATy2 = attributes.inputTATypo) === null || _attributes$inputTATy2 === void 0 ? void 0 : _attributes$inputTATy2.weight) || '400',
+          lineHeight: ((_attributes$inputTATy3 = attributes.inputTATypo) === null || _attributes$inputTATy3 === void 0 ? void 0 : _attributes$inputTATy3.lineHeight) || '',
+          letterSpacing: ((_attributes$inputTATy4 = attributes.inputTATypo) === null || _attributes$inputTATy4 === void 0 ? void 0 : _attributes$inputTATy4.letterSpacing) || '',
+          textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none',
+          fontFamily: ((_attributes$inputTATy6 = attributes.inputTATypo) === null || _attributes$inputTATy6 === void 0 ? void 0 : _attributes$inputTATy6.family) || ''
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            inputTATypo: _objectSpread(_objectSpread({}, attributes.inputTATypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight,
+              lineHeight: newTypo.lineHeight,
+              letterSpacing: newTypo.letterSpacing,
+              textTransform: newTypo.textTransform,
+              family: newTypo.fontFamily
+            })
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        label: "Spacing",
+        values: attributes.inputSpacing,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputSpacing: value
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        label: "Style Settings",
+        value: attributes.inputBorder || {
+          top: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColor || '#dddddd'
+          },
+          right: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColor || '#dddddd'
+          },
+          bottom: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColor || '#dddddd'
+          },
+          left: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColor || '#dddddd'
+          },
+          linked: true,
+          radius: {
+            topLeft: attributes.inputTABorderRadius || 0,
+            topRight: attributes.inputTABorderRadius || 0,
+            bottomRight: attributes.inputTABorderRadius || 0,
+            bottomLeft: attributes.inputTABorderRadius || 0,
+            linked: true
+          }
+        },
+        hoverValue: attributes.inputBorderHover || {
+          top: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColorHover || '#72aee6'
+          },
+          right: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColorHover || '#72aee6'
+          },
+          bottom: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColorHover || '#72aee6'
+          },
+          left: {
+            width: 1,
+            style: 'solid',
+            color: attributes.inputTABorderColorHover || '#72aee6'
+          },
+          linked: true,
+          radius: {
+            topLeft: attributes.inputTABorderRadiusHover || 0,
+            topRight: attributes.inputTABorderRadiusHover || 0,
+            bottomRight: attributes.inputTABorderRadiusHover || 0,
+            bottomLeft: attributes.inputTABorderRadiusHover || 0,
+            linked: true
+          }
+        },
+        spacingValue: attributes.inputSpacing || {
+          top: '10px',
+          right: '10px',
+          bottom: '10px',
+          left: '10px'
+        },
+        spacingHoverValue: attributes.inputSpacingHover || {
+          top: '10px',
+          right: '10px',
+          bottom: '10px',
+          left: '10px'
+        },
+        onChange: function onChange(value) {
+          var _value$top, _value$radius, _value$top2;
+          // Update the new border object
+          setAttributes({
+            inputBorder: value
+          });
+
+          // For backward compatibility, also update the old attributes
+          // Only update if the properties exist to avoid errors
+          var backwardCompatProps = {};
+          if (value !== null && value !== void 0 && (_value$top = value.top) !== null && _value$top !== void 0 && _value$top.width) {
+            backwardCompatProps.inputTABorderWidth = value.top.width;
+          }
+          if ((value === null || value === void 0 || (_value$radius = value.radius) === null || _value$radius === void 0 ? void 0 : _value$radius.topLeft) !== undefined) {
+            backwardCompatProps.inputTABorderRadius = value.radius.topLeft;
+          }
+          if (value !== null && value !== void 0 && (_value$top2 = value.top) !== null && _value$top2 !== void 0 && _value$top2.color) {
+            backwardCompatProps.inputTABorderColor = value.top.color;
+          }
+          if (Object.keys(backwardCompatProps).length > 0) {
+            setAttributes(backwardCompatProps);
+          }
+        },
+        onHoverChange: function onHoverChange(value) {
+          var _value$top3, _value$radius2, _value$top4;
+          // Update the hover border object
+          setAttributes({
+            inputBorderHover: value
+          });
+
+          // For backward compatibility, also update the old hover attributes
+          var backwardCompatProps = {};
+          if (value !== null && value !== void 0 && (_value$top3 = value.top) !== null && _value$top3 !== void 0 && _value$top3.width) {
+            backwardCompatProps.inputTABorderWidthHover = value.top.width;
+          }
+          if ((value === null || value === void 0 || (_value$radius2 = value.radius) === null || _value$radius2 === void 0 ? void 0 : _value$radius2.topLeft) !== undefined) {
+            backwardCompatProps.inputTABorderRadiusHover = value.radius.topLeft;
+          }
+          if (value !== null && value !== void 0 && (_value$top4 = value.top) !== null && _value$top4 !== void 0 && _value$top4.color) {
+            backwardCompatProps.inputTABorderColorHover = value.top.color;
+          }
+          if (Object.keys(backwardCompatProps).length > 0) {
+            setAttributes(backwardCompatProps);
+          }
+        },
+        onSpacingChange: function onSpacingChange(value) {
+          setAttributes({
+            inputSpacing: value
+          });
+        },
+        onSpacingHoverChange: function onSpacingHoverChange(value) {
+          setAttributes({
+            inputSpacingHover: value
+          });
+        },
+        colors: [{
+          name: 'Theme Blue',
+          color: '#72aee6'
+        }, {
+          name: 'Theme Red',
+          color: '#e65054'
+        }, {
+          name: 'Theme Green',
+          color: '#68de7c'
+        }, {
+          name: 'Black',
+          color: '#000000'
+        }, {
+          name: 'White',
+          color: '#ffffff'
+        }, {
+          name: 'Gray',
+          color: '#dddddd'
+        }],
+        showRadius: true,
+        showBorderControls: true,
+        showSpacingControls: true,
+        showHoverControls: true,
+        className: "fluent-form-style-control"
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabGeneral);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/TabStyle.js":
+/*!*****************************************************!*\
+  !*** ./guten_block/src/components/tabs/TabStyle.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/**
+ * Fluent Forms Gutenberg Block Style Tab Component
+ */
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+  PanelBody = _wp$components.PanelBody,
+  TextControl = _wp$components.TextControl;
+
+// Import custom components
+
+
+
+
+
+
+var TabStyle = function TabStyle(_ref) {
+  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5, _attributes$labelTypo6, _attributes$inputTATy, _attributes$inputTATy2, _attributes$inputTATy3, _attributes$inputTATy4, _attributes$inputTATy5, _attributes$inputTATy6, _attributes$placehold, _attributes$placehold2, _attributes$buttonTyp, _attributes$buttonTyp2, _attributes$buttonTyp3, _attributes$buttonTyp4, _attributes$buttonTyp5, _attributes$buttonTyp6;
+  var attributes = _ref.attributes,
+    setAttributes = _ref.setAttributes;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+      title: __("Label"),
+      initialOpen: true,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$labelTypo = attributes.labelTypo) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
+          fontWeight: ((_attributes$labelTypo2 = attributes.labelTypo) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
+          lineHeight: ((_attributes$labelTypo3 = attributes.labelTypo) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
+          letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypo) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
+          textTransform: ((_attributes$labelTypo5 = attributes.labelTypo) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none',
+          fontFamily: ((_attributes$labelTypo6 = attributes.labelTypo) === null || _attributes$labelTypo6 === void 0 ? void 0 : _attributes$labelTypo6.family) || ''
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            labelTypo: _objectSpread(_objectSpread({}, attributes.labelTypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight,
+              lineHeight: newTypo.lineHeight,
+              letterSpacing: newTypo.letterSpacing,
+              textTransform: newTypo.textTransform,
+              family: newTypo.fontFamily
+            })
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Color",
+        value: attributes.labelColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            labelColor: value
+          });
+        },
+        defaultColor: "#333333"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        label: "Space",
+        values: attributes.labelSpacing,
+        onChange: function onChange(value) {
+          return setAttributes({
+            labelSpacing: value
+          });
+        }
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+      title: __("Input/Textarea/Select"),
+      initialOpen: false,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$inputTATy = attributes.inputTATypo) === null || _attributes$inputTATy === void 0 || (_attributes$inputTATy = _attributes$inputTATy.size) === null || _attributes$inputTATy === void 0 ? void 0 : _attributes$inputTATy.lg) || '',
+          fontWeight: ((_attributes$inputTATy2 = attributes.inputTATypo) === null || _attributes$inputTATy2 === void 0 ? void 0 : _attributes$inputTATy2.weight) || '400',
+          lineHeight: ((_attributes$inputTATy3 = attributes.inputTATypo) === null || _attributes$inputTATy3 === void 0 ? void 0 : _attributes$inputTATy3.lineHeight) || '',
+          letterSpacing: ((_attributes$inputTATy4 = attributes.inputTATypo) === null || _attributes$inputTATy4 === void 0 ? void 0 : _attributes$inputTATy4.letterSpacing) || '',
+          textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none',
+          fontFamily: ((_attributes$inputTATy6 = attributes.inputTATypo) === null || _attributes$inputTATy6 === void 0 ? void 0 : _attributes$inputTATy6.family) || ''
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            inputTATypo: _objectSpread(_objectSpread({}, attributes.inputTATypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight,
+              lineHeight: newTypo.lineHeight,
+              letterSpacing: newTypo.letterSpacing,
+              textTransform: newTypo.textTransform,
+              family: newTypo.fontFamily
+            })
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Text Color",
+        value: attributes.inputTAColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputTAColor: value
+          });
+        },
+        defaultColor: "#333333"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Background Color",
+        value: attributes.inputTABGColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputTABGColor: value
+          });
+        },
+        defaultColor: "#ffffff"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Border Color",
+        value: attributes.inputTABorderColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            inputTABorderColor: value
+          });
+        },
+        defaultColor: "#dddddd"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+      title: __("Placeholder"),
+      initialOpen: false,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$placehold = attributes.placeholderTypo) === null || _attributes$placehold === void 0 || (_attributes$placehold = _attributes$placehold.size) === null || _attributes$placehold === void 0 ? void 0 : _attributes$placehold.lg) || '',
+          fontWeight: ((_attributes$placehold2 = attributes.placeholderTypo) === null || _attributes$placehold2 === void 0 ? void 0 : _attributes$placehold2.weight) || '400',
+          fontStyle: attributes.placeholderFontStyle || 'normal'
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            placeholderTypo: _objectSpread(_objectSpread({}, attributes.placeholderTypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight
+            }),
+            placeholderFontStyle: newTypo.fontStyle
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Color",
+        value: attributes.placeholderColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            placeholderColor: value
+          });
+        },
+        defaultColor: "#999999"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+      title: __("Radio & Checkbox"),
+      initialOpen: false,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Border Color",
+        value: attributes.radioCheckboxColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            radioCheckboxColor: value
+          });
+        },
+        defaultColor: "#dddddd"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Selected/Checked Color",
+        value: attributes.radioCheckboxSelectedColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            radioCheckboxSelectedColor: value
+          });
+        },
+        defaultColor: "#4285F4"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          gap: '16px',
+          marginBottom: '16px',
+          marginTop: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          style: {
+            flex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "ffblock-label",
+            children: "Size (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TextControl, {
+            type: "number",
+            value: attributes.radioCheckboxSize || '',
+            onChange: function onChange(value) {
+              return setAttributes({
+                radioCheckboxSize: value
+              });
+            },
+            min: 10,
+            max: 30
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          style: {
+            flex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "ffblock-label",
+            children: "Border Width (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TextControl, {
+            type: "number",
+            value: attributes.radioCheckboxBorderWidth || '',
+            onChange: function onChange(value) {
+              return setAttributes({
+                radioCheckboxBorderWidth: value
+              });
+            },
+            min: 1,
+            max: 5
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(PanelBody, {
+      title: __("Submit Button"),
+      initialOpen: false,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+        label: "Typography",
+        settings: {
+          fontSize: ((_attributes$buttonTyp = attributes.buttonTypo) === null || _attributes$buttonTyp === void 0 || (_attributes$buttonTyp = _attributes$buttonTyp.size) === null || _attributes$buttonTyp === void 0 ? void 0 : _attributes$buttonTyp.lg) || '',
+          fontWeight: ((_attributes$buttonTyp2 = attributes.buttonTypo) === null || _attributes$buttonTyp2 === void 0 ? void 0 : _attributes$buttonTyp2.weight) || '400',
+          lineHeight: ((_attributes$buttonTyp3 = attributes.buttonTypo) === null || _attributes$buttonTyp3 === void 0 ? void 0 : _attributes$buttonTyp3.lineHeight) || '',
+          letterSpacing: ((_attributes$buttonTyp4 = attributes.buttonTypo) === null || _attributes$buttonTyp4 === void 0 ? void 0 : _attributes$buttonTyp4.letterSpacing) || '',
+          textTransform: ((_attributes$buttonTyp5 = attributes.buttonTypo) === null || _attributes$buttonTyp5 === void 0 ? void 0 : _attributes$buttonTyp5.textTransform) || 'none',
+          fontFamily: ((_attributes$buttonTyp6 = attributes.buttonTypo) === null || _attributes$buttonTyp6 === void 0 ? void 0 : _attributes$buttonTyp6.family) || ''
+        },
+        onChange: function onChange(newTypo) {
+          setAttributes({
+            buttonTypo: _objectSpread(_objectSpread({}, attributes.buttonTypo), {}, {
+              size: {
+                lg: newTypo.fontSize
+              },
+              weight: newTypo.fontWeight,
+              lineHeight: newTypo.lineHeight,
+              letterSpacing: newTypo.letterSpacing,
+              textTransform: newTypo.textTransform,
+              family: newTypo.fontFamily
+            })
+          });
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Text Color",
+        value: attributes.buttonTextColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            buttonTextColor: value
+          });
+        },
+        defaultColor: "#ffffff"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Background Color",
+        value: attributes.buttonBGColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            buttonBGColor: value
+          });
+        },
+        defaultColor: "#4285F4"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Hover Background Color",
+        value: attributes.buttonHoverBGColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            buttonHoverBGColor: value
+          });
+        },
+        defaultColor: "#0d6efd"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "Border Color",
+        value: attributes.buttonBorderColor,
+        onChange: function onChange(value) {
+          return setAttributes({
+            buttonBorderColor: value
+          });
+        },
+        defaultColor: "#4285F4"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          gap: '16px',
+          marginBottom: '16px',
+          marginTop: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          style: {
+            flex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "ffblock-label",
+            children: "Border Width (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TextControl, {
+            type: "number",
+            value: attributes.buttonBorderWidth || '',
+            onChange: function onChange(value) {
+              return setAttributes({
+                buttonBorderWidth: value
+              });
+            },
+            min: 0,
+            max: 10
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          style: {
+            flex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "ffblock-label",
+            children: "Border Radius (px)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TextControl, {
+            type: "number",
+            value: attributes.buttonBorderRadius || '',
+            onChange: function onChange(value) {
+              return setAttributes({
+                buttonBorderRadius: value
+              });
+            },
+            min: 0,
+            max: 50
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        label: "Padding",
+        values: attributes.buttonPadding,
+        onChange: function onChange(value) {
+          return setAttributes({
+            buttonPadding: value
+          });
+        }
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabStyle);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/tabs/Tabs.js":
+/*!*************************************************!*\
+  !*** ./guten_block/src/components/tabs/Tabs.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TabGeneral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TabGeneral */ "./guten_block/src/components/tabs/TabGeneral.js");
+/* harmony import */ var _TabStyle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabStyle */ "./guten_block/src/components/tabs/TabStyle.js");
+/* harmony import */ var _TabAdvanced__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TabAdvanced */ "./guten_block/src/components/tabs/TabAdvanced.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+/**
+ * Fluent Forms Gutenberg Block Tabs Component
+ * Manages the tab panel for the block inspector
+ */
+var __ = wp.i18n.__;
+var TabPanel = wp.components.TabPanel;
+var Component = wp.element.Component;
+
+// Import tab content components
+
+
+
+
+var Tabs = /*#__PURE__*/function (_Component) {
+  _inherits(Tabs, _Component);
+  function Tabs() {
+    _classCallCheck(this, Tabs);
+    return _callSuper(this, Tabs, arguments);
+  }
+  _createClass(Tabs, [{
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+        attributes = _this$props.attributes,
+        setAttributes = _this$props.setAttributes,
+        state = _this$props.state;
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TabPanel, {
+        className: "fluent-form-block-style-tabs",
+        activeClass: "is-active",
+        tabs: [{
+          name: 'general',
+          title: __('General'),
+          key: 'general-tab'
+        }, {
+          name: 'style',
+          title: __('Style'),
+          key: 'style-tab'
+        }, {
+          name: 'advanced',
+          title: __('Advanced'),
+          key: 'advanced-tab'
+        }],
+        children: function children(tab) {
+          if (tab.name === 'general') {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
+                attributes: attributes,
+                setAttributes: setAttributes,
+                state: state,
+                handlePresetChange: state.handlePresetChange,
+                toggleCustomizePreset: state.toggleCustomizePreset
+              })
+            }, "general-tab-content");
+          } else if (tab.name === 'style') {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabStyle__WEBPACK_IMPORTED_MODULE_1__["default"], {
+                attributes: attributes,
+                setAttributes: setAttributes
+              })
+            }, "style-tab-content");
+          } else if (tab.name === 'advanced') {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabAdvanced__WEBPACK_IMPORTED_MODULE_2__["default"], {
+                attributes: attributes,
+                setAttributes: setAttributes
+              })
+            }, "advanced-tab-content");
+          }
+          return null;
+        }
+      });
+    }
+  }]);
+  return Tabs;
+}(Component);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Tabs);
+
+/***/ }),
+
+/***/ "./guten_block/src/edit.js":
+/*!*********************************!*\
+  !*** ./guten_block/src/edit.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/tabs/Tabs */ "./guten_block/src/components/tabs/Tabs.js");
+/* harmony import */ var _components_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _components_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _components_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _components_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/controls/MyBorderBoxControl */ "./guten_block/src/components/controls/MyBorderBoxControl.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -34,6 +2241,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 /**
  * Fluent Forms Gutenberg Block Edit Component
+ * Enhanced with custom UX controls
  */
 var __ = wp.i18n.__;
 var InspectorControls = wp.blockEditor.InspectorControls;
@@ -43,8 +2251,46 @@ var _wp2 = wp,
   apiFetch = _wp2.apiFetch;
 var _wp$components = wp.components,
   SelectControl = _wp$components.SelectControl,
-  PanelBody = _wp$components.PanelBody;
-var Component = wp.element.Component;
+  PanelBody = _wp$components.PanelBody,
+  ToggleControl = _wp$components.ToggleControl,
+  Button = _wp$components.Button,
+  Flex = _wp$components.Flex,
+  FlexItem = _wp$components.FlexItem,
+  TextControl = _wp$components.TextControl,
+  ColorPalette = _wp$components.ColorPalette,
+  Panel = _wp$components.Panel,
+  Popover = _wp$components.Popover,
+  RangeControl = _wp$components.RangeControl,
+  Dropdown = _wp$components.Dropdown,
+  ButtonGroup = _wp$components.ButtonGroup,
+  Icon = _wp$components.Icon,
+  TabPanel = _wp$components.TabPanel,
+  Spinner = _wp$components.Spinner;
+var _wp$element = wp.element,
+  Component = _wp$element.Component,
+  Fragment = _wp$element.Fragment,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  useRef = _wp$element.useRef;
+var React = wp.element;
+
+// Import components
+
+
+
+
+
+
+// Add CSS styles for our controls
+
+
+var addCustomStyles = function addCustomStyles() {
+  var style = document.createElement('style');
+  style.innerHTML = "\n\n    ";
+  document.head.appendChild(style);
+};
+
+// Function to get form meta
 var getFormMeta = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(formId, metaKey) {
     var path, response;
@@ -93,14 +2339,20 @@ var Edit = /*#__PURE__*/function (_Component) {
               }
               return _context2.abrupt("return");
             case 2:
-              _context2.next = 4;
+              _this.setState({
+                isPreviewLoading: true
+              });
+              _context2.next = 5;
               return getFormMeta(formId, "is_conversion_form");
-            case 4:
+            case 5:
               isConversationalForm = _context2.sent;
               _this.props.setAttributes({
                 isConversationalForm: isConversationalForm === "yes"
               });
-            case 6:
+              _this.setState({
+                isPreviewLoading: false
+              });
+            case 8:
             case "end":
               return _context2.stop();
           }
@@ -111,6 +2363,9 @@ var Edit = /*#__PURE__*/function (_Component) {
       };
     }());
     _defineProperty(_assertThisInitialized(_this), "handleFormChange", function (formId) {
+      _this.setState({
+        isPreviewLoading: true
+      });
       _this.props.setAttributes({
         formId: formId
       });
@@ -118,111 +2373,294 @@ var Edit = /*#__PURE__*/function (_Component) {
         _this.props.setAttributes({
           themeStyle: "",
           isThemeChange: false,
-          isConversationalForm: false
+          isConversationalForm: false,
+          selectedPreset: 'default',
+          customizePreset: false
+        });
+        _this.setState({
+          isPreviewLoading: false
         });
       } else {
         _this.checkIfConversationalForm(formId);
       }
     });
+    _defineProperty(_assertThisInitialized(_this), "handlePresetChange", function (selectedPreset) {
+      _this.setState({
+        selectedPreset: selectedPreset,
+        isPreviewLoading: true
+      });
+      _this.props.setAttributes({
+        selectedPreset: selectedPreset,
+        isThemeChange: true
+      });
+
+      // Simulate delay for preview update
+      setTimeout(function () {
+        _this.setState({
+          isPreviewLoading: false
+        });
+      }, 300);
+    });
+    _defineProperty(_assertThisInitialized(_this), "toggleCustomizePreset", function () {
+      var customizePreset = !_this.state.customizePreset;
+      _this.setState({
+        customizePreset: customizePreset
+      });
+      _this.props.setAttributes({
+        customizePreset: customizePreset
+      });
+    });
+    _defineProperty(_assertThisInitialized(_this), "setPreviewDevice", function (device) {
+      _this.setState({
+        previewDevice: device
+      });
+    });
+    _this.state = {
+      customizePreset: false,
+      selectedPreset: 'default',
+      isPreviewLoading: false,
+      showSaveNotice: false,
+      previewDevice: 'desktop'
+    };
+
+    // Add custom styles when component initializes
+    addCustomStyles();
     return _this;
   }
   _createClass(Edit, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var maybeSetStyle = !this.props.attributes.themeStyle && window.fluentform_block_vars.theme_style;
+      var _window$fluentform_bl;
+      var attributes = this.props.attributes;
+      var maybeSetStyle = !attributes.themeStyle && ((_window$fluentform_bl = window.fluentform_block_vars) === null || _window$fluentform_bl === void 0 ? void 0 : _window$fluentform_bl.theme_style);
+      var config = window.fluentform_block_vars || {};
       if (maybeSetStyle) {
         this.props.setAttributes({
-          themeStyle: window.fluentform_block_vars.theme_style
+          themeStyle: config.theme_style
+        });
+      }
+
+      // Set initial state based on attributes
+      if (attributes.formId) {
+        this.checkIfConversationalForm(attributes.formId);
+
+        // Set initial state for customization options
+        this.setState({
+          customizePreset: attributes.customizePreset || false,
+          selectedPreset: attributes.selectedPreset || 'default'
         });
       }
     }
   }, {
     key: "render",
-    value: function render() {
+    value:
+    // Tab rendering methods have been moved to separate components
+
+    function render() {
+      var _config$forms,
+        _this2 = this;
       var _this$props = this.props,
         attributes = _this$props.attributes,
         setAttributes = _this$props.setAttributes;
-      var config = window.fluentform_block_vars;
+      var _this$state = this.state,
+        isPreviewLoading = _this$state.isPreviewLoading,
+        showSaveNotice = _this$state.showSaveNotice,
+        previewDevice = _this$state.previewDevice;
+      var config = window.fluentform_block_vars || {};
       var presets = config.style_presets;
-      var settings;
-      var blockContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        className: "flueform-guten-wrapper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-          className: "fluentform-logo",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-            src: config.logo,
-            alt: "Fluent Forms Logo"
-          })
-        }), settings]
-      }, "ff-form-sub-wrapper");
-      settings = [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(InspectorControls, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
-          title: "Select your Fluent Forms",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            label: __("Select a Form"),
-            value: attributes.formId,
-            options: config.forms.map(function (form) {
+      // Form selection and style controls in inspector controls
+      var inspectorControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(InspectorControls, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PanelBody, {
+          title: __('Form Selection'),
+          initialOpen: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(SelectControl, {
+            label: __('Select a Form'),
+            value: attributes.formId || '',
+            options: ((_config$forms = config.forms) === null || _config$forms === void 0 ? void 0 : _config$forms.map(function (form) {
               return {
                 value: form.id,
-                label: form.title
+                label: form.title,
+                key: "form-".concat(form.id)
               };
-            }),
+            })) || [],
             onChange: this.handleFormChange
-          }, "sub_select_form"), attributes.formId && attributes.hasOwnProperty("isConversationalForm") && attributes.isConversationalForm != true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            label: __("Select a Theme Style"),
-            value: attributes.themeStyle,
-            options: presets,
-            onChange: function onChange(themeStyle) {
-              setAttributes({
-                themeStyle: themeStyle,
-                isThemeChange: true
-              });
+          })
+        }), attributes.formId && !attributes.isConversationalForm && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_components_tabs_Tabs__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          attributes: attributes,
+          setAttributes: setAttributes,
+          state: {
+            customizePreset: this.state.customizePreset,
+            selectedPreset: this.state.selectedPreset,
+            handlePresetChange: this.handlePresetChange,
+            toggleCustomizePreset: this.toggleCustomizePreset
+          }
+        })]
+      }, "ff-inspector-controls");
+
+      // Main content based on selection state
+      var mainContent;
+      if (isPreviewLoading) {
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "fluent-form-loading",
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px',
+            backgroundColor: '#f7f7f7',
+            borderRadius: '4px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            style: {
+              marginTop: '16px'
+            },
+            children: "Loading form preview..."
+          })]
+        });
+      } else if (!attributes.formId) {
+        var _config$forms2;
+        // No form selected
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "fluent-form-initial-wrapper",
+          style: {
+            textAlign: 'center',
+            padding: '40px 20px',
+            backgroundColor: '#f7f7f7',
+            borderRadius: '4px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "fluent-form-logo",
+            style: {
+              marginBottom: '20px'
+            },
+            children: config.logo && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+              src: config.logo,
+              alt: "Fluent Forms Logo",
+              style: {
+                maxWidth: '200px'
+              }
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(SelectControl, {
+            label: __('Select a Form'),
+            value: "",
+            options: ((_config$forms2 = config.forms) === null || _config$forms2 === void 0 ? void 0 : _config$forms2.map(function (form) {
+              return {
+                value: form.id,
+                label: form.title,
+                key: "form-select-".concat(form.id)
+              };
+            })) || [],
+            onChange: this.handleFormChange
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            style: {
+              marginTop: '16px',
+              fontSize: '13px',
+              color: '#666'
+            },
+            children: "Select a form to display and customize its appearance."
+          })]
+        });
+      } else if (attributes.isConversationalForm === true) {
+        // Conversational form selected
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "fluent-form-conv-demo",
+          style: {
+            textAlign: 'center',
+            padding: '20px',
+            backgroundColor: '#f7f7f7',
+            borderRadius: '4px'
+          },
+          children: [config.conversational_demo_img && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+            src: config.conversational_demo_img,
+            alt: "Fluent Forms Conversational Form",
+            style: {
+              maxWidth: '100%',
+              height: 'auto'
             }
-          }, "ff-sub_select_theme")]
-        })
-      }, "ff-select-form")];
-      if (attributes.formId) {
-        if (attributes.isConversationalForm == true) {
-          settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-            className: "conv-demo",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
-              src: config.conversational_demo_img,
-              alt: "Fluent Forms Conversational Form"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("strong", {
-                children: __("This is a demo! The actual Conversational Form may look different in live pages.")
-              })
-            })]
-          }, "ff-conv-sub-wrapper"));
-        } else {
-          settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ServerSideRender, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            style: {
+              marginTop: '16px',
+              fontStyle: 'italic'
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("strong", {
+              children: __("This is a demo preview. The actual Conversational Form will appear on your live page.")
+            })
+          })]
+        });
+      } else {
+        // Regular form selected - show preview only
+        var previewWrapperStyle = {};
+
+        // Apply responsive preview styles
+        if (previewDevice === 'tablet') {
+          previewWrapperStyle.maxWidth = '768px';
+          previewWrapperStyle.margin = '0 auto';
+        } else if (previewDevice === 'mobile') {
+          previewWrapperStyle.maxWidth = '480px';
+          previewWrapperStyle.margin = '0 auto';
+        }
+        mainContent = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "fluent-form-preview-wrapper",
+          style: previewWrapperStyle,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "fluent-form-preview-controls",
+            style: {
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '16px',
+              gap: '8px'
+            },
+            children: [{
+              device: 'desktop',
+              icon: 'desktop',
+              label: 'Desktop Preview'
+            }, {
+              device: 'tablet',
+              icon: 'tablet',
+              label: 'Tablet Preview'
+            }, {
+              device: 'mobile',
+              icon: 'smartphone',
+              label: 'Mobile Preview'
+            }].map(function (item) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Button, {
+                icon: item.icon,
+                isSmall: true,
+                isPrimary: previewDevice === item.device,
+                onClick: function onClick() {
+                  return _this2.setPreviewDevice(item.device);
+                },
+                label: item.label
+              }, item.device);
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(ServerSideRender, {
             block: "fluentfom/guten-block",
             attributes: attributes
-          }, "ff-preview"));
-        }
-      } else {
-        settings.push(blockContent);
-        settings.push( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-          label: __("Select a Form"),
-          value: "",
-          options: config.forms.map(function (form) {
-            return {
-              value: form.id,
-              label: form.title
-            };
-          }),
-          onChange: this.handleFormChange
-        }, "ff-main-select-form"));
+          }, "ff-preview")]
+        });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "fluentform-guten-wrapper",
-        children: settings
+        children: [inspectorControls, mainContent]
       });
     }
   }]);
   return Edit;
 }(Component);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/controls/border-box-control.css":
+/*!********************************************************************!*\
+  !*** ./guten_block/src/components/controls/border-box-control.css ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
 
 /***/ }),
 
