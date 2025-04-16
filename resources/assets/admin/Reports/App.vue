@@ -2,7 +2,10 @@
     <div class="ff_reports">
         <el-row :gutter="24">
             <el-col class="report-content" :span="16">
-                <conversion-chart />
+                <overview-chart
+                    :overview_chart="reports.overview_chart"
+                    @date-change="handleDateChange"
+                />
             </el-col>
             <el-col class="report-content" :span="8">
                 <form-stats />
@@ -26,7 +29,7 @@
     </div>
 </template>
 <script type="text/babel">
-import ConversionChart from './Components/ConversionChart/ConversionChart.vue';
+import OverviewChart from './Components/OverviewChart/OverviewChart.vue';
 import FormStats from './Components/FormStats/FormStats.vue';
 import EntriesHeatmap from "./Components/EntriesHeatmap/EntriesHeatmap.vue";
 import ApiLogsChart from './Components/ApiLogsChart/ApiLogsChart.vue';
@@ -38,44 +41,67 @@ export default {
     components: {
         ApiLogsChart,
         EntriesHeatmap,
-        ConversionChart,
+        OverviewChart,
         FormStats,
         TransactionsTable
     },
     data() {
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        // Format dates for API
+        const formatDateForApi = (date, isStart) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const time = isStart ? '00:00:00' : '23:59:59';
+            return `${year}-${month}-${day} ${time}`;
+        };
+        
         return {
             loading: false,
-            chartData: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-                datasets: [
-                    {
-                        label: "Success",
-                        borderColor: "green",
-                        data: [100, 150, 200, 250, 300],
-                        fill: false,
-                    },
-                    {
-                        label: "Processing",
-                        borderColor: "blue",
-                        data: [50, 100, 120, 180, 200],
-                        fill: false,
-                    },
-                    {
-                        label: "Failed",
-                        borderColor: "red",
-                        data: [10, 30, 50, 80, 100],
-                        fill: false,
-                    },
-                ],
-            },
+            reports: {},
+            dateParams: {
+                startDate: formatDateForApi(firstDayOfMonth, true),
+                endDate: formatDateForApi(lastDayOfMonth, false),
+                view: 'entries'
+            }
         }
     },
     methods: {
+        fetchReports() {
+            this.loading = true;
 
+            let data = {
+                action: 'fluentform-get-reports',
+                start_date: this.dateParams.startDate,
+                end_date: this.dateParams.endDate,
+                view: this.dateParams.view
+            };
+
+            FluentFormsGlobal.$get(data)
+                .then(response => {
+                    this.reports = response.data.reports;
+                })
+                .fail(error => {
+                    console.log(error);
+                })
+                .always(() => {
+                    this.loading = false;
+                });
+        },
+
+        handleDateChange(params) {
+            this.dateParams = {
+                startDate: params.startDate,
+                endDate: params.endDate,
+                view: params.view
+            };
+
+            this.fetchReports();
+        }
     },
-    mounted() {
-
-    }
 };
 </script>
 <style scoped>

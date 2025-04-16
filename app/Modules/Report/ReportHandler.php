@@ -1,0 +1,511 @@
+<?php
+
+namespace FluentForm\App\Modules\Report;
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+use FluentForm\App\Models\Submission;
+
+class ReportHandler
+{
+    protected $app;
+
+    public function __construct($app)
+    {
+        $this->app = $app;
+
+        $app->addAction('fluentform/render_report', [$this, 'renderReport']);
+        $app->addAdminAjaxAction('fluentform-get-reports', [$this, 'getReports']);
+    }
+
+    public function renderReport()
+    {
+        wp_enqueue_script('fluentform_reports');
+
+        $this->app->view->render('admin.reports.index', [
+            'logo' => fluentformMix('img/fluentform-logo.svg'),
+        ]);
+    }
+
+    public function getReports()
+    {
+        $reports = [
+            'reports' => [
+                'overview_chart' => $this->getOverviewChartData()
+            ]
+        ];
+
+        wp_send_json_success($reports, 200);
+    }
+
+    public function getOverviewChartData()
+    {
+        $startDate = sanitize_text_field($this->app->request->get('start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('end_date'));
+        $view = sanitize_text_field($this->app->request->get('view'));
+
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        // Validate dates
+        if (!$startDate || !$endDate) {
+            // Default to current month if no dates provided
+            $endDate = date('Y-m-d H:i:s');
+            $startDate = date('Y-m-01 00:00:00');
+        }
+
+        // Calculate date difference to determine grouping
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysInterval = $interval->days + 1; // Include both start and end dates
+
+        // Determine grouping mode based on date range
+        $groupingMode = $this->getGroupingMode($daysInterval);
+
+        // Get data based on the view type
+        if ($view === 'conversion') {
+            return $this->getFormViewsAndConversions($startDate, $endDate, $groupingMode);
+        } else {
+            $data = $this->getAggregatedData($startDate, $endDate, $groupingMode, $view);
+
+            // Get date labels based on grouping mode
+            $dateLabels = $this->getDateLabels($startDateTime, $endDateTime, $groupingMode);
+
+            // Format the data for the chart
+            return $this->formatDataForChart($dateLabels, $data);
+        }
+    }
+
+    /**
+     * Determine grouping mode based on date range
+     */
+    private function getGroupingMode($daysInterval)
+    {
+        if ($daysInterval <= 7) {
+            return 'day'; // 1-7 days: group by day
+        } elseif ($daysInterval <= 31) { // Change from 30 to 31 to catch full months
+            return '3days'; // 8-31 days: group by 3 days
+        } elseif ($daysInterval <= 92) { // About 3 months
+            return 'week'; // Group by week for 1-3 months
+        } else {
+            return 'month'; // 3+ months: group by month
+        }
+    }
+
+    /**
+     * Get aggregated data based on grouping mode
+     */
+    private function getAggregatedData($startDate, $endDate, $groupingMode, $dataType)
+    {
+        $query = Submission::whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($dataType === 'payments') {
+            $query->whereNotNull('payment_total')
+                  ->where(function($query) {
+                      $query->where('payment_status', 'paid');
+                  })
+                  ->selectRaw('ROUND(SUM(payment_total) / 100, 2) as count');
+        } else {
+            $query->selectRaw('COUNT(*) as count');
+        }
+
+        // Apply grouping based on mode
+        if ($groupingMode === 'day') {
+            $query->selectRaw('DATE(created_at) as date_group')
+                  ->groupBy('date_group');
+        } elseif ($groupingMode === '3days') {
+            $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
+                                       ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                       ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $query->selectRaw("MIN(DATE(created_at)) as date_group")
+                      ->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDateRecord->min_date}') / 3) as group_num")
+                      ->groupBy('group_num');
+            } else {
+                $query->selectRaw('DATE(created_at) as date_group')
+                      ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $query->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group")
+                  ->groupBy('date_group');
+        } else {
+            $query->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group")
+                  ->groupBy('date_group');
+        }
+
+        $results = $query->orderBy('date_group')->get();
+
+        $data = [];
+        foreach ($results as $result) {
+            $data[$result->date_group] = $result->count;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generate date labels based on grouping mode
+     */
+    private function getDateLabels(\DateTime $startDate, \DateTime $endDate, $groupingMode)
+    {
+        $dates = [];
+        $labels = [];
+        $current = clone $startDate;
+
+        if ($groupingMode === 'day') {
+            // Generate daily labels
+            while ($current <= $endDate) {
+                $dateKey = $current->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $current->format('M d');
+                $current->modify('+1 day');
+            }
+        } elseif ($groupingMode === '3days') {
+            // Generate labels for every 3 days
+            $dayIndex = 0;
+            $groupStartDate = clone $current;
+
+            while ($current <= $endDate) {
+                if ($dayIndex % 3 === 0 && $dayIndex > 0) {
+                    $previousDate = clone $current;
+                    $previousDate->modify('-1 day');
+
+                    $dateKey = $groupStartDate->format('Y-m-d');
+                    $dates[] = $dateKey;
+                    $labels[] = $groupStartDate->format('M d');
+
+                    $groupStartDate = clone $current;
+                }
+
+                $current->modify('+1 day');
+                $dayIndex++;
+            }
+
+            // Add the last group if needed
+            if ($groupStartDate <= $endDate) {
+                $dateKey = $groupStartDate->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $groupStartDate->format('M d');
+            }
+        } elseif ($groupingMode === 'week') {
+            // Generate weekly labels
+            while ($current <= $endDate) {
+                // Use simple approach to get Monday (start of week)
+                $dayOfWeek = (int)$current->format('N'); // 1 (Monday) through 7 (Sunday)
+                $daysToSubtract = $dayOfWeek - 1;
+
+                $weekStart = clone $current;
+                if ($daysToSubtract > 0) {
+                    $weekStart->modify("-{$daysToSubtract} days");
+                }
+
+                // Calculate end of week (Sunday)
+                $weekEnd = clone $weekStart;
+                $weekEnd->modify('+6 days');
+
+                // If weekend exceeds the range end, cap it
+                if ($weekEnd > $endDate) {
+                    $weekEnd = clone $endDate;
+                }
+
+                $dateKey = $weekStart->format('Y-m-d');
+                $dates[] = $dateKey;
+                $labels[] = $weekStart->format('M d');
+
+                // Move to next week
+                $current->modify('+7 days');
+            }
+        } else { // month
+            // Generate monthly labels - using manual approach to get end of month
+            while ($current <= $endDate) {
+                $dateKey = $current->format('Y-m-01');
+                $dates[] = $dateKey;
+                $labels[] = $current->format('M Y');
+
+                // Manually move to first day of next month
+                $year = (int)$current->format('Y');
+                $month = (int)$current->format('m');
+
+                // Move to next month
+                $month++;
+                if ($month > 12) {
+                    $month = 1;
+                    $year++;
+                }
+
+                // Set to first day of next month
+                $current = new \DateTime("$year-$month-01");
+            }
+        }
+
+        return ['dates' => $dates, 'labels' => $labels];
+    }
+
+    /**
+     * Format data for the chart
+     */
+    private function formatDataForChart($dateLabels, $data)
+    {
+        $dates = $dateLabels['dates'];
+        $labels = $dateLabels['labels'];
+
+        // Fill in missing data with zeros
+        $values = $this->fillMissingData($dates, $data);
+
+        return [
+            'dates' => $labels,
+            'values' => array_values($values),
+        ];
+    }
+
+    private function processDateRange($startDate, $endDate) {
+        // Sanity check - ensure start date is before end date
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // If start date is after end date, swap them
+        if ($startDateTime > $endDateTime) {
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+
+            // Update datetime objects
+            $startDateTime = new \DateTime($startDate);
+            $endDateTime = new \DateTime($endDate);
+        }
+
+        // Check if range appears to be same day (possibly "Today" selection)
+        $interval = $startDateTime->diff($endDateTime);
+        if ($interval->days < 1) {
+            // If the date parameter explicitly requested "today" (has today's date), 
+            // don't modify it. Otherwise, assume it's a range issue and expand to a year.
+            $today = new \DateTime('today');
+            $isToday = $startDateTime->format('Y-m-d') === $today->format('Y-m-d');
+
+            if (!$isToday) {
+                $startDateTime->modify('-1 year');
+                $startDate = $startDateTime->format('Y-m-d H:i:s');
+            }
+        }
+
+        return [$startDate, $endDate];
+    }
+
+    /**
+     * Fill in missing data with zeros
+     */
+    private function fillMissingData($allDates, $data)
+    {
+        $result = [];
+        foreach ($allDates as $date) {
+            $result[$date] = isset($data[$date]) ? $data[$date] : 0;
+        }
+        return $result;
+    }
+
+    /**
+     * Get form views and conversions by date chunks
+     */
+    private function getFormViewsAndConversions($startDate, $endDate, $groupingMode)
+    {
+        // Convert to DateTime objects
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        // Get date labels for X-axis
+        $dateLabels = $this->getDateLabels($startDateTime, $endDateTime, $groupingMode);
+        $dates = $dateLabels['dates'];
+        $labels = $dateLabels['labels'];
+
+        // Initialize data arrays
+        $viewsData = array_fill_keys($dates, 0);
+        $submissionsData = array_fill_keys($dates, 0);
+        $formCountData = array_fill_keys($dates, 0);
+
+        // 1. Get UNIQUE VIEWS by IP address
+        $viewsQuery = \FluentForm\App\Models\FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+                                                          ->whereNotNull('ip');
+
+        // Group by date and IP to count unique visitors
+        if ($groupingMode === 'day') {
+            $viewsQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = \FluentForm\App\Models\FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+                                                                 ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                                                 ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $viewsQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                           ->selectRaw('MIN(DATE(created_at)) as date_group')
+                           ->selectRaw('COUNT(DISTINCT ip) as unique_count')
+                           ->groupBy('group_num');
+            } else {
+                $viewsQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count')
+                           ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $viewsQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(DISTINCT ip) as unique_count");
+        } else { // month
+            $viewsQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(DISTINCT ip) as unique_count");
+        }
+
+        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
+            $viewsQuery->groupBy('date_group');
+        }
+
+        $viewsResults = $viewsQuery->get();
+
+        // Map views results to our date keys
+        foreach ($viewsResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($viewsData[$dateKey])) {
+                $viewsData[$dateKey] = $result->unique_count;
+            }
+        }
+
+        // 2. Get UNIQUE SUBMISSIONS by IP address
+        $submissionQuery = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])
+                                                            ->whereNotNull('ip');
+
+        // Group by date and IP to count unique submitters
+        if ($groupingMode === 'day') {
+            $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])
+                                                              ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                                              ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $submissionQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                                ->selectRaw('MIN(DATE(created_at)) as date_group')
+                                ->selectRaw('COUNT(DISTINCT ip) as unique_count')
+                                ->groupBy('group_num');
+            } else {
+                $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count')
+                                ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $submissionQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(DISTINCT ip) as unique_count");
+        } else { // month
+            $submissionQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(DISTINCT ip) as unique_count");
+        }
+
+        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
+            $submissionQuery->groupBy('date_group');
+        }
+
+        $submissionResults = $submissionQuery->get();
+
+        // Map submission results to our date keys
+        foreach ($submissionResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($submissionsData[$dateKey])) {
+                $submissionsData[$dateKey] = $result->unique_count;
+            }
+        }
+
+        // 3. Count forms created in each time period
+        $formQuery = \FluentForm\App\Models\Form::whereBetween('created_at', [$startDate, $endDate]);
+
+        // Group forms by date
+        if ($groupingMode === 'day') {
+            $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count');
+        } elseif ($groupingMode === '3days') {
+            // Get min date for reference
+            $minDateRecord = \FluentForm\App\Models\Form::whereBetween('created_at', [$startDate, $endDate])
+                                                        ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                                        ->first();
+
+            if ($minDateRecord && $minDateRecord->min_date) {
+                $minDate = $minDateRecord->min_date;
+                $formQuery->selectRaw("FLOOR(DATEDIFF(DATE(created_at), '{$minDate}') / 3) as group_num")
+                          ->selectRaw('MIN(DATE(created_at)) as date_group')
+                          ->selectRaw('COUNT(*) as count')
+                          ->groupBy('group_num');
+            } else {
+                $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count')
+                          ->groupBy('date_group');
+            }
+        } elseif ($groupingMode === 'week') {
+            $formQuery->selectRaw("DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY)) as date_group, COUNT(*) as count");
+        } else { // month
+            $formQuery->selectRaw("DATE_FORMAT(created_at, '%Y-%m-01') as date_group, COUNT(*) as count");
+        }
+
+        if ($groupingMode !== '3days' || !($minDateRecord && $minDateRecord->min_date)) {
+            $formQuery->groupBy('date_group');
+        }
+
+        $formResults = $formQuery->get();
+
+        // Map form results to our date keys
+        foreach ($formResults as $result) {
+            $dateKey = $result->date_group;
+            if (isset($formCountData[$dateKey])) {
+                $formCountData[$dateKey] = $result->count;
+            }
+        }
+
+        // Calculate conversion rates
+        $conversionRates = [];
+        foreach ($dates as $date) {
+            $views = $viewsData[$date];
+            $submissions = $submissionsData[$date];
+
+            // Calculate conversion rate (avoid division by zero)
+            $conversionRate = $views > 0 ? round(($submissions / $views) * 100, 2) : 0;
+            $conversionRates[$date] = $conversionRate;
+        }
+
+        // Format for chart display
+        return [
+            'dates' => $labels,
+            'views' => array_values($viewsData),
+            'submissions' => array_values($submissionsData),
+            'conversion_rates' => array_values($conversionRates),
+            'form_counts' => array_values($formCountData)
+        ];
+    }
+
+    /**
+     * Get the appropriate date key for a form based on grouping mode
+     */
+    private function getDateKeyForForm($formDate, $startDate, $groupingMode)
+    {
+        if ($groupingMode === 'day') {
+            // For daily grouping, use the form's creation date
+            return $formDate->format('Y-m-d');
+        } elseif ($groupingMode === '3days') {
+            // For 3-day grouping, calculate which 3-day chunk it belongs to
+            $daysDiff = $formDate->diff($startDate)->days;
+            $chunkIndex = floor($daysDiff / 3);
+
+            $chunkStart = clone $startDate;
+            $chunkStart->modify('+' . ($chunkIndex * 3) . ' days');
+
+            return $chunkStart->format('Y-m-d');
+        } elseif ($groupingMode === 'week') {
+            // Get start of week (Monday)
+            $dayOfWeek = (int)$formDate->format('N'); // 1 (Monday) through 7 (Sunday)
+            $daysToSubtract = $dayOfWeek - 1;
+
+            $weekStart = clone $formDate;
+            if ($daysToSubtract > 0) {
+                $weekStart->modify("-{$daysToSubtract} days");
+            }
+
+            return $weekStart->format('Y-m-d');
+        } else { // month
+            // First day of month
+            return $formDate->format('Y-m-01');
+        }
+    }
+}
