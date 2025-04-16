@@ -545,7 +545,11 @@ class FormValidationService
             'Use fluentform/has_recaptcha instead of ff_has_auto_recaptcha.'
         );
         $autoInclude = apply_filters('fluentform/has_recaptcha', $hasAutoRecap);
-        if (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude) {
+        $disableRecaptcha = apply_filters('fluentform/disable_recaptcha', false, $this->form);
+        if (
+            !$disableRecaptcha &&
+            (FormFieldsParser::hasElement($this->form, 'recaptcha') || $autoInclude)
+        ) {
             $keys = get_option('_fluentform_reCaptcha_details');
             $token = Arr::get($this->formData, 'g-recaptcha-response');
             $version = 'v2_visible';
@@ -582,8 +586,12 @@ class FormValidationService
             'Use fluentform/has_hcaptcha instead of ff_has_auto_hcaptcha.'
         );
         $autoInclude = apply_filters('fluentform/has_hcaptcha', $hasAutoHcap);
+        $disableHcaptcha = apply_filters('fluentform/disable_hcaptcha', false, $this->form);
         FormFieldsParser::resetData();
-        if (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude) {
+        if (
+            !$disableHcaptcha &&
+            (FormFieldsParser::hasElement($this->form, 'hcaptcha') || $autoInclude)
+        ) {
             $keys = get_option('_fluentform_hCaptcha_details');
             $token = Arr::get($this->formData, 'h-captcha-response');
             $isValid = HCaptcha::validate($token, $keys['secretKey']);
@@ -616,7 +624,11 @@ class FormValidationService
             'Use fluentform/has_turnstile instead of ff_has_auto_turnstile.'
         );
         $autoInclude = apply_filters('fluentform/has_turnstile', $hasAutoTurnsTile);
-        if (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude) {
+        $disableTurnstile = apply_filters('fluentform/disable_turnstile', false, $this->form);
+        if (
+            !$disableTurnstile &&
+            (FormFieldsParser::hasElement($this->form, 'turnstile') || $autoInclude)
+        ) {
             $keys = get_option('_fluentform_turnstile_details');
             $token = Arr::get($this->formData, 'cf-turnstile-response');
             
