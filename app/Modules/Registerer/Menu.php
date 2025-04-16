@@ -1238,21 +1238,7 @@ class Menu
 
     public function renderReports()
     {
-        wp_enqueue_script('fluentform_reports');
-        $showPayment = false;
-        if (defined('FLUENTFORMPRO')) {
-            $showPayment = !get_option('__fluentform_payment_module_settings');
-            if ($showPayment) {
-                $formCount = wpFluent()->table('fluentform_forms')->count();
-                $showPayment = $formCount > 2;
-            }
-        }
-
-        $this->app->view->render('admin.reports', [
-            'logo' => fluentformMix('img/fluentform-logo.svg'),
-            'show_payment'         => $showPayment,
-            'show_payment_entries' => apply_filters('fluentform/show_payment_entries', false),
-        ]);
+        do_action('fluentform/render_report');
     }
 
     private function usedNameAttributes($formId)
