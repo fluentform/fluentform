@@ -2,7 +2,7 @@ import FluentTypography from "../controls/FluentTypography";
 import FluentColorPicker from "../controls/FluentColorPicker";
 import FluentSpaceControl from "../controls/FluentSpaceControl";
 import MyBorderBoxControl from "../controls/MyBorderBoxControl";
-const { useState, useRef, useEffect } = wp.element;
+const { useState, useRef, useEffect, memo } = wp.element;
 /**
  * Fluent Forms Gutenberg Block General Tab Component
  */
@@ -16,7 +16,8 @@ const {
 } = wp.components;
 
 
-const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggleCustomizePreset}) => {
+// Use memo to prevent unnecessary re-renders
+const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handlePresetChange, toggleCustomizePreset}) => {
     const {customizePreset} = state;
     const config = window.fluentform_block_vars;
     const presets = config.style_presets;
@@ -44,7 +45,7 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                 <FluentColorPicker
                     label="Color"
                     value={attributes.labelColor}
-                    onChange={(value) => setAttributes({labelColor: value})}
+                    onChange={(value) => updateStyles({labelColor: value})}
                     defaultColor=""
                 />
                 <FluentTypography
@@ -58,7 +59,7 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                         fontFamily: attributes.labelTypo?.family || ''
                     }}
                     onChange={(newTypo) => {
-                        setAttributes({
+                        updateStyles({
                             labelTypo: {
                                 ...attributes.labelTypo,
                                 size: {lg: newTypo.fontSize},
@@ -79,14 +80,14 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                 <FluentColorPicker
                     label="Text Color"
                     value={attributes.inputTAColor}
-                    onChange={(value) => setAttributes({inputTAColor: value})}
+                    onChange={(value) => updateStyles({inputTAColor: value})}
                     defaultColor="#333333"
                 />
 
                 <FluentColorPicker
                     label="Background Color"
                     value={attributes.inputTABGColor}
-                    onChange={(value) => setAttributes({inputTABGColor: value})}
+                    onChange={(value) => updateStyles({inputTABGColor: value})}
                     defaultColor="#ffffff"
                 />
                 <FluentTypography
@@ -100,7 +101,7 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                         fontFamily: attributes.inputTATypo?.family || ''
                     }}
                     onChange={(newTypo) => {
-                        setAttributes({
+                        updateStyles({
                             inputTATypo: {
                                 ...attributes.inputTATypo,
                                 size: {lg: newTypo.fontSize},
@@ -117,7 +118,7 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                 <FluentSpaceControl
                     label="Spacing"
                     values={attributes.inputSpacing}
-                    onChange={(value) => setAttributes({ inputSpacing: value })}
+                    onChange={(value) => updateStyles({ inputSpacing: value })}
                 />
 
                 <MyBorderBoxControl
@@ -164,56 +165,50 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
                     }}
                     onChange={(value) => {
                         // Update the new border object
-                        setAttributes({ inputBorder: value });
+                        const styleUpdates = { inputBorder: value };
 
                         // For backward compatibility, also update the old attributes
                         // Only update if the properties exist to avoid errors
-                        const backwardCompatProps = {};
-
                         if (value?.top?.width) {
-                            backwardCompatProps.inputTABorderWidth = value.top.width;
+                            styleUpdates.inputTABorderWidth = value.top.width;
                         }
 
                         if (value?.radius?.topLeft !== undefined) {
-                            backwardCompatProps.inputTABorderRadius = value.radius.topLeft;
+                            styleUpdates.inputTABorderRadius = value.radius.topLeft;
                         }
 
                         if (value?.top?.color) {
-                            backwardCompatProps.inputTABorderColor = value.top.color;
+                            styleUpdates.inputTABorderColor = value.top.color;
                         }
 
-                        if (Object.keys(backwardCompatProps).length > 0) {
-                            setAttributes(backwardCompatProps);
-                        }
+                        // Update all styles at once
+                        updateStyles(styleUpdates);
                     }}
                     onHoverChange={(value) => {
                         // Update the hover border object
-                        setAttributes({ inputBorderHover: value });
+                        const styleUpdates = { inputBorderHover: value };
 
                         // For backward compatibility, also update the old hover attributes
-                        const backwardCompatProps = {};
-
                         if (value?.top?.width) {
-                            backwardCompatProps.inputTABorderWidthHover = value.top.width;
+                            styleUpdates.inputTABorderWidthHover = value.top.width;
                         }
 
                         if (value?.radius?.topLeft !== undefined) {
-                            backwardCompatProps.inputTABorderRadiusHover = value.radius.topLeft;
+                            styleUpdates.inputTABorderRadiusHover = value.radius.topLeft;
                         }
 
                         if (value?.top?.color) {
-                            backwardCompatProps.inputTABorderColorHover = value.top.color;
+                            styleUpdates.inputTABorderColorHover = value.top.color;
                         }
 
-                        if (Object.keys(backwardCompatProps).length > 0) {
-                            setAttributes(backwardCompatProps);
-                        }
+                        // Update all styles at once
+                        updateStyles(styleUpdates);
                     }}
                     onSpacingChange={(value) => {
-                        setAttributes({ inputSpacing: value });
+                        updateStyles({ inputSpacing: value });
                     }}
                     onSpacingHoverChange={(value) => {
-                        setAttributes({ inputSpacingHover: value });
+                        updateStyles({ inputSpacingHover: value });
                     }}
                     colors={[
                         { name: 'Theme Blue', color: '#72aee6' },
@@ -232,8 +227,67 @@ const TabGeneral = ({attributes, setAttributes, state, handlePresetChange, toggl
 
             </PanelBody>
 
+            <PanelBody title={__('Button Styles')} initialOpen={false}>
+                <FluentColorPicker
+                    label="Text Color"
+                    value={attributes.buttonColor}
+                    onChange={(value) => updateStyles({buttonColor: value})}
+                    defaultColor="#ffffff"
+                />
+
+                <FluentColorPicker
+                    label="Background Color"
+                    value={attributes.buttonBGColor}
+                    onChange={(value) => updateStyles({buttonBGColor: value})}
+                    defaultColor="#409EFF"
+                />
+
+                <FluentColorPicker
+                    label="Hover Text Color"
+                    value={attributes.buttonHoverColor}
+                    onChange={(value) => updateStyles({buttonHoverColor: value})}
+                    defaultColor="#ffffff"
+                />
+
+                <FluentColorPicker
+                    label="Hover Background Color"
+                    value={attributes.buttonHoverBGColor}
+                    onChange={(value) => updateStyles({buttonHoverBGColor: value})}
+                    defaultColor="#66b1ff"
+                />
+            </PanelBody>
+
         </>
     );
-};
+});
 
-export default TabGeneral;
+// Use areEqual function to determine if component should update
+function areEqual(prevProps, nextProps) {
+    // Only re-render if specific props have changed
+    const { attributes: prevAttrs } = prevProps;
+    const { attributes: nextAttrs } = nextProps;
+
+    // List of attributes to check for changes
+    const attrsToCheck = [
+        'labelColor', 'inputTAColor', 'inputTABGColor',
+        'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
+        'labelTypo', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'
+    ];
+
+    // Check if any of these attributes have changed
+    for (const attr of attrsToCheck) {
+        if (JSON.stringify(prevAttrs[attr]) !== JSON.stringify(nextAttrs[attr])) {
+            return false; // Props are not equal, should update
+        }
+    }
+
+    // Check if state props have changed
+    if (prevProps.state.customizePreset !== nextProps.state.customizePreset ||
+        prevProps.state.selectedPreset !== nextProps.state.selectedPreset) {
+        return false;
+    }
+
+    return true; // Props are equal, no need to update
+}
+
+export default memo(TabGeneral, areEqual);

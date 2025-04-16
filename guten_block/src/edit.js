@@ -68,6 +68,44 @@ class Edit extends Component {
 
         // Add custom styles when component initializes
         addCustomStyles();
+
+        // Bind methods
+        this.updateStyles = this.updateStyles.bind(this);
+    }
+
+    // Method to update styles without causing infinite loops
+    updateStyles(styleAttributes) {
+        const { setAttributes, attributes } = this.props;
+
+        // Create a new object with only the changed attributes
+        const updatedAttributes = {};
+
+        // Compare each attribute to see if it actually changed
+        Object.keys(styleAttributes).forEach(key => {
+            const currentValue = attributes[key];
+            const newValue = styleAttributes[key];
+
+            // Only include attributes that have actually changed
+            // Use JSON.stringify for deep comparison of objects
+            if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
+                updatedAttributes[key] = newValue;
+            }
+        });
+
+        // Only update if there are actual changes
+        if (Object.keys(updatedAttributes).length > 0) {
+            // Just update the attributes without forcing a re-render
+            // The block will re-render automatically when attributes change
+            setAttributes(updatedAttributes);
+
+            // Set loading state briefly to show user something is happening
+            // this.setState({ isPreviewLoading: true });
+
+            // Clear loading state after a short delay
+            setTimeout(() => {
+                // this.setState({ isPreviewLoading: false });
+            }, 300);
+        }
     }
 
     componentDidMount() {
@@ -81,6 +119,8 @@ class Edit extends Component {
             });
         }
 
+
+
         // Set initial state based on attributes
         if (attributes.formId) {
             this.checkIfConversationalForm(attributes.formId);
@@ -90,6 +130,15 @@ class Edit extends Component {
                 customizePreset: attributes.customizePreset || false,
                 selectedPreset: attributes.selectedPreset || 'default'
             });
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { attributes } = this.props;
+
+        // Check if form ID changed
+        if (prevProps.attributes.formId !== attributes.formId && attributes.formId) {
+            this.checkIfConversationalForm(attributes.formId);
         }
     }
 
@@ -183,6 +232,7 @@ class Edit extends Component {
                     <Tabs
                         attributes={attributes}
                         setAttributes={setAttributes}
+                        updateStyles={this.updateStyles}
                         state={{
                             customizePreset: this.state.customizePreset,
                             selectedPreset: this.state.selectedPreset,

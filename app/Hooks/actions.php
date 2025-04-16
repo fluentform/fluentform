@@ -229,7 +229,7 @@ $app->addAction('fluentform/loading_editor_assets', function ($form) {
     ];
     foreach ($upgradableCheckInputs as $upgradeElement) {
         add_filter('fluentform/editor_init_element_' . $upgradeElement, function ($element) use ($upgradeElement, $form) {
-    
+
             if (!\FluentForm\Framework\Helpers\ArrayHelper::get($element, 'settings.advanced_options')) {
                 $formattedOptions = [];
                 $oldOptions = \FluentForm\Framework\Helpers\ArrayHelper::get($element, 'options', []);
@@ -529,7 +529,7 @@ add_action('save_post', function ($post_id) use ($app) {
     if (!is_post_type_viewable(get_post_type($post_id))) {
         return;
     }
-    
+
     $post_content = isset($_REQUEST['post_content']) ? $_REQUEST['post_content'] : false;
     if ($post_content && is_string($post_content)) {
         $post_content = wp_kses_post(wp_unslash($post_content));
@@ -546,7 +546,7 @@ add_action('save_post', function ($post_id) use ($app) {
 
     $attributes = ArrayHelper::get($shortcodeIds, 'attributes', []);
     ArrayHelper::forget($shortcodeIds, 'attributes');
-    
+
     $shortcodeModalIds = Helper::getShortCodeIds(
         $post_content,
         'fluentform_modal',
@@ -758,7 +758,7 @@ function fluentform_after_submission_api_response_failed($form, $entryId, $data,
 
 $app->addAction('fluentform/before_form_render', function ($form, $atts) {
     $theme = ArrayHelper::get($atts, 'theme');
-    
+
     $styles = $theme ? [$theme] : [];
 
     do_action(
@@ -857,7 +857,7 @@ add_action('wp', function () {
     if (!is_a($post, 'WP_Post')) {
         return;
     }
-    
+
     $fluentFormIds = get_post_meta($post->ID, '_has_fluentform', true);
     $attributes = ArrayHelper::get($fluentFormIds, 'attributes', []);
 
@@ -990,7 +990,7 @@ add_action('init', function () {
 new \FluentForm\App\Services\FormBuilder\Components\CustomSubmitButton();
 
 add_action('enqueue_block_editor_assets', function () {
-    
+
     wp_enqueue_script(
         'fluentform-gutenberg-block',
         fluentFormMix('js/fluent_gutenblock.js'),
@@ -1003,13 +1003,13 @@ add_action('enqueue_block_editor_assets', function () {
         ['wp-edit-blocks'],
         FLUENTFORM_VERSION
     );
-    
-    
+
+
     $forms = wpFluent()->table('fluentform_forms')
         ->select(['id', 'title'])
         ->orderBy('id', 'DESC')
         ->get();
-    
+
     array_unshift($forms, (object) [
         'id'    => '',
         'title' => __('-- Select a form --', 'fluentform'),
@@ -1027,7 +1027,7 @@ add_action('enqueue_block_editor_assets', function () {
     ];
 
     $presets = apply_filters('fluentform/block_editor_style_presets', $presets);
-   
+
     wp_localize_script('fluentform-gutenberg-block', 'fluentform_block_vars', [
         'logo'                    => fluentFormMix('img/fluent_icon.png'),
         'forms'                   => $forms,
@@ -1036,7 +1036,7 @@ add_action('enqueue_block_editor_assets', function () {
         'conversational_demo_img' => fluentformMix('img/conversational-form-demo.png'),
         'rest'                    => Helper::getRestInfo()
     ]);
-    
+
     wp_enqueue_style(
         'fluentform-gutenberg-block',
         fluentFormMix('css/fluent_gutenblock.css'),
@@ -1045,12 +1045,12 @@ add_action('enqueue_block_editor_assets', function () {
     );
     $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public.css');
     $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default.css');
-    
+
     if (is_rtl()) {
         $fluentFormPublicCss = fluentFormMix('css/fluent-forms-public-rtl.css');
         $fluentFormPublicDefaultCss = fluentFormMix('css/fluentform-public-default-rtl.css');
     }
-    
+
     wp_enqueue_style(
         'fluent-form-styles',
         $fluentFormPublicCss,
@@ -1087,13 +1087,13 @@ if (function_exists('register_block_type')) {
         register_block_type('fluentfom/guten-block', [
             'render_callback' => function ($atts) {
                 $formId = ArrayHelper::get($atts, 'formId');
-                
+
                 if (empty($formId)) {
                     return '';
                 }
-                
+
                 $className = ArrayHelper::get($atts, 'className');
-                
+
                 if ($className) {
                     $classes = explode(' ', $className);
                     $className = '';
@@ -1103,12 +1103,319 @@ if (function_exists('register_block_type')) {
                         }
                     }
                 }
-    
+
                 $themeStyle = sanitize_text_field(ArrayHelper::get($atts, 'themeStyle'));
-                
                 $type = Helper::isConversionForm($formId) ? 'conversational' : '';
-                
-                return do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
+
+                // Get border styles from attributes
+                $inputBorder = ArrayHelper::get($atts, 'inputBorder', []);
+                $inputBorderHover = ArrayHelper::get($atts, 'inputBorderHover', []);
+                $labelColor = ArrayHelper::get($atts, 'labelColor', '');
+                $inputTAColor = ArrayHelper::get($atts, 'inputTAColor', '');
+                $inputTABGColor = ArrayHelper::get($atts, 'inputTABGColor', '');
+
+                // Generate custom CSS for the form
+                $customCSS = '';
+                $formSelector = '.ff_guten_block.fluentform_wrapper_' . $formId;
+
+                // Define common selectors for form elements
+                $inputSelectors = [
+                    '.ff-el-form-control',
+                    'input[type="text"]',
+                    'input[type="email"]',
+                    'input[type="number"]',
+                    'input[type="password"]',
+                    'textarea',
+                    'select'
+                ];
+
+                $inputSelectorsStr = implode(', ' . $formSelector . ' ', $inputSelectors);
+                $inputSelectorsStr = $formSelector . ' ' . $inputSelectorsStr;
+
+                // Define button selectors
+                $buttonSelectors = [
+                    '.ff-btn',
+                    '.ff-btn-submit',
+                    'button[type="submit"]',
+                    'input[type="submit"]'
+                ];
+
+                $buttonSelectorsStr = implode(', ' . $formSelector . ' ', $buttonSelectors);
+                $buttonSelectorsStr = $formSelector . ' ' . $buttonSelectorsStr;
+
+                // Label styles
+                if ($labelColor) {
+                    $customCSS .= $formSelector . ' .ff-el-input--label label { color: ' . $labelColor . '; }\n';
+                }
+
+                // Label typography
+                $labelTypo = ArrayHelper::get($atts, 'labelTypo', []);
+                // Convert from JSON string if needed
+                if (is_string($labelTypo)) {
+                    $labelTypo = json_decode($labelTypo, true);
+                }
+                if (!empty($labelTypo)) {
+                    $labelTypoCSS = '';
+
+                    if (!empty($labelTypo['size']['lg'])) {
+                        $labelTypoCSS .= 'font-size: ' . $labelTypo['size']['lg'] . 'px; ';
+                    }
+
+                    if (!empty($labelTypo['weight'])) {
+                        $labelTypoCSS .= 'font-weight: ' . $labelTypo['weight'] . '; ';
+                    }
+
+                    if (!empty($labelTypo['lineHeight'])) {
+                        $labelTypoCSS .= 'line-height: ' . $labelTypo['lineHeight'] . '; ';
+                    }
+
+                    if (!empty($labelTypo['letterSpacing'])) {
+                        $labelTypoCSS .= 'letter-spacing: ' . $labelTypo['letterSpacing'] . 'px; ';
+                    }
+
+                    if (!empty($labelTypo['textTransform']) && $labelTypo['textTransform'] !== 'none') {
+                        $labelTypoCSS .= 'text-transform: ' . $labelTypo['textTransform'] . '; ';
+                    }
+
+                    if (!empty($labelTypo['family'])) {
+                        $labelTypoCSS .= 'font-family: ' . $labelTypo['family'] . '; ';
+                    }
+
+                    if ($labelTypoCSS) {
+                        $customCSS .= $formSelector . ' .ff-el-input--label label { ' . $labelTypoCSS . ' }\n';
+                    }
+                }
+
+                // Input text color
+                if ($inputTAColor) {
+                    $customCSS .= $inputSelectorsStr . ' { color: ' . $inputTAColor . '; }\n';
+                }
+
+                // Input background color
+                if ($inputTABGColor) {
+                    $customCSS .= $inputSelectorsStr . ' { background-color: ' . $inputTABGColor . '; }\n';
+                }
+
+                // Input typography
+                $inputTATypo = ArrayHelper::get($atts, 'inputTATypo', []);
+                // Convert from JSON string if needed
+                if (is_string($inputTATypo)) {
+                    $inputTATypo = json_decode($inputTATypo, true);
+                }
+                if (!empty($inputTATypo)) {
+                    $inputTypoCSS = '';
+
+                    if (!empty($inputTATypo['size']['lg'])) {
+                        $inputTypoCSS .= 'font-size: ' . $inputTATypo['size']['lg'] . 'px; ';
+                    }
+
+                    if (!empty($inputTATypo['weight'])) {
+                        $inputTypoCSS .= 'font-weight: ' . $inputTATypo['weight'] . '; ';
+                    }
+
+                    if (!empty($inputTATypo['lineHeight'])) {
+                        $inputTypoCSS .= 'line-height: ' . $inputTATypo['lineHeight'] . '; ';
+                    }
+
+                    if (!empty($inputTATypo['letterSpacing'])) {
+                        $inputTypoCSS .= 'letter-spacing: ' . $inputTATypo['letterSpacing'] . 'px; ';
+                    }
+
+                    if (!empty($inputTATypo['textTransform']) && $inputTATypo['textTransform'] !== 'none') {
+                        $inputTypoCSS .= 'text-transform: ' . $inputTATypo['textTransform'] . '; ';
+                    }
+
+                    if (!empty($inputTATypo['family'])) {
+                        $inputTypoCSS .= 'font-family: ' . $inputTATypo['family'] . '; ';
+                    }
+
+                    if ($inputTypoCSS) {
+                        $customCSS .= $inputSelectorsStr . ' { ' . $inputTypoCSS . ' }\n';
+                    }
+                }
+
+                // Input spacing
+                $inputSpacing = ArrayHelper::get($atts, 'inputSpacing', []);
+                // Convert from JSON string if needed
+                if (is_string($inputSpacing)) {
+                    $inputSpacing = json_decode($inputSpacing, true);
+                }
+                if (!empty($inputSpacing)) {
+                    $spacingCSS = '';
+
+                    if (isset($inputSpacing['top'])) {
+                        $spacingCSS .= 'padding-top: ' . $inputSpacing['top'] . '; ';
+                    }
+
+                    if (isset($inputSpacing['right'])) {
+                        $spacingCSS .= 'padding-right: ' . $inputSpacing['right'] . '; ';
+                    }
+
+                    if (isset($inputSpacing['bottom'])) {
+                        $spacingCSS .= 'padding-bottom: ' . $inputSpacing['bottom'] . '; ';
+                    }
+
+                    if (isset($inputSpacing['left'])) {
+                        $spacingCSS .= 'padding-left: ' . $inputSpacing['left'] . '; ';
+                    }
+
+                    if ($spacingCSS) {
+                        $customCSS .= $inputSelectorsStr . ' { ' . $spacingCSS . ' }\n';
+                    }
+                }
+
+                // Border styles
+                if (!empty($inputBorder)) {
+                    // Convert from JSON string if needed
+                    if (is_string($inputBorder)) {
+                        $inputBorder = json_decode($inputBorder, true);
+                    }
+
+                    $borderCSS = '';
+                    $radiusCSS = '';
+
+                    // Border width, style, color
+                    if (!empty($inputBorder['top'])) {
+                        $borderCSS .= 'border-top-width: ' . $inputBorder['top']['width'] . '; ';
+                        $borderCSS .= 'border-top-style: ' . $inputBorder['top']['style'] . '; ';
+                        $borderCSS .= 'border-top-color: ' . $inputBorder['top']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorder['right'])) {
+                        $borderCSS .= 'border-right-width: ' . $inputBorder['right']['width'] . '; ';
+                        $borderCSS .= 'border-right-style: ' . $inputBorder['right']['style'] . '; ';
+                        $borderCSS .= 'border-right-color: ' . $inputBorder['right']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorder['bottom'])) {
+                        $borderCSS .= 'border-bottom-width: ' . $inputBorder['bottom']['width'] . '; ';
+                        $borderCSS .= 'border-bottom-style: ' . $inputBorder['bottom']['style'] . '; ';
+                        $borderCSS .= 'border-bottom-color: ' . $inputBorder['bottom']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorder['left'])) {
+                        $borderCSS .= 'border-left-width: ' . $inputBorder['left']['width'] . '; ';
+                        $borderCSS .= 'border-left-style: ' . $inputBorder['left']['style'] . '; ';
+                        $borderCSS .= 'border-left-color: ' . $inputBorder['left']['color'] . '; ';
+                    }
+
+                    // Border radius
+                    if (!empty($inputBorder['radius'])) {
+                        $radiusCSS .= 'border-top-left-radius: ' . $inputBorder['radius']['topLeft'] . 'px; ';
+                        $radiusCSS .= 'border-top-right-radius: ' . $inputBorder['radius']['topRight'] . 'px; ';
+                        $radiusCSS .= 'border-bottom-right-radius: ' . $inputBorder['radius']['bottomRight'] . 'px; ';
+                        $radiusCSS .= 'border-bottom-left-radius: ' . $inputBorder['radius']['bottomLeft'] . 'px; ';
+                    }
+
+                    if ($borderCSS) {
+                        $customCSS .= $inputSelectorsStr . ' { ' . $borderCSS . ' }\n';
+                    }
+
+                    if ($radiusCSS) {
+                        $customCSS .= $inputSelectorsStr . ' { ' . $radiusCSS . ' }\n';
+                    }
+                }
+
+                // Hover border styles
+                if (!empty($inputBorderHover)) {
+                    // Convert from JSON string if needed
+                    if (is_string($inputBorderHover)) {
+                        $inputBorderHover = json_decode($inputBorderHover, true);
+                    }
+
+                    $borderHoverCSS = '';
+                    $radiusHoverCSS = '';
+
+                    // Border width, style, color for hover
+                    if (!empty($inputBorderHover['top'])) {
+                        $borderHoverCSS .= 'border-top-width: ' . $inputBorderHover['top']['width'] . '; ';
+                        $borderHoverCSS .= 'border-top-style: ' . $inputBorderHover['top']['style'] . '; ';
+                        $borderHoverCSS .= 'border-top-color: ' . $inputBorderHover['top']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorderHover['right'])) {
+                        $borderHoverCSS .= 'border-right-width: ' . $inputBorderHover['right']['width'] . '; ';
+                        $borderHoverCSS .= 'border-right-style: ' . $inputBorderHover['right']['style'] . '; ';
+                        $borderHoverCSS .= 'border-right-color: ' . $inputBorderHover['right']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorderHover['bottom'])) {
+                        $borderHoverCSS .= 'border-bottom-width: ' . $inputBorderHover['bottom']['width'] . '; ';
+                        $borderHoverCSS .= 'border-bottom-style: ' . $inputBorderHover['bottom']['style'] . '; ';
+                        $borderHoverCSS .= 'border-bottom-color: ' . $inputBorderHover['bottom']['color'] . '; ';
+                    }
+
+                    if (!empty($inputBorderHover['left'])) {
+                        $borderHoverCSS .= 'border-left-width: ' . $inputBorderHover['left']['width'] . '; ';
+                        $borderHoverCSS .= 'border-left-style: ' . $inputBorderHover['left']['style'] . '; ';
+                        $borderHoverCSS .= 'border-left-color: ' . $inputBorderHover['left']['color'] . '; ';
+                    }
+
+                    // Border radius for hover
+                    if (!empty($inputBorderHover['radius'])) {
+                        $radiusHoverCSS .= 'border-top-left-radius: ' . $inputBorderHover['radius']['topLeft'] . 'px; ';
+                        $radiusHoverCSS .= 'border-top-right-radius: ' . $inputBorderHover['radius']['topRight'] . 'px; ';
+                        $radiusHoverCSS .= 'border-bottom-right-radius: ' . $inputBorderHover['radius']['bottomRight'] . 'px; ';
+                        $radiusHoverCSS .= 'border-bottom-left-radius: ' . $inputBorderHover['radius']['bottomLeft'] . 'px; ';
+                    }
+
+                    if ($borderHoverCSS) {
+                        $customCSS .= $inputSelectorsStr . ':focus, ' . $inputSelectorsStr . ':hover { ' . $borderHoverCSS . ' }\n';
+                    }
+
+                    if ($radiusHoverCSS) {
+                        $customCSS .= $inputSelectorsStr . ':focus, ' . $inputSelectorsStr . ':hover { ' . $radiusHoverCSS . ' }\n';
+                    }
+                }
+
+                // Button styles
+                $buttonColor = ArrayHelper::get($atts, 'buttonColor', '');
+                $buttonBGColor = ArrayHelper::get($atts, 'buttonBGColor', '');
+                $buttonHoverColor = ArrayHelper::get($atts, 'buttonHoverColor', '');
+                $buttonHoverBGColor = ArrayHelper::get($atts, 'buttonHoverBGColor', '');
+
+                if ($buttonColor) {
+                    $customCSS .= $buttonSelectorsStr . ' { color: ' . $buttonColor . '; }\n';
+                }
+
+                if ($buttonBGColor) {
+                    $customCSS .= $buttonSelectorsStr . ' { background-color: ' . $buttonBGColor . '; }\n';
+                }
+
+                if ($buttonHoverColor) {
+                    $customCSS .= $buttonSelectorsStr . ':hover, ' . $buttonSelectorsStr . ':focus { color: ' . $buttonHoverColor . '; }\n';
+                }
+
+                if ($buttonHoverBGColor) {
+                    $customCSS .= $buttonSelectorsStr . ':hover, ' . $buttonSelectorsStr . ':focus { background-color: ' . $buttonHoverBGColor . '; }\n';
+                }
+
+                // Add the custom CSS inline with the form
+                if ($customCSS) {
+                    // Create a unique ID for this form's styles
+                    $styleId = 'fluentform-block-styles-' . $formId;
+
+                    // Add the styles inline with the form
+                    $inlineStyle = '<style id="' . esc_attr($styleId) . '">' . $customCSS . '</style>';
+                }
+
+                // Return the form with inline styles
+                $formOutput = do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block" id="' . $formId . '"  type="' . $type . '"]');
+
+                // Add the inline styles if they exist
+                if (!empty($inlineStyle)) {
+                    // Add a hidden debug comment to help troubleshoot attribute passing
+                    $debugInfo = '<!-- FluentForm Block Attributes: ' .
+                                 'inputBorder: ' . (empty($inputBorder) ? 'empty' : 'set') . ', ' .
+                                 'inputBorderHover: ' . (empty($inputBorderHover) ? 'empty' : 'set') . ', ' .
+                                 'labelColor: ' . (empty($labelColor) ? 'empty' : $labelColor) . ', ' .
+                                 'inputTAColor: ' . (empty($inputTAColor) ? 'empty' : $inputTAColor) . ', ' .
+                                 'buttonColor: ' . (empty($buttonColor) ? 'empty' : $buttonColor) . ' -->';
+
+                    return $inlineStyle . $debugInfo . $formOutput;
+                }
+
+                return $formOutput;
             },
             'attributes'      => [
                 'formId'               => [
@@ -1127,6 +1434,45 @@ if (function_exists('register_block_type')) {
                 'isThemeChange'        => [
                     'type'    => 'boolean',
                     'default' => false,
+                ],
+                // Border styles
+                'inputBorder'          => [
+                    'type'    => 'object',
+                ],
+                'inputBorderHover'     => [
+                    'type'    => 'object',
+                ],
+                // Typography and colors
+                'labelColor'           => [
+                    'type'    => 'string',
+                ],
+                'inputTAColor'         => [
+                    'type'    => 'string',
+                ],
+                'inputTABGColor'       => [
+                    'type'    => 'string',
+                ],
+                'labelTypo'            => [
+                    'type'    => 'object',
+                ],
+                'inputTATypo'          => [
+                    'type'    => 'object',
+                ],
+                'inputSpacing'         => [
+                    'type'    => 'object',
+                ],
+                // Button styles
+                'buttonColor'          => [
+                    'type'    => 'string',
+                ],
+                'buttonBGColor'        => [
+                    'type'    => 'string',
+                ],
+                'buttonHoverColor'     => [
+                    'type'    => 'string',
+                ],
+                'buttonHoverBGColor'   => [
+                    'type'    => 'string',
                 ],
             ],
         ]);

@@ -6,14 +6,13 @@
 
 .fluent-form-block-style-tabs {
 
-
-  .components-tab-panel__tabs {
-  }
   .components-tab-panel__tabs-item {
     flex: 1;
     background: #ffffff;
     border: 1px solid #D1E5FE;
-    &.is-active{
+    justify-content: center;
+
+    &.is-active {
       background: #eef5fc;
 
     }
@@ -113,3 +112,5 @@
   display: flex;
   gap: 4px;
 }
+
+//
