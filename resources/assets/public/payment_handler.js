@@ -747,7 +747,10 @@ export class Payment_handler {
                 if (!iframe.hasAttribute("title")) {
                     // Stripe iframe
                     if (iframe.name.startsWith("__privateStripeFrame")) {
-                        iframe.setAttribute("title", "Secure Stripe Payment Frame");
+                        iframe.setAttribute("title", this.$t("Secure Stripe Payment Frame"));
+                    }
+                    if (iframe.name.startsWith('single-card')) {
+                        iframe.setAttribute("title", this.$t("Secure Square Payment Frame"));
                     }
                 }
             });

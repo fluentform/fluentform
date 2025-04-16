@@ -128,16 +128,18 @@ class PaymentHandler
             
             wp_localize_script('fluentform-payment-handler', 'fluentform_payment_config', [
                 'i18n' => [
-                    'item'            => __('Item', 'fluentformpro'),
-                    'price'           => __('Price', 'fluentformpro'),
-                    'qty'             => __('Qty', 'fluentformpro'),
-                    'line_total'      => __('Line Total', 'fluentformpro'),
-                    'total'           => __('Total', 'fluentformpro'),
-                    'not_found'       => __('No payment item selected yet', 'fluentformpro'),
-                    'discount:'       => __('Discount:', 'fluentformpro'),
-                    'processing_text' => __('Processing payment. Please wait...', 'fluentformpro'),
-                    'confirming_text' => __('Confirming payment. Please wait...', 'fluentformpro'),
-                    'Signup Fee for'  => __('Signup Fee for', 'fluentformpro')
+                    'item'                        => __('Item', 'fluentformpro'),
+                    'price'                       => __('Price', 'fluentformpro'),
+                    'qty'                         => __('Qty', 'fluentformpro'),
+                    'line_total'                  => __('Line Total', 'fluentformpro'),
+                    'total'                       => __('Total', 'fluentformpro'),
+                    'not_found'                   => __('No payment item selected yet', 'fluentformpro'),
+                    'discount:'                   => __('Discount:', 'fluentformpro'),
+                    'processing_text'             => __('Processing payment. Please wait...', 'fluentformpro'),
+                    'confirming_text'             => __('Confirming payment. Please wait...', 'fluentformpro'),
+                    'Secure Stripe Payment Frame' => __('Secure Stripe Payment Frame', 'fluentformpro'),
+                    'Secure Square Payment Frame' => __('Secure Square Payment Frame', 'fluentformpro'),
+                    'Signup Fee for'              => __('Signup Fee for', 'fluentformpro')
                 ]
             ]);
             
