@@ -47,14 +47,14 @@ class Settings
     public function enqueue()
     {
         wp_enqueue_script('fluentform-global-settings-js');
-
+        
         $globalSettingAppData = [
-            'plugin' => $this->app->config->get('app.slug'),
-            'akismet_activated' => AkismetHandler::isPluginEnabled(),
-            'cleantalk_activated' => CleanTalkHandler::isPluginEnabled(),
-            'has_pro' =>  Helper::hasPro(),
-            'is_payment_compatible' =>  Helper::isPaymentCompatible(),
-            'form_settings_str' => TranslationString::getGlobalSettingsI18n()
+            'plugin'                => $this->app->config->get('app.slug'),
+            'akismet_activated'     => AkismetHandler::isPluginEnabled(),
+            'cleantalk_activated'   => CleanTalkHandler::isPluginEnabled(),
+            'has_pro'               => Helper::hasPro(),
+            'is_payment_compatible' => Helper::isPaymentCompatible(),
+            'form_settings_str'     => TranslationString::getGlobalSettingsI18n()
         ];
         if (Helper::isPaymentCompatible()) {
             $globalSettingAppData = apply_filters('fluentform/global_settings_component_settings_data', $globalSettingAppData);
