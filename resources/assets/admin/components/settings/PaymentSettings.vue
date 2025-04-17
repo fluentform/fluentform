@@ -238,9 +238,60 @@
                                         <el-radio label="test">{{ $t('Test Mode') }}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
-                                <el-form-item class="ff-form-item" label="PayPal Email">
-                                    <el-input type="email" v-model="settings.custom_paypal_id" :placeholder="$t('Custom PayPal Email')" />
-                                </el-form-item>
+
+	                            <el-form-item class="ff-form-item">
+		                            <template slot="label">
+			                            {{ $t('Payment Processor') }}
+			                            <el-tooltip class="item" placement="bottom-start" popper-class="ff_tooltip_wrap">
+				                            <div slot="content">
+					                            <p>{{ $t('Select the PayPal integration method you want to use for this form. Legacy Email Integration will use a hosted PayPal page. Standard API Key Integration will display an inline PayPal button.') }}</p>
+				                            </div>
+				                            <i class="ff-icon ff-icon-info-filled text-primary"></i>
+			                            </el-tooltip>
+		                            </template>
+		                            <el-radio-group v-model="settings.custom_paypal_processor">
+			                            <el-radio label="paypal_legacy">{{ $t('Legacy Email Integration') }}</el-radio>
+			                            <el-radio label="paypal_standard_api">{{ $t('Standard API Key Integration') }}</el-radio>
+		                            </el-radio-group>
+	                            </el-form-item>
+
+	                            <!-- Legacy Email Integration fields -->
+	                            <template v-if="settings.custom_paypal_processor == 'paypal_legacy'">
+		                            <el-form-item class="ff-form-item" label="PayPal Email">
+			                            <el-input type="email" v-model="settings.custom_paypal_id" :placeholder="$t('Custom PayPal Email')" />
+		                            </el-form-item>
+	                            </template>
+
+	                            <!-- Standard API Key Integration fields -->
+	                            <template v-if="settings.custom_paypal_processor == 'paypal_standard_api'">
+		                            <el-form-item v-if="settings.custom_paypal_mode == 'test'" class="ff-form-item" :label="$t('Sandbox Client ID')">
+			                            <el-input
+				                            type="text"
+				                            v-model="settings.custom_paypal_sandbox_client_id"
+				                            :placeholder="$t('Sandbox Client ID')"/>
+		                            </el-form-item>
+
+		                            <el-form-item v-else-if="settings.custom_paypal_mode == 'live'" class="ff-form-item" :label="$t('Live Client ID')">
+			                            <el-input
+				                            type="text"
+				                            v-model="settings.custom_paypal_live_client_id"
+				                            :placeholder="$t('Live Client ID')"/>
+		                            </el-form-item>
+
+		                            <el-form-item v-if="settings.custom_paypal_mode == 'test'" class="ff-form-item" :label="$t('Sandbox Secret')">
+			                            <el-input
+				                            type="password"
+				                            v-model="settings.custom_paypal_sandbox_secret"
+				                            :placeholder="$t('Sandbox Secret')"/>
+		                            </el-form-item>
+
+		                            <el-form-item v-else-if="settings.custom_paypal_mode == 'live'" class="ff-form-item" :label="$t('Live Secret')">
+			                            <el-input
+				                            type="password"
+				                            v-model="settings.custom_paypal_live_secret"
+				                            :placeholder="$t('Live Secret')"/>
+		                            </el-form-item>
+	                            </template>
                             </template>
                         </div>
 
