@@ -1,8 +1,8 @@
 <template>
-    <div class="heatmap-container">
+    <div class="submission-heatmap">
         <card>
-            <card-head class="d-flex justify-between">
-                <h3>Entries Heatmap</h3>
+            <card-head class="submission-heatmap-header">
+                <h3>Submission Heatmap</h3>
                 <el-date-picker
                     v-model="dateRange"
                     type="daterange"
@@ -15,12 +15,11 @@
                     @change="handleDateRangeChange"
                 />
             </card-head>
-            <card-body>
+            <card-body class="submission-heatmap-body">
                 <div class="table-container">
                     <div v-if="loading" class="loading-overlay">
                         <div class="loading-spinner">
                             <i class="el-icon-loading"></i>
-                            <span>Loading data...</span>
                         </div>
                     </div>
                     <div class="heatmap-wrapper" ref="gridWrapper">
@@ -98,7 +97,7 @@ import CardBody from '@/admin/components/Card/CardBody.vue';
 import CardHead from "@/admin/components/Card/CardHead.vue";
 
 export default {
-    name: 'EntriesHeatmap',
+    name: 'SubmissionHeatmap',
     components: {
         Card,
         CardBody,
@@ -402,7 +401,7 @@ export default {
             const dateStr = this.formatDateForDisplay(date);
             const timeSlot = this.timeSlots[timeSlotIndex];
 
-            this.tooltip.text = `${dateStr} | ${timeSlot}: ${value} entries`;
+            this.tooltip.text = `${dateStr} | ${timeSlot}: ${value} Submission`;
             this.tooltip.visible = true;
 
             // Position the tooltip near the cell
@@ -424,203 +423,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.heatmap-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    padding: 20px;
-    width: 100%;
-    position: relative;
-}
-
-.table-container {
-    overflow-x: auto;
-    width: 100%;
-    position: relative;
-}
-
-.heatmap-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding: 12px 0;
-}
-
-/* Grid Layout */
-.heatmap-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px; /* Gap between rows */
-}
-
-.header-row, .data-row {
-    display: grid;
-    grid-template-columns: 120px repeat(8, 1fr); /* First column for date/navigation, then 8 columns for time slots */
-    gap: 10px; /* Gap between cells */
-    align-items: center;
-}
-
-.navigation-cell {
-    grid-column: 1;
-    padding: 8px 0;
-}
-
-.nav-controls {
-    display: flex;
-    gap: 8px;
-}
-
-.nav-btn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #dcdfe6;
-    background-color: white;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.nav-btn:hover:not(:disabled) {
-    background-color: #f5f7fa;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.time-header {
-    text-align: center;
-    color: #606266;
-    font-size: 13px;
-    font-weight: normal;
-}
-
-.date-cell {
-    padding: 8px 12px;
-    color: #606266;
-    font-size: 14px;
-    text-align: left;
-    white-space: nowrap;
-    font-weight: 500;
-}
-
-.data-cell {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.data-cell:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    z-index: 2;
-}
-
-/* Cell colors */
-.empty {
-    background-color: #f8f9fa;
-    color: #888;
-    border: 1px solid #e9ecef;
-}
-
-.level-1 {
-    background-color: #dcf0f9;
-    color: #333;
-}
-
-.level-2 {
-    background-color: #72cff5;
-    color: #333;
-}
-
-.level-3 {
-    background-color: #28a7f0;
-    color: white;
-}
-
-.level-4 {
-    background-color: #1c93d5;
-    color: white;
-}
-
-.level-5 {
-    background-color: #0f77ad;
-    color: white;
-}
-
-/* Tooltip */
-.tooltip {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    z-index: 10;
-    pointer-events: none;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Slide transition animations */
-.slide-fade-enter-active, .slide-fade-leave-active {
-    transition: all 0.3s ease;
-}
-
-.slide-fade-enter-from {
-    opacity: 0;
-    transform: translateX(30px);
-}
-
-.slide-fade-leave-to {
-    opacity: 0;
-    transform: translateX(-30px);
-}
-
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
-.loading-spinner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.loading-spinner i {
-    font-size: 32px;
-    color: #7B5CFA;
-}
-
-@media (max-width: 768px) {
-    .header-row, .data-row {
-        grid-template-columns: 100px repeat(8, minmax(60px, 1fr));
-        gap: 6px;
-    }
-}
-</style>

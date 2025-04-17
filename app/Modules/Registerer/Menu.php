@@ -57,6 +57,7 @@ class Menu
         $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin.css');
         $addOnsCss = fluentFormMix('css/add-ons.css');
         $adminDocCss = fluentFormMix('css/admin_docs.css');
+        $reportsCss = fluentFormMix('css/fluent-forms-reports.css');
         if (is_rtl()) {
             $settingsGlobalStyle = fluentFormMix('css/settings_global_rtl.css');
             $allFormsStyle = fluentFormMix('css/fluent-all-forms-rtl.css');
@@ -64,6 +65,7 @@ class Menu
             $fluentFormAdminCSS = fluentFormMix('css/fluent-forms-admin-rtl.css');
             $addOnsCss = fluentFormMix('css/add-ons-rtl.css');
             $adminDocCss = fluentFormMix('css/admin_docs_rtl.css');
+            $reportsCss = fluentFormMix('css/fluent-forms-reports-rtl.css');
         }
 
         wp_register_style(
@@ -182,9 +184,17 @@ class Menu
         wp_register_script(
             'fluentform_reports',
             fluentFormMix('js/reports.js'),
-            ['jquery', 'fluentform_chart_js', 'fluentform_vue_chart_js'],
+            ['jquery'],
             FLUENTFORM_VERSION,
             true
+        );
+
+        wp_register_style(
+            'fluentform_reports',
+            $reportsCss,
+            [],
+            FLUENTFORM_VERSION,
+            'all'
         );
 
         wp_register_script(
@@ -333,8 +343,7 @@ class Menu
         } elseif (
             'fluent_forms_settings' == $page ||
             'fluent_forms_payment_entries' == $page ||
-            'fluent_forms_all_entries' == $page ||
-            'fluent_forms_reports' == $page
+            'fluent_forms_all_entries' == $page
         ) {
             wp_enqueue_style('fluentform_settings_global');
         } elseif ('fluent_forms_add_ons' == $page) {

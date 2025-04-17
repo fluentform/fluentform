@@ -1,7 +1,7 @@
 <template>
-    <div class="line-chart-container">
+    <div class="api-logs">
         <card>
-            <card-head class="d-flex justify-between">
+            <card-head class="api-logs-header">
                 <h3>API Logs</h3>
                 <el-date-picker
                     v-model="dateRange"
@@ -16,7 +16,7 @@
                     :disabledDate="disableFutureDates"
                 />
             </card-head>
-            <card-body>
+            <card-body class="api-logs-body">
                 <div v-if="loading" class="loading-overlay">
                     <div class="loading-spinner">
                         <i class="el-icon-loading"></i>
@@ -311,138 +311,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.line-chart-container {
-    background-color: #fff;
-    border-radius: 8px;
-    position: relative;
-}
-
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
-.loading-spinner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.loading-spinner i {
-    font-size: 32px;
-    color: #7B5CFA;
-}
-
-.chart-legend {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-    margin-bottom: 10px;
-}
-
-.legend-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.legend-dot.success {
-    background-color: #22c55e;
-}
-
-.legend-dot.processing {
-    background-color: #4f46e5;
-}
-
-.legend-dot.failed {
-    background-color: #ef4444;
-}
-
-.chart-wrapper {
-    height: 400px;
-    position: relative;
-}
-
-.no-data {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #909399;
-    font-size: 16px;
-}
-
-.chart-stats {
-    display: flex;
-    margin: 20px 0;
-    flex-wrap: wrap;
-    border-top: 1px solid #EBEEF5;
-    border-bottom: 1px solid #EBEEF5;
-    padding: 15px 0;
-}
-
-.stat-item {
-    margin-right: 40px;
-    padding: 5px 0;
-}
-
-.stat-value {
-    font-size: 24px;
-    font-weight: 600;
-    color: #303133;
-}
-
-.stat-label {
-    font-size: 14px;
-    color: #909399;
-    margin-top: 5px;
-}
-
-.chart-nav {
-    display: flex;
-    margin-top: 20px;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    color: #303133;
-    margin-right: 30px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.nav-item i {
-    margin: 0 5px;
-}
-
-@media (max-width: 768px) {
-    .chart-legend, .chart-stats {
-        flex-direction: column;
-    }
-
-    .legend-item, .stat-item {
-        margin-bottom: 10px;
-    }
-}
-</style>

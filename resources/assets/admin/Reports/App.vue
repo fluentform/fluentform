@@ -1,5 +1,5 @@
 <template>
-    <div class="ff_reports">
+        <div class="fluentform-reports">
         <el-row :gutter="24">
             <el-col class="report-content" :span="16">
                 <overview-chart
@@ -16,7 +16,7 @@
         </el-row>
         <el-row class="mt-4">
             <el-col class="report-content" :span="24">
-                <entries-heatmap
+                <submission-heatmap
                     :heatmap_data="reports.heatmap_data"
                     @heatmap-date-change="handleHeatmapDateChange"
                 />
@@ -31,7 +31,7 @@
             </el-col>
         </el-row>
         <el-row class="mt-4">
-            <el-col class="report-content" :span="24">
+            <el-col v-if="hasPro" class="report-content" :span="24">
                 <transactions-table
                     :transactions="reports.transactions"
                     :loading="loading"
@@ -43,7 +43,7 @@
 <script type="text/babel">
 import OverviewChart from './Components/OverviewChart/OverviewChart.vue';
 import FormStats from './Components/FormStats/FormStats.vue';
-import EntriesHeatmap from "./Components/EntriesHeatmap/EntriesHeatmap.vue";
+import SubmissionHeatmap from "@/admin/Reports/Components/SubmissionHeatmap/SubmissionHeatmap.vue";
 import ApiLogsChart from './Components/ApiLogsChart/ApiLogsChart.vue';
 import TransactionsTable from './Components/TransactionsTable/TransactionsTable.vue';
 
@@ -52,7 +52,7 @@ export default {
     props: ['settings'],
     components: {
         ApiLogsChart,
-        EntriesHeatmap,
+        SubmissionHeatmap,
         OverviewChart,
         FormStats,
         TransactionsTable
@@ -78,7 +78,7 @@ export default {
             dateParams: {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
                 endDate: formatDateForApi(now, false),
-                view: 'entries',
+                view: 'submission',
                 statsRange: 'month'
             },
             heatmapParams: {
@@ -89,6 +89,11 @@ export default {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
                 endDate: formatDateForApi(now, false)
             }
+        }
+    },
+    computed: {
+        hasPro() {
+            return !!window.FluentFormApp.has_pro;
         }
     },
     methods: {
@@ -157,7 +162,5 @@ export default {
     }
 };
 </script>
-<style scoped>
-</style>
 
 
