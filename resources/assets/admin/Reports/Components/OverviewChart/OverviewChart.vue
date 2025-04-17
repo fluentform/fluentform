@@ -69,7 +69,7 @@
 
                 <!-- Navigation buttons -->
                 <div class="chart-nav">
-                    <div class="nav-item active">
+                    <div class="nav-item">
                         <i class="el-icon-top"></i> Total Counts
                     </div>
                     <div class="nav-item">
@@ -702,13 +702,9 @@ export default {
 .nav-item {
     display: flex;
     align-items: center;
-    color: #606266;
+    color: #303133;
     margin-right: 30px;
     cursor: pointer;
-}
-
-.nav-item.active {
-    color: #303133;
     font-weight: 500;
 }
 
