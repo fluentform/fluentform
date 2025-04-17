@@ -12,33 +12,45 @@
                     format="MMM d, yyyy"
                     value-format="MMM d, yyyy"
                     :default-time="['00:00:00', '23:59:59']"
+                    @change="handleDateChange"
+                    :disabledDate="disableFutureDates"
                 />
             </card-head>
             <card-body>
+                <div v-if="loading" class="loading-overlay">
+                    <div class="loading-spinner">
+                        <i class="el-icon-loading"></i>
+                        <span>Loading data...</span>
+                    </div>
+                </div>
                 <div class="chart-legend">
                     <div class="legend-item">
                         <span class="legend-dot success"></span>
-                        <span>Success</span>
+                        <span>Success ({{ getTotalByStatus('success') }})</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-dot processing"></span>
-                        <span>Processing</span>
+                        <span>Processing ({{ getTotalByStatus('pending') }})</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-dot failed"></span>
-                        <span>Failed</span>
+                        <span>Failed ({{ getTotalByStatus('failed') }})</span>
                     </div>
                 </div>
                 <div class="chart-wrapper">
                     <apexchart
+                        v-if="!loading && hasData"
                         type="line"
                         height="400"
                         :options="chartOptions"
                         :series="series"
                     />
+                    <div v-else-if="!loading && !hasData" class="no-data">
+                        <p>No API log data available for the selected period</p>
+                    </div>
                 </div>
                 <div class="chart-nav">
-                    <div class="nav-item active">
+                    <div class="nav-item">
                         <i class="el-icon-top"></i> Total Counts
                     </div>
                     <div class="nav-item">
@@ -57,29 +69,159 @@ import CardHead from "@/admin/components/Card/CardHead.vue";
 
 export default {
     name: "ApiLogs",
+    props: ['api_logs'],
+    emits: ['api-logs-date-change'],
     components: {
         Card,
         CardBody,
         CardHead,
     },
     data() {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+
         return {
-            dateRange: ['Jan 1, 2023', 'Dec 30, 2023'],
-            series: [
+            loading: false,
+            dateRange: [
+                this.formatDateForDisplay(thirtyDaysAgo),
+                this.formatDateForDisplay(now)
+            ],
+            viewMode: 'counts', // 'counts' or 'timeline'
+            totalLogsByStatus: {
+                success: 0,
+                pending: 0,
+                failed: 0
+            }
+        };
+    },
+    computed: {
+        hasData() {
+            return this.series.some(series => series.data.some(value => value > 0));
+        },
+
+        series() {
+            if (!this.api_logs || !this.api_logs.logs_data) {
+                return [
+                    { name: 'Success', data: [] },
+                    { name: 'Processing', data: [] },
+                    { name: 'Failed', data: [] }
+                ];
+            }
+
+            const data = this.api_logs.logs_data;
+
+            // Fix the mismatch between categories and data keys
+            // Create maps of data values indexed by formatted date strings
+            const successData = [];
+            const pendingData = [];
+            const failedData = [];
+
+            // For each category (formatted date like "Mar 18")
+            for (let i = 0; i < data.categories.length; i++) {
+                // Get the corresponding full date key (like "2025-03-18")
+                const fullDateKey = Object.keys(data.series.success)[i];
+
+                // Get the values from the corresponding full date keys
+                successData.push(data.series.success[fullDateKey] || 0);
+                pendingData.push(data.series.pending[fullDateKey] || 0);
+                failedData.push(data.series.failed[fullDateKey] || 0);
+            }
+
+            return [
                 {
                     name: 'Success',
-                    data: [100, 140, 160, 170, 180, 160, 200, 200, 200, 200, 200, 200]
+                    data: successData
                 },
                 {
                     name: 'Processing',
-                    data: [60, 80, 80, 100, 100, 80, 80, 80, 120, 140, 150, 170]
+                    data: pendingData
                 },
                 {
                     name: 'Failed',
-                    data: [10, 30, 30, 15, 40, 55, 40, 40, 40, 40, 60, 55]
+                    data: failedData
                 }
-            ],
-            chartOptions: {
+            ];
+        },
+
+        chartOptions() {
+            if (!this.api_logs || !this.api_logs.logs_data) {
+                return this.getDefaultChartOptions([]);
+            }
+
+            return this.getDefaultChartOptions(this.api_logs.logs_data.categories);
+        }
+    },
+    watch: {
+        api_logs: {
+            handler(newData) {
+                if (newData && newData.logs_data) {
+                    // Update totals
+                    this.totalLogsByStatus = {
+                        success: newData.totals?.success || 0,
+                        pending: newData.totals?.pending || 0,
+                        failed: newData.totals?.failed || 0
+                    };
+
+                    this.loading = false;
+                }
+            },
+            deep: true,
+            immediate: true
+        }
+    },
+    methods: {
+        disableFutureDates(date) {
+            return date > new Date();
+        },
+
+        getTotalByStatus(status) {
+            return this.totalLogsByStatus[status] || 0;
+        },
+
+        handleDateChange(range) {
+            if (!range || !range[0] || !range[1]) return;
+
+            // Parse the date strings
+            const startParts = range[0].split(" ");
+            const startMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(startParts[0]);
+            const startDay = parseInt(startParts[1].replace(',', ''));
+            const startYear = parseInt(startParts[2]);
+
+            const endParts = range[1].split(" ");
+            const endMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(endParts[0]);
+            const endDay = parseInt(endParts[1].replace(',', ''));
+            const endYear = parseInt(endParts[2]);
+
+            // Create Date objects
+            const startDate = new Date(startYear, startMonth, startDay);
+            const endDate = new Date(endYear, endMonth, endDay);
+
+            // Format dates for API
+            const formatDateForApi = (date, isStart) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const time = isStart ? '00:00:00' : '23:59:59';
+                return `${year}-${month}-${day} ${time}`;
+            };
+
+            this.loading = true;
+
+            // Emit event to parent
+            this.$emit('api-logs-date-change', {
+                startDate: formatDateForApi(startDate, true),
+                endDate: formatDateForApi(endDate, false)
+            });
+        },
+
+        formatDateForDisplay(date) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        },
+
+        getDefaultChartOptions(categories) {
+            return {
                 chart: {
                     type: 'line',
                     toolbar: {
@@ -120,7 +262,7 @@ export default {
                     }
                 },
                 xaxis: {
-                    categories: ['Jan 2023', 'Feb 2023', 'Mar 2023', 'Apr 2023', 'May 2023', 'Jun 2023', 'Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'],
+                    categories: categories,
                     labels: {
                         style: {
                             colors: '#666',
@@ -136,15 +278,14 @@ export default {
                 },
                 yaxis: {
                     min: 0,
-                    max: 350,
-                    tickAmount: 7,
+                    tickAmount: 5,
                     labels: {
                         style: {
                             colors: '#666',
                             fontSize: '12px'
                         },
                         formatter: function(val) {
-                            return val === 0 ? '00' : val;
+                            return Math.round(val);
                         }
                     }
                 },
@@ -152,20 +293,7 @@ export default {
                     show: false // Using custom legend
                 },
                 dataLabels: {
-                    enabled: true,
-                    enabledOnSeries: [0], // Only show on Success series
-                    formatter: function(val, opts) {
-                        return '';
-                    },
-                    style: {
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        colors: ['#333']
-                    },
-                    background: {
-                        enabled: false
-                    },
-                    offsetY: -10
+                    enabled: false
                 },
                 tooltip: {
                     enabled: true,
@@ -179,14 +307,13 @@ export default {
                         show: true
                     },
                     y: {
-                        formatter: function(val, opts) {
-                            // Add the series name to clearly identify each value
-                            return val;
+                        formatter: function(val) {
+                            return Math.round(val);
                         }
                     }
                 }
-            }
-        };
+            };
+        }
     }
 };
 </script>
@@ -195,18 +322,46 @@ export default {
 .line-chart-container {
     background-color: #fff;
     border-radius: 8px;
+    position: relative;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-spinner i {
+    font-size: 32px;
+    color: #7B5CFA;
 }
 
 .chart-legend {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
     margin-right: 20px;
+    margin-bottom: 10px;
 }
 
 .legend-dot {
@@ -231,29 +386,69 @@ export default {
 
 .chart-wrapper {
     height: 400px;
+    position: relative;
+}
+
+.no-data {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #909399;
+    font-size: 16px;
+}
+
+.chart-stats {
+    display: flex;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    border-top: 1px solid #EBEEF5;
+    border-bottom: 1px solid #EBEEF5;
+    padding: 15px 0;
+}
+
+.stat-item {
+    margin-right: 40px;
+    padding: 5px 0;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #303133;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #909399;
+    margin-top: 5px;
 }
 
 .chart-nav {
     display: flex;
     margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #EBEEF5;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
-    color: #606266;
+    color: #303133;
     margin-right: 30px;
     cursor: pointer;
-}
-
-.nav-item.active {
-    color: #303133;
     font-weight: 500;
 }
 
 .nav-item i {
     margin: 0 5px;
+}
+
+@media (max-width: 768px) {
+    .chart-legend, .chart-stats {
+        flex-direction: column;
+    }
+
+    .legend-item, .stat-item {
+        margin-bottom: 10px;
+    }
 }
 </style>

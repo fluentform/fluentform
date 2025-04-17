@@ -24,7 +24,10 @@
         </el-row>
         <el-row class="mt-4">
             <el-col class="report-content" :span="24">
-                <api-logs-chart />
+                <api-logs-chart
+                    :api_logs="reports.api_logs"
+                    @api-logs-date-change="handleApiLogsDateChange"
+                />
             </el-col>
         </el-row>
         <el-row class="mt-4">
@@ -55,6 +58,8 @@ export default {
         const now = new Date();
         const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(now.getDate() - 30);
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
 
         const formatDateForApi = (date, isStart) => {
             const year = date.getFullYear();
@@ -74,8 +79,12 @@ export default {
                 statsRange: 'month'
             },
             heatmapParams: {
-                startDate: null,
-                endDate: null
+                startDate: formatDateForApi(sevenDaysAgo, true),
+                endDate: formatDateForApi(now, false),
+            },
+            apiLogsParams: {
+                startDate: formatDateForApi(thirtyDaysAgo, true),
+                endDate: formatDateForApi(now, false)
             }
         }
     },
@@ -90,7 +99,9 @@ export default {
                 view: this.dateParams.view,
                 stats_range: this.dateParams.statsRange,
                 heatmap_start_date: this.heatmapParams.startDate,
-                heatmap_end_date: this.heatmapParams.endDate
+                heatmap_end_date: this.heatmapParams.endDate,
+                api_logs_start_date: this.apiLogsParams.startDate,
+                api_logs_end_date: this.apiLogsParams.endDate
             };
 
             FluentFormsGlobal.$get(data)
@@ -122,6 +133,15 @@ export default {
 
         handleHeatmapDateChange(params) {
             this.heatmapParams = {
+                startDate: params.startDate,
+                endDate: params.endDate
+            };
+
+            this.fetchReports();
+        },
+
+        handleApiLogsDateChange(params) {
+            this.apiLogsParams = {
                 startDate: params.startDate,
                 endDate: params.endDate
             };

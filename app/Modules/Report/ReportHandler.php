@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use FluentForm\App\Models\Submission;
+use FluentForm\App\Models\Log;
 
 class ReportHandler
 {
@@ -35,7 +36,8 @@ class ReportHandler
             'reports' => [
                 'overview_chart' => $this->getOverviewChartData(),
                 'form_stats'     => $this->getFormStats(),
-                'heatmap_data'   => $this->getSubmissionHeatmap()
+                'heatmap_data'   => $this->getSubmissionHeatmap(),
+                'api_logs'       => $this->getApiLogs()
             ]
         ];
 
@@ -626,6 +628,131 @@ class ReportHandler
 
         return [
             'heatmap_data' => $heatmapData,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ];
+    }
+
+    public function getApiLogs()
+    {
+        $startDate = sanitize_text_field($this->app->request->get('api_logs_start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('api_logs_end_date'));
+
+        if (!$startDate || !$endDate) {
+            $endDate = date('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-30 days'));
+        }
+
+        // Process date range
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        // Calculate date difference to determine grouping
+        $startDateTime = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+        $interval = $startDateTime->diff($endDateTime);
+        $daysInterval = $interval->days + 1;
+
+        // Determine grouping mode based on date range
+        $groupingMode = $this->getGroupingMode($daysInterval);
+
+        // Define the date format based on grouping mode
+        if ($groupingMode === 'day') {
+            $dateFormat = "DATE(created_at)";
+        } elseif ($groupingMode === '3days') {
+            $dateFormat = "DATE(created_at)";
+        } elseif ($groupingMode === 'week') {
+            $dateFormat = "DATE(DATE_ADD(created_at, INTERVAL(-WEEKDAY(created_at)) DAY))";
+        } else { // month
+            $dateFormat = "DATE_FORMAT(created_at, '%Y-%m-01')";
+        }
+
+        // Components to exclude
+        $excludedComponents = [
+            'postFeeds',
+            'AdminApproval',
+            'Payment',
+            'EntryEditor',
+            'DoubleOptin',
+            'Subscription',
+            'UserRegistration',
+            'Akismet Integration',
+            'CleanTalk API Integration'
+        ];
+
+        // Get logs grouped by date and status using Eloquent, excluding specific components
+        $logsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
+
+        // Exclude components - handle both NULL and specific values
+        $logsQuery->where(function($query) use ($excludedComponents) {
+            $query->whereNull('component')
+                  ->orWhereNotIn('component', $excludedComponents);
+        });
+
+        $results = $logsQuery->selectRaw($dateFormat . ' as log_date')
+                             ->selectRaw('status')
+                             ->selectRaw('COUNT(*) as count')
+                             ->groupBy('log_date', 'status')
+                             ->orderBy('log_date')
+                             ->get();
+
+        // Get total counts by status (also excluding the specific components)
+        $totalsQuery = Log::whereBetween('created_at', [$startDate, $endDate]);
+
+        $totalsQuery->where(function($query) use ($excludedComponents) {
+            $query->whereNull('component')
+                  ->orWhereNotIn('component', $excludedComponents);
+        });
+
+        $totalsResults = $totalsQuery->selectRaw('status')
+                                     ->selectRaw('COUNT(*) as count')
+                                     ->groupBy('status')
+                                     ->get();
+
+        $totals = [
+            'success' => 0,
+            'pending' => 0,
+            'failed' => 0
+        ];
+
+        foreach ($totalsResults as $total) {
+            $status = strtolower($total->status);
+            if (isset($totals[$status])) {
+                $totals[$status] = (int)$total->count;
+            }
+        }
+
+        // Get date labels and prepare data
+        $dateLabels = $this->getDateLabels($startDateTime, $endDateTime, $groupingMode);
+        $dates = $dateLabels['dates'];
+        $formattedLabels = $dateLabels['labels'];
+
+        // Initialize data structure
+        $seriesData = [
+            'success' => array_fill_keys($dates, 0),
+            'pending' => array_fill_keys($dates, 0),
+            'failed' => array_fill_keys($dates, 0)
+        ];
+
+        // Fill in data from results
+        foreach ($results as $row) {
+            $date = $row->log_date;
+            $status = strtolower($row->status);
+            $count = (int)$row->count;
+
+            // Map status to our categories
+            if ($status === 'success' || $status === 'pending' || $status === 'failed') {
+                if (isset($seriesData[$status][$date])) {
+                    $seriesData[$status][$date] = $count;
+                }
+            }
+        }
+
+        return [
+            'logs_data' => [
+                'categories' => $formattedLabels,
+                'series' => $seriesData
+            ],
+            'totals' => $totals,
             'start_date' => $startDate,
             'end_date' => $endDate
         ];
