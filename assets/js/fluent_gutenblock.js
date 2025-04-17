@@ -55,7 +55,6 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
     setIsOpen(!isOpen);
   };
   var resetToDefault = function resetToDefault() {
-    console.log(defaultColor);
     onChange(defaultColor);
   };
 
@@ -421,7 +420,10 @@ var _wp$components = wp.components,
   Popover = _wp$components.Popover,
   SelectControl = _wp$components.SelectControl,
   RangeControl = _wp$components.RangeControl;
-var useState = wp.element.useState;
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  useRef = _wp$element.useRef;
 
 // Custom Typography Control Component
 var FluentTypography = function FluentTypography(_ref) {
@@ -433,47 +435,59 @@ var FluentTypography = function FluentTypography(_ref) {
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
 
-  // Default values
+  // Create local state for each typography property
+  var _useState3 = useState(settings.fontSize || ''),
+    _useState4 = _slicedToArray(_useState3, 2),
+    localFontSize = _useState4[0],
+    setLocalFontSize = _useState4[1];
+  var _useState5 = useState(settings.fontWeight || '400'),
+    _useState6 = _slicedToArray(_useState5, 2),
+    localFontWeight = _useState6[0],
+    setLocalFontWeight = _useState6[1];
+  var _useState7 = useState(settings.lineHeight || ''),
+    _useState8 = _slicedToArray(_useState7, 2),
+    localLineHeight = _useState8[0],
+    setLocalLineHeight = _useState8[1];
+  var _useState9 = useState(settings.letterSpacing || ''),
+    _useState10 = _slicedToArray(_useState9, 2),
+    localLetterSpacing = _useState10[0],
+    setLocalLetterSpacing = _useState10[1];
+  var _useState11 = useState(settings.textTransform || 'none'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    localTextTransform = _useState12[0],
+    setLocalTextTransform = _useState12[1];
+
+  // Update local state when settings change
+  useEffect(function () {
+    console.log('Settings changed:', settings);
+    setLocalFontSize(settings.fontSize || '');
+    setLocalFontWeight(settings.fontWeight || '400');
+    setLocalLineHeight(settings.lineHeight || '');
+    setLocalLetterSpacing(settings.letterSpacing || '');
+    setLocalTextTransform(settings.textTransform || 'none');
+  }, [settings]);
+
+  // Define default values in one place
+  var defaultValues = {
+    fontSize: '',
+    fontWeight: '400',
+    lineHeight: '',
+    letterSpacing: '',
+    textTransform: 'none'
+  };
+
+  // Use defaults for any missing properties
   var _ref2 = settings || {},
     _ref2$fontSize = _ref2.fontSize,
-    fontSize = _ref2$fontSize === void 0 ? '' : _ref2$fontSize,
+    fontSize = _ref2$fontSize === void 0 ? defaultValues.fontSize : _ref2$fontSize,
     _ref2$fontWeight = _ref2.fontWeight,
-    fontWeight = _ref2$fontWeight === void 0 ? '400' : _ref2$fontWeight,
+    fontWeight = _ref2$fontWeight === void 0 ? defaultValues.fontWeight : _ref2$fontWeight,
     _ref2$lineHeight = _ref2.lineHeight,
-    lineHeight = _ref2$lineHeight === void 0 ? '' : _ref2$lineHeight,
+    lineHeight = _ref2$lineHeight === void 0 ? defaultValues.lineHeight : _ref2$lineHeight,
     _ref2$letterSpacing = _ref2.letterSpacing,
-    letterSpacing = _ref2$letterSpacing === void 0 ? '' : _ref2$letterSpacing,
+    letterSpacing = _ref2$letterSpacing === void 0 ? defaultValues.letterSpacing : _ref2$letterSpacing,
     _ref2$textTransform = _ref2.textTransform,
-    textTransform = _ref2$textTransform === void 0 ? 'none' : _ref2$textTransform,
-    _ref2$fontFamily = _ref2.fontFamily,
-    fontFamily = _ref2$fontFamily === void 0 ? '' : _ref2$fontFamily;
-
-  // Font options
-  var fontOptions = [{
-    value: '',
-    label: 'Default',
-    key: 'default-font'
-  }, {
-    value: 'Arial, sans-serif',
-    label: 'Arial',
-    key: 'arial-font'
-  }, {
-    value: 'Helvetica, sans-serif',
-    label: 'Helvetica',
-    key: 'helvetica-font'
-  }, {
-    value: 'Georgia, serif',
-    label: 'Georgia',
-    key: 'georgia-font'
-  }, {
-    value: '"Times New Roman", serif',
-    label: 'Times New Roman',
-    key: 'times-font'
-  }, {
-    value: 'Verdana, sans-serif',
-    label: 'Verdana',
-    key: 'verdana-font'
-  }];
+    textTransform = _ref2$textTransform === void 0 ? defaultValues.textTransform : _ref2$textTransform;
   var fontWeightOptions = [{
     value: '300',
     label: 'Light (300)',
@@ -516,21 +530,102 @@ var FluentTypography = function FluentTypography(_ref) {
     label: 'lowercase',
     key: 'lowercase-transform'
   }];
+
+  // Toggle popover
   var togglePopover = function togglePopover() {
     return setIsOpen(!isOpen);
   };
   var updateSetting = function updateSetting(property, value) {
+    // Update local state based on property
+    switch (property) {
+      case 'fontSize':
+        setLocalFontSize(value);
+        break;
+      case 'fontWeight':
+        setLocalFontWeight(value);
+        break;
+      case 'lineHeight':
+        setLocalLineHeight(value);
+        break;
+      case 'letterSpacing':
+        setLocalLetterSpacing(value);
+        break;
+      case 'textTransform':
+        setLocalTextTransform(value);
+        break;
+    }
+
+    // Call onChange with updated values
     onChange(_objectSpread(_objectSpread({}, settings), {}, _defineProperty({}, property, value)));
+  };
+  var _useState13 = useState(0),
+    _useState14 = _slicedToArray(_useState13, 2),
+    forceUpdateKey = _useState14[0],
+    setForceUpdateKey = _useState14[1];
+  useEffect(function () {
+    setForceUpdateKey(function (prev) {
+      return prev + 1;
+    });
+  }, [settings]);
+
+  // Improved isFontChanged function that compares current values with default values
+  var isFontChanged = function isFontChanged() {
+    // Helper function to normalize values for comparison
+    var normalizeValue = function normalizeValue(value) {
+      if (value === undefined || value === null) return '';
+      return String(value).trim();
+    };
+
+    // Check if fontSize is set and different from default
+    var hasFontSizeChanged = localFontSize !== '' && localFontSize !== undefined && localFontSize !== null;
+
+    // Check if other properties have changed
+    var hasFontWeightChanged = normalizeValue(localFontWeight) !== normalizeValue(defaultValues.fontWeight);
+    var hasLineHeightChanged = localLineHeight !== '' && localLineHeight !== undefined && localLineHeight !== null;
+    var hasLetterSpacingChanged = localLetterSpacing !== '' && localLetterSpacing !== undefined && localLetterSpacing !== null;
+    var hasTextTransformChanged = normalizeValue(localTextTransform) !== normalizeValue(defaultValues.textTransform);
+
+    // Return true if any property has changed
+    return hasFontSizeChanged || hasFontWeightChanged || hasLineHeightChanged || hasLetterSpacingChanged || hasTextTransformChanged;
+  };
+
+  // Reset all typography settings to defaults
+  var resetToDefault = function resetToDefault() {
+    // Log the reset action for debugging
+    console.log('Resetting typography to defaults');
+
+    // Create a new object with default values
+    var resetValues = {
+      fontSize: '',
+      fontWeight: '400',
+      lineHeight: '',
+      letterSpacing: '',
+      textTransform: 'none'
+    };
+
+    // Update local state
+    setLocalFontSize('');
+    setLocalFontWeight('400');
+    setLocalLineHeight('');
+    setLocalLetterSpacing('');
+    setLocalTextTransform('none');
+
+    // Close the popover if it's open
+    if (isOpen) {
+      setIsOpen(false);
+    }
+
+    // Call onChange with reset values
+    onChange(resetValues);
   };
 
   // Preview style
   var previewStyle = {
-    fontFamily: fontFamily || 'inherit',
-    fontSize: fontSize ? "".concat(fontSize, "px") : 'inherit',
-    fontWeight: fontWeight,
-    lineHeight: lineHeight || 'normal',
-    letterSpacing: letterSpacing ? "".concat(letterSpacing, "px") : 'normal',
-    textTransform: textTransform
+    fontSize: localFontSize ? "".concat(localFontSize, "px") : 'inherit',
+    fontWeight: localFontWeight,
+    lineHeight: localLineHeight || 'normal',
+    letterSpacing: localLetterSpacing ? "".concat(localLetterSpacing, "px") : 'normal',
+    textTransform: localTextTransform
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-typography-wrap",
@@ -540,49 +635,42 @@ var FluentTypography = function FluentTypography(_ref) {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
         className: "ffblock-label",
         children: label
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
-        icon: "edit",
-        isSmall: true,
-        onClick: togglePopover,
-        className: "fluent-typography-edit-btn"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        },
+        children: [isFontChanged() && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          icon: "image-rotate",
+          isSmall: true,
+          onClick: resetToDefault,
+          label: "Reset to default",
+          className: "ffblock-color-reset-button",
+          style: {
+            padding: '2px'
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+          icon: "edit",
+          isSmall: true,
+          onClick: togglePopover,
+          className: "fluent-typography-edit-btn"
+        })]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
       className: "fluent-typography-preview",
       style: previewStyle,
-      children: [fontSize ? "".concat(fontSize, "px") : '16px', " / ", fontWeight, " / ", fontFamily || 'Default']
+      children: [localFontSize ? "".concat(localFontSize, "px") : '16px', " / ", localFontWeight]
     }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
       className: "fluent-typography-popover",
       onClose: togglePopover,
       position: "bottom center",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         style: {
-          width: '300px',
-          padding: '16px'
+          width: '270px',
+          padding: '15px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", {
-          style: {
-            marginTop: 0,
-            marginBottom: '12px'
-          },
-          children: "Typography Settings"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
-            children: "Font Family"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            value: fontFamily,
-            options: fontOptions,
-            onChange: function onChange(value) {
-              return updateSetting('fontFamily', value);
-            }
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
           style: {
             marginBottom: '12px'
           },
@@ -593,11 +681,12 @@ var FluentTypography = function FluentTypography(_ref) {
             },
             children: "Font Size (px)"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-            value: fontSize ? parseInt(fontSize) : '',
+            value: localFontSize ? parseInt(localFontSize) : undefined,
             min: 8,
             max: 72,
             onChange: function onChange(value) {
-              return updateSetting('fontSize', value);
+              console.log('Font size changed:', value);
+              updateSetting('fontSize', value);
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -611,7 +700,7 @@ var FluentTypography = function FluentTypography(_ref) {
             },
             children: "Font Weight"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            value: fontWeight,
+            value: localFontWeight,
             options: fontWeightOptions,
             onChange: function onChange(value) {
               return updateSetting('fontWeight', value);
@@ -628,7 +717,7 @@ var FluentTypography = function FluentTypography(_ref) {
             },
             children: "Line Height"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-            value: lineHeight ? parseFloat(lineHeight) : '',
+            value: localLineHeight ? parseFloat(localLineHeight) : undefined,
             min: 0.1,
             max: 3,
             step: 0.1,
@@ -647,7 +736,7 @@ var FluentTypography = function FluentTypography(_ref) {
             },
             children: "Letter Spacing (px)"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-            value: letterSpacing ? parseFloat(letterSpacing) : 0,
+            value: localLetterSpacing ? parseFloat(localLetterSpacing) : undefined,
             min: -5,
             max: 10,
             step: 0.1,
@@ -666,7 +755,7 @@ var FluentTypography = function FluentTypography(_ref) {
             },
             children: "Text Transform"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
-            value: textTransform,
+            value: localTextTransform,
             options: textTransformOptions,
             onChange: function onChange(value) {
               return updateSetting('textTransform', value);
@@ -674,7 +763,7 @@ var FluentTypography = function FluentTypography(_ref) {
           })]
         })]
       })
-    })]
+    }, "typo-popover")]
   });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentTypography);
@@ -1149,7 +1238,7 @@ var _wp$components = wp.components,
 
 // Use memo to prevent unnecessary re-renders
 var TabGeneral = memo(function (_ref) {
-  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5, _attributes$labelTypo6, _attributes$inputTATy, _attributes$inputTATy2, _attributes$inputTATy3, _attributes$inputTATy4, _attributes$inputTATy5, _attributes$inputTATy6;
+  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5, _attributes$inputTATy, _attributes$inputTATy2, _attributes$inputTATy3, _attributes$inputTATy4, _attributes$inputTATy5;
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
     updateStyles = _ref.updateStyles,
@@ -1172,7 +1261,6 @@ var TabGeneral = memo(function (_ref) {
             themeStyle: themeStyle,
             isThemeChange: true
           });
-          // Update the selected preset in the parent component
           if (handlePresetChange) {
             handlePresetChange(themeStyle);
           }
@@ -1193,25 +1281,35 @@ var TabGeneral = memo(function (_ref) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
         label: "Typography",
         settings: {
-          fontSize: ((_attributes$labelTypo = attributes.labelTypo) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
-          fontWeight: ((_attributes$labelTypo2 = attributes.labelTypo) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
-          lineHeight: ((_attributes$labelTypo3 = attributes.labelTypo) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
-          letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypo) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
-          textTransform: ((_attributes$labelTypo5 = attributes.labelTypo) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none',
-          fontFamily: ((_attributes$labelTypo6 = attributes.labelTypo) === null || _attributes$labelTypo6 === void 0 ? void 0 : _attributes$labelTypo6.family) || ''
+          fontSize: ((_attributes$labelTypo = attributes.labelTypography) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
+          fontWeight: ((_attributes$labelTypo2 = attributes.labelTypography) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
+          lineHeight: ((_attributes$labelTypo3 = attributes.labelTypography) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
+          letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypography) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
+          textTransform: ((_attributes$labelTypo5 = attributes.labelTypography) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none'
         },
         onChange: function onChange(newTypo) {
+          console.log('Typography changed in TabGeneral:', newTypo);
+          console.log('Current attributes:', attributes.labelTypography);
+
+          // Create updated typography object
+          // Handle the case where all values are reset
+          var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
+
+          // If it's a reset, create an empty object
+          var updatedTypography = isReset ? {} : _objectSpread(_objectSpread({}, attributes.labelTypography), {}, {
+            size: {
+              lg: newTypo.fontSize
+            },
+            weight: newTypo.fontWeight,
+            lineHeight: newTypo.lineHeight,
+            letterSpacing: newTypo.letterSpacing,
+            textTransform: newTypo.textTransform
+          });
+          console.log('Updated typography:', updatedTypography);
+
+          // Update styles with the new typography object
           updateStyles({
-            labelTypo: _objectSpread(_objectSpread({}, attributes.labelTypo), {}, {
-              size: {
-                lg: newTypo.fontSize
-              },
-              weight: newTypo.fontWeight,
-              lineHeight: newTypo.lineHeight,
-              letterSpacing: newTypo.letterSpacing,
-              textTransform: newTypo.textTransform,
-              family: newTypo.fontFamily
-            })
+            labelTypography: updatedTypography
           });
         }
       })]
@@ -1243,21 +1341,27 @@ var TabGeneral = memo(function (_ref) {
           fontWeight: ((_attributes$inputTATy2 = attributes.inputTATypo) === null || _attributes$inputTATy2 === void 0 ? void 0 : _attributes$inputTATy2.weight) || '400',
           lineHeight: ((_attributes$inputTATy3 = attributes.inputTATypo) === null || _attributes$inputTATy3 === void 0 ? void 0 : _attributes$inputTATy3.lineHeight) || '',
           letterSpacing: ((_attributes$inputTATy4 = attributes.inputTATypo) === null || _attributes$inputTATy4 === void 0 ? void 0 : _attributes$inputTATy4.letterSpacing) || '',
-          textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none',
-          fontFamily: ((_attributes$inputTATy6 = attributes.inputTATypo) === null || _attributes$inputTATy6 === void 0 ? void 0 : _attributes$inputTATy6.family) || ''
+          textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none'
         },
         onChange: function onChange(newTypo) {
+          console.log('Input Typography changed:', newTypo);
+
+          // Handle the case where all values are reset
+          var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
+
+          // If it's a reset, create an empty object
+          var updatedTypography = isReset ? {} : _objectSpread(_objectSpread({}, attributes.inputTATypo), {}, {
+            size: {
+              lg: newTypo.fontSize
+            },
+            weight: newTypo.fontWeight,
+            lineHeight: newTypo.lineHeight,
+            letterSpacing: newTypo.letterSpacing,
+            textTransform: newTypo.textTransform
+          });
+          console.log('Updated input typography:', updatedTypography);
           updateStyles({
-            inputTATypo: _objectSpread(_objectSpread({}, attributes.inputTATypo), {}, {
-              size: {
-                lg: newTypo.fontSize
-              },
-              weight: newTypo.fontWeight,
-              lineHeight: newTypo.lineHeight,
-              letterSpacing: newTypo.letterSpacing,
-              textTransform: newTypo.textTransform,
-              family: newTypo.fontFamily
-            })
+            inputTATypo: updatedTypography
           });
         }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -1471,7 +1575,7 @@ function areEqual(prevProps, nextProps) {
   var nextAttrs = nextProps.attributes;
 
   // List of attributes to check for changes
-  var attrsToCheck = ['labelColor', 'inputTAColor', 'inputTABGColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypo', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
+  var attrsToCheck = ['labelColor', 'inputTAColor', 'inputTABGColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
 
   // Check if any of these attributes have changed
   for (var _i = 0, _attrsToCheck = attrsToCheck; _i < _attrsToCheck.length; _i++) {
@@ -1744,16 +1848,9 @@ var React = wp.element;
 
 
 
-// Add CSS styles for our controls
-
-
-var addCustomStyles = function addCustomStyles() {
-  var style = document.createElement('style');
-  style.innerHTML = "\n\n    ";
-  document.head.appendChild(style);
-};
-
 // Function to get form meta
+
+
 var getFormMeta = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(formId, metaKey) {
     var path, response;
@@ -1885,11 +1982,6 @@ var Edit = /*#__PURE__*/function (_Component) {
       showSaveNotice: false,
       previewDevice: 'desktop'
     };
-
-    // Add custom styles when component initializes
-    addCustomStyles();
-
-    // Bind methods
     _this.updateStyles = _this.updateStyles.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -1919,8 +2011,6 @@ var Edit = /*#__PURE__*/function (_Component) {
 
       // Only update if there are actual changes
       if (Object.keys(updatedAttributes).length > 0) {
-        // Just update the attributes without forcing a re-render
-        // The block will re-render automatically when attributes change
         setAttributes(updatedAttributes);
 
         // Set loading state briefly to show user something is happening

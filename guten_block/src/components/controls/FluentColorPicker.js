@@ -24,7 +24,6 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
     };
 
     const resetToDefault = () => {
-        console.log(defaultColor)
         onChange(defaultColor);
     };
 
@@ -56,7 +55,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
             <Flex align="center" justify="space-between">
                 <span className="ffblock-label">{label}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {/* Only show reset button if color has been changed from default */}
+                    {/* Reset button */}
                     {isColorChanged && (
                         <Button
                             icon="image-rotate"

@@ -33,7 +33,6 @@ const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handle
                             themeStyle,
                             isThemeChange: true,
                         });
-                        // Update the selected preset in the parent component
                         if (handlePresetChange) {
                             handlePresetChange(themeStyle);
                         }
@@ -51,24 +50,39 @@ const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handle
                 <FluentTypography
                     label="Typography"
                     settings={{
-                        fontSize: attributes.labelTypo?.size?.lg || '',
-                        fontWeight: attributes.labelTypo?.weight || '400',
-                        lineHeight: attributes.labelTypo?.lineHeight || '',
-                        letterSpacing: attributes.labelTypo?.letterSpacing || '',
-                        textTransform: attributes.labelTypo?.textTransform || 'none',
-                        fontFamily: attributes.labelTypo?.family || ''
+                        fontSize: attributes.labelTypography?.size?.lg || '',
+                        fontWeight: attributes.labelTypography?.weight || '400',
+                        lineHeight: attributes.labelTypography?.lineHeight || '',
+                        letterSpacing: attributes.labelTypography?.letterSpacing || '',
+                        textTransform: attributes.labelTypography?.textTransform || 'none'
                     }}
+
                     onChange={(newTypo) => {
+                        console.log('Typography changed in TabGeneral:', newTypo);
+                        console.log('Current attributes:', attributes.labelTypography);
+
+                        // Create updated typography object
+                        // Handle the case where all values are reset
+                        const isReset = !newTypo.fontSize && newTypo.fontWeight === '400' &&
+                                      !newTypo.lineHeight && !newTypo.letterSpacing &&
+                                      newTypo.textTransform === 'none';
+
+                        // If it's a reset, create an empty object
+                        const updatedTypography = isReset ? {} : {
+                            // Otherwise, update with new values
+                            ...attributes.labelTypography,
+                            size: {lg: newTypo.fontSize},
+                            weight: newTypo.fontWeight,
+                            lineHeight: newTypo.lineHeight,
+                            letterSpacing: newTypo.letterSpacing,
+                            textTransform: newTypo.textTransform
+                        };
+
+                        console.log('Updated typography:', updatedTypography);
+
+                        // Update styles with the new typography object
                         updateStyles({
-                            labelTypo: {
-                                ...attributes.labelTypo,
-                                size: {lg: newTypo.fontSize},
-                                weight: newTypo.fontWeight,
-                                lineHeight: newTypo.lineHeight,
-                                letterSpacing: newTypo.letterSpacing,
-                                textTransform: newTypo.textTransform,
-                                family: newTypo.fontFamily
-                            }
+                            labelTypography: updatedTypography
                         });
                     }}
                 />
@@ -97,20 +111,32 @@ const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handle
                         fontWeight: attributes.inputTATypo?.weight || '400',
                         lineHeight: attributes.inputTATypo?.lineHeight || '',
                         letterSpacing: attributes.inputTATypo?.letterSpacing || '',
-                        textTransform: attributes.inputTATypo?.textTransform || 'none',
-                        fontFamily: attributes.inputTATypo?.family || ''
+                        textTransform: attributes.inputTATypo?.textTransform || 'none'
                     }}
+
                     onChange={(newTypo) => {
+                        console.log('Input Typography changed:', newTypo);
+
+                        // Handle the case where all values are reset
+                        const isReset = !newTypo.fontSize && newTypo.fontWeight === '400' &&
+                                      !newTypo.lineHeight && !newTypo.letterSpacing &&
+                                      newTypo.textTransform === 'none';
+
+                        // If it's a reset, create an empty object
+                        const updatedTypography = isReset ? {} : {
+                            // Otherwise, update with new values
+                            ...attributes.inputTATypo,
+                            size: {lg: newTypo.fontSize},
+                            weight: newTypo.fontWeight,
+                            lineHeight: newTypo.lineHeight,
+                            letterSpacing: newTypo.letterSpacing,
+                            textTransform: newTypo.textTransform
+                        };
+
+                        console.log('Updated input typography:', updatedTypography);
+
                         updateStyles({
-                            inputTATypo: {
-                                ...attributes.inputTATypo,
-                                size: {lg: newTypo.fontSize},
-                                weight: newTypo.fontWeight,
-                                lineHeight: newTypo.lineHeight,
-                                letterSpacing: newTypo.letterSpacing,
-                                textTransform: newTypo.textTransform,
-                                family: newTypo.fontFamily
-                            }
+                            inputTATypo: updatedTypography
                         });
                     }}
                 />
@@ -271,7 +297,7 @@ function areEqual(prevProps, nextProps) {
     const attrsToCheck = [
         'labelColor', 'inputTAColor', 'inputTABGColor',
         'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'labelTypo', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'
+        'labelTypography', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'
     ];
 
     // Check if any of these attributes have changed

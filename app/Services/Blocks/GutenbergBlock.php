@@ -3,7 +3,7 @@
 namespace FluentForm\App\Services\Blocks;
 
 use FluentForm\App\Helpers\Helper;
-use FluentForm\Framework\Helpers\ArrayHelper;
+use FluentForm\Framework\Support\Arr;
 
 /**
  * GutenbergBlock class for handling Fluent Forms Gutenberg block functionality
@@ -12,6 +12,60 @@ use FluentForm\Framework\Helpers\ArrayHelper;
  */
 class GutenbergBlock
 {
+    /**
+     * Helper method to generate CSS rule
+     *
+     * @param string $selector CSS selector
+     * @param string $property CSS property
+     * @param string $value CSS value
+     * @param string $suffix Optional suffix for the value (e.g., 'px')
+     * @return string Generated CSS rule
+     */
+    private static function generateCssRule($selector, $property, $value, $suffix = '')
+    {
+        return "{$selector} { {$property}: {$value}{$suffix}; }\n";
+    }
+
+    /**
+     * Helper method to process typography settings
+     *
+     * @param array $typo Typography settings
+     * @param string $selector CSS selector
+     * @return string Generated CSS rules
+     */
+    private static function processTypography($typo, $selector)
+    {
+        $css = '';
+
+
+        // Process font size
+        if ($fontSize = Arr::get($typo, 'size.lg')) {
+            $css .= self::generateCssRule($selector, 'font-size', $fontSize, 'px');
+        }
+
+        // Process font weight
+        if ($fontWeight = Arr::get($typo, 'weight')) {
+            $css .= self::generateCssRule($selector, 'font-weight', $fontWeight);
+        }
+
+        // Process line height
+        if ($lineHeight = Arr::get($typo, 'lineHeight')) {
+            $css .= self::generateCssRule($selector, 'line-height', $lineHeight);
+        }
+
+        // Process letter spacing
+        if ($letterSpacing = Arr::get($typo, 'letterSpacing')) {
+            $css .= self::generateCssRule($selector, 'letter-spacing', $letterSpacing, 'px');
+        }
+
+        // Process text transform
+        if ($textTransform = Arr::get($typo, 'textTransform')) {
+            $css .= self::generateCssRule($selector, 'text-transform', $textTransform);
+        }
+
+        return $css;
+    }
+
     /**
      * Register the Gutenberg block
      *
@@ -94,13 +148,14 @@ class GutenbergBlock
      */
     public static function render($atts)
     {
-        $formId = ArrayHelper::get($atts, 'formId');
+        $formId = Arr::get($atts, 'formId');
 
         if (empty($formId)) {
             return '';
         }
 
-        $className = ArrayHelper::get($atts, 'className');
+
+        $className = Arr::get($atts, 'className');
 
         if ($className) {
             $classes = explode(' ', $className);
@@ -112,87 +167,94 @@ class GutenbergBlock
             }
         }
 
-        $themeStyle = sanitize_text_field(ArrayHelper::get($atts, 'themeStyle', ''));
+        $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
         // Custom CSS for block styling
         $customCSS = '';
         $inlineStyle = '';
 
+        // Define common selectors
+        $labelSelector = ".ff_guten_block.ff_guten_block-{$formId} .ff-el-input--label label";
+        $inputSelectors = [
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-label",
+            ".ff_guten_block.ff_guten_block-{$formId} .ff_t_c",
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
+        ];
+        $inputSelectorsStr = implode(', ', $inputSelectors);
+
+        $inputBGSelectors = [
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
+            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--multiple",
+            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single",
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
+        ];
+        $inputBGSelectorsStr = implode(', ', $inputBGSelectors);
+
+        $buttonSelectors = [
+            ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
+            ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
+        ];
+        $buttonSelectorsStr = implode(', ', $buttonSelectors);
+
         // Process label color
-        $labelColor = ArrayHelper::get($atts, 'labelColor');
-        if ($labelColor) {
-            $customCSS .= ".ff_guten_block.ff_guten_block-{$formId} .ff-el-input--label label { color: {$labelColor}; }\n";
+        if ($labelColor = Arr::get($atts, 'labelColor')) {
+            $customCSS .= self::generateCssRule($labelSelector, 'color', $labelColor);
         }
 
         // Process input text color
-        $inputTextColor = ArrayHelper::get($atts, 'inputTextColor');
-        if ($inputTextColor) {
-            $inputSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-label",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_t_c",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
-            ];
-            $inputSelectorsStr = implode(', ', $inputSelectors);
-            $customCSS .= $inputSelectorsStr . " { color: {$inputTextColor}; }\n";
+        if ($inputTextColor = Arr::get($atts, 'inputTextColor')) {
+            $customCSS .= self::generateCssRule($inputSelectorsStr, 'color', $inputTextColor);
         }
 
         // Process input background color
-        $inputBackgroundColor = ArrayHelper::get($atts, 'inputBackgroundColor');
-        if ($inputBackgroundColor) {
-            $inputBGSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-                ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--multiple",
-                ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
-            ];
-            $inputBGSelectorsStr = implode(', ', $inputBGSelectors);
-            $customCSS .= $inputBGSelectorsStr . " { background-color: {$inputBackgroundColor}; }\n";
+        if ($inputBackgroundColor = Arr::get($atts, 'inputBackgroundColor')) {
+            $customCSS .= self::generateCssRule($inputBGSelectorsStr, 'background-color', $inputBackgroundColor);
         }
 
         // Process button text color
-        $buttonColor = ArrayHelper::get($atts, 'buttonColor');
-        if ($buttonColor) {
-            $buttonSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
-            ];
-            $buttonSelectorsStr = implode(', ', $buttonSelectors);
-            $customCSS .= $buttonSelectorsStr . " { color: {$buttonColor}; }\n";
+        if ($buttonColor = Arr::get($atts, 'buttonColor')) {
+            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'color', $buttonColor);
         }
 
         // Process button background color
-        $buttonBGColor = ArrayHelper::get($atts, 'buttonBGColor');
-        if ($buttonBGColor) {
-            $buttonSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
-            ];
-            $buttonSelectorsStr = implode(', ', $buttonSelectors);
-            $customCSS .= $buttonSelectorsStr . " { background-color: {$buttonBGColor}; }\n";
+        if ($buttonBGColor = Arr::get($atts, 'buttonBGColor')) {
+            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'background-color', $buttonBGColor);
         }
 
         // Process button hover text color
-        $buttonHoverColor = ArrayHelper::get($atts, 'buttonHoverColor');
-        if ($buttonHoverColor) {
-            $buttonSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
-            ];
-            $buttonSelectorsStr = implode(', ', $buttonSelectors);
-            $customCSS .= $buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus { color: {$buttonHoverColor}; }\n";
+        if ($buttonHoverColor = Arr::get($atts, 'buttonHoverColor')) {
+            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'color', $buttonHoverColor);
         }
 
         // Process button hover background color
-        $buttonHoverBGColor = ArrayHelper::get($atts, 'buttonHoverBGColor');
-        if ($buttonHoverBGColor) {
-            $buttonSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
-            ];
-            $buttonSelectorsStr = implode(', ', $buttonSelectors);
-            $customCSS .= $buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus { background-color: {$buttonHoverBGColor}; }\n";
+        if ($buttonHoverBGColor = Arr::get($atts, 'buttonHoverBGColor')) {
+            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'background-color', $buttonHoverBGColor);
+        }
+
+        // Process label typography
+        $labelTypo = Arr::get($atts, 'labelTypography', []);
+
+        if (empty($labelTypo)) {
+            // Try alternate attribute name for backward compatibility
+            $labelTypo = Arr::get($atts, 'labelTypo', []);
+        }
+
+        if (!empty($labelTypo)) {
+
+            $customCSS .= self::processTypography($labelTypo, $labelSelector);
+        }
+
+        // Process input typography
+        $inputTypo = Arr::get($atts, 'inputTypography', []);
+        if (empty($inputTypo)) {
+            // Try alternate attribute name for backward compatibility
+            $inputTypo = Arr::get($atts, 'inputTATypo', []);
+        }
+
+        if (!empty($inputTypo)) {
+            $customCSS .= self::processTypography($inputTypo, $inputBGSelectorsStr);
         }
 
         // Add the custom CSS inline with the form
@@ -210,12 +272,20 @@ class GutenbergBlock
         if ($formOutput) {
             // Add a hidden debug comment to help troubleshoot attribute passing
             if ($inlineStyle) {
-                $debugInfo = '<!-- FluentForm Block Attributes: ' .
-                             'formId: ' . $formId . ', ' .
-                             'labelColor: ' . (empty($labelColor) ? 'empty' : $labelColor) . ', ' .
-                             'inputTextColor: ' . (empty($inputTextColor) ? 'empty' : $inputTextColor) . ', ' .
-                             'inputBackgroundColor: ' . (empty($inputBackgroundColor) ? 'empty' : $inputBackgroundColor) . ', ' .
-                             'buttonColor: ' . (empty($buttonColor) ? 'empty' : $buttonColor) . ' -->';
+                $debugAttrs = [
+                    'formId' => $formId,
+                    'labelColor' => $labelColor ?: 'empty',
+                    'inputTextColor' => $inputTextColor ?: 'empty',
+                    'inputBackgroundColor' => $inputBackgroundColor ?: 'empty',
+                    'buttonColor' => $buttonColor ?: 'empty'
+                ];
+
+                $debugParts = [];
+                foreach ($debugAttrs as $key => $value) {
+                    $debugParts[] = $key . ': ' . $value;
+                }
+
+                $debugInfo = '<!-- FluentForm Block Attributes: ' . implode(', ', $debugParts) . ' -->';
                 return $inlineStyle . $debugInfo . $formOutput;
             }
             return $formOutput;

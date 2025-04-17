@@ -34,14 +34,6 @@ import FluentTypography from './components/controls/FluentTypography';
 import FluentSpaceControl from './components/controls/FluentSpaceControl';
 import MyBorderControl from './components/controls/MyBorderBoxControl';
 
-// Add CSS styles for our controls
-const addCustomStyles = () => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-
-    `;
-    document.head.appendChild(style);
-};
 
 // Function to get form meta
 const getFormMeta = async (formId, metaKey) => {
@@ -66,10 +58,6 @@ class Edit extends Component {
             previewDevice: 'desktop'
         };
 
-        // Add custom styles when component initializes
-        addCustomStyles();
-
-        // Bind methods
         this.updateStyles = this.updateStyles.bind(this);
     }
 
@@ -94,8 +82,6 @@ class Edit extends Component {
 
         // Only update if there are actual changes
         if (Object.keys(updatedAttributes).length > 0) {
-            // Just update the attributes without forcing a re-render
-            // The block will re-render automatically when attributes change
             setAttributes(updatedAttributes);
 
             // Set loading state briefly to show user something is happening
