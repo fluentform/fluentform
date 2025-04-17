@@ -1,10 +1,10 @@
 <template>
-    <div class="chart-container">
+    <div class="overview-chart">
         <card>
-            <card-head class="d-flex justify-between">
+            <card-head class="overview-chart-header">
                 <h3>Overview Chart</h3>
                 <div>
-                    <el-select clearable class="form-stats-selectable" v-model="selectedRange" @change="handleRangeChange">
+                    <el-select clearable v-model="selectedRange" @change="handleRangeChange">
                         <el-option label="Today" value="today"></el-option>
                         <el-option label="Last Week" value="week"></el-option>
                         <el-option label="Last Month" value="month"></el-option>
@@ -23,13 +23,12 @@
                     />
                 </div>
             </card-head>
-            <card-body>
-                <!-- Series legend and toggles -->
+            <card-body class="overview-chart-body">
                 <div class="chart-controls">
                     <div class="chart-legend">
                         <div class="legend-item" v-if="!viewPayments">
-                            <span class="legend-dot entries"></span>
-                            <span>Entries</span>
+                            <span class="legend-dot submission"></span>
+                            <span>Submission</span>
                         </div>
                         <div class="legend-item" v-if="viewConversion">
                             <span class="legend-dot views"></span>
@@ -45,7 +44,7 @@
                         </div>
                     </div>
                     <div class="view-selector">
-                        <el-select v-model="activeView" placeholder="Select view" size="medium">
+                        <el-select v-model="activeView" placeholder="Select view">
                             <el-option
                                 v-for="item in viewOptions"
                                 :key="item.value"
@@ -98,16 +97,16 @@ export default {
     data() {
         return {
             dateRange: null,
-            activeView: 'entries',
+            activeView: 'submission',
             selectedRange: 'month',
             viewOptions: [
-                {value: 'entries', label: 'Entries'},
+                {value: 'submission', label: 'Submission'},
                 {value: 'conversion', label: 'Conversion'},
                 {value: 'payments', label: 'Payments'}
             ],
             allSeries: [
                 {name: 'Views', type: 'column', data: []},
-                {name: 'Entries', type: 'column', data: []},
+                {name: 'Submission', type: 'column', data: []},
                 {name: 'Conversions', type: 'column', data: []},
                 {name: 'Payments', type: 'column', data: []}
             ],
@@ -237,7 +236,7 @@ export default {
                     }
                 ];
             } else {
-                return [this.allSeries[1]]; // Default: show only Entries
+                return [this.allSeries[1]]; // Default: show only Submissions
             }
         },
 
@@ -433,13 +432,13 @@ export default {
                         }
                     }
                 });
-            } else { // entries
+            } else { // submission
                 this.allSeries[1].data = values;
                 this.allSeries[0].data = Array(values.length).fill(0);
                 this.allSeries[2].data = Array(values.length).fill(0);
                 this.allSeries[3].data = Array(values.length).fill(0);
 
-                // Update Y-axis for entries
+                // Update Y-axis for submission
                 this.updateChartOptions({
                     colors: ['#7B5CFA'],
                     xaxis: {
@@ -576,13 +575,13 @@ export default {
                             }
                         });
                     } else {
-                        // Entries view
+                        // Submission view
                         this.allSeries[1].data = values;
                         this.allSeries[0].data = Array(values.length).fill(0);
                         this.allSeries[2].data = Array(values.length).fill(0);
                         this.allSeries[3].data = Array(values.length).fill(0);
 
-                        // Update chart options for entries
+                        // Update chart options for submission
                         this.updateChartOptions({
                             colors: ['#7B5CFA'],
                             xaxis: {
@@ -626,111 +625,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.chart-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.chart-legend {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap; /* Allow legend items to wrap on smaller screens */
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-    margin-bottom: 8px; /* Add some space when they wrap */
-}
-
-.legend-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.legend-dot.entries {
-    background-color: #7B5CFA; /* Purple */
-}
-
-.legend-dot.views {
-    background-color: #72d0ff; /* Blue */
-}
-
-.legend-dot.conversions {
-    background-color: #FFC107; /* Yellow */
-}
-
-.legend-dot.payments {
-    background-color: #4CAF50; /* Green */
-}
-
-.view-selector {
-    display: flex;
-    align-items: center;
-}
-
-.view-selector .el-select {
-    width: 160px;
-}
-
-.info-icon {
-    color: #C0C4CC;
-    margin-left: 8px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.chart-wrapper {
-    height: 400px;
-}
-
-.chart-nav {
-    display: flex;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #EBEEF5;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    color: #303133;
-    margin-right: 30px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.nav-item i {
-    margin: 0 5px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .chart-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .toggles-container {
-        margin-top: 15px;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .toggle-item:first-child {
-        margin-left: 0;
-    }
-
-    .chart-legend {
-        margin-bottom: 10px;
-    }
-}
-</style>

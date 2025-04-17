@@ -1,14 +1,14 @@
 <template>
-    <div class="transcriptions-table">
+    <div class="transactions-table">
         <card>
-            <card-head class="d-flex justify-between">
+            <card-head class="transactions-table-header">
                 <h3>Recent Transactions</h3>
                 <div>
                     <el-input v-model="search" placeholder="Search..." clearable></el-input>
                 </div>
             </card-head>
 
-            <card-body>
+            <card-body class="transactions-table-body">
                 <div v-if="loading" class="loading-state">
                     <i class="el-icon-loading"></i> Loading transactions...
                 </div>
@@ -133,24 +133,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.transaction-link {
-    color: #409EFF;
-    text-decoration: none;
-}
-
-.transaction-link:hover {
-    text-decoration: underline;
-}
-
-.loading-state, .empty-state {
-    padding: 40px;
-    text-align: center;
-    color: #909399;
-}
-
-.loading-state i {
-    margin-right: 8px;
-}
-</style>

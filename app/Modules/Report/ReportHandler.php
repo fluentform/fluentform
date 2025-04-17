@@ -6,6 +6,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+use FluentForm\App\Helpers\Helper;
+use FluentForm\App\Models\Form;
+use FluentForm\App\Models\FormAnalytics;
 use FluentForm\App\Models\Submission;
 use FluentForm\App\Models\Log;
 
@@ -24,6 +27,11 @@ class ReportHandler
     public function renderReport()
     {
         wp_enqueue_script('fluentform_reports');
+        wp_enqueue_style('fluentform_reports');
+        
+        wp_localize_script('fluentform_reports', 'FluentFormApp', [
+            'has_pro' => Helper::hasPro()
+        ]);
 
         $this->app->view->render('admin.reports.index', [
             'logo' => fluentformMix('img/fluentform-logo.svg'),
@@ -66,7 +74,7 @@ class ReportHandler
         $startDateTime = new \DateTime($startDate);
         $endDateTime = new \DateTime($endDate);
         $interval = $startDateTime->diff($endDateTime);
-        $daysInterval = $interval->days + 1; // Include both start and end dates
+        $daysInterval = $interval->days + 1;
 
         // Determine grouping mode based on date range
         $groupingMode = $this->getGroupingMode($daysInterval);
@@ -92,9 +100,9 @@ class ReportHandler
     {
         if ($daysInterval <= 7) {
             return 'day'; // 1-7 days: group by day
-        } elseif ($daysInterval <= 31) { // Change from 30 to 31 to catch full months
+        } elseif ($daysInterval <= 31) {
             return '3days'; // 8-31 days: group by 3 days
-        } elseif ($daysInterval <= 92) { // About 3 months
+        } elseif ($daysInterval <= 92) {
             return 'week'; // Group by week for 1-3 months
         } else {
             return 'month'; // 3+ months: group by month
@@ -225,8 +233,8 @@ class ReportHandler
                 // Move to next week
                 $current->modify('+7 days');
             }
-        } else { // month
-            // Generate monthly labels - using manual approach to get end of month
+        } else {
+            // Generate monthly labels
             while ($current <= $endDate) {
                 $dateKey = $current->format('Y-m-01');
                 $dates[] = $dateKey;
@@ -288,8 +296,7 @@ class ReportHandler
         // Check if range appears to be same day (possibly "Today" selection)
         $interval = $startDateTime->diff($endDateTime);
         if ($interval->days < 1) {
-            // If the date parameter explicitly requested "today" (has today's date), 
-            // don't modify it. Otherwise, assume it's a range issue and expand to a year.
+            // If the date parameter explicitly requested "today" (has today's date)
             $today = new \DateTime('today');
             $isToday = $startDateTime->format('Y-m-d') === $today->format('Y-m-d');
 
@@ -334,17 +341,17 @@ class ReportHandler
         $formCountData = array_fill_keys($dates, 0);
 
         // 1. Get UNIQUE VIEWS by IP address
-        $viewsQuery = \FluentForm\App\Models\FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
-                                                          ->whereNotNull('ip');
+        $viewsQuery = FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+                                   ->whereNotNull('ip');
 
         // Group by date and IP to count unique visitors
         if ($groupingMode === 'day') {
             $viewsQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
         } elseif ($groupingMode === '3days') {
             // Get min date for reference
-            $minDateRecord = \FluentForm\App\Models\FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
-                                                                 ->selectRaw('MIN(DATE(created_at)) as min_date')
-                                                                 ->first();
+            $minDateRecord = FormAnalytics::whereBetween('created_at', [$startDate, $endDate])
+                                          ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                          ->first();
 
             if ($minDateRecord && $minDateRecord->min_date) {
                 $minDate = $minDateRecord->min_date;
@@ -377,17 +384,18 @@ class ReportHandler
         }
 
         // 2. Get UNIQUE SUBMISSIONS by IP address
-        $submissionQuery = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])
-                                                            ->whereNotNull('ip');
+        $submissionQuery = Submission::whereBetween('created_at', [$startDate, $endDate])
+                                     ->whereNotNull('ip');
 
+        $minDateRecord = null;
         // Group by date and IP to count unique submitters
         if ($groupingMode === 'day') {
             $submissionQuery->selectRaw('DATE(created_at) as date_group, COUNT(DISTINCT ip) as unique_count');
         } elseif ($groupingMode === '3days') {
             // Get min date for reference
-            $minDateRecord = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])
-                                                              ->selectRaw('MIN(DATE(created_at)) as min_date')
-                                                              ->first();
+            $minDateRecord = Submission::whereBetween('created_at', [$startDate, $endDate])
+                                       ->selectRaw('MIN(DATE(created_at)) as min_date')
+                                       ->first();
 
             if ($minDateRecord && $minDateRecord->min_date) {
                 $minDate = $minDateRecord->min_date;
@@ -420,14 +428,14 @@ class ReportHandler
         }
 
         // 3. Count forms created in each time period
-        $formQuery = \FluentForm\App\Models\Form::whereBetween('created_at', [$startDate, $endDate]);
+        $formQuery = Form::whereBetween('created_at', [$startDate, $endDate]);
 
         // Group forms by date
         if ($groupingMode === 'day') {
             $formQuery->selectRaw('DATE(created_at) as date_group, COUNT(*) as count');
         } elseif ($groupingMode === '3days') {
             // Get min date for reference
-            $minDateRecord = \FluentForm\App\Models\Form::whereBetween('created_at', [$startDate, $endDate])
+            $minDateRecord = Form::whereBetween('created_at', [$startDate, $endDate])
                                                         ->selectRaw('MIN(DATE(created_at)) as min_date')
                                                         ->first();
 
@@ -521,20 +529,20 @@ class ReportHandler
         }
 
         // Get submission counts
-        $periodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $periodSubmissions = Submission::whereBetween('created_at',
             [$startDate, $endDate])->count();
-        $previousPeriodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $previousPeriodSubmissions = Submission::whereBetween('created_at',
             [$previousStartDate, $previousEndDate])->count();
 
         // Get submission status counts
-        $unreadSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $unreadSubmissions = Submission::whereBetween('created_at',
             [$startDate, $endDate])->where('status', 'unread')->count();
-        $readSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $readSubmissions = Submission::whereBetween('created_at',
             [$startDate, $endDate])->where('status', 'read')->count();
 
-        $periodSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $periodSpamSubmissions = Submission::whereBetween('created_at',
             [$startDate, $endDate])->where('status', 'spam')->count();
-        $previousSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+        $previousSpamSubmissions = Submission::whereBetween('created_at',
             [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
 
         // Get active integrations count from wp_options
@@ -770,6 +778,10 @@ class ReportHandler
 
     public function getTransactions()
     {
+        if (!Helper::hasPro()) {
+            return [];
+        }
+        
         $transactions = wpFluent()
             ->table('fluentform_transactions')
             ->orderBy('created_at', 'desc')
