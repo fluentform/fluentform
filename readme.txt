@@ -456,7 +456,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 = 6.0.2 (Date: April 7, 2025) =
 - Fixes Stripe 3DS payment issue
 - Fixes form entry delete issue
-- Fixes textdomain load issue
 
 = 6.0.1 (Date: March 20, 2025) =
 - Fixes container conditional logic issue
