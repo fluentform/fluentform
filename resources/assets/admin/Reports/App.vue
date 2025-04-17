@@ -32,7 +32,10 @@
         </el-row>
         <el-row class="mt-4">
             <el-col class="report-content" :span="24">
-                <transactions-table />
+                <transactions-table
+                    :transactions="reports.transactions"
+                    :loading="loading"
+                />
             </el-col>
         </el-row>
     </div>
