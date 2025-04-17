@@ -2,7 +2,7 @@
     <div class="line-chart-container">
         <card>
             <card-head class="d-flex justify-between">
-                <h3>Api Logs</h3>
+                <h3>API Logs</h3>
                 <el-date-picker
                     v-model="dateRange"
                     type="daterange"
@@ -39,15 +39,12 @@
                 </div>
                 <div class="chart-wrapper">
                     <apexchart
-                        v-if="!loading && hasData"
+                        v-if="!loading"
                         type="line"
                         height="400"
                         :options="chartOptions"
                         :series="series"
                     />
-                    <div v-else-if="!loading && !hasData" class="no-data">
-                        <p>No API log data available for the selected period</p>
-                    </div>
                 </div>
                 <div class="chart-nav">
                     <div class="nav-item">
@@ -96,23 +93,17 @@ export default {
         };
     },
     computed: {
-        hasData() {
-            return this.series.some(series => series.data.some(value => value > 0));
-        },
-
         series() {
             if (!this.api_logs || !this.api_logs.logs_data) {
                 return [
-                    { name: 'Success', data: [] },
-                    { name: 'Processing', data: [] },
-                    { name: 'Failed', data: [] }
+                    { name: 'Success', data: [0, 0, 0, 0, 0] },
+                    { name: 'Processing', data: [0, 0, 0, 0, 0] },
+                    { name: 'Failed', data: [0, 0, 0, 0, 0] }
                 ];
             }
 
             const data = this.api_logs.logs_data;
 
-            // Fix the mismatch between categories and data keys
-            // Create maps of data values indexed by formatted date strings
             const successData = [];
             const pendingData = [];
             const failedData = [];
@@ -146,7 +137,7 @@ export default {
 
         chartOptions() {
             if (!this.api_logs || !this.api_logs.logs_data) {
-                return this.getDefaultChartOptions([]);
+                return this.getDefaultChartOptions(['No data']);
             }
 
             return this.getDefaultChartOptions(this.api_logs.logs_data.categories);
@@ -230,6 +221,9 @@ export default {
                     zoom: {
                         enabled: false
                     }
+                },
+                animations: {
+                    enabled: true
                 },
                 colors: ['#22c55e', '#4f46e5', '#ef4444'], // Green, Blue, Red
                 stroke: {

@@ -37,7 +37,8 @@ class ReportHandler
                 'overview_chart' => $this->getOverviewChartData(),
                 'form_stats'     => $this->getFormStats(),
                 'heatmap_data'   => $this->getSubmissionHeatmap(),
-                'api_logs'       => $this->getApiLogs()
+                'api_logs'       => $this->getApiLogs(),
+                'transactions'   => $this->getTransactions()
             ]
         ];
 
@@ -262,12 +263,13 @@ class ReportHandler
         $values = $this->fillMissingData($dates, $data);
 
         return [
-            'dates' => $labels,
+            'dates'  => $labels,
             'values' => array_values($values),
         ];
     }
 
-    private function processDateRange($startDate, $endDate) {
+    private function processDateRange($startDate, $endDate)
+    {
         // Sanity check - ensure start date is before end date
         $startDateTime = new \DateTime($startDate);
         $endDateTime = new \DateTime($endDate);
@@ -472,14 +474,14 @@ class ReportHandler
 
         // Format for chart display
         return [
-            'dates' => $labels,
-            'views' => array_values($viewsData),
-            'submissions' => array_values($submissionsData),
+            'dates'            => $labels,
+            'views'            => array_values($viewsData),
+            'submissions'      => array_values($submissionsData),
             'conversion_rates' => array_values($conversionRates),
-            'form_counts' => array_values($formCountData)
+            'form_counts'      => array_values($formCountData)
         ];
     }
-    
+
     public function getFormStats()
     {
         $range = $this->app->request->get('stats_range', 'month');
@@ -519,16 +521,22 @@ class ReportHandler
         }
 
         // Get submission counts
-        $periodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->count();
-        $previousPeriodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+        $periodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$startDate, $endDate])->count();
+        $previousPeriodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$previousStartDate, $previousEndDate])->count();
 
         // Get submission status counts
-        $unreadSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'unread')->count();
-        $readSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'read')->count();
-        
-        $periodSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'spam')->count();
-        $previousSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
-        
+        $unreadSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$startDate, $endDate])->where('status', 'unread')->count();
+        $readSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$startDate, $endDate])->where('status', 'read')->count();
+
+        $periodSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$startDate, $endDate])->where('status', 'spam')->count();
+        $previousSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at',
+            [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
+
         // Get active integrations count from wp_options
         $modulesStatus = get_option('fluentform_global_modules_status');
         $activeIntegrations = count(array_filter($modulesStatus, function($status) {
@@ -538,18 +546,20 @@ class ReportHandler
         // Calculate period growth percentage
         $growthPercentage = 0;
         if ($previousPeriodSubmissions > 0) {
-            $growthPercentage = round((($periodSubmissions - $previousPeriodSubmissions) / $previousPeriodSubmissions) * 100, 1);
+            $growthPercentage = round((($periodSubmissions - $previousPeriodSubmissions) / $previousPeriodSubmissions) * 100,
+                1);
         } elseif ($periodSubmissions > 0) {
             $growthPercentage = 100;
         }
 
         $growthText = $growthPercentage > 0 ? '+' . $growthPercentage . '%' : $growthPercentage . '%';
         $growthType = $growthPercentage > 0 ? 'up' : ($growthPercentage < 0 ? 'down' : '');
-        
+
         // calculate spam percentage
         $spamPercentage = 0;
         if ($previousSpamSubmissions > 0) {
-            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
+            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100,
+                1);
         } elseif ($periodSpamSubmissions > 0) {
             $spamPercentage = 100;
         }
@@ -558,26 +568,26 @@ class ReportHandler
         $spamType = $spamPercentage > 0 ? 'up' : ($spamPercentage < 0 ? 'down' : '');
 
         return [
-            'period' => $range,
-            'total_submissions' => [
-                'value' => $periodSubmissions,
+            'period'              => $range,
+            'total_submissions'   => [
+                'value'        => $periodSubmissions,
                 'period_value' => $periodSubmissions,
-                'change' => $growthText,
-                'change_type' => $growthType
+                'change'       => $growthText,
+                'change_type'  => $growthType
             ],
-            'spam_submissions' => [
-                'value' => $periodSpamSubmissions,
+            'spam_submissions'    => [
+                'value'        => $periodSpamSubmissions,
                 'period_value' => $previousSpamSubmissions,
-                'change' => $spamText,
-                'change_type' => $spamType
+                'change'       => $spamText,
+                'change_type'  => $spamType
             ],
             'active_integrations' => [
                 'value' => $activeIntegrations,
             ],
-            'unread_submissions' => [
+            'unread_submissions'  => [
                 'value' => $unreadSubmissions,
             ],
-            'read_submissions' => [
+            'read_submissions'    => [
                 'value' => $readSubmissions,
             ],
         ];
@@ -628,8 +638,8 @@ class ReportHandler
 
         return [
             'heatmap_data' => $heatmapData,
-            'start_date' => $startDate,
-            'end_date' => $endDate
+            'start_date'   => $startDate,
+            'end_date'     => $endDate
         ];
     }
 
@@ -711,7 +721,7 @@ class ReportHandler
         $totals = [
             'success' => 0,
             'pending' => 0,
-            'failed' => 0
+            'failed'  => 0
         ];
 
         foreach ($totalsResults as $total) {
@@ -726,14 +736,14 @@ class ReportHandler
         $dates = $dateLabels['dates'];
         $formattedLabels = $dateLabels['labels'];
 
-        // Initialize data structure
+        // Initialize data structure - always with all dates, even if no data exists
         $seriesData = [
             'success' => array_fill_keys($dates, 0),
             'pending' => array_fill_keys($dates, 0),
-            'failed' => array_fill_keys($dates, 0)
+            'failed'  => array_fill_keys($dates, 0)
         ];
 
-        // Fill in data from results
+        // Fill in data from results when available
         foreach ($results as $row) {
             $date = $row->log_date;
             $status = strtolower($row->status);
@@ -748,13 +758,61 @@ class ReportHandler
         }
 
         return [
-            'logs_data' => [
+            'logs_data'  => [
                 'categories' => $formattedLabels,
-                'series' => $seriesData
+                'series'     => $seriesData
             ],
-            'totals' => $totals,
+            'totals'     => $totals,
             'start_date' => $startDate,
-            'end_date' => $endDate
+            'end_date'   => $endDate
         ];
+    }
+
+    public function getTransactions()
+    {
+        $transactions = wpFluent()
+            ->table('fluentform_transactions')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get([
+                'id',
+                'submission_id',
+                'form_id',
+                'transaction_hash',
+                'payment_method',
+                'payment_total',
+                'status',
+                'currency',
+                'created_at'
+            ]);
+
+        $formattedTransactions = [];
+
+        foreach ($transactions as $transaction) {
+            $status = strtolower($transaction->status);
+            if ($status === 'paid') {
+                $standardStatus = 'Paid';
+            } elseif ($status === 'failed') {
+                $standardStatus = 'Failed';
+            } else {
+                $standardStatus = 'Processing';
+            }
+
+            $submissionLink = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $transaction->form_id . '#/entries/' . $transaction->submission_id);
+
+            $formattedTransactions[] = [
+                'id'             => $transaction->id,
+                'submissionLink' => $submissionLink,
+                'transactionId'  => $transaction->transaction_hash,
+                'date'           => $transaction->created_at ? date('d M, Y',
+                    strtotime($transaction->created_at)) : 'N/A',
+                'amount'         => $transaction->payment_total / 100,
+                'paymentMethod'  => ucfirst($transaction->payment_method),
+                'status'         => $standardStatus,
+                'currency'       => $transaction->currency ?: 'USD'
+            ];
+        }
+
+        return $formattedTransactions;
     }
 }
