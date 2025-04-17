@@ -61,7 +61,7 @@
                     <apexchart
                         ref="chart"
                         type="bar"
-                        height="400"
+                        height="420"
                         :options="chartOptions"
                         :series="currentSeries"
                     />
@@ -99,7 +99,7 @@ export default {
         return {
             dateRange: null,
             activeView: 'entries',
-            selectedRange: 'week',
+            selectedRange: 'month',
             viewOptions: [
                 {value: 'entries', label: 'Entries'},
                 {value: 'conversion', label: 'Conversion'},
@@ -172,6 +172,7 @@ export default {
                     },
                 },
                 xaxis: {
+                    type: 'category',
                     categories: [],
                     labels: {
                         style: {
@@ -216,7 +217,7 @@ export default {
     computed: {
         currentSeries() {
             if (this.activeView === 'payments') {
-                return [this.allSeries[3]]; // Only show Payments
+                return [this.allSeries[3]];
             } else if (this.activeView === 'conversion') {
                 return [
                     {
@@ -261,30 +262,11 @@ export default {
             this.emitDateChange();
         },
 
-        getInitialDateRange() {
-            const now = new Date();
-            const firstDay = new Date(now);
-            firstDay.setDate(now.getDate() - 6);
-            let lastDay = new Date(now);
-            lastDay = this.ensureDateNotFuture(lastDay);
-            const startDate = this.formatDateForApi(firstDay, true);
-            const endDate = this.formatDateForApi(lastDay, false);
-
-            return {
-                startDate: startDate,
-                endDate: endDate,
-                view: this.activeView
-            };
-        },
-
         emitDateChange() {
-            // Format dates for API
             let startDate, endDate;
             const today = new Date();
 
-            // Use date range from either the dropdown or the date picker based on which one was last used
             if (this.lastUsedSelector === 'range' || !this.dateRange) {
-                // Use the selected range from dropdown
                 if (this.selectedRange === 'today') {
                     startDate = this.formatDateForApi(today, true);
                     endDate = this.formatDateForApi(today, false);
@@ -340,7 +322,6 @@ export default {
         formatDateForApi(date, isStart) {
             const d = new Date(date);
 
-            // If it's an end date, double-check it's not in the future
             if (!isStart) {
                 const today = new Date();
                 today.setHours(23, 59, 59, 999);
@@ -642,23 +623,6 @@ export default {
             this.emitDateChange();
             this.updateChartForCurrentView();
         }
-    },
-    mounted() {
-        this.$nextTick(() => {
-            // Initialize the chart once with proper settings
-            if (this.$refs.chart) {
-                this.$refs.chart.updateOptions({
-                    xaxis: {
-                        type: 'category'  // This is the key setting!
-                    }
-                });
-            }
-
-            // Request initial data
-            this.lastUsedSelector = 'range';
-            const initialRange = this.getInitialDateRange();
-            this.$emit('date-change', initialRange);
-        });
     }
 };
 </script>

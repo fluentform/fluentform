@@ -33,7 +33,9 @@ class ReportHandler
     {
         $reports = [
             'reports' => [
-                'overview_chart' => $this->getOverviewChartData()
+                'overview_chart' => $this->getOverviewChartData(),
+                'form_stats'     => $this->getFormStats(),
+                'heatmap_data'   => $this->getSubmissionHeatmap()
             ]
         ];
 
@@ -46,15 +48,16 @@ class ReportHandler
         $endDate = sanitize_text_field($this->app->request->get('end_date'));
         $view = sanitize_text_field($this->app->request->get('view'));
 
+        if (empty($startDate) || empty($endDate)) {
+            $now = new \DateTime();
+            $endDate = $now->format('Y-m-d 23:59:59');
+
+            $thirtyDaysAgo = (new \DateTime())->modify('-30 days');
+            $startDate = $thirtyDaysAgo->format('Y-m-d 00:00:00');
+        }
+
         // Process and fix date ranges if needed
         list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
-
-        // Validate dates
-        if (!$startDate || !$endDate) {
-            // Default to current month if no dates provided
-            $endDate = date('Y-m-d H:i:s');
-            $startDate = date('Y-m-01 00:00:00');
-        }
 
         // Calculate date difference to determine grouping
         $startDateTime = new \DateTime($startDate);
@@ -474,38 +477,157 @@ class ReportHandler
             'form_counts' => array_values($formCountData)
         ];
     }
-
-    /**
-     * Get the appropriate date key for a form based on grouping mode
-     */
-    private function getDateKeyForForm($formDate, $startDate, $groupingMode)
+    
+    public function getFormStats()
     {
-        if ($groupingMode === 'day') {
-            // For daily grouping, use the form's creation date
-            return $formDate->format('Y-m-d');
-        } elseif ($groupingMode === '3days') {
-            // For 3-day grouping, calculate which 3-day chunk it belongs to
-            $daysDiff = $formDate->diff($startDate)->days;
-            $chunkIndex = floor($daysDiff / 3);
+        $range = $this->app->request->get('stats_range', 'month');
 
-            $chunkStart = clone $startDate;
-            $chunkStart->modify('+' . ($chunkIndex * 3) . ' days');
+        $now = new \DateTime();
+        $today = $now->format('Y-m-d');
 
-            return $chunkStart->format('Y-m-d');
-        } elseif ($groupingMode === 'week') {
-            // Get start of week (Monday)
-            $dayOfWeek = (int)$formDate->format('N'); // 1 (Monday) through 7 (Sunday)
-            $daysToSubtract = $dayOfWeek - 1;
+        // Set date range based on selection
+        switch ($range) {
+            case 'today':
+                $startDate = $today . ' 00:00:00';
+                $endDate = $today . ' 23:59:59';
+                $previousStartDate = (new \DateTime())->modify('-1 day')->format('Y-m-d 00:00:00');
+                $previousEndDate = (new \DateTime())->modify('-1 day')->format('Y-m-d 23:59:59');
+                break;
 
-            $weekStart = clone $formDate;
-            if ($daysToSubtract > 0) {
-                $weekStart->modify("-{$daysToSubtract} days");
+            case 'week':
+                $startDate = (new \DateTime())->modify('-7 days')->format('Y-m-d H:i:s');
+                $endDate = $now->format('Y-m-d H:i:s');
+                $previousStartDate = (new \DateTime())->modify('-14 days')->format('Y-m-d H:i:s');
+                $previousEndDate = (new \DateTime())->modify('-8 days')->format('Y-m-d H:i:s');
+                break;
+
+            case 'month':
+                $startDate = (new \DateTime())->modify('-30 days')->format('Y-m-d H:i:s');
+                $endDate = $now->format('Y-m-d H:i:s');
+                $previousStartDate = (new \DateTime())->modify('-60 days')->format('Y-m-d H:i:s');
+                $previousEndDate = (new \DateTime())->modify('-31 days')->format('Y-m-d H:i:s');
+                break;
+
+            case 'year':
+                $startDate = (new \DateTime())->modify('-365 days')->format('Y-m-d H:i:s');
+                $endDate = $now->format('Y-m-d H:i:s');
+                $previousStartDate = (new \DateTime())->modify('-730 days')->format('Y-m-d H:i:s');
+                $previousEndDate = (new \DateTime())->modify('-366 days')->format('Y-m-d H:i:s');
+                break;
+        }
+
+        // Get submission counts
+        $periodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->count();
+        $previousPeriodSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+
+        // Get submission status counts
+        $unreadSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'unread')->count();
+        $readSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'read')->count();
+        
+        $periodSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$startDate, $endDate])->where('status', 'spam')->count();
+        $previousSpamSubmissions = \FluentForm\App\Models\Submission::whereBetween('created_at', [$previousStartDate, $previousEndDate])->where('status', 'spam')->count();
+        
+        // Get active integrations count from wp_options
+        $modulesStatus = get_option('fluentform_global_modules_status');
+        $activeIntegrations = count(array_filter($modulesStatus, function($status) {
+            return $status === 'yes' || $status == 1 || $status == 'true';
+        }));
+
+        // Calculate period growth percentage
+        $growthPercentage = 0;
+        if ($previousPeriodSubmissions > 0) {
+            $growthPercentage = round((($periodSubmissions - $previousPeriodSubmissions) / $previousPeriodSubmissions) * 100, 1);
+        } elseif ($periodSubmissions > 0) {
+            $growthPercentage = 100;
+        }
+
+        $growthText = $growthPercentage > 0 ? '+' . $growthPercentage . '%' : $growthPercentage . '%';
+        $growthType = $growthPercentage > 0 ? 'up' : ($growthPercentage < 0 ? 'down' : '');
+        
+        // calculate spam percentage
+        $spamPercentage = 0;
+        if ($previousSpamSubmissions > 0) {
+            $spamPercentage = round((($periodSpamSubmissions - $previousSpamSubmissions) / $previousSpamSubmissions) * 100, 1);
+        } elseif ($periodSpamSubmissions > 0) {
+            $spamPercentage = 100;
+        }
+
+        $spamText = $spamPercentage > 0 ? '+' . $spamPercentage . '%' : $spamPercentage . '%';
+        $spamType = $spamPercentage > 0 ? 'up' : ($spamPercentage < 0 ? 'down' : '');
+
+        return [
+            'period' => $range,
+            'total_submissions' => [
+                'value' => $periodSubmissions,
+                'period_value' => $periodSubmissions,
+                'change' => $growthText,
+                'change_type' => $growthType
+            ],
+            'spam_submissions' => [
+                'value' => $periodSpamSubmissions,
+                'period_value' => $previousSpamSubmissions,
+                'change' => $spamText,
+                'change_type' => $spamType
+            ],
+            'active_integrations' => [
+                'value' => $activeIntegrations,
+            ],
+            'unread_submissions' => [
+                'value' => $unreadSubmissions,
+            ],
+            'read_submissions' => [
+                'value' => $readSubmissions,
+            ],
+        ];
+    }
+
+    public function getSubmissionHeatmap()
+    {
+        $startDate = sanitize_text_field($this->app->request->get('heatmap_start_date'));
+        $endDate = sanitize_text_field($this->app->request->get('heatmap_end_date'));
+
+        if (!$startDate || !$endDate) {
+            $endDate = date('Y-m-d H:i:s');
+            $startDate = date('Y-m-d H:i:s', strtotime('-14 days'));
+        }
+
+        // Process and fix date ranges if needed
+        list($startDate, $endDate) = $this->processDateRange($startDate, $endDate);
+
+        // Query submissions using Eloquent-like syntax
+        $results = Submission::whereBetween('created_at', [$startDate, $endDate])
+                             ->selectRaw('DATE(created_at) as submission_date')
+                             ->selectRaw('HOUR(created_at) as submission_hour')
+                             ->selectRaw('COUNT(*) as count')
+                             ->groupBy('submission_date', 'submission_hour')
+                             ->orderBy('submission_date')
+                             ->orderBy('submission_hour')
+                             ->get();
+
+        // Transform into time slot buckets (8 time slots of 3 hours each)
+        $heatmapData = [];
+
+        foreach ($results as $row) {
+            $date = $row->submission_date;
+            $hour = (int)$row->submission_hour;
+            $count = (int)$row->count;
+
+            // Calculate time slot index (0-7) for 3-hour intervals
+            $timeSlotIndex = floor($hour / 3);
+
+            // Initialize date in heatmap data if not exists
+            if (!isset($heatmapData[$date])) {
+                $heatmapData[$date] = array_fill(0, 8, 0);
             }
 
-            return $weekStart->format('Y-m-d');
-        } else { // month
-            // First day of month
-            return $formDate->format('Y-m-01');
+            // Add count to appropriate time slot
+            $heatmapData[$date][$timeSlotIndex] += $count;
         }
+
+        return [
+            'heatmap_data' => $heatmapData,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ];
     }
 }
