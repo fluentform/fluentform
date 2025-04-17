@@ -7,6 +7,7 @@ use FluentForm\App\Hooks\Handlers\ActivationHandler;
 use FluentForm\App\Modules\Acl\Acl;
 use FluentForm\App\Modules\AddOnModule;
 use FluentForm\App\Modules\DocumentationModule;
+use FluentForm\App\Modules\Payments\PaymentHelper;
 use FluentForm\App\Services\FluentConversational\Classes\Converter\Converter;
 use FluentForm\App\Services\Manager\FormManagerService;
 use FluentForm\Framework\Foundation\Application;
@@ -979,7 +980,7 @@ class Menu
             'element_search_tags'            => $searchTags,
             'element_settings_placement'     => $elementPlacements,
             'all_forms_url'                  => admin_url('admin.php?page=fluent_forms'),
-            'has_payment_features'           => !defined('FLUENTFORMPRO'),
+            'has_payment_features'           => true,
             'upgrade_url'                    => fluentform_upgrade_url(),
             'is_conversion_form'             => Helper::isConversionForm($formId),
             'is_autoload_captcha'            => Helper::isAutoloadCaptchaEnabled(),
@@ -1062,7 +1063,6 @@ class Menu
         );
         
         $components = apply_filters('fluentform/global_settings_components', $components);
-    
 
         $components['reCAPTCHA'] = [
             'hash'  => 're_captcha',
@@ -1167,14 +1167,11 @@ class Menu
 
     public function renderGlobalMenu()
     {
-        $showPayment = false;
-        if (defined('FLUENTFORMPRO')) {
-            $showPayment = !get_option('__fluentform_payment_module_settings');
-            if ($showPayment) {
-                $formCount = wpFluent()->table('fluentform_forms')
-                                ->count();
-                $showPayment = $formCount > 2;
-            }
+        $showPayment = !PaymentHelper::hasPaymentSettings();
+        if ($showPayment) {
+            $formCount = wpFluent()->table('fluentform_forms')
+                ->count();
+            $showPayment = $formCount > 2;
         }
         $showPaymentEntry = apply_filters_deprecated('fluentform_show_payment_entries', [
                 false

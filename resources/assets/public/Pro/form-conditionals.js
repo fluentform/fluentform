@@ -33,12 +33,22 @@ const formConditional = function ($, $theForm, form) {
                 if (!fieldName) {
                     return;
                 }
-                $.each(field.conditions, function (index, condition) {
-                    let el = getElement(condition.field);
-                    watchableFields[el.prop('name')] = el;
-                });
-            });
+                if (field.type == 'group' && field.condition_groups) {
+                    $.each(field.condition_groups, function (index, conditionGroup) {
 
+                        $.each(conditionGroup.rules, function (index, condition) {
+                            let el = getElement(condition.field);
+                            watchableFields[el.prop('name')] = el;
+                        });
+                    });
+                }else{
+                    $.each(field.conditions, function (index, condition) {
+                        let el = getElement(condition.field);
+                        watchableFields[el.prop('name')] = el;
+                    });
+                }
+
+            });
             formData = getFormData();
             const conditionAppInstance = new ConditionApp(form.conditionals, formData);
 
@@ -83,6 +93,7 @@ const formConditional = function ($, $theForm, form) {
                 }
             });
             $theForm.trigger('do_calculation');
+            $theForm.trigger('ff_render_dynamic_smartcodes', $theForm);
         };
 
         const getFormData = function () {

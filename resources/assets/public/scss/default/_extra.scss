@@ -141,7 +141,7 @@
 select#{$el-prefix}-form-control {
   &:not([size]) {
     &:not([multiple]) {
-      height: 42px;
+      height: var(--fluentform-input-select-height, auto);
     }
   }
 }

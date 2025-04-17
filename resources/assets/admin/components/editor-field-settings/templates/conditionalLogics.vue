@@ -10,13 +10,14 @@
         <div class="ff_conditions_warp" v-if="conditional_logics.status">
             <el-form-item>
                 <elLabel slot="label" :label="$t('Condition Match')"
-                         :helpText="$t('Select to match whether all rules are required or any. if the match success then the field will be shown')"></elLabel>
+                         :helpText="$t('Select to match whether all rules are required or any or in groups. If the condition is passed then the field will be shown')"></elLabel>
 
                 <el-radio v-model="conditional_logics.type" label="any">{{ $t('Any') }}</el-radio>
                 <el-radio v-model="conditional_logics.type" label="all">{{ $t('All') }}</el-radio>
+                <el-radio v-model="conditional_logics.type" label="group">{{ $t('Group') }}</el-radio>
             </el-form-item>
 
-            <div v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
+            <div v-if="conditional_logics.type!='group'" v-for="(condition, i) in conditional_logics.conditions" :key="i" class="conditional-logic">
                 <select
                         v-model="condition.field"
                         @change="condition.value = ''"
@@ -77,6 +78,166 @@
                     <action-btn-remove @click="decreaseLogic(i)" size="mini"></action-btn-remove>
                 </action-btn>
             </div>
+
+            <div v-if="conditional_logics.type == 'group'">
+                <div v-for="(group, groupIndex) in conditional_logics.condition_groups" :key="groupIndex">
+                    <div class="group-container">
+                        <div class="group-header">
+                            <div class="title-section">
+                                <div class="group-relationship">
+                                    <b> {{$t('IF')}} </b>
+                                </div>
+
+                                <template v-if="group.isEditingTitle">
+                                    <el-input
+                                        v-model="group.title"
+                                        size="small"
+                                        class="title-input"
+                                        @blur="finishTitleEdit(group)"
+                                        @keyup.enter.native="finishTitleEdit(group)"
+                                    />
+                                </template>
+                                <template v-else>
+                                    <div class="group-title" @click="startTitleEdit(group)">
+                                        <span v-if="group.title">{{ group.title }}</span>
+                                        <span v-else>{{ `${$t('Group')} ${groupIndex + 1}` }}</span>
+                                        <i class="el-icon-edit-outline" style="font-size: 12px; margin-left: 5px;"></i>
+                                    </div>
+                                </template>
+                                <el-tooltip class="item" :content="$t('Enter a descriptive name for this condition group if you want. This helps you identify different sets of rules easily.')" placement="bottom" popper-class="ff_tooltip_wrap">
+                                    <i class="ff-icon ff-icon-gray ff-icon-info-filled"/>
+                                </el-tooltip>
+                            </div>
+
+                            <div class="actions">
+
+                                <el-button size="mini" class="el-button--icon" v-if="conditional_logics.condition_groups.length > 1" @click="removeGroup(groupIndex)" icon="el-icon-delete" type="danger" plain>
+                                </el-button>
+
+                                <el-button size="mini"  class="el-button--icon"  @click="toggleGroup(groupIndex)" plain>
+                                    <i :class="[
+                                    { 'el-icon-arrow-up': group.isGroupOpen },
+                                    { 'el-icon-arrow-down': !group.isGroupOpen }
+                                ]"> </i>
+                                </el-button>
+                            </div>
+                        </div>
+
+                        <!-- Conditions within group -->
+                        <div v-for="(condition, conditionIndex) in group.rules"
+                             :key="conditionIndex"
+                             class="conditional-logic" v-show="group.isGroupOpen">
+                            <select
+                                v-model="condition.field"
+                                @change="condition.value = ''"
+                                :placeholder="$t('Select')"
+                                class="condition-field ff-select ff-select-small"
+                            >
+                                <option value="" disabled>{{ $t('Select') }}</option>
+                                <template v-for="(dep, meta, i) in dependencies">
+                                    <option
+                                            v-if="meta != editItem.attributes.name"
+                                            :key="i"
+                                            :value="meta"
+                                    >
+                                        {{ dep.field_label || meta }}
+                                    </option>
+                                </template>
+                            </select>
+
+                            <!-- Operator Selection -->
+                            <select
+                                v-model="condition.operator"
+                                :placeholder="$t('Select')"
+                                class="condition-operator ff-select ff-select-small"
+                            >
+                                <option value="" disabled>{{ $t('Select') }}</option>
+                                <option value="=">{{ $t('equal') }}</option>
+                                <option value="!=">{{ $t('not equal') }}</option>
+
+                                <template v-if="condition.field && (!dependencies[condition.field] || !dependencies[condition.field].options)">
+                                    <option value=">">{{ $t('greater than') }}</option>
+                                    <option value="<">{{ $t('less than') }}</option>
+                                    <option value=">=">{{ $t('greater than or equal') }}</option>
+                                    <option value="<=">{{ $t('less than or equal') }}</option>
+                                    <option value="contains">{{ $t('includes') }}</option>
+                                    <option value="doNotContains">{{ $t('not includes') }}</option>
+                                    <option value="startsWith">{{ $t('starts with') }}</option>
+                                    <option value="endsWith">{{ $t('ends with') }}</option>
+                                    <option value="test_regex">{{ $t('Regex match') }}</option>
+                                </template>
+                            </select>
+
+                            <!-- Value Input -->
+                            <template v-if="condition.field">
+                                <input
+                                    v-if="!dependencies[condition.field] || !dependencies[condition.field].options"
+                                    class="form-control-2 condition-value"
+                                    type="text"
+                                    v-model="condition.value"
+                                >
+                                <select
+                                    v-else-if="dependencies[condition.field] && dependencies[condition.field].options"
+                                    v-model="condition.value"
+                                    :placeholder="$t('Select')"
+                                    class="condition-value ff-select ff-select-small"
+                                >
+                                    <option value="" selected>{{ $t('Select') }}</option>
+                                    <option
+                                            v-for="(option, i) in dependencies[condition.field].options"
+                                            :key="i"
+                                            :value="option.value"
+                                    >
+                                        {{ option.label }}
+                                    </option>
+                                </select>
+                            </template>
+
+                            <select v-else class="condition-value ff-select ff-select-small">
+                                <option value="" disabled selected>{{ $t('Select') }}</option>
+                            </select>
+
+                            <action-btn>
+                                <action-btn-add @click="addGroupRule(groupIndex, conditionIndex)" size="mini"/>
+                                <action-btn-remove v-if="group.rules.length > 1" @click="removeRule(groupIndex, conditionIndex)" size="mini"/>
+                            </action-btn>
+                        </div>
+
+                        <div class="preview-section" v-if="!isGroupEmpty(group) && group.isGroupOpen && getGroupPreview(group)">
+                            <div class="preview-header" @click="togglePreview(group)">
+                                <div class="preview-toggle">
+                                    <i :class="[
+                                    { 'el-icon-arrow-up': group.isPreviewOpen },
+                                    { 'el-icon-arrow-down': !group.isPreviewOpen }
+                                ]"></i>
+                                </div>
+                            </div>
+
+                            <div v-show="group.isPreviewOpen" class="preview-content">
+                                <div class="group-preview">
+                                    <div class="preview-conditions" v-html="getGroupPreview(group)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="conditional_logics.condition_groups && groupIndex !== conditional_logics.condition_groups.length - 1 && conditional_logics.condition_groups.length > 1 " class="ff_cond_or">
+                        <span>{{ $t('OR') }}</span>
+                    </div>
+
+                </div>
+
+                <div class="add-group-btn">
+                    <el-button
+                        @click="addNewGroup"
+                        type="primary"
+                        plain
+                        size="small">
+                        {{ $t('+ OR') }}
+                    </el-button>
+                </div>
+            </div>
+
         </div>
 
         <el-dialog
@@ -149,7 +310,7 @@
                     'subscription_payment_component'
                 ],
                 showPreventMessage: false,
-                emptyRules: { field: '', value: '', operator: '' }
+                emptyRules: { field: '', value: '', operator: '' },
             }
         },
         computed: {
@@ -275,6 +436,74 @@
             }
         },
         methods: {
+            addGroupRule(groupIndex, conditionIndex) {
+                const group = this.conditional_logics.condition_groups[groupIndex]
+                group.rules.splice(conditionIndex + 1, 0, { ...this.emptyRules })
+            },
+
+            removeRule(groupIndex, conditionIndex) {
+                const group = this.conditional_logics.condition_groups[groupIndex]
+                if (group.rules.length > 1) {
+                    group.rules.splice(conditionIndex, 1)
+                }
+            },
+
+            removeGroup(groupIndex) {
+                if (this.conditional_logics.condition_groups.length > 1) {
+                    this.conditional_logics.condition_groups.splice(groupIndex, 1)
+                }
+            },
+            isGroupEmpty(group) {
+                return group.rules.every(rule => !rule.field && !rule.value);
+            },
+            togglePreview(group) {
+                if (!group.hasOwnProperty('isPreviewOpen')) {
+                    this.$set(group, 'isPreviewOpen', false);
+                }
+                group.isPreviewOpen = !group.isPreviewOpen;
+            },
+            toggleGroup(groupIndex) {
+                const group = this.conditional_logics.condition_groups[groupIndex]
+                if (!group.hasOwnProperty('isGroupOpen')) {
+                    this.$set(group, 'isGroupOpen', false);
+                }
+                group.isGroupOpen = !group.isGroupOpen;
+            },
+
+            getGroupPreview(group) {
+                const conditions = group.rules.map(rule => {
+                    if (!rule.field || !rule.operator) return '';
+
+                    const fieldLabel = this.dependencies[rule.field]?.field_label || rule.field;
+                    const value = this.dependencies[rule.field]?.options?.find(opt => opt.value === rule.value)?.label || rule.value;
+                    const operator = this.getOperatorLabel(rule.operator);
+
+                    return `
+                <span class="preview-field">${fieldLabel}</span>
+                <span class="preview-operator">${operator}</span>
+                <span class="preview-value ${!value ? 'empty-value' : ''}">${value || 'empty'}</span>
+            `;
+                }).filter(preview => preview);
+
+                return conditions.join('<span class="preview-and">AND</span>');
+            },
+
+            getOperatorLabel(operator) {
+                const operators = {
+                    '=': this.$t('equals'),
+                    '!=': this.$t('not equals'),
+                    '>': this.$t('greater than'),
+                    '<': this.$t('less than'),
+                    '>=': this.$t('greater than or equals'),
+                    '<=': this.$t('less than or equals'),
+                    'contains': this.$t('contains'),
+                    'doNotContains': this.$t('does not contain'),
+                    'startsWith': this.$t('starts with'),
+                    'endsWith': this.$t('ends with'),
+                    'test_regex': this.$t('matches regex')
+                };
+                return operators[operator] || operator;
+            },
             decreaseLogic(index) {
                 if (this.conditional_logics.conditions.length > 1) {
                     return this.conditional_logics.conditions.splice(index, 1);
@@ -292,6 +521,47 @@
                 if (!this.conditional_logics.conditions.length) {
                     this.conditional_logics.conditions.push(this.emptyRules);
                 }
+
+                // Ensure condition_groups exists and has at least one group with an empty rule
+                if (!this.conditional_logics.condition_groups) {
+					this.addNewGroup();
+                } else if (!this.conditional_logics.condition_groups.length) {
+	                this.addNewGroup();
+                } else {
+                    // Ensure each existing group has at least one rule
+                    this.conditional_logics.condition_groups.forEach(group => {
+                        if (!group.rules || !group.rules.length) {
+                            group.rules = [{ ...this.emptyRules }];
+                        }
+                    });
+                }
+            },
+            startTitleEdit(group) {
+                if (!group.hasOwnProperty('title')) {
+                    this.$set(group, 'title', '');
+                }
+                this.$set(group, 'isEditingTitle', true);
+            },
+            finishTitleEdit(group) {
+                group.isEditingTitle = false;
+                if (group.title) {
+                    group.title = group.title.trim();
+                }
+            },
+            addNewGroup() {
+                if (!this.conditional_logics.condition_groups) {
+                    this.$set(this.conditional_logics, 'condition_groups', []);
+                }
+
+                const newGroup = {
+                    rules: [{ ...this.emptyRules }],
+                    title: '',
+                    isEditingTitle: false,
+                    isPreviewOpen: false,
+                    isGroupOpen: true
+                };
+
+                this.conditional_logics.condition_groups.push(newGroup);
             },
             formatOptions(items) {
                 let options = [];
@@ -311,6 +581,24 @@
                     this.conditional_logics.conditions.push(this.emptyRules);
                 }
             });
+        },
+        created() {
+            if (this.conditional_logics.condition_groups) {
+                this.conditional_logics.condition_groups.forEach(group => {
+                    if (!group.hasOwnProperty('title')) {
+                        this.$set(group, 'title', '');
+                    }
+                    if (!group.hasOwnProperty('isEditingTitle')) {
+                        this.$set(group, 'isEditingTitle', false);
+                    }
+                    if (!group.hasOwnProperty('isPreviewOpen')) {
+                        this.$set(group, 'isPreviewOpen', false);
+                    }
+                    if (!group.hasOwnProperty('isGroupOpen')) {
+                        this.$set(group, 'isGroupOpen', true);
+                    }
+                });
+            }
         }
     }
 </script>

@@ -379,7 +379,7 @@
                                     <div slot="content">
                                         <p>
                                             {{
-                                                $t('Enable token based spam protection for better spam protection')
+                                                $t('Token based spam protection is generated only after interacting with the form, ensuring human engagement. Please interact with the form before submitting to validate the token.')
                                             }}
                                         </p>
                                     </div>
@@ -443,7 +443,7 @@
                 </template>
 
                 <template >
-                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width"  :class="{ 'ff-disabled': !cleantalk_available }">
+                    <el-form-item class="ff-form-item-flex ff-form-item ff-form-setting-label-width" v-if="cleantalk_available">
                         <template slot="label">
                             <span>
                                 <span>
@@ -452,15 +452,14 @@
                                         <div slot="content">
                                             <p>
                                                 {{
-                                                    $t('If you enable this then Fluent Forms will verify the form submission CleanTalk Anti-spam plugin. It will save you from spam form submission.')
+                                                    $t('Please use the CleanTalk option found in the Security submenu, which utilizes CleanTalk API and does not require the CleanTalk Anti-Spam Plugin which is recommended.')
                                                 }}
                                             </p>
                                         </div>
                                         <i class="ff-icon ff-icon-info-filled text-primary"></i>
                                     </el-tooltip>
                                 </span>
-                                <p class="text-note mt-1 " v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
-                                <p class="text-note mt-1" v-else>{{ $t('Please use the CleanTalk option found in the Security submenu. This version utilizes an API and does not require the CleanTalk Anti-Spam Plugin.') }}</p>
+                                <p class="text-note mt-1" v-if="!cleantalk_available">{{ $t('Requires Anti-Spam by CleanTalk Plugin') }}</p>
                             </span>
                         </template>
 

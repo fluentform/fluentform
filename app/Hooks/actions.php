@@ -71,6 +71,7 @@ $app->addAction(
 add_action('admin_init', function () use ($app) {
     (new \FluentForm\App\Modules\Registerer\Menu($app))->reisterScripts();
     (new \FluentForm\App\Modules\Registerer\AdminBar())->register();
+    (new \FluentForm\App\Modules\Ai\AiController())->boot();
 }, 9);
 
 add_action('admin_enqueue_scripts', function () use ($app) {
@@ -800,6 +801,10 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
+    // Load payment module
+    if (Helper::isPaymentCompatible()) {
+        (new FluentForm\App\Modules\Payments\PaymentHandler())->init();
+    }
 });
 
 $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
@@ -808,6 +813,9 @@ $app->addAction('fluentform/form_element_start', function ($form) use ($app) {
 
     $tokenBasedSpamProtection = new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
     $tokenBasedSpamProtection->renderTokenField($form);
+
+    $cleanTalk = new \FluentForm\App\Modules\Form\CleanTalkHandler();
+    $cleanTalk->setCleanTalkScript();
 });
 
 $app->addAction('fluentform/before_insert_submission', function ($insertData, $requestData, $form) use ($app) {

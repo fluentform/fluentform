@@ -1,0 +1,133 @@
+@import "~element-ui/lib/theme-chalk/checkbox-group.css";
+@import "~element-ui/lib/theme-chalk/menu.css";
+@import "~element-ui/lib/theme-chalk/menu-item.css";
+
+.ff_pre_settings_wrapper {
+  text-align: center;
+  padding: 20px 50px 50px;
+  max-width: 800px;
+  margin: 50px auto;
+  background: #f1f1f1;
+  border-radius: 20px;
+  h2 {
+    line-height: 36px;
+    font-size: 26px;
+    margin-bottom: 10px;
+  }
+  p{
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+}
+.ff_payment_wrapper {
+  .el-tabs--border-card>.el-tabs__content {
+    padding: 45px;
+  }
+}
+
+.ff_payment_sub_section {
+  padding: 20px 30px;
+  background: #f2f2f2;
+  border-radius: 8px;
+}
+.ff_connect_ok {
+  padding: 15px 20px;
+  background: mix(#67c23a, #ffffff, 10%);
+  border-left: 5px solid #67c23a;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+// ff connect require
+.ff_connect_require {
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  background: #fcf4e6;
+  border-left: 5px solid #FF6154;
+  border-radius: 5px;
+  img {
+    max-width: 200px;
+  }
+}
+
+// ff pay navigation
+.ff_pay_navigation {
+  display: block;
+  width: 100%;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e4e7ec;
+  li {
+    display: inline-block;
+    padding-bottom: 15px;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+    &:not(:last-child){
+      margin-right: 20px;
+    }
+    &::after{
+      position: absolute;
+      content: "";
+      bottom: -1px;    
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #1a7efb;
+      transition: 0.3s;
+    }
+    &.ff_active {
+      color: #1a7efb;
+      &::after{
+        width: 100%;
+      }
+    }
+  }
+}
+
+// el menu demo
+.el-menu-demo{
+  background-color: transparent;
+  &.el-menu--horizontal {
+    border-bottom: 0;
+    > .el-menu-item{
+      border-bottom: 0;
+      height: auto;
+      line-height: inherit;
+      margin-bottom: 10px;
+      padding: 8px 14px;
+      display: block;
+      float: none;
+      border-radius: 6px;
+      color: #606266;
+      &:hover,
+      &.is-active{
+        background-color: mix(#1e1f21, #ffffff, 15%);
+        color: #1e1f21;
+      }
+    }
+  }
+}
+
+.el-tabs__item{
+  height: auto;
+  line-height: inherit;
+  padding-bottom: 15px;
+  font-weight: 400;
+  color: #606266;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.el-tabs__nav-wrap::after{
+  height: 1px;
+}
+.ff_method_settings_form {
+  h2{
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  p:not(.text-note){
+    margin-bottom: 15px;
+  }
+}
