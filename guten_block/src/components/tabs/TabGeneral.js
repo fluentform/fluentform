@@ -58,27 +58,51 @@ const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handle
                     }}
 
                     onChange={(newTypo) => {
-                        console.log('Typography changed in TabGeneral:', newTypo);
-                        console.log('Current attributes:', attributes.labelTypography);
+                        // Determine which property was changed by comparing with previous values
+                        const prevTypo = {
+                            fontSize: attributes.labelTypography?.size?.lg || '',
+                            fontWeight: attributes.labelTypography?.weight || '400',
+                            lineHeight: attributes.labelTypography?.lineHeight || '',
+                            letterSpacing: attributes.labelTypography?.letterSpacing || '',
+                            textTransform: attributes.labelTypography?.textTransform || 'none'
+                        };
 
-                        // Create updated typography object
-                        // Handle the case where all values are reset
+                        // Check if this is a reset operation
                         const isReset = !newTypo.fontSize && newTypo.fontWeight === '400' &&
                                       !newTypo.lineHeight && !newTypo.letterSpacing &&
                                       newTypo.textTransform === 'none';
 
-                        // If it's a reset, create an empty object
-                        const updatedTypography = isReset ? {} : {
-                            // Otherwise, update with new values
-                            ...attributes.labelTypography,
-                            size: {lg: newTypo.fontSize},
-                            weight: newTypo.fontWeight,
-                            lineHeight: newTypo.lineHeight,
-                            letterSpacing: newTypo.letterSpacing,
-                            textTransform: newTypo.textTransform
-                        };
+                        if (isReset) {
+                            // For reset, create an empty object
+                            updateStyles({
+                                labelTypography: {}
+                            });
+                            return;
+                        }
 
-                        console.log('Updated typography:', updatedTypography);
+                        // Create a new typography object with only the changed properties
+                        const updatedTypography = {...attributes.labelTypography};
+
+                        // Only update properties that have changed
+                        if (newTypo.fontSize !== prevTypo.fontSize) {
+                            updatedTypography.size = {lg: newTypo.fontSize};
+                        }
+
+                        if (newTypo.fontWeight !== prevTypo.fontWeight) {
+                            updatedTypography.weight = newTypo.fontWeight;
+                        }
+
+                        if (newTypo.lineHeight !== prevTypo.lineHeight) {
+                            updatedTypography.lineHeight = newTypo.lineHeight;
+                        }
+
+                        if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
+                            updatedTypography.letterSpacing = newTypo.letterSpacing;
+                        }
+
+                        if (newTypo.textTransform !== prevTypo.textTransform) {
+                            updatedTypography.textTransform = newTypo.textTransform;
+                        }
 
                         // Update styles with the new typography object
                         updateStyles({
@@ -115,26 +139,53 @@ const TabGeneral = memo(({attributes, setAttributes, updateStyles, state, handle
                     }}
 
                     onChange={(newTypo) => {
-                        console.log('Input Typography changed:', newTypo);
+                        // Determine which property was changed by comparing with previous values
+                        const prevTypo = {
+                            fontSize: attributes.inputTATypo?.size?.lg || '',
+                            fontWeight: attributes.inputTATypo?.weight || '400',
+                            lineHeight: attributes.inputTATypo?.lineHeight || '',
+                            letterSpacing: attributes.inputTATypo?.letterSpacing || '',
+                            textTransform: attributes.inputTATypo?.textTransform || 'none'
+                        };
 
-                        // Handle the case where all values are reset
+                        // Check if this is a reset operation
                         const isReset = !newTypo.fontSize && newTypo.fontWeight === '400' &&
                                       !newTypo.lineHeight && !newTypo.letterSpacing &&
                                       newTypo.textTransform === 'none';
 
-                        // If it's a reset, create an empty object
-                        const updatedTypography = isReset ? {} : {
-                            // Otherwise, update with new values
-                            ...attributes.inputTATypo,
-                            size: {lg: newTypo.fontSize},
-                            weight: newTypo.fontWeight,
-                            lineHeight: newTypo.lineHeight,
-                            letterSpacing: newTypo.letterSpacing,
-                            textTransform: newTypo.textTransform
-                        };
+                        if (isReset) {
+                            // For reset, create an empty object
+                            updateStyles({
+                                inputTATypo: {}
+                            });
+                            return;
+                        }
 
-                        console.log('Updated input typography:', updatedTypography);
+                        // Create a new typography object with only the changed properties
+                        const updatedTypography = {...attributes.inputTATypo};
 
+                        // Only update properties that have changed
+                        if (newTypo.fontSize !== prevTypo.fontSize) {
+                            updatedTypography.size = {lg: newTypo.fontSize};
+                        }
+
+                        if (newTypo.fontWeight !== prevTypo.fontWeight) {
+                            updatedTypography.weight = newTypo.fontWeight;
+                        }
+
+                        if (newTypo.lineHeight !== prevTypo.lineHeight) {
+                            updatedTypography.lineHeight = newTypo.lineHeight;
+                        }
+
+                        if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
+                            updatedTypography.letterSpacing = newTypo.letterSpacing;
+                        }
+
+                        if (newTypo.textTransform !== prevTypo.textTransform) {
+                            updatedTypography.textTransform = newTypo.textTransform;
+                        }
+
+                        // Update styles with the new typography object
                         updateStyles({
                             inputTATypo: updatedTypography
                         });

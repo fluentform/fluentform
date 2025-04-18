@@ -8,13 +8,21 @@ const {
     SelectControl,
     RangeControl
 } = wp.components;
-const { useState, useEffect, useRef } = wp.element;
+const { useState, useEffect } = wp.element;
 
-// Custom Typography Control Component
+/**
+ * Typography control component for Fluent Forms
+ *
+ * @param {Object} props Component properties
+ * @param {string} props.label Label for the control
+ * @param {Object} props.settings Typography settings object
+ * @param {Function} props.onChange Callback when settings change
+ * @returns {JSX.Element} Typography control component
+ */
 const FluentTypography = ({ label, settings, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Create local state for each typography property
+    // Local state for typography properties
     const [localFontSize, setLocalFontSize] = useState(settings.fontSize || '');
     const [localFontWeight, setLocalFontWeight] = useState(settings.fontWeight || '400');
     const [localLineHeight, setLocalLineHeight] = useState(settings.lineHeight || '');
@@ -23,7 +31,6 @@ const FluentTypography = ({ label, settings, onChange }) => {
 
     // Update local state when settings change
     useEffect(() => {
-        console.log('Settings changed:', settings);
         setLocalFontSize(settings.fontSize || '');
         setLocalFontWeight(settings.fontWeight || '400');
         setLocalLineHeight(settings.lineHeight || '');
@@ -31,7 +38,7 @@ const FluentTypography = ({ label, settings, onChange }) => {
         setLocalTextTransform(settings.textTransform || 'none');
     }, [settings]);
 
-    // Define default values in one place
+    // Default values and options
     const defaultValues = {
         fontSize: '',
         fontWeight: '400',
@@ -40,51 +47,39 @@ const FluentTypography = ({ label, settings, onChange }) => {
         textTransform: 'none',
     };
 
-    // Use defaults for any missing properties
-    const {
-        fontSize = defaultValues.fontSize,
-        fontWeight = defaultValues.fontWeight,
-        lineHeight = defaultValues.lineHeight,
-        letterSpacing = defaultValues.letterSpacing,
-        textTransform = defaultValues.textTransform,
-    } = settings || {};
     const fontWeightOptions = [
-        { value: '300', label: 'Light (300)', key: 'light-weight' },
-        { value: '400', label: 'Regular (400)', key: 'regular-weight' },
-        { value: '500', label: 'Medium (500)', key: 'medium-weight' },
-        { value: '600', label: 'Semi Bold (600)', key: 'semibold-weight' },
-        { value: '700', label: 'Bold (700)', key: 'bold-weight' },
-        { value: '800', label: 'Extra Bold (800)', key: 'extrabold-weight' }
+        { value: '300', label: 'Light (300)' },
+        { value: '400', label: 'Regular (400)' },
+        { value: '500', label: 'Medium (500)' },
+        { value: '600', label: 'Semi Bold (600)' },
+        { value: '700', label: 'Bold (700)' },
+        { value: '800', label: 'Extra Bold (800)' }
     ];
 
     const textTransformOptions = [
-        { value: 'none', label: 'None', key: 'none-transform' },
-        { value: 'capitalize', label: 'Capitalize', key: 'capitalize-transform' },
-        { value: 'uppercase', label: 'UPPERCASE', key: 'uppercase-transform' },
-        { value: 'lowercase', label: 'lowercase', key: 'lowercase-transform' }
+        { value: 'none', label: 'None' },
+        { value: 'capitalize', label: 'Capitalize' },
+        { value: 'uppercase', label: 'UPPERCASE' },
+        { value: 'lowercase', label: 'lowercase' }
     ];
 
     // Toggle popover
     const togglePopover = () => setIsOpen(!isOpen);
 
+    /**
+     * Update a typography setting
+     *
+     * @param {string} property Property to update
+     * @param {any} value New value
+     */
     const updateSetting = (property, value) => {
         // Update local state based on property
         switch (property) {
-            case 'fontSize':
-                setLocalFontSize(value);
-                break;
-            case 'fontWeight':
-                setLocalFontWeight(value);
-                break;
-            case 'lineHeight':
-                setLocalLineHeight(value);
-                break;
-            case 'letterSpacing':
-                setLocalLetterSpacing(value);
-                break;
-            case 'textTransform':
-                setLocalTextTransform(value);
-                break;
+            case 'fontSize': setLocalFontSize(value); break;
+            case 'fontWeight': setLocalFontWeight(value); break;
+            case 'lineHeight': setLocalLineHeight(value); break;
+            case 'letterSpacing': setLocalLetterSpacing(value); break;
+            case 'textTransform': setLocalTextTransform(value); break;
         }
 
         // Call onChange with updated values
@@ -94,55 +89,37 @@ const FluentTypography = ({ label, settings, onChange }) => {
         });
     };
 
-    const [forceUpdateKey, setForceUpdateKey] = useState(0);
-
-    useEffect(() => {
-        setForceUpdateKey(prev => prev + 1);
-    }, [settings]);
 
 
-    // Improved isFontChanged function that compares current values with default values
+    /**
+     * Check if any typography settings have changed from defaults
+     *
+     * @returns {boolean} True if any setting has changed
+     */
     const isFontChanged = () => {
-        // Helper function to normalize values for comparison
-        const normalizeValue = (value) => {
-            if (value === undefined || value === null) return '';
-            return String(value).trim();
-        };
-
-        // Check if fontSize is set and different from default
-        const hasFontSizeChanged = localFontSize !== '' && localFontSize !== undefined && localFontSize !== null;
-
-        // Check if other properties have changed
-        const hasFontWeightChanged = normalizeValue(localFontWeight) !== normalizeValue(defaultValues.fontWeight);
-        const hasLineHeightChanged = localLineHeight !== '' && localLineHeight !== undefined && localLineHeight !== null;
-        const hasLetterSpacingChanged = localLetterSpacing !== '' && localLetterSpacing !== undefined && localLetterSpacing !== null;
-        const hasTextTransformChanged = normalizeValue(localTextTransform) !== normalizeValue(defaultValues.textTransform);
-
-        // Return true if any property has changed
-        return hasFontSizeChanged || hasFontWeightChanged || hasLineHeightChanged ||
-               hasLetterSpacingChanged || hasTextTransformChanged;
+        // Check if any property has a non-default value
+        return (
+            (localFontSize !== '' && localFontSize != null) ||
+            localFontWeight !== defaultValues.fontWeight ||
+            (localLineHeight !== '' && localLineHeight != null) ||
+            (localLetterSpacing !== '' && localLetterSpacing != null) ||
+            localTextTransform !== defaultValues.textTransform
+        );
     };
 
-    // Reset all typography settings to defaults
+    /**
+     * Reset all typography settings to defaults
+     */
     const resetToDefault = () => {
-        // Log the reset action for debugging
-        console.log('Resetting typography to defaults');
-
-        // Create a new object with default values
-        const resetValues = {
-            fontSize: '',
-            fontWeight: '400',
-            lineHeight: '',
-            letterSpacing: '',
-            textTransform: 'none'
-        };
+        // Create reset values object
+        const resetValues = { ...defaultValues };
 
         // Update local state
-        setLocalFontSize('');
-        setLocalFontWeight('400');
-        setLocalLineHeight('');
-        setLocalLetterSpacing('');
-        setLocalTextTransform('none');
+        setLocalFontSize(defaultValues.fontSize);
+        setLocalFontWeight(defaultValues.fontWeight);
+        setLocalLineHeight(defaultValues.lineHeight);
+        setLocalLetterSpacing(defaultValues.letterSpacing);
+        setLocalTextTransform(defaultValues.textTransform);
 
         // Close the popover if it's open
         if (isOpen) {
@@ -151,15 +128,6 @@ const FluentTypography = ({ label, settings, onChange }) => {
 
         // Call onChange with reset values
         onChange(resetValues);
-    };
-
-    // Preview style
-    const previewStyle = {
-        fontSize: localFontSize ? `${localFontSize}px` : 'inherit',
-        fontWeight: localFontWeight,
-        lineHeight: localLineHeight || 'normal',
-        letterSpacing: localLetterSpacing ? `${localLetterSpacing}px` : 'normal',
-        textTransform: localTextTransform
     };
 
     return (
@@ -186,11 +154,6 @@ const FluentTypography = ({ label, settings, onChange }) => {
               </div>
           </Flex>
 
-          {/* Typography preview */}
-          <div className="fluent-typography-preview" style={previewStyle}>
-              {localFontSize ? `${localFontSize}px` : '16px'} / {localFontWeight}
-          </div>
-
           {isOpen && (
             <Popover
               className="fluent-typography-popover"
@@ -206,10 +169,7 @@ const FluentTypography = ({ label, settings, onChange }) => {
                           value={localFontSize ? parseInt(localFontSize) : undefined}
                           min={8}
                           max={72}
-                          onChange={(value) => {
-                              console.log('Font size changed:', value);
-                              updateSetting('fontSize', value);
-                          }}
+                          onChange={(value) => updateSetting('fontSize', value)}
                         />
                     </div>
 

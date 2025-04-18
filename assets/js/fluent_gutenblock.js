@@ -422,10 +422,17 @@ var _wp$components = wp.components,
   RangeControl = _wp$components.RangeControl;
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect,
-  useRef = _wp$element.useRef;
+  useEffect = _wp$element.useEffect;
 
-// Custom Typography Control Component
+/**
+ * Typography control component for Fluent Forms
+ *
+ * @param {Object} props Component properties
+ * @param {string} props.label Label for the control
+ * @param {Object} props.settings Typography settings object
+ * @param {Function} props.onChange Callback when settings change
+ * @returns {JSX.Element} Typography control component
+ */
 var FluentTypography = function FluentTypography(_ref) {
   var label = _ref.label,
     settings = _ref.settings,
@@ -435,7 +442,7 @@ var FluentTypography = function FluentTypography(_ref) {
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
 
-  // Create local state for each typography property
+  // Local state for typography properties
   var _useState3 = useState(settings.fontSize || ''),
     _useState4 = _slicedToArray(_useState3, 2),
     localFontSize = _useState4[0],
@@ -459,7 +466,6 @@ var FluentTypography = function FluentTypography(_ref) {
 
   // Update local state when settings change
   useEffect(function () {
-    console.log('Settings changed:', settings);
     setLocalFontSize(settings.fontSize || '');
     setLocalFontWeight(settings.fontWeight || '400');
     setLocalLineHeight(settings.lineHeight || '');
@@ -467,7 +473,7 @@ var FluentTypography = function FluentTypography(_ref) {
     setLocalTextTransform(settings.textTransform || 'none');
   }, [settings]);
 
-  // Define default values in one place
+  // Default values and options
   var defaultValues = {
     fontSize: '',
     fontWeight: '400',
@@ -475,66 +481,50 @@ var FluentTypography = function FluentTypography(_ref) {
     letterSpacing: '',
     textTransform: 'none'
   };
-
-  // Use defaults for any missing properties
-  var _ref2 = settings || {},
-    _ref2$fontSize = _ref2.fontSize,
-    fontSize = _ref2$fontSize === void 0 ? defaultValues.fontSize : _ref2$fontSize,
-    _ref2$fontWeight = _ref2.fontWeight,
-    fontWeight = _ref2$fontWeight === void 0 ? defaultValues.fontWeight : _ref2$fontWeight,
-    _ref2$lineHeight = _ref2.lineHeight,
-    lineHeight = _ref2$lineHeight === void 0 ? defaultValues.lineHeight : _ref2$lineHeight,
-    _ref2$letterSpacing = _ref2.letterSpacing,
-    letterSpacing = _ref2$letterSpacing === void 0 ? defaultValues.letterSpacing : _ref2$letterSpacing,
-    _ref2$textTransform = _ref2.textTransform,
-    textTransform = _ref2$textTransform === void 0 ? defaultValues.textTransform : _ref2$textTransform;
   var fontWeightOptions = [{
     value: '300',
-    label: 'Light (300)',
-    key: 'light-weight'
+    label: 'Light (300)'
   }, {
     value: '400',
-    label: 'Regular (400)',
-    key: 'regular-weight'
+    label: 'Regular (400)'
   }, {
     value: '500',
-    label: 'Medium (500)',
-    key: 'medium-weight'
+    label: 'Medium (500)'
   }, {
     value: '600',
-    label: 'Semi Bold (600)',
-    key: 'semibold-weight'
+    label: 'Semi Bold (600)'
   }, {
     value: '700',
-    label: 'Bold (700)',
-    key: 'bold-weight'
+    label: 'Bold (700)'
   }, {
     value: '800',
-    label: 'Extra Bold (800)',
-    key: 'extrabold-weight'
+    label: 'Extra Bold (800)'
   }];
   var textTransformOptions = [{
     value: 'none',
-    label: 'None',
-    key: 'none-transform'
+    label: 'None'
   }, {
     value: 'capitalize',
-    label: 'Capitalize',
-    key: 'capitalize-transform'
+    label: 'Capitalize'
   }, {
     value: 'uppercase',
-    label: 'UPPERCASE',
-    key: 'uppercase-transform'
+    label: 'UPPERCASE'
   }, {
     value: 'lowercase',
-    label: 'lowercase',
-    key: 'lowercase-transform'
+    label: 'lowercase'
   }];
 
   // Toggle popover
   var togglePopover = function togglePopover() {
     return setIsOpen(!isOpen);
   };
+
+  /**
+   * Update a typography setting
+   *
+   * @param {string} property Property to update
+   * @param {any} value New value
+   */
   var updateSetting = function updateSetting(property, value) {
     // Update local state based on property
     switch (property) {
@@ -558,57 +548,30 @@ var FluentTypography = function FluentTypography(_ref) {
     // Call onChange with updated values
     onChange(_objectSpread(_objectSpread({}, settings), {}, _defineProperty({}, property, value)));
   };
-  var _useState13 = useState(0),
-    _useState14 = _slicedToArray(_useState13, 2),
-    forceUpdateKey = _useState14[0],
-    setForceUpdateKey = _useState14[1];
-  useEffect(function () {
-    setForceUpdateKey(function (prev) {
-      return prev + 1;
-    });
-  }, [settings]);
 
-  // Improved isFontChanged function that compares current values with default values
+  /**
+   * Check if any typography settings have changed from defaults
+   *
+   * @returns {boolean} True if any setting has changed
+   */
   var isFontChanged = function isFontChanged() {
-    // Helper function to normalize values for comparison
-    var normalizeValue = function normalizeValue(value) {
-      if (value === undefined || value === null) return '';
-      return String(value).trim();
-    };
-
-    // Check if fontSize is set and different from default
-    var hasFontSizeChanged = localFontSize !== '' && localFontSize !== undefined && localFontSize !== null;
-
-    // Check if other properties have changed
-    var hasFontWeightChanged = normalizeValue(localFontWeight) !== normalizeValue(defaultValues.fontWeight);
-    var hasLineHeightChanged = localLineHeight !== '' && localLineHeight !== undefined && localLineHeight !== null;
-    var hasLetterSpacingChanged = localLetterSpacing !== '' && localLetterSpacing !== undefined && localLetterSpacing !== null;
-    var hasTextTransformChanged = normalizeValue(localTextTransform) !== normalizeValue(defaultValues.textTransform);
-
-    // Return true if any property has changed
-    return hasFontSizeChanged || hasFontWeightChanged || hasLineHeightChanged || hasLetterSpacingChanged || hasTextTransformChanged;
+    // Check if any property has a non-default value
+    return localFontSize !== '' && localFontSize != null || localFontWeight !== defaultValues.fontWeight || localLineHeight !== '' && localLineHeight != null || localLetterSpacing !== '' && localLetterSpacing != null || localTextTransform !== defaultValues.textTransform;
   };
 
-  // Reset all typography settings to defaults
+  /**
+   * Reset all typography settings to defaults
+   */
   var resetToDefault = function resetToDefault() {
-    // Log the reset action for debugging
-    console.log('Resetting typography to defaults');
-
-    // Create a new object with default values
-    var resetValues = {
-      fontSize: '',
-      fontWeight: '400',
-      lineHeight: '',
-      letterSpacing: '',
-      textTransform: 'none'
-    };
+    // Create reset values object
+    var resetValues = _objectSpread({}, defaultValues);
 
     // Update local state
-    setLocalFontSize('');
-    setLocalFontWeight('400');
-    setLocalLineHeight('');
-    setLocalLetterSpacing('');
-    setLocalTextTransform('none');
+    setLocalFontSize(defaultValues.fontSize);
+    setLocalFontWeight(defaultValues.fontWeight);
+    setLocalLineHeight(defaultValues.lineHeight);
+    setLocalLetterSpacing(defaultValues.letterSpacing);
+    setLocalTextTransform(defaultValues.textTransform);
 
     // Close the popover if it's open
     if (isOpen) {
@@ -617,15 +580,6 @@ var FluentTypography = function FluentTypography(_ref) {
 
     // Call onChange with reset values
     onChange(resetValues);
-  };
-
-  // Preview style
-  var previewStyle = {
-    fontSize: localFontSize ? "".concat(localFontSize, "px") : 'inherit',
-    fontWeight: localFontWeight,
-    lineHeight: localLineHeight || 'normal',
-    letterSpacing: localLetterSpacing ? "".concat(localLetterSpacing, "px") : 'normal',
-    textTransform: localTextTransform
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-typography-wrap",
@@ -657,10 +611,6 @@ var FluentTypography = function FluentTypography(_ref) {
           className: "fluent-typography-edit-btn"
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-      className: "fluent-typography-preview",
-      style: previewStyle,
-      children: [localFontSize ? "".concat(localFontSize, "px") : '16px', " / ", localFontWeight]
     }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Popover, {
       className: "fluent-typography-popover",
       onClose: togglePopover,
@@ -685,8 +635,7 @@ var FluentTypography = function FluentTypography(_ref) {
             min: 8,
             max: 72,
             onChange: function onChange(value) {
-              console.log('Font size changed:', value);
-              updateSetting('fontSize', value);
+              return updateSetting('fontSize', value);
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -1288,24 +1237,47 @@ var TabGeneral = memo(function (_ref) {
           textTransform: ((_attributes$labelTypo5 = attributes.labelTypography) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none'
         },
         onChange: function onChange(newTypo) {
-          console.log('Typography changed in TabGeneral:', newTypo);
-          console.log('Current attributes:', attributes.labelTypography);
+          var _attributes$labelTypo6, _attributes$labelTypo7, _attributes$labelTypo8, _attributes$labelTypo9, _attributes$labelTypo10;
+          // Determine which property was changed by comparing with previous values
+          var prevTypo = {
+            fontSize: ((_attributes$labelTypo6 = attributes.labelTypography) === null || _attributes$labelTypo6 === void 0 || (_attributes$labelTypo6 = _attributes$labelTypo6.size) === null || _attributes$labelTypo6 === void 0 ? void 0 : _attributes$labelTypo6.lg) || '',
+            fontWeight: ((_attributes$labelTypo7 = attributes.labelTypography) === null || _attributes$labelTypo7 === void 0 ? void 0 : _attributes$labelTypo7.weight) || '400',
+            lineHeight: ((_attributes$labelTypo8 = attributes.labelTypography) === null || _attributes$labelTypo8 === void 0 ? void 0 : _attributes$labelTypo8.lineHeight) || '',
+            letterSpacing: ((_attributes$labelTypo9 = attributes.labelTypography) === null || _attributes$labelTypo9 === void 0 ? void 0 : _attributes$labelTypo9.letterSpacing) || '',
+            textTransform: ((_attributes$labelTypo10 = attributes.labelTypography) === null || _attributes$labelTypo10 === void 0 ? void 0 : _attributes$labelTypo10.textTransform) || 'none'
+          };
 
-          // Create updated typography object
-          // Handle the case where all values are reset
+          // Check if this is a reset operation
           var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
+          if (isReset) {
+            // For reset, create an empty object
+            updateStyles({
+              labelTypography: {}
+            });
+            return;
+          }
 
-          // If it's a reset, create an empty object
-          var updatedTypography = isReset ? {} : _objectSpread(_objectSpread({}, attributes.labelTypography), {}, {
-            size: {
+          // Create a new typography object with only the changed properties
+          var updatedTypography = _objectSpread({}, attributes.labelTypography);
+
+          // Only update properties that have changed
+          if (newTypo.fontSize !== prevTypo.fontSize) {
+            updatedTypography.size = {
               lg: newTypo.fontSize
-            },
-            weight: newTypo.fontWeight,
-            lineHeight: newTypo.lineHeight,
-            letterSpacing: newTypo.letterSpacing,
-            textTransform: newTypo.textTransform
-          });
-          console.log('Updated typography:', updatedTypography);
+            };
+          }
+          if (newTypo.fontWeight !== prevTypo.fontWeight) {
+            updatedTypography.weight = newTypo.fontWeight;
+          }
+          if (newTypo.lineHeight !== prevTypo.lineHeight) {
+            updatedTypography.lineHeight = newTypo.lineHeight;
+          }
+          if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
+            updatedTypography.letterSpacing = newTypo.letterSpacing;
+          }
+          if (newTypo.textTransform !== prevTypo.textTransform) {
+            updatedTypography.textTransform = newTypo.textTransform;
+          }
 
           // Update styles with the new typography object
           updateStyles({
@@ -1344,22 +1316,49 @@ var TabGeneral = memo(function (_ref) {
           textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none'
         },
         onChange: function onChange(newTypo) {
-          console.log('Input Typography changed:', newTypo);
+          var _attributes$inputTATy6, _attributes$inputTATy7, _attributes$inputTATy8, _attributes$inputTATy9, _attributes$inputTATy10;
+          // Determine which property was changed by comparing with previous values
+          var prevTypo = {
+            fontSize: ((_attributes$inputTATy6 = attributes.inputTATypo) === null || _attributes$inputTATy6 === void 0 || (_attributes$inputTATy6 = _attributes$inputTATy6.size) === null || _attributes$inputTATy6 === void 0 ? void 0 : _attributes$inputTATy6.lg) || '',
+            fontWeight: ((_attributes$inputTATy7 = attributes.inputTATypo) === null || _attributes$inputTATy7 === void 0 ? void 0 : _attributes$inputTATy7.weight) || '400',
+            lineHeight: ((_attributes$inputTATy8 = attributes.inputTATypo) === null || _attributes$inputTATy8 === void 0 ? void 0 : _attributes$inputTATy8.lineHeight) || '',
+            letterSpacing: ((_attributes$inputTATy9 = attributes.inputTATypo) === null || _attributes$inputTATy9 === void 0 ? void 0 : _attributes$inputTATy9.letterSpacing) || '',
+            textTransform: ((_attributes$inputTATy10 = attributes.inputTATypo) === null || _attributes$inputTATy10 === void 0 ? void 0 : _attributes$inputTATy10.textTransform) || 'none'
+          };
 
-          // Handle the case where all values are reset
+          // Check if this is a reset operation
           var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
+          if (isReset) {
+            // For reset, create an empty object
+            updateStyles({
+              inputTATypo: {}
+            });
+            return;
+          }
 
-          // If it's a reset, create an empty object
-          var updatedTypography = isReset ? {} : _objectSpread(_objectSpread({}, attributes.inputTATypo), {}, {
-            size: {
+          // Create a new typography object with only the changed properties
+          var updatedTypography = _objectSpread({}, attributes.inputTATypo);
+
+          // Only update properties that have changed
+          if (newTypo.fontSize !== prevTypo.fontSize) {
+            updatedTypography.size = {
               lg: newTypo.fontSize
-            },
-            weight: newTypo.fontWeight,
-            lineHeight: newTypo.lineHeight,
-            letterSpacing: newTypo.letterSpacing,
-            textTransform: newTypo.textTransform
-          });
-          console.log('Updated input typography:', updatedTypography);
+            };
+          }
+          if (newTypo.fontWeight !== prevTypo.fontWeight) {
+            updatedTypography.weight = newTypo.fontWeight;
+          }
+          if (newTypo.lineHeight !== prevTypo.lineHeight) {
+            updatedTypography.lineHeight = newTypo.lineHeight;
+          }
+          if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
+            updatedTypography.letterSpacing = newTypo.letterSpacing;
+          }
+          if (newTypo.textTransform !== prevTypo.textTransform) {
+            updatedTypography.textTransform = newTypo.textTransform;
+          }
+
+          // Update styles with the new typography object
           updateStyles({
             inputTATypo: updatedTypography
           });
