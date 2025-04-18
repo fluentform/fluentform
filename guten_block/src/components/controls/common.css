@@ -1,0 +1,42 @@
+/**
+ * Common styles for Fluent Forms Gutenberg Block components
+ */
+
+/* Label styles */
+.ffblock-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: #1e1e1e;
+}
+
+/* Control field styles */
+.ffblock-control-field {
+    margin-bottom: 16px;
+}
+
+/* Reset button styles */
+.ffblock-reset-button {
+    padding: 2px !important;
+}
+
+/* Panel body spacing */
+.components-panel__body > .components-flex {
+    margin-top: 8px;
+}
+
+/* Popover styles */
+.ffblock-popover {
+    min-width: 260px;
+}
+
+/* Input styles */
+.components-text-control__input {
+    font-size: 13px;
+}
+
+/* Help text */
+.components-base-control__help {
+    font-size: 12px;
+    font-style: italic;
+    color: #757575;
+}

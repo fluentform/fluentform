@@ -1,0 +1,105 @@
+/**
+ * Styles for FluentSpaceControl component
+ */
+
+.ffblock-space-label {
+    font-size: 10px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    color: #555;
+}
+
+.ffblock-space-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ffblock-label-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ffblock-label {
+    font-weight: 500;
+}
+
+.ffblock-reset-button {
+    padding: 2px !important;
+}
+
+.ffblock-space-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Device selector dropdown */
+.ffblock-device-dropdown button.components-dropdown-menu__toggle {
+    padding: 4px !important;
+    height: 30px !important;
+    width: 40px !important;
+    min-width: 0 !important;
+}
+
+.ffblock-device-dropdown .components-dropdown-menu__toggle svg {
+    margin: 0 !important;
+}
+
+.ffblock-device-dropdown .components-dropdown-menu__menu {
+    min-width: 50px !important;
+    padding: 4px !important;
+}
+
+.ffblock-device-dropdown .components-button.has-icon {
+    justify-content: center;
+    padding: 8px !important;
+    width: 100%;
+}
+
+.ffblock-device-dropdown .components-menu-item__button svg {
+    margin-right: 0 !important;
+}
+
+/* Device-specific preview styles */
+.ffblock-space-inputs.device-desktop {
+    max-width: 100%;
+}
+
+.ffblock-space-inputs.device-tablet {
+    max-width: 768px;
+    margin: 0 auto;
+    border-left: 1px dashed #ddd;
+    border-right: 1px dashed #ddd;
+}
+
+.ffblock-space-inputs.device-mobile {
+    max-width: 480px;
+    margin: 0 auto;
+    border-left: 1px dashed #ddd;
+    border-right: 1px dashed #ddd;
+}
+
+.ffblock-space-input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.ffblock-space-input-row > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ffblock-linked-button {
+    margin-top: 22px;
+}
+
+.components-text-control__input {
+    width: 50px !important;
+    text-align: center;
+}

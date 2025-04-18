@@ -1,0 +1,34 @@
+/**
+ * Styles for FluentColorPicker component
+ */
+
+.ffblock-control-color-wrap {
+    margin-bottom: 16px;
+}
+
+.ffblock-color-button {
+    cursor: pointer;
+}
+
+.ffblock-color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.ffblock-color-transparent-pattern {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC");
+    background-position: 0 0;
+    background-size: 10px 10px;
+    background-repeat: repeat;
+}
+
+.ffblock-color-reset-button {
+    padding: 2px !important;
+}
+
+.ffblock-color-popover .components-popover__content {
+    min-width: 260px;
+}

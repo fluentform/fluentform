@@ -214,10 +214,10 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
 
     // Default spacing values
     const defaultSpacing = {
-        top: '10px',
-        right: '10px',
-        bottom: '10px',
-        left: '10px'
+        top: '',
+        right: '',
+        bottom: '',
+        left: ''
     };
 
     return (

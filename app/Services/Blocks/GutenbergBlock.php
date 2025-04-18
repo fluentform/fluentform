@@ -67,6 +67,55 @@ class GutenbergBlock
     }
 
     /**
+     * Helper method to process spacing settings
+     *
+     * @param array $spacing Spacing settings
+     * @param string $selector CSS selector
+     * @param string $device Device type (desktop, tablet, mobile)
+     * @param string $unit Unit type (px, em, %)
+     * @return string Generated CSS rules
+     */
+    private static function processSpacing($spacing, $selector, $device = 'desktop', $unit = 'px')
+    {
+        $css = '';
+        $deviceValues = Arr::get($spacing, $device, []);
+
+        if (empty($deviceValues)) {
+            return $css;
+        }
+
+        // Start building CSS rules for this selector
+        $rules = [];
+
+        // Process padding top
+        if (isset($deviceValues['top']) && $deviceValues['top'] !== '' && $deviceValues['top'] !== 0) {
+            $rules[] = 'padding-top: ' . $deviceValues['top'] . $unit;
+        }
+
+        // Process padding right
+        if (isset($deviceValues['right']) && $deviceValues['right'] !== '' && $deviceValues['right'] !== 0) {
+            $rules[] = 'padding-right: ' . $deviceValues['right'] . $unit;
+        }
+
+        // Process padding bottom
+        if (isset($deviceValues['bottom']) && $deviceValues['bottom'] !== '' && $deviceValues['bottom'] !== 0) {
+            $rules[] = 'padding-bottom: ' . $deviceValues['bottom'] . $unit;
+        }
+
+        // Process padding left
+        if (isset($deviceValues['left']) && $deviceValues['left'] !== '' && $deviceValues['left'] !== 0) {
+            $rules[] = 'padding-left: ' . $deviceValues['left'] . $unit;
+        }
+
+        // Only generate CSS if we have rules
+        if (!empty($rules)) {
+            $css = $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
+        }
+
+        return $css;
+    }
+
+    /**
      * Register the Gutenberg block
      *
      * @return void
@@ -248,6 +297,39 @@ class GutenbergBlock
             $customCSS .= self::processTypography($inputTypo, $inputBGSelectorsStr);
         }
 
+        // Process input spacing
+        $inputSpacing = Arr::get($atts, 'inputSpacing', []);
+
+        if (!empty($inputSpacing)) {
+            // Get the unit from the spacing object or default to px
+            $globalUnit = Arr::get($inputSpacing, 'unit', 'px');
+
+            // Apply desktop spacing to input fields (no media query needed)
+            $desktopUnit = Arr::get($inputSpacing, 'desktop.unit', $globalUnit);
+            $desktopCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'desktop', $desktopUnit);
+            if ($desktopCSS) {
+                $customCSS .= $desktopCSS;
+            }
+
+            // Apply tablet spacing with media query
+            if (Arr::has($inputSpacing, 'tablet')) {
+                $tabletUnit = Arr::get($inputSpacing, 'tablet.unit', $globalUnit);
+                $tabletCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'tablet', $tabletUnit);
+                if ($tabletCSS) {
+                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
+                }
+            }
+
+            // Apply mobile spacing with media query
+            if (Arr::has($inputSpacing, 'mobile')) {
+                $mobileUnit = Arr::get($inputSpacing, 'mobile.unit', $globalUnit);
+                $mobileCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'mobile', $mobileUnit);
+                if ($mobileCSS) {
+                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
+                }
+            }
+        }
+
         // Add the custom CSS inline with the form
         if ($customCSS) {
             // Create a unique ID for this form's styles
@@ -268,7 +350,8 @@ class GutenbergBlock
                     'labelColor' => $labelColor ?: 'empty',
                     'inputTextColor' => $inputTextColor ?: 'empty',
                     'inputBackgroundColor' => $inputBackgroundColor ?: 'empty',
-                    'buttonColor' => $buttonColor ?: 'empty'
+                    'buttonColor' => $buttonColor ?: 'empty',
+                    'inputSpacing' => !empty($inputSpacing) ? 'set' : 'empty'
                 ];
 
                 $debugParts = [];

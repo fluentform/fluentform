@@ -161,10 +161,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-
-
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -179,21 +178,32 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 /**
  * Fluent Forms Custom Space/Margin/Padding Control
  */
+
+
+
 var _wp$components = wp.components,
   Button = _wp$components.Button,
   ButtonGroup = _wp$components.ButtonGroup,
-  TextControl = _wp$components.TextControl;
+  TextControl = _wp$components.TextControl,
+  Flex = _wp$components.Flex,
+  FlexItem = _wp$components.FlexItem,
+  FlexBlock = _wp$components.FlexBlock,
+  Tooltip = _wp$components.Tooltip,
+  DropdownMenu = _wp$components.DropdownMenu;
+var _ref = wp.blockEditor || wp.editor,
+  Icon = _ref.Icon;
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect;
+var __ = wp.i18n.__;
 
 // Custom Space/Margin/Padding Control
-var FluentSpaceControl = function FluentSpaceControl(_ref) {
-  var label = _ref.label,
-    values = _ref.values,
-    onChange = _ref.onChange,
-    _ref$units = _ref.units,
-    units = _ref$units === void 0 ? [{
+var FluentSpaceControl = function FluentSpaceControl(_ref2) {
+  var label = _ref2.label,
+    values = _ref2.values,
+    onChange = _ref2.onChange,
+    _ref2$units = _ref2.units,
+    units = _ref2$units === void 0 ? [{
       value: 'px',
       key: 'px-unit'
     }, {
@@ -202,7 +212,7 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     }, {
       value: '%',
       key: 'percent-unit'
-    }] : _ref$units;
+    }] : _ref2$units;
   var _useState = useState(true),
     _useState2 = _slicedToArray(_useState, 2),
     isLinked = _useState2[0],
@@ -215,6 +225,10 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     activeDevice = _useState6[0],
     setActiveDevice = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    hasModifiedValues = _useState8[0],
+    setHasModifiedValues = _useState8[1];
 
   // Default values structure
   var defaultValues = {
@@ -245,18 +259,60 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
   };
   var currentValues = values || defaultValues;
 
+  // Helper function to check if any spacing values have been set
+  var checkForModifiedValues = function checkForModifiedValues(values) {
+    // Check all devices for any non-empty, non-zero values
+    var devices = ['desktop', 'tablet', 'mobile'];
+    for (var _i = 0, _devices = devices; _i < _devices.length; _i++) {
+      var device = _devices[_i];
+      if (values[device]) {
+        var _deviceValues = values[device];
+        // Check if any value is set and not empty or zero
+        if (_deviceValues.top && _deviceValues.top !== 0 && _deviceValues.top !== '' || _deviceValues.right && _deviceValues.right !== 0 && _deviceValues.right !== '' || _deviceValues.bottom && _deviceValues.bottom !== 0 && _deviceValues.bottom !== '' || _deviceValues.left && _deviceValues.left !== 0 && _deviceValues.left !== '') {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   // Set initial state from props
   useEffect(function () {
     if (currentValues[activeDevice]) {
       setIsLinked(currentValues[activeDevice].linked !== false);
-      setActiveUnit(currentValues[activeDevice].unit || 'px');
+
+      // Check for unit at the top level first, then in the device object
+      if (currentValues.unit) {
+        setActiveUnit(currentValues.unit);
+      } else if (currentValues[activeDevice].unit) {
+        setActiveUnit(currentValues[activeDevice].unit);
+      } else {
+        setActiveUnit('px');
+      }
+
+      // Check if any values have been modified
+      setHasModifiedValues(checkForModifiedValues(currentValues));
     }
-  }, [activeDevice]);
+  }, [activeDevice, currentValues]);
   var handleUnitChange = function handleUnitChange(unit) {
     setActiveUnit(unit);
-    updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
-      unit: unit
-    }));
+
+    // Create a new values object with the updated unit
+    var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, {
+      unit: unit // Set unit at the top level
+    });
+
+    // Also update the unit in each device object for backward compatibility
+    ['desktop', 'tablet', 'mobile'].forEach(function (device) {
+      if (updatedValues[device]) {
+        updatedValues[device] = _objectSpread(_objectSpread({}, updatedValues[device]), {}, {
+          unit: unit
+        });
+      }
+    });
+
+    // Call the onChange callback with the updated values
+    onChange(updatedValues);
   };
   var toggleLinked = function toggleLinked() {
     var newLinkedState = !isLinked;
@@ -266,10 +322,28 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     }));
   };
   var updateValues = function updateValues(newDeviceValues) {
-    onChange(_objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({}, activeDevice, newDeviceValues)));
+    // Make sure the unit is always included in the values
+    var updatedValues = _objectSpread(_objectSpread({}, currentValues), {}, _defineProperty({
+      unit: activeUnit
+    }, activeDevice, _objectSpread(_objectSpread({}, newDeviceValues), {}, {
+      unit: activeUnit // Also ensure unit is in the device object
+    })));
+    onChange(updatedValues);
   };
   var handleValueChange = function handleValueChange(position, value) {
-    var numValue = value === '' ? 0 : parseInt(value);
+    var numValue = value === '' ? '' : parseInt(value);
+
+    // Set the modified flag if the value is not empty
+    if (value !== '') {
+      setHasModifiedValues(true);
+    } else {
+      // If the value is empty, check if any other values exist
+      var updatedValues = _objectSpread({}, currentValues);
+      var _deviceValues2 = _objectSpread({}, updatedValues[activeDevice]);
+      _deviceValues2[position] = numValue;
+      updatedValues[activeDevice] = _deviceValues2;
+      setHasModifiedValues(checkForModifiedValues(updatedValues));
+    }
     if (isLinked) {
       // If linked, update all sides
       updateValues(_objectSpread(_objectSpread({}, currentValues[activeDevice]), {}, {
@@ -284,41 +358,97 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
     }
   };
   var deviceValues = currentValues[activeDevice] || defaultValues[activeDevice];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+
+  // Handler for reset button
+  var handleReset = function handleReset() {
+    // Create an empty values object with the current unit
+    var emptyValues = {
+      unit: activeUnit,
+      desktop: {
+        top: '',
+        right: '',
+        bottom: '',
+        left: '',
+        linked: isLinked
+      },
+      tablet: {
+        top: '',
+        right: '',
+        bottom: '',
+        left: '',
+        linked: isLinked
+      },
+      mobile: {
+        top: '',
+        right: '',
+        bottom: '',
+        left: '',
+        linked: isLinked
+      }
+    };
+
+    // Reset the modified flag
+    setHasModifiedValues(false);
+
+    // Update with empty values
+    onChange(emptyValues);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-space",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
       className: "ffblock-space-header",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
-        className: "ffblock-label",
-        children: label
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        className: "ffblock-space-controls",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-          className: "ffblock-device-selector",
-          children: [{
-            device: 'desktop',
-            icon: 'desktop'
-          }, {
-            device: 'tablet',
-            icon: 'tablet'
-          }, {
-            device: 'mobile',
-            icon: 'smartphone'
-          }].map(function (item) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
-              icon: item.icon,
-              isSmall: true,
-              isPrimary: activeDevice === item.device,
-              onClick: function onClick() {
-                return setActiveDevice(item.device);
-              }
-            }, item.device);
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "ffblock-label-container",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "ffblock-label",
+          children: label
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
+          text: __('Reset spacing values'),
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+            onClick: handleReset,
+            className: "ffblock-reset-button",
+            icon: "image-rotate",
+            isSmall: true
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        className: "ffblock-space-controls",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+          className: "ffblock-device-selector",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(DropdownMenu, {
+            className: "ffblock-device-dropdown",
+            icon: activeDevice === 'desktop' ? 'desktop' : activeDevice === 'tablet' ? 'tablet' : 'smartphone',
+            label: __('Select device'),
+            controls: [{
+              value: 'desktop',
+              label: __('Desktop'),
+              icon: 'desktop'
+            }, {
+              value: 'tablet',
+              label: __('Tablet'),
+              icon: 'tablet'
+            }, {
+              value: 'mobile',
+              label: __('Mobile'),
+              icon: 'smartphone'
+            }].map(function (device) {
+              return {
+                title: device.label,
+                icon: device.icon,
+                isActive: activeDevice === device.value,
+                onClick: function onClick() {
+                  return setActiveDevice(device.value);
+                }
+              };
+            })
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "ffblock-unit-selector",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ButtonGroup, {
             children: units.map(function (unit) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
                 isSmall: true,
                 isPrimary: activeUnit === unit.value,
                 onClick: function onClick() {
@@ -330,55 +460,60 @@ var FluentSpaceControl = function FluentSpaceControl(_ref) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-      className: "ffblock-space-inputs",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "ffblock-space-inputs device-".concat(activeDevice),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-space-input-row",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
-          type: "number",
-          value: deviceValues.top,
-          onChange: function onChange(value) {
-            return handleValueChange('top', value);
-          },
-          min: 0
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
-          type: "number",
-          value: deviceValues.right,
-          onChange: function onChange(value) {
-            return handleValueChange('right', value);
-          },
-          min: 0
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
-          type: "number",
-          value: deviceValues.bottom,
-          onChange: function onChange(value) {
-            return handleValueChange('bottom', value);
-          },
-          min: 0
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
-          type: "number",
-          value: deviceValues.left,
-          onChange: function onChange(value) {
-            return handleValueChange('left', value);
-          },
-          min: 0
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+            type: "number",
+            value: deviceValues.top,
+            onChange: function onChange(value) {
+              return handleValueChange('top', value);
+            },
+            min: 0
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            children: "TOP"
+          }, "label-top")]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+            type: "number",
+            value: deviceValues.right,
+            onChange: function onChange(value) {
+              return handleValueChange('right', value);
+            },
+            min: 0
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            children: "RIGHT"
+          }, "label-right")]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+            type: "number",
+            value: deviceValues.bottom,
+            onChange: function onChange(value) {
+              return handleValueChange('bottom', value);
+            },
+            min: 0
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            children: "BOTTOM"
+          }, "label-right")]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+            type: "number",
+            value: deviceValues.left,
+            onChange: function onChange(value) {
+              return handleValueChange('left', value);
+            },
+            min: 0
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            children: "LEFT"
+          }, "label-left")]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
           icon: isLinked ? 'admin-links' : 'editor-unlink',
           onClick: toggleLinked,
           className: "ffblock-linked-button"
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        className: "ffblock-space-labels",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
-          children: "TOP"
-        }, "label-top"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
-          children: "RIGHT"
-        }, "label-right"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
-          children: "BOTTOM"
-        }, "label-bottom"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
-          children: "LEFT"
-        }, "label-left")]
-      })]
+      })
     })]
   });
 };
@@ -1437,10 +1572,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
 
   // Default spacing values
   var defaultSpacing = {
-    top: '10px',
-    right: '10px',
-    bottom: '10px',
-    left: '10px'
+    top: '',
+    right: '',
+    bottom: '',
+    left: ''
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
     title: __("Input & Textarea"),
@@ -2273,6 +2408,18 @@ var Edit = /*#__PURE__*/function (_Component) {
   return Edit;
 }(Component);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
+
+/***/ }),
+
+/***/ "./guten_block/src/components/controls/common.css":
+/*!********************************************************!*\
+  !*** ./guten_block/src/components/controls/common.css ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
 
 /***/ }),
 
