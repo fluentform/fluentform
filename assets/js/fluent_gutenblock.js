@@ -545,8 +545,8 @@ var FluentTypography = function FluentTypography(_ref) {
         break;
     }
 
-    // Call onChange with updated values
-    onChange(_objectSpread(_objectSpread({}, settings), {}, _defineProperty({}, property, value)));
+    // Call onChange with only the changed property
+    onChange(_defineProperty({}, property, value));
   };
 
   /**
@@ -563,8 +563,10 @@ var FluentTypography = function FluentTypography(_ref) {
    * Reset all typography settings to defaults
    */
   var resetToDefault = function resetToDefault() {
-    // Create reset values object
-    var resetValues = _objectSpread({}, defaultValues);
+    // Create reset values object with a special reset flag
+    var resetValues = _objectSpread({
+      reset: true
+    }, defaultValues);
 
     // Update local state
     setLocalFontSize(defaultValues.fontSize);
@@ -1162,419 +1164,436 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-
-
-
-
-
-
-
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useRef = _wp$element.useRef,
   useEffect = _wp$element.useEffect,
   memo = _wp$element.memo;
-/**
- * Fluent Forms Gutenberg Block General Tab Component
- */
 var __ = wp.i18n.__;
 var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody,
-  SelectControl = _wp$components.SelectControl,
-  ToggleControl = _wp$components.ToggleControl,
-  TextControl = _wp$components.TextControl,
-  BorderControl = _wp$components.BorderControl;
+  SelectControl = _wp$components.SelectControl;
 
-// Use memo to prevent unnecessary re-renders
-var TabGeneral = memo(function (_ref) {
-  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5, _attributes$inputTATy, _attributes$inputTATy2, _attributes$inputTATy3, _attributes$inputTATy4, _attributes$inputTATy5;
+// Custom components
+
+
+
+
+
+// Constants
+
+
+
+var DEFAULT_COLORS = [{
+  name: 'Theme Blue',
+  color: '#72aee6'
+}, {
+  name: 'Theme Red',
+  color: '#e65054'
+}, {
+  name: 'Theme Green',
+  color: '#68de7c'
+}, {
+  name: 'Black',
+  color: '#000000'
+}, {
+  name: 'White',
+  color: '#ffffff'
+}, {
+  name: 'Gray',
+  color: '#dddddd'
+}];
+
+/**
+ * Updates typography settings with only changed values to avoid unnecessary rerenders
+ * @param {Object} changedTypo - Object containing only the changed typography property
+ * @param {Object} currentAttributes - Current attributes object
+ * @param {string} typographyKey - Key for the typography attribute to update
+ * @returns {Object} The updated typography object or empty object for reset
+ */
+var getUpdatedTypography = function getUpdatedTypography(changedTypo, currentAttributes, typographyKey) {
+  // Check if this is a reset operation
+  if (changedTypo.reset) {
+    return {};
+  }
+
+  // Create a new typography object based on current attributes
+  var updatedTypography = _objectSpread({}, currentAttributes[typographyKey] || {});
+
+  // Get the property that changed (there should be only one)
+  var changedProperty = Object.keys(changedTypo)[0];
+  var newValue = changedTypo[changedProperty];
+
+  // Update only the changed property
+  switch (changedProperty) {
+    case 'fontSize':
+      updatedTypography.size = {
+        lg: newValue
+      };
+      break;
+    case 'fontWeight':
+      updatedTypography.weight = newValue;
+      break;
+    case 'lineHeight':
+      updatedTypography.lineHeight = newValue;
+      break;
+    case 'letterSpacing':
+      updatedTypography.letterSpacing = newValue;
+      break;
+    case 'textTransform':
+      updatedTypography.textTransform = newValue;
+      break;
+  }
+  return updatedTypography;
+};
+
+/**
+ * Component for form style template selection
+ */
+var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes,
-    updateStyles = _ref.updateStyles,
-    state = _ref.state,
-    handlePresetChange = _ref.handlePresetChange,
-    toggleCustomizePreset = _ref.toggleCustomizePreset;
-  var customizePreset = state.customizePreset;
+    handlePresetChange = _ref.handlePresetChange;
   var config = window.fluentform_block_vars;
   var presets = config.style_presets;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(PanelBody, {
-      title: __("Form Style Template"),
-      initialOpen: true,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SelectControl, {
-        label: __("Choose a Template"),
-        value: attributes.themeStyle,
-        options: presets,
-        onChange: function onChange(themeStyle) {
-          setAttributes({
-            themeStyle: themeStyle,
-            isThemeChange: true
-          });
-          if (handlePresetChange) {
-            handlePresetChange(themeStyle);
-          }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(PanelBody, {
+    title: __("Form Style Template"),
+    initialOpen: true,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SelectControl, {
+      label: __("Choose a Template"),
+      value: attributes.themeStyle,
+      options: presets,
+      onChange: function onChange(themeStyle) {
+        setAttributes({
+          themeStyle: themeStyle,
+          isThemeChange: true
+        });
+        if (handlePresetChange) {
+          handlePresetChange(themeStyle);
         }
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
-      title: __("Label Styles"),
-      initialOpen: true,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Color",
-        value: attributes.labelColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            labelColor: value
-          });
-        },
-        defaultColor: ""
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-        label: "Typography",
-        settings: {
-          fontSize: ((_attributes$labelTypo = attributes.labelTypography) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
-          fontWeight: ((_attributes$labelTypo2 = attributes.labelTypography) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
-          lineHeight: ((_attributes$labelTypo3 = attributes.labelTypography) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
-          letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypography) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
-          textTransform: ((_attributes$labelTypo5 = attributes.labelTypography) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none'
-        },
-        onChange: function onChange(newTypo) {
-          var _attributes$labelTypo6, _attributes$labelTypo7, _attributes$labelTypo8, _attributes$labelTypo9, _attributes$labelTypo10;
-          // Determine which property was changed by comparing with previous values
-          var prevTypo = {
-            fontSize: ((_attributes$labelTypo6 = attributes.labelTypography) === null || _attributes$labelTypo6 === void 0 || (_attributes$labelTypo6 = _attributes$labelTypo6.size) === null || _attributes$labelTypo6 === void 0 ? void 0 : _attributes$labelTypo6.lg) || '',
-            fontWeight: ((_attributes$labelTypo7 = attributes.labelTypography) === null || _attributes$labelTypo7 === void 0 ? void 0 : _attributes$labelTypo7.weight) || '400',
-            lineHeight: ((_attributes$labelTypo8 = attributes.labelTypography) === null || _attributes$labelTypo8 === void 0 ? void 0 : _attributes$labelTypo8.lineHeight) || '',
-            letterSpacing: ((_attributes$labelTypo9 = attributes.labelTypography) === null || _attributes$labelTypo9 === void 0 ? void 0 : _attributes$labelTypo9.letterSpacing) || '',
-            textTransform: ((_attributes$labelTypo10 = attributes.labelTypography) === null || _attributes$labelTypo10 === void 0 ? void 0 : _attributes$labelTypo10.textTransform) || 'none'
-          };
+      }
+    })
+  });
+};
 
-          // Check if this is a reset operation
-          var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
-          if (isReset) {
-            // For reset, create an empty object
-            updateStyles({
-              labelTypography: {}
-            });
-            return;
-          }
-
-          // Create a new typography object with only the changed properties
-          var updatedTypography = _objectSpread({}, attributes.labelTypography);
-
-          // Only update properties that have changed
-          if (newTypo.fontSize !== prevTypo.fontSize) {
-            updatedTypography.size = {
-              lg: newTypo.fontSize
-            };
-          }
-          if (newTypo.fontWeight !== prevTypo.fontWeight) {
-            updatedTypography.weight = newTypo.fontWeight;
-          }
-          if (newTypo.lineHeight !== prevTypo.lineHeight) {
-            updatedTypography.lineHeight = newTypo.lineHeight;
-          }
-          if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
-            updatedTypography.letterSpacing = newTypo.letterSpacing;
-          }
-          if (newTypo.textTransform !== prevTypo.textTransform) {
-            updatedTypography.textTransform = newTypo.textTransform;
-          }
-
-          // Update styles with the new typography object
-          updateStyles({
-            labelTypography: updatedTypography
-          });
-        }
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
-      title: __("Input & Textarea"),
-      initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Text Color",
-        value: attributes.inputTAColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            inputTAColor: value
-          });
-        },
-        defaultColor: "#333333"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Background Color",
-        value: attributes.inputTABGColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            inputTABGColor: value
-          });
-        },
-        defaultColor: "#ffffff"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
-        label: "Typography",
-        settings: {
-          fontSize: ((_attributes$inputTATy = attributes.inputTATypo) === null || _attributes$inputTATy === void 0 || (_attributes$inputTATy = _attributes$inputTATy.size) === null || _attributes$inputTATy === void 0 ? void 0 : _attributes$inputTATy.lg) || '',
-          fontWeight: ((_attributes$inputTATy2 = attributes.inputTATypo) === null || _attributes$inputTATy2 === void 0 ? void 0 : _attributes$inputTATy2.weight) || '400',
-          lineHeight: ((_attributes$inputTATy3 = attributes.inputTATypo) === null || _attributes$inputTATy3 === void 0 ? void 0 : _attributes$inputTATy3.lineHeight) || '',
-          letterSpacing: ((_attributes$inputTATy4 = attributes.inputTATypo) === null || _attributes$inputTATy4 === void 0 ? void 0 : _attributes$inputTATy4.letterSpacing) || '',
-          textTransform: ((_attributes$inputTATy5 = attributes.inputTATypo) === null || _attributes$inputTATy5 === void 0 ? void 0 : _attributes$inputTATy5.textTransform) || 'none'
-        },
-        onChange: function onChange(newTypo) {
-          var _attributes$inputTATy6, _attributes$inputTATy7, _attributes$inputTATy8, _attributes$inputTATy9, _attributes$inputTATy10;
-          // Determine which property was changed by comparing with previous values
-          var prevTypo = {
-            fontSize: ((_attributes$inputTATy6 = attributes.inputTATypo) === null || _attributes$inputTATy6 === void 0 || (_attributes$inputTATy6 = _attributes$inputTATy6.size) === null || _attributes$inputTATy6 === void 0 ? void 0 : _attributes$inputTATy6.lg) || '',
-            fontWeight: ((_attributes$inputTATy7 = attributes.inputTATypo) === null || _attributes$inputTATy7 === void 0 ? void 0 : _attributes$inputTATy7.weight) || '400',
-            lineHeight: ((_attributes$inputTATy8 = attributes.inputTATypo) === null || _attributes$inputTATy8 === void 0 ? void 0 : _attributes$inputTATy8.lineHeight) || '',
-            letterSpacing: ((_attributes$inputTATy9 = attributes.inputTATypo) === null || _attributes$inputTATy9 === void 0 ? void 0 : _attributes$inputTATy9.letterSpacing) || '',
-            textTransform: ((_attributes$inputTATy10 = attributes.inputTATypo) === null || _attributes$inputTATy10 === void 0 ? void 0 : _attributes$inputTATy10.textTransform) || 'none'
-          };
-
-          // Check if this is a reset operation
-          var isReset = !newTypo.fontSize && newTypo.fontWeight === '400' && !newTypo.lineHeight && !newTypo.letterSpacing && newTypo.textTransform === 'none';
-          if (isReset) {
-            // For reset, create an empty object
-            updateStyles({
-              inputTATypo: {}
-            });
-            return;
-          }
-
-          // Create a new typography object with only the changed properties
-          var updatedTypography = _objectSpread({}, attributes.inputTATypo);
-
-          // Only update properties that have changed
-          if (newTypo.fontSize !== prevTypo.fontSize) {
-            updatedTypography.size = {
-              lg: newTypo.fontSize
-            };
-          }
-          if (newTypo.fontWeight !== prevTypo.fontWeight) {
-            updatedTypography.weight = newTypo.fontWeight;
-          }
-          if (newTypo.lineHeight !== prevTypo.lineHeight) {
-            updatedTypography.lineHeight = newTypo.lineHeight;
-          }
-          if (newTypo.letterSpacing !== prevTypo.letterSpacing) {
-            updatedTypography.letterSpacing = newTypo.letterSpacing;
-          }
-          if (newTypo.textTransform !== prevTypo.textTransform) {
-            updatedTypography.textTransform = newTypo.textTransform;
-          }
-
-          // Update styles with the new typography object
-          updateStyles({
-            inputTATypo: updatedTypography
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        label: "Spacing",
-        values: attributes.inputSpacing,
-        onChange: function onChange(value) {
-          return updateStyles({
-            inputSpacing: value
-          });
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: "Style Settings",
-        value: attributes.inputBorder || {
-          top: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColor || '#dddddd'
-          },
-          right: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColor || '#dddddd'
-          },
-          bottom: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColor || '#dddddd'
-          },
-          left: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColor || '#dddddd'
-          },
-          linked: true,
-          radius: {
-            topLeft: attributes.inputTABorderRadius || 0,
-            topRight: attributes.inputTABorderRadius || 0,
-            bottomRight: attributes.inputTABorderRadius || 0,
-            bottomLeft: attributes.inputTABorderRadius || 0,
-            linked: true
-          }
-        },
-        hoverValue: attributes.inputBorderHover || {
-          top: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColorHover || '#72aee6'
-          },
-          right: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColorHover || '#72aee6'
-          },
-          bottom: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColorHover || '#72aee6'
-          },
-          left: {
-            width: 1,
-            style: 'solid',
-            color: attributes.inputTABorderColorHover || '#72aee6'
-          },
-          linked: true,
-          radius: {
-            topLeft: attributes.inputTABorderRadiusHover || 0,
-            topRight: attributes.inputTABorderRadiusHover || 0,
-            bottomRight: attributes.inputTABorderRadiusHover || 0,
-            bottomLeft: attributes.inputTABorderRadiusHover || 0,
-            linked: true
-          }
-        },
-        spacingValue: attributes.inputSpacing || {
-          top: '10px',
-          right: '10px',
-          bottom: '10px',
-          left: '10px'
-        },
-        spacingHoverValue: attributes.inputSpacingHover || {
-          top: '10px',
-          right: '10px',
-          bottom: '10px',
-          left: '10px'
-        },
-        onChange: function onChange(value) {
-          var _value$top, _value$radius, _value$top2;
-          // Update the new border object
-          var styleUpdates = {
-            inputBorder: value
-          };
-
-          // For backward compatibility, also update the old attributes
-          // Only update if the properties exist to avoid errors
-          if (value !== null && value !== void 0 && (_value$top = value.top) !== null && _value$top !== void 0 && _value$top.width) {
-            styleUpdates.inputTABorderWidth = value.top.width;
-          }
-          if ((value === null || value === void 0 || (_value$radius = value.radius) === null || _value$radius === void 0 ? void 0 : _value$radius.topLeft) !== undefined) {
-            styleUpdates.inputTABorderRadius = value.radius.topLeft;
-          }
-          if (value !== null && value !== void 0 && (_value$top2 = value.top) !== null && _value$top2 !== void 0 && _value$top2.color) {
-            styleUpdates.inputTABorderColor = value.top.color;
-          }
-
-          // Update all styles at once
-          updateStyles(styleUpdates);
-        },
-        onHoverChange: function onHoverChange(value) {
-          var _value$top3, _value$radius2, _value$top4;
-          // Update the hover border object
-          var styleUpdates = {
-            inputBorderHover: value
-          };
-
-          // For backward compatibility, also update the old hover attributes
-          if (value !== null && value !== void 0 && (_value$top3 = value.top) !== null && _value$top3 !== void 0 && _value$top3.width) {
-            styleUpdates.inputTABorderWidthHover = value.top.width;
-          }
-          if ((value === null || value === void 0 || (_value$radius2 = value.radius) === null || _value$radius2 === void 0 ? void 0 : _value$radius2.topLeft) !== undefined) {
-            styleUpdates.inputTABorderRadiusHover = value.radius.topLeft;
-          }
-          if (value !== null && value !== void 0 && (_value$top4 = value.top) !== null && _value$top4 !== void 0 && _value$top4.color) {
-            styleUpdates.inputTABorderColorHover = value.top.color;
-          }
-
-          // Update all styles at once
-          updateStyles(styleUpdates);
-        },
-        onSpacingChange: function onSpacingChange(value) {
-          updateStyles({
-            inputSpacing: value
-          });
-        },
-        onSpacingHoverChange: function onSpacingHoverChange(value) {
-          updateStyles({
-            inputSpacingHover: value
-          });
-        },
-        colors: [{
-          name: 'Theme Blue',
-          color: '#72aee6'
-        }, {
-          name: 'Theme Red',
-          color: '#e65054'
-        }, {
-          name: 'Theme Green',
-          color: '#68de7c'
-        }, {
-          name: 'Black',
-          color: '#000000'
-        }, {
-          name: 'White',
-          color: '#ffffff'
-        }, {
-          name: 'Gray',
-          color: '#dddddd'
-        }],
-        showRadius: true,
-        showBorderControls: true,
-        showSpacingControls: true,
-        showHoverControls: true,
-        className: "fluent-form-style-control"
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
-      title: __('Button Styles'),
-      initialOpen: false,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Text Color",
-        value: attributes.buttonColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            buttonColor: value
-          });
-        },
-        defaultColor: "#ffffff"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Background Color",
-        value: attributes.buttonBGColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            buttonBGColor: value
-          });
-        },
-        defaultColor: "#409EFF"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Hover Text Color",
-        value: attributes.buttonHoverColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            buttonHoverColor: value
-          });
-        },
-        defaultColor: "#ffffff"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "Hover Background Color",
-        value: attributes.buttonHoverBGColor,
-        onChange: function onChange(value) {
-          return updateStyles({
-            buttonHoverBGColor: value
-          });
-        },
-        defaultColor: "#66b1ff"
-      })]
+/**
+ * Component for label styling options
+ */
+var LabelStylesPanel = function LabelStylesPanel(_ref2) {
+  var _attributes$labelTypo, _attributes$labelTypo2, _attributes$labelTypo3, _attributes$labelTypo4, _attributes$labelTypo5;
+  var attributes = _ref2.attributes,
+    updateStyles = _ref2.updateStyles;
+  var handleTypographyChange = function handleTypographyChange(changedTypo) {
+    var updatedTypography = getUpdatedTypography(changedTypo, attributes, 'labelTypography');
+    updateStyles({
+      labelTypography: updatedTypography
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+    title: __("Label Styles"),
+    initialOpen: true,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Color",
+      value: attributes.labelColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          labelColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      label: "Typography",
+      settings: {
+        fontSize: ((_attributes$labelTypo = attributes.labelTypography) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
+        fontWeight: ((_attributes$labelTypo2 = attributes.labelTypography) === null || _attributes$labelTypo2 === void 0 ? void 0 : _attributes$labelTypo2.weight) || '400',
+        lineHeight: ((_attributes$labelTypo3 = attributes.labelTypography) === null || _attributes$labelTypo3 === void 0 ? void 0 : _attributes$labelTypo3.lineHeight) || '',
+        letterSpacing: ((_attributes$labelTypo4 = attributes.labelTypography) === null || _attributes$labelTypo4 === void 0 ? void 0 : _attributes$labelTypo4.letterSpacing) || '',
+        textTransform: ((_attributes$labelTypo5 = attributes.labelTypography) === null || _attributes$labelTypo5 === void 0 ? void 0 : _attributes$labelTypo5.textTransform) || 'none'
+      },
+      onChange: handleTypographyChange
     })]
   });
-});
+};
 
-// Use areEqual function to determine if component should update
+/**
+ * Component for input and textarea styling options
+ */
+var InputStylesPanel = function InputStylesPanel(_ref3) {
+  var _attributes$inputTypo, _attributes$inputTypo2, _attributes$inputTypo3, _attributes$inputTypo4, _attributes$inputTypo5;
+  var attributes = _ref3.attributes,
+    updateStyles = _ref3.updateStyles;
+  var handleTypographyChange = function handleTypographyChange(changedTypo) {
+    var updatedTypography = getUpdatedTypography(changedTypo, attributes, 'inputTypography');
+    updateStyles({
+      inputTypography: updatedTypography
+    });
+  };
+  var handleBorderChange = function handleBorderChange(value) {
+    var _value$top, _value$radius, _value$top2;
+    // Update the new border object
+    var styleUpdates = {
+      inputBorder: value
+    };
+
+    // For backward compatibility, also update the old attributes
+    if (value !== null && value !== void 0 && (_value$top = value.top) !== null && _value$top !== void 0 && _value$top.width) {
+      styleUpdates.inputTABorderWidth = value.top.width;
+    }
+    if ((value === null || value === void 0 || (_value$radius = value.radius) === null || _value$radius === void 0 ? void 0 : _value$radius.topLeft) !== undefined) {
+      styleUpdates.inputTABorderRadius = value.radius.topLeft;
+    }
+    if (value !== null && value !== void 0 && (_value$top2 = value.top) !== null && _value$top2 !== void 0 && _value$top2.color) {
+      styleUpdates.inputTABorderColor = value.top.color;
+    }
+
+    // Update all styles at once
+    updateStyles(styleUpdates);
+  };
+  var handleHoverBorderChange = function handleHoverBorderChange(value) {
+    var _value$top3, _value$radius2, _value$top4;
+    // Update the hover border object
+    var styleUpdates = {
+      inputBorderHover: value
+    };
+
+    // For backward compatibility, also update the old hover attributes
+    if (value !== null && value !== void 0 && (_value$top3 = value.top) !== null && _value$top3 !== void 0 && _value$top3.width) {
+      styleUpdates.inputTABorderWidthHover = value.top.width;
+    }
+    if ((value === null || value === void 0 || (_value$radius2 = value.radius) === null || _value$radius2 === void 0 ? void 0 : _value$radius2.topLeft) !== undefined) {
+      styleUpdates.inputTABorderRadiusHover = value.radius.topLeft;
+    }
+    if (value !== null && value !== void 0 && (_value$top4 = value.top) !== null && _value$top4 !== void 0 && _value$top4.color) {
+      styleUpdates.inputTABorderColorHover = value.top.color;
+    }
+
+    // Update all styles at once
+    updateStyles(styleUpdates);
+  };
+
+  // Default border values
+  var defaultBorder = {
+    top: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColor || '#dddddd'
+    },
+    right: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColor || '#dddddd'
+    },
+    bottom: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColor || '#dddddd'
+    },
+    left: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColor || '#dddddd'
+    },
+    linked: true,
+    radius: {
+      topLeft: attributes.inputTABorderRadius || 0,
+      topRight: attributes.inputTABorderRadius || 0,
+      bottomRight: attributes.inputTABorderRadius || 0,
+      bottomLeft: attributes.inputTABorderRadius || 0,
+      linked: true
+    }
+  };
+
+  // Default hover border values
+  var defaultHoverBorder = {
+    top: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColorHover || '#72aee6'
+    },
+    right: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColorHover || '#72aee6'
+    },
+    bottom: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColorHover || '#72aee6'
+    },
+    left: {
+      width: 1,
+      style: 'solid',
+      color: attributes.inputTABorderColorHover || '#72aee6'
+    },
+    linked: true,
+    radius: {
+      topLeft: attributes.inputTABorderRadiusHover || 0,
+      topRight: attributes.inputTABorderRadiusHover || 0,
+      bottomRight: attributes.inputTABorderRadiusHover || 0,
+      bottomLeft: attributes.inputTABorderRadiusHover || 0,
+      linked: true
+    }
+  };
+
+  // Default spacing values
+  var defaultSpacing = {
+    top: '10px',
+    right: '10px',
+    bottom: '10px',
+    left: '10px'
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+    title: __("Input & Textarea"),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Text Color",
+      value: attributes.inputTextColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          inputTextColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Background Color",
+      value: attributes.inputBackgroundColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          inputBackgroundColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      label: "Typography",
+      settings: {
+        fontSize: ((_attributes$inputTypo = attributes.inputTypography) === null || _attributes$inputTypo === void 0 || (_attributes$inputTypo = _attributes$inputTypo.size) === null || _attributes$inputTypo === void 0 ? void 0 : _attributes$inputTypo.lg) || '',
+        fontWeight: ((_attributes$inputTypo2 = attributes.inputTypography) === null || _attributes$inputTypo2 === void 0 ? void 0 : _attributes$inputTypo2.weight) || '400',
+        lineHeight: ((_attributes$inputTypo3 = attributes.inputTypography) === null || _attributes$inputTypo3 === void 0 ? void 0 : _attributes$inputTypo3.lineHeight) || '',
+        letterSpacing: ((_attributes$inputTypo4 = attributes.inputTypography) === null || _attributes$inputTypo4 === void 0 ? void 0 : _attributes$inputTypo4.letterSpacing) || '',
+        textTransform: ((_attributes$inputTypo5 = attributes.inputTypography) === null || _attributes$inputTypo5 === void 0 ? void 0 : _attributes$inputTypo5.textTransform) || 'none'
+      },
+      onChange: handleTypographyChange
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      label: "Spacing",
+      values: attributes.inputSpacing,
+      onChange: function onChange(value) {
+        return updateStyles({
+          inputSpacing: value
+        });
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: "Style Settings",
+      value: attributes.inputBorder || defaultBorder,
+      hoverValue: attributes.inputBorderHover || defaultHoverBorder,
+      spacingValue: attributes.inputSpacing || defaultSpacing,
+      spacingHoverValue: attributes.inputSpacingHover || defaultSpacing,
+      onChange: handleBorderChange,
+      onHoverChange: handleHoverBorderChange,
+      onSpacingChange: function onSpacingChange(value) {
+        return updateStyles({
+          inputSpacing: value
+        });
+      },
+      onSpacingHoverChange: function onSpacingHoverChange(value) {
+        return updateStyles({
+          inputSpacingHover: value
+        });
+      },
+      colors: DEFAULT_COLORS,
+      showRadius: true,
+      showBorderControls: true,
+      showSpacingControls: true,
+      showHoverControls: true,
+      className: "fluent-form-style-control"
+    })]
+  });
+};
+
+/**
+ * Component for button styling options
+ */
+var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
+  var attributes = _ref4.attributes,
+    updateStyles = _ref4.updateStyles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+    title: __('Button Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Text Color",
+      value: attributes.buttonColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonColor: value
+        });
+      },
+      defaultColor: "#ffffff"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Background Color",
+      value: attributes.buttonBGColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonBGColor: value
+        });
+      },
+      defaultColor: "#409EFF"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Hover Text Color",
+      value: attributes.buttonHoverColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonHoverColor: value
+        });
+      },
+      defaultColor: "#ffffff"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Hover Background Color",
+      value: attributes.buttonHoverBGColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          buttonHoverBGColor: value
+        });
+      },
+      defaultColor: "#66b1ff"
+    })]
+  });
+};
+
+/**
+ * Main TabGeneral component
+ */
+var TabGeneral = function TabGeneral(_ref5) {
+  var attributes = _ref5.attributes,
+    setAttributes = _ref5.setAttributes,
+    updateStyles = _ref5.updateStyles,
+    state = _ref5.state,
+    handlePresetChange = _ref5.handlePresetChange;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(StyleTemplatePanel, {
+      attributes: attributes,
+      setAttributes: setAttributes,
+      handlePresetChange: handlePresetChange
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(LabelStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(InputStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(ButtonStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    })]
+  });
+};
+
+/**
+ * Compare function to determine if component should update
+ */
 function areEqual(prevProps, nextProps) {
-  // Only re-render if specific props have changed
   var prevAttrs = prevProps.attributes;
   var nextAttrs = nextProps.attributes;
 
   // List of attributes to check for changes
-  var attrsToCheck = ['labelColor', 'inputTAColor', 'inputTABGColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
+  var attrsToCheck = ['labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
 
   // Check if any of these attributes have changed
   for (var _i = 0, _attrsToCheck = attrsToCheck; _i < _attrsToCheck.length; _i++) {
@@ -1758,7 +1777,7 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
   }
 
   // List of attributes to check for changes
-  var attrsToCheck = ['formId', 'themeStyle', 'labelColor', 'inputTAColor', 'inputTABGColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypo', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
+  var attrsToCheck = ['formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
 
   // Check if any of these attributes have changed
   for (var _i = 0, _attrsToCheck = attrsToCheck; _i < _attrsToCheck.length; _i++) {

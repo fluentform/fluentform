@@ -236,11 +236,6 @@ class GutenbergBlock
         // Process label typography
         $labelTypo = Arr::get($atts, 'labelTypography', []);
 
-        if (empty($labelTypo)) {
-            // Try alternate attribute name for backward compatibility
-            $labelTypo = Arr::get($atts, 'labelTypo', []);
-        }
-
         if (!empty($labelTypo)) {
 
             $customCSS .= self::processTypography($labelTypo, $labelSelector);
@@ -248,10 +243,6 @@ class GutenbergBlock
 
         // Process input typography
         $inputTypo = Arr::get($atts, 'inputTypography', []);
-        if (empty($inputTypo)) {
-            // Try alternate attribute name for backward compatibility
-            $inputTypo = Arr::get($atts, 'inputTATypo', []);
-        }
 
         if (!empty($inputTypo)) {
             $customCSS .= self::processTypography($inputTypo, $inputBGSelectorsStr);

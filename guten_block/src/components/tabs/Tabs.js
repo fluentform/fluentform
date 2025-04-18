@@ -80,9 +80,9 @@ export default memo(Tabs, (prevProps, nextProps) => {
 
     // List of attributes to check for changes
     const attrsToCheck = [
-        'formId', 'themeStyle', 'labelColor', 'inputTAColor', 'inputTABGColor',
+        'formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor',
         'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'labelTypo', 'inputTATypo', 'inputSpacing', 'inputBorder', 'inputBorderHover'
+        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'
     ];
 
     // Check if any of these attributes have changed

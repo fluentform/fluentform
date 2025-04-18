@@ -82,9 +82,8 @@ const FluentTypography = ({ label, settings, onChange }) => {
             case 'textTransform': setLocalTextTransform(value); break;
         }
 
-        // Call onChange with updated values
+        // Call onChange with only the changed property
         onChange({
-            ...settings,
             [property]: value
         });
     };
@@ -111,8 +110,11 @@ const FluentTypography = ({ label, settings, onChange }) => {
      * Reset all typography settings to defaults
      */
     const resetToDefault = () => {
-        // Create reset values object
-        const resetValues = { ...defaultValues };
+        // Create reset values object with a special reset flag
+        const resetValues = {
+            reset: true,
+            ...defaultValues
+        };
 
         // Update local state
         setLocalFontSize(defaultValues.fontSize);
