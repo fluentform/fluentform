@@ -87,14 +87,12 @@ const FluentBorderControl = ({
 
     // State for the enable/disable toggle
     // Initialize isEnabled based on the custom_border flag in the value or the enableCustomBorder prop
-    const [isEnabled, setIsEnabled] = useState(value?.custom_border !== undefined ? value.custom_border : enableCustomBorder);
-
+    const [isEnabled, setIsEnabled] = useState(value?.custom_border !== undefined ||  value?.custom_border != false ? value.custom_border : false);
     // Handle toggle for enabling/disabling custom border
     const handleToggle = () => {
         const newEnabledState = !isEnabled;
         setIsEnabled(newEnabledState);
         handleBorderChange();
-        console.log('x');
         // Call the parent's onEnableChange callback if provided
         if (onEnableChange) {
             onEnableChange(newEnabledState);

@@ -8,7 +8,6 @@ const { Component, memo, PureComponent } = wp.element;
 
 // Import tab content components
 import TabGeneral from './TabGeneral';
-import TabMisc from './TabMisc';
 import TabAdvanced from './TabAdvanced';
 
 // Use PureComponent to automatically implement shouldComponentUpdate
@@ -22,7 +21,6 @@ class Tabs extends PureComponent {
                 activeClass="is-active"
                 tabs={[
                     { name: 'general', title: __('General'), key: 'general-tab' },
-                    { name: 'misc', title: __('Misc'), key: 'misc-tab' },
                     { name: 'advanced', title: __('Advanced'), key: 'advanced-tab' }
                 ]}
             >
@@ -37,15 +35,6 @@ class Tabs extends PureComponent {
                                     state={state}
                                     handlePresetChange={state.handlePresetChange}
                                     toggleCustomizePreset={state.toggleCustomizePreset}
-                                />
-                            </div>
-                        );
-                    } else if (tab.name === 'misc') {
-                        return (
-                            <div key="style-tab-content">
-                                <TabMisc
-                                    attributes={attributes}
-                                    setAttributes={setAttributes}
                                 />
                             </div>
                         );
@@ -82,7 +71,8 @@ export default memo(Tabs, (prevProps, nextProps) => {
     const attrsToCheck = [
         'formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor',
         'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'
+        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover',
+        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'
     ];
 
     // Check if any of these attributes have changed

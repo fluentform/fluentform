@@ -7,7 +7,6 @@ use FluentForm\Framework\Support\Arr;
 
 /**
  * GutenbergBlock class for handling Fluent Forms Gutenberg block functionality
- *
  * @since 1.0.0
  */
 class GutenbergBlock
@@ -17,8 +16,9 @@ class GutenbergBlock
      *
      * @param string $selector CSS selector
      * @param string $property CSS property
-     * @param string $value CSS value
-     * @param string $suffix Optional suffix for the value (e.g., 'px')
+     * @param string $value    CSS value
+     * @param string $suffix   Optional suffix for the value (e.g., 'px')
+     *
      * @return string Generated CSS rule
      */
     private static function generateCssRule($selector, $property, $value, $suffix = '')
@@ -29,8 +29,9 @@ class GutenbergBlock
     /**
      * Helper method to process typography settings
      *
-     * @param array $typo Typography settings
+     * @param array $typo      Typography settings
      * @param string $selector CSS selector
+     *
      * @return string Generated CSS rules
      */
     private static function processTypography($typo, $selector)
@@ -69,10 +70,11 @@ class GutenbergBlock
     /**
      * Helper method to process spacing settings
      *
-     * @param array $spacing Spacing settings
+     * @param array $spacing   Spacing settings
      * @param string $selector CSS selector
-     * @param string $device Device type (desktop, tablet, mobile)
-     * @param string $unit Unit type (px, em, %)
+     * @param string $device   Device type (desktop, tablet, mobile)
+     * @param string $unit     Unit type (px, em, %)
+     *
      * @return string Generated CSS rules
      */
     private static function processSpacing($spacing, $selector, $device = 'desktop', $unit = 'px')
@@ -118,9 +120,10 @@ class GutenbergBlock
     /**
      * Helper method to process border settings
      *
-     * @param array $border Border settings
+     * @param array $border    Border settings
      * @param string $selector CSS selector
      * @param boolean $isHover Whether this is for hover state
+     *
      * @return string Generated CSS rules
      */
     private static function processBorder($border, $selector, $isHover = false)
@@ -260,7 +263,6 @@ class GutenbergBlock
 
     /**
      * Register the Gutenberg block
-     *
      * @return void
      */
     public static function register()
@@ -272,74 +274,85 @@ class GutenbergBlock
         register_block_type('fluentfom/guten-block', [
             'render_callback' => [self::class, 'render'],
             'attributes'      => [
-                'formId'               => [
+                'formId'                => [
                     'type' => 'string',
                 ],
-                'className'            => [
+                'className'             => [
                     'type' => 'string',
                 ],
-                'themeStyle'           => [
-                    'type'    => 'string',
+                'themeStyle'            => [
+                    'type' => 'string',
                 ],
-                'isConversationalForm' => [
+                'isConversationalForm'  => [
                     'type'    => 'boolean',
                     'default' => false,
                 ],
-                'isThemeChange'        => [
+                'isThemeChange'         => [
                     'type'    => 'boolean',
                     'default' => false,
                 ],
                 // Border styles
-                'inputBorder'          => [
-                    'type'    => 'object',
+                'inputBorder'           => [
+                    'type' => 'object',
                 ],
-                'inputBorderHover'     => [
-                    'type'    => 'object',
+                'inputBorderHover'      => [
+                    'type' => 'object',
                 ],
                 // Typography and colors
-                'labelColor'           => [
-                    'type'    => 'string',
+                'labelColor'            => [
+                    'type' => 'string',
                 ],
-                'inputTextColor'      => [
-                    'type'    => 'string',
+                'inputTextColor'        => [
+                    'type' => 'string',
                 ],
-                'inputBackgroundColor' => [
-                    'type'    => 'string',
+                'inputBackgroundColor'  => [
+                    'type' => 'string',
                 ],
-                'labelTypography'      => [
-                    'type'    => 'object',
+                'labelTypography'       => [
+                    'type' => 'object',
                 ],
-                'inputTypography'      => [
-                    'type'    => 'object',
+                'inputTypography'       => [
+                    'type' => 'object',
                 ],
-                'inputSpacing'         => [
-                    'type'    => 'object',
+                'inputSpacing'          => [
+                    'type' => 'object',
                 ],
                 // Button styles
-                'buttonColor'          => [
-                    'type'    => 'string',
+                'buttonColor'           => [
+                    'type' => 'string',
                 ],
-                'buttonBGColor'        => [
-                    'type'    => 'string',
+                'buttonBGColor'         => [
+                    'type' => 'string',
                 ],
-                'buttonHoverColor'     => [
-                    'type'    => 'string',
+                'buttonHoverColor'      => [
+                    'type' => 'string',
                 ],
-                'buttonHoverBGColor'   => [
-                    'type'    => 'string',
+                'buttonHoverBGColor'    => [
+                    'type' => 'string',
                 ],
-                'enableTransition'     => [
+                'enableTransition'      => [
                     'type'    => 'boolean',
                     'default' => true,
                 ],
+                // Placeholder styles
+                'placeholderColor'      => [
+                    'type' => 'string',
+                ],
+                'placeholderFocusColor' => [
+                    'type' => 'string',
+                ],
+                'placeholderTypography' => [
+                    'type' => 'object',
+                ],
             ],
-            ]);
+        ]);
     }
 
     /**
      * Render the Gutenberg block
      *
      * @param array $atts Block attributes
+     *
      * @return string Rendered block HTML
      */
     public static function render($atts)
@@ -394,6 +407,17 @@ class GutenbergBlock
         ];
         $buttonSelectorsStr = implode(', ', $buttonSelectors);
 
+        // Define base selector and placeholder pseudo-elements
+        $baseSelector = ".ff_guten_block.ff_guten_block-{$formId}";
+        $inputTypes = ['.ff-el-form-control', 'textarea', 'select'];
+        $placeholderPseudos = [
+            '::placeholder',
+            '::-webkit-input-placeholder',
+            '::-moz-placeholder',
+            ':-ms-input-placeholder',
+            ':-moz-placeholder'
+        ];
+
         // Process label color
         if ($labelColor = Arr::get($atts, 'labelColor')) {
             $customCSS .= self::generateCssRule($labelSelector, 'color', $labelColor);
@@ -405,7 +429,8 @@ class GutenbergBlock
 
             // Add transition for smooth hover effects if enabled
             if (Arr::get($atts, 'enableTransition', true)) {
-                $customCSS .= self::generateCssRule($inputSelectorsStr, 'transition', 'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, border-width 0.3s ease, border-radius 0.3s ease');
+                $customCSS .= self::generateCssRule($inputSelectorsStr, 'transition',
+                    'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, border-width 0.3s ease, border-radius 0.3s ease');
             }
         }
 
@@ -420,7 +445,8 @@ class GutenbergBlock
 
             // Add transition for smooth hover effects if enabled
             if (Arr::get($atts, 'enableTransition', true)) {
-                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'transition', 'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease');
+                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'transition',
+                    'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease');
             }
         }
 
@@ -429,21 +455,22 @@ class GutenbergBlock
             $customCSS .= self::generateCssRule($buttonSelectorsStr, 'background-color', $buttonBGColor);
         }
 
-        // Process button hover text color
+        // Process button hovers text color
         if ($buttonHoverColor = Arr::get($atts, 'buttonHoverColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'color', $buttonHoverColor);
+            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus",
+                'color', $buttonHoverColor);
         }
 
         // Process button hover background color
         if ($buttonHoverBGColor = Arr::get($atts, 'buttonHoverBGColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'background-color', $buttonHoverBGColor);
+            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus",
+                'background-color', $buttonHoverBGColor);
         }
 
         // Process label typography
         $labelTypo = Arr::get($atts, 'labelTypography', []);
 
         if (!empty($labelTypo)) {
-
             $customCSS .= self::processTypography($labelTypo, $labelSelector);
         }
 
@@ -452,6 +479,43 @@ class GutenbergBlock
 
         if (!empty($inputTypo)) {
             $customCSS .= self::processTypography($inputTypo, $inputBGSelectorsStr);
+        }
+
+        // Process placeholder styles - handle both set and reset cases
+        if (Arr::has($atts, 'placeholderColor')) {
+            $placeholderColor = Arr::get($atts, 'placeholderColor');
+            // Group selectors by pseudo-element type for more efficient CSS
+            foreach ($placeholderPseudos as $pseudo) {
+                $groupedSelectors = [];
+                foreach ($inputTypes as $inputType) {
+                    $groupedSelectors[] = "{$baseSelector} {$inputType}{$pseudo}";
+                }
+                $selectorStr = implode(', ', $groupedSelectors);
+
+                if (!empty($placeholderColor)) {
+                    $customCSS .= self::generateCssRule($selectorStr, 'color', $placeholderColor);
+                }
+
+                if (Arr::get($atts, 'enableTransition', true)) {
+                    $customCSS .= self::generateCssRule($selectorStr, 'transition', 'color 0.3s ease');
+                }
+            }
+        }
+
+
+        // Process placeholder typography
+        $placeholderTypo = Arr::get($atts, 'placeholderTypography', []);
+
+        if (!empty($placeholderTypo)) {
+            // Apply typography to grouped selectors
+            foreach ($placeholderPseudos as $pseudo) {
+                $groupedSelectors = [];
+                foreach ($inputTypes as $inputType) {
+                    $groupedSelectors[] = "{$baseSelector} {$inputType}{$pseudo}";
+                }
+                $selectorStr = implode(', ', $groupedSelectors);
+                $customCSS .= self::processTypography($placeholderTypo, $selectorStr);
+            }
         }
 
         // Process input spacing
@@ -491,9 +555,16 @@ class GutenbergBlock
         $inputBorder = Arr::get($atts, 'inputBorder', []);
         $inputBorderHover = Arr::get($atts, 'inputBorderHover', []);
 
-        $customBorderEnabled = Arr::get($inputBorder, 'custom_border');
+        // Get the custom_border flag - default to false if not set
+        // This ensures that if no data is saved for custom_border, it defaults to false
+        $customBorderEnabled = Arr::get($inputBorder, 'custom_border', false);
 
-        if (!empty($inputBorder) && $customBorderEnabled && $customBorderEnabled !== 'false' && $customBorderEnabled !== '0') {
+        // Check if custom_border is truthy (true, 'true', 1, etc.) but not falsey values ('false', '0', etc.)
+        // This handles various data types that might come from the client
+        $isBorderEnabled = $customBorderEnabled && $customBorderEnabled !== 'false' && $customBorderEnabled !== '0';
+
+        // Apply border styles if inputBorder is not empty and custom_border is enabled
+        if (!empty($inputBorder) && $isBorderEnabled) {
             $borderCSS = self::processBorder($inputBorder, $inputBGSelectorsStr, false);
             if ($borderCSS) {
                 $customCSS .= $borderCSS;
@@ -517,16 +588,17 @@ class GutenbergBlock
         }
 
         // Return the form with inline styles
-        $formOutput = do_shortcode('[fluentform theme="'. $themeStyle .'" css_classes="' . $className . ' ff_guten_block ff_guten_block-' . $formId . '" id="' . $formId . '"  type="' . $type . '"]');
+        $formOutput = do_shortcode('[fluentform theme="' . $themeStyle . '" css_classes="' . $className . ' ff_guten_block ff_guten_block-' . $formId . '" id="' . $formId . '"  type="' . $type . '"]');
 
         if ($formOutput) {
             // Add a hidden debug comment to help troubleshoot attribute passing
             if ($inlineStyle) {
                 $debugAttrs = [
-                    'formId' => $formId,
-                    'spacing' => !empty($inputSpacing) ? 'yes' : 'no',
-                    'border' => !empty($inputBorder) && $customBorderEnabled ? 'yes' : 'no',
-                    'hover' => !empty($inputBorderHover) ? 'yes' : 'no'
+                    'formId'      => $formId,
+                    'spacing'     => !empty($inputSpacing) ? 'yes' : 'no',
+                    'border'      => !empty($inputBorder) && $isBorderEnabled ? 'yes' : 'no',
+                    'hover'       => !empty($inputBorderHover) ? 'yes' : 'no',
+                    'placeholder' => !empty($placeholderColor) || !empty($placeholderFocusColor) || !empty($placeholderTypo) ? 'yes' : 'no'
                 ];
 
                 $debugParts = [];

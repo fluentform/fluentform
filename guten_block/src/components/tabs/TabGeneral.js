@@ -1,3 +1,5 @@
+import { Component } from "react";
+
 const { useState, useRef, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
 const { PanelBody, SelectControl } = wp.components;
@@ -139,6 +141,7 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
     };
 
     const handleBorderChange = (value) => {
+
         // Update the new border object
         const styleUpdates = { inputBorder: value };
 
@@ -169,7 +172,7 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
             bottomLeft: attributes.inputTABorderRadius || 0,
             linked: true
         },
-        custom_border: true
+        custom_border: false
     };
 
     // Default spacing values
@@ -275,6 +278,46 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
 };
 
 /**
+ * Component for placeholder styling options
+ */
+const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
+    const handleTypographyChange = (changedTypo) => {
+        const updatedTypography = getUpdatedTypography(
+            changedTypo,
+            attributes,
+            'placeholderTypography'
+        );
+        updateStyles({
+            placeholderTypography: updatedTypography
+        });
+    };
+
+    return (
+      <PanelBody title={__('Placeholder Styles')} initialOpen={false}>
+          <FluentColorPicker
+            label="Text Color"
+            value={attributes.placeholderColor}
+            onChange={(value) => updateStyles({placeholderColor: value})}
+            defaultColor=""
+          />
+
+          <FluentTypography
+            label="Typography"
+            settings={{
+                fontSize: attributes.placeholderTypography?.size?.lg || '',
+                fontWeight: attributes.placeholderTypography?.weight || '400',
+                lineHeight: attributes.placeholderTypography?.lineHeight || '',
+                letterSpacing: attributes.placeholderTypography?.letterSpacing || '',
+                textTransform: attributes.placeholderTypography?.textTransform || 'none'
+            }}
+            onChange={handleTypographyChange}
+          />
+
+      </PanelBody>
+    );
+}
+
+/**
  * Main TabGeneral component
  */
 const TabGeneral = ({ attributes, setAttributes, updateStyles, state, handlePresetChange }) => {
@@ -292,6 +335,10 @@ const TabGeneral = ({ attributes, setAttributes, updateStyles, state, handlePres
           />
 
           <InputStylesPanel
+            attributes={attributes}
+            updateStyles={updateStyles}
+          />
+          <PlaceHolderStylesPanel
             attributes={attributes}
             updateStyles={updateStyles}
           />
@@ -315,7 +362,8 @@ function areEqual(prevProps, nextProps) {
     const attrsToCheck = [
         'labelColor', 'inputTextColor', 'inputBackgroundColor',
         'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'
+        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover',
+        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'
     ];
 
     // Check if any of these attributes have changed

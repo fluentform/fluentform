@@ -136,17 +136,15 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
 
   // State for the enable/disable toggle
   // Initialize isEnabled based on the custom_border flag in the value or the enableCustomBorder prop
-  var _useState = useState((value === null || value === void 0 ? void 0 : value.custom_border) !== undefined ? value.custom_border : enableCustomBorder),
+  var _useState = useState((value === null || value === void 0 ? void 0 : value.custom_border) !== undefined || (value === null || value === void 0 ? void 0 : value.custom_border) != false ? value.custom_border : false),
     _useState2 = _slicedToArray(_useState, 2),
     isEnabled = _useState2[0],
     setIsEnabled = _useState2[1];
-
   // Handle toggle for enabling/disabling custom border
   var handleToggle = function handleToggle() {
     var newEnabledState = !isEnabled;
     setIsEnabled(newEnabledState);
     handleBorderChange();
-    console.log('x');
     // Call the parent's onEnableChange callback if provided
     if (onEnableChange) {
       onEnableChange(newEnabledState);
@@ -1397,17 +1395,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
-/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
-/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
+/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useRef = _wp$element.useRef,
@@ -1500,10 +1501,10 @@ var StyleTemplatePanel = function StyleTemplatePanel(_ref) {
     handlePresetChange = _ref.handlePresetChange;
   var config = window.fluentform_block_vars;
   var presets = config.style_presets;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PanelBody, {
     title: __("Form Style Template"),
     initialOpen: true,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SelectControl, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(SelectControl, {
       label: __("Choose a Template"),
       value: attributes.themeStyle,
       options: presets,
@@ -1533,10 +1534,10 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
       labelTypography: updatedTypography
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(PanelBody, {
     title: __("Label Styles"),
     initialOpen: true,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Color",
       value: attributes.labelColor,
       onChange: function onChange(value) {
@@ -1545,7 +1546,7 @@ var LabelStylesPanel = function LabelStylesPanel(_ref2) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Typography",
       settings: {
         fontSize: ((_attributes$labelTypo = attributes.labelTypography) === null || _attributes$labelTypo === void 0 || (_attributes$labelTypo = _attributes$labelTypo.size) === null || _attributes$labelTypo === void 0 ? void 0 : _attributes$labelTypo.lg) || '',
@@ -1621,7 +1622,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
       bottomLeft: attributes.inputTABorderRadius || 0,
       linked: true
     },
-    custom_border: true
+    custom_border: false
   };
 
   // Default spacing values
@@ -1631,10 +1632,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
     bottom: '',
     left: ''
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(PanelBody, {
     title: __("Input & Textarea"),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Text Color",
       value: attributes.inputTextColor,
       onChange: function onChange(value) {
@@ -1643,7 +1644,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Background Color",
       value: attributes.inputBackgroundColor,
       onChange: function onChange(value) {
@@ -1652,7 +1653,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
         });
       },
       defaultColor: ""
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_1__["default"], {
       label: "Typography",
       settings: {
         fontSize: ((_attributes$inputTypo = attributes.inputTypography) === null || _attributes$inputTypo === void 0 || (_attributes$inputTypo = _attributes$inputTypo.size) === null || _attributes$inputTypo === void 0 ? void 0 : _attributes$inputTypo.lg) || '',
@@ -1662,7 +1663,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
         textTransform: ((_attributes$inputTypo5 = attributes.inputTypography) === null || _attributes$inputTypo5 === void 0 ? void 0 : _attributes$inputTypo5.textTransform) || 'none'
       },
       onChange: handleTypographyChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
       label: "Spacing",
       values: attributes.inputSpacing,
       onChange: function onChange(value) {
@@ -1670,7 +1671,7 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
           inputSpacing: value
         });
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_4__["default"], {
       value: attributes.inputBorder || defaultBorder,
       hoverValue: attributes.inputBorderHover || defaultBorder,
       spacingValue: attributes.inputSpacing || defaultSpacing,
@@ -1702,10 +1703,10 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
 var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
   var attributes = _ref4.attributes,
     updateStyles = _ref4.updateStyles;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(PanelBody, {
     title: __('Button Styles'),
     initialOpen: false,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Text Color",
       value: attributes.buttonColor,
       onChange: function onChange(value) {
@@ -1714,7 +1715,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
         });
       },
       defaultColor: "#ffffff"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Background Color",
       value: attributes.buttonBGColor,
       onChange: function onChange(value) {
@@ -1723,7 +1724,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
         });
       },
       defaultColor: "#409EFF"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Hover Text Color",
       value: attributes.buttonHoverColor,
       onChange: function onChange(value) {
@@ -1732,7 +1733,7 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
         });
       },
       defaultColor: "#ffffff"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
       label: "Hover Background Color",
       value: attributes.buttonHoverBGColor,
       onChange: function onChange(value) {
@@ -1746,26 +1747,68 @@ var ButtonStylesPanel = function ButtonStylesPanel(_ref4) {
 };
 
 /**
+ * Component for placeholder styling options
+ */
+var PlaceHolderStylesPanel = function PlaceHolderStylesPanel(_ref5) {
+  var _attributes$placehold, _attributes$placehold2, _attributes$placehold3, _attributes$placehold4, _attributes$placehold5;
+  var attributes = _ref5.attributes,
+    updateStyles = _ref5.updateStyles;
+  var handleTypographyChange = function handleTypographyChange(changedTypo) {
+    var updatedTypography = getUpdatedTypography(changedTypo, attributes, 'placeholderTypography');
+    updateStyles({
+      placeholderTypography: updatedTypography
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(PanelBody, {
+    title: __('Placeholder Styles'),
+    initialOpen: false,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      label: "Text Color",
+      value: attributes.placeholderColor,
+      onChange: function onChange(value) {
+        return updateStyles({
+          placeholderColor: value
+        });
+      },
+      defaultColor: ""
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      label: "Typography",
+      settings: {
+        fontSize: ((_attributes$placehold = attributes.placeholderTypography) === null || _attributes$placehold === void 0 || (_attributes$placehold = _attributes$placehold.size) === null || _attributes$placehold === void 0 ? void 0 : _attributes$placehold.lg) || '',
+        fontWeight: ((_attributes$placehold2 = attributes.placeholderTypography) === null || _attributes$placehold2 === void 0 ? void 0 : _attributes$placehold2.weight) || '400',
+        lineHeight: ((_attributes$placehold3 = attributes.placeholderTypography) === null || _attributes$placehold3 === void 0 ? void 0 : _attributes$placehold3.lineHeight) || '',
+        letterSpacing: ((_attributes$placehold4 = attributes.placeholderTypography) === null || _attributes$placehold4 === void 0 ? void 0 : _attributes$placehold4.letterSpacing) || '',
+        textTransform: ((_attributes$placehold5 = attributes.placeholderTypography) === null || _attributes$placehold5 === void 0 ? void 0 : _attributes$placehold5.textTransform) || 'none'
+      },
+      onChange: handleTypographyChange
+    })]
+  });
+};
+
+/**
  * Main TabGeneral component
  */
-var TabGeneral = function TabGeneral(_ref5) {
-  var attributes = _ref5.attributes,
-    setAttributes = _ref5.setAttributes,
-    updateStyles = _ref5.updateStyles,
-    state = _ref5.state,
-    handlePresetChange = _ref5.handlePresetChange;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(StyleTemplatePanel, {
+var TabGeneral = function TabGeneral(_ref6) {
+  var attributes = _ref6.attributes,
+    setAttributes = _ref6.setAttributes,
+    updateStyles = _ref6.updateStyles,
+    state = _ref6.state,
+    handlePresetChange = _ref6.handlePresetChange;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(StyleTemplatePanel, {
       attributes: attributes,
       setAttributes: setAttributes,
       handlePresetChange: handlePresetChange
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(LabelStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(LabelStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(InputStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(InputStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(ButtonStylesPanel, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PlaceHolderStylesPanel, {
+      attributes: attributes,
+      updateStyles: updateStyles
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(ButtonStylesPanel, {
       attributes: attributes,
       updateStyles: updateStyles
     })]
@@ -1780,7 +1823,7 @@ function areEqual(prevProps, nextProps) {
   var nextAttrs = nextProps.attributes;
 
   // List of attributes to check for changes
-  var attrsToCheck = ['labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
+  var attrsToCheck = ['labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'];
 
   // Check if any of these attributes have changed
   for (var _i = 0, _attrsToCheck = attrsToCheck; _i < _attrsToCheck.length; _i++) {
@@ -1800,48 +1843,6 @@ function areEqual(prevProps, nextProps) {
 
 /***/ }),
 
-/***/ "./guten_block/src/components/tabs/TabMisc.js":
-/*!****************************************************!*\
-  !*** ./guten_block/src/components/tabs/TabMisc.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
-/* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
-/* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Fluent Forms Gutenberg Block Style Tab Component
- */
-var __ = wp.i18n.__;
-var _wp$components = wp.components,
-  PanelBody = _wp$components.PanelBody,
-  TextControl = _wp$components.TextControl;
-
-// Import custom components
-
-
-
-
-
-var TabMisc = function TabMisc(_ref) {
-  var attributes = _ref.attributes,
-    setAttributes = _ref.setAttributes;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(PanelBody, {
-      title: __("Container Styles"),
-      initialOpen: true
-    })
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabMisc);
-
-/***/ }),
-
 /***/ "./guten_block/src/components/tabs/Tabs.js":
 /*!*************************************************!*\
   !*** ./guten_block/src/components/tabs/Tabs.js ***!
@@ -1853,9 +1854,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _TabGeneral__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TabGeneral */ "./guten_block/src/components/tabs/TabGeneral.js");
-/* harmony import */ var _TabMisc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabMisc */ "./guten_block/src/components/tabs/TabMisc.js");
-/* harmony import */ var _TabAdvanced__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TabAdvanced */ "./guten_block/src/components/tabs/TabAdvanced.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _TabAdvanced__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabAdvanced */ "./guten_block/src/components/tabs/TabAdvanced.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -1884,7 +1884,6 @@ var _wp$element = wp.element,
 
 
 
-
 // Use PureComponent to automatically implement shouldComponentUpdate
 
 var Tabs = /*#__PURE__*/function (_PureComponent) {
@@ -1901,7 +1900,7 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
         setAttributes = _this$props.setAttributes,
         updateStyles = _this$props.updateStyles,
         state = _this$props.state;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TabPanel, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(TabPanel, {
         className: "fluent-form-block-style-tabs",
         activeClass: "is-active",
         tabs: [{
@@ -1909,18 +1908,14 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
           title: __('General'),
           key: 'general-tab'
         }, {
-          name: 'misc',
-          title: __('Misc'),
-          key: 'misc-tab'
-        }, {
           name: 'advanced',
           title: __('Advanced'),
           key: 'advanced-tab'
         }],
         children: function children(tab) {
           if (tab.name === 'general') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabGeneral__WEBPACK_IMPORTED_MODULE_0__["default"], {
                 attributes: attributes,
                 setAttributes: setAttributes,
                 updateStyles: updateStyles,
@@ -1929,16 +1924,9 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
                 toggleCustomizePreset: state.toggleCustomizePreset
               })
             }, "general-tab-content");
-          } else if (tab.name === 'misc') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabMisc__WEBPACK_IMPORTED_MODULE_1__["default"], {
-                attributes: attributes,
-                setAttributes: setAttributes
-              })
-            }, "style-tab-content");
           } else if (tab.name === 'advanced') {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TabAdvanced__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_TabAdvanced__WEBPACK_IMPORTED_MODULE_1__["default"], {
                 attributes: attributes,
                 setAttributes: setAttributes
               })
@@ -1964,7 +1952,7 @@ var Tabs = /*#__PURE__*/function (_PureComponent) {
   }
 
   // List of attributes to check for changes
-  var attrsToCheck = ['formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover'];
+  var attrsToCheck = ['formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor', 'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor', 'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover', 'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'];
 
   // Check if any of these attributes have changed
   for (var _i = 0, _attrsToCheck = attrsToCheck; _i < _attrsToCheck.length; _i++) {
@@ -6610,6 +6598,18 @@ if (false) {} else {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
