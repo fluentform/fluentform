@@ -40,3 +40,23 @@
     font-style: italic;
     color: #757575;
 }
+
+/* Section title */
+.ffblock-section-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #1e1e1e;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Border controls */
+.ffblock-border-controls {
+    margin-top: 16px;
+}
+
+.ffblock-radius-control {
+    margin-top: 24px !important;
+}

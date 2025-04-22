@@ -6,7 +6,7 @@ const { PanelBody, SelectControl } = wp.components;
 import FluentTypography from "../controls/FluentTypography";
 import FluentColorPicker from "../controls/FluentColorPicker";
 import FluentSpaceControl from "../controls/FluentSpaceControl";
-import MyBorderBoxControl from "../controls/MyBorderBoxControl";
+import FluentBorderControl from "../controls/FluentBorderControl";
 
 // Constants
 const DEFAULT_COLORS = [
@@ -142,18 +142,6 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
         // Update the new border object
         const styleUpdates = { inputBorder: value };
 
-        // For backward compatibility, also update the old attributes
-        if (value?.top?.width) {
-            styleUpdates.inputTABorderWidth = value.top.width;
-        }
-
-        if (value?.radius?.topLeft !== undefined) {
-            styleUpdates.inputTABorderRadius = value.radius.topLeft;
-        }
-
-        if (value?.top?.color) {
-            styleUpdates.inputTABorderColor = value.top.color;
-        }
 
         // Update all styles at once
         updateStyles(styleUpdates);
@@ -162,19 +150,6 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
     const handleHoverBorderChange = (value) => {
         // Update the hover border object
         const styleUpdates = { inputBorderHover: value };
-
-        // For backward compatibility, also update the old hover attributes
-        if (value?.top?.width) {
-            styleUpdates.inputTABorderWidthHover = value.top.width;
-        }
-
-        if (value?.radius?.topLeft !== undefined) {
-            styleUpdates.inputTABorderRadiusHover = value.radius.topLeft;
-        }
-
-        if (value?.top?.color) {
-            styleUpdates.inputTABorderColorHover = value.top.color;
-        }
 
         // Update all styles at once
         updateStyles(styleUpdates);
@@ -193,23 +168,8 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
             bottomRight: attributes.inputTABorderRadius || 0,
             bottomLeft: attributes.inputTABorderRadius || 0,
             linked: true
-        }
-    };
-
-    // Default hover border values
-    const defaultHoverBorder = {
-        top: { width: 1, style: 'solid', color: attributes.inputTABorderColorHover || '#72aee6' },
-        right: { width: 1, style: 'solid', color: attributes.inputTABorderColorHover || '#72aee6' },
-        bottom: { width: 1, style: 'solid', color: attributes.inputTABorderColorHover || '#72aee6' },
-        left: { width: 1, style: 'solid', color: attributes.inputTABorderColorHover || '#72aee6' },
-        linked: true,
-        radius: {
-            topLeft: attributes.inputTABorderRadiusHover || 0,
-            topRight: attributes.inputTABorderRadiusHover || 0,
-            bottomRight: attributes.inputTABorderRadiusHover || 0,
-            bottomLeft: attributes.inputTABorderRadiusHover || 0,
-            linked: true
-        }
+        },
+        custom_border: true
     };
 
     // Default spacing values
@@ -258,10 +218,9 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
             onChange={(value) => updateStyles({ inputSpacing: value })}
           />
 
-          <MyBorderBoxControl
-            label="Style Settings"
+          <FluentBorderControl
             value={attributes.inputBorder || defaultBorder}
-            hoverValue={attributes.inputBorderHover || defaultHoverBorder}
+            hoverValue={attributes.inputBorderHover || defaultBorder}
             spacingValue={attributes.inputSpacing || defaultSpacing}
             spacingHoverValue={attributes.inputSpacingHover || defaultSpacing}
             onChange={handleBorderChange}
@@ -271,7 +230,6 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
             colors={DEFAULT_COLORS}
             showRadius={true}
             showBorderControls={true}
-            showSpacingControls={true}
             showHoverControls={true}
             className="fluent-form-style-control"
           />

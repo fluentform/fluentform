@@ -2,6 +2,449 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./guten_block/src/components/controls/FluentBorderControl.js":
+/*!********************************************************************!*\
+  !*** ./guten_block/src/components/controls/FluentBorderControl.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+/**
+ * Fluent Forms Border Control Component
+ */
+
+
+// Import React components
+
+
+
+var _wp$element = wp.element,
+  useState = _wp$element.useState,
+  useEffect = _wp$element.useEffect,
+  useRef = _wp$element.useRef;
+var __ = wp.i18n.__;
+
+// Import WordPress components
+var _wp$components = wp.components,
+  __experimentalBorderBoxControl = _wp$components.__experimentalBorderBoxControl,
+  RangeControl = _wp$components.RangeControl,
+  Flex = _wp$components.Flex,
+  FlexItem = _wp$components.FlexItem,
+  Button = _wp$components.Button,
+  ButtonGroup = _wp$components.ButtonGroup,
+  TabPanel = _wp$components.TabPanel,
+  ToggleControl = _wp$components.ToggleControl;
+
+// If experimental components are not available, they might not exist in your WordPress version
+var BorderBoxControl = __experimentalBorderBoxControl;
+
+/**
+ * Fluent Forms Border Control Component
+ *
+ * @param {Object} props Component props
+ * @param {string} props.label Label for the control
+ * @param {Object} props.value Current border values for normal state
+ * @param {Object} props.hoverValue Current border values for hover state
+ * @param {Function} props.onChange Callback when border values change for normal state
+ * @param {Function} props.onHoverChange Callback when border values change for hover state
+ * @param {Array} props.colors Custom color palette
+ * @param {Object} props.defaultBorder Default border settings
+ * @param {boolean} props.showRadius Whether to show radius controls
+ * @param {boolean} props.showHoverControls Whether to show hover state controls
+ * @param {string} props.className Additional CSS class
+ * @param {boolean} props.enableCustomBorder Whether custom border is enabled
+ * @param {Function} props.onEnableChange Callback when enable/disable toggle changes
+ */
+var FluentBorderControl = function FluentBorderControl(_ref) {
+  var _ref$label = _ref.label,
+    label = _ref$label === void 0 ? __('Borders') : _ref$label,
+    value = _ref.value,
+    hoverValue = _ref.hoverValue,
+    onChange = _ref.onChange,
+    onHoverChange = _ref.onHoverChange,
+    _ref$colors = _ref.colors,
+    colors = _ref$colors === void 0 ? [{
+      name: 'Blue 20',
+      color: '#72aee6'
+    }, {
+      name: 'Red',
+      color: '#e65054'
+    }, {
+      name: 'Green',
+      color: '#68de7c'
+    }, {
+      name: 'Yellow',
+      color: '#f2d675'
+    }, {
+      name: 'Black',
+      color: '#000000'
+    }] : _ref$colors,
+    defaultBorder = _ref.defaultBorder,
+    _ref$showRadius = _ref.showRadius,
+    showRadius = _ref$showRadius === void 0 ? true : _ref$showRadius,
+    _ref$showHoverControl = _ref.showHoverControls,
+    showHoverControls = _ref$showHoverControl === void 0 ? true : _ref$showHoverControl,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? '' : _ref$className,
+    _ref$enableCustomBord = _ref.enableCustomBorder,
+    enableCustomBorder = _ref$enableCustomBord === void 0 ? false : _ref$enableCustomBord,
+    onEnableChange = _ref.onEnableChange;
+  // Use the parent's default border if provided, otherwise use our own default
+  var fallbackBorder = {
+    color: '#72aee6',
+    style: 'solid',
+    width: '1px'
+  };
+
+  // Create default border structure using the provided or fallback border
+  var createDefaultBorderStructure = function createDefaultBorderStructure(border) {
+    return {
+      top: border,
+      right: border,
+      bottom: border,
+      left: border,
+      linked: true,
+      radius: {
+        topLeft: 0,
+        topRight: 0,
+        bottomRight: 0,
+        bottomLeft: 0,
+        linked: true
+      }
+    };
+  };
+
+  // Initialize with the parent's default border or our fallback
+  var defaultBorderStructure = createDefaultBorderStructure(defaultBorder || fallbackBorder);
+
+  // State for the enable/disable toggle
+  // Initialize isEnabled based on the custom_border flag in the value or the enableCustomBorder prop
+  var _useState = useState((value === null || value === void 0 ? void 0 : value.custom_border) !== undefined ? value.custom_border : enableCustomBorder),
+    _useState2 = _slicedToArray(_useState, 2),
+    isEnabled = _useState2[0],
+    setIsEnabled = _useState2[1];
+
+  // Handle toggle for enabling/disabling custom border
+  var handleToggle = function handleToggle() {
+    var newEnabledState = !isEnabled;
+    setIsEnabled(newEnabledState);
+    handleBorderChange();
+    console.log('x');
+    // Call the parent's onEnableChange callback if provided
+    if (onEnableChange) {
+      onEnableChange(newEnabledState);
+    }
+
+    // Update both normal and hover borders with the new custom_border flag
+    if (onChange) {
+      // Get current borders or use default if none exist
+      var currentBordersData = borders || defaultBorderStructure;
+
+      // Create updated border structure with new custom_border flag
+      var updatedBorderStructure = _objectSpread(_objectSpread({}, currentBordersData), {}, {
+        custom_border: newEnabledState
+      });
+
+      // Update local state immediately
+      setBorders(updatedBorderStructure);
+
+      // Notify parent
+      onChange(updatedBorderStructure);
+
+      // Also update hover borders if they exist
+      if (hoverBorders && onHoverChange) {
+        var updatedHoverBorders = _objectSpread(_objectSpread({}, hoverBorders), {}, {
+          custom_border: newEnabledState
+        });
+        setHoverBorders(updatedHoverBorders);
+        onHoverChange(updatedHoverBorders);
+      }
+
+      // Force an immediate update in the editor
+      // This is a workaround to ensure the editor re-renders with the new custom_border value
+      var event = new Event('input', {
+        bubbles: true
+      });
+      document.activeElement.dispatchEvent(event);
+    }
+  };
+
+  // Initialize borders with custom_border flag if enabled
+  var initialBorders = value || defaultBorderStructure;
+  var _useState3 = useState(_objectSpread(_objectSpread({}, initialBorders), {}, {
+      custom_border: isEnabled
+    })),
+    _useState4 = _slicedToArray(_useState3, 2),
+    borders = _useState4[0],
+    setBorders = _useState4[1];
+
+  // Initialize hover borders with custom_border flag if enabled
+  var initialHoverBorders = hoverValue || defaultBorderStructure;
+  var _useState5 = useState(_objectSpread(_objectSpread({}, initialHoverBorders), {}, {
+      custom_border: isEnabled
+    })),
+    _useState6 = _slicedToArray(_useState5, 2),
+    hoverBorders = _useState6[0],
+    setHoverBorders = _useState6[1];
+  var _useState7 = useState('normal'),
+    _useState8 = _slicedToArray(_useState7, 2),
+    activeTab = _useState8[0],
+    setActiveTab = _useState8[1];
+
+  // Using refs to prevent the initial render from triggering onChange
+  var isInitialNormalMount = useRef(true);
+  var isInitialHoverMount = useRef(true);
+
+  // Update parent component when normal borders change
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onChange calls
+    if (isInitialNormalMount.current) {
+      isInitialNormalMount.current = false;
+      return;
+    }
+
+    // Only call onChange if it exists and borders is defined
+    if (onChange && borders) {
+      // Ensure the custom_border flag is set based on isEnabled
+      var updatedBorders = _objectSpread(_objectSpread({}, borders), {}, {
+        custom_border: isEnabled
+      });
+      onChange(updatedBorders);
+    }
+  }, [borders, onChange, isEnabled]);
+  useEffect(function () {
+    // Skip the first render to prevent unnecessary onHoverChange calls
+    if (isInitialHoverMount.current) {
+      isInitialHoverMount.current = false;
+      return;
+    }
+
+    // Only call onHoverChange if it exists and hoverBorders is defined
+    if (onHoverChange && hoverBorders) {
+      // Ensure the custom_border flag is set based on isEnabled
+      var updatedHoverBorders = _objectSpread(_objectSpread({}, hoverBorders), {}, {
+        custom_border: isEnabled
+      });
+      onHoverChange(updatedHoverBorders);
+    } else if (onHoverChange && !hoverBorders && isEnabled) {
+      // If hoverBorders is not defined but isEnabled is true, create a default hover border
+      var defaultHoverBorder = _objectSpread(_objectSpread({}, defaultBorderStructure), {}, {
+        custom_border: true
+      });
+      onHoverChange(defaultHoverBorder);
+    }
+  }, [hoverBorders, onHoverChange, isEnabled, defaultBorderStructure]);
+  var getCurrentBorders = function getCurrentBorders() {
+    return activeTab === 'normal' ? borders : hoverBorders;
+  };
+  var setCurrentBorders = function setCurrentBorders(newBorders) {
+    if (activeTab === 'normal') {
+      setBorders(newBorders);
+    } else {
+      setHoverBorders(newBorders);
+    }
+  };
+  var handleBorderChange = function handleBorderChange(newBorders) {
+    console.log('y');
+    var currentBorders = getCurrentBorders();
+    // Preserve radius and linked properties
+    var updatedBorders = _objectSpread(_objectSpread({}, newBorders), {}, {
+      radius: currentBorders.radius || {
+        topLeft: 0,
+        topRight: 0,
+        bottomRight: 0,
+        bottomLeft: 0,
+        linked: true
+      },
+      linked: currentBorders.linked !== undefined ? currentBorders.linked : true,
+      custom_border: true // Always set this flag to true when borders are changed
+    });
+    setCurrentBorders(updatedBorders);
+  };
+  var handleRadiusChange = function handleRadiusChange(newRadius) {
+    var currentBorders = getCurrentBorders();
+    var updatedBorders = _objectSpread(_objectSpread({}, currentBorders), {}, {
+      radius: newRadius,
+      custom_border: true // Always set this flag to true when radius is changed
+    });
+    setCurrentBorders(updatedBorders);
+  };
+  var toggleLinkedRadius = function toggleLinkedRadius() {
+    var _currentBorders$radiu, _currentBorders$radiu2, _currentBorders$radiu3;
+    var currentBorders = getCurrentBorders();
+    var radiusValue = ((_currentBorders$radiu = currentBorders.radius) === null || _currentBorders$radiu === void 0 ? void 0 : _currentBorders$radiu.topLeft) || 0;
+    setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, {
+      radius: _objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+        linked: !((_currentBorders$radiu2 = currentBorders.radius) !== null && _currentBorders$radiu2 !== void 0 && _currentBorders$radiu2.linked)
+      }, (_currentBorders$radiu3 = currentBorders.radius) !== null && _currentBorders$radiu3 !== void 0 && _currentBorders$radiu3.linked ? {} : {
+        topLeft: radiusValue,
+        topRight: radiusValue,
+        bottomRight: radiusValue,
+        bottomLeft: radiusValue
+      }),
+      custom_border: true // Always set this flag to true when radius linking is toggled
+    }));
+  };
+  var renderBorderControls = function renderBorderControls() {
+    var _currentBorders$radiu4, _currentBorders$radiu5, _currentBorders$radiu6, _currentBorders$radiu7, _currentBorders$radiu8, _currentBorders$radiu9, _currentBorders$radiu10, _currentBorders$radiu11;
+    var currentBorders = getCurrentBorders();
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BorderBoxControl, {
+        style: {
+          marginTop: '16px'
+        },
+        colors: colors,
+        onChange: handleBorderChange,
+        value: currentBorders
+      }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        className: "ffblock-radius-control",
+        style: {
+          marginTop: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
+          align: "center",
+          justify: "space-between",
+          style: {
+            marginBottom: '8px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            className: "ffblock-radius-label",
+            children: __('Radius Control')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+            icon: (_currentBorders$radiu4 = currentBorders.radius) !== null && _currentBorders$radiu4 !== void 0 && _currentBorders$radiu4.linked ? 'admin-links' : 'editor-unlink',
+            onClick: toggleLinkedRadius,
+            label: (_currentBorders$radiu5 = currentBorders.radius) !== null && _currentBorders$radiu5 !== void 0 && _currentBorders$radiu5.linked ? __('Unlink sides') : __('Link sides'),
+            isSmall: true
+          })]
+        }), (_currentBorders$radiu6 = currentBorders.radius) !== null && _currentBorders$radiu6 !== void 0 && _currentBorders$radiu6.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          label: __('Radius'),
+          value: ((_currentBorders$radiu7 = currentBorders.radius) === null || _currentBorders$radiu7 === void 0 ? void 0 : _currentBorders$radiu7.topLeft) || 0,
+          onChange: function onChange(value) {
+            handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+              topLeft: value,
+              topRight: value,
+              bottomRight: value,
+              bottomLeft: value
+            }));
+          },
+          min: 0,
+          max: 100
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Top Left'),
+            value: ((_currentBorders$radiu8 = currentBorders.radius) === null || _currentBorders$radiu8 === void 0 ? void 0 : _currentBorders$radiu8.topLeft) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                topLeft: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Top Right'),
+            value: ((_currentBorders$radiu9 = currentBorders.radius) === null || _currentBorders$radiu9 === void 0 ? void 0 : _currentBorders$radiu9.topRight) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                topRight: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Bottom Right'),
+            value: ((_currentBorders$radiu10 = currentBorders.radius) === null || _currentBorders$radiu10 === void 0 ? void 0 : _currentBorders$radiu10.bottomRight) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                bottomRight: value
+              }));
+            },
+            min: 0,
+            max: 100
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Bottom Left'),
+            value: ((_currentBorders$radiu11 = currentBorders.radius) === null || _currentBorders$radiu11 === void 0 ? void 0 : _currentBorders$radiu11.bottomLeft) || 0,
+            onChange: function onChange(value) {
+              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
+                bottomLeft: value
+              }));
+            },
+            min: 0,
+            max: 100
+          })]
+        })]
+      })]
+    });
+  };
+
+  // Main component render with collapsible panels
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    className: "ffblock-border-box-control",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
+      align: "center",
+      justify: "space-between",
+      className: "ffblock-control-header",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(FlexItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "ffblock-label",
+          children: label || __('Custom Border')
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(FlexItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
+          checked: isEnabled,
+          onChange: function onChange() {
+            return handleToggle();
+          },
+          label: ""
+        })
+      })]
+    }), isEnabled ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "ffblock-border-controls",
+      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "ffblock-state-tabs-container",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TabPanel, {
+          className: "ffblock-state-tabs",
+          activeClass: "is-active",
+          onSelect: function onSelect(tabName) {
+            return setActiveTab(tabName);
+          },
+          tabs: [{
+            name: "normal",
+            title: __("Normal"),
+            className: "ffblock-tab-normal"
+          }, {
+            name: "hover",
+            title: __("Hover"),
+            className: "ffblock-tab-hover"
+          }],
+          children: function children() {
+            return renderBorderControls();
+          }
+        })
+      }) : renderBorderControls()
+    }) : null]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FluentBorderControl);
+
+/***/ }),
+
 /***/ "./guten_block/src/components/controls/FluentColorPicker.js":
 /*!******************************************************************!*\
   !*** ./guten_block/src/components/controls/FluentColorPicker.js ***!
@@ -856,360 +1299,6 @@ var FluentTypography = function FluentTypography(_ref) {
 
 /***/ }),
 
-/***/ "./guten_block/src/components/controls/MyBorderBoxControl.js":
-/*!*******************************************************************!*\
-  !*** ./guten_block/src/components/controls/MyBorderBoxControl.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-
-
-
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-// Import React components
-var _wp$element = wp.element,
-  useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect,
-  useRef = _wp$element.useRef;
-var __ = wp.i18n.__;
-
-// Import WordPress components
-var _wp$components = wp.components,
-  __experimentalBorderBoxControl = _wp$components.__experimentalBorderBoxControl,
-  RangeControl = _wp$components.RangeControl,
-  Flex = _wp$components.Flex,
-  Button = _wp$components.Button,
-  ButtonGroup = _wp$components.ButtonGroup,
-  PanelBody = _wp$components.PanelBody,
-  TabPanel = _wp$components.TabPanel;
-
-// If experimental components are not available, they might not exist in your WordPress version
-var BorderBoxControl = __experimentalBorderBoxControl;
-
-/**
- * Dynamic Border Box Control Component
- *
- * @param {Object} props Component props
- * @param {string} props.label Label for the control
- * @param {Object} props.value Current border values for normal state
- * @param {Object} props.hoverValue Current border values for hover state
- * @param {Function} props.onChange Callback when border values change for normal state
- * @param {Function} props.onHoverChange Callback when border values change for hover state
- * @param {Array} props.colors Custom color palette
- * @param {Object} props.defaultBorder Default border settings
- * @param {boolean} props.showRadius Whether to show radius controls
- * @param {boolean} props.showHoverControls Whether to show hover state controls
- * @param {string} props.className Additional CSS class
- */
-var MyBorderBoxControl = function MyBorderBoxControl(_ref) {
-  var _ref$label = _ref.label,
-    label = _ref$label === void 0 ? __('Borders') : _ref$label,
-    value = _ref.value,
-    hoverValue = _ref.hoverValue,
-    onChange = _ref.onChange,
-    onHoverChange = _ref.onHoverChange,
-    _ref$colors = _ref.colors,
-    colors = _ref$colors === void 0 ? [{
-      name: 'Blue 20',
-      color: '#72aee6'
-    }, {
-      name: 'Red',
-      color: '#e65054'
-    }, {
-      name: 'Green',
-      color: '#68de7c'
-    }, {
-      name: 'Yellow',
-      color: '#f2d675'
-    }, {
-      name: 'Black',
-      color: '#000000'
-    }] : _ref$colors,
-    _ref$defaultBorder = _ref.defaultBorder,
-    defaultBorder = _ref$defaultBorder === void 0 ? {
-      color: '#72aee6',
-      style: 'solid',
-      width: '1px'
-    } : _ref$defaultBorder,
-    _ref$showRadius = _ref.showRadius,
-    showRadius = _ref$showRadius === void 0 ? true : _ref$showRadius,
-    _ref$showHoverControl = _ref.showHoverControls,
-    showHoverControls = _ref$showHoverControl === void 0 ? true : _ref$showHoverControl,
-    _ref$className = _ref.className,
-    className = _ref$className === void 0 ? '' : _ref$className;
-  // Default border structure
-  var defaultBorderStructure = {
-    top: defaultBorder,
-    right: defaultBorder,
-    bottom: defaultBorder,
-    left: defaultBorder,
-    linked: true,
-    radius: {
-      topLeft: 0,
-      topRight: 0,
-      bottomRight: 0,
-      bottomLeft: 0,
-      linked: true
-    }
-  };
-
-  // Initialize borders state with provided value or defaults
-  var _useState = useState(value || defaultBorderStructure),
-    _useState2 = _slicedToArray(_useState, 2),
-    borders = _useState2[0],
-    setBorders = _useState2[1];
-
-  // Initialize hover borders state with provided value or defaults
-  var _useState3 = useState(hoverValue || defaultBorderStructure),
-    _useState4 = _slicedToArray(_useState3, 2),
-    hoverBorders = _useState4[0],
-    setHoverBorders = _useState4[1];
-
-  // Track active tab (normal or hover)
-  var _useState5 = useState('normal'),
-    _useState6 = _slicedToArray(_useState5, 2),
-    activeTab = _useState6[0],
-    setActiveTab = _useState6[1];
-
-  // Using refs to prevent the initial render from triggering onChange
-  var isInitialNormalMount = useRef(true);
-  var isInitialHoverMount = useRef(true);
-
-  // Update parent component when normal borders change
-  useEffect(function () {
-    // Skip the first render to prevent unnecessary onChange calls
-    if (isInitialNormalMount.current) {
-      isInitialNormalMount.current = false;
-      return;
-    }
-
-    // Only call onChange if it exists and borders is defined
-    if (onChange && borders) {
-      onChange(borders);
-    }
-  }, [borders, onChange]);
-
-  // Update parent component when hover borders change
-  useEffect(function () {
-    // Skip the first render to prevent unnecessary onHoverChange calls
-    if (isInitialHoverMount.current) {
-      isInitialHoverMount.current = false;
-      return;
-    }
-
-    // Only call onHoverChange if it exists and hoverBorders is defined
-    if (onHoverChange && hoverBorders) {
-      onHoverChange(hoverBorders);
-    }
-  }, [hoverBorders, onHoverChange]);
-
-  // Get the current borders based on active tab
-  var getCurrentBorders = function getCurrentBorders() {
-    return activeTab === 'normal' ? borders : hoverBorders;
-  };
-
-  // Set the current borders based on active tab
-  var setCurrentBorders = function setCurrentBorders(newBorders) {
-    if (activeTab === 'normal') {
-      setBorders(newBorders);
-    } else {
-      setHoverBorders(newBorders);
-    }
-  };
-
-  // Handle border changes
-  var handleBorderChange = function handleBorderChange(newBorders) {
-    var currentBorders = getCurrentBorders();
-    // Preserve radius and linked properties
-    var updatedBorders = _objectSpread(_objectSpread({}, newBorders), {}, {
-      radius: currentBorders.radius || {
-        topLeft: 0,
-        topRight: 0,
-        bottomRight: 0,
-        bottomLeft: 0,
-        linked: true
-      },
-      linked: currentBorders.linked !== undefined ? currentBorders.linked : true
-    });
-    setCurrentBorders(updatedBorders);
-  };
-
-  // Handle radius changes
-  var handleRadiusChange = function handleRadiusChange(newRadius) {
-    var currentBorders = getCurrentBorders();
-    var updatedBorders = _objectSpread(_objectSpread({}, currentBorders), {}, {
-      radius: newRadius
-    });
-    setCurrentBorders(updatedBorders);
-  };
-
-  // Toggle linked radius
-  var toggleLinkedRadius = function toggleLinkedRadius() {
-    var _currentBorders$radiu, _currentBorders$radiu2, _currentBorders$radiu3;
-    var currentBorders = getCurrentBorders();
-    var radiusValue = ((_currentBorders$radiu = currentBorders.radius) === null || _currentBorders$radiu === void 0 ? void 0 : _currentBorders$radiu.topLeft) || 0;
-    setCurrentBorders(_objectSpread(_objectSpread({}, currentBorders), {}, {
-      radius: _objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-        linked: !((_currentBorders$radiu2 = currentBorders.radius) !== null && _currentBorders$radiu2 !== void 0 && _currentBorders$radiu2.linked)
-      }, (_currentBorders$radiu3 = currentBorders.radius) !== null && _currentBorders$radiu3 !== void 0 && _currentBorders$radiu3.linked ? {} : {
-        topLeft: radiusValue,
-        topRight: radiusValue,
-        bottomRight: radiusValue,
-        bottomLeft: radiusValue
-      })
-    }));
-  };
-
-  // Render the border controls based on the current state
-  var renderBorderControls = function renderBorderControls() {
-    var _currentBorders$radiu4, _currentBorders$radiu5, _currentBorders$radiu6, _currentBorders$radiu7, _currentBorders$radiu8, _currentBorders$radiu9, _currentBorders$radiu10, _currentBorders$radiu11, _currentBorders$radiu12, _currentBorders$radiu13;
-    var currentBorders = getCurrentBorders();
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BorderBoxControl, {
-        colors: colors,
-        label: label,
-        onChange: handleBorderChange,
-        value: currentBorders
-      }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        className: "ffblock-radius-control",
-        style: {
-          marginTop: '16px'
-        },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
-          title: __('Border Radius'),
-          initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Flex, {
-            align: "flex-start",
-            justify: "flex-start",
-            style: {
-              marginBottom: '8px'
-            },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(ButtonGroup, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
-                isPrimary: (_currentBorders$radiu4 = currentBorders.radius) === null || _currentBorders$radiu4 === void 0 ? void 0 : _currentBorders$radiu4.linked,
-                isSecondary: !((_currentBorders$radiu5 = currentBorders.radius) !== null && _currentBorders$radiu5 !== void 0 && _currentBorders$radiu5.linked),
-                onClick: toggleLinkedRadius,
-                children: __('Linked')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
-                isPrimary: !((_currentBorders$radiu6 = currentBorders.radius) !== null && _currentBorders$radiu6 !== void 0 && _currentBorders$radiu6.linked),
-                isSecondary: (_currentBorders$radiu7 = currentBorders.radius) === null || _currentBorders$radiu7 === void 0 ? void 0 : _currentBorders$radiu7.linked,
-                onClick: toggleLinkedRadius,
-                children: __('Individual')
-              })]
-            })
-          }), (_currentBorders$radiu8 = currentBorders.radius) !== null && _currentBorders$radiu8 !== void 0 && _currentBorders$radiu8.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-            label: __('Radius'),
-            value: ((_currentBorders$radiu9 = currentBorders.radius) === null || _currentBorders$radiu9 === void 0 ? void 0 : _currentBorders$radiu9.topLeft) || 0,
-            onChange: function onChange(value) {
-              handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-                topLeft: value,
-                topRight: value,
-                bottomRight: value,
-                bottomLeft: value
-              }));
-            },
-            min: 0,
-            max: 100
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-              label: __('Top Left'),
-              value: ((_currentBorders$radiu10 = currentBorders.radius) === null || _currentBorders$radiu10 === void 0 ? void 0 : _currentBorders$radiu10.topLeft) || 0,
-              onChange: function onChange(value) {
-                handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-                  topLeft: value
-                }));
-              },
-              min: 0,
-              max: 100
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-              label: __('Top Right'),
-              value: ((_currentBorders$radiu11 = currentBorders.radius) === null || _currentBorders$radiu11 === void 0 ? void 0 : _currentBorders$radiu11.topRight) || 0,
-              onChange: function onChange(value) {
-                handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-                  topRight: value
-                }));
-              },
-              min: 0,
-              max: 100
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-              label: __('Bottom Right'),
-              value: ((_currentBorders$radiu12 = currentBorders.radius) === null || _currentBorders$radiu12 === void 0 ? void 0 : _currentBorders$radiu12.bottomRight) || 0,
-              onChange: function onChange(value) {
-                handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-                  bottomRight: value
-                }));
-              },
-              min: 0,
-              max: 100
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
-              label: __('Bottom Left'),
-              value: ((_currentBorders$radiu13 = currentBorders.radius) === null || _currentBorders$radiu13 === void 0 ? void 0 : _currentBorders$radiu13.bottomLeft) || 0,
-              onChange: function onChange(value) {
-                handleRadiusChange(_objectSpread(_objectSpread({}, currentBorders.radius), {}, {
-                  bottomLeft: value
-                }));
-              },
-              min: 0,
-              max: 100
-            })]
-          })]
-        })
-      })]
-    });
-  };
-
-  // Main component render with collapsible panels
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-    className: "ffblock-border-box-control ".concat(className),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(PanelBody, {
-      title: __('Border Controls'),
-      initialOpen: false,
-      className: "ffblock-control-panel is-active",
-      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        className: "ffblock-state-tabs-container",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TabPanel, {
-          className: "ffblock-state-tabs",
-          activeClass: "is-active",
-          onSelect: function onSelect(tabName) {
-            return setActiveTab(tabName);
-          },
-          tabs: [{
-            name: 'normal',
-            title: __('Normal'),
-            className: 'ffblock-tab-normal'
-          }, {
-            name: 'hover',
-            title: __('Hover'),
-            className: 'ffblock-tab-hover'
-          }],
-          children: function children() {
-            return renderBorderControls();
-          }
-        })
-      }) : renderBorderControls()
-    })
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyBorderBoxControl);
-
-/***/ }),
-
 /***/ "./guten_block/src/components/tabs/TabAdvanced.js":
 /*!********************************************************!*\
   !*** ./guten_block/src/components/tabs/TabAdvanced.js ***!
@@ -1230,12 +1319,32 @@ __webpack_require__.r(__webpack_exports__);
 var __ = wp.i18n.__;
 var _wp$components = wp.components,
   PanelBody = _wp$components.PanelBody,
-  TextControl = _wp$components.TextControl;
+  TextControl = _wp$components.TextControl,
+  ToggleControl = _wp$components.ToggleControl,
+  Flex = _wp$components.Flex,
+  FlexItem = _wp$components.FlexItem;
 var TabAdvanced = function TabAdvanced(_ref) {
   var attributes = _ref.attributes,
     setAttributes = _ref.setAttributes;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(PanelBody, {
+      title: __('Animation & Effects'),
+      initialOpen: true,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Flex, {
+        direction: "column",
+        gap: 4,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ToggleControl, {
+          label: __('Enable Hover Transitions'),
+          checked: attributes.enableTransition !== false,
+          onChange: function onChange(value) {
+            return setAttributes({
+              enableTransition: value
+            });
+          },
+          help: __('Add smooth transitions when hovering over form elements')
+        })
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(PanelBody, {
       title: __('Custom CSS'),
       initialOpen: true,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
@@ -1271,7 +1380,7 @@ var TabAdvanced = function TabAdvanced(_ref) {
           placeholder: ".fluent-form .ff-el-form-control { /* Your custom styles */\n}"
         })]
       })]
-    })
+    })]
   });
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabAdvanced);
@@ -1291,7 +1400,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _controls_FluentTypography__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
 /* harmony import */ var _controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var _controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/MyBorderBoxControl */ "./guten_block/src/components/controls/MyBorderBoxControl.js");
+/* harmony import */ var _controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -1464,43 +1573,19 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
     });
   };
   var handleBorderChange = function handleBorderChange(value) {
-    var _value$top, _value$radius, _value$top2;
     // Update the new border object
     var styleUpdates = {
       inputBorder: value
     };
 
-    // For backward compatibility, also update the old attributes
-    if (value !== null && value !== void 0 && (_value$top = value.top) !== null && _value$top !== void 0 && _value$top.width) {
-      styleUpdates.inputTABorderWidth = value.top.width;
-    }
-    if ((value === null || value === void 0 || (_value$radius = value.radius) === null || _value$radius === void 0 ? void 0 : _value$radius.topLeft) !== undefined) {
-      styleUpdates.inputTABorderRadius = value.radius.topLeft;
-    }
-    if (value !== null && value !== void 0 && (_value$top2 = value.top) !== null && _value$top2 !== void 0 && _value$top2.color) {
-      styleUpdates.inputTABorderColor = value.top.color;
-    }
-
     // Update all styles at once
     updateStyles(styleUpdates);
   };
   var handleHoverBorderChange = function handleHoverBorderChange(value) {
-    var _value$top3, _value$radius2, _value$top4;
     // Update the hover border object
     var styleUpdates = {
       inputBorderHover: value
     };
-
-    // For backward compatibility, also update the old hover attributes
-    if (value !== null && value !== void 0 && (_value$top3 = value.top) !== null && _value$top3 !== void 0 && _value$top3.width) {
-      styleUpdates.inputTABorderWidthHover = value.top.width;
-    }
-    if ((value === null || value === void 0 || (_value$radius2 = value.radius) === null || _value$radius2 === void 0 ? void 0 : _value$radius2.topLeft) !== undefined) {
-      styleUpdates.inputTABorderRadiusHover = value.radius.topLeft;
-    }
-    if (value !== null && value !== void 0 && (_value$top4 = value.top) !== null && _value$top4 !== void 0 && _value$top4.color) {
-      styleUpdates.inputTABorderColorHover = value.top.color;
-    }
 
     // Update all styles at once
     updateStyles(styleUpdates);
@@ -1535,39 +1620,8 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
       bottomRight: attributes.inputTABorderRadius || 0,
       bottomLeft: attributes.inputTABorderRadius || 0,
       linked: true
-    }
-  };
-
-  // Default hover border values
-  var defaultHoverBorder = {
-    top: {
-      width: 1,
-      style: 'solid',
-      color: attributes.inputTABorderColorHover || '#72aee6'
     },
-    right: {
-      width: 1,
-      style: 'solid',
-      color: attributes.inputTABorderColorHover || '#72aee6'
-    },
-    bottom: {
-      width: 1,
-      style: 'solid',
-      color: attributes.inputTABorderColorHover || '#72aee6'
-    },
-    left: {
-      width: 1,
-      style: 'solid',
-      color: attributes.inputTABorderColorHover || '#72aee6'
-    },
-    linked: true,
-    radius: {
-      topLeft: attributes.inputTABorderRadiusHover || 0,
-      topRight: attributes.inputTABorderRadiusHover || 0,
-      bottomRight: attributes.inputTABorderRadiusHover || 0,
-      bottomLeft: attributes.inputTABorderRadiusHover || 0,
-      linked: true
-    }
+    custom_border: true
   };
 
   // Default spacing values
@@ -1616,10 +1670,9 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
           inputSpacing: value
         });
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      label: "Style Settings",
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
       value: attributes.inputBorder || defaultBorder,
-      hoverValue: attributes.inputBorderHover || defaultHoverBorder,
+      hoverValue: attributes.inputBorderHover || defaultBorder,
       spacingValue: attributes.inputSpacing || defaultSpacing,
       spacingHoverValue: attributes.inputSpacingHover || defaultSpacing,
       onChange: handleBorderChange,
@@ -1637,7 +1690,6 @@ var InputStylesPanel = function InputStylesPanel(_ref3) {
       colors: DEFAULT_COLORS,
       showRadius: true,
       showBorderControls: true,
-      showSpacingControls: true,
       showHoverControls: true,
       className: "fluent-form-style-control"
     })]
@@ -1940,7 +1992,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_controls_FluentColorPicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/controls/FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
 /* harmony import */ var _components_controls_FluentTypography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/controls/FluentTypography */ "./guten_block/src/components/controls/FluentTypography.js");
 /* harmony import */ var _components_controls_FluentSpaceControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/controls/FluentSpaceControl */ "./guten_block/src/components/controls/FluentSpaceControl.js");
-/* harmony import */ var _components_controls_MyBorderBoxControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/controls/MyBorderBoxControl */ "./guten_block/src/components/controls/MyBorderBoxControl.js");
+/* harmony import */ var _components_controls_FluentBorderControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/controls/FluentBorderControl */ "./guten_block/src/components/controls/FluentBorderControl.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2143,6 +2195,7 @@ var Edit = /*#__PURE__*/function (_Component) {
   _createClass(Edit, [{
     key: "updateStyles",
     value: function updateStyles(styleAttributes) {
+      console.log(styleAttributes);
       var _this$props = this.props,
         setAttributes = _this$props.setAttributes,
         attributes = _this$props.attributes;

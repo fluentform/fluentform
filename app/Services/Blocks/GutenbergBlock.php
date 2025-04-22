@@ -116,6 +116,149 @@ class GutenbergBlock
     }
 
     /**
+     * Helper method to process border settings
+     *
+     * @param array $border Border settings
+     * @param string $selector CSS selector
+     * @param boolean $isHover Whether this is for hover state
+     * @return string Generated CSS rules
+     */
+    private static function processBorder($border, $selector, $isHover = false)
+    {
+        $css = '';
+
+        if (empty($border)) {
+            return $css;
+        }
+
+        // Start building CSS rules for this selector
+        $rules = [];
+
+        // Process border width, style, and color
+        // Check if we have individual border sides or a single border object
+        $topBorder = Arr::get($border, 'top', []);
+        $rightBorder = Arr::get($border, 'right', []);
+        $bottomBorder = Arr::get($border, 'bottom', []);
+        $leftBorder = Arr::get($border, 'left', []);
+
+        // Check if we have any border properties
+        if (!empty($topBorder)) {
+            // Border width
+            $borderWidth = Arr::get($topBorder, 'width');
+            if (!empty($borderWidth)) {
+                // Remove 'px' suffix if it already exists
+                $borderWidth = str_replace('px', '', $borderWidth);
+                $rules[] = 'border-width: ' . $borderWidth . 'px';
+            }
+
+            // Border style
+            $borderStyle = Arr::get($topBorder, 'style');
+            if (!empty($borderStyle)) {
+                $rules[] = 'border-style: ' . $borderStyle;
+            }
+
+            // Border color
+            $borderColor = Arr::get($topBorder, 'color');
+            if (!empty($borderColor)) {
+                $rules[] = 'border-color: ' . $borderColor;
+            }
+        } else {
+            // Check if we have a color property directly on the border object
+            $borderColor = Arr::get($border, 'color');
+            if (!empty($borderColor)) {
+                $rules[] = 'border-color: ' . $borderColor;
+            }
+
+            // Check if we have a width property directly on the border object
+            $borderWidth = Arr::get($border, 'width');
+            if (!empty($borderWidth)) {
+                // Remove 'px' suffix if it already exists
+                $borderWidth = str_replace('px', '', $borderWidth);
+                $rules[] = 'border-width: ' . $borderWidth . 'px';
+            }
+
+            // Check if we have a style property directly on the border object
+            $borderStyle = Arr::get($border, 'style');
+            if (!empty($borderStyle)) {
+                $rules[] = 'border-style: ' . $borderStyle;
+            }
+        }
+
+        // Process border radius - always process radius if it exists, even if other border properties don't
+        $radius = Arr::get($border, 'radius', []);
+        // Use isset instead of !empty to catch zero values
+        if (isset($radius) && is_array($radius)) {
+            $isLinked = Arr::get($radius, 'linked', false);
+
+            if ($isLinked) {
+                // If all corners are linked, use a single border-radius property
+                $topLeft = Arr::get($radius, 'topLeft');
+                // Check if the value is set (including zero)
+                if (isset($topLeft) || $topLeft === 0 || $topLeft === '0') {
+                    $rules[] = 'border-radius: ' . $topLeft . 'px';
+                }
+            } else {
+                // Individual corner radii
+                $radiusRules = [];
+
+                $topLeft = Arr::get($radius, 'topLeft');
+                // Check if the value is set (including zero)
+                if (isset($topLeft) || $topLeft === 0 || $topLeft === '0') {
+                    $radiusRules[] = 'border-top-left-radius: ' . $topLeft . 'px';
+                }
+
+                $topRight = Arr::get($radius, 'topRight');
+                // Check if the value is set (including zero)
+                if (isset($topRight) || $topRight === 0 || $topRight === '0') {
+                    $radiusRules[] = 'border-top-right-radius: ' . $topRight . 'px';
+                }
+
+                $bottomRight = Arr::get($radius, 'bottomRight');
+                // Check if the value is set (including zero)
+                if (isset($bottomRight) || $bottomRight === 0 || $bottomRight === '0') {
+                    $radiusRules[] = 'border-bottom-right-radius: ' . $bottomRight . 'px';
+                }
+
+                $bottomLeft = Arr::get($radius, 'bottomLeft');
+                // Check if the value is set (including zero)
+                if (isset($bottomLeft) || $bottomLeft === 0 || $bottomLeft === '0') {
+                    $radiusRules[] = 'border-bottom-left-radius: ' . $bottomLeft . 'px';
+                }
+
+                $rules = array_merge($rules, $radiusRules);
+            }
+        }
+
+        // Only generate CSS if we have rules
+        if (!empty($rules)) {
+            if ($isHover) {
+                // For hover styles, use :hover and :focus pseudo-classes
+                // Split the selector by commas and add :hover and :focus to each part
+                $selectorParts = explode(',', $selector);
+                $hoverSelectors = [];
+
+                foreach ($selectorParts as $part) {
+                    $part = trim($part);
+                    $hoverSelectors[] = $part . ':hover';
+                    $hoverSelectors[] = $part . ':focus';
+                }
+
+                $hoverSelector = implode(', ', $hoverSelectors);
+                $css = $hoverSelector . ' { ' . implode('; ', $rules) . '; }' . "\n";
+            } else {
+                // For normal styles, use the selector as is
+                // Add transition if enabled
+                if (Arr::get($border, 'enableTransition', true)) {
+                    $rules[] = 'transition: border-color 0.3s ease, border-width 0.3s ease, border-style 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, color 0.3s ease';
+                }
+                $css = $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
+            }
+        }
+
+        return $css;
+    }
+
+    /**
      * Register the Gutenberg block
      *
      * @return void
@@ -184,6 +327,10 @@ class GutenbergBlock
                 ],
                 'buttonHoverBGColor'   => [
                     'type'    => 'string',
+                ],
+                'enableTransition'     => [
+                    'type'    => 'boolean',
+                    'default' => true,
                 ],
             ],
             ]);
@@ -255,6 +402,11 @@ class GutenbergBlock
         // Process input text color
         if ($inputTextColor = Arr::get($atts, 'inputTextColor')) {
             $customCSS .= self::generateCssRule($inputSelectorsStr, 'color', $inputTextColor);
+
+            // Add transition for smooth hover effects if enabled
+            if (Arr::get($atts, 'enableTransition', true)) {
+                $customCSS .= self::generateCssRule($inputSelectorsStr, 'transition', 'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, border-width 0.3s ease, border-radius 0.3s ease');
+            }
         }
 
         // Process input background color
@@ -265,6 +417,11 @@ class GutenbergBlock
         // Process button text color
         if ($buttonColor = Arr::get($atts, 'buttonColor')) {
             $customCSS .= self::generateCssRule($buttonSelectorsStr, 'color', $buttonColor);
+
+            // Add transition for smooth hover effects if enabled
+            if (Arr::get($atts, 'enableTransition', true)) {
+                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'transition', 'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease');
+            }
         }
 
         // Process button background color
@@ -330,6 +487,26 @@ class GutenbergBlock
             }
         }
 
+        // Process input border
+        $inputBorder = Arr::get($atts, 'inputBorder', []);
+        $inputBorderHover = Arr::get($atts, 'inputBorderHover', []);
+
+        $customBorderEnabled = Arr::get($inputBorder, 'custom_border');
+
+        if (!empty($inputBorder) && $customBorderEnabled && $customBorderEnabled !== 'false' && $customBorderEnabled !== '0') {
+            $borderCSS = self::processBorder($inputBorder, $inputBGSelectorsStr, false);
+            if ($borderCSS) {
+                $customCSS .= $borderCSS;
+            }
+
+            if (!empty($inputBorderHover)) {
+                $borderHoverCSS = self::processBorder($inputBorderHover, $inputBGSelectorsStr, true);
+                if ($borderHoverCSS) {
+                    $customCSS .= $borderHoverCSS;
+                }
+            }
+        }
+
         // Add the custom CSS inline with the form
         if ($customCSS) {
             // Create a unique ID for this form's styles
@@ -347,11 +524,9 @@ class GutenbergBlock
             if ($inlineStyle) {
                 $debugAttrs = [
                     'formId' => $formId,
-                    'labelColor' => $labelColor ?: 'empty',
-                    'inputTextColor' => $inputTextColor ?: 'empty',
-                    'inputBackgroundColor' => $inputBackgroundColor ?: 'empty',
-                    'buttonColor' => $buttonColor ?: 'empty',
-                    'inputSpacing' => !empty($inputSpacing) ? 'set' : 'empty'
+                    'spacing' => !empty($inputSpacing) ? 'yes' : 'no',
+                    'border' => !empty($inputBorder) && $customBorderEnabled ? 'yes' : 'no',
+                    'hover' => !empty($inputBorderHover) ? 'yes' : 'no'
                 ];
 
                 $debugParts = [];

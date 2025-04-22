@@ -32,7 +32,7 @@ import Tabs from './components/tabs/Tabs';
 import FluentColorPicker from './components/controls/FluentColorPicker';
 import FluentTypography from './components/controls/FluentTypography';
 import FluentSpaceControl from './components/controls/FluentSpaceControl';
-import MyBorderControl from './components/controls/MyBorderBoxControl';
+import FluentBorderControl from './components/controls/FluentBorderControl';
 
 
 // Function to get form meta
@@ -63,6 +63,7 @@ class Edit extends Component {
 
     // Method to update styles without causing infinite loops
     updateStyles(styleAttributes) {
+        console.log(styleAttributes);
         const { setAttributes, attributes } = this.props;
 
         // Create a new object with only the changed attributes
