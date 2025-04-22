@@ -123,6 +123,11 @@ class PaymentHelper
             $settings = wp_parse_args($settings, $globalSettings);
         }
 
+        $settings['paypal_webhook_url'] = add_query_arg([
+            'fluentform_payment_api_notify' => '1',
+            'payment_method'                => 'paypal'
+        ], site_url('index.php'));
+
 
         $cachedSettings[$scope . '_' . $formId] = $settings;
 

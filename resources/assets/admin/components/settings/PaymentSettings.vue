@@ -260,6 +260,36 @@
 		                            <el-form-item class="ff-form-item" label="PayPal Email">
 			                            <el-input type="email" v-model="settings.custom_paypal_id" :placeholder="$t('Custom PayPal Email')" />
 		                            </el-form-item>
+		                            <!-- Legacy PayPal IPN Settings -->
+		                            <div class="ff_sub_section">
+			                            <h5 class="mb-2">
+				                            {{ $t('PayPal IPN Settings (Recommended for Subscription Payment)') }}
+			                            </h5>
+			                            <p>
+				                            {{ $t('In order to function completely for subscription/recurring payments, you must configure your PayPal IPN.') }}
+			                            </p>
+			                            <p
+				                            v-html="
+				                                $t(
+				                                    '%sIPN URL:%s %s',
+				                                    '<b>',
+				                                    '</b>',
+				                                    `<code>${settings.paypal_webhook_url}</code>`
+				                                )
+                                            "
+			                            ></p>
+			                            <p
+				                            v-html="
+				                                $t(
+				                                    '%sPlease read the documentation%s to learn how to setup %sPayPal IPN%s',
+				                                    `<a target='_blank' rel='noopener' href='https://wpmanageninja.com/docs/fluent-form/payment-settings/how-to-setup-paypal-ipn-with-wp-fluent-forms/'>`,
+				                                    '</a>',
+				                                    '<b>',
+				                                    '</b>'
+				                                )
+                                            "
+			                            ></p>
+		                            </div>
 	                            </template>
 
 	                            <!-- Standard API Key Integration fields -->
@@ -291,6 +321,49 @@
 				                            v-model="settings.custom_paypal_live_secret"
 				                            :placeholder="$t('Live Secret')"/>
 		                            </el-form-item>
+
+		                            <div  class="ff_sub_section">
+			                            <h5 class="mb-2">
+				                            {{ $t('PayPal Webhook Settings (Required for Subscriptions)') }}
+			                            </h5>
+			                            <p>
+				                            {{ $t('For PayPal API integration, you need to set up webhooks to properly handle payment notifications, especially for subscriptions.') }}
+			                            </p>
+			                            <p
+				                            v-html="
+				                                $t(
+				                                    '%sWebhook URL:%s %s',
+				                                    '<b>',
+				                                    '</b>',
+				                                    `<code>${settings.paypal_webhook_url}</code>`
+				                                )
+                                            "
+			                            >
+			                            </p>
+
+			                            <p>{{ $t('Follow these steps to set up your webhook:') }}</p>
+			                            <p>{{ $t('Log in to the PayPal Developer Dashboard → Go to My Apps & Credentials → Scroll to Webhooks and click "Add Webhook" → Enter the Webhook URL shown above') }} </p>
+			                            <p>{{ $t('Select the following event types:') }}</p>
+			                            <ul class="mt-1">
+				                            <li><code>Billing subscription activated</code></li>
+				                            <li><code>Billing subscription cancelled</code></li>
+				                            <li><code>Billing subscription expired</code></li>
+				                            <li><code>Billing subscription suspended</code></li>
+				                            <li><code>Payment sale completed</code></li>
+				                            <li><code>Payment sale refunded</code></li>
+				                            <li><code>Payment capture refunded</code></li>
+			                            </ul>
+			                            <p>{{ $t('Save the webhook') }}</p>
+			                            <p
+				                            v-html="
+				                                $t(
+				                                    '%sPlease read the documentation%s to learn how to setup PayPal Webhook',
+				                                    `<a href='https://wpmanageninja.com/docs/fluent-form/payment-settings/how-to-setup-paypal-api/' target='_blank' rel='noopener'>`,
+				                                    '</a>'
+				                                )
+                                            "
+			                            ></p>
+		                            </div>
 	                            </template>
                             </template>
                         </div>
