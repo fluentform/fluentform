@@ -21,24 +21,24 @@
                 <stat-card
                     title="Spam Submissions"
                     :value="stats?.spam_submissions?.value || 0"
-                    icon="spam"
+                    icon="trash"
                     :change="stats?.spam_submissions?.change"
                     :change-type="stats?.spam_submissions?.change_type"
                 />
                 <stat-card
                     title="Unread Submissions"
                     :value="stats?.unread_submissions?.value || 0"
-                    icon="unread"
+                    icon="eye-off"
                 />
                 <stat-card
                     title="Read Submissions"
                     :value="stats?.read_submissions?.value || 0"
-                    icon="read"
+                    icon="eye"
                 />
                 <stat-card
                     title="Active Integrations"
                     :value="stats?.active_integrations?.value || 0"
-                    icon="integration"
+                    icon="rocket-filled"
                 />
             </card-body>
         </card>

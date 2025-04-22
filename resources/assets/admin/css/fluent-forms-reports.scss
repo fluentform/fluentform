@@ -25,10 +25,7 @@
             
             &-body {
                 .chart-controls {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
+                    text-align: right;
                 }
 
                 .chart-legend {
@@ -52,7 +49,7 @@
                     margin-right: 8px;
                 }
 
-                .legend-dot.entries {
+                .legend-dot.submission {
                     background-color: #7B5CFA; /* Purple */
                 }
 
@@ -110,7 +107,7 @@
             &-body {
                 display: flex;
                 flex-direction: column;
-                gap: 27px;
+                gap: 30px;
                 
                 .stat-card {
                     border: 1px solid #E1E4EA;
@@ -121,19 +118,23 @@
                     }
 
                     .stat-icon {
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 12px;
+                        background-color: #F5F6F9;
                         display: flex;
-                        justify-content: center;
                         align-items: center;
-                        width: 50px;
-                        height: 50px;
-                        background: #f5f5f5;
-                        border-radius: 8px;
-                        margin-right: 16px;
+                        justify-content: center;
+                        margin-right: 15px;
+                        flex-shrink: 0;
                     }
 
-                    .stat-info {
-                        display: flex;
-                        gap: 8px;
+                    .stat-icon i {
+                        font-size: 20px;
+                    }
+
+                    .stat-details {
+                        flex-grow: 1;
                     }
 
                     .stat-title {
@@ -142,23 +143,42 @@
                         margin-bottom: 4px;
                     }
 
+                    .stat-info {
+                        display: flex;
+                        gap: 8px;
+                    }
+
                     .stat-value {
                         font-size: 18px;
                         font-weight: bold;
                         display: flex;
                         align-items: center;
+                        
+                        .value {
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-right: 8px;
+                        }
                     }
 
-                    .value {
-                        margin-right: 8px;
-                    }
+                    .change-value {
+                        font-size: 14px;
+                        font-weight: 500;
+                        display: flex;
+                        align-items: center;
 
-                    .positive {
-                        color: green;
-                    }
+                        &.up {
+                            color: #22C55E;
+                        }
 
-                    .negative {
-                        color: red;
+                        &.down {
+                            color: #EF4444;
+                        }
+
+                        & i {
+                            margin-right: 2px;
+                            font-size: 12px;
+                        }
                     }
                 }
             }
@@ -175,6 +195,7 @@
                     overflow-x: auto;
                     width: 100%;
                     position: relative;
+                    min-height: 400px;
                 }
 
                 .heatmap-wrapper {
@@ -188,13 +209,33 @@
                 .heatmap-grid {
                     display: grid;
                     grid-template-columns: 1fr;
-                    gap: 12px; /* Gap between rows */
+                    gap: 12px;
+                    transition: transform 0.3s ease-in-out;
+                    will-change: transform;
+                }
+
+                .slide-left {
+                    animation: slideLeft 0.3s ease-in-out;
+                }
+
+                .slide-right {
+                    animation: slideRight 0.3s ease-in-out;
+                }
+
+                @keyframes slideLeft {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(-30px); opacity: 0; }
+                }
+
+                @keyframes slideRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(30px); opacity: 0; }
                 }
 
                 .header-row, .data-row {
                     display: grid;
-                    grid-template-columns: 120px repeat(8, 1fr); /* First column for date/navigation, then 8 columns for time slots */
-                    gap: 10px; /* Gap between cells */
+                    grid-template-columns: 120px repeat(8, 1fr);
+                    gap: 12px;
                     align-items: center;
                 }
 
@@ -233,10 +274,10 @@
                 }
 
                 .time-header {
+                    font-weight: 500;
                     text-align: center;
                     color: #606266;
-                    font-size: 13px;
-                    font-weight: normal;
+                    font-size: 14px;
                 }
 
                 .date-cell {
@@ -326,38 +367,6 @@
                 .slide-fade-leave-to {
                     opacity: 0;
                     transform: translateX(-30px);
-                }
-
-                .loading-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background-color: rgba(255, 255, 255, 0.7);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10;
-                }
-
-                .loading-spinner {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 10px;
-                }
-
-                .loading-spinner i {
-                    font-size: 32px;
-                    color: #7B5CFA;
-                }
-
-                @media (max-width: 768px) {
-                    .header-row, .data-row {
-                        grid-template-columns: 100px repeat(8, minmax(60px, 1fr));
-                        gap: 6px;
-                    }
                 }
             }
         }
