@@ -16,15 +16,10 @@
                 />
             </card-head>
             <card-body class="submission-heatmap-body">
-                <div class="table-container">
-                    <div v-if="loading" class="loading-overlay">
-                        <div class="loading-spinner">
-                            <i class="el-icon-loading"></i>
-                        </div>
-                    </div>
+                <div class="table-container" v-loading="loading">
                     <div class="heatmap-wrapper" ref="gridWrapper">
                         <transition name="slide-fade" mode="out-in">
-                            <div class="heatmap-grid" :key="tableKey">
+                            <div class="heatmap-grid" :key="tableKey" :class="{'slide-right': isSlideRight, 'slide-left': isSlideLeft}">
                                 <!-- Header row with navigation and time slots -->
                                 <div class="header-row">
                                     <div class="navigation-cell">
@@ -51,7 +46,7 @@
                                         :key="'header-' + index"
                                         class="time-header"
                                     >
-                                        {{ formatTimeHeader(timeSlot) }}
+                                        {{ timeSlot }}
                                     </div>
                                 </div>
 
@@ -108,7 +103,7 @@ export default {
     data() {
         const now = new Date();
         const sevenDaysAgo = new Date(now);
-        sevenDaysAgo.setDate(now.getDate() - 7);
+        sevenDaysAgo.setDate(now.getDate() - 6);
 
         return {
             loading: false,
@@ -117,7 +112,10 @@ export default {
                 this.formatDateForRange(now)
             ],
             currentStartDate: sevenDaysAgo,
-            daysToShow: 7, // Changed to 7 days
+            daysToShow: 7,
+            skipNextAnimation: false,
+            isSlideRight: false,
+            isSlideLeft: false,
             timeSlots: [
                 "12:00 AM-03:00 AM",
                 "03:00 AM-06:00 AM",
@@ -153,25 +151,36 @@ export default {
                 date.setDate(date.getDate() + 1);
             }
 
-            // Reverse the array to show most recent dates at the top
             return days.reverse();
         },
         // Check if next button should be disabled (if end date would be in the future)
         isNextDisabled() {
-            // Get today with time set to 23:59:59
+            // Calculate the end date of the current view
+            const currentEndDate = new Date(this.currentStartDate);
+            currentEndDate.setDate(currentEndDate.getDate() + (this.daysToShow - 1));
+
+            // Get today's date
             const today = new Date();
-            today.setHours(23, 59, 59, 999);
 
-            // Calculate end date after potential next navigation
-            const potentialStartDate = new Date(this.currentStartDate);
-            potentialStartDate.setDate(potentialStartDate.getDate() + this.daysToShow);
-
-            // Disable if the new start date would be after today
-            return potentialStartDate > today;
+            // Compare only the date parts (year, month, day), ignoring time
+            return (
+                currentEndDate.getFullYear() === today.getFullYear() &&
+                currentEndDate.getMonth() === today.getMonth() &&
+                currentEndDate.getDate() === today.getDate()
+            );
         },
         // Check if prev button should be disabled (if start date is beyond the history limit)
         isPrevDisabled() {
-            return this.currentStartDate <= this.maxHistoryDate;
+            // Get the current start date and reset time to midnight
+            const currentStartDate = new Date(this.currentStartDate);
+            currentStartDate.setHours(0, 0, 0, 0);
+
+            // Get the maximum history date and reset time to midnight
+            const maxHistoryDate = new Date(this.maxHistoryDate);
+            maxHistoryDate.setHours(0, 0, 0, 0);
+
+            // Compare dates (now effectively comparing just the date portions)
+            return currentStartDate.getTime() <= maxHistoryDate.getTime();
         }
     },
     watch: {
@@ -179,43 +188,9 @@ export default {
             handler(newData) {
                 if (newData && newData.heatmap_data) {
                     this.processHeatmapData(newData.heatmap_data);
-
-                    // Important: Update component date range based on what the server provided
-                    if (newData.start_date && newData.end_date) {
-                        // Use server-provided date range
-                        const serverStartDate = new Date(newData.start_date);
-                        const serverEndDate = new Date(newData.end_date);
-
-                        // Update component's current start date
-                        // Calculate the proper start date for a 7-day window ending at the server's end date
-                        const idealStartDate = new Date(serverEndDate);
-                        idealStartDate.setDate(idealStartDate.getDate() - 6); // 7 days inclusive
-
-                        // Use the later of the server's start date or our ideal start date
-                        // This ensures we don't try to show data before what the server provided
-                        if (idealStartDate >= serverStartDate) {
-                            this.currentStartDate = idealStartDate;
-                        } else {
-                            this.currentStartDate = serverStartDate;
-                        }
-
-                        // Update the dateRange picker display to match
-                        const endDate = new Date(this.currentStartDate);
-                        endDate.setDate(endDate.getDate() + 6); // 7 days inclusive
-
-                        // Cap the end date at the server's end date
-                        const finalEndDate = endDate > serverEndDate ? serverEndDate : endDate;
-
-                        this.dateRange = [
-                            this.formatDateForRange(this.currentStartDate),
-                            this.formatDateForRange(finalEndDate)
-                        ];
-
-                        // Force re-render
-                        this.tableKey++;
-                    }
-
-                    this.loading = false;
+                    setTimeout(() => {
+                        this.loading = false;
+                    }, 300);
                 }
             },
             deep: true,
@@ -227,21 +202,6 @@ export default {
         disableFutureDates(date) {
             return date > new Date();
         },
-        formatTimeHeader(timeSlot) {
-            // Return a shorter version of the time slot (e.g., "12-3AM")
-            const parts = timeSlot.split('-');
-            const start = parts[0].trim();
-            const end = parts[1].trim();
-
-            // Get just the hours and AM/PM
-            const startTime = start.split(':')[0];
-            const startAmPm = start.includes('AM') ? 'AM' : 'PM';
-
-            const endTime = end.split(':')[0];
-            const endAmPm = end.includes('AM') ? 'AM' : 'PM';
-
-            return `${startTime} ${startAmPm} - ${endTime} ${endAmPm}`;
-        },
         processHeatmapData(data) {
             this.heatmapDataStore = {...data};
         },
@@ -250,13 +210,19 @@ export default {
 
             // Calculate the end date as start date + 6 days (for 7 days total, inclusive)
             const endDate = new Date(this.currentStartDate);
-            endDate.setDate(endDate.getDate() + 6);
+            endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
 
             // Ensure end date is not in the future
             const today = new Date();
             today.setHours(23, 59, 59, 999);
 
             const finalEndDate = endDate > today ? today : endDate;
+
+            // Also update the dateRange picker to show what we're actually requesting
+            this.dateRange = [
+                this.formatDateForRange(this.currentStartDate),
+                this.formatDateForRange(finalEndDate)
+            ];
 
             this.$emit('heatmap-date-change', {
                 startDate: startDate,
@@ -276,7 +242,7 @@ export default {
         },
         formatDayHeader(date) {
             const day = String(date.getDate()).padStart(2, '0');
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const months = ['Januaryuary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'December'];
             const month = months[date.getMonth()];
             return `${month} ${day}`;
         },
@@ -312,30 +278,35 @@ export default {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
 
-                if (newDate > today) {
+                const endDate = new Date(newDate);
+                endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
+
+                // If the end date would be in the future, adjust to show today at the end
+                if (endDate > today) {
+                    // Calculate a new start date that would make today the end date
                     newDate.setTime(today.getTime());
+                    newDate.setDate(newDate.getDate() - (this.daysToShow - 1));
                 }
             } else {
                 newDate.setDate(newDate.getDate() - this.daysToShow);
             }
 
-            // Apply a slide animation by incrementing the key
-            this.tableKey++;
-
-            // Update dates after a short delay to allow the animation to complete
+            // Wait for animation to complete before updating data
             setTimeout(() => {
+                // Reset animation classes
+                this.isSlideLeft = false;
+                this.isSlideRight = false;
+
                 this.currentStartDate = newDate;
 
                 // Update the dateRange to reflect the new visible dates
                 const endDate = new Date(newDate);
-                endDate.setDate(endDate.getDate() + (this.daysToShow - 1)); // Use days - 1 for exact 7 days
+                endDate.setDate(endDate.getDate() + (this.daysToShow - 1));
 
                 // Ensure end date is not in the future
                 const today = new Date();
                 const finalEndDate = endDate > today ? today : endDate;
 
-                // Modify the displayed date range to match the actual data range
-                // For the display end date, subtract one day to show the correct inclusive range
                 this.dateRange = [
                     this.formatDateForRange(newDate),
                     this.formatDateForRange(finalEndDate)
@@ -346,7 +317,7 @@ export default {
             }, 300);
         },
         formatDateForRange(date) {
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
         },
         handleDateRangeChange(range) {
@@ -354,42 +325,26 @@ export default {
 
             // Parse the date strings and set the currentStartDate
             const startParts = range[0].split(" ");
-            const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(startParts[0]);
+            const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'December'].indexOf(startParts[0]);
             const day = parseInt(startParts[1].replace(',', ''));
             const year = parseInt(startParts[2]);
 
-            // Parse end date
-            const endParts = range[1].split(" ");
-            const endMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(endParts[0]);
-            const endDay = parseInt(endParts[1].replace(',', ''));
-            const endYear = parseInt(endParts[2]);
-
-            // Create dates
+            // Create new start date
             const newStartDate = new Date(year, month, day);
-            const newEndDate = new Date(endYear, endMonth, endDay);
 
-            // Calculate days between (inclusive)
-            const diffTime = Math.abs(newEndDate - newStartDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-            // If they selected more than 7 days, adjust the end date
-            if (diffDays > 7) {
-                const adjustedEndDate = new Date(newStartDate);
-                adjustedEndDate.setDate(adjustedEndDate.getDate() + 6); // 7 days inclusive
-
-                // Update the displayed range
-                this.dateRange = [
-                    this.formatDateForRange(newStartDate),
-                    this.formatDateForRange(adjustedEndDate)
-                ];
-            }
-
-            // Check for future dates
+            // Ensure we're not showing future dates
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            if (newStartDate > today) {
+            // Calculate what the end date would be
+            const newEndDate = new Date(newStartDate);
+            newEndDate.setDate(newEndDate.getDate() + (this.daysToShow - 1));
+
+            // If the end date would be future, adjust to show today at the end
+            if (newEndDate > today) {
+                // Move start date back so today is the end date
                 newStartDate.setTime(today.getTime());
+                newStartDate.setDate(newStartDate.getDate() - (this.daysToShow - 1));
             }
 
             this.currentStartDate = newStartDate;
@@ -408,9 +363,38 @@ export default {
             const rect = event.target.getBoundingClientRect();
             const gridRect = this.$refs.gridWrapper.getBoundingClientRect();
 
+            // Estimate tooltip dimensions
+            const tooltipHeight = 30;
+            const tooltipWidth = 180; // Estimate based on text length
+
+            // Check if we're near the bottom of the container
+            const distanceToBottom = gridRect.bottom - rect.bottom;
+            const isNearBottom = distanceToBottom < tooltipHeight + 20; // Add padding
+
+            // Check if we're near the right edge of the container
+            const distanceToRight = gridRect.right - rect.right;
+            const isNearRight = distanceToRight < tooltipWidth/2 + 20; // Add padding
+
+            // Determine vertical position
+            let topPosition;
+            if (isNearBottom) {
+                topPosition = `${rect.top - gridRect.top - tooltipHeight - 10}px`;
+            } else {
+                topPosition = `${rect.top - gridRect.top + rect.height + 10}px`;
+            }
+
+            // Determine horizontal position
+            let leftPosition;
+            if (isNearRight) {
+                leftPosition = `${rect.left - gridRect.left - tooltipWidth}px`;
+            } else {
+                leftPosition = `${rect.left - gridRect.left + (rect.width / 2) - 75}px`;
+            }
+
             this.tooltip.style = {
-                top: `${rect.top - gridRect.top + rect.height + 10}px`,
-                left: `${rect.left - gridRect.left + (rect.width / 2) - 75}px`
+                top: topPosition,
+                left: leftPosition,
+                zIndex: '999'
             };
         },
         removeHighlight() {

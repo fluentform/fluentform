@@ -25,34 +25,31 @@
             </card-head>
             <card-body class="overview-chart-body">
                 <div class="chart-controls">
-                    <div class="chart-legend">
-                        <div class="legend-item" v-if="!viewPayments">
-                            <span class="legend-dot submission"></span>
-                            <span>Submission</span>
-                        </div>
-                        <div class="legend-item" v-if="viewConversion">
-                            <span class="legend-dot views"></span>
-                            <span>Views</span>
-                        </div>
-                        <div class="legend-item" v-if="viewConversion">
-                            <span class="legend-dot conversions"></span>
-                            <span>Conversions</span>
-                        </div>
-                        <div class="legend-item" v-if="viewPayments">
-                            <span class="legend-dot payments"></span>
-                            <span>Payments</span>
-                        </div>
-                    </div>
-                    <div class="view-selector">
-                        <el-select v-model="activeView" placeholder="Select view">
-                            <el-option
-                                v-for="item in viewOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
+                    <el-select
+                        v-model="selectedFormId"
+                        placeholder="Select Form"
+                        clearable
+                        filterable
+                        @change="handleFormChange"
+                        class="form-selector"
+                    >
+                        <el-option
+                            v-for="form in forms_list"
+                            :key="form.id"
+                            :label="'#' + form.id + ' - ' + form.title"
+                            :value="form.id">
+                        </el-option>
+                    </el-select>
+
+                    <!-- View Selector Dropdown -->
+                    <el-select v-model="activeView" placeholder="Select view" @change="handleViewChange">
+                        <el-option
+                            v-for="item in viewOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
                 </div>
 
                 <!-- Chart -->
@@ -60,7 +57,7 @@
                     <apexchart
                         ref="chart"
                         type="bar"
-                        height="420"
+                        height="440"
                         :options="chartOptions"
                         :series="currentSeries"
                     />
@@ -92,13 +89,14 @@ export default {
         CardBody,
         CardHead,
     },
-    props: ['overview_chart'],
+    props: ['overview_chart', 'forms_list'],
     emits: ['handleRangeChange', 'handleDateRangeChange', 'date-change'],
     data() {
         return {
             dateRange: null,
             activeView: 'submission',
             selectedRange: 'month',
+            selectedFormId: '',
             viewOptions: [
                 {value: 'submission', label: 'Submission'},
                 {value: 'conversion', label: 'Conversion'},
@@ -137,7 +135,7 @@ export default {
                         }
                     }
                 },
-                colors: ['#28a7f0', '#7B5CFA', '#FFC107', '#4CAF50'], // Blue, Purple, Yellow, Green
+                colors: ['#28a7f0', '#7B5CFA', '#FFC107', '#4CAF50'],
                 plotOptions: {
                     bar: {
                         borderRadius: 4,
@@ -204,51 +202,130 @@ export default {
                     decimalsInFloat: 0
                 },
                 legend: {
-                    show: false,
+                    show: true,
+                    position: 'top',
+                    horizontalAlign: 'left',
+                    fontSize: '13px',
+                    fontFamily: 'inherit',
+                    markers: {
+                        width: 12,
+                        height: 12,
+                        radius: 6,
+                        shape: 'circle',
+                        strokeWidth: 0
+                    },
+                    itemMargin: {
+                        horizontal: 15,
+                        vertical: 5
+                    }
                 },
                 tooltip: {
                     shared: true,
                     intersect: false,
-                },
+                    followCursor: false,
+                    marker: {
+                        show: true
+                    },
+                    x: {
+                        show: true
+                    },
+                    y: {
+                        formatter: function(val) {
+                            return val;
+                        }
+                    }
+                }
             }
         };
     },
     computed: {
         currentSeries() {
-            if (this.activeView === 'payments') {
-                return [this.allSeries[3]];
+            if (this.overview_chart &&
+                this.overview_chart.values &&
+                typeof this.overview_chart.values === 'object' &&
+                !Array.isArray(this.overview_chart.values)) {
+
+                const paidData = Array.isArray(this.overview_chart.values.paid) ?
+                    this.overview_chart.values.paid.map(val => val === "" || val === null ? 0 : Number(val)) : [];
+
+                const pendingData = Array.isArray(this.overview_chart.values.pending) ?
+                    this.overview_chart.values.pending.map(val => val === "" || val === null ? 0 : Number(val)) : [];
+
+                const refundedData = Array.isArray(this.overview_chart.values.refunded) ?
+                    this.overview_chart.values.refunded.map(val => val === "" || val === null ? 0 : Number(val)) : [];
+
+                return [
+                    {
+                        name: 'Paid',
+                        type: 'column',
+                        data: paidData
+                    },
+                    {
+                        name: 'Pending',
+                        type: 'column',
+                        data: pendingData
+                    },
+                    {
+                        name: 'Refunded',
+                        type: 'column',
+                        data: refundedData
+                    }
+                ];
             } else if (this.activeView === 'conversion') {
+                // Ensure all data arrays exist for conversion view
+                const viewsData = this.allSeries[0].data || [];
+                const submissionsData = this.allSeries[1].data || [];
+                const conversionData = this.allSeries[2].data || [];
+
                 return [
                     {
                         name: 'Views',
                         type: 'column',
-                        data: this.allSeries[0].data
+                        data: viewsData
                     },
                     {
                         name: 'Submissions',
                         type: 'column',
-                        data: this.allSeries[1].data
+                        data: submissionsData
                     },
                     {
                         name: 'Conversion Rate',
-                        type: 'column', // Changed from 'line' to 'column'
-                        data: this.allSeries[2].data
+                        type: 'column',
+                        data: conversionData
                     }
                 ];
             } else {
-                return [this.allSeries[1]]; // Default: show only Submissions
+                // Submission view (single series)
+                return [{
+                    name: 'Submissions',
+                    type: 'column',
+                    data: this.allSeries[1].data || []
+                }];
             }
         },
-
-        viewConversion() {
-            return this.activeView === 'conversion';
-        },
-
-        viewPayments() {
-            return this.activeView === 'payments';
-        }
     },
     methods: {
+        // Handle form selection
+        handleFormChange() {
+            if (this.selectedFormId) {
+                // When a specific form is selected, reset other date selectors
+                this.selectedRange = null;
+                this.dateRange = null;
+            } else {
+                // When "All Forms" is selected, reset to default behavior
+                this.selectedRange = 'month'; // Reset to default range
+            }
+
+            // Emit date change to get data
+            this.emitDateChange();
+        },
+
+        // Handle view type change
+        handleViewChange() {
+            // Re-fetch with the appropriate data for this view
+            this.emitDateChange();
+        },
+
         handleRangeChange() {
             this.lastUsedSelector = 'range';
             this.dateRange = null;
@@ -265,7 +342,12 @@ export default {
             let startDate, endDate;
             const today = new Date();
 
-            if (this.lastUsedSelector === 'range' || !this.dateRange) {
+            // If a form is selected, we'll let the backend handle the date range
+            if (this.selectedFormId) {
+                // Send null dates to indicate backend should use form-specific timeline
+                startDate = null;
+                endDate = null;
+            } else if (this.lastUsedSelector === 'range' || !this.dateRange) {
                 if (this.selectedRange === 'today') {
                     startDate = this.formatDateForApi(today, true);
                     endDate = this.formatDateForApi(today, false);
@@ -310,11 +392,12 @@ export default {
                 }
             }
 
-            // Emit the event with date range and view
+            // Emit the event with all necessary parameters
             this.$emit('date-change', {
                 startDate,
                 endDate,
-                view: this.activeView
+                view: this.activeView,
+                formId: this.selectedFormId
             });
         },
 
@@ -353,52 +436,39 @@ export default {
             return dateObj;
         },
 
-        updateChartForCurrentView() {
+        formatDateForRange(date) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        },
+
+        // Complete implementation of processChartData method with fixes
+        processChartData() {
             if (!this.overview_chart) return;
 
             const data = this.overview_chart;
-            const values = data.values ? data.values.map(Number) : [];
-
             this.categories = data.dates || [];
 
-            // Assign values to the correct series based on active view
-            if (this.activeView === 'payments') {
-                this.allSeries[3].data = values;
-                this.allSeries[0].data = Array(values.length).fill(0);
-                this.allSeries[1].data = Array(values.length).fill(0);
-                this.allSeries[2].data = Array(values.length).fill(0);
+            // Handle different data format for conversion view
+            if (this.activeView === 'conversion') {
+                // For conversion view, data should have views, submissions, and conversion_rates arrays
+                this.allSeries[0].data = data.views || [];
+                this.allSeries[1].data = data.submissions || [];
+                this.allSeries[2].data = data.conversion_rates || [];
 
-                // Update Y-axis for payments
-                this.updateChartOptions({
-                    colors: ['#4CAF50'],
-                    xaxis: {
-                        categories: this.categories, // Add this line to update x-axis
-                        type: 'category'
-                    },
-                    yaxis: {
-                        decimalsInFloat: 2,
-                        labels: {
-                            formatter: function(val) {
-                                return '$' + parseFloat(val).toFixed(2);
-                            }
-                        }
-                    }
-                });
-            } else if (this.activeView === 'conversion' && data.views && data.submissions && data.conversion_rates) {
-                this.allSeries[0].data = data.views.map(Number);
-                this.allSeries[1].data = data.submissions.map(val => Number(val) * 2);
-                this.allSeries[2].data = data.conversion_rates.map(Number);
-
-
+                // Setup for conversion view chart
                 this.updateChartOptions({
                     chart: {
                         type: 'bar',
                         stacked: false
                     },
+                    stroke: {
+                        width: [0, 0, 0], // All bars
+                        curve: 'smooth'
+                    },
                     colors: ['#28a7f0', '#7B5CFA', '#FFC107'], // Blue, Purple, Yellow
                     plotOptions: {
                         bar: {
-                            columnWidth: '65%',
+                            columnWidth: '75%',
                             distributed: false
                         }
                     },
@@ -416,40 +486,171 @@ export default {
                             }
                         }
                     },
+                    legend: {
+                        show: true,
+                        showForSingleSeries: true,
+                        showForNullSeries: true,
+                        showForZeroSeries: true,
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        fontSize: '13px',
+                        fontFamily: 'inherit',
+                        markers: {
+                            width: 12,
+                            height: 12,
+                            radius: 6,
+                            shape: 'circle',
+                            strokeWidth: 0
+                        },
+                        itemMargin: {
+                            horizontal: 15,
+                            vertical: 5
+                        }
+                    },
                     tooltip: {
                         shared: true,
                         intersect: false,
                         y: {
-                            formatter: function(value, { seriesIndex }) {
-                                if (seriesIndex === 0) {
-                                    return `Views: ${value}`;
-                                } else if (seriesIndex === 1) {
-                                    return `Submissions: ${value / 2}`;
-                                } else {
-                                    return `Conversion: ${value}%`;
+                            formatter: function(value, { seriesIndex, dataPointIndex }) {
+                                if (seriesIndex === 2) { // Conversion rate
+                                    return `${value}%`;
+                                } else if (seriesIndex === 0) { // Views
+                                    const formCount = data.form_counts && data.form_counts[dataPointIndex];
+                                    return formCount ? `${value} (${formCount} forms)` : value;
                                 }
+                                return value;
                             }
                         }
                     }
                 });
-            } else { // submission
-                this.allSeries[1].data = values;
-                this.allSeries[0].data = Array(values.length).fill(0);
-                this.allSeries[2].data = Array(values.length).fill(0);
-                this.allSeries[3].data = Array(values.length).fill(0);
+            } else if (this.activeView === 'payments') {
+                // Handle payment view data formats
 
-                // Update Y-axis for submission
+                // Check if we have the multi-series format (with paid, pending, failed)
+                if (data.values && typeof data.values === 'object' && !Array.isArray(data.values) && data.values.paid) {
+                    // Multi-series payment data
+                    this.allSeries[3].data = data.values.paid || [];
+
+                    // Update chart options for payment view with multiple series
+                    this.updateChartOptions({
+                        chart: {
+                            type: 'bar',
+                            stacked: false
+                        },
+                        colors: ['#4CAF50', '#FFC107', '#F44336'], // Green, Yellow, Red
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '75%',
+                                borderRadius: 4,
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        xaxis: {
+                            categories: this.categories,
+                            type: 'category'
+                        },
+                        // Set appropriate y-axis range and minimum height for bars
+                        yaxis: {
+                            min: 0,
+                            forceNiceScale: true,
+                            decimalsInFloat: 2,
+                            labels: {
+                                formatter: function(val) {
+                                    return '$' + parseFloat(val).toFixed(2);
+                                }
+                            },
+                            // Ensure a minimum visible height even for small values
+                            tickAmount: 5
+                        },
+                        // Show data labels on the bars to make small values visible
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        legend: {
+                            show: true,
+                            position: 'top',
+                            horizontalAlign: 'left',
+                            fontSize: '13px',
+                            fontFamily: 'inherit',
+                            markers: {
+                                width: 12,
+                                height: 12,
+                                radius: 12,
+                                shape: 'circle',
+                                strokeWidth: 0
+                            }
+                        },
+                        tooltip: {
+                            shared: true,
+                            intersect: false,
+                            y: {
+                                formatter: function(value, { seriesIndex }) {
+                                    const statusLabels = ['Paid', 'Pending', 'Refunded'];
+                                    return `${statusLabels[seriesIndex]}: $${parseFloat(value).toFixed(2)}`;
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Submission view (default)
+                if (data.values && Array.isArray(data.values)) {
+                    this.allSeries[1].data = data.values;
+                } else {
+                    // If data.values is not an array, initialize with empty array
+                    this.allSeries[1].data = [];
+                    console.warn('Unexpected data structure for submissions chart values:', data.values);
+                }
+
+                // Update chart options for submission view
                 this.updateChartOptions({
-                    colors: ['#7B5CFA'],
+                    chart: {
+                        type: 'bar',
+                        stacked: false
+                    },
+                    colors: ['#7B5CFA'], // Purple
+                    plotOptions: {
+                        bar: {
+                            columnWidth: '65%'
+                        }
+                    },
                     xaxis: {
-                        categories: this.categories, // Add this line to update x-axis
+                        categories: this.categories,
                         type: 'category'
                     },
                     yaxis: {
+                        min: 0,
+                        forceNiceScale: true,
                         decimalsInFloat: 0,
                         labels: {
                             formatter: function(val) {
                                 return Math.floor(val);
+                            }
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        showForSingleSeries: true,
+                        showForNullSeries: true,
+                        showForZeroSeries: true,
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        fontSize: '13px',
+                        fontFamily: 'inherit',
+                        markers: {
+                            width: 12,
+                            height: 12,
+                            radius: 6,
+                            shape: 'circle',
+                            strokeWidth: 0
+                        }
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function(value) {
+                                return Math.floor(value);
                             }
                         }
                     }
@@ -466,147 +667,7 @@ export default {
 
         updateChartOptions(newOptions) {
             if (!this.$refs.chart) return;
-
             this.$refs.chart.updateOptions(newOptions, false, true);
-        },
-
-        processChartData() {
-            if (!this.overview_chart) return;
-
-            const data = this.overview_chart;
-
-            this.categories = this.overview_chart.dates || [];
-
-            // Update chart options to use categories
-            if (this.$refs.chart) {
-                this.$refs.chart.updateOptions({
-                    xaxis: {
-                        categories: this.categories,
-                        type: 'category'  // Ensure this is always set
-                    }
-                });
-            }
-
-            // Handle different data format for conversion view
-            if (this.activeView === 'conversion') {
-                // For conversion view, data is already in the right format
-                this.categories = data.dates || [];
-                this.allSeries[0].data = data.views || [];
-                this.allSeries[1].data = data.submissions || [];
-                this.allSeries[2].data = data.conversion_rates || [];
-
-                // Setup for dual-axis chart
-                this.updateChartOptions({
-                    chart: {
-                        type: 'line',
-                        stacked: false
-                    },
-                    stroke: {
-                        width: [0, 0, 3], // Bar, bar, line
-                        curve: 'smooth'
-                    },
-                    colors: ['#28a7f0', '#7B5CFA', '#FFC107'], // Blue, Purple, Yellow
-                    xaxis: {
-                        categories: this.categories,
-                        type: 'category'
-                    },
-                    yaxis: [
-                        {
-                            title: {
-                                text: 'Count'
-                            },
-                            decimalsInFloat: 0
-                        },
-                        {
-                            opposite: true,
-                            title: {
-                                text: 'Conversion %'
-                            },
-                            min: 0,
-                            max: 100,
-                            decimalsInFloat: 1,
-                            labels: {
-                                formatter: function(val) {
-                                    return val.toFixed(1) + '%';
-                                }
-                            }
-                        }
-                    ],
-                    tooltip: {
-                        shared: true,
-                        intersect: false,
-                        y: {
-                            formatter: function(value, { seriesIndex, dataPointIndex }) {
-                                const formCount = data.form_counts ? data.form_counts[dataPointIndex] : 0;
-
-                                if (seriesIndex === 0) {
-                                    return `Views: ${value}${formCount ? ` (${formCount} forms)` : ''}`;
-                                } else if (seriesIndex === 1) {
-                                    return `Submissions: ${value}`;
-                                } else {
-                                    return `Conversion: ${value.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    }
-                });
-            } else {
-                this.categories = data.dates || [];
-
-                if (data.values) {
-                    const values = data.values.map(Number);
-
-                    if (this.activeView === 'payments') {
-                        this.allSeries[3].data = values;
-                        this.allSeries[0].data = Array(values.length).fill(0);
-                        this.allSeries[1].data = Array(values.length).fill(0);
-                        this.allSeries[2].data = Array(values.length).fill(0);
-
-                        // Update chart options for payments
-                        this.updateChartOptions({
-                            colors: ['#4CAF50'], // Green for payments
-                            yaxis: {
-                                decimalsInFloat: 2,
-                                labels: {
-                                    formatter: function(val) {
-                                        return '$' + parseFloat(val).toFixed(2);
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        // Submission view
-                        this.allSeries[1].data = values;
-                        this.allSeries[0].data = Array(values.length).fill(0);
-                        this.allSeries[2].data = Array(values.length).fill(0);
-                        this.allSeries[3].data = Array(values.length).fill(0);
-
-                        // Update chart options for submission
-                        this.updateChartOptions({
-                            colors: ['#7B5CFA'],
-                            xaxis: {
-                                categories: this.categories, // Add this line to update x-axis
-                                type: 'category'
-                            },
-                            yaxis: {
-                                decimalsInFloat: 0,
-                                labels: {
-                                    formatter: function(val) {
-                                        return Math.floor(val);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-
-            // Force chart update
-            this.$nextTick(() => {
-                if (this.$refs.chart) {
-                    this.$refs.chart.updateSeries(this.currentSeries);
-                }
-            });
         },
     },
     watch: {
@@ -617,10 +678,8 @@ export default {
             deep: true,
             immediate: true
         },
-
         activeView() {
-            this.emitDateChange();
-            this.updateChartForCurrentView();
+            this.processChartData();
         }
     }
 };

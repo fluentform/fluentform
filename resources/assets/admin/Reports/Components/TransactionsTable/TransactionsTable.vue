@@ -4,20 +4,70 @@
             <card-head class="transactions-table-header">
                 <h3>Recent Transactions</h3>
                 <div>
-                    <el-input v-model="search" placeholder="Search..." clearable></el-input>
+                    <el-select
+                        v-model="formFilter"
+                        placeholder="Filter by Form"
+                        clearable
+                        @change="applyFilters"
+                        class="filter-select"
+                    >
+                        <el-option
+                            v-for="form in paymentForms"
+                            :key="form.id"
+                            :label="'#' + form.id + ' - ' + form.title"
+                            :value="form.id">
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        v-model="statusFilter"
+                        placeholder="Filter by Status"
+                        clearable
+                        @change="applyFilters"
+                        class="filter-select"
+                    >
+                        <el-option
+                            v-for="(label, key) in payment_statuses"
+                            :key="key"
+                            :label="label"
+                            :value="key"
+                        />
+                    </el-select>
+                    <el-select
+                        v-model="paymentMethodFilter"
+                        placeholder="Filter by Payment Method"
+                        clearable
+                        @change="applyFilters"
+                        class="filter-select"
+                    >
+                        <el-option
+                            v-for="status in payment_methods"
+                            :key="status.method_value"
+                            :label="status.title"
+                            :value="status.method_value"
+                        />
+                    </el-select>
+                    <el-date-picker
+                        v-model="dateRange"
+                        type="daterange"
+                        range-separator="-"
+                        start-placeholder="Start date"
+                        end-placeholder="End date"
+                        format="MMM d, yyyy"
+                        value-format="MMM d, yyyy"
+                        :default-time="['00:00:00', '23:59:59']"
+                        @change="handleDateChange"
+                        :disabledDate="disableFutureDates"
+                    />
                 </div>
             </card-head>
 
             <card-body class="transactions-table-body">
-                <div v-if="loading" class="loading-state">
-                    <i class="el-icon-loading"></i> Loading transactions...
-                </div>
-                <div v-else-if="!transactions || transactions.length === 0" class="empty-state">
+                <div v-if="!transactions || transactions.length === 0" class="empty-state">
                     No transactions found
                 </div>
                 <el-table
                     v-else
-                    :data="filteredTransactions"
+                    :data="transactions"
                     stripe
                     style="width: 100%"
                 >
@@ -32,7 +82,7 @@
                     <el-table-column prop="date" label="Date" sortable width="150"></el-table-column>
                     <el-table-column prop="amount" label="Amount" sortable width="120">
                         <template slot-scope="{ row }">
-                            {{ formatCurrency(row.amount, row.currency) }}
+                            {{ row.currency + ' ' + row.amount }}
                         </template>
                     </el-table-column>
 
@@ -40,8 +90,8 @@
 
                     <el-table-column label="Status" width="120">
                         <template slot-scope="{ row }">
-                            <el-tag :type="statusType(row.status)" effect="plain" size="small">
-                                <i :class="statusIcon(row.status)"></i> {{ row.status }}
+                            <el-tag :type="getStatusType(row.status)" effect="light">
+                                <i :class="getStatusIcon(row.status)"></i> {{ row.status }}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -62,73 +112,107 @@ export default {
         CardBody,
         CardHead,
     },
-    props: {
-        transactions: {
-            type: Array,
-            default: () => []
-        },
-        loading: {
-            type: Boolean,
-            default: false
-        }
-    },
+    props: ['transactions', 'forms_list'],
+    emits: ['transactions-date-change'],
     data() {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
         return {
-            search: "",
+            dateRange: [
+                this.formatDateForDisplay(thirtyDaysAgo),
+                this.formatDateForDisplay(now)
+            ],
+            formFilter: null,
+            statusFilter: null,
+            paymentMethodFilter: null,
         };
     },
-    computed: {
-        filteredTransactions() {
-            if (!this.transactions) return [];
-
-            return this.transactions.filter((txn) =>
-                Object.values(txn).some(value =>
-                    String(value).toLowerCase().includes(this.search.toLowerCase())
-                )
-            );
-        }
-    },
     methods: {
-        formatCurrency(value, currency = 'USD') {
-            const currencySymbols = {
-                'USD': '$',
-                'EUR': '€',
-                'GBP': '£',
-                'JPY': '¥',
-                'INR': '₹'
-            };
-
-            const symbol = currencySymbols[currency] || '$';
-            return `${symbol}${value.toFixed(2)}`;
+        getStatusType(status) {
+            if (status === 'Paid' || status === 'Completed') {
+                return 'success';
+            } else if (status === 'Failed') {
+                return 'danger';
+            } else {
+                return 'warning';
+            }
         },
-        statusType(status) {
-            const statusMap = {
-                'Pending': 'warning',
-                'Paid': 'success',
-                'Completed': 'success',
-                'Processing': 'info',
-                'Failed': 'danger',
-                'Refunded': 'info',
-                'Cancelled': 'info'
-            };
-
-            return statusMap[status] || 'info';
-        },
-        statusIcon(status) {
-            const iconMap = {
-                'Pending': 'el-icon-time',
-                'Paid': 'el-icon-check',
-                'Completed': 'el-icon-check',
-                'Processing': 'el-icon-loading',
-                'Failed': 'el-icon-close',
-                'Refunded': 'el-icon-back',
-                'Cancelled': 'el-icon-close'
-            };
-
-            return iconMap[status] || 'el-icon-question';
+        getStatusIcon(status) {
+            if (status === 'Paid' || status === 'Completed' || status === 'Success') {
+                return 'ff-icon-check';
+            } else if (status === 'Failed') {
+                return 'ff-icon-close';
+            } else if (status === 'Processing') {
+                return 'ff-icon-refresh';
+            } else if (status === 'Refunded' || status === 'Partially Refunded') {
+                return 'ff-icon-refresh';
+            } else {
+                return 'ff-icon-calendar';
+            }
         },
         viewTransaction(link) {
             window.location.href = link;
+        },
+        disableFutureDates(date) {
+            return date > new Date();
+        },
+        formatDateForDisplay(date) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        },
+        handleDateChange(range) {
+            if (!range || !range[0] || !range[1]) return;
+
+            // Parse the date strings
+            const startParts = range[0].split(" ");
+            const startMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(startParts[0]);
+            const startDay = parseInt(startParts[1].replace(',', ''));
+            const startYear = parseInt(startParts[2]);
+
+            const endParts = range[1].split(" ");
+            const endMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(endParts[0]);
+            const endDay = parseInt(endParts[1].replace(',', ''));
+            const endYear = parseInt(endParts[2]);
+
+            // Create Date objects
+            const startDate = new Date(startYear, startMonth, startDay);
+            const endDate = new Date(endYear, endMonth, endDay);
+
+            // Format dates for API
+            const formatDateForApi = (date, isStart) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const time = isStart ? '00:00:00' : '23:59:59';
+                return `${year}-${month}-${day} ${time}`;
+            };
+
+            this.$emit('transactions-filter-change', {
+                startDate: formatDateForApi(startDate, true),
+                endDate: formatDateForApi(endDate, false),
+                formId: this.formFilter,
+                paymentStatus: this.statusFilter,
+                paymentMethod: this.paymentMethodFilter
+            });
+        },
+
+        applyFilters() {
+            // If we have date range, use it to trigger the filter with all current values
+            if (this.dateRange && this.dateRange[0] && this.dateRange[1]) {
+                this.handleDateChange(this.dateRange);
+            }
+        },
+    },
+    computed: {
+        paymentForms() {
+            return this.forms_list.filter(form => form.has_payment == 1);
+        },
+        payment_statuses() {
+            return window.FluentFormApp.payment_statuses || [];
+        },
+        payment_methods() {
+            return window.FluentFormApp.payment_methods || [];
         }
     }
 };

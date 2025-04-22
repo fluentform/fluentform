@@ -4,6 +4,7 @@
             <el-col class="report-content" :span="16">
                 <overview-chart
                     :overview_chart="reports.overview_chart"
+                    :forms_list="formsList"
                     @date-change="handleDateChange"
                 />
             </el-col>
@@ -31,10 +32,11 @@
             </el-col>
         </el-row>
         <el-row class="mt-4">
-            <el-col v-if="hasPro" class="report-content" :span="24">
+            <el-col v-if="hasPayment" class="report-content" :span="24">
                 <transactions-table
                     :transactions="reports.transactions"
-                    :loading="loading"
+                    :forms_list="formsList"
+                    @transactions-filter-change="handleTransactionsFilterChange"
                 />
             </el-col>
         </el-row>
@@ -49,7 +51,6 @@ import TransactionsTable from './Components/TransactionsTable/TransactionsTable.
 
 export default {
     name: 'Reports',
-    props: ['settings'],
     components: {
         ApiLogsChart,
         SubmissionHeatmap,
@@ -75,6 +76,7 @@ export default {
         return {
             loading: false,
             reports: {},
+            formsList: [],
             dateParams: {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
                 endDate: formatDateForApi(now, false),
@@ -88,12 +90,16 @@ export default {
             apiLogsParams: {
                 startDate: formatDateForApi(thirtyDaysAgo, true),
                 endDate: formatDateForApi(now, false)
+            },
+            transactionsParams: {
+                startDate: formatDateForApi(thirtyDaysAgo, true),
+                endDate: formatDateForApi(now, false)
             }
         }
     },
     computed: {
-        hasPro() {
-            return !!window.FluentFormApp.has_pro;
+        hasPayment() {
+            return !!window.FluentFormApp.has_payment;
         }
     },
     methods: {
@@ -109,7 +115,13 @@ export default {
                 heatmap_start_date: this.heatmapParams.startDate,
                 heatmap_end_date: this.heatmapParams.endDate,
                 api_logs_start_date: this.apiLogsParams.startDate,
-                api_logs_end_date: this.apiLogsParams.endDate
+                api_logs_end_date: this.apiLogsParams.endDate,
+                transactions_start_date: this.transactionsParams.startDate,
+                transactions_end_date: this.transactionsParams.endDate,
+                transactions_form_id: this.transactionsParams.formId,
+                transactions_payment_status: this.transactionsParams.paymentStatus,
+                transactions_payment_method: this.transactionsParams.paymentMethod,
+                form_id: this.dateParams.formId,
             };
 
             FluentFormsGlobal.$get(data)
@@ -124,11 +136,28 @@ export default {
                 });
         },
 
+        fetchFormsList() {
+            const data = {
+                action: 'fluentform-get-forms'
+            };
+
+            FluentFormsGlobal.$get(data)
+                .then(response => {
+                    if (response.data && response.data.forms) {
+                        this.formsList = response.data.forms;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching forms list:', error);
+                });
+        },
+
         handleDateChange(params) {
             this.dateParams = {
                 startDate: params.startDate,
                 endDate: params.endDate,
                 view: params.view,
+                formId: params.formId
             };
 
             this.fetchReports();
@@ -155,10 +184,23 @@ export default {
             };
 
             this.fetchReports();
+        },
+
+        handleTransactionsFilterChange(params) {
+            this.transactionsParams = {
+                startDate: params.startDate,
+                endDate: params.endDate,
+                formId: params.formId,
+                paymentStatus: params.paymentStatus,
+                paymentMethod: params.paymentMethod
+            };
+
+            this.fetchReports();
         }
     },
     mounted() {
         this.fetchReports();
+        this.fetchFormsList();
     }
 };
 </script>
