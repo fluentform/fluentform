@@ -1085,8 +1085,7 @@ class Helper
             '__square_payment_method_id',
             '__square_verify_buyer_id',
             'ct_bot_detector_event_token',
-            'ff_ct_form_load_time',
-            '__ff_paypal_order_id'
+            'ff_ct_form_load_time'
         ];
         
         return apply_filters('fluentform/white_listed_fields', $whiteListedFields, $formId);
