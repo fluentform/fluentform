@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Services\FormBuilder;
 
+use FluentForm\App\Models\SubmissionMeta;
 use FluentForm\App\Modules\Form\FormDataParser;
 use FluentForm\App\Modules\Form\FormFieldsParser;
 use FluentForm\App\Services\Browser\Browser;
@@ -497,7 +498,14 @@ class ShortCodeParser
                 $feedId = end($exploded);
                 $chatGPT = new \FluentFormPro\classes\Chat\ChatFieldController(wpFluentForm());
                 if ($chatGPT->api->isApiEnabled()) {
-                    return $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                    $entry = static::getEntry();
+                    $lastResponse = SubmissionMeta::retrieve("chat_gpt_response_{$feedId}", $entry->id);
+                    if (!$lastResponse) {
+                        $response = $chatGPT->chatGPTSubmissionMessageHandler($formId, $feedId, static::getInstance());
+                        SubmissionMeta::persist($entry->id, "chat_gpt_response_{$feedId}", $response, $formId);
+                        return $response;
+                    }
+                    return $lastResponse;
                 }
             }
             return '';
