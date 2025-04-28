@@ -708,8 +708,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
                     isInitialLoad = false;
                 } else {
-                    const focusableElements = step.find("input, select, textarea, button, a").filter(":visible");
-
+                    const focusableElements = step.find("input, .ff-custom_html, select, textarea, button, a").filter(":visible");
                     if (focusableElements.length && shouldFocus) {
                         setTimeout(() => {
                             focusableElements.first().focus();

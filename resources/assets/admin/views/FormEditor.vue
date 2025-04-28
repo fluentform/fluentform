@@ -844,6 +844,11 @@
         handleDrop({index, list, item, type}) {
             if (type != 'existingElement') {
                 this.makeUniqueNameAttr(this.form.dropzone, item);
+
+	            // Make save & resume button right align by default for conversation form
+	            if (this.is_conversion_form && 'save_progress_button' === item.element) {
+		            item.settings.align = 'right';
+	            }
             }
 
 	        let $containerElement = jQuery(event.target).closest('.item-container');
@@ -947,6 +952,11 @@
             }
 
             this.makeUniqueNameAttr(this.form.dropzone, freshCopy);
+
+			// Make save & resume button right align by default for conversation form
+			if (this.is_conversion_form && 'save_progress_button' === freshCopy.element) {
+				freshCopy.settings.align = 'right';
+			}
 
             if (this.insertNext.index != null) {
                 this.insertNext.wrapper.splice(this.insertNext.index + 1, 0, freshCopy);
