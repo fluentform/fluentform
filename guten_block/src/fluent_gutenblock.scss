@@ -385,11 +385,11 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
   .components-tab-panel__tabs-item {
     flex: 1;
     background: #fff;
-    border: 1px solid rgba($ff-color-primary, 0.1);
+    border: 1px solid rgba($primary, 0.1);
     justify-content: center;
 
     &.is-active {
-      background: rgba($ff-color-primary, 0.1);
+      background: rgba($primary, 0.1);
     }
   }
 }
@@ -398,7 +398,7 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
   .components-tab-panel__tabs {
     display: flex;
     justify-content: stretch;
-    border-bottom: 1px solid $ff-color-border;
+    border-bottom: 1px solid $border-color;
   }
 
   .components-tab-panel__tab-content {
@@ -413,8 +413,8 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
     justify-content: center;
 
     &.is-active {
-      box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $ff-color-primary;
-      color: $ff-color-primary;
+      box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $primary;
+      color: $primary;
     }
   }
 }
@@ -446,7 +446,7 @@ $ff-prefix: 'ffblock'; // Prefix namespace for our components
   }
 
   .components-base-control__label {
-    padding-right: $ff-spacing-md;
+    padding-right: 12px;
   }
 
   .ff-btn-submit {
