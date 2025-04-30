@@ -27,7 +27,6 @@ const TabAdvanced = ({ attributes, setAttributes }) => {
                 </Flex>
             </PanelBody>
 
-            <FluentSeparator label="Custom Styling" style="dashed" className="fluent-separator-primary" />
 
             <PanelBody title={__('Custom CSS')} initialOpen={true}>
                 <p>Add custom CSS to further customize your form appearance.</p>

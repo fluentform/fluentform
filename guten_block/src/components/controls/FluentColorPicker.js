@@ -54,7 +54,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
         <div className="ffblock-control-field ffblock-control-color-wrap" ref={containerRef}>
             <Flex align="center" justify="space-between">
                 <span className="ffblock-label">{label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="ffblock-flex-gap">
                     {/* Reset button */}
                     {isColorChanged && (
                         <Button
@@ -62,8 +62,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                             isSmall
                             onClick={resetToDefault}
                             label="Reset to default"
-                            className="ffblock-color-reset-button"
-                            style={{ padding: '2px' }}
+                            className="ffblock-reset-button"
                         />
                     )}
                     <div
@@ -72,19 +71,9 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                         ref={buttonRef}
                     >
                         <div
+                            className={`ffblock-color-swatch ${!value || value === 'transparent' || value.includes('rgba') ? 'ffblock-color-transparent-pattern' : ''}`}
                             style={{
-                                backgroundColor: value || 'transparent',
-                                backgroundImage: !value || value === 'transparent' || value.includes('rgba') ?
-                                    'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC")' :
-                                    'none',
-                                backgroundPosition: '0 0',
-                                backgroundSize: '10px 10px',
-                                backgroundRepeat: 'repeat',
-                                width: '24px',
-                                height: '24px',
-                                borderRadius: '2px',
-                                boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.2)',
-                                cursor: 'pointer'
+                                backgroundColor: value || 'transparent'
                             }}
                         />
                     </div>
@@ -103,7 +92,7 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                         className="ffblock-color-popover"
                     >
                         <div
-                            style={{ padding: '12px' }}
+                            className="ffblock-popover-content"
                             ref={popoverRef}
                         >
                             {/* wp.components.ColorPicker instead of ColorPalette */}

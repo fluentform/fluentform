@@ -1,7 +1,6 @@
 /**
  * Fluent Forms Border Control Component
  */
-import './common.css';
 
 // Import React components
 const { useState, useEffect, useRef } = wp.element;

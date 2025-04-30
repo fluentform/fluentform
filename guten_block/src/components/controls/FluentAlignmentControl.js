@@ -1,7 +1,6 @@
 /**
  * Fluent Forms Alignment Control Component
  */
-import './common.css';
 
 // Import React components
 const { useState, useEffect } = wp.element;

@@ -5,57 +5,326 @@
 
 @import "@/admin/styles/_variables.scss";
 
+// =========================================
+// VARIABLES
+// =========================================
+$ff-prefix: 'ffblock'; // Prefix namespace for our components
 
-.fluent-form-block-style-tabs {
-  .components-tab-panel__tabs-item {
-    flex: 1;
-    background: $white;
-    border: 1px solid $primary-soft;
-    justify-content: center;
-
-    &.is-active {
-      background: $primary-soft;
-    }
+// =========================================
+// MIXINS
+// =========================================
+@mixin flex($justify: flex-start, $align: stretch, $direction: row, $gap: 0) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+  @if $gap != 0 {
+    gap: $gap;
   }
 }
 
-/* Tab panel styling */
-.fluent-form-style-tabs .components-tab-panel__tabs {
-  display: flex;
-  justify-content: stretch;
-  border-bottom: 1px solid $border-color;
+@mixin grid($columns, $gap: 8px) {
+  display: grid;
+  grid-template-columns: $columns;
+  gap: $gap;
 }
 
-.fluent-form-style-tabs .components-tab-panel__tab-content {
-  padding: 5px;
+@mixin transition($props: all, $duration: 0.3s, $timing: ease) {
+  transition: $props $duration $timing;
 }
 
-.fluent-form-style-tabs .components-tab-panel__tabs-item {
-  padding: 6px 4px;
-  font-weight: 500;
-  text-align: center;
-  flex: 1;
-  justify-content: center;
-}
+// =========================================
+// BASE COMPONENTS
+// =========================================
 
-.fluent-form-style-tabs .components-tab-panel__tabs-item.is-active {
-  box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $primary;
-  color: $primary;
-}
-
-/* Custom controls styling */
-.ffblock-control-field {
-  margin-bottom: 16px;
-}
-
-.ffblock-label {
-  font-weight: 500;
+/* Typography and Labels */
+.#{$ff-prefix}-label {
+  font-weight: $--font-weight-primary;
+  font-size: $--font-size-small;
+  color: $base-text;
   margin-bottom: 8px;
   display: block;
 }
 
-.ffblock-color-ball {
+.#{$ff-prefix}-separator-label {
+  font-size: $--font-size-extra-small;
+  font-weight: $--font-weight-primary;
+  color: $base-text;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.components-base-control__help {
+  font-size: $--font-size-extra-small;
+  font-style: italic;
+  color: $--color-text-secondary;
+}
+
+/* Control Fields and Containers */
+.#{$ff-prefix}-control-field {
+  margin-bottom: 16px;
+}
+
+.components-panel__body > .components-flex {
+  margin-top: 8px;
+}
+
+/* Buttons */
+.#{$ff-prefix}-reset-button,
+.fluent-typography-edit-btn {
+  padding: 2px !important;
+  min-width: auto !important;
+  height: auto !important;
+  color: $base-text;
+}
+
+.#{$ff-prefix}-linked-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  margin-top: 22px;
+}
+
+/* Input Controls */
+.components-text-control__input {
+  font-size: $--font-size-small;
+
+  &[type="number"] {
+    width: 50px !important;
+    text-align: center;
+  }
+}
+
+/* Popovers */
+.#{$ff-prefix}-popover-content {
+  padding: 12px;
+  width: 270px;
+}
+
+.#{$ff-prefix}-popover {
+  min-width: 260px;
+}
+
+// =========================================
+// LAYOUT UTILITIES
+// =========================================
+
+/* Flex layout helpers */
+.#{$ff-prefix}-flex-between {
+  @include flex(space-between, center);
+}
+
+.#{$ff-prefix}-flex-gap {
+  @include flex(flex-start, center, row, 8px);
+}
+
+/* Separators */
+.#{$ff-prefix}-separator {
+  margin: 16px 0;
+  border: none;
+  border-bottom: 1px solid $border-color;
+}
+
+/* Fluent Separator Component */
+.fluent-separator {
+  position: relative;
+  height: 1px;
+  background-color: $border-color;
+  margin: 16px 0;
+  text-align: center;
+  clear: both;
+
+  // Separator variants
+  &-dashed {
+    background: repeating-linear-gradient(
+                    to right,
+                    $border-color,
+                    $border-color 5px,
+                    transparent 5px,
+                    transparent 10px
+    );
+  }
+
+  &-dotted {
+    background: repeating-linear-gradient(
+                    to right,
+                    $border-color,
+                    $border-color 1px,
+                    transparent 1px,
+                    transparent 5px
+    );
+  }
+
+  &-primary {
+    background-color: $primary;
+
+    .fluent-separator-label {
+      color: $primary;
+    }
+  }
+
+  // Separator sizes
+  &-sm {
+    margin: 12px 0;
+  }
+
+  &-label {
+    position: relative;
+    display: inline-block;
+    padding: 0 10px;
+    background-color: $white;
+    color: $base-text;
+    font-size: $--font-size-extra-small;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    top: -6px;
+  }
+}
+
+
+// =========================================
+// COMPONENT-SPECIFIC STYLES
+// =========================================
+
+/* FluentColorPicker */
+.#{$ff-prefix}-control-color-wrap {
+  margin-bottom: 16px;
+}
+
+.#{$ff-prefix}-color-button {
   cursor: pointer;
+}
+
+.#{$ff-prefix}-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: $--border-radius-small;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.#{$ff-prefix}-color-transparent-pattern {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC");
+  background-position: 0 0;
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}
+
+.#{$ff-prefix}-color-popover .components-popover__content {
+  min-width: 260px;
+}
+
+.#{$ff-prefix}-color-ball {
+  cursor: pointer;
+}
+
+/* FluentSpaceControl */
+.#{$ff-prefix}-space-header {
+  @include flex(space-between, center);
+  margin-bottom: 12px;
+}
+
+.#{$ff-prefix}-label-container {
+  @include flex(flex-start, center, row, 8px);
+}
+
+.#{$ff-prefix}-space-label {
+  font-size: $--font-size-extra-small;
+  margin-top: 4px;
+  text-transform: uppercase;
+  color: $base-text;
+}
+
+.#{$ff-prefix}-space-controls {
+  @include flex(flex-start, center, row, 8px);
+}
+
+.#{$ff-prefix}-space-input-row {
+  @include grid(repeat(4, 1fr) auto, 8px);
+  margin-bottom: 4px;
+}
+
+.#{$ff-prefix}-space-input-row > div {
+  @include flex(flex-start, center, column);
+}
+
+.#{$ff-prefix}-space-labels {
+  @include grid(repeat(4, 1fr), 8px);
+  font-size: $--font-size-extra-small;
+  color: $base-text;
+  text-align: center;
+}
+
+/* Device selector and responsive controls */
+.#{$ff-prefix}-device-dropdown button.components-dropdown-menu__toggle {
+  padding: 4px !important;
+  height: 30px !important;
+  width: 40px !important;
+  min-width: 0 !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-dropdown-menu__toggle svg {
+  margin: 0 !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-dropdown-menu__menu {
+  min-width: 50px !important;
+  padding: 4px !important;
+}
+
+.#{$ff-prefix}-device-dropdown .components-button.has-icon {
+  justify-content: center;
+  padding: 8px !important;
+  width: 100%;
+}
+
+.#{$ff-prefix}-device-dropdown .components-menu-item__button svg {
+  margin-right: 0 !important;
+}
+
+.#{$ff-prefix}-device-selector {
+  @include flex(flex-start, center, row, 4px);
+}
+
+/* Device-specific preview styles */
+.#{$ff-prefix}-space-inputs.device-desktop {
+  max-width: 100%;
+}
+
+.#{$ff-prefix}-space-inputs.device-tablet {
+  max-width: 768px;
+  margin: 0 auto;
+  border-left: 1px dashed $border-color;
+  border-right: 1px dashed $border-color;
+}
+
+.#{$ff-prefix}-space-inputs.device-mobile {
+  max-width: 480px;
+  margin: 0 auto;
+  border-left: 1px dashed $border-color;
+  border-right: 1px dashed $border-color;
+}
+
+/* FluentTypography */
+.#{$ff-prefix}-control-typography-wrap {
+  margin-bottom: 16px;
+}
+
+.fluent-typography-popover .components-popover__content {
+  min-width: 270px;
+}
+
+.fluent-typography-control-section {
+  margin-bottom: 12px;
+}
+
+.fluent-typography-control-section label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: $--font-size-extra-small;
+  font-weight: $--font-weight-primary;
 }
 
 .fluent-typography-preview {
@@ -63,62 +332,95 @@
   background: $bg-gray;
   border-radius: $--border-radius-small;
   margin-top: 8px;
-  font-size: $--font-size-small;
+  font-size: $--font-size-extra-small;
 }
 
-.fluent-typography-edit-btn {
-  padding: 2px !important;
-  min-width: auto !important;
-  height: auto !important;
+/* FluentBoxShadowControl */
+.#{$ff-prefix}-box-shadow-control {
+  margin-bottom: 16px;
 }
 
-.ffblock-space-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.#{$ff-prefix}-control-header {
   margin-bottom: 12px;
 }
 
-.ffblock-space-controls {
+.#{$ff-prefix}-shadow-controls {
+  margin-top: 12px;
+}
+
+.#{$ff-prefix}-shadow-color {
+  margin-bottom: 12px;
+}
+
+.#{$ff-prefix}-shadow-preview {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+/* State tabs styling */
+.#{$ff-prefix}-state-tabs-container {
+  margin-top: 8px;
+}
+
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 16px;
 }
 
-.ffblock-space-input-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.ffblock-space-labels {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 8px;
-  font-size: 10px;
-  color: $--color-text-secondary;
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs-item {
+  flex: 1;
   text-align: center;
+  margin-bottom: -1px;
+  padding: 8px 12px;
+  border-bottom: 2px solid transparent;
 }
 
-.ffblock-linked-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 !important;
+.#{$ff-prefix}-state-tabs .components-tab-panel__tabs-item.is-active {
+  border-bottom-color: $primary;
 }
 
-.ffblock-device-selector {
-  display: flex;
-  gap: 4px;
+/* Tab panel styling */
+.fluent-form-block-style-tabs {
+  .components-tab-panel__tabs-item {
+    flex: 1;
+    background: #fff;
+    border: 1px solid rgba($ff-color-primary, 0.1);
+    justify-content: center;
+
+    &.is-active {
+      background: rgba($ff-color-primary, 0.1);
+    }
+  }
 }
 
-.ffblock-color-reset-button {
-  color: $--color-text-secondary;
+.fluent-form-style-tabs {
+  .components-tab-panel__tabs {
+    display: flex;
+    justify-content: stretch;
+    border-bottom: 1px solid $ff-color-border;
+  }
+
+  .components-tab-panel__tab-content {
+    padding: 5px;
+  }
+
+  .components-tab-panel__tabs-item {
+    padding: 6px 4px;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    justify-content: center;
+
+    &.is-active {
+      box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $ff-color-primary;
+      color: $ff-color-primary;
+    }
+  }
 }
 
 /* Alignment Control Styles */
-.ffblock-alignment-buttons {
+.#{$ff-prefix}-alignment-buttons {
   .components-button-group {
     display: flex;
     width: 100%;
@@ -130,103 +432,25 @@
   }
 }
 
-.ffblock-alignment-control{
+.#{$ff-prefix}-alignment-control {
   margin-bottom: 12px;
 }
 
-/* Separator Component */
-.fluent-separator {
-  position: relative;
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 24px 0;
-  text-align: center;
-  clear: both;
-
-  &-dashed {
-    background: repeating-linear-gradient(
-      to right,
-      #e0e0e0,
-      #e0e0e0 5px,
-      transparent 5px,
-      transparent 10px
-    );
-  }
-
-  &-dotted {
-    background: repeating-linear-gradient(
-      to right,
-      #e0e0e0,
-      #e0e0e0 1px,
-      transparent 1px,
-      transparent 5px
-    );
-  }
-
-  &-label {
-    position: relative;
-    display: inline-block;
-    padding: 0 10px;
-    background-color: #fff;
-    color: #757575;
-    font-size: 12px;
-    line-height: 1;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    top: -6px;
-  }
-
-  &-primary {
-    background-color: #007cba;
-
-    &.fluent-separator-dashed {
-      background: repeating-linear-gradient(
-        to right,
-        #007cba,
-        #007cba 5px,
-        transparent 5px,
-        transparent 10px
-      );
-    }
-
-    &.fluent-separator-dotted {
-      background: repeating-linear-gradient(
-        to right,
-        #007cba,
-        #007cba 1px,
-        transparent 1px,
-        transparent 5px
-      );
-    }
-
-    .fluent-separator-label {
-      color: #007cba;
-    }
-  }
-
-  &-sm {
-    margin: 12px 0;
-  }
-
-  &-lg {
-    margin: 36px 0;
-  }
-}
-
+/* Gutenberg Block Wrapper */
 .fluentform-guten-wrapper {
   position: relative;
   min-height: 100px;
 
-  .ff_guten_block{
+  .ff_guten_block {
     pointer-events: none;
   }
 
   .components-base-control__label {
-    padding-right: 15px;
+    padding-right: $ff-spacing-md;
   }
 
-  .ff-btn-submit{
-    pointer-events:none;
+  .ff-btn-submit {
+    pointer-events: none;
   }
 
   .fluentform-step.active {
@@ -241,16 +465,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include flex(center, center, column);
   background-color: rgba(255, 255, 255, 0.85);
   z-index: 100;
-  border-radius: 4px;
+  border-radius: $--border-radius-small;
   backdrop-filter: blur(2px);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05) inset;
-  transition: all 0.3s ease;
+  @include transition();
   animation: fluent-form-fade-in 0.3s ease-in-out;
 
   .components-spinner {
@@ -260,10 +481,9 @@
   }
 
   p {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    font-weight: 500;
-    color: #3c434a;
+    margin: 16px 0;
+    font-weight: $--font-weight-primary;
+    color: $base-color;
     animation: fluent-form-pulse 2s ease-in-out infinite;
   }
 
@@ -275,10 +495,8 @@
 
 /* Preview Device Controls */
 .fluent-form-preview-controls {
-  display: flex;
-  justify-content: center;
+  @include flex(center, center, row, 8px);
   margin-bottom: 16px;
-  gap: 8px;
 }
 
 .fluent-form-preview-wrapper {
@@ -296,20 +514,21 @@
   }
 }
 
+/* Form Demo and Initial Wrapper */
 .fluent-form-initial-wrapper,
 .fluent-form-conv-demo {
   text-align: center;
   padding: 40px 20px;
-  background-color: #f7f7f7;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  background-color: $bg-gray;
+  border-radius: $--border-radius-small;
+  margin-bottom: 16px;
 }
 
 .fluent-form-logo {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 
   img {
-    margin: 0px auto;
+    margin: 0 auto;
     max-width: 48px;
     display: block;
   }
@@ -335,8 +554,7 @@
 
   img {
     max-height: 400px;
-    margin: 0 auto;
-    margin-bottom: 15px;
+    margin: 0 auto 12px;
   }
 }
 

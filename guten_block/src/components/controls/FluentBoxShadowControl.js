@@ -1,25 +1,18 @@
 /**
  * Fluent Forms Box Shadow Control Component
  */
-import './common.css';
-import './FluentBoxShadowControl.css';
 
 // Import custom components
 import FluentColorPicker from './FluentColorPicker';
 
 // Import React components
-const { useState, useEffect } = wp.element;
+const { useState, useEffect, useMemo } = wp.element;
 const { __ } = wp.i18n;
 
 // Import WordPress components
 const {
     RangeControl,
-    Flex,
-    FlexItem,
-    Button,
-    TabPanel,
-    ToggleControl,
-    Popover
+    ToggleControl
 } = wp.components;
 
 /**
@@ -61,9 +54,6 @@ const FluentBoxShadowControl = ({
         enable: false
     };
 
-    // Log the initial values for debugging
-    console.log('FluentBoxShadowControl initial values:', { value, hoverValue, colors });
-
     // Initialize with provided values or defaults
     const [boxShadow, setBoxShadow] = useState(value || defaultBoxShadow);
     const [hoverBoxShadow, setHoverBoxShadow] = useState(hoverValue || defaultBoxShadow);
@@ -72,14 +62,12 @@ const FluentBoxShadowControl = ({
     // Update parent component when box shadow changes
     useEffect(() => {
         if (onChange && boxShadow) {
-            console.log('Box shadow updated:', boxShadow);
             onChange(boxShadow);
         }
     }, [boxShadow, onChange]);
 
     useEffect(() => {
         if (onHoverChange && hoverBoxShadow) {
-            console.log('Box shadow hover updated:', hoverBoxShadow);
             onHoverChange(hoverBoxShadow);
         }
     }, [hoverBoxShadow, onHoverChange]);
@@ -108,8 +96,6 @@ const FluentBoxShadowControl = ({
             setHoverBoxShadow(updatedValue);
         }
     }, [hoverValue]);
-
-    // No need for event listeners as FluentColorPicker handles its own state
 
     const getCurrentShadow = () => {
         return activeTab === 'normal' ? boxShadow : hoverBoxShadow;
@@ -153,40 +139,140 @@ const FluentBoxShadowControl = ({
         handleValueChange('color', color);
     };
 
+    // Preset shadow options - memoized to prevent recreation on each render
+    const shadowPresets = useMemo(() => [
+        {
+            name: __('Soft'),
+            value: {
+                horizontal: 0,
+                vertical: 4,
+                blur: 8,
+                spread: 0,
+                color: 'rgba(0,0,0,0.1)',
+                inset: false,
+                enable: true
+            }
+        },
+        {
+            name: __('Medium'),
+            value: {
+                horizontal: 0,
+                vertical: 6,
+                blur: 12,
+                spread: 0,
+                color: 'rgba(0,0,0,0.2)',
+                inset: false,
+                enable: true
+            }
+        },
+        {
+            name: __('Hard'),
+            value: {
+                horizontal: 0,
+                vertical: 8,
+                blur: 16,
+                spread: 0,
+                color: 'rgba(0,0,0,0.3)',
+                inset: false,
+                enable: true
+            }
+        },
+        {
+            name: __('Inset'),
+            value: {
+                horizontal: 0,
+                vertical: 4,
+                blur: 8,
+                spread: 0,
+                color: 'rgba(0,0,0,0.2)',
+                inset: true,
+                enable: true
+            }
+        }
+    ], []);
+
+    const applyPreset = (preset) => {
+        setCurrentShadow({
+            ...getCurrentShadow(),
+            ...preset.value
+        });
+    };
+
     const renderShadowControls = () => {
         const currentShadow = getCurrentShadow();
 
         return (
             <>
+                <div className="ffblock-shadow-presets" style={{ marginBottom: '16px' }}>
+                    <label className="ffblock-label" style={{ marginBottom: '8px' }}>{__('Presets')}</label>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {shadowPresets.map((preset, index) => {
+                            // Define icon based on preset type
+
+
+                            return (
+                                <button
+                                    key={index}
+                                    className="components-button is-secondary is-small"
+                                    onClick={() => applyPreset(preset)}
+                                    style={{
+                                        flex: '1 0 auto',
+                                        minWidth: '60px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '4px'
+                                    }}
+                                >
+                                    <span style={{ fontSize: '14px', width: '14px', height: '14px' }}></span>
+                                    {preset.name}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
                 <div className="ffblock-shadow-controls">
-                    <RangeControl
-                        label={__('Horizontal Offset (px)')}
-                        value={currentShadow.horizontal}
-                        onChange={(value) => handleValueChange('horizontal', value)}
-                        min={-50}
-                        max={50}
-                    />
-                    <RangeControl
-                        label={__('Vertical Offset (px)')}
-                        value={currentShadow.vertical}
-                        onChange={(value) => handleValueChange('vertical', value)}
-                        min={-50}
-                        max={50}
-                    />
-                    <RangeControl
-                        label={__('Blur Radius (px)')}
-                        value={currentShadow.blur}
-                        onChange={(value) => handleValueChange('blur', value)}
-                        min={0}
-                        max={100}
-                    />
-                    <RangeControl
-                        label={__('Spread Radius (px)')}
-                        value={currentShadow.spread}
-                        onChange={(value) => handleValueChange('spread', value)}
-                        min={-50}
-                        max={50}
-                    />
+                    <div >
+                        <RangeControl
+                            label={__('Horizontal Offset (px)')}
+                            value={currentShadow.horizontal}
+                            onChange={(value) => handleValueChange('horizontal', value)}
+                            min={-50}
+                            max={50}
+                            step={1}
+                            withInputField={true}
+                        />
+                        <RangeControl
+                            label={__('Vertical Offset (px)')}
+                            value={currentShadow.vertical}
+                            onChange={(value) => handleValueChange('vertical', value)}
+                            min={-50}
+                            max={50}
+                            step={1}
+                            withInputField={true}
+                        />
+                    </div>
+                    <div >
+                        <RangeControl
+                            label={__('Blur Radius (px)')}
+                            value={currentShadow.blur}
+                            onChange={(value) => handleValueChange('blur', value)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            withInputField={true}
+                        />
+                        <RangeControl
+                            label={__('Spread Radius (px)')}
+                            value={currentShadow.spread}
+                            onChange={(value) => handleValueChange('spread', value)}
+                            min={-50}
+                            max={50}
+                            step={1}
+                            withInputField={true}
+                        />
+                    </div>
 
                     <FluentColorPicker
                         label={__('Shadow Color')}
@@ -203,8 +289,22 @@ const FluentBoxShadowControl = ({
                     />
                 </div>
 
-                <div className="ffblock-shadow-preview" style={{ marginTop: '16px' }}>
-                    <label className="ffblock-label">{__('Preview')}</label>
+                <div className="ffblock-shadow-preview" style={{ marginTop: '16px', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <label className="ffblock-label">{__('Preview')}</label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <button
+                                className="components-button is-small is-secondary"
+                                onClick={() => setCurrentShadow({
+                                    ...defaultBoxShadow,
+                                    enable: currentShadow.enable
+                                })}
+                                style={{ padding: '2px 8px', fontSize: '11px' }}
+                            >
+                                {__('Reset')}
+                            </button>
+                        </div>
+                    </div>
                     <div
                         style={{
                             height: '60px',
@@ -212,9 +312,17 @@ const FluentBoxShadowControl = ({
                             borderRadius: '4px',
                             boxShadow: currentShadow.enable
                                 ? `${currentShadow.inset ? 'inset ' : ''}${currentShadow.horizontal}px ${currentShadow.vertical}px ${currentShadow.blur}px ${currentShadow.spread}px ${currentShadow.color}`
-                                : 'none'
+                                : 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s ease'
                         }}
-                    />
+                    >
+                        <span style={{ fontSize: '12px', color: '#666' }}>
+                            {currentShadow.enable ? __('Shadow Applied') : __('No Shadow')}
+                        </span>
+                    </div>
                 </div>
             </>
         );
@@ -223,34 +331,53 @@ const FluentBoxShadowControl = ({
     // Main component render
     return (
         <div className="ffblock-box-shadow-control">
-            <Flex align="center" justify="space-between" className="ffblock-control-header">
-                <FlexItem>
-                    <span className="ffblock-label">{label}</span>
-                </FlexItem>
-                <FlexItem>
+            <div className="ffblock-control-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <span className="ffblock-label">{label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '12px', color: '#666' }}>
+                        {getCurrentShadow().enable ? __('Enabled') : __('Disabled')}
+                    </span>
                     <ToggleControl
                         checked={getCurrentShadow().enable}
                         onChange={handleToggleEnable}
                         label=""
                     />
-                </FlexItem>
-            </Flex>
+                </div>
+            </div>
 
             {getCurrentShadow().enable && (
                 <div className="ffblock-shadow-content">
                     {showHoverControls ? (
-                        <div className="ffblock-state-tabs-container">
-                            <TabPanel
-                                className="ffblock-state-tabs"
-                                activeClass="is-active"
-                                onSelect={(tabName) => setActiveTab(tabName)}
-                                tabs={[
-                                    { name: "normal", title: __("Normal"), className: "ffblock-tab-normal" },
-                                    { name: "hover", title: __("Hover"), className: "ffblock-tab-hover" }
-                                ]}
-                            >
-                                {() => renderShadowControls()}
-                            </TabPanel>
+                        <div className="ffblock-state-tabs-container" style={{ marginBottom: '16px' }}>
+                            <div className="ffblock-state-tabs" style={{ display: 'flex', borderBottom: '1px solid #e0e0e0', marginBottom: '16px' }}>
+                                <button
+                                    className={`components-button ${activeTab === 'normal' ? 'is-primary' : ''}`}
+                                    onClick={() => setActiveTab('normal')}
+                                    style={{
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        borderBottom: activeTab === 'normal' ? '2px solid #007cba' : '2px solid transparent',
+                                        margin: 0,
+                                        borderRadius: 0
+                                    }}
+                                >
+                                    {__('Normal')}
+                                </button>
+                                <button
+                                    className={`components-button ${activeTab === 'hover' ? 'is-primary' : ''}`}
+                                    onClick={() => setActiveTab('hover')}
+                                    style={{
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        borderBottom: activeTab === 'hover' ? '2px solid #007cba' : '2px solid transparent',
+                                        margin: 0,
+                                        borderRadius: 0
+                                    }}
+                                >
+                                    {__('Hover')}
+                                </button>
+                            </div>
+                            {renderShadowControls()}
                         </div>
                     ) : (
                         renderShadowControls()

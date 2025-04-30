@@ -12,8 +12,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -24,9 +24,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Fluent Forms Alignment Control Component
  */
 
-
 // Import React components
-
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect;
@@ -84,15 +82,15 @@ var FluentAlignmentControl = function FluentAlignmentControl(_ref) {
       onChange(newAlignment);
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
     className: "ffblock-alignment-control",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
       className: "ffblock-alignment-buttons",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ButtonGroup, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
         children: options.map(function (option) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Tooltip, {
             text: option.label,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
               icon: option.icon,
               isPrimary: alignment === option.value,
               isSecondary: alignment !== option.value,
@@ -121,9 +119,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+
+
+
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -139,11 +139,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Fluent Forms Border Control Component
  */
 
-
 // Import React components
-
-
-
 var _wp$element = wp.element,
   useState = _wp$element.useState,
   useEffect = _wp$element.useEffect,
@@ -412,35 +408,35 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
   var renderBorderControls = function renderBorderControls() {
     var _currentBorders$radiu4, _currentBorders$radiu5, _currentBorders$radiu6, _currentBorders$radiu7, _currentBorders$radiu8, _currentBorders$radiu9, _currentBorders$radiu10, _currentBorders$radiu11;
     var currentBorders = getCurrentBorders();
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(BorderBoxControl, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BorderBoxControl, {
         style: {
           marginTop: '16px'
         },
         colors: colors,
         onChange: handleBorderChange,
         value: currentBorders
-      }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      }), showRadius && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "ffblock-radius-control",
         style: {
           marginTop: '16px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
           align: "center",
           justify: "space-between",
           style: {
             marginBottom: '8px'
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             className: "ffblock-radius-label",
             children: __('Radius Control')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
             icon: (_currentBorders$radiu4 = currentBorders.radius) !== null && _currentBorders$radiu4 !== void 0 && _currentBorders$radiu4.linked ? 'admin-links' : 'editor-unlink',
             onClick: toggleLinkedRadius,
             label: (_currentBorders$radiu5 = currentBorders.radius) !== null && _currentBorders$radiu5 !== void 0 && _currentBorders$radiu5.linked ? __('Unlink sides') : __('Link sides'),
             isSmall: true
           })]
-        }), (_currentBorders$radiu6 = currentBorders.radius) !== null && _currentBorders$radiu6 !== void 0 && _currentBorders$radiu6.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+        }), (_currentBorders$radiu6 = currentBorders.radius) !== null && _currentBorders$radiu6 !== void 0 && _currentBorders$radiu6.linked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
           label: __('Radius'),
           value: ((_currentBorders$radiu7 = currentBorders.radius) === null || _currentBorders$radiu7 === void 0 ? void 0 : _currentBorders$radiu7.topLeft) || 0,
           onChange: function onChange(value) {
@@ -453,8 +449,8 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
           },
           min: 0,
           max: 100
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             label: __('Top Left'),
             value: ((_currentBorders$radiu8 = currentBorders.radius) === null || _currentBorders$radiu8 === void 0 ? void 0 : _currentBorders$radiu8.topLeft) || 0,
             onChange: function onChange(value) {
@@ -464,7 +460,7 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
             },
             min: 0,
             max: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             label: __('Top Right'),
             value: ((_currentBorders$radiu9 = currentBorders.radius) === null || _currentBorders$radiu9 === void 0 ? void 0 : _currentBorders$radiu9.topRight) || 0,
             onChange: function onChange(value) {
@@ -474,7 +470,7 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
             },
             min: 0,
             max: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             label: __('Bottom Right'),
             value: ((_currentBorders$radiu10 = currentBorders.radius) === null || _currentBorders$radiu10 === void 0 ? void 0 : _currentBorders$radiu10.bottomRight) || 0,
             onChange: function onChange(value) {
@@ -484,7 +480,7 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
             },
             min: 0,
             max: 100
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             label: __('Bottom Left'),
             value: ((_currentBorders$radiu11 = currentBorders.radius) === null || _currentBorders$radiu11 === void 0 ? void 0 : _currentBorders$radiu11.bottomLeft) || 0,
             onChange: function onChange(value) {
@@ -501,19 +497,19 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
   };
 
   // Main component render with collapsible panels
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
     className: "ffblock-border-box-control",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(Flex, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(Flex, {
       align: "center",
       justify: "space-between",
       className: "ffblock-control-header",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(FlexItem, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(FlexItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
           className: "ffblock-label",
           children: label || __('Custom Border')
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(FlexItem, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(FlexItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ToggleControl, {
           checked: isEnabled,
           onChange: function onChange() {
             return handleToggle();
@@ -521,11 +517,11 @@ var FluentBorderControl = function FluentBorderControl(_ref) {
           label: ""
         })
       })]
-    }), isEnabled ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    }), isEnabled ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
       className: "ffblock-border-controls",
-      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
         className: "ffblock-state-tabs-container",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TabPanel, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TabPanel, {
           className: "ffblock-state-tabs",
           activeClass: "is-active",
           onSelect: function onSelect(tabName) {
@@ -562,10 +558,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
-/* harmony import */ var _FluentBoxShadowControl_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FluentBoxShadowControl.css */ "./guten_block/src/components/controls/FluentBoxShadowControl.css");
-/* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FluentColorPicker */ "./guten_block/src/components/controls/FluentColorPicker.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -582,8 +576,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Fluent Forms Box Shadow Control Component
  */
 
-
-
 // Import custom components
 
 
@@ -593,18 +585,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var _wp$element = wp.element,
   useState = _wp$element.useState,
-  useEffect = _wp$element.useEffect;
+  useEffect = _wp$element.useEffect,
+  useMemo = _wp$element.useMemo;
 var __ = wp.i18n.__;
 
 // Import WordPress components
 var _wp$components = wp.components,
   RangeControl = _wp$components.RangeControl,
-  Flex = _wp$components.Flex,
-  FlexItem = _wp$components.FlexItem,
-  Button = _wp$components.Button,
-  TabPanel = _wp$components.TabPanel,
-  ToggleControl = _wp$components.ToggleControl,
-  Popover = _wp$components.Popover;
+  ToggleControl = _wp$components.ToggleControl;
 
 /**
  * Fluent Forms Box Shadow Control Component
@@ -658,13 +646,6 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     enable: false
   };
 
-  // Log the initial values for debugging
-  console.log('FluentBoxShadowControl initial values:', {
-    value: value,
-    hoverValue: hoverValue,
-    colors: colors
-  });
-
   // Initialize with provided values or defaults
   var _useState = useState(value || defaultBoxShadow),
     _useState2 = _slicedToArray(_useState, 2),
@@ -682,13 +663,11 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
   // Update parent component when box shadow changes
   useEffect(function () {
     if (onChange && boxShadow) {
-      console.log('Box shadow updated:', boxShadow);
       onChange(boxShadow);
     }
   }, [boxShadow, onChange]);
   useEffect(function () {
     if (onHoverChange && hoverBoxShadow) {
-      console.log('Box shadow hover updated:', hoverBoxShadow);
       onHoverChange(hoverBoxShadow);
     }
   }, [hoverBoxShadow, onHoverChange]);
@@ -712,9 +691,6 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
       setHoverBoxShadow(updatedValue);
     }
   }, [hoverValue]);
-
-  // No need for event listeners as FluentColorPicker handles its own state
-
   var getCurrentShadow = function getCurrentShadow() {
     return activeTab === 'normal' ? boxShadow : hoverBoxShadow;
   };
@@ -746,116 +722,294 @@ var FluentBoxShadowControl = function FluentBoxShadowControl(_ref) {
     // We can directly use this value for the shadow color
     handleValueChange('color', color);
   };
+
+  // Preset shadow options - memoized to prevent recreation on each render
+  var shadowPresets = useMemo(function () {
+    return [{
+      name: __('Soft'),
+      value: {
+        horizontal: 0,
+        vertical: 4,
+        blur: 8,
+        spread: 0,
+        color: 'rgba(0,0,0,0.1)',
+        inset: false,
+        enable: true
+      }
+    }, {
+      name: __('Medium'),
+      value: {
+        horizontal: 0,
+        vertical: 6,
+        blur: 12,
+        spread: 0,
+        color: 'rgba(0,0,0,0.2)',
+        inset: false,
+        enable: true
+      }
+    }, {
+      name: __('Hard'),
+      value: {
+        horizontal: 0,
+        vertical: 8,
+        blur: 16,
+        spread: 0,
+        color: 'rgba(0,0,0,0.3)',
+        inset: false,
+        enable: true
+      }
+    }, {
+      name: __('Inset'),
+      value: {
+        horizontal: 0,
+        vertical: 4,
+        blur: 8,
+        spread: 0,
+        color: 'rgba(0,0,0,0.2)',
+        inset: true,
+        enable: true
+      }
+    }];
+  }, []);
+  var applyPreset = function applyPreset(preset) {
+    setCurrentShadow(_objectSpread(_objectSpread({}, getCurrentShadow()), preset.value));
+  };
   var renderShadowControls = function renderShadowControls() {
     var currentShadow = getCurrentShadow();
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        className: "ffblock-shadow-presets",
+        style: {
+          marginBottom: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+          className: "ffblock-label",
+          style: {
+            marginBottom: '8px'
+          },
+          children: __('Presets')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+          style: {
+            display: 'flex',
+            gap: '8px',
+            flexWrap: 'wrap'
+          },
+          children: shadowPresets.map(function (preset, index) {
+            // Define icon based on preset type
+
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("button", {
+              className: "components-button is-secondary is-small",
+              onClick: function onClick() {
+                return applyPreset(preset);
+              },
+              style: {
+                flex: '1 0 auto',
+                minWidth: '60px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+                style: {
+                  fontSize: '14px',
+                  width: '14px',
+                  height: '14px'
+                }
+              }), preset.name]
+            }, index);
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-shadow-controls",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(RangeControl, {
-          label: __('Horizontal Offset (px)'),
-          value: currentShadow.horizontal,
-          onChange: function onChange(value) {
-            return handleValueChange('horizontal', value);
-          },
-          min: -50,
-          max: 50
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(RangeControl, {
-          label: __('Vertical Offset (px)'),
-          value: currentShadow.vertical,
-          onChange: function onChange(value) {
-            return handleValueChange('vertical', value);
-          },
-          min: -50,
-          max: 50
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(RangeControl, {
-          label: __('Blur Radius (px)'),
-          value: currentShadow.blur,
-          onChange: function onChange(value) {
-            return handleValueChange('blur', value);
-          },
-          min: 0,
-          max: 100
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(RangeControl, {
-          label: __('Spread Radius (px)'),
-          value: currentShadow.spread,
-          onChange: function onChange(value) {
-            return handleValueChange('spread', value);
-          },
-          min: -50,
-          max: 50
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Horizontal Offset (px)'),
+            value: currentShadow.horizontal,
+            onChange: function onChange(value) {
+              return handleValueChange('horizontal', value);
+            },
+            min: -50,
+            max: 50,
+            step: 1,
+            withInputField: true
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Vertical Offset (px)'),
+            value: currentShadow.vertical,
+            onChange: function onChange(value) {
+              return handleValueChange('vertical', value);
+            },
+            min: -50,
+            max: 50,
+            step: 1,
+            withInputField: true
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Blur Radius (px)'),
+            value: currentShadow.blur,
+            onChange: function onChange(value) {
+              return handleValueChange('blur', value);
+            },
+            min: 0,
+            max: 100,
+            step: 1,
+            withInputField: true
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(RangeControl, {
+            label: __('Spread Radius (px)'),
+            value: currentShadow.spread,
+            onChange: function onChange(value) {
+              return handleValueChange('spread', value);
+            },
+            min: -50,
+            max: 50,
+            step: 1,
+            withInputField: true
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_FluentColorPicker__WEBPACK_IMPORTED_MODULE_0__["default"], {
           label: __('Shadow Color'),
           value: currentShadow.color || 'rgba(0,0,0,0.5)',
           onChange: handleColorChange,
           defaultColor: "rgba(0,0,0,0.5)",
           colors: colors
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToggleControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
           label: __('Inset Shadow'),
           checked: currentShadow.inset,
           onChange: handleToggleInset
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-shadow-preview",
         style: {
-          marginTop: '16px'
+          marginTop: '16px',
+          marginBottom: '16px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
-          className: "ffblock-label",
-          children: __('Preview')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+          style: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '8px'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+            className: "ffblock-label",
+            children: __('Preview')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              className: "components-button is-small is-secondary",
+              onClick: function onClick() {
+                return setCurrentShadow(_objectSpread(_objectSpread({}, defaultBoxShadow), {}, {
+                  enable: currentShadow.enable
+                }));
+              },
+              style: {
+                padding: '2px 8px',
+                fontSize: '11px'
+              },
+              children: __('Reset')
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           style: {
             height: '60px',
             backgroundColor: '#f0f0f0',
             borderRadius: '4px',
-            boxShadow: currentShadow.enable ? "".concat(currentShadow.inset ? 'inset ' : '').concat(currentShadow.horizontal, "px ").concat(currentShadow.vertical, "px ").concat(currentShadow.blur, "px ").concat(currentShadow.spread, "px ").concat(currentShadow.color) : 'none'
-          }
+            boxShadow: currentShadow.enable ? "".concat(currentShadow.inset ? 'inset ' : '').concat(currentShadow.horizontal, "px ").concat(currentShadow.vertical, "px ").concat(currentShadow.blur, "px ").concat(currentShadow.spread, "px ").concat(currentShadow.color) : 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+            style: {
+              fontSize: '12px',
+              color: '#666'
+            },
+            children: currentShadow.enable ? __('Shadow Applied') : __('No Shadow')
+          })
         })]
       })]
     });
   };
 
   // Main component render
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "ffblock-box-shadow-control",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(Flex, {
-      align: "center",
-      justify: "space-between",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
       className: "ffblock-control-header",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(FlexItem, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
-          className: "ffblock-label",
-          children: label
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(FlexItem, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ToggleControl, {
+      style: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '12px'
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+        className: "ffblock-label",
+        children: label
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          style: {
+            fontSize: '12px',
+            color: '#666'
+          },
+          children: getCurrentShadow().enable ? __('Enabled') : __('Disabled')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ToggleControl, {
           checked: getCurrentShadow().enable,
           onChange: handleToggleEnable,
           label: ""
-        })
+        })]
       })]
-    }), getCurrentShadow().enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    }), getCurrentShadow().enable && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "ffblock-shadow-content",
-      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      children: showHoverControls ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "ffblock-state-tabs-container",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(TabPanel, {
+        style: {
+          marginBottom: '16px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
           className: "ffblock-state-tabs",
-          activeClass: "is-active",
-          onSelect: function onSelect(tabName) {
-            return setActiveTab(tabName);
+          style: {
+            display: 'flex',
+            borderBottom: '1px solid #e0e0e0',
+            marginBottom: '16px'
           },
-          tabs: [{
-            name: "normal",
-            title: __("Normal"),
-            className: "ffblock-tab-normal"
-          }, {
-            name: "hover",
-            title: __("Hover"),
-            className: "ffblock-tab-hover"
-          }],
-          children: function children() {
-            return renderShadowControls();
-          }
-        })
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+            className: "components-button ".concat(activeTab === 'normal' ? 'is-primary' : ''),
+            onClick: function onClick() {
+              return setActiveTab('normal');
+            },
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              borderBottom: activeTab === 'normal' ? '2px solid #007cba' : '2px solid transparent',
+              margin: 0,
+              borderRadius: 0
+            },
+            children: __('Normal')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+            className: "components-button ".concat(activeTab === 'hover' ? 'is-primary' : ''),
+            onClick: function onClick() {
+              return setActiveTab('hover');
+            },
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              borderBottom: activeTab === 'hover' ? '2px solid #007cba' : '2px solid transparent',
+              margin: 0,
+              borderRadius: 0
+            },
+            children: __('Hover')
+          })]
+        }), renderShadowControls()]
       }) : renderShadowControls()
     })]
   });
@@ -944,36 +1098,21 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
         className: "ffblock-label",
         children: label
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        },
+        className: "ffblock-flex-gap",
         children: [isColorChanged && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
           icon: "image-rotate",
           isSmall: true,
           onClick: resetToDefault,
           label: "Reset to default",
-          className: "ffblock-color-reset-button",
-          style: {
-            padding: '2px'
-          }
+          className: "ffblock-reset-button"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
           className: "ffblock-color-button",
           onClick: toggleColorPicker,
           ref: buttonRef,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+            className: "ffblock-color-swatch ".concat(!value || value === 'transparent' || value.includes('rgba') ? 'ffblock-color-transparent-pattern' : ''),
             style: {
-              backgroundColor: value || 'transparent',
-              backgroundImage: !value || value === 'transparent' || value.includes('rgba') ? 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC")' : 'none',
-              backgroundPosition: '0 0',
-              backgroundSize: '10px 10px',
-              backgroundRepeat: 'repeat',
-              width: '24px',
-              height: '24px',
-              borderRadius: '2px',
-              boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.2)',
-              cursor: 'pointer'
+              backgroundColor: value || 'transparent'
             }
           })
         })]
@@ -993,9 +1132,7 @@ var FluentColorPicker = function FluentColorPicker(_ref) {
         expandOnMobile: true,
         className: "ffblock-color-popover",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-          style: {
-            padding: '12px'
-          },
+          className: "ffblock-popover-content",
           ref: popoverRef,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(wp.components.ColorPicker, {
             color: value,
@@ -1074,9 +1211,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _common_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.css */ "./guten_block/src/components/controls/common.css");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+
+
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1091,8 +1229,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 /**
  * Fluent Forms Custom Space/Margin/Padding Control
  */
-
-
 
 var _wp$components = wp.components,
   Button = _wp$components.Button,
@@ -1382,31 +1518,31 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
       onChange(emptyValues);
     }
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
     className: "ffblock-control-field ffblock-control-space",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
       className: "ffblock-space-header",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
         className: "ffblock-label-container",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
           className: "ffblock-label",
           children: label
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Tooltip, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        children: hasModifiedValues && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Tooltip, {
           text: __('Reset spacing values'),
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
             onClick: handleReset,
             className: "ffblock-reset-button",
             icon: "image-rotate",
             isSmall: true
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "ffblock-space-controls",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
           className: "ffblock-device-selector",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(DropdownMenu, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DropdownMenu, {
             className: "ffblock-device-dropdown",
             icon: activeDevice === 'desktop' ? 'desktop' : activeDevice === 'tablet' ? 'tablet' : 'smartphone',
             label: __('Select device'),
@@ -1433,11 +1569,11 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
               };
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
           className: "ffblock-unit-selector",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ButtonGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(ButtonGroup, {
             children: units.map(function (unit) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
                 isSmall: true,
                 isPrimary: activeUnit === unit.value,
                 onClick: function onClick() {
@@ -1449,55 +1585,55 @@ var FluentSpaceControl = function FluentSpaceControl(_ref2) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
       className: "ffblock-space-inputs device-".concat(activeDevice),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "ffblock-space-input-row",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.top,
             onChange: function onChange(value) {
               return handleValueChange('top', value);
             },
             min: 0
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "TOP"
           }, "label-top")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.right,
             onChange: function onChange(value) {
               return handleValueChange('right', value);
             },
             min: 0
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "RIGHT"
           }, "label-right")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.bottom,
             onChange: function onChange(value) {
               return handleValueChange('bottom', value);
             },
             min: 0
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "BOTTOM"
           }, "label-right")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(TextControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TextControl, {
             type: "number",
             value: deviceValues.left,
             onChange: function onChange(value) {
               return handleValueChange('left', value);
             },
             min: 0
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
             children: "LEFT"
           }, "label-left")]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
           icon: isLinked ? 'admin-links' : 'editor-unlink',
           onClick: toggleLinked,
           className: "ffblock-linked-button"
@@ -1716,20 +1852,13 @@ var FluentTypography = function FluentTypography(_ref) {
         className: "ffblock-label",
         children: label
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        },
+        className: "ffblock-flex-gap",
         children: [isFontChanged() && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
           icon: "image-rotate",
           isSmall: true,
           onClick: resetToDefault,
           label: "Reset to default",
-          className: "ffblock-color-reset-button",
-          style: {
-            padding: '2px'
-          }
+          className: "ffblock-reset-button"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Button, {
           icon: "edit",
           isSmall: true,
@@ -1742,19 +1871,10 @@ var FluentTypography = function FluentTypography(_ref) {
       onClose: togglePopover,
       position: "bottom center",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-        style: {
-          width: '270px',
-          padding: '15px'
-        },
+        className: "ffblock-popover-content",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
+          className: "fluent-typography-control-section",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
             children: "Font Size (px)"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             value: localFontSize ? parseInt(localFontSize) : undefined,
@@ -1765,14 +1885,8 @@ var FluentTypography = function FluentTypography(_ref) {
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
+          className: "fluent-typography-control-section",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
             children: "Font Weight"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
             value: localFontWeight,
@@ -1782,14 +1896,8 @@ var FluentTypography = function FluentTypography(_ref) {
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
+          className: "fluent-typography-control-section",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
             children: "Line Height"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             value: localLineHeight ? parseFloat(localLineHeight) : undefined,
@@ -1801,14 +1909,8 @@ var FluentTypography = function FluentTypography(_ref) {
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
+          className: "fluent-typography-control-section",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
             children: "Letter Spacing (px)"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RangeControl, {
             value: localLetterSpacing ? parseFloat(localLetterSpacing) : undefined,
@@ -1820,14 +1922,8 @@ var FluentTypography = function FluentTypography(_ref) {
             }
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-          style: {
-            marginBottom: '12px'
-          },
+          className: "fluent-typography-control-section",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", {
-            style: {
-              display: 'block',
-              marginBottom: '4px'
-            },
             children: "Text Transform"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SelectControl, {
             value: localTextTransform,
@@ -1894,10 +1990,6 @@ var TabAdvanced = function TabAdvanced(_ref) {
           help: __('Add smooth transitions when hovering over form elements')
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_controls_FluentSeparator__WEBPACK_IMPORTED_MODULE_0__["default"], {
-      label: "Custom Styling",
-      style: "dashed",
-      className: "fluent-separator-primary"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(PanelBody, {
       title: __('Custom CSS'),
       initialOpen: true,
@@ -2498,9 +2590,7 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
       },
       defaultColor: ""
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      style: {
-        marginBottom: '12px'
-      },
+      className: "ffblock-control-field",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
         className: "ffblock-label",
         children: "Size (px)"
@@ -2512,12 +2602,8 @@ var RadioCheckBoxStylesPanel = function RadioCheckBoxStylesPanel(_ref6) {
         step: 1,
         onChange: handleSizeChange
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("hr", {
-      style: {
-        margin: '15px 0',
-        border: 'none',
-        borderBottom: '1px solid #e2e4e7'
-      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      className: "ffblock-separator"
     })]
   });
 };
@@ -3189,30 +3275,6 @@ var Edit = /*#__PURE__*/function (_Component) {
   return Edit;
 }(Component);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
-
-/***/ }),
-
-/***/ "./guten_block/src/components/controls/FluentBoxShadowControl.css":
-/*!************************************************************************!*\
-  !*** ./guten_block/src/components/controls/FluentBoxShadowControl.css ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./guten_block/src/components/controls/common.css":
-/*!********************************************************!*\
-  !*** ./guten_block/src/components/controls/common.css ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
 
 /***/ }),
 

@@ -136,15 +136,14 @@ const FluentTypography = ({ label, settings, onChange }) => {
       <div className="ffblock-control-field ffblock-control-typography-wrap">
           <Flex align="center" justify="space-between">
               <span className="ffblock-label">{label}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="ffblock-flex-gap">
                   {isFontChanged() && (
                     <Button
                       icon="image-rotate"
                       isSmall
                       onClick={resetToDefault}
                       label="Reset to default"
-                      className="ffblock-color-reset-button"
-                      style={{ padding: '2px' }}
+                      className="ffblock-reset-button"
                     />
                   )}
                   <Button
@@ -163,10 +162,10 @@ const FluentTypography = ({ label, settings, onChange }) => {
               position="bottom center"
               key="typo-popover"
             >
-                <div style={{ width: '270px', padding: '15px' }}>
+                <div className="ffblock-popover-content">
 
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '4px' }}>Font Size (px)</label>
+                    <div className="fluent-typography-control-section">
+                        <label>Font Size (px)</label>
                         <RangeControl
                           value={localFontSize ? parseInt(localFontSize) : undefined}
                           min={8}
@@ -175,8 +174,8 @@ const FluentTypography = ({ label, settings, onChange }) => {
                         />
                     </div>
 
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '4px' }}>Font Weight</label>
+                    <div className="fluent-typography-control-section">
+                        <label>Font Weight</label>
                         <SelectControl
                           value={localFontWeight}
                           options={fontWeightOptions}
@@ -184,8 +183,8 @@ const FluentTypography = ({ label, settings, onChange }) => {
                         />
                     </div>
 
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '4px' }}>Line Height</label>
+                    <div className="fluent-typography-control-section">
+                        <label>Line Height</label>
                         <RangeControl
                           value={localLineHeight ? parseFloat(localLineHeight) : undefined}
                           min={0.1}
@@ -195,8 +194,8 @@ const FluentTypography = ({ label, settings, onChange }) => {
                         />
                     </div>
 
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '4px' }}>Letter Spacing (px)</label>
+                    <div className="fluent-typography-control-section">
+                        <label>Letter Spacing (px)</label>
                         <RangeControl
                           value={localLetterSpacing ? parseFloat(localLetterSpacing) : undefined}
                           min={-5}
@@ -206,8 +205,8 @@ const FluentTypography = ({ label, settings, onChange }) => {
                         />
                     </div>
 
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '4px' }}>Text Transform</label>
+                    <div className="fluent-typography-control-section">
+                        <label>Text Transform</label>
                         <SelectControl
                           value={localTextTransform}
                           options={textTransformOptions}

@@ -1,7 +1,6 @@
 /**
  * Fluent Forms Custom Space/Margin/Padding Control
  */
-import './common.css';
 
 const {
     Button,

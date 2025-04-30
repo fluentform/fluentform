@@ -454,7 +454,7 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
                 onChange={(value) => updateStyles({radioCheckboxItemsColor: value})}
                 defaultColor=""
             />
-            <div style={{ marginBottom: '12px' }}>
+            <div className="ffblock-control-field">
                 <span className="ffblock-label">Size (px)</span>
                 <RangeControl
                     value={localSize} // Use local state for immediate UI feedback
@@ -466,7 +466,7 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
             </div>
 
 
-            <hr style={{ margin: '15px 0', border: 'none', borderBottom: '1px solid #e2e4e7' }} />
+            <div className="ffblock-separator"></div>
 
 
 
