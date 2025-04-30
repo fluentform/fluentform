@@ -19,10 +19,12 @@ const { __ } = wp.i18n;
 
 // Custom Space/Margin/Padding Control
 const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }] }) => {
+    // Initialize state from props or defaults
     const [isLinked, setIsLinked] = useState(true);
     const [activeUnit, setActiveUnit] = useState('px');
     const [activeDevice, setActiveDevice] = useState('desktop');
     const [hasModifiedValues, setHasModifiedValues] = useState(false);
+    const [currentValues, setCurrentValues] = useState({});
 
     // Default values structure
     const defaultValues = {
@@ -31,7 +33,43 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         mobile: { unit: 'px', top: 0, right: 0, bottom: 0, left: 0, linked: true }
     };
 
-    const currentValues = values || defaultValues;
+    // Initialize values on component mount and when props change
+    useEffect(() => {
+        if (values) {
+            // Create a properly structured object with all required properties
+            const structuredValues = {
+                desktop: {
+                    unit: values.desktop?.unit || values.unit || 'px',
+                    top: values.desktop?.top || '',
+                    right: values.desktop?.right || '',
+                    bottom: values.desktop?.bottom || '',
+                    left: values.desktop?.left || '',
+                    linked: values.desktop?.linked !== undefined ? values.desktop.linked : true
+                },
+                tablet: {
+                    unit: values.tablet?.unit || values.unit || 'px',
+                    top: values.tablet?.top || '',
+                    right: values.tablet?.right || '',
+                    bottom: values.tablet?.bottom || '',
+                    left: values.tablet?.left || '',
+                    linked: values.tablet?.linked !== undefined ? values.tablet.linked : true
+                },
+                mobile: {
+                    unit: values.mobile?.unit || values.unit || 'px',
+                    top: values.mobile?.top || '',
+                    right: values.mobile?.right || '',
+                    bottom: values.mobile?.bottom || '',
+                    left: values.mobile?.left || '',
+                    linked: values.mobile?.linked !== undefined ? values.mobile.linked : true
+                }
+            };
+
+            setCurrentValues(structuredValues);
+            setIsLinked(structuredValues[activeDevice].linked);
+            setActiveUnit(structuredValues[activeDevice].unit || 'px');
+            setHasModifiedValues(checkForModifiedValues(structuredValues));
+        }
+    }, [values]);
 
     // Helper function to check if any spacing values have been set
     const checkForModifiedValues = (values) => {
@@ -131,21 +169,41 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             setHasModifiedValues(checkForModifiedValues(updatedValues));
         }
 
-        if (isLinked) {
-            // If linked, update all sides
-            updateValues({
-                ...currentValues[activeDevice],
-                top: numValue,
-                right: numValue,
-                bottom: numValue,
-                left: numValue
-            });
+        // If linked, update all values
+        if (isLinked && position !== 'unit') {
+            const updatedValues = {...currentValues};
+            const updatedDeviceValues = {...updatedValues[activeDevice]};
+
+            // Update all positions with the same value
+            updatedDeviceValues.top = numValue;
+            updatedDeviceValues.right = numValue;
+            updatedDeviceValues.bottom = numValue;
+            updatedDeviceValues.left = numValue;
+
+            // Update the device values
+            updatedValues[activeDevice] = updatedDeviceValues;
+
+            // Update local state
+            setCurrentValues(updatedValues);
+
+            // Call onChange with updated values
+            if (onChange) {
+                onChange(updatedValues);
+            }
         } else {
-            // Otherwise just update the changed side
-            updateValues({
-                ...currentValues[activeDevice],
-                [position]: numValue
-            });
+            // Update just the changed position
+            const updatedValues = {...currentValues};
+            const updatedDeviceValues = {...updatedValues[activeDevice]};
+            updatedDeviceValues[position] = numValue;
+            updatedValues[activeDevice] = updatedDeviceValues;
+
+            // Update local state
+            setCurrentValues(updatedValues);
+
+            // Call onChange with updated values
+            if (onChange) {
+                onChange(updatedValues);
+            }
         }
     };
 
@@ -153,19 +211,25 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
 
     // Handler for reset button
     const handleReset = () => {
-        // Create an empty values object with the current unit
-        const emptyValues = {
-            unit: activeUnit,
-            desktop: { top: '', right: '', bottom: '', left: '', linked: isLinked },
-            tablet: { top: '', right: '', bottom: '', left: '', linked: isLinked },
-            mobile: { top: '', right: '', bottom: '', left: '', linked: isLinked }
-        };
-
-        // Reset the modified flag
+        // Reset to default values
+        setIsLinked(true);
+        setActiveUnit('px');
         setHasModifiedValues(false);
 
-        // Update with empty values
-        onChange(emptyValues);
+        // Create empty values
+        const emptyValues = {
+            desktop: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+            tablet: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true },
+            mobile: { unit: 'px', top: '', right: '', bottom: '', left: '', linked: true }
+        };
+
+        // Update local state
+        setCurrentValues(emptyValues);
+
+        // Call onChange with empty values
+        if (onChange) {
+            onChange(emptyValues);
+        }
     };
 
     return (

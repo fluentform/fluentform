@@ -2,6 +2,7 @@
  * Fluent Forms Gutenberg Block Edit Component
  * Enhanced with custom UX controls
  */
+import FluentSeparator from './components/controls/FluentSeparator';
 const { __ } = wp.i18n;
 const { InspectorControls } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
@@ -55,44 +56,71 @@ class Edit extends Component {
             selectedPreset: 'default',
             isPreviewLoading: false,
             showSaveNotice: false,
-            previewDevice: 'desktop'
+            previewDevice: 'desktop',
+            updateTimer: null // Add timer state for debouncing
         };
 
         this.updateStyles = this.updateStyles.bind(this);
     }
 
-    // Method to update styles without causing infinite loops
+    // Method to update styles with debouncing to prevent excessive requests
     updateStyles(styleAttributes) {
-        console.log(styleAttributes);
-        const { setAttributes, attributes } = this.props;
-
-        // Create a new object with only the changed attributes
-        const updatedAttributes = {};
-
-        // Compare each attribute to see if it actually changed
-        Object.keys(styleAttributes).forEach(key => {
-            const currentValue = attributes[key];
-            const newValue = styleAttributes[key];
-
-            // Only include attributes that have actually changed
-            // Use JSON.stringify for deep comparison of objects
-            if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
-                updatedAttributes[key] = newValue;
-            }
-        });
-
-        // Only update if there are actual changes
-        if (Object.keys(updatedAttributes).length > 0) {
-            setAttributes(updatedAttributes);
-
-            // Set loading state briefly to show user something is happening
-            // this.setState({ isPreviewLoading: true });
-
-            // Clear loading state after a short delay
-            setTimeout(() => {
-                // this.setState({ isPreviewLoading: false });
-            }, 300);
+        // Special handling for radioCheckboxItemsSize to ensure it's a number
+        if ('radioCheckboxItemsSize' in styleAttributes) {
+            styleAttributes.radioCheckboxItemsSize = parseInt(styleAttributes.radioCheckboxItemsSize, 10) || 0;
         }
+
+        // Clear any existing timer
+        if (this.state.updateTimer) {
+            clearTimeout(this.state.updateTimer);
+        }
+
+        // Set a new timer to delay the update
+        const timer = setTimeout(() => {
+            console.log('Updating styles:', styleAttributes);
+            const { setAttributes, attributes } = this.props;
+
+            // Create a new object with only the changed attributes
+            const updatedAttributes = {};
+
+            // Compare each attribute to see if it actually changed
+            Object.keys(styleAttributes).forEach(key => {
+                const currentValue = attributes[key];
+                const newValue = styleAttributes[key];
+
+                // Special handling for radioCheckboxItemsSize to ensure numeric comparison
+                if (key === 'radioCheckboxItemsSize') {
+                    if (currentValue !== newValue) {
+                        updatedAttributes[key] = newValue;
+                    }
+                } else {
+                    // For other attributes, use JSON.stringify for deep comparison
+                    if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
+                        updatedAttributes[key] = newValue;
+                    }
+                }
+            });
+
+            // Only update if there are actual changes
+            if (Object.keys(updatedAttributes).length > 0) {
+                console.log('Applying updates:', updatedAttributes);
+                setAttributes(updatedAttributes);
+
+                // Set loading state briefly to show user something is happening
+                this.setState({ isPreviewLoading: true });
+
+                // Clear loading state after a short delay
+                setTimeout(() => {
+                    this.setState({ isPreviewLoading: false });
+                }, 300);
+            }
+
+            // Clear the timer reference
+            this.setState({ updateTimer: null });
+        }, 300); // 300ms debounce delay
+
+        // Store the timer reference
+        this.setState({ updateTimer: timer });
     }
 
     componentDidMount() {
@@ -201,7 +229,7 @@ class Edit extends Component {
         // Form selection and style controls in inspector controls
         const inspectorControls = (
             <InspectorControls key="ff-inspector-controls">
-                <PanelBody title={__('Form Selection')} initialOpen={true}>
+                <PanelBody title={__('Form Selection')} initialOpen={attributes.formId ? false : true}>
                     <SelectControl
                         label={__('Select a Form')}
                         value={attributes.formId || ''}
@@ -233,33 +261,25 @@ class Edit extends Component {
 
         // Main content based on selection state
         let mainContent;
+        let loadingOverlay = null;
 
+        // Create loading overlay if needed
         if (isPreviewLoading) {
-            mainContent = (
-                <div className="fluent-form-loading" style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '40px',
-                    backgroundColor: '#f7f7f7',
-                    borderRadius: '4px'
-                }}>
+            loadingOverlay = (
+                <div className="fluent-form-loading-overlay">
                     <Spinner />
-                    <p style={{ marginTop: '16px' }}>Loading form preview...</p>
+                    <p>Loading form preview...</p>
+                    <FluentSeparator style="dotted" className="fluent-separator-sm" />
                 </div>
             );
-        } else if (!attributes.formId) {
+        }
+
+        if (!attributes.formId) {
             // No form selected
             mainContent = (
-                <div className="fluent-form-initial-wrapper" style={{
-                    textAlign: 'center',
-                    padding: '40px 20px',
-                    backgroundColor: '#f7f7f7',
-                    borderRadius: '4px'
-                }}>
-                    <div className="fluent-form-logo" style={{ marginBottom: '20px' }}>
-                        {config.logo && <img src={config.logo} alt="Fluent Forms Logo" style={{ maxWidth: '200px' }} />}
+                <div className="fluent-form-initial-wrapper">
+                    <div className="fluent-form-logo">
+                        {config.logo && <img src={config.logo} alt="Fluent Forms Logo" className="fluent-form-logo-img" />}
                     </div>
                     <SelectControl
                         label={__('Select a Form')}
@@ -279,20 +299,15 @@ class Edit extends Component {
         } else if (attributes.isConversationalForm === true) {
             // Conversational form selected
             mainContent = (
-                <div className="fluent-form-conv-demo" style={{
-                    textAlign: 'center',
-                    padding: '20px',
-                    backgroundColor: '#f7f7f7',
-                    borderRadius: '4px'
-                }}>
+                <div className="fluent-form-conv-demo">
                     {config.conversational_demo_img && (
                         <img
                             src={config.conversational_demo_img}
                             alt="Fluent Forms Conversational Form"
-                            style={{ maxWidth: '100%', height: 'auto' }}
+                            className="fluent-form-conv-img"
                         />
                     )}
-                    <p style={{ marginTop: '16px', fontStyle: 'italic' }}>
+                    <p className="fluent-form-conv-message">
                         <strong>
                             {__(
                                 "This is a demo preview. The actual Conversational Form will appear on your live page."
@@ -303,26 +318,13 @@ class Edit extends Component {
             );
         } else {
             // Regular form selected - show preview only
-            const previewWrapperStyle = {};
-
-            // Apply responsive preview styles
-            if (previewDevice === 'tablet') {
-                previewWrapperStyle.maxWidth = '768px';
-                previewWrapperStyle.margin = '0 auto';
-            } else if (previewDevice === 'mobile') {
-                previewWrapperStyle.maxWidth = '480px';
-                previewWrapperStyle.margin = '0 auto';
-            }
+            // Create device-specific class for responsive preview
+            const deviceClass = `preview-device-${previewDevice}`;
 
             mainContent = (
-                <div className="fluent-form-preview-wrapper" style={previewWrapperStyle}>
+                <div className={`fluent-form-preview-wrapper ${deviceClass}`}>
                     {/* Device Preview Controls */}
-                    <div className="fluent-form-preview-controls" style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginBottom: '16px',
-                        gap: '8px'
-                    }}>
+                    <div className="fluent-form-preview-controls">
                         {[
                             { device: 'desktop', icon: 'desktop', label: 'Desktop Preview' },
                             { device: 'tablet', icon: 'tablet', label: 'Tablet Preview' },
@@ -352,6 +354,7 @@ class Edit extends Component {
             <div className="fluentform-guten-wrapper">
                 {inspectorControls}
                 {mainContent}
+                {loadingOverlay}
             </div>
         );
     }

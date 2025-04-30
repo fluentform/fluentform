@@ -74,10 +74,11 @@ class GutenbergBlock
      * @param string $selector CSS selector
      * @param string $device   Device type (desktop, tablet, mobile)
      * @param string $unit     Unit type (px, em, %)
+     * @param string $property CSS property type (padding or margin)
      *
      * @return string Generated CSS rules
      */
-    private static function processSpacing($spacing, $selector, $device = 'desktop', $unit = 'px')
+    private static function processSpacing($spacing, $selector, $device = 'desktop', $unit = 'px', $property = 'padding')
     {
         $css = '';
         $deviceValues = Arr::get($spacing, $device, []);
@@ -89,24 +90,24 @@ class GutenbergBlock
         // Start building CSS rules for this selector
         $rules = [];
 
-        // Process padding top
+        // Process top spacing
         if (isset($deviceValues['top']) && $deviceValues['top'] !== '' && $deviceValues['top'] !== 0) {
-            $rules[] = 'padding-top: ' . $deviceValues['top'] . $unit;
+            $rules[] = $property . '-top: ' . $deviceValues['top'] . $unit;
         }
 
-        // Process padding right
+        // Process right spacing
         if (isset($deviceValues['right']) && $deviceValues['right'] !== '' && $deviceValues['right'] !== 0) {
-            $rules[] = 'padding-right: ' . $deviceValues['right'] . $unit;
+            $rules[] = $property . '-right: ' . $deviceValues['right'] . $unit;
         }
 
-        // Process padding bottom
+        // Process bottom spacing
         if (isset($deviceValues['bottom']) && $deviceValues['bottom'] !== '' && $deviceValues['bottom'] !== 0) {
-            $rules[] = 'padding-bottom: ' . $deviceValues['bottom'] . $unit;
+            $rules[] = $property . '-bottom: ' . $deviceValues['bottom'] . $unit;
         }
 
-        // Process padding left
+        // Process left spacing
         if (isset($deviceValues['left']) && $deviceValues['left'] !== '' && $deviceValues['left'] !== 0) {
-            $rules[] = 'padding-left: ' . $deviceValues['left'] . $unit;
+            $rules[] = $property . '-left: ' . $deviceValues['left'] . $unit;
         }
 
         // Only generate CSS if we have rules
@@ -330,6 +331,28 @@ class GutenbergBlock
                 'buttonHoverBGColor'    => [
                     'type' => 'string',
                 ],
+                'buttonAlignment'       => [
+                    'type'    => 'string',
+                    'default' => 'left',
+                ],
+                'buttonWidth'           => [
+                    'type' => 'number',
+                ],
+                'buttonTypography'      => [
+                    'type' => 'object',
+                ],
+                'buttonPadding'         => [
+                    'type' => 'object',
+                ],
+                'buttonMargin'          => [
+                    'type' => 'object',
+                ],
+                'buttonBoxShadow'       => [
+                    'type' => 'object',
+                ],
+                'buttonBoxShadowHover'  => [
+                    'type' => 'object',
+                ],
                 'enableTransition'      => [
                     'type'    => 'boolean',
                     'default' => true,
@@ -343,6 +366,12 @@ class GutenbergBlock
                 ],
                 'placeholderTypography' => [
                     'type' => 'object',
+                ],
+                'radioCheckboxItemsColor' => [
+                    'type' => 'string',
+                ],
+                'radioCheckboxItemsSize' => [
+                    'type' => 'number',
                 ],
             ],
         ]);
@@ -377,10 +406,41 @@ class GutenbergBlock
         }
 
         $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
+
+
+
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
-        // Custom CSS for block styling
+        // Add Radio & Checkbox styles
         $customCSS = '';
+
+        if ($radioCheckboxItemsColor = Arr::get($atts, 'radioCheckboxItemsColor')) {
+            $radioCheckboxSelectors = [
+                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check",
+                ".ff_guten_block.ff_guten_block-{$formId} .ff_list_buttons .ff-el-form-check label>span"
+            ];
+            $radioCheckboxSelectorsStr = implode(', ', $radioCheckboxSelectors);
+            $customCSS .= self::generateCssRule($radioCheckboxSelectorsStr, 'color', $radioCheckboxItemsColor);
+        }
+
+        if ($radioCheckboxItemsSize = Arr::get($atts, 'radioCheckboxItemsSize')) {
+            $sizeSelectors = [
+                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-group input[type=checkbox]",
+                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-group input[type=radio]"
+            ];
+            $sizeSelectorsStr = implode(', ', $sizeSelectors);
+
+            $size = $radioCheckboxItemsSize . 'px';
+            $customCSS .= self::generateCssRule($sizeSelectorsStr, 'width', $size);
+            $customCSS .= self::generateCssRule($sizeSelectorsStr, 'height', $size);
+
+            // Add transition if enabled
+            if (Arr::get($atts, 'enableTransition', true)) {
+                $customCSS .= self::generateCssRule($sizeSelectorsStr, 'transition', 'width 0.3s ease, height 0.3s ease');
+            }
+        }
+
+        // Custom CSS for block styling
         $inlineStyle = '';
 
         // Define common selectors
@@ -465,6 +525,122 @@ class GutenbergBlock
         if ($buttonHoverBGColor = Arr::get($atts, 'buttonHoverBGColor')) {
             $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus",
                 'background-color', $buttonHoverBGColor);
+        }
+
+        // Process button alignment
+        if ($buttonAlignment = Arr::get($atts, 'buttonAlignment')) {
+            // Target the button wrapper for alignment
+            $buttonWrapperSelector = ".ff_guten_block.ff_guten_block-{$formId} .ff_submit_btn_wrapper";
+            $customCSS .= self::generateCssRule($buttonWrapperSelector, 'text-align', $buttonAlignment);
+        }
+
+        // Process button width
+        if ($buttonWidth = Arr::get($atts, 'buttonWidth')) {
+            if ($buttonWidth > 0) {
+                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'width', $buttonWidth, '%');
+            }
+        }
+
+        // Process button typography
+        $buttonTypo = Arr::get($atts, 'buttonTypography', []);
+        if (!empty($buttonTypo)) {
+            $customCSS .= self::processTypography($buttonTypo, $buttonSelectorsStr);
+        }
+
+        // Process button padding
+        $buttonPadding = Arr::get($atts, 'buttonPadding', []);
+        if (!empty($buttonPadding)) {
+            // Get the unit from the spacing object or default to px
+            $globalUnit = Arr::get($buttonPadding, 'unit', 'px');
+
+            // Apply desktop padding to buttons (no media query needed)
+            if (Arr::has($buttonPadding, 'desktop')) {
+                $desktopUnit = Arr::get($buttonPadding, 'desktop.unit', $globalUnit);
+                $desktopCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'desktop', $desktopUnit);
+                if ($desktopCSS) {
+                    $customCSS .= $desktopCSS;
+                }
+            }
+
+            // Apply tablet padding with media query
+            if (Arr::has($buttonPadding, 'tablet')) {
+                $tabletUnit = Arr::get($buttonPadding, 'tablet.unit', $globalUnit);
+                $tabletCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'tablet', $tabletUnit);
+                if ($tabletCSS) {
+                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
+                }
+            }
+
+            // Apply mobile padding with media query
+            if (Arr::has($buttonPadding, 'mobile')) {
+                $mobileUnit = Arr::get($buttonPadding, 'mobile.unit', $globalUnit);
+                $mobileCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'mobile', $mobileUnit);
+                if ($mobileCSS) {
+                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
+                }
+            }
+        }
+
+        // Process button margin
+        $buttonMargin = Arr::get($atts, 'buttonMargin', []);
+        if (!empty($buttonMargin)) {
+            // Get the unit from the spacing object or default to px
+            $globalUnit = Arr::get($buttonMargin, 'unit', 'px');
+
+            // Apply desktop margin to buttons (no media query needed)
+            if (Arr::has($buttonMargin, 'desktop')) {
+                $desktopUnit = Arr::get($buttonMargin, 'desktop.unit', $globalUnit);
+                $desktopCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'desktop', $desktopUnit, 'margin');
+                if ($desktopCSS) {
+                    $customCSS .= $desktopCSS;
+                }
+            }
+
+            // Apply tablet margin with media query
+            if (Arr::has($buttonMargin, 'tablet')) {
+                $tabletUnit = Arr::get($buttonMargin, 'tablet.unit', $globalUnit);
+                $tabletCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'tablet', $tabletUnit, 'margin');
+                if ($tabletCSS) {
+                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
+                }
+            }
+
+            // Apply mobile margin with media query
+            if (Arr::has($buttonMargin, 'mobile')) {
+                $mobileUnit = Arr::get($buttonMargin, 'mobile.unit', $globalUnit);
+                $mobileCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'mobile', $mobileUnit, 'margin');
+                if ($mobileCSS) {
+                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
+                }
+            }
+        }
+
+        // Process button box shadow
+        $buttonBoxShadow = Arr::get($atts, 'buttonBoxShadow', []);
+        if (!empty($buttonBoxShadow) && Arr::get($buttonBoxShadow, 'enable', false)) {
+            $inset = Arr::get($buttonBoxShadow, 'inset', false) ? 'inset ' : '';
+            $horizontal = Arr::get($buttonBoxShadow, 'horizontal', 0);
+            $vertical = Arr::get($buttonBoxShadow, 'vertical', 0);
+            $blur = Arr::get($buttonBoxShadow, 'blur', 0);
+            $spread = Arr::get($buttonBoxShadow, 'spread', 0);
+            $color = Arr::get($buttonBoxShadow, 'color', 'rgba(0,0,0,0.5)');
+
+            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
+            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'box-shadow', $shadowValue, '');
+        }
+
+        // Process button box shadow hover
+        $buttonBoxShadowHover = Arr::get($atts, 'buttonBoxShadowHover', []);
+        if (!empty($buttonBoxShadowHover) && Arr::get($buttonBoxShadowHover, 'enable', false)) {
+            $inset = Arr::get($buttonBoxShadowHover, 'inset', false) ? 'inset ' : '';
+            $horizontal = Arr::get($buttonBoxShadowHover, 'horizontal', 0);
+            $vertical = Arr::get($buttonBoxShadowHover, 'vertical', 0);
+            $blur = Arr::get($buttonBoxShadowHover, 'blur', 0);
+            $spread = Arr::get($buttonBoxShadowHover, 'spread', 0);
+            $color = Arr::get($buttonBoxShadowHover, 'color', 'rgba(0,0,0,0.5)');
+
+            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
+            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'box-shadow', $shadowValue, '');
         }
 
         // Process label typography

@@ -1,14 +1,16 @@
-import { Component } from "react";
 
 const { useState, useRef, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
-const { PanelBody, SelectControl } = wp.components;
+const { PanelBody, SelectControl, PanelRow, RangeControl } = wp.components;
 
 // Custom components
 import FluentTypography from "../controls/FluentTypography";
 import FluentColorPicker from "../controls/FluentColorPicker";
 import FluentSpaceControl from "../controls/FluentSpaceControl";
 import FluentBorderControl from "../controls/FluentBorderControl";
+import FluentBoxShadowControl from "../controls/FluentBoxShadowControl";
+import FluentAlignmentControl from "../controls/FluentAlignmentControl";
+import FluentSeparator from "../controls/FluentSeparator";
 
 // Constants
 const DEFAULT_COLORS = [
@@ -103,7 +105,7 @@ const LabelStylesPanel = ({ attributes, updateStyles }) => {
     };
 
     return (
-      <PanelBody title={__("Label Styles")} initialOpen={true}>
+      <PanelBody title={__("Label Styles")} initialOpen={false}>
           <FluentColorPicker
             label="Color"
             value={attributes.labelColor}
@@ -244,8 +246,49 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
  * Component for button styling options
  */
 const ButtonStylesPanel = ({ attributes, updateStyles }) => {
+    const handleTypographyChange = (changedTypo) => {
+        const updatedTypography = getUpdatedTypography(
+            changedTypo,
+            attributes,
+            'buttonTypography'
+        );
+        updateStyles({
+            buttonTypography: updatedTypography
+        });
+    };
+
+    const handleBoxShadowChange = (value) => {
+        updateStyles({ buttonBoxShadow: value });
+    };
+
+    const handleBoxShadowHoverChange = (value) => {
+        updateStyles({ buttonBoxShadowHover: value });
+    };
+
+    // Default spacing values
+    const defaultSpacing = {
+        top: '',
+        right: '',
+        bottom: '',
+        left: ''
+    };
+
     return (
       <PanelBody title={__('Button Styles')} initialOpen={false}>
+
+          <div>
+              <span className="ffblock-label">{__('Alignment')}</span>
+              <FluentAlignmentControl
+                  value={attributes.buttonAlignment}
+                  onChange={(value) => updateStyles({buttonAlignment: value})}
+                  options={[
+                      { value: 'left', icon: 'editor-alignleft', label: __('Left') },
+                      { value: 'center', icon: 'editor-aligncenter', label: __('Center') },
+                      { value: 'right', icon: 'editor-alignright', label: __('Right') }
+                  ]}
+              />
+          </div>
+          {/* @todo add tabs for hover and normal*/}
           <FluentColorPicker
             label="Text Color"
             value={attributes.buttonColor}
@@ -272,6 +315,59 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
             value={attributes.buttonHoverBGColor}
             onChange={(value) => updateStyles({buttonHoverBGColor: value})}
             defaultColor="#66b1ff"
+          />
+
+          <FluentSeparator label="Dimensions" />
+
+          {/* Width */}
+          <RangeControl
+            label={__('Width (%)')}
+            value={attributes.buttonWidth}
+            onChange={(value) => updateStyles({buttonWidth: value})}
+            min={0}
+            max={100}
+            allowReset
+            initialPosition={0}
+            help={__('Set to 0 for auto width')}
+          />
+
+          {/* Typography */}
+          <FluentTypography
+            label="Typography"
+            settings={{
+                fontSize: attributes.buttonTypography?.size?.lg || '',
+                fontWeight: attributes.buttonTypography?.weight || '500',
+                lineHeight: attributes.buttonTypography?.lineHeight || '',
+                letterSpacing: attributes.buttonTypography?.letterSpacing || '',
+                textTransform: attributes.buttonTypography?.textTransform || 'none'
+            }}
+            onChange={handleTypographyChange}
+          />
+
+          {/* Padding */}
+          <FluentSpaceControl
+            label="Padding"
+            values={attributes.buttonPadding}
+            onChange={(value) => updateStyles({ buttonPadding: value })}
+          />
+
+          {/* Margin */}
+          <FluentSpaceControl
+            label="Margin"
+            values={attributes.buttonMargin}
+            onChange={(value) => updateStyles({ buttonMargin: value })}
+          />
+
+          <FluentSeparator label="Effects" />
+
+          {/* Box Shadow */}
+          <FluentBoxShadowControl
+            label="Box Shadow"
+            value={attributes.buttonBoxShadow}
+            hoverValue={attributes.buttonBoxShadowHover}
+            onChange={handleBoxShadowChange}
+            onHoverChange={handleBoxShadowHoverChange}
+            colors={DEFAULT_COLORS}
           />
       </PanelBody>
     );
@@ -317,6 +413,67 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
     );
 }
 
+const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
+    const handleTypographyChange = (changedTypo) => {
+        const updatedTypography = getUpdatedTypography(
+            changedTypo,
+            attributes,
+            'radioCheckboxTypography'
+        );
+        updateStyles({
+            radioCheckboxTypography: updatedTypography
+        });
+    };
+
+    // Use local state to ensure the UI updates immediately
+    const [localSize, setLocalSize] = useState(attributes.radioCheckboxItemsSize || 15);
+
+    // Update local state when the attribute changes from outside
+    useEffect(() => {
+        if (attributes.radioCheckboxItemsSize !== undefined && attributes.radioCheckboxItemsSize !== localSize) {
+            setLocalSize(attributes.radioCheckboxItemsSize);
+        }
+    }, [attributes.radioCheckboxItemsSize]);
+
+    // Handle size change with immediate UI update
+    const handleSizeChange = (value) => {
+        // Update local state for immediate UI feedback
+        setLocalSize(value);
+        // Update the actual attribute
+        updateStyles({radioCheckboxItemsSize: value});
+        // Log for debugging
+        console.log('Radio/Checkbox size changed to:', value);
+    };
+
+    return (
+        <PanelBody title={__('Radio & Checkbox Styles')} initialOpen={false}>
+            {/* Label Text Styles */}
+            <FluentColorPicker
+                label="Items Color"
+                value={attributes.radioCheckboxItemsColor}
+                onChange={(value) => updateStyles({radioCheckboxItemsColor: value})}
+                defaultColor=""
+            />
+            <div style={{ marginBottom: '12px' }}>
+                <span className="ffblock-label">Size (px)</span>
+                <RangeControl
+                    value={localSize} // Use local state for immediate UI feedback
+                    min={1}
+                    max={30}
+                    step={1}
+                    onChange={handleSizeChange}
+                />
+            </div>
+
+
+            <hr style={{ margin: '15px 0', border: 'none', borderBottom: '1px solid #e2e4e7' }} />
+
+
+
+        </PanelBody>
+    );
+}
+
 /**
  * Main TabGeneral component
  */
@@ -329,16 +486,26 @@ const TabGeneral = ({ attributes, setAttributes, updateStyles, state, handlePres
             handlePresetChange={handlePresetChange}
           />
 
+
           <LabelStylesPanel
             attributes={attributes}
             updateStyles={updateStyles}
           />
 
+
           <InputStylesPanel
             attributes={attributes}
             updateStyles={updateStyles}
           />
+
+
           <PlaceHolderStylesPanel
+            attributes={attributes}
+            updateStyles={updateStyles}
+          />
+
+
+          <RadioCheckBoxStylesPanel
             attributes={attributes}
             updateStyles={updateStyles}
           />
@@ -358,12 +525,21 @@ function areEqual(prevProps, nextProps) {
     const { attributes: prevAttrs } = prevProps;
     const { attributes: nextAttrs } = nextProps;
 
+    // Special check for radioCheckboxItemsSize to ensure numeric comparison
+    if (prevAttrs.radioCheckboxItemsSize !== nextAttrs.radioCheckboxItemsSize) {
+        return false; // Size has changed, should update
+    }
+
     // List of attributes to check for changes
     const attrsToCheck = [
         'labelColor', 'inputTextColor', 'inputBackgroundColor',
         'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
+        'buttonWidth', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBoxShadowHover', 'buttonAlignment',
         'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover',
-        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'
+        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
+        'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor',
+        'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor',
+        'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor'
     ];
 
     // Check if any of these attributes have changed

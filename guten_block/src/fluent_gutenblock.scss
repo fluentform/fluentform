@@ -3,18 +3,18 @@
  * These styles apply to the block settings in the WordPress editor
  */
 
+@import "@/admin/styles/_variables.scss";
+
 
 .fluent-form-block-style-tabs {
-
   .components-tab-panel__tabs-item {
     flex: 1;
-    background: #ffffff;
-    border: 1px solid #D1E5FE;
+    background: $white;
+    border: 1px solid $primary-soft;
     justify-content: center;
 
     &.is-active {
-      background: #eef5fc;
-
+      background: $primary-soft;
     }
   }
 }
@@ -23,7 +23,7 @@
 .fluent-form-style-tabs .components-tab-panel__tabs {
   display: flex;
   justify-content: stretch;
-  border-bottom: 1px solid #e2e4e7;
+  border-bottom: 1px solid $border-color;
 }
 
 .fluent-form-style-tabs .components-tab-panel__tab-content {
@@ -39,8 +39,8 @@
 }
 
 .fluent-form-style-tabs .components-tab-panel__tabs-item.is-active {
-  box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 #007cba;
-  color: #007cba;
+  box-shadow: inset 0 0 0 1.5px transparent, inset 0 -3px 0 0 $primary;
+  color: $primary;
 }
 
 /* Custom controls styling */
@@ -60,10 +60,10 @@
 
 .fluent-typography-preview {
   padding: 8px 12px;
-  background: #f7f7f7;
-  border-radius: 4px;
+  background: $bg-gray;
+  border-radius: $--border-radius-small;
   margin-top: 8px;
-  font-size: 13px;
+  font-size: $--font-size-small;
 }
 
 .fluent-typography-edit-btn {
@@ -97,7 +97,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 8px;
   font-size: 10px;
-  color: #757575;
+  color: $--color-text-secondary;
   text-align: center;
 }
 
@@ -113,4 +113,257 @@
   gap: 4px;
 }
 
-//
+.ffblock-color-reset-button {
+  color: $--color-text-secondary;
+}
+
+/* Alignment Control Styles */
+.ffblock-alignment-buttons {
+  .components-button-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .components-button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.ffblock-alignment-control{
+  margin-bottom: 12px;
+}
+
+/* Separator Component */
+.fluent-separator {
+  position: relative;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 24px 0;
+  text-align: center;
+  clear: both;
+
+  &-dashed {
+    background: repeating-linear-gradient(
+      to right,
+      #e0e0e0,
+      #e0e0e0 5px,
+      transparent 5px,
+      transparent 10px
+    );
+  }
+
+  &-dotted {
+    background: repeating-linear-gradient(
+      to right,
+      #e0e0e0,
+      #e0e0e0 1px,
+      transparent 1px,
+      transparent 5px
+    );
+  }
+
+  &-label {
+    position: relative;
+    display: inline-block;
+    padding: 0 10px;
+    background-color: #fff;
+    color: #757575;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    top: -6px;
+  }
+
+  &-primary {
+    background-color: #007cba;
+
+    &.fluent-separator-dashed {
+      background: repeating-linear-gradient(
+        to right,
+        #007cba,
+        #007cba 5px,
+        transparent 5px,
+        transparent 10px
+      );
+    }
+
+    &.fluent-separator-dotted {
+      background: repeating-linear-gradient(
+        to right,
+        #007cba,
+        #007cba 1px,
+        transparent 1px,
+        transparent 5px
+      );
+    }
+
+    .fluent-separator-label {
+      color: #007cba;
+    }
+  }
+
+  &-sm {
+    margin: 12px 0;
+  }
+
+  &-lg {
+    margin: 36px 0;
+  }
+}
+
+.fluentform-guten-wrapper {
+  position: relative;
+  min-height: 100px;
+
+  .ff_guten_block{
+    pointer-events: none;
+  }
+
+  .components-base-control__label {
+    padding-right: 15px;
+  }
+
+  .ff-btn-submit{
+    pointer-events:none;
+  }
+
+  .fluentform-step.active {
+    width: 100%;
+  }
+}
+
+/* Loading Overlay */
+.fluent-form-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  z-index: 100;
+  border-radius: 4px;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05) inset;
+  transition: all 0.3s ease;
+  animation: fluent-form-fade-in 0.3s ease-in-out;
+
+  .components-spinner {
+    width: 50px;
+    height: 50px;
+    animation: fluent-form-spin 1.5s linear infinite;
+  }
+
+  p {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    font-weight: 500;
+    color: #3c434a;
+    animation: fluent-form-pulse 2s ease-in-out infinite;
+  }
+
+  .fluent-separator {
+    width: 80px;
+    margin: 0 auto;
+  }
+}
+
+/* Preview Device Controls */
+.fluent-form-preview-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.fluent-form-preview-wrapper {
+  position: relative;
+  width: 100%;
+
+  &.preview-device-tablet {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  &.preview-device-mobile {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+.fluent-form-initial-wrapper,
+.fluent-form-conv-demo {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f7f7f7;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.fluent-form-logo {
+  margin-bottom: 20px;
+
+  img {
+    margin: 0px auto;
+    max-width: 48px;
+    display: block;
+  }
+}
+
+.fluent-form-logo-img {
+  max-width: 200px;
+}
+
+.fluent-form-conv-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.fluent-form-conv-message {
+  margin-top: 16px;
+  font-style: italic;
+}
+
+.conv-demo {
+  text-align: center;
+  margin: 0 auto;
+
+  img {
+    max-height: 400px;
+    margin: 0 auto;
+    margin-bottom: 15px;
+  }
+}
+
+/* Animations */
+@keyframes fluent-form-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fluent-form-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fluent-form-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

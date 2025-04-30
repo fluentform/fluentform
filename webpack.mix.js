@@ -72,7 +72,6 @@ mix
     .sass('resources/assets/admin/css/admin_notices.scss', `assets/css/admin_notices.css`)
     .sass('resources/assets/admin/css/admin_docs.scss', `assets/css/admin_docs.css`)
     .sass('resources/assets/admin/css/add-ons.scss', 'assets/css/add-ons.css')
-    .sass('resources/assets/admin/css/fluent_gutenblock.scss', 'assets/css/fluent_gutenblock.css')
     .sass('resources/assets/admin/css/payment_settings.scss', 'assets/css/payment_settings.css')
     .sass('resources/assets/admin/css/payment_entries.scss', 'assets/css/payment_entries.css')
     .sass('resources/assets/public/scss/fluent-forms-public.scss', `assets/css/fluent-forms-public.css`)
