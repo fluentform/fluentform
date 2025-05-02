@@ -87,10 +87,7 @@ class EmailNotificationActions
         );
 
         $emailData = $feed['processedValues'];
-        $emailAttachments = $this->getAttachments($emailData, $formData, $entry, $form);
-        if ($emailAttachments) {
-            $emailData['attachments'] = $emailAttachments;
-        }
+        $emailData['attachments'] = $this->getAttachments($emailData, $formData, $entry, $form);
 
         $notifier->notify($emailData, $formData, $form, $entry->id);
     }
@@ -108,13 +105,14 @@ class EmailNotificationActions
         $emailAttachments = [];
         if (! empty($emailData['attachments']) && is_array($emailData['attachments'])) {
             $attachments = [];
+            $uploadDir = wp_get_upload_dir();
             foreach ($emailData['attachments'] as $name) {
                 $fileUrls = ArrayHelper::get($formData, $name);
                 if ($fileUrls && is_array($fileUrls)) {
                     foreach ($fileUrls as $url) {
                         $filePath = str_replace(
-                            site_url(''),
-                            wp_normalize_path(untrailingslashit(ABSPATH)),
+                            $uploadDir['baseurl'],
+                            wp_normalize_path($uploadDir['basedir']),
                             $url
                         );
                         if (file_exists($filePath)) {
