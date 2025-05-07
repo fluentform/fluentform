@@ -356,16 +356,13 @@ class FormValidationService
         $this->checkIpRestriction($settings, $ip);
 
         $isCountryRestrictionEnabled = Arr::get($settings, 'fields.country.status');
-        if ($ipInfo = $this->getIpInfo()) {
-            $country = Arr::get($ipInfo, 'country');
-            if ($isCountryRestrictionEnabled) {
-                $this->checkCountryRestriction($settings, $country);
-            }
-        } else {
-            if ($isCountryRestrictionEnabled) {
+        if ($isCountryRestrictionEnabled) {
+            if ($ipInfo = $this->getIpInfo()) {
+                $country = Arr::get($ipInfo, 'country');
+            } else {
                 $country = $this->getIpBasedOnCountry($ip);
-                $this->checkCountryRestriction($settings, $country);
             }
+            $this->checkCountryRestriction($settings, $country);
         }
 
         $this->checkKeyWordRestriction($settings);
