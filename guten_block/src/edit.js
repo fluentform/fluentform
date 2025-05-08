@@ -10,30 +10,13 @@ const { apiFetch } = wp;
 const {
     SelectControl,
     PanelBody,
-    ToggleControl,
     Button,
-    Flex,
-    FlexItem,
-    TextControl,
-    ColorPalette,
-    Panel,
-    Popover,
-    RangeControl,
-    Dropdown,
-    ButtonGroup,
-    Icon,
-    TabPanel,
     Spinner
 } = wp.components;
-const { Component, Fragment, useState, useEffect, useRef } = wp.element;
-const React = wp.element;
+const { Component, React } = wp.element;
 
 // Import components
 import Tabs from './components/tabs/Tabs';
-import FluentColorPicker from './components/controls/FluentColorPicker';
-import FluentTypography from './components/controls/FluentTypography';
-import FluentSpaceControl from './components/controls/FluentSpaceControl';
-import FluentBorderControl from './components/controls/FluentBorderControl';
 
 
 // Function to get form meta
@@ -57,7 +40,7 @@ class Edit extends Component {
             isPreviewLoading: false,
             showSaveNotice: false,
             previewDevice: 'desktop',
-            updateTimer: null // Add timer state for debouncing
+            updateTimer: null, // Add timer state for debouncing
         };
 
         this.updateStyles = this.updateStyles.bind(this);
@@ -103,12 +86,18 @@ class Edit extends Component {
 
             // Only update if there are actual changes
             if (Object.keys(updatedAttributes).length > 0) {
-                console.log('Applying updates:', updatedAttributes);
+                // Save if we're updating the background image
+                const isUpdatingBgImage = 'backgroundImage' in updatedAttributes;
+
+                // Update attributes
                 setAttributes(updatedAttributes);
 
                 // Set loading state briefly to show user something is happening
                 this.setState({ isPreviewLoading: true });
-
+                
+                if (isUpdatingBgImage) {
+                    this.injectBackgroundStyles();
+                }
                 // Clear loading state after a short delay
                 setTimeout(() => {
                     this.setState({ isPreviewLoading: false });
@@ -134,8 +123,6 @@ class Edit extends Component {
             });
         }
 
-
-
         // Set initial state based on attributes
         if (attributes.formId) {
             this.checkIfConversationalForm(attributes.formId);
@@ -146,6 +133,10 @@ class Edit extends Component {
                 selectedPreset: attributes.selectedPreset || 'default'
             });
         }
+
+        if (attributes.backgroundImage) {
+            this.injectBackgroundStyles();
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -155,6 +146,68 @@ class Edit extends Component {
         if (prevProps.attributes.formId !== attributes.formId && attributes.formId) {
             this.checkIfConversationalForm(attributes.formId);
         }
+
+        this.injectBackgroundStyles();
+    }
+
+    componentWillUnmount() {
+        const { attributes } = this.props;
+        const { formId } = attributes;
+
+        // Clean up any style elements we created
+        if (formId) {
+            const styleEl = document.getElementById(`ff-dynamic-bg-styles-${formId}`);
+            if (styleEl && styleEl.parentNode) {
+                styleEl.parentNode.removeChild(styleEl);
+            }
+        }
+    }
+
+    // Add this method to your Edit class
+    injectBackgroundStyles() {
+        const { attributes } = this.props;
+        const { formId, backgroundImage, backgroundColor } = attributes;
+
+        // Get or create the style element
+        let styleEl = document.getElementById(`ff-dynamic-bg-styles-${formId}`);
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = `ff-dynamic-bg-styles-${formId}`;
+            document.head.appendChild(styleEl);
+        }
+
+        // If no formId, clear the styles and return
+        if (!formId) {
+            styleEl.innerHTML = '';
+            return;
+        }
+
+        // Start building the CSS rules
+        let cssRules = [];
+
+        // Add background color as an independent property
+        if (backgroundColor) {
+            cssRules.push(`background-color: ${backgroundColor};`);
+        }
+
+        // Add background image properties if they exist
+        if (backgroundImage) {
+            cssRules.push(`background-image: url('${backgroundImage}');`);
+            cssRules.push(`background-size: ${attributes.backgroundSize || 'cover'};`);
+            cssRules.push(`background-position: ${attributes.backgroundPosition || 'center center'};`);
+            cssRules.push(`background-repeat: ${attributes.backgroundRepeat || 'no-repeat'};`);
+            cssRules.push(`background-attachment: ${attributes.backgroundAttachment || 'scroll'};`);
+        }
+
+        // Create the CSS
+        const css = `
+        .ff_guten_block-${formId} {
+            ${cssRules.join('\n            ')}
+        }
+    `;
+
+        // Update the stylesheet content
+        styleEl.innerHTML = css;
     }
 
     checkIfConversationalForm = async formId => {

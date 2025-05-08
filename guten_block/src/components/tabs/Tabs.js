@@ -9,6 +9,8 @@ const { Component, memo, PureComponent } = wp.element;
 // Import tab content components
 import TabGeneral from './TabGeneral';
 import TabAdvanced from './TabAdvanced';
+import TabMisc from './TabMisc';
+import { arePropsEqual } from '../utils/ComponentUtils';
 
 // Use PureComponent to automatically implement shouldComponentUpdate
 class Tabs extends PureComponent {
@@ -21,7 +23,8 @@ class Tabs extends PureComponent {
                 activeClass="is-active"
                 tabs={[
                     { name: 'general', title: __('General'), key: 'general-tab' },
-                    { name: 'advanced', title: __('Advanced'), key: 'advanced-tab' }
+                    { name: 'misc', title: __('Misc'), key: 'misc-tab' },
+                    { name: 'advanced', title: __('Advanced'), key: 'advanced-tab' },
                 ]}
             >
                 {(tab) => {
@@ -47,6 +50,17 @@ class Tabs extends PureComponent {
                                 />
                             </div>
                         );
+                    }  else if (tab.name === 'misc') {
+                        return (
+                            <div key="misc-tab-content">
+                                <TabMisc
+                                    attributes={attributes}
+                                    setAttributes={setAttributes}
+                                    updateStyles={updateStyles}
+                                    state={state}
+                                />
+                            </div>
+                        );
                     }
                     return null;
                 }}
@@ -55,32 +69,6 @@ class Tabs extends PureComponent {
     }
 }
 
-// Use memo to prevent unnecessary re-renders
 export default memo(Tabs, (prevProps, nextProps) => {
-    // Only re-render if specific props have changed
-    const { attributes: prevAttrs, state: prevState } = prevProps;
-    const { attributes: nextAttrs, state: nextState } = nextProps;
-
-    // Check if state props have changed
-    if (prevState.customizePreset !== nextState.customizePreset ||
-        prevState.selectedPreset !== nextState.selectedPreset) {
-        return false; // Props are not equal, should update
-    }
-
-    // List of attributes to check for changes
-    const attrsToCheck = [
-        'formId', 'themeStyle', 'labelColor', 'inputTextColor', 'inputBackgroundColor',
-        'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover',
-        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography'
-    ];
-
-    // Check if any of these attributes have changed
-    for (const attr of attrsToCheck) {
-        if (JSON.stringify(prevAttrs[attr]) !== JSON.stringify(nextAttrs[attr])) {
-            return false; // Props are not equal, should update
-        }
-    }
-
-    return true; // Props are equal, no need to update
+    return arePropsEqual(prevProps, nextProps, [], true);
 });

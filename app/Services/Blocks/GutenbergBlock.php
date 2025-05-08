@@ -12,257 +12,6 @@ use FluentForm\Framework\Support\Arr;
 class GutenbergBlock
 {
     /**
-     * Helper method to generate CSS rule
-     *
-     * @param string $selector CSS selector
-     * @param string $property CSS property
-     * @param string $value    CSS value
-     * @param string $suffix   Optional suffix for the value (e.g., 'px')
-     *
-     * @return string Generated CSS rule
-     */
-    private static function generateCssRule($selector, $property, $value, $suffix = '')
-    {
-        return "{$selector} { {$property}: {$value}{$suffix}; }\n";
-    }
-
-    /**
-     * Helper method to process typography settings
-     *
-     * @param array $typo      Typography settings
-     * @param string $selector CSS selector
-     *
-     * @return string Generated CSS rules
-     */
-    private static function processTypography($typo, $selector)
-    {
-        $css = '';
-
-
-        // Process font size
-        if ($fontSize = Arr::get($typo, 'size.lg')) {
-            $css .= self::generateCssRule($selector, 'font-size', $fontSize, 'px');
-        }
-
-        // Process font weight
-        if ($fontWeight = Arr::get($typo, 'weight')) {
-            $css .= self::generateCssRule($selector, 'font-weight', $fontWeight);
-        }
-
-        // Process line height
-        if ($lineHeight = Arr::get($typo, 'lineHeight')) {
-            $css .= self::generateCssRule($selector, 'line-height', $lineHeight);
-        }
-
-        // Process letter spacing
-        if ($letterSpacing = Arr::get($typo, 'letterSpacing')) {
-            $css .= self::generateCssRule($selector, 'letter-spacing', $letterSpacing, 'px');
-        }
-
-        // Process text transform
-        if ($textTransform = Arr::get($typo, 'textTransform')) {
-            $css .= self::generateCssRule($selector, 'text-transform', $textTransform);
-        }
-
-        return $css;
-    }
-
-    /**
-     * Helper method to process spacing settings
-     *
-     * @param array $spacing   Spacing settings
-     * @param string $selector CSS selector
-     * @param string $device   Device type (desktop, tablet, mobile)
-     * @param string $unit     Unit type (px, em, %)
-     * @param string $property CSS property type (padding or margin)
-     *
-     * @return string Generated CSS rules
-     */
-    private static function processSpacing($spacing, $selector, $device = 'desktop', $unit = 'px', $property = 'padding')
-    {
-        $css = '';
-        $deviceValues = Arr::get($spacing, $device, []);
-
-        if (empty($deviceValues)) {
-            return $css;
-        }
-
-        // Start building CSS rules for this selector
-        $rules = [];
-
-        // Process top spacing
-        if (isset($deviceValues['top']) && $deviceValues['top'] !== '' && $deviceValues['top'] !== 0) {
-            $rules[] = $property . '-top: ' . $deviceValues['top'] . $unit;
-        }
-
-        // Process right spacing
-        if (isset($deviceValues['right']) && $deviceValues['right'] !== '' && $deviceValues['right'] !== 0) {
-            $rules[] = $property . '-right: ' . $deviceValues['right'] . $unit;
-        }
-
-        // Process bottom spacing
-        if (isset($deviceValues['bottom']) && $deviceValues['bottom'] !== '' && $deviceValues['bottom'] !== 0) {
-            $rules[] = $property . '-bottom: ' . $deviceValues['bottom'] . $unit;
-        }
-
-        // Process left spacing
-        if (isset($deviceValues['left']) && $deviceValues['left'] !== '' && $deviceValues['left'] !== 0) {
-            $rules[] = $property . '-left: ' . $deviceValues['left'] . $unit;
-        }
-
-        // Only generate CSS if we have rules
-        if (!empty($rules)) {
-            $css = $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
-        }
-
-        return $css;
-    }
-
-    /**
-     * Helper method to process border settings
-     *
-     * @param array $border    Border settings
-     * @param string $selector CSS selector
-     * @param boolean $isHover Whether this is for hover state
-     *
-     * @return string Generated CSS rules
-     */
-    private static function processBorder($border, $selector, $isHover = false)
-    {
-        $css = '';
-
-        if (empty($border)) {
-            return $css;
-        }
-
-        // Start building CSS rules for this selector
-        $rules = [];
-
-        // Process border width, style, and color
-        // Check if we have individual border sides or a single border object
-        $topBorder = Arr::get($border, 'top', []);
-        $rightBorder = Arr::get($border, 'right', []);
-        $bottomBorder = Arr::get($border, 'bottom', []);
-        $leftBorder = Arr::get($border, 'left', []);
-
-        // Check if we have any border properties
-        if (!empty($topBorder)) {
-            // Border width
-            $borderWidth = Arr::get($topBorder, 'width');
-            if (!empty($borderWidth)) {
-                // Remove 'px' suffix if it already exists
-                $borderWidth = str_replace('px', '', $borderWidth);
-                $rules[] = 'border-width: ' . $borderWidth . 'px';
-            }
-
-            // Border style
-            $borderStyle = Arr::get($topBorder, 'style');
-            if (!empty($borderStyle)) {
-                $rules[] = 'border-style: ' . $borderStyle;
-            }
-
-            // Border color
-            $borderColor = Arr::get($topBorder, 'color');
-            if (!empty($borderColor)) {
-                $rules[] = 'border-color: ' . $borderColor;
-            }
-        } else {
-            // Check if we have a color property directly on the border object
-            $borderColor = Arr::get($border, 'color');
-            if (!empty($borderColor)) {
-                $rules[] = 'border-color: ' . $borderColor;
-            }
-
-            // Check if we have a width property directly on the border object
-            $borderWidth = Arr::get($border, 'width');
-            if (!empty($borderWidth)) {
-                // Remove 'px' suffix if it already exists
-                $borderWidth = str_replace('px', '', $borderWidth);
-                $rules[] = 'border-width: ' . $borderWidth . 'px';
-            }
-
-            // Check if we have a style property directly on the border object
-            $borderStyle = Arr::get($border, 'style');
-            if (!empty($borderStyle)) {
-                $rules[] = 'border-style: ' . $borderStyle;
-            }
-        }
-
-        // Process border radius - always process radius if it exists, even if other border properties don't
-        $radius = Arr::get($border, 'radius', []);
-        // Use isset instead of !empty to catch zero values
-        if (isset($radius) && is_array($radius)) {
-            $isLinked = Arr::get($radius, 'linked', false);
-
-            if ($isLinked) {
-                // If all corners are linked, use a single border-radius property
-                $topLeft = Arr::get($radius, 'topLeft');
-                // Check if the value is set (including zero)
-                if (isset($topLeft) || $topLeft === 0 || $topLeft === '0') {
-                    $rules[] = 'border-radius: ' . $topLeft . 'px';
-                }
-            } else {
-                // Individual corner radii
-                $radiusRules = [];
-
-                $topLeft = Arr::get($radius, 'topLeft');
-                // Check if the value is set (including zero)
-                if (isset($topLeft) || $topLeft === 0 || $topLeft === '0') {
-                    $radiusRules[] = 'border-top-left-radius: ' . $topLeft . 'px';
-                }
-
-                $topRight = Arr::get($radius, 'topRight');
-                // Check if the value is set (including zero)
-                if (isset($topRight) || $topRight === 0 || $topRight === '0') {
-                    $radiusRules[] = 'border-top-right-radius: ' . $topRight . 'px';
-                }
-
-                $bottomRight = Arr::get($radius, 'bottomRight');
-                // Check if the value is set (including zero)
-                if (isset($bottomRight) || $bottomRight === 0 || $bottomRight === '0') {
-                    $radiusRules[] = 'border-bottom-right-radius: ' . $bottomRight . 'px';
-                }
-
-                $bottomLeft = Arr::get($radius, 'bottomLeft');
-                // Check if the value is set (including zero)
-                if (isset($bottomLeft) || $bottomLeft === 0 || $bottomLeft === '0') {
-                    $radiusRules[] = 'border-bottom-left-radius: ' . $bottomLeft . 'px';
-                }
-
-                $rules = array_merge($rules, $radiusRules);
-            }
-        }
-
-        // Only generate CSS if we have rules
-        if (!empty($rules)) {
-            if ($isHover) {
-                // For hover styles, use :hover and :focus pseudo-classes
-                // Split the selector by commas and add :hover and :focus to each part
-                $selectorParts = explode(',', $selector);
-                $hoverSelectors = [];
-
-                foreach ($selectorParts as $part) {
-                    $part = trim($part);
-                    $hoverSelectors[] = $part . ':hover';
-                    $hoverSelectors[] = $part . ':focus';
-                }
-
-                $hoverSelector = implode(', ', $hoverSelectors);
-                $css = $hoverSelector . ' { ' . implode('; ', $rules) . '; }' . "\n";
-            } else {
-                // For normal styles, use the selector as is
-                // Add transition if enabled
-                if (Arr::get($border, 'enableTransition', true)) {
-                    $rules[] = 'transition: border-color 0.3s ease, border-width 0.3s ease, border-style 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, color 0.3s ease';
-                }
-                $css = $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
-            }
-        }
-
-        return $css;
-    }
-
-    /**
      * Register the Gutenberg block
      * @return void
      */
@@ -274,106 +23,7 @@ class GutenbergBlock
 
         register_block_type('fluentfom/guten-block', [
             'render_callback' => [self::class, 'render'],
-            'attributes'      => [
-                'formId'                => [
-                    'type' => 'string',
-                ],
-                'className'             => [
-                    'type' => 'string',
-                ],
-                'themeStyle'            => [
-                    'type' => 'string',
-                ],
-                'isConversationalForm'  => [
-                    'type'    => 'boolean',
-                    'default' => false,
-                ],
-                'isThemeChange'         => [
-                    'type'    => 'boolean',
-                    'default' => false,
-                ],
-                // Border styles
-                'inputBorder'           => [
-                    'type' => 'object',
-                ],
-                'inputBorderHover'      => [
-                    'type' => 'object',
-                ],
-                // Typography and colors
-                'labelColor'            => [
-                    'type' => 'string',
-                ],
-                'inputTextColor'        => [
-                    'type' => 'string',
-                ],
-                'inputBackgroundColor'  => [
-                    'type' => 'string',
-                ],
-                'labelTypography'       => [
-                    'type' => 'object',
-                ],
-                'inputTypography'       => [
-                    'type' => 'object',
-                ],
-                'inputSpacing'          => [
-                    'type' => 'object',
-                ],
-                // Button styles
-                'buttonColor'           => [
-                    'type' => 'string',
-                ],
-                'buttonBGColor'         => [
-                    'type' => 'string',
-                ],
-                'buttonHoverColor'      => [
-                    'type' => 'string',
-                ],
-                'buttonHoverBGColor'    => [
-                    'type' => 'string',
-                ],
-                'buttonAlignment'       => [
-                    'type'    => 'string',
-                    'default' => 'left',
-                ],
-                'buttonWidth'           => [
-                    'type' => 'number',
-                ],
-                'buttonTypography'      => [
-                    'type' => 'object',
-                ],
-                'buttonPadding'         => [
-                    'type' => 'object',
-                ],
-                'buttonMargin'          => [
-                    'type' => 'object',
-                ],
-                'buttonBoxShadow'       => [
-                    'type' => 'object',
-                ],
-                'buttonBoxShadowHover'  => [
-                    'type' => 'object',
-                ],
-                'enableTransition'      => [
-                    'type'    => 'boolean',
-                    'default' => true,
-                ],
-                // Placeholder styles
-                'placeholderColor'      => [
-                    'type' => 'string',
-                ],
-                'placeholderFocusColor' => [
-                    'type' => 'string',
-                ],
-                'placeholderTypography' => [
-                    'type' => 'object',
-                ],
-                'radioCheckboxItemsColor' => [
-                    'type' => 'string',
-                ],
-                'radioCheckboxItemsSize' => [
-                    'type' => 'number',
-                ],
-            ],
+            'attributes'      => BlockAttributes::getAttributes()
         ]);
     }
 
@@ -392,6 +42,13 @@ class GutenbergBlock
             return '';
         }
 
+        // Define selectors for various form elements
+        $baseSelector = '.ff_guten_block.ff_guten_block-' . $formId;
+        $buttonSelectorsStr = $baseSelector . ' .ff-btn-submit';
+        $labelSelector = $baseSelector . ' .ff-el-input--label label';
+        $inputTypes = ['.ff-el-form-control', 'input', 'textarea', 'select'];
+        $inputBGSelectorsStr = $baseSelector . ' ' . implode(', ' . $baseSelector . ' ', $inputTypes);
+        $placeholderPseudos = ['::placeholder', '::-webkit-input-placeholder', '::-moz-placeholder', ':-ms-input-placeholder', ':-moz-placeholder'];
 
         $className = Arr::get($atts, 'className');
 
@@ -406,325 +63,51 @@ class GutenbergBlock
         }
 
         $themeStyle = sanitize_text_field(Arr::get($atts, 'themeStyle', ''));
-
-
-
         $type = Helper::isConversionForm($formId) ? 'conversational' : '';
 
-        // Add Radio & Checkbox styles
-        $customCSS = '';
-
-        if ($radioCheckboxItemsColor = Arr::get($atts, 'radioCheckboxItemsColor')) {
-            $radioCheckboxSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff_list_buttons .ff-el-form-check label>span"
-            ];
-            $radioCheckboxSelectorsStr = implode(', ', $radioCheckboxSelectors);
-            $customCSS .= self::generateCssRule($radioCheckboxSelectorsStr, 'color', $radioCheckboxItemsColor);
-        }
-
-        if ($radioCheckboxItemsSize = Arr::get($atts, 'radioCheckboxItemsSize')) {
-            $sizeSelectors = [
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-group input[type=checkbox]",
-                ".ff_guten_block.ff_guten_block-{$formId} .ff-el-group input[type=radio]"
-            ];
-            $sizeSelectorsStr = implode(', ', $sizeSelectors);
-
-            $size = $radioCheckboxItemsSize . 'px';
-            $customCSS .= self::generateCssRule($sizeSelectorsStr, 'width', $size);
-            $customCSS .= self::generateCssRule($sizeSelectorsStr, 'height', $size);
-
-            // Add transition if enabled
-            if (Arr::get($atts, 'enableTransition', true)) {
-                $customCSS .= self::generateCssRule($sizeSelectorsStr, 'transition', 'width 0.3s ease, height 0.3s ease');
-            }
-        }
+        // Generate custom CSS using the StyleProcessor
+        $customCSS = StyleProcessor::generateBlockStyles($atts, $formId);
 
         // Custom CSS for block styling
         $inlineStyle = '';
 
-        // Define common selectors
-        $labelSelector = ".ff_guten_block.ff_guten_block-{$formId} .ff-el-input--label label";
-        $inputSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-label",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff_t_c",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
-        ];
-        $inputSelectorsStr = implode(', ', $inputSelectors);
-
-        $inputBGSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-control",
-            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--multiple",
-            ".ff_guten_block.ff_guten_block-{$formId} .select2-container--default .select2-selection--single",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-el-form-check-input"
-        ];
-        $inputBGSelectorsStr = implode(', ', $inputBGSelectors);
-
-        $buttonSelectors = [
-            ".ff_guten_block.ff_guten_block-{$formId} .ff-btn-submit",
-            ".ff_guten_block.ff_guten_block-{$formId} .ff_upload_btn"
-        ];
-        $buttonSelectorsStr = implode(', ', $buttonSelectors);
-
-        // Define base selector and placeholder pseudo-elements
-        $baseSelector = ".ff_guten_block.ff_guten_block-{$formId}";
-        $inputTypes = ['.ff-el-form-control', 'textarea', 'select'];
-        $placeholderPseudos = [
-            '::placeholder',
-            '::-webkit-input-placeholder',
-            '::-moz-placeholder',
-            ':-ms-input-placeholder',
-            ':-moz-placeholder'
-        ];
-
-        // Process label color
-        if ($labelColor = Arr::get($atts, 'labelColor')) {
-            $customCSS .= self::generateCssRule($labelSelector, 'color', $labelColor);
-        }
-
-        // Process input text color
-        if ($inputTextColor = Arr::get($atts, 'inputTextColor')) {
-            $customCSS .= self::generateCssRule($inputSelectorsStr, 'color', $inputTextColor);
-
-            // Add transition for smooth hover effects if enabled
-            if (Arr::get($atts, 'enableTransition', true)) {
-                $customCSS .= self::generateCssRule($inputSelectorsStr, 'transition',
-                    'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, border-width 0.3s ease, border-radius 0.3s ease');
-            }
-        }
-
-        // Process input background color
-        if ($inputBackgroundColor = Arr::get($atts, 'inputBackgroundColor')) {
-            $customCSS .= self::generateCssRule($inputBGSelectorsStr, 'background-color', $inputBackgroundColor);
-        }
-
-        // Process button text color
-        if ($buttonColor = Arr::get($atts, 'buttonColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'color', $buttonColor);
-
-            // Add transition for smooth hover effects if enabled
-            if (Arr::get($atts, 'enableTransition', true)) {
-                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'transition',
-                    'color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease');
-            }
-        }
-
-        // Process button background color
-        if ($buttonBGColor = Arr::get($atts, 'buttonBGColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'background-color', $buttonBGColor);
-        }
-
-        // Process button hovers text color
-        if ($buttonHoverColor = Arr::get($atts, 'buttonHoverColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus",
-                'color', $buttonHoverColor);
-        }
-
-        // Process button hover background color
-        if ($buttonHoverBGColor = Arr::get($atts, 'buttonHoverBGColor')) {
-            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus",
-                'background-color', $buttonHoverBGColor);
-        }
-
-        // Process button alignment
-        if ($buttonAlignment = Arr::get($atts, 'buttonAlignment')) {
-            // Target the button wrapper for alignment
-            $buttonWrapperSelector = ".ff_guten_block.ff_guten_block-{$formId} .ff_submit_btn_wrapper";
-            $customCSS .= self::generateCssRule($buttonWrapperSelector, 'text-align', $buttonAlignment);
-        }
-
-        // Process button width
-        if ($buttonWidth = Arr::get($atts, 'buttonWidth')) {
-            if ($buttonWidth > 0) {
-                $customCSS .= self::generateCssRule($buttonSelectorsStr, 'width', $buttonWidth, '%');
-            }
-        }
-
-        // Process button typography
-        $buttonTypo = Arr::get($atts, 'buttonTypography', []);
-        if (!empty($buttonTypo)) {
-            $customCSS .= self::processTypography($buttonTypo, $buttonSelectorsStr);
-        }
-
         // Process button padding
         $buttonPadding = Arr::get($atts, 'buttonPadding', []);
         if (!empty($buttonPadding)) {
-            // Get the unit from the spacing object or default to px
-            $globalUnit = Arr::get($buttonPadding, 'unit', 'px');
-
-            // Apply desktop padding to buttons (no media query needed)
-            if (Arr::has($buttonPadding, 'desktop')) {
-                $desktopUnit = Arr::get($buttonPadding, 'desktop.unit', $globalUnit);
-                $desktopCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'desktop', $desktopUnit);
-                if ($desktopCSS) {
-                    $customCSS .= $desktopCSS;
-                }
-            }
-
-            // Apply tablet padding with media query
-            if (Arr::has($buttonPadding, 'tablet')) {
-                $tabletUnit = Arr::get($buttonPadding, 'tablet.unit', $globalUnit);
-                $tabletCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'tablet', $tabletUnit);
-                if ($tabletCSS) {
-                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
-                }
-            }
-
-            // Apply mobile padding with media query
-            if (Arr::has($buttonPadding, 'mobile')) {
-                $mobileUnit = Arr::get($buttonPadding, 'mobile.unit', $globalUnit);
-                $mobileCSS = self::processSpacing($buttonPadding, $buttonSelectorsStr, 'mobile', $mobileUnit);
-                if ($mobileCSS) {
-                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
-                }
-            }
+            $customCSS .= StyleProcessor::processSpacing($buttonPadding, $buttonSelectorsStr, 'padding');
         }
 
         // Process button margin
         $buttonMargin = Arr::get($atts, 'buttonMargin', []);
         if (!empty($buttonMargin)) {
-            // Get the unit from the spacing object or default to px
-            $globalUnit = Arr::get($buttonMargin, 'unit', 'px');
-
-            // Apply desktop margin to buttons (no media query needed)
-            if (Arr::has($buttonMargin, 'desktop')) {
-                $desktopUnit = Arr::get($buttonMargin, 'desktop.unit', $globalUnit);
-                $desktopCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'desktop', $desktopUnit, 'margin');
-                if ($desktopCSS) {
-                    $customCSS .= $desktopCSS;
-                }
-            }
-
-            // Apply tablet margin with media query
-            if (Arr::has($buttonMargin, 'tablet')) {
-                $tabletUnit = Arr::get($buttonMargin, 'tablet.unit', $globalUnit);
-                $tabletCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'tablet', $tabletUnit, 'margin');
-                if ($tabletCSS) {
-                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
-                }
-            }
-
-            // Apply mobile margin with media query
-            if (Arr::has($buttonMargin, 'mobile')) {
-                $mobileUnit = Arr::get($buttonMargin, 'mobile.unit', $globalUnit);
-                $mobileCSS = self::processSpacing($buttonMargin, $buttonSelectorsStr, 'mobile', $mobileUnit, 'margin');
-                if ($mobileCSS) {
-                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
-                }
-            }
+            $customCSS .= StyleProcessor::processSpacing($buttonMargin, $buttonSelectorsStr, 'margin');
         }
 
-        // Process button box shadow
-        $buttonBoxShadow = Arr::get($atts, 'buttonBoxShadow', []);
-        if (!empty($buttonBoxShadow) && Arr::get($buttonBoxShadow, 'enable', false)) {
-            $inset = Arr::get($buttonBoxShadow, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($buttonBoxShadow, 'horizontal', 0);
-            $vertical = Arr::get($buttonBoxShadow, 'vertical', 0);
-            $blur = Arr::get($buttonBoxShadow, 'blur', 0);
-            $spread = Arr::get($buttonBoxShadow, 'spread', 0);
-            $color = Arr::get($buttonBoxShadow, 'color', 'rgba(0,0,0,0.5)');
-
-            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
-            $customCSS .= self::generateCssRule($buttonSelectorsStr, 'box-shadow', $shadowValue, '');
-        }
-
-        // Process button box shadow hover
-        $buttonBoxShadowHover = Arr::get($atts, 'buttonBoxShadowHover', []);
-        if (!empty($buttonBoxShadowHover) && Arr::get($buttonBoxShadowHover, 'enable', false)) {
-            $inset = Arr::get($buttonBoxShadowHover, 'inset', false) ? 'inset ' : '';
-            $horizontal = Arr::get($buttonBoxShadowHover, 'horizontal', 0);
-            $vertical = Arr::get($buttonBoxShadowHover, 'vertical', 0);
-            $blur = Arr::get($buttonBoxShadowHover, 'blur', 0);
-            $spread = Arr::get($buttonBoxShadowHover, 'spread', 0);
-            $color = Arr::get($buttonBoxShadowHover, 'color', 'rgba(0,0,0,0.5)');
-
-            $shadowValue = $inset . $horizontal . 'px ' . $vertical . 'px ' . $blur . 'px ' . $spread . 'px ' . $color;
-            $customCSS .= self::generateCssRule($buttonSelectorsStr . ":hover, " . $buttonSelectorsStr . ":focus", 'box-shadow', $shadowValue, '');
-        }
+        // Button box shadow and hover are now handled in StyleProcessor
 
         // Process label typography
         $labelTypo = Arr::get($atts, 'labelTypography', []);
 
         if (!empty($labelTypo)) {
-            $customCSS .= self::processTypography($labelTypo, $labelSelector);
+            $customCSS .= StyleProcessor::processTypography($labelTypo, $labelSelector);
         }
 
         // Process input typography
         $inputTypo = Arr::get($atts, 'inputTypography', []);
 
         if (!empty($inputTypo)) {
-            $customCSS .= self::processTypography($inputTypo, $inputBGSelectorsStr);
+            $customCSS .= StyleProcessor::processTypography($inputTypo, $inputBGSelectorsStr);
         }
 
-        // Process placeholder styles - handle both set and reset cases
-        if (Arr::has($atts, 'placeholderColor')) {
-            $placeholderColor = Arr::get($atts, 'placeholderColor');
-            // Group selectors by pseudo-element type for more efficient CSS
-            foreach ($placeholderPseudos as $pseudo) {
-                $groupedSelectors = [];
-                foreach ($inputTypes as $inputType) {
-                    $groupedSelectors[] = "{$baseSelector} {$inputType}{$pseudo}";
-                }
-                $selectorStr = implode(', ', $groupedSelectors);
-
-                if (!empty($placeholderColor)) {
-                    $customCSS .= self::generateCssRule($selectorStr, 'color', $placeholderColor);
-                }
-
-                if (Arr::get($atts, 'enableTransition', true)) {
-                    $customCSS .= self::generateCssRule($selectorStr, 'transition', 'color 0.3s ease');
-                }
-            }
-        }
+        // Process placeholder styles - now handled in StyleProcessor
 
 
-        // Process placeholder typography
-        $placeholderTypo = Arr::get($atts, 'placeholderTypography', []);
-
-        if (!empty($placeholderTypo)) {
-            // Apply typography to grouped selectors
-            foreach ($placeholderPseudos as $pseudo) {
-                $groupedSelectors = [];
-                foreach ($inputTypes as $inputType) {
-                    $groupedSelectors[] = "{$baseSelector} {$inputType}{$pseudo}";
-                }
-                $selectorStr = implode(', ', $groupedSelectors);
-                $customCSS .= self::processTypography($placeholderTypo, $selectorStr);
-            }
-        }
+        // Process placeholder typography - now handled in StyleProcessor
 
         // Process input spacing
         $inputSpacing = Arr::get($atts, 'inputSpacing', []);
-
         if (!empty($inputSpacing)) {
-            // Get the unit from the spacing object or default to px
-            $globalUnit = Arr::get($inputSpacing, 'unit', 'px');
-
-            // Apply desktop spacing to input fields (no media query needed)
-            $desktopUnit = Arr::get($inputSpacing, 'desktop.unit', $globalUnit);
-            $desktopCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'desktop', $desktopUnit);
-            if ($desktopCSS) {
-                $customCSS .= $desktopCSS;
-            }
-
-            // Apply tablet spacing with media query
-            if (Arr::has($inputSpacing, 'tablet')) {
-                $tabletUnit = Arr::get($inputSpacing, 'tablet.unit', $globalUnit);
-                $tabletCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'tablet', $tabletUnit);
-                if ($tabletCSS) {
-                    $customCSS .= '@media (max-width: 768px) and (min-width: 481px) { ' . $tabletCSS . ' }';
-                }
-            }
-
-            // Apply mobile spacing with media query
-            if (Arr::has($inputSpacing, 'mobile')) {
-                $mobileUnit = Arr::get($inputSpacing, 'mobile.unit', $globalUnit);
-                $mobileCSS = self::processSpacing($inputSpacing, $inputBGSelectorsStr, 'mobile', $mobileUnit);
-                if ($mobileCSS) {
-                    $customCSS .= '@media (max-width: 480px) { ' . $mobileCSS . ' }';
-                }
-            }
+            $customCSS .= StyleProcessor::processSpacing($inputSpacing, $inputBGSelectorsStr, 'padding');
         }
 
         // Process input border
@@ -741,13 +124,13 @@ class GutenbergBlock
 
         // Apply border styles if inputBorder is not empty and custom_border is enabled
         if (!empty($inputBorder) && $isBorderEnabled) {
-            $borderCSS = self::processBorder($inputBorder, $inputBGSelectorsStr, false);
+            $borderCSS = StyleProcessor::processBorder($inputBorder, $inputBGSelectorsStr, false);
             if ($borderCSS) {
                 $customCSS .= $borderCSS;
             }
 
             if (!empty($inputBorderHover)) {
-                $borderHoverCSS = self::processBorder($inputBorderHover, $inputBGSelectorsStr, true);
+                $borderHoverCSS = StyleProcessor::processBorder($inputBorderHover, $inputBGSelectorsStr, true);
                 if ($borderHoverCSS) {
                     $customCSS .= $borderHoverCSS;
                 }

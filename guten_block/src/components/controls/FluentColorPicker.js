@@ -4,19 +4,26 @@
 const {
     Button,
     Flex,
-    Popover
+    Popover,
+    ColorPicker
 } = wp.components;
 const { useState, useRef, useEffect } = wp.element;
 
 // Custom Color Picker Component with direct ColorPicker and conditional reset button
 const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [currentColor, setCurrentColor] = useState(value || '');
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
     const popoverRef = useRef(null);
 
+    // Update currentColor when value changes from outside
+    useEffect(() => {
+        setCurrentColor(value || '');
+    }, [value]);
+
     // Check if current value is different from default
-    const isColorChanged = value !== defaultColor && value !== undefined && value !== null;
+    const isColorChanged = currentColor !== defaultColor && currentColor !== undefined && currentColor !== null;
 
     const toggleColorPicker = (e) => {
         e.stopPropagation();
@@ -24,7 +31,19 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
     };
 
     const resetToDefault = () => {
+        setCurrentColor(defaultColor);
         onChange(defaultColor);
+    };
+
+    // Determine if we should show the transparent pattern
+    const isTransparent = !currentColor ||
+                         currentColor === 'transparent' ||
+                         (typeof currentColor === 'string' && currentColor.includes('rgba') &&
+                          (currentColor.endsWith(',0)') || currentColor.endsWith(', 0)')));
+
+    // Prepare the style for the color swatch
+    const swatchStyle = {
+        backgroundColor: currentColor || 'transparent'
     };
 
     // Handle clicks outside to close the color picker
@@ -71,10 +90,9 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                         ref={buttonRef}
                     >
                         <div
-                            className={`ffblock-color-swatch ${!value || value === 'transparent' || value.includes('rgba') ? 'ffblock-color-transparent-pattern' : ''}`}
-                            style={{
-                                backgroundColor: value || 'transparent'
-                            }}
+                            className={`ffblock-color-swatch ${isTransparent ? 'ffblock-color-transparent-pattern' : ''}`}
+                            style={swatchStyle}
+                            title={currentColor || 'transparent'}
                         />
                     </div>
                 </div>
@@ -90,18 +108,33 @@ const FluentColorPicker = ({ label, value, onChange, defaultColor = '' }) => {
                         position="bottom right"
                         expandOnMobile={true}
                         className="ffblock-color-popover"
+                        onFocusOutside={(e) => {
+                            e.close();
+                        }}
                     >
                         <div
                             className="ffblock-popover-content"
                             ref={popoverRef}
                         >
-                            {/* wp.components.ColorPicker instead of ColorPalette */}
-                            <wp.components.ColorPicker
-                                color={value}
-                                onChangeComplete={(color) => {
-                                    onChange(color.hex);
+                            {/* Close button */}
+                            <div className="ffblock-color-picker-header">
+                                <span>Select Color</span>
+                                <Button
+                                    className="ffblock-color-picker-close"
+                                    onClick={() => setIsOpen(false)}
+                                    icon="no-alt"
+                                    isSmall
+                                    label="Close"
+                                />
+                            </div>
+
+                            <ColorPicker
+                                color={currentColor}
+                                onChange={(color) => {
+                                    setCurrentColor(color);
+                                    onChange(color);
                                 }}
-                                disableAlpha={false}
+                                enableAlpha={true}
                             />
                         </div>
                     </Popover>

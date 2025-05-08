@@ -19,9 +19,12 @@ const { __ } = wp.i18n;
 // Custom Space/Margin/Padding Control
 const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', key: 'px-unit' }, { value: 'em', key: 'em-unit' }, { value: '%', key: 'percent-unit' }] }) => {
     // Initialize state from props or defaults
-    const [isLinked, setIsLinked] = useState(true);
-    const [activeUnit, setActiveUnit] = useState('px');
     const [activeDevice, setActiveDevice] = useState('desktop');
+    // Initialize isLinked based on values if available
+    const initialLinkedState = values && values[activeDevice] && values[activeDevice].linked !== undefined ?
+        values[activeDevice].linked : true;
+    const [isLinked, setIsLinked] = useState(initialLinkedState);
+    const [activeUnit, setActiveUnit] = useState('px');
     const [hasModifiedValues, setHasModifiedValues] = useState(false);
     const [currentValues, setCurrentValues] = useState({});
 
@@ -64,11 +67,12 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             };
 
             setCurrentValues(structuredValues);
-            setIsLinked(structuredValues[activeDevice].linked);
+            // Ensure isLinked is properly set based on the current device's linked property
+            setIsLinked(structuredValues[activeDevice].linked !== false);
             setActiveUnit(structuredValues[activeDevice].unit || 'px');
             setHasModifiedValues(checkForModifiedValues(structuredValues));
         }
-    }, [values]);
+    }, [values, activeDevice]);
 
     // Helper function to check if any spacing values have been set
     const checkForModifiedValues = (values) => {
@@ -89,9 +93,10 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
         return false;
     };
 
-    // Set initial state from props
+    // Set initial state from props and update when device changes
     useEffect(() => {
         if (currentValues[activeDevice]) {
+            // Explicitly set isLinked based on the current device's linked property
             setIsLinked(currentValues[activeDevice].linked !== false);
 
             // Check for unit at the top level first, then in the device object
@@ -134,10 +139,18 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
     const toggleLinked = () => {
         const newLinkedState = !isLinked;
         setIsLinked(newLinkedState);
-        updateValues({
-            ...currentValues[activeDevice],
-            linked: newLinkedState
-        });
+
+        // Create a new values object with the updated linked state
+        const updatedValues = {
+            ...currentValues,
+            [activeDevice]: {
+                ...currentValues[activeDevice],
+                linked: newLinkedState
+            }
+        };
+
+        // Update the parent component's state
+        onChange(updatedValues);
     };
 
     const updateValues = (newDeviceValues) => {
@@ -147,7 +160,8 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             unit: activeUnit, // Ensure unit is at the top level
             [activeDevice]: {
                 ...newDeviceValues,
-                unit: activeUnit // Also ensure unit is in the device object
+                unit: activeUnit, // Also ensure unit is in the device object
+                linked: isLinked // Explicitly preserve the linked state
             }
         };
         onChange(updatedValues);
@@ -179,6 +193,9 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             updatedDeviceValues.bottom = numValue;
             updatedDeviceValues.left = numValue;
 
+            // Explicitly preserve the linked state
+            updatedDeviceValues.linked = true;
+
             // Update the device values
             updatedValues[activeDevice] = updatedDeviceValues;
 
@@ -194,6 +211,10 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
             const updatedValues = {...currentValues};
             const updatedDeviceValues = {...updatedValues[activeDevice]};
             updatedDeviceValues[position] = numValue;
+
+            // Explicitly preserve the linked state
+            updatedDeviceValues.linked = isLinked;
+
             updatedValues[activeDevice] = updatedDeviceValues;
 
             // Update local state
@@ -266,7 +287,13 @@ const FluentSpaceControl = ({ label, values, onChange, units = [{ value: 'px', k
                                     title: device.label,
                                     icon: device.icon,
                                     isActive: activeDevice === device.value,
-                                    onClick: () => setActiveDevice(device.value)
+                                    onClick: () => {
+                                        setActiveDevice(device.value);
+                                        // Update isLinked based on the selected device's linked property
+                                        if (currentValues[device.value]) {
+                                            setIsLinked(currentValues[device.value].linked !== false);
+                                        }
+                                    }
                                 }))
                             }
                         />

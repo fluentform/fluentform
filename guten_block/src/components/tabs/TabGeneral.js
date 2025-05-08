@@ -1,7 +1,7 @@
 
 const { useState, useRef, useEffect, memo } = wp.element;
 const { __ } = wp.i18n;
-const { PanelBody, SelectControl, PanelRow, RangeControl } = wp.components;
+const { PanelBody, SelectControl, PanelRow, RangeControl, TabPanel } = wp.components;
 
 // Custom components
 import FluentTypography from "../controls/FluentTypography";
@@ -11,6 +11,8 @@ import FluentBorderControl from "../controls/FluentBorderControl";
 import FluentBoxShadowControl from "../controls/FluentBoxShadowControl";
 import FluentAlignmentControl from "../controls/FluentAlignmentControl";
 import FluentSeparator from "../controls/FluentSeparator";
+import { getUpdatedTypography } from "../utils/TypographyUtils";
+import { arePropsEqual } from '../utils/ComponentUtils';
 
 // Constants
 const DEFAULT_COLORS = [
@@ -21,47 +23,6 @@ const DEFAULT_COLORS = [
     { name: 'White', color: '#ffffff' },
     { name: 'Gray', color: '#dddddd' }
 ];
-
-/**
- * Updates typography settings with only changed values to avoid unnecessary rerenders
- * @param {Object} changedTypo - Object containing only the changed typography property
- * @param {Object} currentAttributes - Current attributes object
- * @param {string} typographyKey - Key for the typography attribute to update
- * @returns {Object} The updated typography object or empty object for reset
- */
-const getUpdatedTypography = (changedTypo, currentAttributes, typographyKey) => {
-    // Check if this is a reset operation
-    if (changedTypo.reset) {
-        return {};
-    }
-
-    // Create a new typography object based on current attributes
-    const updatedTypography = {...currentAttributes[typographyKey] || {}};
-
-    // Get the property that changed (there should be only one)
-    const changedProperty = Object.keys(changedTypo)[0];
-    const newValue = changedTypo[changedProperty];
-
-    // Update only the changed property
-    switch (changedProperty) {
-        case 'fontSize':
-            updatedTypography.size = {lg: newValue};
-            break;
-        case 'fontWeight':
-            updatedTypography.weight = newValue;
-            break;
-        case 'lineHeight':
-            updatedTypography.lineHeight = newValue;
-            break;
-        case 'letterSpacing':
-            updatedTypography.letterSpacing = newValue;
-            break;
-        case 'textTransform':
-            updatedTypography.textTransform = newValue;
-            break;
-    }
-    return updatedTypography;
-};
 
 /**
  * Component for form style template selection
@@ -94,14 +55,14 @@ const StyleTemplatePanel = ({ attributes, setAttributes, handlePresetChange }) =
  * Component for label styling options
  */
 const LabelStylesPanel = ({ attributes, updateStyles }) => {
-    const handleTypographyChange = (changedTypo) => {
+    const handleTypographyChange = (changedTypo, key) => {
         const updatedTypography = getUpdatedTypography(
-          changedTypo,
-          attributes,
-          'labelTypography'
+            changedTypo,
+            attributes,
+            key
         );
 
-        updateStyles({ labelTypography: updatedTypography });
+        updateStyles({ [key]: updatedTypography });
     };
 
     return (
@@ -121,7 +82,7 @@ const LabelStylesPanel = ({ attributes, updateStyles }) => {
                 letterSpacing: attributes.labelTypography?.letterSpacing || '',
                 textTransform: attributes.labelTypography?.textTransform || 'none'
             }}
-            onChange={handleTypographyChange}
+            onChange={(changedTypo) => handleTypographyChange(changedTypo, 'labelTypography')}
           />
       </PanelBody>
     );
@@ -131,114 +92,180 @@ const LabelStylesPanel = ({ attributes, updateStyles }) => {
  * Component for input and textarea styling options
  */
 const InputStylesPanel = ({ attributes, updateStyles }) => {
-    const handleTypographyChange = (changedTypo) => {
+    const handleTypographyChange = (changedTypo, key) => {
         const updatedTypography = getUpdatedTypography(
           changedTypo,
           attributes,
-          'inputTypography'
+          key
         );
-        updateStyles({
-            inputTypography: updatedTypography
-        });
-    };
 
-    const handleBorderChange = (value) => {
-
-        // Update the new border object
-        const styleUpdates = { inputBorder: value };
-
-
-        // Update all styles at once
-        updateStyles(styleUpdates);
-    };
-
-    const handleHoverBorderChange = (value) => {
-        // Update the hover border object
-        const styleUpdates = { inputBorderHover: value };
-
-        // Update all styles at once
-        updateStyles(styleUpdates);
-    };
-
-    // Default border values
-    const defaultBorder = {
-        top: { width: 1, style: 'solid', color: attributes.inputTABorderColor || '#dddddd' },
-        right: { width: 1, style: 'solid', color: attributes.inputTABorderColor || '#dddddd' },
-        bottom: { width: 1, style: 'solid', color: attributes.inputTABorderColor || '#dddddd' },
-        left: { width: 1, style: 'solid', color: attributes.inputTABorderColor || '#dddddd' },
-        linked: true,
-        radius: {
-            topLeft: attributes.inputTABorderRadius || 0,
-            topRight: attributes.inputTABorderRadius || 0,
-            bottomRight: attributes.inputTABorderRadius || 0,
-            bottomLeft: attributes.inputTABorderRadius || 0,
-            linked: true
-        },
-        custom_border: false
-    };
-
-    // Default spacing values
-    const defaultSpacing = {
-        top: '',
-        right: '',
-        bottom: '',
-        left: ''
+        updateStyles({ [key]: updatedTypography });
     };
 
     return (
-      <PanelBody title={__("Input & Textarea")} initialOpen={false}>
-          <FluentColorPicker
-            label="Text Color"
-            value={attributes.inputTextColor}
-            onChange={(value) => updateStyles({
-                inputTextColor: value
-            })}
-            defaultColor=""
-          />
+        <PanelBody title={__("Input & Textarea")} initialOpen={false}>
+            <TabPanel
+                className="input-styles-tabs"
+                activeClass="is-active"
+                tabs={[
+                    { name: 'normal', title: __('Normal'), className: 'tab-normal' },
+                    { name: 'focus', title: __('Focus'), className: 'tab-focus' },
+                ]}
+            >
+                {(tab) => {
+                    if (tab.name === 'normal') {
+                        return (
+                            <>
+                                <FluentColorPicker
+                                    label="Text Color"
+                                    value={attributes.inputTextColor}
+                                    onChange={(value) => updateStyles({
+                                        inputTextColor: value
+                                    })}
+                                    defaultColor=""
+                                />
 
-          <FluentColorPicker
-            label="Background Color"
-            value={attributes.inputBackgroundColor}
-            onChange={(value) => updateStyles({
-                inputBackgroundColor: value
-            })}
-            defaultColor=""
-          />
+                                <FluentColorPicker
+                                    label="Background Color"
+                                    value={attributes.inputBackgroundColor}
+                                    onChange={(value) => updateStyles({
+                                        inputBackgroundColor: value
+                                    })}
+                                    defaultColor=""
+                                />
 
-          <FluentTypography
-            label="Typography"
-            settings={{
-                fontSize: attributes.inputTypography?.size?.lg || '',
-                fontWeight: attributes.inputTypography?.weight || '400',
-                lineHeight: attributes.inputTypography?.lineHeight || '',
-                letterSpacing: attributes.inputTypography?.letterSpacing || '',
-                textTransform: attributes.inputTypography?.textTransform || 'none'
-            }}
-            onChange={handleTypographyChange}
-          />
+                                <FluentTypography
+                                    label="Typography"
+                                    settings={{
+                                        fontSize: attributes.inputTypography?.size?.lg || '',
+                                        fontWeight: attributes.inputTypography?.weight || '400',
+                                        lineHeight: attributes.inputTypography?.lineHeight || '',
+                                        letterSpacing: attributes.inputTypography?.letterSpacing || '',
+                                        textTransform: attributes.inputTypography?.textTransform || 'none'
+                                    }}
+                                    onChange={(changedTypo) => handleTypographyChange(changedTypo, 'inputTypography')}
+                                />
 
-          <FluentSpaceControl
-            label="Spacing"
-            values={attributes.inputSpacing}
-            onChange={(value) => updateStyles({ inputSpacing: value })}
-          />
+                                <FluentSpaceControl
+                                    label="Spacing"
+                                    values={attributes.inputSpacing}
+                                    onChange={(value) => updateStyles({ inputSpacing: value })}
+                                />
 
-          <FluentBorderControl
-            value={attributes.inputBorder || defaultBorder}
-            hoverValue={attributes.inputBorderHover || defaultBorder}
-            spacingValue={attributes.inputSpacing || defaultSpacing}
-            spacingHoverValue={attributes.inputSpacingHover || defaultSpacing}
-            onChange={handleBorderChange}
-            onHoverChange={handleHoverBorderChange}
-            onSpacingChange={(value) => updateStyles({ inputSpacing: value })}
-            onSpacingHoverChange={(value) => updateStyles({ inputSpacingHover: value })}
-            colors={DEFAULT_COLORS}
-            showRadius={true}
-            showBorderControls={true}
-            showHoverControls={true}
-            className="fluent-form-style-control"
-          />
-      </PanelBody>
+                                <FluentBorderControl
+                                    label={__("Border")}
+                                    enabled={attributes.enableInputBorder || false}
+                                    onToggle={(value) => updateStyles({ enableInputBorder: value })}
+                                    borderType={attributes.inputBorderType}
+                                    onBorderTypeChange={(value) => updateStyles({ inputBorderType: value })}
+                                    borderColor={attributes.inputBorderColor}
+                                    onBorderColorChange={(value) => updateStyles({ inputBorderColor: value })}
+                                    borderWidth={attributes.inputBorderWidth}
+                                    onBorderWidthChange={(value) => updateStyles({ inputBorderWidth: value })}
+                                    borderRadius={attributes.inputBorderRadius}
+                                    onBorderRadiusChange={(value) => updateStyles({ inputBorderRadius: value })}
+                                />
+
+                                <FluentBoxShadowControl
+                                    label={__("Box Shadow")}
+                                    enabled={attributes.enableInputBoxShadow || false}
+                                    onToggle={(value) => updateStyles({ enableInputBoxShadow: value })}
+                                    color={attributes.inputBoxShadowColor}
+                                    onColorChange={(value) => updateStyles({ inputBoxShadowColor: value })}
+                                    position={attributes.inputBoxShadowPosition}
+                                    onPositionChange={(value) => updateStyles({ inputBoxShadowPosition: value })}
+                                    horizontal={attributes.inputBoxShadowHorizontal}
+                                    onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontal: value })}
+                                    horizontalUnit={attributes.inputBoxShadowHorizontalUnit}
+                                    onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnit: value })}
+                                    vertical={attributes.inputBoxShadowVertical}
+                                    onVerticalChange={(value) => updateStyles({ inputBoxShadowVertical: value })}
+                                    verticalUnit={attributes.inputBoxShadowVerticalUnit}
+                                    onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnit: value })}
+                                    blur={attributes.inputBoxShadowBlur}
+                                    onBlurChange={(value) => updateStyles({ inputBoxShadowBlur: value })}
+                                    blurUnit={attributes.inputBoxShadowBlurUnit}
+                                    onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnit: value })}
+                                    spread={attributes.inputBoxShadowSpread}
+                                    onSpreadChange={(value) => updateStyles({ inputBoxShadowSpread: value })}
+                                    spreadUnit={attributes.inputBoxShadowSpreadUnit}
+                                    onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnit: value })}
+                                />
+                            </>
+                        );
+                    } else if (tab.name === 'focus') {
+                        return (
+                            <>
+                                <FluentColorPicker
+                                    label="Text Color"
+                                    value={attributes.inputTextFocusColor}
+                                    onChange={(value) => updateStyles({
+                                        inputTextFocusColor: value
+                                    })}
+                                    defaultColor=""
+                                />
+
+                                <FluentColorPicker
+                                    label="Background Color"
+                                    value={attributes.inputBackgroundFocusColor}
+                                    onChange={(value) => updateStyles({
+                                        inputBackgroundFocusColor: value
+                                    })}
+                                    defaultColor=""
+                                />
+
+                                <FluentSpaceControl
+                                    label="Spacing"
+                                    values={attributes.inputFocusSpacing}
+                                    onChange={(value) => updateStyles({ inputFocusSpacing: value })}
+                                />
+
+                                <FluentBorderControl
+                                    label={__("Border")}
+                                    enabled={attributes.enableInputBorderFocus || false}
+                                    onToggle={(value) => updateStyles({ enableInputBorderFocus: value })}
+                                    borderType={attributes.inputBorderTypeFocus}
+                                    onBorderTypeChange={(value) => updateStyles({ inputBorderTypeFocus: value })}
+                                    borderColor={attributes.inputBorderColorFocus}
+                                    onBorderColorChange={(value) => updateStyles({ inputBorderColorFocus: value })}
+                                    borderWidth={attributes.inputBorderWidthFocus}
+                                    onBorderWidthChange={(value) => updateStyles({ inputBorderWidthFocus: value })}
+                                    borderRadius={attributes.inputBorderRadiusFocus}
+                                    onBorderRadiusChange={(value) => updateStyles({ inputBorderRadiusFocus: value })}
+                                />
+
+                                <FluentBoxShadowControl
+                                    label={__("Box Shadow")}
+                                    enabled={attributes.enableInputBoxShadowFocus || false}
+                                    onToggle={(value) => updateStyles({ enableInputBoxShadowFocus: value })}
+                                    color={attributes.inputBoxShadowColorFocus}
+                                    onColorChange={(value) => updateStyles({ inputBoxShadowColorFocus: value })}
+                                    position={attributes.inputBoxShadowPositionFocus}
+                                    onPositionChange={(value) => updateStyles({ inputBoxShadowPositionFocus: value })}
+                                    horizontal={attributes.inputBoxShadowHorizontalFocus}
+                                    onHorizontalChange={(value) => updateStyles({ inputBoxShadowHorizontalFocus: value })}
+                                    horizontalUnit={attributes.inputBoxShadowHorizontalUnitFocus}
+                                    onHorizontalUnitChange={(value) => updateStyles({ inputBoxShadowHorizontalUnitFocus: value })}
+                                    vertical={attributes.inputBoxShadowVerticalFocus}
+                                    onVerticalChange={(value) => updateStyles({ inputBoxShadowVerticalFocus: value })}
+                                    verticalUnit={attributes.inputBoxShadowVerticalUnitFocus}
+                                    onVerticalUnitChange={(value) => updateStyles({ inputBoxShadowVerticalUnitFocus: value })}
+                                    blur={attributes.inputBoxShadowBlurFocus}
+                                    onBlurChange={(value) => updateStyles({ inputBoxShadowBlurFocus: value })}
+                                    blurUnit={attributes.inputBoxShadowBlurUnitFocus}
+                                    onBlurUnitChange={(value) => updateStyles({ inputBoxShadowBlurUnitFocus: value })}
+                                    spread={attributes.inputBoxShadowSpreadFocus}
+                                    onSpreadChange={(value) => updateStyles({ inputBoxShadowSpreadFocus: value })}
+                                    spreadUnit={attributes.inputBoxShadowSpreadUnitFocus}
+                                    onSpreadUnitChange={(value) => updateStyles({ inputBoxShadowSpreadUnitFocus: value })}
+                                />
+                            </>
+                        );
+                    }
+                    return null;
+                }}
+            </TabPanel>
+        </PanelBody>
     );
 };
 
@@ -246,15 +273,14 @@ const InputStylesPanel = ({ attributes, updateStyles }) => {
  * Component for button styling options
  */
 const ButtonStylesPanel = ({ attributes, updateStyles }) => {
-    const handleTypographyChange = (changedTypo) => {
+    const handleTypographyChange = (changedTypo, key) => {
         const updatedTypography = getUpdatedTypography(
             changedTypo,
             attributes,
-            'buttonTypography'
+            key
         );
-        updateStyles({
-            buttonTypography: updatedTypography
-        });
+
+        updateStyles({ [key]: updatedTypography });
     };
 
     const handleBoxShadowChange = (value) => {
@@ -265,17 +291,10 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
         updateStyles({ buttonBoxShadowHover: value });
     };
 
-    // Default spacing values
-    const defaultSpacing = {
-        top: '',
-        right: '',
-        bottom: '',
-        left: ''
-    };
-
     return (
       <PanelBody title={__('Button Styles')} initialOpen={false}>
 
+          {/* Common Button Alignment */}
           <div>
               <span className="ffblock-label">{__('Alignment')}</span>
               <FluentAlignmentControl
@@ -288,38 +307,8 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
                   ]}
               />
           </div>
-          {/* @todo add tabs for hover and normal*/}
-          <FluentColorPicker
-            label="Text Color"
-            value={attributes.buttonColor}
-            onChange={(value) => updateStyles({buttonColor: value})}
-            defaultColor="#ffffff"
-          />
 
-          <FluentColorPicker
-            label="Background Color"
-            value={attributes.buttonBGColor}
-            onChange={(value) => updateStyles({buttonBGColor: value})}
-            defaultColor="#409EFF"
-          />
-
-          <FluentColorPicker
-            label="Hover Text Color"
-            value={attributes.buttonHoverColor}
-            onChange={(value) => updateStyles({buttonHoverColor: value})}
-            defaultColor="#ffffff"
-          />
-
-          <FluentColorPicker
-            label="Hover Background Color"
-            value={attributes.buttonHoverBGColor}
-            onChange={(value) => updateStyles({buttonHoverBGColor: value})}
-            defaultColor="#66b1ff"
-          />
-
-          <FluentSeparator label="Dimensions" />
-
-          {/* Width */}
+          {/* Common Button Width */}
           <RangeControl
             label={__('Width (%)')}
             value={attributes.buttonWidth}
@@ -331,44 +320,194 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
             help={__('Set to 0 for auto width')}
           />
 
-          {/* Typography */}
-          <FluentTypography
-            label="Typography"
-            settings={{
-                fontSize: attributes.buttonTypography?.size?.lg || '',
-                fontWeight: attributes.buttonTypography?.weight || '500',
-                lineHeight: attributes.buttonTypography?.lineHeight || '',
-                letterSpacing: attributes.buttonTypography?.letterSpacing || '',
-                textTransform: attributes.buttonTypography?.textTransform || 'none'
-            }}
-            onChange={handleTypographyChange}
-          />
+          {/* Tabs for Normal and Hover states */}
+          <TabPanel
+              className="button-styles-tabs"
+              activeClass="is-active"
+              tabs={[
+                  { name: 'normal', title: __('Normal'), className: 'tab-normal' },
+                  { name: 'hover', title: __('Hover'), className: 'tab-hover' },
+              ]}
+          >
+              {(tab) => {
+                  if (tab.name === 'normal') {
+                      return (
+                          <>
+                              <FluentColorPicker
+                                label="Text Color"
+                                value={attributes.buttonColor}
+                                onChange={(value) => updateStyles({buttonColor: value})}
+                                defaultColor="#ffffff"
+                              />
 
-          {/* Padding */}
-          <FluentSpaceControl
-            label="Padding"
-            values={attributes.buttonPadding}
-            onChange={(value) => updateStyles({ buttonPadding: value })}
-          />
+                              <FluentColorPicker
+                                label="Background Color"
+                                value={attributes.buttonBGColor}
+                                onChange={(value) => updateStyles({buttonBGColor: value})}
+                                defaultColor="#409EFF"
+                              />
 
-          {/* Margin */}
-          <FluentSpaceControl
-            label="Margin"
-            values={attributes.buttonMargin}
-            onChange={(value) => updateStyles({ buttonMargin: value })}
-          />
+                              {/* Typography */}
+                              <FluentTypography
+                                label="Typography"
+                                settings={{
+                                    fontSize: attributes.buttonTypography?.size?.lg || '',
+                                    fontWeight: attributes.buttonTypography?.weight || '500',
+                                    lineHeight: attributes.buttonTypography?.lineHeight || '',
+                                    letterSpacing: attributes.buttonTypography?.letterSpacing || '',
+                                    textTransform: attributes.buttonTypography?.textTransform || 'none'
+                                }}
+                                onChange={(changedTypo) => handleTypographyChange(changedTypo, 'buttonTypography')}
+                              />
 
-          <FluentSeparator label="Effects" />
+                              {/* Padding */}
+                              <FluentSpaceControl
+                                label="Padding"
+                                values={attributes.buttonPadding}
+                                onChange={(value) => updateStyles({ buttonPadding: value })}
+                              />
 
-          {/* Box Shadow */}
-          <FluentBoxShadowControl
-            label="Box Shadow"
-            value={attributes.buttonBoxShadow}
-            hoverValue={attributes.buttonBoxShadowHover}
-            onChange={handleBoxShadowChange}
-            onHoverChange={handleBoxShadowHoverChange}
-            colors={DEFAULT_COLORS}
-          />
+                              {/* Margin */}
+                              <FluentSpaceControl
+                                label="Margin"
+                                values={attributes.buttonMargin}
+                                onChange={(value) => updateStyles({ buttonMargin: value })}
+                              />
+
+                              {/* Box Shadow */}
+                              <FluentBoxShadowControl
+                                  label={__("Box Shadow")}
+                                  enabled={attributes.enableButtonBoxShadow || false}
+                                  onToggle={(value) => updateStyles({ enableButtonBoxShadow: value })}
+                                  color={attributes.buttonBoxShadowColor}
+                                  onColorChange={(value) => updateStyles({ buttonBoxShadowColor: value })}
+                                  position={attributes.buttonBoxShadowPosition}
+                                  onPositionChange={(value) => updateStyles({ buttonBoxShadowPosition: value })}
+                                  horizontal={attributes.buttonBoxShadowHorizontal}
+                                  onHorizontalChange={(value) => updateStyles({ buttonBoxShadowHorizontal: value })}
+                                  horizontalUnit={attributes.buttonBoxShadowHorizontalUnit}
+                                  onHorizontalUnitChange={(value) => updateStyles({ buttonBoxShadowHorizontalUnit: value })}
+                                  vertical={attributes.buttonBoxShadowVertical}
+                                  onVerticalChange={(value) => updateStyles({ buttonBoxShadowVertical: value })}
+                                  verticalUnit={attributes.buttonBoxShadowVerticalUnit}
+                                  onVerticalUnitChange={(value) => updateStyles({ buttonBoxShadowVerticalUnit: value })}
+                                  blur={attributes.buttonBoxShadowBlur}
+                                  onBlurChange={(value) => updateStyles({ buttonBoxShadowBlur: value })}
+                                  blurUnit={attributes.buttonBoxShadowBlurUnit}
+                                  onBlurUnitChange={(value) => updateStyles({ buttonBoxShadowBlurUnit: value })}
+                                  spread={attributes.buttonBoxShadowSpread}
+                                  onSpreadChange={(value) => updateStyles({ buttonBoxShadowSpread: value })}
+                                  spreadUnit={attributes.buttonBoxShadowSpreadUnit}
+                                  onSpreadUnitChange={(value) => updateStyles({ buttonBoxShadowSpreadUnit: value })}
+                              />
+
+                              {/* Button Border */}
+                              <FluentBorderControl
+                                  label={__("Border")}
+                                  enabled={attributes.enableButtonBorder || false}
+                                  onToggle={(value) => updateStyles({ enableButtonBorder: value })}
+                                  borderType={attributes.buttonBorderType}
+                                  onBorderTypeChange={(value) => updateStyles({ buttonBorderType: value })}
+                                  borderColor={attributes.buttonBorderColor}
+                                  onBorderColorChange={(value) => updateStyles({ buttonBorderColor: value })}
+                                  borderWidth={attributes.buttonBorderWidth}
+                                  onBorderWidthChange={(value) => updateStyles({ buttonBorderWidth: value })}
+                                  borderRadius={attributes.buttonBorderRadius}
+                                  onBorderRadiusChange={(value) => updateStyles({ buttonBorderRadius: value })}
+                              />
+                          </>
+                      );
+                  } else if (tab.name === 'hover') {
+                      return (
+                          <>
+                              <FluentColorPicker
+                                label="Text Color"
+                                value={attributes.buttonHoverColor}
+                                onChange={(value) => updateStyles({buttonHoverColor: value})}
+                                defaultColor="#ffffff"
+                              />
+
+                              <FluentColorPicker
+                                label="Background Color"
+                                value={attributes.buttonHoverBGColor}
+                                onChange={(value) => updateStyles({buttonHoverBGColor: value})}
+                                defaultColor="#66b1ff"
+                              />
+
+                              {/* Typography */}
+                              <FluentTypography
+                                label="Typography"
+                                settings={{
+                                    fontSize: attributes.buttonHoverTypography?.size?.lg || '',
+                                    fontWeight: attributes.buttonHoverTypography?.weight || '500',
+                                    lineHeight: attributes.buttonHoverTypography?.lineHeight || '',
+                                    letterSpacing: attributes.buttonHoverTypography?.letterSpacing || '',
+                                    textTransform: attributes.buttonHoverTypography?.textTransform || 'none'
+                                }}
+                                onChange={(changedTypo) => handleTypographyChange(changedTypo, 'buttonHoverTypography')}
+                              />
+
+                              {/* Padding */}
+                              <FluentSpaceControl
+                                label="Padding"
+                                values={attributes.buttonHoverPadding}
+                                onChange={(value) => updateStyles({ buttonHoverPadding: value })}
+                              />
+
+                              {/* Margin */}
+                              <FluentSpaceControl
+                                label="Margin"
+                                values={attributes.buttonHoverMargin}
+                                onChange={(value) => updateStyles({ buttonHoverMargin: value })}
+                              />
+
+                              {/* Box Shadow */}
+                              <FluentBoxShadowControl
+                                  label={__("Box Shadow")}
+                                  enabled={attributes.enableButtonHoverBoxShadow || false}
+                                  onToggle={(value) => updateStyles({ enableButtonHoverBoxShadow: value })}
+                                  color={attributes.buttonHoverBoxShadowColor}
+                                  onColorChange={(value) => updateStyles({ buttonHoverBoxShadowColor: value })}
+                                  position={attributes.buttonHoverBoxShadowPosition}
+                                  onPositionChange={(value) => updateStyles({ buttonHoverBoxShadowPosition: value })}
+                                  horizontal={attributes.buttonHoverBoxShadowHorizontal}
+                                  onHorizontalChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontal: value })}
+                                  horizontalUnit={attributes.buttonHoverBoxShadowHorizontalUnit}
+                                  onHorizontalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowHorizontalUnit: value })}
+                                  vertical={attributes.buttonHoverBoxShadowVertical}
+                                  onVerticalChange={(value) => updateStyles({ buttonHoverBoxShadowVertical: value })}
+                                  verticalUnit={attributes.buttonHoverBoxShadowVerticalUnit}
+                                  onVerticalUnitChange={(value) => updateStyles({ buttonHoverBoxShadowVerticalUnit: value })}
+                                  blur={attributes.buttonHoverBoxShadowBlur}
+                                  onBlurChange={(value) => updateStyles({ buttonHoverBoxShadowBlur: value })}
+                                  blurUnit={attributes.buttonHoverBoxShadowBlurUnit}
+                                  onBlurUnitChange={(value) => updateStyles({ buttonHoverBoxShadowBlurUnit: value })}
+                                  spread={attributes.buttonHoverBoxShadowSpread}
+                                  onSpreadChange={(value) => updateStyles({ buttonHoverBoxShadowSpread: value })}
+                                  spreadUnit={attributes.buttonHoverBoxShadowSpreadUnit}
+                                  onSpreadUnitChange={(value) => updateStyles({ buttonHoverBoxShadowSpreadUnit: value })}
+                              />
+
+                              {/* Button Border */}
+                              <FluentBorderControl
+                                  label={__("Border")}
+                                  enabled={attributes.enableButtonHoverBorder || false}
+                                  onToggle={(value) => updateStyles({ enableButtonHoverBorder: value })}
+                                  borderType={attributes.buttonHoverBorderType}
+                                  onBorderTypeChange={(value) => updateStyles({ buttonHoverBorderType: value })}
+                                  borderColor={attributes.buttonHoverBorderColor}
+                                  onBorderColorChange={(value) => updateStyles({ buttonHoverBorderColor: value })}
+                                  borderWidth={attributes.buttonHoverBorderWidth}
+                                  onBorderWidthChange={(value) => updateStyles({ buttonHoverBorderWidth: value })}
+                                  borderRadius={attributes.buttonHoverBorderRadius}
+                                  onBorderRadiusChange={(value) => updateStyles({ buttonHoverBorderRadius: value })}
+                              />
+                          </>
+                      );
+                  }
+                  return null;
+              }}
+          </TabPanel>
       </PanelBody>
     );
 };
@@ -377,15 +516,14 @@ const ButtonStylesPanel = ({ attributes, updateStyles }) => {
  * Component for placeholder styling options
  */
 const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
-    const handleTypographyChange = (changedTypo) => {
+    const handleTypographyChange = (changedTypo, key) => {
         const updatedTypography = getUpdatedTypography(
             changedTypo,
             attributes,
-            'placeholderTypography'
+            key
         );
-        updateStyles({
-            placeholderTypography: updatedTypography
-        });
+
+        updateStyles({ [key]: updatedTypography });
     };
 
     return (
@@ -406,7 +544,7 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
                 letterSpacing: attributes.placeholderTypography?.letterSpacing || '',
                 textTransform: attributes.placeholderTypography?.textTransform || 'none'
             }}
-            onChange={handleTypographyChange}
+            onChange={(changedTypo) => handleTypographyChange(changedTypo, 'placeholderTypography')}
           />
 
       </PanelBody>
@@ -414,17 +552,6 @@ const PlaceHolderStylesPanel = ({ attributes, updateStyles }) => {
 }
 
 const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
-    const handleTypographyChange = (changedTypo) => {
-        const updatedTypography = getUpdatedTypography(
-            changedTypo,
-            attributes,
-            'radioCheckboxTypography'
-        );
-        updateStyles({
-            radioCheckboxTypography: updatedTypography
-        });
-    };
-
     // Use local state to ensure the UI updates immediately
     const [localSize, setLocalSize] = useState(attributes.radioCheckboxItemsSize || 15);
 
@@ -464,12 +591,6 @@ const RadioCheckBoxStylesPanel = ({ attributes, updateStyles }) => {
                     onChange={handleSizeChange}
                 />
             </div>
-
-
-            <div className="ffblock-separator"></div>
-
-
-
         </PanelBody>
     );
 }
@@ -518,44 +639,127 @@ const TabGeneral = ({ attributes, setAttributes, updateStyles, state, handlePres
     );
 };
 
-/**
- * Compare function to determine if component should update
- */
-function areEqual(prevProps, nextProps) {
-    const { attributes: prevAttrs } = prevProps;
-    const { attributes: nextAttrs } = nextProps;
+const GENERAL_TAB_ATTRIBUTES = [
+    // Label attributes
+    'labelColor',
+    'labelTypography',
 
-    // Special check for radioCheckboxItemsSize to ensure numeric comparison
-    if (prevAttrs.radioCheckboxItemsSize !== nextAttrs.radioCheckboxItemsSize) {
-        return false; // Size has changed, should update
-    }
+    // Input attributes
+    'inputTextColor',
+    'inputBackgroundColor',
+    'inputTypography',
+    'inputSpacing',
+    'inputBorder',
+    'inputBorderHover',
+    'inputTextFocusColor',
+    'inputBackgroundFocusColor',
+    'inputFocusSpacing',
+    'enableInputBorder',
+    'inputBorderType',
+    'inputBorderColor',
+    'inputBorderWidth',
+    'inputBorderRadius',
+    'enableInputBorderFocus',
+    'inputBorderTypeFocus',
+    'inputBorderColorFocus',
+    'inputBorderWidthFocus',
+    'inputBorderRadiusFocus',
+    'enableInputBoxShadow',
+    'inputBoxShadowColor',
+    'inputBoxShadowPosition',
+    'inputBoxShadowHorizontal',
+    'inputBoxShadowHorizontalUnit',
+    'inputBoxShadowVertical',
+    'inputBoxShadowVerticalUnit',
+    'inputBoxShadowBlur',
+    'inputBoxShadowBlurUnit',
+    'inputBoxShadowSpread',
+    'inputBoxShadowSpreadUnit',
+    'enableInputBoxShadowFocus',
+    'inputBoxShadowColorFocus',
+    'inputBoxShadowPositionFocus',
+    'inputBoxShadowHorizontalFocus',
+    'inputBoxShadowHorizontalUnitFocus',
+    'inputBoxShadowVerticalFocus',
+    'inputBoxShadowVerticalUnitFocus',
+    'inputBoxShadowBlurFocus',
+    'inputBoxShadowBlurUnitFocus',
+    'inputBoxShadowSpreadFocus',
+    'inputBoxShadowSpreadUnitFocus',
 
-    // List of attributes to check for changes
-    const attrsToCheck = [
-        'labelColor', 'inputTextColor', 'inputBackgroundColor',
-        'buttonColor', 'buttonBGColor', 'buttonHoverColor', 'buttonHoverBGColor',
-        'buttonWidth', 'buttonTypography', 'buttonPadding', 'buttonMargin', 'buttonBoxShadow', 'buttonBoxShadowHover', 'buttonAlignment',
-        'labelTypography', 'inputTypography', 'inputSpacing', 'inputBorder', 'inputBorderHover',
-        'placeholderColor', 'placeholderFocusColor', 'placeholderTypography',
-        'radioCheckboxLabelColor', 'radioCheckboxTypography', 'radioCheckboxItemsColor',
-        'checkboxSize', 'checkboxBorderColor', 'checkboxBgColor', 'checkboxCheckedColor',
-        'radioSize', 'radioBorderColor', 'radioBgColor', 'radioCheckedColor'
-    ];
+    // Placeholder attributes
+    'placeholderColor',
+    'placeholderFocusColor',
+    'placeholderTypography',
 
-    // Check if any of these attributes have changed
-    for (const attr of attrsToCheck) {
-        if (JSON.stringify(prevAttrs[attr]) !== JSON.stringify(nextAttrs[attr])) {
-            return false; // Props are not equal, should update
-        }
-    }
+    // Radio/Checkbox attributes
+    'radioCheckboxLabelColor',
+    'radioCheckboxTypography',
+    'radioCheckboxItemsColor',
+    'checkboxSize',
+    'checkboxBorderColor',
+    'checkboxBgColor',
+    'checkboxCheckedColor',
+    'radioSize',
+    'radioBorderColor',
+    'radioBgColor',
+    'radioCheckedColor',
 
-    // Check if state props have changed
-    if (prevProps.state.customizePreset !== nextProps.state.customizePreset ||
-      prevProps.state.selectedPreset !== nextProps.state.selectedPreset) {
-        return false;
-    }
+    // Common Button attributes
+    'buttonWidth',
+    'buttonAlignment',
 
-    return true; // Props are equal, no need to update
-}
+    // Normal Button attributes
+    'buttonColor',
+    'buttonBGColor',
+    'buttonTypography',
+    'buttonPadding',
+    'buttonMargin',
+    'buttonBoxShadow',
+    'enableButtonBoxShadow',
+    'buttonBoxShadowColor',
+    'buttonBoxShadowPosition',
+    'buttonBoxShadowHorizontal',
+    'buttonBoxShadowHorizontalUnit',
+    'buttonBoxShadowVertical',
+    'buttonBoxShadowVerticalUnit',
+    'buttonBoxShadowBlur',
+    'buttonBoxShadowBlurUnit',
+    'buttonBoxShadowSpread',
+    'buttonBoxShadowSpreadUnit',
+    'enableButtonBorder',
+    'buttonBorderType',
+    'buttonBorderColor',
+    'buttonBorderWidth',
+    'buttonBorderRadius',
 
-export default memo(TabGeneral, areEqual);
+    // Hover Button attributes
+    'buttonHoverColor',
+    'buttonHoverBGColor',
+    'buttonHoverTypography',
+    'buttonHoverPadding',
+    'buttonHoverMargin',
+    'buttonBoxShadowHover',
+    'buttonBoxShadowHoverColor',
+    'buttonBoxShadowHoverPosition',
+    'enableButtonHoverBoxShadow',
+    'buttonHoverBoxShadowColor',
+    'buttonHoverBoxShadowPosition',
+    'buttonHoverBoxShadowHorizontal',
+    'buttonHoverBoxShadowHorizontalUnit',
+    'buttonHoverBoxShadowVertical',
+    'buttonHoverBoxShadowVerticalUnit',
+    'buttonHoverBoxShadowBlur',
+    'buttonHoverBoxShadowBlurUnit',
+    'buttonHoverBoxShadowSpread',
+    'buttonHoverBoxShadowSpreadUnit',
+    'enableButtonHoverBorder',
+    'buttonHoverBorderType',
+    'buttonHoverBorderColor',
+    'buttonHoverBorderWidth',
+    'buttonHoverBorderRadius'
+];
+
+export default memo(TabGeneral, (prevProps, nextProps) => {
+    return arePropsEqual(prevProps, nextProps, GENERAL_TAB_ATTRIBUTES, true);
+});

@@ -1,390 +1,214 @@
-/**
- * Fluent Forms Box Shadow Control Component
- */
-
-// Import custom components
-import FluentColorPicker from './FluentColorPicker';
-
-// Import React components
-const { useState, useEffect, useMemo } = wp.element;
+const { BaseControl, ToggleControl, SelectControl } = wp.components;
+const { useState, useEffect } = wp.element;
 const { __ } = wp.i18n;
+import FluentColorPicker from "./FluentColorPicker";
 
-// Import WordPress components
-const {
-    RangeControl,
-    ToggleControl
-} = wp.components;
-
-/**
- * Fluent Forms Box Shadow Control Component
- *
- * @param {Object} props Component props
- * @param {string} props.label Label for the control
- * @param {Object} props.value Current box shadow values for normal state
- * @param {Object} props.hoverValue Current box shadow values for hover state
- * @param {Function} props.onChange Callback when box shadow values change for normal state
- * @param {Function} props.onHoverChange Callback when box shadow values change for hover state
- * @param {Array} props.colors Custom color palette
- * @param {boolean} props.showHoverControls Whether to show hover state controls
- */
 const FluentBoxShadowControl = ({
-    label = __('Box Shadow'),
-    value,
-    hoverValue,
-    onChange,
-    onHoverChange,
-    colors = [
-        { name: 'Blue 20', color: '#72aee6' },
-        { name: 'Red', color: '#e65054' },
-        { name: 'Green', color: '#68de7c' },
-        { name: 'Yellow', color: '#f2d675' },
-        { name: 'Black', color: '#000000' },
-        { name: 'White', color: '#ffffff' },
-    ],
-    showHoverControls = true
-}) => {
-    // Default box shadow structure
-    const defaultBoxShadow = {
-        horizontal: 0,
-        vertical: 0,
-        blur: 0,
-        spread: 0,
-        color: 'rgba(0,0,0,0.5)',
-        inset: false,
-        enable: false
-    };
+                                    label = __("Box Shadow"),
+                                    enabled,
+                                    onToggle,
+                                    color,
+                                    onColorChange,
+                                    position,
+                                    onPositionChange,
+                                    horizontal,
+                                    onHorizontalChange,
+                                    horizontalUnit,
+                                    onHorizontalUnitChange,
+                                    vertical,
+                                    onVerticalChange,
+                                    verticalUnit,
+                                    onVerticalUnitChange,
+                                    blur,
+                                    onBlurChange,
+                                    blurUnit,
+                                    onBlurUnitChange,
+                                    spread,
+                                    onSpreadChange,
+                                    spreadUnit,
+                                    onSpreadUnitChange,
+                                    defaultColor = "rgba(0,0,0,0.5)"
+                                }) => {
+    // Use internal state to track the enabled state and values
+    const [isEnabled, setIsEnabled] = useState(!!enabled);
+    const [localHorizontal, setLocalHorizontal] = useState(horizontal || '');
+    const [localVertical, setLocalVertical] = useState(vertical || '');
+    const [localBlur, setLocalBlur] = useState(blur || '');
+    const [localSpread, setLocalSpread] = useState(spread || '');
 
-    // Initialize with provided values or defaults
-    const [boxShadow, setBoxShadow] = useState(value || defaultBoxShadow);
-    const [hoverBoxShadow, setHoverBoxShadow] = useState(hoverValue || defaultBoxShadow);
-    const [activeTab, setActiveTab] = useState('normal');
-
-    // Update parent component when box shadow changes
+    // Update internal state when props change
     useEffect(() => {
-        if (onChange && boxShadow) {
-            onChange(boxShadow);
-        }
-    }, [boxShadow, onChange]);
+        setIsEnabled(!!enabled);
+        setLocalHorizontal(horizontal || '');
+        setLocalVertical(vertical || '');
+        setLocalBlur(blur || '');
+        setLocalSpread(spread || '');
+    }, [enabled, horizontal, vertical, blur, spread]);
+    const positionOptions = [
+        { label: __("Outline"), value: 'outline' },
+        { label: __("Inset"), value: 'inset' }
+    ];
 
-    useEffect(() => {
-        if (onHoverChange && hoverBoxShadow) {
-            onHoverChange(hoverBoxShadow);
-        }
-    }, [hoverBoxShadow, onHoverChange]);
+    const unitOptions = [
+        { label: 'px', value: 'px' },
+        { label: 'em', value: 'em' },
+        { label: '%', value: '%' }
+    ];
 
-    // Update local state when props change
-    useEffect(() => {
-        if (value) {
-            // Ensure color is properly set
-            const updatedValue = {
-                ...defaultBoxShadow,
-                ...value,
-                color: value.color || defaultBoxShadow.color
-            };
-            setBoxShadow(updatedValue);
-        }
-    }, [value]);
-
-    useEffect(() => {
-        if (hoverValue) {
-            // Ensure color is properly set
-            const updatedValue = {
-                ...defaultBoxShadow,
-                ...hoverValue,
-                color: hoverValue.color || defaultBoxShadow.color
-            };
-            setHoverBoxShadow(updatedValue);
-        }
-    }, [hoverValue]);
-
-    const getCurrentShadow = () => {
-        return activeTab === 'normal' ? boxShadow : hoverBoxShadow;
-    };
-
-    const setCurrentShadow = (newShadow) => {
-        if (activeTab === 'normal') {
-            setBoxShadow(newShadow);
-        } else {
-            setHoverBoxShadow(newShadow);
-        }
-    };
-
-    const handleToggleEnable = () => {
-        const currentShadow = getCurrentShadow();
-        setCurrentShadow({
-            ...currentShadow,
-            enable: !currentShadow.enable
-        });
-    };
-
-    const handleToggleInset = () => {
-        const currentShadow = getCurrentShadow();
-        setCurrentShadow({
-            ...currentShadow,
-            inset: !currentShadow.inset
-        });
-    };
-
-    const handleValueChange = (property, value) => {
-        const currentShadow = getCurrentShadow();
-        setCurrentShadow({
-            ...currentShadow,
-            [property]: value
-        });
-    };
-
-    const handleColorChange = (color) => {
-        // The FluentColorPicker now returns either a hex color or rgba string
-        // We can directly use this value for the shadow color
-        handleValueChange('color', color);
-    };
-
-    // Preset shadow options - memoized to prevent recreation on each render
-    const shadowPresets = useMemo(() => [
-        {
-            name: __('Soft'),
-            value: {
-                horizontal: 0,
-                vertical: 4,
-                blur: 8,
-                spread: 0,
-                color: 'rgba(0,0,0,0.1)',
-                inset: false,
-                enable: true
-            }
-        },
-        {
-            name: __('Medium'),
-            value: {
-                horizontal: 0,
-                vertical: 6,
-                blur: 12,
-                spread: 0,
-                color: 'rgba(0,0,0,0.2)',
-                inset: false,
-                enable: true
-            }
-        },
-        {
-            name: __('Hard'),
-            value: {
-                horizontal: 0,
-                vertical: 8,
-                blur: 16,
-                spread: 0,
-                color: 'rgba(0,0,0,0.3)',
-                inset: false,
-                enable: true
-            }
-        },
-        {
-            name: __('Inset'),
-            value: {
-                horizontal: 0,
-                vertical: 4,
-                blur: 8,
-                spread: 0,
-                color: 'rgba(0,0,0,0.2)',
-                inset: true,
-                enable: true
-            }
-        }
-    ], []);
-
-    const applyPreset = (preset) => {
-        setCurrentShadow({
-            ...getCurrentShadow(),
-            ...preset.value
-        });
-    };
-
-    const renderShadowControls = () => {
-        const currentShadow = getCurrentShadow();
-
-        return (
-            <>
-                <div className="ffblock-shadow-presets" style={{ marginBottom: '16px' }}>
-                    <label className="ffblock-label" style={{ marginBottom: '8px' }}>{__('Presets')}</label>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {shadowPresets.map((preset, index) => {
-                            // Define icon based on preset type
-
-
-                            return (
-                                <button
-                                    key={index}
-                                    className="components-button is-secondary is-small"
-                                    onClick={() => applyPreset(preset)}
-                                    style={{
-                                        flex: '1 0 auto',
-                                        minWidth: '60px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '4px'
-                                    }}
-                                >
-                                    <span style={{ fontSize: '14px', width: '14px', height: '14px' }}></span>
-                                    {preset.name}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className="ffblock-shadow-controls">
-                    <div >
-                        <RangeControl
-                            label={__('Horizontal Offset (px)')}
-                            value={currentShadow.horizontal}
-                            onChange={(value) => handleValueChange('horizontal', value)}
-                            min={-50}
-                            max={50}
-                            step={1}
-                            withInputField={true}
-                        />
-                        <RangeControl
-                            label={__('Vertical Offset (px)')}
-                            value={currentShadow.vertical}
-                            onChange={(value) => handleValueChange('vertical', value)}
-                            min={-50}
-                            max={50}
-                            step={1}
-                            withInputField={true}
-                        />
-                    </div>
-                    <div >
-                        <RangeControl
-                            label={__('Blur Radius (px)')}
-                            value={currentShadow.blur}
-                            onChange={(value) => handleValueChange('blur', value)}
-                            min={0}
-                            max={100}
-                            step={1}
-                            withInputField={true}
-                        />
-                        <RangeControl
-                            label={__('Spread Radius (px)')}
-                            value={currentShadow.spread}
-                            onChange={(value) => handleValueChange('spread', value)}
-                            min={-50}
-                            max={50}
-                            step={1}
-                            withInputField={true}
-                        />
-                    </div>
-
-                    <FluentColorPicker
-                        label={__('Shadow Color')}
-                        value={currentShadow.color || 'rgba(0,0,0,0.5)'}
-                        onChange={handleColorChange}
-                        defaultColor="rgba(0,0,0,0.5)"
-                        colors={colors}
-                    />
-
-                    <ToggleControl
-                        label={__('Inset Shadow')}
-                        checked={currentShadow.inset}
-                        onChange={handleToggleInset}
-                    />
-                </div>
-
-                <div className="ffblock-shadow-preview" style={{ marginTop: '16px', marginBottom: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <label className="ffblock-label">{__('Preview')}</label>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <button
-                                className="components-button is-small is-secondary"
-                                onClick={() => setCurrentShadow({
-                                    ...defaultBoxShadow,
-                                    enable: currentShadow.enable
-                                })}
-                                style={{ padding: '2px 8px', fontSize: '11px' }}
-                            >
-                                {__('Reset')}
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            height: '60px',
-                            backgroundColor: '#f0f0f0',
-                            borderRadius: '4px',
-                            boxShadow: currentShadow.enable
-                                ? `${currentShadow.inset ? 'inset ' : ''}${currentShadow.horizontal}px ${currentShadow.vertical}px ${currentShadow.blur}px ${currentShadow.spread}px ${currentShadow.color}`
-                                : 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'all 0.2s ease'
-                        }}
-                    >
-                        <span style={{ fontSize: '12px', color: '#666' }}>
-                            {currentShadow.enable ? __('Shadow Applied') : __('No Shadow')}
-                        </span>
-                    </div>
-                </div>
-            </>
-        );
-    };
-
-    // Main component render
     return (
-        <div className="ffblock-box-shadow-control">
-            <div className="ffblock-control-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span className="ffblock-label">{label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', color: '#666' }}>
-                        {getCurrentShadow().enable ? __('Enabled') : __('Disabled')}
-                    </span>
-                    <ToggleControl
-                        checked={getCurrentShadow().enable}
-                        onChange={handleToggleEnable}
-                        label=""
-                    />
-                </div>
-            </div>
+        <BaseControl label={label}>
+            <ToggleControl
+                label={__("Enable Box Shadow")}
+                checked={isEnabled}
+                onChange={(value) => {
+                    // Update internal state first
+                    setIsEnabled(!!value);
+                    // Then notify parent
+                    onToggle(!!value);
 
-            {getCurrentShadow().enable && (
-                <div className="ffblock-shadow-content">
-                    {showHoverControls ? (
-                        <div className="ffblock-state-tabs-container" style={{ marginBottom: '16px' }}>
-                            <div className="ffblock-state-tabs" style={{ display: 'flex', borderBottom: '1px solid #e0e0e0', marginBottom: '16px' }}>
-                                <button
-                                    className={`components-button ${activeTab === 'normal' ? 'is-primary' : ''}`}
-                                    onClick={() => setActiveTab('normal')}
-                                    style={{
-                                        flex: 1,
-                                        justifyContent: 'center',
-                                        borderBottom: activeTab === 'normal' ? '2px solid #007cba' : '2px solid transparent',
-                                        margin: 0,
-                                        borderRadius: 0
-                                    }}
-                                >
-                                    {__('Normal')}
-                                </button>
-                                <button
-                                    className={`components-button ${activeTab === 'hover' ? 'is-primary' : ''}`}
-                                    onClick={() => setActiveTab('hover')}
-                                    style={{
-                                        flex: 1,
-                                        justifyContent: 'center',
-                                        borderBottom: activeTab === 'hover' ? '2px solid #007cba' : '2px solid transparent',
-                                        margin: 0,
-                                        borderRadius: 0
-                                    }}
-                                >
-                                    {__('Hover')}
-                                </button>
-                            </div>
-                            {renderShadowControls()}
+                    // If enabling, make sure all values are set with defaults if needed
+                    if (value) {
+                        // Set color (use provided color or default)
+                        onColorChange(color || defaultColor);
+
+                        // Set position if not already set
+                        if (!position) onPositionChange('outline');
+
+                        // Set horizontal with default if not set
+                        onHorizontalChange(horizontal || '0');
+                        if (!horizontalUnit) onHorizontalUnitChange('px');
+
+                        // Set vertical with default if not set
+                        onVerticalChange(vertical || '0');
+                        if (!verticalUnit) onVerticalUnitChange('px');
+
+                        // Set blur with default if not set
+                        onBlurChange(blur || '5');
+                        if (!blurUnit) onBlurUnitChange('px');
+
+                        // Set spread with default if not set
+                        onSpreadChange(spread || '0');
+                        if (!spreadUnit) onSpreadUnitChange('px');
+                    }
+                }}
+            />
+
+            {isEnabled && (
+                <>
+                    {/* Shadow Color */}
+                    <FluentColorPicker
+                        label={__("Shadow Color")}
+                        value={color || ''}
+                        onChange={onColorChange}
+                        defaultColor={defaultColor}
+                    />
+
+                    {/* Shadow Position */}
+                    <SelectControl
+                        label={__("Shadow Position")}
+                        value={position || 'outline'}
+                        options={positionOptions}
+                        onChange={onPositionChange}
+                    />
+
+                    {/* Horizontal Offset */}
+                    <BaseControl label={__("Horizontal Offset")}>
+                        <div className="ffblock-unit-control">
+                            <input
+                                type="number"
+                                className="components-text-control__input"
+                                value={localHorizontal}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setLocalHorizontal(value);
+                                    onHorizontalChange(value);
+                                }}
+                                min="-50"
+                                max="50"
+                                placeholder="0"
+                            />
+                            <SelectControl
+                                value={horizontalUnit || 'px'}
+                                options={unitOptions}
+                                onChange={onHorizontalUnitChange}
+                            />
                         </div>
-                    ) : (
-                        renderShadowControls()
-                    )}
-                </div>
+                    </BaseControl>
+
+                    {/* Vertical Offset */}
+                    <BaseControl label={__("Vertical Offset")}>
+                        <div className="ffblock-unit-control">
+                            <input
+                                type="number"
+                                className="components-text-control__input"
+                                value={localVertical}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setLocalVertical(value);
+                                    onVerticalChange(value);
+                                }}
+                                min="-50"
+                                max="50"
+                                placeholder="0"
+                            />
+                            <SelectControl
+                                value={verticalUnit || 'px'}
+                                options={unitOptions}
+                                onChange={onVerticalUnitChange}
+                            />
+                        </div>
+                    </BaseControl>
+
+                    {/* Blur Radius */}
+                    <BaseControl label={__("Blur Radius")}>
+                        <div className="ffblock-unit-control">
+                            <input
+                                type="number"
+                                className="components-text-control__input"
+                                value={localBlur}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setLocalBlur(value);
+                                    onBlurChange(value);
+                                }}
+                                min="0"
+                                max="100"
+                                placeholder="0"
+                            />
+                            <SelectControl
+                                value={blurUnit || 'px'}
+                                options={unitOptions}
+                                onChange={onBlurUnitChange}
+                            />
+                        </div>
+                    </BaseControl>
+
+                    {/* Spread Radius */}
+                    <BaseControl label={__("Spread Radius")}>
+                        <div className="ffblock-unit-control">
+                            <input
+                                type="number"
+                                className="components-text-control__input"
+                                value={localSpread}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setLocalSpread(value);
+                                    onSpreadChange(value);
+                                }}
+                                min="-50"
+                                max="50"
+                                placeholder="0"
+                            />
+                            <SelectControl
+                                value={spreadUnit || 'px'}
+                                options={unitOptions}
+                                onChange={onSpreadUnitChange}
+                            />
+                        </div>
+                    </BaseControl>
+                </>
             )}
-        </div>
+        </BaseControl>
     );
 };
 
