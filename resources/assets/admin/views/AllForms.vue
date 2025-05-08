@@ -106,9 +106,31 @@
 
                             <el-table-column sortable="custom" :label="$t('Title')" prop="title" min-width="400">
                                 <template slot-scope="scope">
-                                    <strong>
-                                        {{ scope.row.title }}
-                                    </strong>
+                                    <div @click="startEditingTitle(scope.row)" class="form-title-wrapper" :class="{ 'editing': editingForm && editingForm.id === scope.row.id, 'editable': hasPermission('fluentform_forms_manager') }">
+                                        <template v-if="!editingForm || editingForm.id !== scope.row.id">
+                                            <el-tooltip v-if="hasPermission('fluentform_forms_manager')" content="Click to edit form title" placement="top" :open-delay="500">
+                                                <strong class="form-title-text">
+                                                    {{ scope.row.title }}
+                                                </strong>
+                                            </el-tooltip>
+                                            <strong v-else class="form-title-text">
+                                                {{ scope.row.title }}
+                                            </strong>
+                                        </template>
+                                        <div v-else class="form-title-edit">
+                                            <el-input
+                                                ref="titleInput"
+                                                v-model="editingForm.title"
+                                                @keyup.enter.native="updateFormTitle"
+                                                @keyup.esc.native="cancelEditingTitle"
+                                                @blur="updateFormTitle"
+                                                size="small"
+                                                :loading="updatingTitle"
+                                            >
+                                                <i slot="suffix" v-if="updatingTitle" class="el-icon-loading"></i>
+                                            </el-input>
+                                        </div>
+                                    </div>
                                     <span v-show="scope.row.has_payment == '1'" class="el-icon el-icon-money"></span>
                                     <div class="row-actions">
                                         <template v-if="hasPermission('fluentform_forms_manager')">
@@ -402,10 +424,72 @@ export default {
             loadingLocations: false,
             radioOption: 'all',
             changingStatus: {},
-
+            editingForm: null,
+            updatingTitle: false
         }
     },
     methods: {
+        startEditingTitle(form) {
+            // Only allow editing for users with proper permissions
+            if (!this.hasPermission('fluentform_forms_manager') || this.updatingTitle) {
+                return;
+            }
+            this.editingForm = { ...form };
+            // Use nextTick to ensure the input is rendered before trying to focus it
+            this.$nextTick(() => {
+                if (this.$refs.titleInput && this.$refs.titleInput.length) {
+                    this.$refs.titleInput[0].focus();
+                    // Select all text for easy replacement
+                    this.$refs.titleInput[0].$el.querySelector('input').select();
+                }
+            });
+        },
+
+        cancelEditingTitle() {
+            this.editingForm = null;
+        },
+
+        updateFormTitle() {
+            if (!this.editingForm || this.updatingTitle) {
+                return;
+            }
+
+            const id = this.editingForm.id;
+            const newTitle = this.editingForm.title.trim();
+            const originalForm = this.items.find(item => item.id === id);
+
+            // If title hasn't changed or is empty, just cancel editing
+            if (!newTitle || newTitle === originalForm.title) {
+                this.cancelEditingTitle();
+                return;
+            }
+
+            this.updatingTitle = true;
+
+            let data = {
+                title: newTitle,
+                status: this.editingForm.status
+            };
+
+            const url = FluentFormsGlobal.$rest.route('updateForm', id);
+            FluentFormsGlobal.$rest.post(url, data)
+                .then((response) => {
+                    this.$success(response.message);
+                    // Update the title in the local items array
+                    const formIndex = this.items.findIndex(item => item.id === id);
+                    if (formIndex !== -1) {
+                        this.items[formIndex].title = newTitle;
+                    }
+                })
+                .catch(error => {
+                    this.$fail(error.message);
+                })
+                .finally(() => {
+                    this.updatingTitle = false;
+                    this.cancelEditingTitle();
+                });
+        },
+
         toggleStatus(id, title, status) {
             let data = {
                 title,
@@ -739,7 +823,46 @@ export default {
     }
 };
 </script>
+
 <style scoped>
+.form-title-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.form-title-wrapper.editable {
+    cursor: pointer;
+}
+
+.form-title-wrapper.editable:hover .form-title-text {
+    background-color: rgba(64, 158, 255, 0.08);
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+.form-title-wrapper.editable:hover .form-title-text::after {
+    content: '\270E'; /* Pencil icon */
+    margin-left: 5px;
+    font-size: 14px;
+    color: #409EFF;
+    opacity: 0.8;
+}
+
+.form-title-wrapper.editing {
+    cursor: default;
+}
+
+.form-title-edit {
+    min-width: 300px;
+    margin: -2px 0;
+}
+
+.form-title-edit .el-input__inner {
+    font-weight: bold;
+    border-color: #409EFF;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+}
+
 .el-dropdown-menu{
   z-index: 9999 !important;
 }
