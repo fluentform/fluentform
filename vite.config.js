@@ -116,6 +116,11 @@ export default defineConfig({
         host: serverConfig.host,
         port: serverConfig.port,
         strictPort: serverConfig.strict_port,
+        cors: {
+            origin: '*', // Allow all origins
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        },
         hmr: {
             host: serverConfig.host,
             port: serverConfig.port,
