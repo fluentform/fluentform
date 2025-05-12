@@ -60,20 +60,27 @@ class Converter
             if ($hasSaveAndResume && $saveAndResumeData) {
                 $response = ArrayHelper::get($saveAndResumeData, 'response');
                 $questionId = ArrayHelper::get($question, 'id');
-                $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
-                if (!empty($value)) {
-                    if (ArrayHelper::get($field, 'element') == 'input_file') {
-                        $files = ArrayHelper::get($response, $questionId);
-                        foreach ($files as $file) {
-                            $question['answer'][] = ArrayHelper::get($file, 'data_src');
+
+                // Special handling for section breaks and custom HTML
+                if (ArrayHelper::get($field, 'element') == 'section_break' || ArrayHelper::get($field, 'element') == 'custom_html') {
+                    $question['answered'] = true;
+                    $question['answer'] = 'section_viewed';
+                } else {
+                    $value = $questionId ? ArrayHelper::get($response, $questionId) : null;
+                    if (!empty($value)) {
+                        if (ArrayHelper::get($field, 'element') == 'input_file') {
+                            $files = ArrayHelper::get($response, $questionId);
+                            foreach ($files as $file) {
+                                $question['answer'][] = ArrayHelper::get($file, 'data_src');
+                            }
+                        } elseif (
+                            ArrayHelper::get($field, 'element') == 'rangeslider' ||
+                            ArrayHelper::get($field, 'element') == 'subscription_payment_component'
+                        ) {
+                            $question['answer'] = +$value;
+                        } else {
+                            $question['answer'] = $value;
                         }
-                    } elseif (
-                        ArrayHelper::get($field, 'element') == 'rangeslider' ||
-                        ArrayHelper::get($field, 'element') == 'subscription_payment_component'
-                    ) {
-                        $question['answer'] = +$value;
-                    } else {
-                        $question['answer'] = $value;
                     }
                 }
             }
@@ -428,7 +435,7 @@ class Converter
                     $question['counter'] = count($questions) - 1;
                     $lastQuestion['has_save_and_resume_button'] = true;
                     $lastQuestion['save_and_resume_button'] = $question;
-                    $form->hasSaveAndRusemeButton = true;
+                    $form->hasSaveAndResumeButton = true;
                 }
                 // Skip Save Progress Button as a separate question
                 continue;
