@@ -487,8 +487,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             // Disable pointer events during animation to prevent issues
             stepsWrapper.css('pointer-events', 'none');
 
-            // Apply position first in all cases
-            stepsWrapper.css(inlineCssObj);
+            // We'll apply position based on animation type
 
             // Helper function to create a promise that resolves on transition end
             const createTransitionPromise = (element, propertyName = null) => {
@@ -514,13 +513,30 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
             switch (animationType) {
                 case 'slide':
+
+                    // Determine which property to animate based on RTL setting
+                    const property = isRtl ? 'right' : 'left';
+
+                    // Disable transitions
                     stepsWrapper.css('transition', 'none');
+
+                    // Calculate and apply initial position
+                    const offset = actionType === 'prev' ? activeStep + 1 : activeStep - 1;
+                    stepsWrapper.css({ [property]: -((offset) * 100) + '%' });
+
                     // Force browser reflow
                     stepsWrapper[0].offsetHeight;
-                    stepsWrapper.css('transition', `transform ${animDuration}ms, left ${animDuration}ms, right ${animDuration}ms`);
-                    animationPromise = createTransitionPromise(stepsWrapper);
+
+                    // Set up transition and apply final position
+                    stepsWrapper.css('transition', `${property} ${animDuration}ms`);
+                    stepsWrapper.css(inlineCssObj);
+
+                    // Simple timeout-based promise
+                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration));
                     break;
                 case 'fade':
+                    // For fade animation, apply position first
+                    stepsWrapper.css(inlineCssObj);
                     stepsWrapper.css('transition', 'none');
                     stepsWrapper.css('opacity', 0);
                     stepsWrapper[0].offsetHeight;
@@ -531,13 +547,19 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
                     animationPromise = createTransitionPromise(stepsWrapper, 'opacity');
                     break;
                 case 'slide_down':
+                    // For slide_down, apply position first
+                    stepsWrapper.css(inlineCssObj);
                     stepsWrapper.hide();
                     animationPromise = stepsWrapper.slideDown(animDuration).promise();
                     break;
                 case 'none':
+                    // For no animation, just apply position
+                    stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
                     break;
                 default:
+                    // Default case, just apply position
+                    stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
             }
 
