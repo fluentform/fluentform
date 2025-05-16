@@ -484,31 +484,60 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
             let animationPromise;
 
+            // Disable pointer events during animation to prevent issues
+            stepsWrapper.css('pointer-events', 'none');
+
+            // Apply position first in all cases
+            stepsWrapper.css(inlineCssObj);
+
+            // Helper function to create a promise that resolves on transition end
+            const createTransitionPromise = (element, propertyName = null) => {
+                return new Promise(resolve => {
+                    const transitionEndHandler = function(event) {
+                        // If propertyName is specified, only resolve for that property
+                        if (propertyName && event.propertyName !== propertyName) {
+                            return;
+                        }
+                        element.off('transitionend', transitionEndHandler);
+                        resolve();
+                    };
+
+                    // Add a safety timeout in case the transitionend event doesn't fire
+                    const safetyTimeout = setTimeout(() => {
+                        element.off('transitionend', transitionEndHandler);
+                        resolve();
+                    }, animDuration + 100);
+
+                    element.on('transitionend', transitionEndHandler);
+                });
+            };
+
             switch (animationType) {
                 case 'slide':
-                    stepsWrapper.css('transition', `all ${animDuration}ms`);
-                    stepsWrapper.css(inlineCssObj);
-                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration));
+                    stepsWrapper.css('transition', 'none');
+                    // Force browser reflow
+                    stepsWrapper[0].offsetHeight;
+                    stepsWrapper.css('transition', `transform ${animDuration}ms, left ${animDuration}ms, right ${animDuration}ms`);
+                    animationPromise = createTransitionPromise(stepsWrapper);
                     break;
                 case 'fade':
-                    stepsWrapper.css('transition', `all ${animDuration}ms`);
-                    stepsWrapper.css({opacity: 0, ...inlineCssObj});
-                    setTimeout(() => {
-                        stepsWrapper.css({opacity: 1});
-                    }, 50);
-                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration * 2));
+                    stepsWrapper.css('transition', 'none');
+                    stepsWrapper.css('opacity', 0);
+                    stepsWrapper[0].offsetHeight;
+                    stepsWrapper.css('transition', `opacity ${animDuration}ms`);
+                    requestAnimationFrame(() => {
+                        stepsWrapper.css('opacity', 1);
+                    });
+                    animationPromise = createTransitionPromise(stepsWrapper, 'opacity');
                     break;
                 case 'slide_down':
                     stepsWrapper.hide();
-                    stepsWrapper.css(inlineCssObj);
                     animationPromise = stepsWrapper.slideDown(animDuration).promise();
                     break;
                 case 'none':
-                    stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
                     break;
                 default:
-                    stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
             }
 
