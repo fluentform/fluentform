@@ -472,7 +472,7 @@ export class Payment_handler {
                 $responseDiv.find('.ff_resp_item_' + coupon_code).remove();
                 delete this.appliedCoupons[coupon_code];
                 this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
-                this.$form.trigger('do_calculation');
+                this.calculatePayments();
             }
         });
 
