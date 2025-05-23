@@ -3,9 +3,9 @@
 **Contributors:** techjewel, adreastrian, heera, pyrobd, hrdelwar, dhrupo, wpmanageninja  
 **Tags:** contact form, wp forms, forms, form builder, custom form  
 **Requires at least:** 4.5  
-**Tested up to:** 6.7  
+**Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.0.3
+**Stable tag:** 6.0.4
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,18 @@ Yes, you can use 2 column or 3 column containers and you can build forms.
 Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also import in pro version.
 
 ## Changelog
+
+### 6.0.4 (Date: May 29, 2025) =
+- Improve ChatGPT response with HTML code support
+- Improve honeypot condition check
+- Fix the net promoter score field's zero (0) value in the visual report
+- Fix the multi-select values in the submission including commas
+- Fix tooltip/help message
+- Fix conversational form address field meta smartcode
+- Fix conversational form section break image layout position
+- Fix email attachment missing for WordPress sub-directory
+- Fix conversational form name and address fields prefilled using URL params
+- Fix keyword-based restriction if IPInfo access key is provided
 
 ### 6.0.3 (Date: April 16, 2025) =
 - Adds hooks for disable captcha validation
