@@ -618,7 +618,7 @@ class SubmissionService
         
         $entryItems = [];
         foreach ($formData as $dataKey => $dataValue) {
-            if (empty($dataValue)) {
+            if ($dataValue === '' || $dataValue === null) {
                 continue;
             }
             
