@@ -470,9 +470,11 @@ export class Payment_handler {
             html: '&times;',
             click: (e) => {
                 $responseDiv.find('.ff_resp_item_' + coupon_code).remove();
-                delete this.appliedCoupons[coupon_code];
-                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
-                this.calculatePayments();
+                if (coupon_code in this.appliedCoupons) {
+                    delete this.appliedCoupons[coupon_code];
+                    this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                    this.$form.trigger('do_calculation');
+                }
             }
         });
 
@@ -841,22 +843,25 @@ export class Payment_handler {
         jQuery('#form_success').remove();
     }
 }
+// Register payment handler events only if pro is not installed.
+// If pro is installed, payment handler events is registered from payment_handler_pro.js
+if (!window.fluentFormVars.pro_payment_script_compatible) {
+    (function ($) {
+        $.each($('form.fluentform_has_payment'), function () {
+            const $form = $(this);
+            $form.on('fluentform_init_single', function (event, instance) {
+                (new Payment_handler($form, instance)).init();
+            });
+        });
 
-(function ($) {
-    $.each($('form.fluentform_has_payment'), function () {
-        const $form = $(this);
-        $form.on('fluentform_init_single', function (event, instance) {
+        $(document).on('ff_reinit', function (e, formItem) {
+            var $form = $(formItem);
+            $form.attr('data-ff_reinit', 'yes');
+            const instance = fluentFormApp($form);
+            if (!instance) {
+                return false;
+            }
             (new Payment_handler($form, instance)).init();
         });
-    });
-
-    $(document).on('ff_reinit', function (e, formItem) {
-        var $form = $(formItem);
-        $form.attr('data-ff_reinit', 'yes');
-        const instance = fluentFormApp($form);
-        if (!instance) {
-            return false;
-        }
-        (new Payment_handler($form, instance)).init();
-    });
-}(jQuery));
+    }(jQuery));
+}
