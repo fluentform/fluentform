@@ -442,9 +442,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-= 6.0.4 (Date: May 29, 2025) =
-- Improve ChatGPT response with HTML code support
-- Improve honeypot condition check
+= 6.0.4 (Date: May 28, 2025) =
 - Fix the net promoter score field's zero (0) value in the visual report
 - Fix the multi-select values in the submission including commas
 - Fix tooltip/help message
@@ -453,6 +451,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fix email attachment missing for WordPress sub-directory
 - Fix conversational form name and address fields prefilled using URL params
 - Fix keyword-based restriction if IPInfo access key is provided
+- Improve honeypot condition check
 
 = 6.0.3 (Date: April 16, 2025) =
 - Adds filter hooks for disable captcha validation
