@@ -442,7 +442,9 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
+
 = 6.0.4 (Date: May 28, 2025) =
+
 - Fix the net promoter score field's zero (0) value in the visual report
 - Fix the multi-select values in the submission including commas
 - Fix tooltip/help message

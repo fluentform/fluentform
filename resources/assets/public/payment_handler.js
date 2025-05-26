@@ -664,10 +664,19 @@ export class Payment_handler {
         }
 
         if ($paymentMethods.length > 1) {
+            const paypalInlineWrapper = this.$form.find('.paypal-standard-checkout-wrapper');
+            if (this.paymentMethod === 'paypal' && paypalInlineWrapper.length) {
+                this.$form.find('.ff-btn-submit').css({display: 'none'});
+            }
+
             $paymentMethods.change((event) => {
                 this.paymentMethod = event.target.value;
 
                 jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline').css({display: 'none'});
+
+                if (paypalInlineWrapper.length) {
+                    this.$form.find('.ff-btn-submit').css({display: 'block'});
+                }
 
                 if (this.paymentMethod === 'stripe') {
                     jQuery(event.target).closest('.ff-el-input--content').find('.stripe-inline-wrapper').css({display: 'block'});
@@ -675,6 +684,11 @@ export class Payment_handler {
 
                 if (this.paymentMethod === 'square') {
                     jQuery(event.target).closest('.ff-el-input--content').find('.square-inline-wrapper').css({display: 'block'});
+                }
+
+                if (this.paymentMethod === 'paypal' && paypalInlineWrapper.length) {
+                    paypalInlineWrapper.css({ display: 'block' });
+                    this.$form.find('.ff-btn-submit').css({ display: 'none' });
                 }
             });
         }
