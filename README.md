@@ -159,8 +159,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
-### 6.0.4 (Date: May 29, 2025) =
-- Improve ChatGPT response with HTML code support
+### 6.0.4 (Date: May 28, 2025) =
 - Improve honeypot condition check
 - Fix the net promoter score field's zero (0) value in the visual report
 - Fix the multi-select values in the submission including commas
@@ -170,6 +169,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fix email attachment missing for WordPress sub-directory
 - Fix conversational form name and address fields prefilled using URL params
 - Fix keyword-based restriction if IPInfo access key is provided
+- Fix email notification/integration sending after payment status change to paid
 
 ### 6.0.3 (Date: April 16, 2025) =
 - Adds hooks for disable captcha validation
