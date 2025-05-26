@@ -2,6 +2,7 @@
 
 namespace FluentForm\App\Modules\Form;
 
+use FluentForm\App\Helpers\Helper;
 use FluentForm\Framework\Foundation\Application;
 use FluentForm\Framework\Helpers\ArrayHelper;
 
@@ -47,7 +48,10 @@ class HoneyPot
 
     public function verify($insertData, $requestData, $formId)
     {
-        if (!$this->isEnabled($formId)) {
+        if (!$this->isEnabled($formId) || (
+                Helper::isConversionForm($formId) &&
+                ArrayHelper::isTrue($requestData, 'isFFConversational')
+            )) {
             return;
         }
 
