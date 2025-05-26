@@ -334,8 +334,13 @@ class AjaxEndpoints
         $transactionId = intval(ArrayHelper::get($_REQUEST, 'transaction_id', '0'));
         $submissionId = intval(ArrayHelper::get($_REQUEST, 'submission_id', '0'));
 
-        $oldTransaction = wpFluent()->table('fluentform_transactions')
-                                    ->find($transactionId);
+        if ($transactionId) {
+            $oldTransaction = wpFluent()->table('fluentform_transactions')
+                ->find($transactionId);
+        } else {
+            $oldTransaction = wpFluent()->table('fluentform_transactions')
+                ->where('subscription_id', $subscriptionId)->first();
+        }
 
         $oldSubmission = wpFluent()->table('fluentform_submissions')
                                    ->find($submissionId);
@@ -344,21 +349,20 @@ class AjaxEndpoints
             $isStatusNotCancelled = $oldTransaction->status !== 'cancelled' && $oldSubmission->payment_status !== 'cancelled';
 
             if ($isStatusNotCancelled) {
-                $updateData =
-
                 wpFluent()->table('fluentform_transactions')
-                          ->where('id', $transactionId)
-                          ->update([
-                              'status' => 'cancelled',
-                              'updated_at' => current_time('mysql')
-                          ]);
+                    ->where('id', $transactionId)
+                    ->orWhere('subscription_id', $subscriptionId)
+                    ->update([
+                        'status'     => 'cancelled',
+                        'updated_at' => current_time('mysql')
+                    ]);
 
                 wpFluent()->table('fluentform_submissions')
-                          ->where('id', $submissionId)
-                          ->update([
-                              'payment_status' => 'cancelled',
-                              'updated_at' => current_time('mysql')
-                          ]);
+                    ->where('id', $submissionId)
+                    ->update([
+                        'payment_status' => 'cancelled',
+                        'updated_at'     => current_time('mysql')
+                    ]);
             }
         }
 

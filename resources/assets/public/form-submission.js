@@ -266,6 +266,10 @@ jQuery(document).ready(function () {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
                         }
+                        $theForm.trigger('fluentform_validation_failed', {
+                            form: $theForm,
+                            response: e.messages
+                        });
                         showErrorMessages(e.messages);
                         scrollToFirstError(350);
                     }
