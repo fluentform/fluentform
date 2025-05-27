@@ -249,8 +249,9 @@ class Form extends Model
 
     public static function remove($formId)
     {
-        static::where('id', $formId)->delete();
+        do_action('fluentform/before_form_delete', $formId);
 
+        static::where('id', $formId)->delete();
         Submission::where('form_id', $formId)->delete();
         SubmissionMeta::where('form_id', $formId)->delete();
         EntryDetails::where('form_id', $formId)->delete();
@@ -278,5 +279,7 @@ class Form extends Model
             } catch (\Exception $e) {
             }
         }
+
+        do_action('fluentform/after_form_delete', $formId);
     }
 }

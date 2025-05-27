@@ -1109,6 +1109,11 @@ class Helper
             $form
         );
     }
+
+    public static function getAjaxUrl()
+    {
+        return apply_filters('fluentform/ajax_url', admin_url('admin-ajax.php'));
+    }
     
     public static function getDefaultDateTimeFormatForMoment()
     {
