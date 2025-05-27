@@ -484,30 +484,81 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
             const animationType = $(formSteps[activeStep]).closest('.ff-step-container').data('animation_type');
             let animationPromise;
 
+            // Disable pointer events during animation to prevent issues
+            stepsWrapper.css('pointer-events', 'none');
+
+            // We'll apply position based on animation type
+
+            // Helper function to create a promise that resolves on transition end
+            const createTransitionPromise = (element, propertyName = null) => {
+                return new Promise(resolve => {
+                    const transitionEndHandler = function(event) {
+                        // If propertyName is specified, only resolve for that property
+                        if (propertyName && event.propertyName !== propertyName) {
+                            return;
+                        }
+                        element.off('transitionend', transitionEndHandler);
+                        resolve();
+                    };
+
+                    // Add a safety timeout in case the transitionend event doesn't fire
+                    const safetyTimeout = setTimeout(() => {
+                        element.off('transitionend', transitionEndHandler);
+                        resolve();
+                    }, animDuration + 100);
+
+                    element.on('transitionend', transitionEndHandler);
+                });
+            };
+
             switch (animationType) {
                 case 'slide':
-                    stepsWrapper.css('transition', `all ${animDuration}ms`);
+
+                    // Determine which property to animate based on RTL setting
+                    const property = isRtl ? 'right' : 'left';
+
+                    // Disable transitions
+                    stepsWrapper.css('transition', 'none');
+
+                    // Calculate and apply initial position
+                    const offset = actionType === 'prev' ? activeStep + 1 : activeStep - 1;
+                    stepsWrapper.css({ [property]: -((offset) * 100) + '%' });
+
+                    // Force browser reflow
+                    stepsWrapper[0].offsetHeight;
+
+                    // Set up transition and apply final position
+                    stepsWrapper.css('transition', `${property} ${animDuration}ms`);
                     stepsWrapper.css(inlineCssObj);
+
+                    // Simple timeout-based promise
                     animationPromise = new Promise(resolve => setTimeout(resolve, animDuration));
                     break;
                 case 'fade':
-                    stepsWrapper.css('transition', `all ${animDuration}ms`);
-                    stepsWrapper.css({opacity: 0, ...inlineCssObj});
-                    setTimeout(() => {
-                        stepsWrapper.css({opacity: 1});
-                    }, 50);
-                    animationPromise = new Promise(resolve => setTimeout(resolve, animDuration * 2));
+                    // For fade animation, apply position first
+                    stepsWrapper.css(inlineCssObj);
+                    stepsWrapper.css('transition', 'none');
+                    stepsWrapper.css('opacity', 0);
+                    stepsWrapper[0].offsetHeight;
+                    stepsWrapper.css('transition', `opacity ${animDuration}ms`);
+                    requestAnimationFrame(() => {
+                        stepsWrapper.css('opacity', 1);
+                    });
+                    animationPromise = createTransitionPromise(stepsWrapper, 'opacity');
                     break;
                 case 'slide_down':
-                    stepsWrapper.hide();
+                    // For slide_down, apply position first
                     stepsWrapper.css(inlineCssObj);
+                    stepsWrapper.hide();
                     animationPromise = stepsWrapper.slideDown(animDuration).promise();
                     break;
                 case 'none':
+                    // For no animation, just apply position
                     stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
                     break;
                 default:
+                    // Default case, just apply position
                     stepsWrapper.css(inlineCssObj);
                     animationPromise = Promise.resolve();
             }
@@ -600,8 +651,7 @@ export default function ($, $theForm, fluentFormVars, formSelector) {
 
                     isInitialLoad = false;
                 } else {
-                    const focusableElements = step.find("input, select, textarea, button, a").filter(":visible");
-
+                    const focusableElements = step.find("input, .ff-custom_html, select, textarea, button, a").filter(":visible");
                     if (focusableElements.length && shouldFocus) {
                         setTimeout(() => {
                             focusableElements.first().focus();

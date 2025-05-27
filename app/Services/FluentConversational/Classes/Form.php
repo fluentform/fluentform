@@ -416,7 +416,9 @@ class Form
                         echo "</script>\n";
                     }
                     $src = $jsScript->src;
-                    $src = add_query_arg('ver', $jsScript->ver, $src);
+                    if (strpos($src, 'www.paypal.com/sdk/js') === false) {
+                        $src = add_query_arg('ver', $jsScript->ver, $src);
+                    }
                     echo "<script type='text/javascript' id='" . esc_attr($handle) . "' src='" . esc_url($src) . "'></script>\n";
                 }
             }, 1);
@@ -868,6 +870,8 @@ class Form
                     'confirming_text' => __('Confirming payment. Please wait...', 'fluentform'),
                 ],
             ];
+
+            $paymentConfig = apply_filters('fluentform/payment_config', $paymentConfig, $form->id);
 
             $paymentConfig['currency_settings']['currency_symbol'] = \html_entity_decode($paymentConfig['currency_settings']['currency_sign']);
         }

@@ -53,8 +53,10 @@ jQuery(document).ready(function () {
 
         window.fluentFormApp = function ($theForm) {
             var formInstanceSelector = $theForm.attr('data-form_instance');
-            var form = window['fluent_form_' + formInstanceSelector];
-
+            // Sanitize the selector - only allow alphanumeric, underscore and hyphen
+            formInstanceSelector = formInstanceSelector ? formInstanceSelector.replace(/[^a-zA-Z0-9_-]/g, '') : '';
+            var formObj = window['fluent_form_' + formInstanceSelector];
+            var form = (formObj && typeof formObj === 'object') ? formObj : null;
             if (!form) {
                 console.log('No Fluent form JS vars found!');
                 return false;
@@ -264,6 +266,10 @@ jQuery(document).ready(function () {
                         if (!(e instanceof ffValidationError)) {
                             throw e;
                         }
+                        $theForm.trigger('fluentform_validation_failed', {
+                            form: $theForm,
+                            response: e.messages
+                        });
                         showErrorMessages(e.messages);
                         scrollToFirstError(350);
                     }
@@ -611,7 +617,7 @@ jQuery(document).ready(function () {
                  */
                 var validate = function (elements) {
                     if (!elements.length) {
-                        elements = $('.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
+                        elements = $('form.frm-fluent-form').find(':input').not(':button').filter(function (i, el) {
                             return !$(el).closest('.has-conditions').hasClass('ff_excluded');
                         });
                     }
@@ -857,7 +863,7 @@ jQuery(document).ready(function () {
                     });
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        const content = $(this).data('content');
+                        let content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
@@ -865,6 +871,11 @@ jQuery(document).ready(function () {
                             }).appendTo(document.body);
                             $popContent = $('.ff-el-pop-content');
                         }
+                        // Remove dangerous tags and event handlers
+                        content = content.replace(/<script.*?>.*?<\/script>/gis, '')
+                            .replace(/<iframe.*?>.*?<\/iframe>/gis, '')
+                            .replace(/<.*?\bon\w+=["'][^"']*["']/gi, '')
+                            .replace(/javascript:/gi, '');
                         $popContent.html(content);
                         const formWidth = $theForm.innerWidth() - 20;
                         $popContent.css('max-width', formWidth);
@@ -1055,7 +1066,7 @@ jQuery(document).ready(function () {
             },
 
             maybeInitSpamTokenProtection: function() {
-                const formContainers = jQuery('.frm-fluent-form');
+                const formContainers = jQuery('form.frm-fluent-form');
 
                 formContainers.each((index, formElement) => {
                     const formContainer = jQuery(formElement);
@@ -1122,7 +1133,7 @@ jQuery(document).ready(function () {
 
             maybeHandleCleanTalkSubmitTime: function() {
                 if (!!window.fluentFormVars?.has_cleantalk) {
-                    const formContainers = jQuery('.frm-fluent-form');
+                    const formContainers = jQuery('form.frm-fluent-form');
 
                     formContainers.each((index, formElement) => {
                         const formContainer = jQuery(formElement);
@@ -1250,7 +1261,7 @@ jQuery(document).ready(function () {
             },
 
             initNumericFormat: function () {
-                var numericFields = $('.frm-fluent-form .ff_numeric');
+                var numericFields = $('form.frm-fluent-form .ff_numeric');
                 $.each(numericFields, (index, field) => {
                     let $field = $(field);
                     let formatConfig = JSON.parse($field.attr('data-formatter'));
@@ -1549,7 +1560,7 @@ jQuery(document).ready(function () {
             }();
         };
 
-        var $allForms = $('.frm-fluent-form');
+        var $allForms = $('form.frm-fluent-form');
 
         function initSingleForm($theForm) {
             var formInstance = fluentFormApp($theForm);

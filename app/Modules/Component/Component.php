@@ -621,9 +621,9 @@ class Component
         );
 
         $stepText = apply_filters('fluentform/step_string', $stepText);
-
+        
         $data = [
-            'ajaxUrl'               => Helper::getAjaxUrl(),
+            'ajaxUrl'               => admin_url('admin-ajax.php'),
             'forms'                 => [],
             'step_text'             => $stepText,
             'is_rtl'                => is_rtl(),
@@ -645,10 +645,12 @@ class Component
             'input_mask_vars'       => [
                 'clearIfNotMatch' => false,
             ],
-            'nonce'                 => wp_create_nonce(),
-            'form_id'               => $form_id,
-            'step_change_focus'     => true,
-            'has_cleantalk'         => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated()
+            
+            'nonce'                         => wp_create_nonce(),
+            'form_id'                       => $form_id,
+            'step_change_focus'             => true,
+            'has_cleantalk'                 => \FluentForm\App\Modules\Form\CleanTalkHandler::isCleantalkActivated(),
+            'pro_payment_script_compatible' => Helper::isProPaymentScriptCompatible(),
         ];
     
         $data = apply_filters_deprecated(

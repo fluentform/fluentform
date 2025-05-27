@@ -3,9 +3,9 @@
 **Contributors:** techjewel, adreastrian, heera, pyrobd, hrdelwar, dhrupo, wpmanageninja  
 **Tags:** contact form, wp forms, forms, form builder, custom form  
 **Requires at least:** 4.5  
-**Tested up to:** 6.7  
+**Tested up to:** 6.8
 **Requires PHP:** 7.4  
-**Stable tag:** 6.0.0
+**Stable tag:** 6.0.4
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -159,6 +159,29 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 
 ## Changelog
 
+### 6.0.4 (Date: May 28, 2025) =
+- Improve honeypot condition check
+- Fix the net promoter score field's zero (0) value in the visual report
+- Fix the multi-select values in the submission including commas
+- Fix tooltip/help message
+- Fix conversational form address field meta smartcode
+- Fix conversational form section break image layout position
+- Fix email attachment missing for WordPress sub-directory
+- Fix conversational form name and address fields prefilled using URL params
+- Fix keyword-based restriction if IPInfo access key is provided
+- Fix email notification/integration sending after payment status change to paid
+
+### 6.0.3 (Date: April 16, 2025) =
+- Adds hooks for disable captcha validation
+- Adds filter to control response as html on checkable field
+- Adds filter to control Mailchimp timout
+- Improves rating field accessibility
+- Fixes Cross-Site Scripting vulnerability CVE ID: CVE-2025-3615
+- Fixes Textdomain early load
+- Fixes cleantalk toggle in misc settings
+- Fixes analytics visual report showing empty
+- Fixes aria-label separately in address field
+
 ### 6.0.0 (Date: March 19, 2025)
 - Adds Payment fields for free users (except coupon fields)
 - Adds Stripe payment gateway for free users (1.9% fee per transaction)
@@ -179,14 +202,6 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Adds Italian Language Translation
 - Improve Honeypot Security for better bot detection
 - Improve Turnstile appearance option names for clarity
-
-### 5.2.11 (Date: February 10, 2025)
-- Adds CleanTalk Spam Protection with API
-- Adds Hungarian Language Translation
-- Adds form editor options for reCaptcha V3 badge rendering
-- Improve Honeypot spam protection
-- Fixes WordFence vulnerability IP-Spoofing CVE-2024-13666
-- Fixes fluentform/load_default_public filter not affects Block Editor
 
 [View complete changelog history](https://fluentforms.com/docs/changelog/)
 

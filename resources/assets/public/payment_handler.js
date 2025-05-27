@@ -470,9 +470,11 @@ export class Payment_handler {
             html: '&times;',
             click: (e) => {
                 $responseDiv.find('.ff_resp_item_' + coupon_code).remove();
-                delete this.appliedCoupons[coupon_code];
-                this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
-                this.$form.trigger('do_calculation');
+                if (coupon_code in this.appliedCoupons) {
+                    delete this.appliedCoupons[coupon_code];
+                    this.$form.find('.__ff_all_applied_coupons').attr('value', JSON.stringify(Object.keys(this.appliedCoupons)));
+                    this.$form.trigger('do_calculation');
+                }
             }
         });
 
@@ -531,59 +533,59 @@ export class Payment_handler {
     }
 
     initStripeElement() {
-        if (this.$form.hasClass('ff_has_stripe_inline')) {
-            const locale = this.formPaymentConfig.stripe.locale;
-            this.stripe = new Stripe(this.formPaymentConfig.stripe.publishable_key, {
-                locale: locale
-            });
-            this.stripe.registerAppInfo(this.formPaymentConfig.stripe_app_info);
-            let customStyles = this.formPaymentConfig.stripe.custom_style.styles;
-
-            const elements = this.stripe.elements();
-
-            const card = elements.create("card", {
-                style: customStyles,
-                hidePostalCode: !this.formPaymentConfig.stripe.inlineConfig.verifyZip,
-                disableLink: this.formPaymentConfig.stripe.inlineConfig.disable_link,
-            });
-
-            // let's find the element
-            const inlineElementId = this.$form.find('.ff_stripe_card_element').attr('id');
-
-            if (!inlineElementId) {
-                console.log('No Stripe Cart Element Found');
-                return;
-            }
-
-            // Add an instance of the card Element into the `card-element` <div>.
-            card.mount("#" + inlineElementId);
-
-            card.addEventListener('change', (event) => {
-                this.toggleStripeInlineCardError(event.error);
-            });
-
-            this.stripeCard = card;
-
-            this.$form.on('fluentform_submission_success', () => {
-                card.clear();
-            });
-
-            this.$form.on('fluentform_submission_failed', () => {
-                this.stripeCard.update({disabled: false});
-            });
-
-            this.registerStripePaymentToken(inlineElementId);
-
-            // Listener for update stripe input element styles.
-            const that = this;
-            this.$form.on('fluentform_update_stripe_inline_element_style', function (event, styles) {
-                that.handleStripeStyleUpdate(styles, customStyles)
-            })
-
-            // get custom inline styles from stripe inline config and update stripe input element styles
-            const styles = this.formPaymentConfig.stripe?.inlineConfig?.inline_styles || false;
-            this.handleStripeStyleUpdate(styles, customStyles)
+        if (!this.$form.hasClass('ff_has_stripe_inline')) {
+            return;
         }
+
+        // Initialize Stripe object
+        this.ensureStripeIsInitialized();
+
+        // Now set up the inline form elements with styles
+        let customStyles = this.formPaymentConfig.stripe.custom_style.styles;
+        const elements = this.stripe.elements();
+
+        const card = elements.create("card", {
+            style: customStyles,
+            hidePostalCode: !this.formPaymentConfig.stripe.inlineConfig.verifyZip,
+            disableLink: this.formPaymentConfig.stripe.inlineConfig.disable_link,
+        });
+
+        // let's find the element
+        const inlineElementId = this.$form.find('.ff_stripe_card_element').attr('id');
+
+        if (!inlineElementId) {
+            console.log('No Stripe Cart Element Found');
+            return;
+        }
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount("#" + inlineElementId);
+
+        card.addEventListener('change', (event) => {
+            this.toggleStripeInlineCardError(event.error);
+        });
+
+        this.stripeCard = card;
+
+        this.$form.on('fluentform_submission_success', () => {
+            card.clear();
+        });
+
+        this.$form.on('fluentform_submission_failed', () => {
+            this.stripeCard.update({disabled: false});
+        });
+
+        this.registerStripePaymentToken(inlineElementId);
+
+        // Listener for update stripe input element styles.
+        const that = this;
+        this.$form.on('fluentform_update_stripe_inline_element_style', function (event, styles) {
+            that.handleStripeStyleUpdate(styles, customStyles)
+        })
+
+        // get custom inline styles from stripe inline config and update stripe input element styles
+        const styles = this.formPaymentConfig.stripe?.inlineConfig?.inline_styles || false;
+        this.handleStripeStyleUpdate(styles, customStyles)
     }
 
     // method for parse string styles to JS Object styles
@@ -664,10 +666,19 @@ export class Payment_handler {
         }
 
         if ($paymentMethods.length > 1) {
+            const paypalInlineWrapper = this.$form.find('.paypal-standard-checkout-wrapper');
+            if (this.paymentMethod === 'paypal' && paypalInlineWrapper.length) {
+                this.$form.find('.ff-btn-submit').css({display: 'none'});
+            }
+
             $paymentMethods.change((event) => {
                 this.paymentMethod = event.target.value;
 
                 jQuery(event.target).closest('.ff-el-input--content').find('.ff_pay_inline').css({display: 'none'});
+
+                if (paypalInlineWrapper.length) {
+                    this.$form.find('.ff-btn-submit').css({display: 'block'});
+                }
 
                 if (this.paymentMethod === 'stripe') {
                     jQuery(event.target).closest('.ff-el-input--content').find('.stripe-inline-wrapper').css({display: 'block'});
@@ -675,6 +686,11 @@ export class Payment_handler {
 
                 if (this.paymentMethod === 'square') {
                     jQuery(event.target).closest('.ff-el-input--content').find('.square-inline-wrapper').css({display: 'block'});
+                }
+
+                if (this.paymentMethod === 'paypal' && paypalInlineWrapper.length) {
+                    paypalInlineWrapper.css({ display: 'block' });
+                    this.$form.find('.ff-btn-submit').css({ display: 'none' });
                 }
             });
         }
@@ -741,6 +757,11 @@ export class Payment_handler {
     }
 
     stripeSetupIntent(data) {
+        if (!this.ensureStripeIsInitialized()) {
+            console.error('Stripe is not initialized');
+            return;
+        }
+        
         this.stripe.confirmCardPayment(
             data.client_secret,
             {
@@ -765,6 +786,11 @@ export class Payment_handler {
     }
 
     initStripeSCAModal(data) {
+        if (!this.ensureStripeIsInitialized()) {
+            console.error('Stripe is not initialized');
+            return;
+        }
+        
         this.formInstance.showFormSubmissionProgress(this.$form);
         this.stripe.handleCardAction(
             data.client_secret
@@ -799,26 +825,43 @@ export class Payment_handler {
         window.fluentFormApp(this.$form).sendData(this.$form, data);
     }
 
+    ensureStripeIsInitialized() {
+        if (!this.stripe && this.formPaymentConfig && this.formPaymentConfig.stripe) {
+            const locale = this.formPaymentConfig.stripe.locale;
+            this.stripe = new Stripe(this.formPaymentConfig.stripe.publishable_key, {
+                locale: locale
+            });
+            if (this.formPaymentConfig.stripe_app_info) {
+                this.stripe.registerAppInfo(this.formPaymentConfig.stripe_app_info);
+            }
+            return true;
+        }
+        return !!this.stripe;
+    }
+
     maybeRemoveSubmitError() {
         jQuery('#form_success').remove();
     }
 }
+// Register payment handler events only if pro is not installed.
+// If pro is installed, payment handler events is registered from payment_handler_pro.js
+if (!window.fluentFormVars.pro_payment_script_compatible) {
+    (function ($) {
+        $.each($('form.fluentform_has_payment'), function () {
+            const $form = $(this);
+            $form.on('fluentform_init_single', function (event, instance) {
+                (new Payment_handler($form, instance)).init();
+            });
+        });
 
-(function ($) {
-    $.each($('form.fluentform_has_payment'), function () {
-        const $form = $(this);
-        $form.on('fluentform_init_single', function (event, instance) {
+        $(document).on('ff_reinit', function (e, formItem) {
+            var $form = $(formItem);
+            $form.attr('data-ff_reinit', 'yes');
+            const instance = fluentFormApp($form);
+            if (!instance) {
+                return false;
+            }
             (new Payment_handler($form, instance)).init();
         });
-    });
-
-    $(document).on('ff_reinit', function (e, formItem) {
-        var $form = $(formItem);
-        $form.attr('data-ff_reinit', 'yes');
-        const instance = fluentFormApp($form);
-        if (!instance) {
-            return false;
-        }
-        (new Payment_handler($form, instance)).init();
-    });
-}(jQuery));
+    }(jQuery));
+}

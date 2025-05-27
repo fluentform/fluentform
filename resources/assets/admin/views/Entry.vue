@@ -452,16 +452,21 @@
                     return dataValue;
                 }
 
-                if(field.element == 'select' && field.attributes && !field.attributes.multiple) {
+                if (field.element == 'select' && field.attributes && !field.attributes.multiple) {
                     return dataValue;
                 }
+
                 if (!dataValue) {
                     return;
                 }
 
+                if (typeof dataValue == 'string' && (dataValue.includes('<ul') || dataValue.includes('<li'))) {
+                  return dataValue;
+                }
+
                 let itemArray = [];
 
-                if(typeof dataValue == 'string') {
+                if (typeof dataValue == 'string') {
                     itemArray = dataValue.split(',');
                 }
 
