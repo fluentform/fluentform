@@ -86,7 +86,6 @@ class EditorShortCode
             '{submission.status}'         => __('Submission Status', 'fluentform'),
             '{submission.created_at}'     => __('Submission Create Date', 'fluentform'),
             '{submission.admin_view_url}' => __('Submission Admin View URL', 'fluentform'),
-            '{submission.entry_uid_link}' => __('Entry Frontend View Link', 'fluentform'),
         ];
 
         if ($form) {
@@ -100,10 +99,12 @@ class EditorShortCode
             }
         }
 
-        return [
+        $submissionShortcodes = [
             'title'      => __('Entry Attributes','fluentform'),
             'shortcodes' => $submissionProperties,
         ];
+
+        return apply_filters('fluentform/submission_shortcodes', $submissionShortcodes, $form);
     }
 
     public static function getPaymentShortcodes($form)
