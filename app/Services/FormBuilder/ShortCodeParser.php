@@ -235,7 +235,7 @@ class ShortCodeParser
                 $isHtml
             );
         }
-    
+
         static::$store['inputs'][$key] = apply_filters_deprecated(
             'fluentform_response_render_' . $field['element'],
             [
@@ -257,7 +257,7 @@ class ShortCodeParser
             $isHtml
         );
     }
-    
+
     protected static function getFormLabelData($key)
     {
         if (is_null(static::$formFields)) {
@@ -371,6 +371,8 @@ class ShortCodeParser
         }
         if ('admin_view_url' == $key) {
             return admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $entry->form_id . '#/entries/' . $entry->id);
+        } elseif ('entry_uid_link' == $key) {
+            return static::getEntryUidLink($entry);
         } elseif (false !== strpos($key, 'meta.')) {
             $metaKey = substr($key, strlen('meta.'));
             $data = Helper::getSubmissionMeta($entry->id, $metaKey);
@@ -610,6 +612,39 @@ class ShortCodeParser
     public static function getInputs()
     {
         return static::$store['original_inputs'];
+    }
+
+    /**
+     * Get the entry UID link for a submission
+     *
+     * @param object $entry
+     * @return string
+     */
+    protected static function getEntryUidLink($entry)
+    {
+        // Check if entry already has the entry_uid_link property
+        if (isset($entry->entry_uid_link)) {
+            return $entry->entry_uid_link;
+        }
+
+        // Check if front-end entry view is enabled for this form
+        $frontEndSettings = Helper::getFormMeta($entry->form_id, 'front_end_entry_view', []);
+        if (ArrayHelper::get($frontEndSettings, 'status') !== 'yes') {
+            return '';
+        }
+
+        // Get the UID hash from submission meta
+        $meta = wpFluent()->table('fluentform_submission_meta')
+            ->where('response_id', $entry->id)
+            ->where('meta_key', '_entry_uid_hash')
+            ->first();
+
+        if (!$meta || !$meta->value) {
+            return '';
+        }
+
+        // Generate the link
+        return site_url('?ff_entry=1&hash=' . $meta->value);
     }
 
     public static function resetData()

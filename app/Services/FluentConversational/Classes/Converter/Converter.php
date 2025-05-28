@@ -673,6 +673,7 @@ class Converter
                 
                 $form->turnstile = [
                     'siteKey' => $siteKey,
+                    'appearance' => $appearance,
                 ];
                 
                 wp_enqueue_script(
@@ -682,6 +683,9 @@ class Converter
                     FLUENTFORM_VERSION,
                     false
                 );
+                if ('interaction-only' === $appearance) {
+                    continue;
+                }
             } elseif ('payment_coupon' === $field['element']) {
                 if ($hasSaveAndResume && $saveAndResumeData) {
                     if ($coupons = ArrayHelper::get($saveAndResumeData, 'response.__ff_all_applied_coupons')) {
