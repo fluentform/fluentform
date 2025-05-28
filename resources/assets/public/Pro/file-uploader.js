@@ -93,6 +93,8 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     return false;
                 }
 
+                let elName = element.prop('name');
+                $(`[name="${elName}"]`).closest('div').find('.error').html('');
                 element.closest('div').find('.error').html('');
 
                 return true;
