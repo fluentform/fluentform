@@ -167,10 +167,10 @@
                     </card-body>
                 </card>
 
-              <!--Entry Fronend View-->
+              <!--Entry Frontend View-->
               <card  id="front_end_view" v-if="front_end_entry_view">
                 <card-head>
-                  <h5 class="title">{{ $t('Fron End Entry View') }}</h5>
+                  <h5 class="title">{{ $t('Front End Entry View') }}</h5>
                 </card-head>
                 <card-body>
 
@@ -178,7 +178,7 @@
                     <el-row :gutter="24">
                       <el-col>
                         <el-checkbox true-label="yes" false-label="no"  v-model="front_end_entry_view.status">
-                          {{ $t('Enable Front End View of User Submision')}}
+                          {{ $t('Enable Front End View of User Submission')}}
                         </el-checkbox>
                       </el-col>
                       <el-col v-if="front_end_entry_view.status =='yes'">
@@ -206,7 +206,7 @@
                               </label>
                               <div class="el-form-item__content">
                                 <el-checkbox true-label="yes" false-label="no"
-                                             v-model="front_end_entry_view.forLoggedInUser">
+                                             v-model="front_end_entry_view.for_logged_in_user">
                                   {{ $t('Enable For logged in Users only') }}
                                 </el-checkbox>
                               </div>
@@ -218,7 +218,7 @@
                                 {{ $t('Background Color') }}
                               </label>
                               <div class="el-form-item__content">
-                                <el-color-picker v-model="front_end_entry_view.bgColor"
+                                <el-color-picker v-model="front_end_entry_view.bg_color"
                                                  size="mini"></el-color-picker>
                               </div>
                             </div>
@@ -995,8 +995,6 @@
 
                             if (!settings.restrictions.restrictForm)
                                 settings.restrictions.restrictForm = {};
-                            if (!settings.front_end_entry_view)
-                               settings.front_end_entry_view = false;
 
                             if (!settings.appendSurveyResult) {
                                 settings.appendSurveyResult = {
@@ -1015,7 +1013,6 @@
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
                         this.front_end_entry_view = response?.front_end_entry_view
-
                     })
                     .catch(e => {
                         this.setDefaultSettings();
@@ -1045,6 +1042,7 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
+	                front_end_entry_view: JSON.stringify(this.front_end_entry_view)
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {
