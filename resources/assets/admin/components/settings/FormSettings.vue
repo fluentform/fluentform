@@ -1042,10 +1042,13 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
-	                front_end_entry_view: JSON.stringify(this.front_end_entry_view)
+	                  front_end_entry_view: JSON.stringify(this.front_end_entry_view)
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {
+                        if(this.front_end_entry_view?.status){
+                             this.$emit('refetch-all-editor-shortcodes');
+                        }
                         this.$success(response.message);
                     })
                     .catch(error => {
