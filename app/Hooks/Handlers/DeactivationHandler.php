@@ -13,5 +13,6 @@ class DeactivationHandler
     {
         wp_clear_scheduled_hook('fluentform_do_scheduled_tasks');
         wp_clear_scheduled_hook('fluentform_do_email_report_scheduled_tasks');
+        wp_clear_scheduled_hook('fluentform_do_temp_upload_file_delete_scheduled_tasks');
     }
 }
