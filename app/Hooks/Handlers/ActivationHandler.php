@@ -206,10 +206,5 @@ class ActivationHandler
         if (!wp_next_scheduled($emailReportHookName)) {
             wp_schedule_event(time(), 'daily', $emailReportHookName);
         }
-
-        $tempUploadFileDeleteHookName = 'fluentform_do_temp_upload_file_delete_scheduled_tasks';
-        if (!wp_next_scheduled($tempUploadFileDeleteHookName)) {
-            wp_schedule_event(time(), 'daily', $tempUploadFileDeleteHookName);
-        }
     }
 }
