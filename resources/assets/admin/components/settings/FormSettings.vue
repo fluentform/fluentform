@@ -294,6 +294,86 @@
                     </card-body>
                 </card>
 
+              <!--Entry Fronend View-->
+              <card  id="admin_approval">
+                <card-head>
+                  <h5 class="title">{{ $t('Fron End Entry View') }}</h5>
+                </card-head>
+                <card-body>
+
+                  <el-form label-position="top">
+                    <el-row :gutter="24">
+                      <el-col>
+                        <el-checkbox true-label="yes" false-label="no"  v-model="front_end_entry_view.status">
+                          {{ $t('Enable Front End View of User Submision')}}
+                        </el-checkbox>
+                      </el-col>
+                      <el-col v-if="front_end_entry_view.status =='yes'">
+
+                        <el-row :gutter="24">
+
+                          <el-col :sm="24" :md="24">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Content') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <wp-editor
+                                  :height="15"
+                                  :editor-shortcodes="editorShortcodes"
+                                  v-model="front_end_entry_view.content"/>
+                              </div>
+                            </div>
+                          </el-col>
+
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Allow Logged in Users Only') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.forLoggedInUser">
+                                  {{ $t('Enable For logged in Users only') }}
+                                </el-checkbox>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Background Color') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-color-picker v-model="front_end_entry_view.bgColor"
+                                                 size="mini"></el-color-picker>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('SEO Settings') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.no_index">
+                                  {{ $t('Add noindex meta tag') }}
+                                </el-checkbox>
+                                <p class="mt-1 fs-12 text-muted">
+                                  {{ $t('Prevents search engines from indexing this page') }}
+                                </p>
+                              </div>
+                            </div>
+                          </el-col>
+                        </el-row>
+
+                      </el-col>
+
+                    </el-row>
+                  </el-form>
+                </card-body>
+              </card>
                 <!-- Appearance Settings -->
                 <card id="form-layout">
                     <card-head>
@@ -815,6 +895,7 @@
                 conv_form_per_step_save: false,
                 conv_form_resume_from_last_step: false,
                 hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
+                front_end_entry_view: false
             }
         },
         computed: {
@@ -932,7 +1013,13 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
-
+                        this.front_end_entry_view = response.front_end_entry_view || {
+                            status: 'no',
+                            forLoggedInUser: 'no',
+                            no_index: 'no',
+                            bgColor: '#ffffff',
+                            content: '{all_data}'
+                        }
                     })
                     .catch(e => {
                         this.setDefaultSettings();
@@ -962,6 +1049,7 @@
                     double_optin: JSON.stringify(this.double_optin),
                     admin_approval: JSON.stringify(this.admin_approval),
                     affiliate_wp: JSON.stringify(this.affiliate_wp),
+                    front_end_entry_view: this.front_end_entry_view,
                 }
                 FluentFormsGlobal.$post(data)
                     .then(response => {
