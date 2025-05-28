@@ -673,7 +673,6 @@ class Converter
                 
                 $form->turnstile = [
                     'siteKey' => $siteKey,
-                    'appearance' => $appearance,
                 ];
                 
                 wp_enqueue_script(
@@ -683,6 +682,10 @@ class Converter
                     FLUENTFORM_VERSION,
                     false
                 );
+
+                // for WP Rocket compatibility
+                wp_script_add_data('turnstile_conv', 'data-cfasync', 'false');
+                
                 if ('interaction-only' === $appearance) {
                     continue;
                 }
