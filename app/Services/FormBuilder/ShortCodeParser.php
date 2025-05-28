@@ -627,6 +627,12 @@ class ShortCodeParser
             return $entry->entry_uid_link;
         }
 
+        // Check if front-end entry view is enabled for this form
+        $frontEndSettings = Helper::getFormMeta($entry->form_id, 'front_end_entry_view', []);
+        if (ArrayHelper::get($frontEndSettings, 'status') !== 'yes') {
+            return '';
+        }
+
         // Get the UID hash from submission meta
         $meta = wpFluent()->table('fluentform_submission_meta')
             ->where('response_id', $entry->id)

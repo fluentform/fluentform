@@ -167,6 +167,87 @@
                     </card-body>
                 </card>
 
+              <!--Entry Fronend View-->
+              <card  id="front_end_view" v-if="front_end_entry_view">
+                <card-head>
+                  <h5 class="title">{{ $t('Fron End Entry View') }}</h5>
+                </card-head>
+                <card-body>
+
+                  <el-form label-position="top">
+                    <el-row :gutter="24">
+                      <el-col>
+                        <el-checkbox true-label="yes" false-label="no"  v-model="front_end_entry_view.status">
+                          {{ $t('Enable Front End View of User Submision')}}
+                        </el-checkbox>
+                      </el-col>
+                      <el-col v-if="front_end_entry_view.status =='yes'">
+
+                        <el-row :gutter="24">
+
+                          <el-col :sm="24" :md="24">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Content') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <wp-editor
+                                  :height="15"
+                                  :editor-shortcodes="editorShortcodes"
+                                  v-model="front_end_entry_view.content"/>
+                              </div>
+                            </div>
+                          </el-col>
+
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Allow Logged in Users Only') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.forLoggedInUser">
+                                  {{ $t('Enable For logged in Users only') }}
+                                </el-checkbox>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('Background Color') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-color-picker v-model="front_end_entry_view.bgColor"
+                                                 size="mini"></el-color-picker>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :sm="24" :md="8">
+                            <div class="el-form-item ff-form-item">
+                              <label class="el-form-item__label">
+                                {{ $t('SEO Settings') }}
+                              </label>
+                              <div class="el-form-item__content">
+                                <el-checkbox true-label="yes" false-label="no"
+                                             v-model="front_end_entry_view.no_index">
+                                  {{ $t('Add noindex meta tag') }}
+                                </el-checkbox>
+                                <p class="mt-1 fs-12 text-muted">
+                                  {{ $t('Prevents search engines from indexing this page') }}
+                                </p>
+                              </div>
+                            </div>
+                          </el-col>
+                        </el-row>
+
+                      </el-col>
+
+                    </el-row>
+                  </el-form>
+                </card-body>
+              </card>
+
                 <!--Admin approval settings-->
                 <card v-if="admin_approval" id="admin_approval">
                     <card-head>
@@ -728,6 +809,8 @@
     import Notice from '@/admin/components/Notice/Notice.vue';
     import BtnGroup from '@/admin/components/BtnGroup/BtnGroup.vue';
     import BtnGroupItem from '@/admin/components/BtnGroup/BtnGroupItem.vue';
+    import TabItem from "@/admin/components/Tab/TabItem.vue";
+    import TabLink from "@/admin/components/Tab/TabLink.vue";
 
     export default {
         name: 'FormSettings',
@@ -811,7 +894,8 @@
                 is_conversion_form: !!window.FluentFormApp.is_conversion_form,
                 conv_form_per_step_save: false,
                 conv_form_resume_from_last_step: false,
-                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume
+                hasConvFormSaveAndResume: !!window.FluentFormApp.has_conv_form_save_and_resume,
+                front_end_entry_view: false
             }
         },
         computed: {
@@ -911,6 +995,8 @@
 
                             if (!settings.restrictions.restrictForm)
                                 settings.restrictions.restrictForm = {};
+                            if (!settings.front_end_entry_view)
+                               settings.front_end_entry_view = false;
 
                             if (!settings.appendSurveyResult) {
                                 settings.appendSurveyResult = {
@@ -919,7 +1005,6 @@
                                     showCount: false
                                 }
                             }
-
                             this.formSettings = settings;
                         } else {
                             this.setDefaultSettings();
@@ -929,12 +1014,7 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
-                        this.front_end_entry_view = response.front_end_entry_view || {
-                            status: 'no',
-                            forLoggedInUser: 'no',
-                            bgColor: '#ffffff',
-                            content: '{all_data}'
-                        };
+                        this.front_end_entry_view = response?.front_end_entry_view
 
                     })
                     .catch(e => {
