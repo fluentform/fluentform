@@ -1013,7 +1013,12 @@
                         this.double_optin = response.double_optin;
                         this.admin_approval = response.admin_approval;
                         this.affiliate_wp = response.affiliate_wp;
-                        this.front_end_entry_view = response.front_end_entry_view || {};
+                        this.front_end_entry_view = response.front_end_entry_view || {
+                            status: 'no',
+                            forLoggedInUser: 'no',
+                            bgColor: '#ffffff',
+                            content: '{all_data}'
+                        };
 
                     })
                     .catch(e => {
