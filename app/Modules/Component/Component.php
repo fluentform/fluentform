@@ -1194,6 +1194,8 @@ class Component
             'net_promoter_score',
             'featured_image',
         ];
+        $advancedFields = apply_filters('fluentform/fields_requiring_advanced_script', $advancedFields);
+        
         if ($formBuilder->conditions || array_intersect($formBuilder->fieldLists, $advancedFields)) {
             wp_enqueue_script('fluentform-advanced');
         }
