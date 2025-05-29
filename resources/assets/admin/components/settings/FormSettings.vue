@@ -202,13 +202,21 @@
                           <el-col :sm="24" :md="8">
                             <div class="el-form-item ff-form-item">
                               <label class="el-form-item__label">
-                                {{ $t('Enable Restriction') }}
+                                {{ $t("Enable Restriction") }}
                               </label>
                               <div class="el-form-item__content">
                                 <el-checkbox true-label="yes" false-label="no"
                                              v-model="front_end_entry_view.for_logged_in_user">
-                                  {{ $t('Only Submitter or Admin Can View') }}
+                                  {{ $t("Only Submitter or Admin Can View") }}
                                 </el-checkbox>
+                                <p class="mt-1 fs-12 text-muted">
+                                    <span v-if="front_end_entry_view.for_logged_in_user === 'yes'">
+                                      {{ $t("Current: Only the logged in submitter or admin can view this submission") }}
+                                    </span>
+                                          <span v-else>
+                                      {{ $t("Current: Anyone with the link can view this submission") }}
+                                    </span>
+                                </p>
                               </div>
                             </div>
                           </el-col>
