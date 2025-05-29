@@ -443,18 +443,19 @@ You can get support from our official support thread at <a href="https://wpmanag
 == Changelog ==
 
 = 6.0.4 (Date: May 29, 2025) =
+- Fixes the net promoter score field's zero (0) value in the visual report
+- Fixes the multi-select values in the submission including commas
+- Fixes tooltip/help message
+- Fixes conversational form address field default value meta smart code
+- Fixes conversational form section break image layout position
+- Fixes email attachment missing for WordPress subdirectory
+- Fixes conversational form name and address fields prefilled using URL params
+- Fixes keyword-based restriction if IPInfo access key is provided
+- Fixes conversational form invisible turnstile autoload
+- Fixes email notification/integration sending after payment status change to paid
+- Fixes turnstile with WP Rocket compatibility
 - Improve honeypot condition check
-- Fix the net promoter score field's zero (0) value in the visual report
-- Fix the multi-select values in the submission including commas
-- Fix tooltip/help message
-- Fix conversational form address field meta smart code
-- Fix conversational form section break image layout position
-- Fix email attachment missing for WordPress subdirectory
-- Fix conversational form name and address fields prefilled using URL params
-- Fix keyword-based restriction if IPInfo access key is provided
-- Fix conversational form invisible turnstile autoload
-- Fix email notification/integration sending after payment status change to paid
-- Fix turnstile with WP Rocket compatibility
+- Adds support for WPML translation with the `Multilingual Forms for Fluent Forms with WPML` addon
 
 = 6.0.3 (Date: April 16, 2025) =
 - Adds filter hooks for disable captcha validation
