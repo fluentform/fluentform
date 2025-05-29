@@ -90,11 +90,6 @@ class PaymentHelper
                 'secret_key'      => ''
             ],
             'custom_paypal_id'               => '',
-            'custom_paypal_processor'        => 'paypal_legacy',
-            'custom_paypal_live_secret'      => '',
-            'custom_paypal_sandbox_secret'   => '',
-            'custom_paypal_sandbox_client_id'=> '',
-            'custom_paypal_live_client_id'   => '',
             'custom_paypal_mode'             => 'live',
             'paypal_account_type'            => 'global'
         ];
@@ -123,10 +118,6 @@ class PaymentHelper
             $settings = wp_parse_args($settings, $globalSettings);
         }
 
-        $settings['paypal_webhook_url'] = add_query_arg([
-            'fluentform_payment_api_notify' => '1',
-            'payment_method'                => 'paypal'
-        ], site_url('index.php'));
 
         $cachedSettings[$scope . '_' . $formId] = $settings;
 

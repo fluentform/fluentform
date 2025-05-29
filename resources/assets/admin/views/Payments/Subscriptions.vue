@@ -246,7 +246,7 @@ export default {
                 route: 'cancel_subscription',
                 subscription_id: this.canceling_subscription.id,
                 form_id: this.canceling_subscription.form_id,
-                transaction_id: this.canceling_subscription.vendor_response?.subscription_details?.metadata?.transaction_id,
+                transaction_id: this.canceling_subscription.vendor_response.subscription_details.metadata.transaction_id,
                 submission_id: this.canceling_subscription.submission_id
             })
                 .then((res) => {

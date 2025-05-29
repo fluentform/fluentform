@@ -825,7 +825,7 @@ abstract class BaseProcessor
                 do_action('fluentform/subscription_received_payment_' . $submission->payment_method, $subscription, $submission);
             }
 
-            if($subscription->bill_times <= $subscription->bill_count) {
+            if($subscription->bill_times >= $subscription->bill_count) {
                 // We have to mark the subscription as completed
                 $this->updateSubscriptionStatus($subscription, 'completed');
             }
@@ -838,8 +838,8 @@ abstract class BaseProcessor
     {
         $payments = wpFluent()
             ->table('fluentform_transactions')
-            ->select(['id', 'payment_total', 'transaction_type'])
-            ->whereIn('transaction_type', ['subscription', 'subscription_signup_fee'])
+            ->select(['id', 'payment_total'])
+            ->where('transaction_type', 'subscription')
             ->where('subscription_id', $subscriptionId)
             ->when($paymentMethod, function ($q) use ($paymentMethod) {
                 $q->where('payment_method', $paymentMethod);
@@ -847,16 +847,12 @@ abstract class BaseProcessor
             ->get();
 
         $paymentTotal = 0;
-        $billCounts = 0;
 
         foreach ($payments as $payment) {
             $paymentTotal += $payment->payment_total;
-            if ('subscription_signup_fee' != $payment->transaction_type) {
-                $billCounts++;
-            }
         }
 
-        return [$billCounts, $paymentTotal];
+        return [count($payments), $paymentTotal];
     }
 
     protected function getCancelAtTimeStamp($subscription)

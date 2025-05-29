@@ -63,7 +63,7 @@ class OrderData
     {
         $transactions = wpFluent()->table('fluentform_transactions')
             ->where('submission_id', $submissionId)
-            ->whereIn('transaction_type', ['onetime', 'subscription', 'subscription_signup_fee'])
+            ->whereIn('transaction_type', ['onetime', 'subscription'])
             ->orderBy('id', 'ASC')
             ->get();
 
