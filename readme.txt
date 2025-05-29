@@ -447,7 +447,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fix the net promoter score field's zero (0) value in the visual report
 - Fix the multi-select values in the submission including commas
 - Fix tooltip/help message
-- Fix conversational form address field meta smartcode
+- Fix conversational form address field meta smart code
 - Fix conversational form section break image layout position
 - Fix email attachment missing for WordPress subdirectory
 - Fix conversational form name and address fields prefilled using URL params

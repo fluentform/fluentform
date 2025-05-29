@@ -202,12 +202,12 @@
                           <el-col :sm="24" :md="8">
                             <div class="el-form-item ff-form-item">
                               <label class="el-form-item__label">
-                                {{ $t('Allow Logged in Users Only') }}
+                                {{ $t('Enable Restriction') }}
                               </label>
                               <div class="el-form-item__content">
                                 <el-checkbox true-label="yes" false-label="no"
                                              v-model="front_end_entry_view.for_logged_in_user">
-                                  {{ $t('Enable For logged in Users only') }}
+                                  {{ $t('Only Submitter or Admin Can View') }}
                                 </el-checkbox>
                               </div>
                             </div>
@@ -234,7 +234,7 @@
                                   {{ $t('Add noindex meta tag') }}
                                 </el-checkbox>
                                 <p class="mt-1 fs-12 text-muted">
-                                  {{ $t('Prevents search engines from indexing this page') }}
+                                  {{ $t('Prevents search engines from indexing') }}
                                 </p>
                               </div>
                             </div>
