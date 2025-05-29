@@ -673,6 +673,7 @@ class Converter
                 
                 $form->turnstile = [
                     'siteKey' => $siteKey,
+                    'appearance' => $appearance,
                 ];
                 
                 wp_enqueue_script(
