@@ -171,6 +171,7 @@ Yes, you can export your data in CSV, Excel, ODS, JSON format. You can also impo
 - Fix keyword-based restriction if IPInfo access key is provided
 - Fix conversational form invisible turnstile autoload
 - Fix email notification/integration sending after payment status change to paid
+- Fix turnstile with WP Rocket compatibility
 
 ### 6.0.3 (Date: April 16, 2025) =
 - Adds hooks for disable captcha validation

@@ -442,7 +442,6 @@ You can get support from our official support thread at <a href="https://wpmanag
 
 == Changelog ==
 
-
 = 6.0.4 (Date: May 29, 2025) =
 - Improve honeypot condition check
 - Fix the net promoter score field's zero (0) value in the visual report
@@ -455,6 +454,7 @@ You can get support from our official support thread at <a href="https://wpmanag
 - Fix keyword-based restriction if IPInfo access key is provided
 - Fix conversational form invisible turnstile autoload
 - Fix email notification/integration sending after payment status change to paid
+- Fix turnstile with WP Rocket compatibility
 
 = 6.0.3 (Date: April 16, 2025) =
 - Adds filter hooks for disable captcha validation
