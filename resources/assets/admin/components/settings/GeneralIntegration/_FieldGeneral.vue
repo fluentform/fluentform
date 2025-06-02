@@ -1,8 +1,8 @@
 <template>
     <div class="field_general">
-        <input-popover 
+        <input-popover
             :fieldType="field_type"
-            :placeholder="$t('Select a Field or Type Custom value')"
+            :placeholder="placeholder"
             v-model="fieldValue"
             icon="el-icon-arrow-down"
             :data="editorShortcodes"
@@ -24,7 +24,12 @@
             field_type: {
                 type: String,
                 default: 'text'
+            },
+            placeholder : {
+                type: String,
+                default: 'Select a Field or Type Custom value'
             }
+
         },
 	    computed : {
 		    fieldValue: {

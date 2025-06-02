@@ -93,6 +93,10 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     return false;
                 }
 
+                let elName = element.prop('name');
+                $(`[name="${elName}"]`).closest('div').find('.error').html('');
+                element.closest('div').find('.error').html('');
+
                 return true;
             }
 
@@ -333,6 +337,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                 filePath = $this.attr('data-href'),
                 attachmentId = $this.attr('data-attachment-id');
             if (filePath == '#') {
+                $this.closest('.ff-el-input--content').find('.error').remove();
                 $this.closest('.ff-upload-preview').remove();
                 if (!parent.find('.ff-upload-preview').length) {
                     parent.siblings('.ff-upload-progress').addClass('ff-hidden');
@@ -347,6 +352,7 @@ export default function ($, $form, form, fluentFormVars, formSelector) {
                     .then(function (response) {
                         var element = $this.closest('.ff-el-input--content').find('input');
                         $el.trigger('change_remaining', 1);
+                        $this.closest('.ff-el-input--content').find('.error').remove();
                         $this.closest('.ff-upload-preview').remove();
                         if (!parent.find('.ff-upload-preview').length) {
                             parent.siblings('.ff-upload-progress').addClass('ff-hidden');
