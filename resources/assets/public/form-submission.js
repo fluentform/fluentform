@@ -859,7 +859,7 @@ jQuery(document).ready(function () {
                     });
 
                     $theForm.find('.ff-el-tooltip').on('mouseenter', function (event) {
-                        const content = $(this).data('content');
+                        let content = $(this).data('content');
                         let $popContent = $('.ff-el-pop-content');
                         if (!$popContent.length) {
                             $('<div/>', {
