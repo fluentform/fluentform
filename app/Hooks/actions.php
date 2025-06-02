@@ -144,8 +144,7 @@ add_action('admin_init', function () {
         'fluent_forms_docs',
         'fluent_forms_all_entries',
         'msformentries',
-        'fluent_forms_payment_entries',
-        'fluent_forms_reports'
+        'fluent_forms_payment_entries'
     ];
 
     $page = wpFluentForm('request')->get('page');
@@ -622,7 +621,7 @@ add_action('wp', function () use ($app) {
             );
             wp_localize_script('fluent_forms_global', 'fluent_forms_global_var', [
                 'fluent_forms_admin_nonce' => wp_create_nonce('fluent_forms_admin_nonce'),
-                'ajaxurl'                  => admin_url('admin-ajax.php'),
+                'ajaxurl'                  => Helper::getAjaxUrl(),
                 'global_search_active'     => apply_filters('fluentform/global_search_active', 'yes'),
                 'rest'                     => Helper::getRestInfo()
             ]);
@@ -802,7 +801,6 @@ $app->addAction('fluentform/schedule_feed', function ($queueId) use ($app) {
 $app->addAction('init', function () use ($app) {
     new \FluentForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
     new \FluentForm\App\Modules\Form\TokenBasedSpamProtection($app);
-    new \FluentForm\App\Modules\Report\ReportHandler($app);
     // Load payment module
     if (Helper::isPaymentCompatible()) {
         (new FluentForm\App\Modules\Payments\PaymentHandler())->init();
